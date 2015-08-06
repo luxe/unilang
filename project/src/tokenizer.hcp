@@ -8,15 +8,21 @@ class
 
 ⚞⚟
 
-◀public: static▶ std::vector<Parser_Token> ☀Get_Stream_Of_Tokens(std::string const& path_to_file)❰
+//default constructor at file beginning
+◀public:▶ ☀◈(std::string const& path_to_file)◖
+              :path_to_file(path_to_file)
+             ◗❰❱
+
+◀public:▶ std::vector<Parser_Token> ☀Get_Stream_Of_Tokens()❰
 
     std::vector<Parser_Token> tokens;
     Build_Up_Tokens_By_Parsing_File(tokens,path_to_file);
     return tokens;
 ❱
 
-◀private: static▶ void ☀Build_Up_Tokens_By_Parsing_File(std::vector<Parser_Token> & tokens, std::string const& path_to_file)❰
+◀private:▶ void ☀Build_Up_Tokens_By_Parsing_File(std::vector<Parser_Token> & tokens, std::string const& path_to_file)❰
 
+    collecting_token = false;
     Tokenizer_Marker tokenizer_marker(path_to_file);
     while (tokenizer_marker.Current_Char() != EOF){
         Proccess_Marker(tokens,tokenizer_marker);
@@ -24,6 +30,28 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Proccess_Marker(std::vector<Parser_Token> & tokens, Tokenizer_Marker const& tokenizer_marker)❰
-    std::cout << tokenizer_marker.Inside_Marker();
+◀private:▶ void ☀Proccess_Marker(std::vector<Parser_Token> & tokens, Tokenizer_Marker const& tokenizer_marker)❰
+
+    //not yet collecting
+    if (!collecting_token){
+    }
+    
+    //already collecting
+    else{
+        collecting_token = tokenizer_marker.Inside_Marker();
+        if (collecting_token){
+            token_value += tokenizer_marker.Current_Char();
+        }
+        
+        //reached the end of the token
+        else{
+            std::cout << token_value << std::endl;
+            token_value.clear();
+        }
+    }
 ❱
+
+
+◀private:▶ std::string path_to_file;
+◀private:▶ std::wstring token_value;
+◀private:▶ bool collecting_token;

@@ -35,14 +35,18 @@ wchar_t ☀Current_Char() const❰ return current_char;❱
 ◀private:▶ std::wifstream file;
 ◀private:▶ wchar_t current_char;
 ◀private:▶ bool inside_marker;
+◀private:▶ wchar_t start_symbol;
 
 //private functions
 ◀private:▶ void ☀Set_Next_Char()❰
     current_char = file.get();
     if (!inside_marker){
-    inside_marker = Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Starter_Char(current_char);
+        inside_marker = Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Starter_Char(current_char);
+        if (inside_marker){
+            start_symbol = current_char;
+        }
     }else{
-        inside_marker = !Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Ender_Char(current_char);
+        inside_marker = !Global_Tokens_Table_Utilities::Chars_Make_Valid_CodeLang_Enclosure_Block(start_symbol,current_char);
     }
     
 ❱
