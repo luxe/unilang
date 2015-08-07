@@ -3,21 +3,19 @@ class
 ❪"systems"❫
 ❪"program_options"❫
 ❪"tokenizer_exception"❫
+❪"CodeLang_structure"❫
 ⚯
 ❪"CodeLang_parser"❫
+❪"exception_handler"❫
 ⚞⚟
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options)❰
 
      //process each file at a time
      for (auto const& path_to_file: program_options.Input_Files()){
       
-        try{
-            Compile_File(path_to_file);
-        }
-        
-        catch(Tokenizer_Exception exception){Exit_With_Error("Error while tokenizing");}
-        catch(...){Exit_With_Error("Now way to handle."); }
-        //might want just the catch all and then a call to an error handler where we rethrow
+        //compile the file, but stop at any time if there are compiler errors
+        try{ Compile_File(path_to_file); }
+        catch(...){Exception_Handler::Handle_Parse_Exceptions();}
      }
 ❱
 ◀private: static▶ void ☀Compile_File(std::string const& path_to_file)❰
@@ -26,7 +24,8 @@ class
         Immediate_Checks_On_Filename_Sent_To_Compiler(path_to_file);
 
         //parse the CodeLang file and get back a class that represents it
-        CodeLang_Parser::Parse(path_to_file);
+        //might throw...
+        auto code_structure = CodeLang_Parser::Parse(path_to_file);
     
         //compile that structure into the appropriate files (hcp -> hpp and cpp)
         //Hcp_Compiler::Compile(structure,program_options.Utility_Functions());
