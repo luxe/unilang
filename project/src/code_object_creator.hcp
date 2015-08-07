@@ -23,7 +23,7 @@ class
 ⚞⚟
 
 //turn the entire stream of tokens into a CodeLang data structure
-◀public: static▶ CodeLang_Structure ☀Create_Code_Object_From_Token_Stream(std::vector<Parser_Token> const& tokens)❰
+◀public: static▶ CodeLang_Structure ☀Create_Code_Object_From_Token_Stream(std::vector<Parser_Token> const& tokens, std::string const& path_to_file)❰
     CodeLang_Structure code;
     
     //the overall structure of any CodeLang file
@@ -33,6 +33,9 @@ class
     code.inheritance  = Parse_Out_Inheritance_Section(tokens);
     code.methods      = Parse_Out_Method_Section(tokens);
     code.data_members = Parse_Out_Data_Member_Section(tokens);
+    
+    //set the file name that the code structure was derived from
+    code.name = As_Removed_Suffix(Get_File_Name_From_File_Path(path_to_file));
     
     return code;
 ❱
@@ -150,12 +153,25 @@ class
 
 //utilities for stream of parser tokens
 ◀public: static▶ std::wstring ☀Get_Value_Of_Token_Name(std::vector<Parser_Token> const& tokens, std::string token_name)❰
-    std::wstring contents;
+    std::wstring content;
     
-    return contents;
+    for (auto i: tokens){
+        if (i.token.name == token_name){
+            content = i.content;
+            break;
+        }
+    }
+    
+    return content;
 ❱
 ◀public: static▶ std::vector<std::wstring> ☀Get_Values_Of_Token_Name(std::vector<Parser_Token> const& tokens, std::string token_name)❰
     std::vector<std::wstring> contents;
+    
+    for (auto i: tokens){
+        if (i.token.name == token_name){
+            contents.push_back(i.content);
+        }
+    }
     
     return contents;
 ❱
