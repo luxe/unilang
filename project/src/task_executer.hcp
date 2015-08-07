@@ -2,6 +2,7 @@ class
 ❪"utilities"❫
 ❪"systems"❫
 ❪"program_options"❫
+❪"tokenizer_exception"❫
 ⚯
 ❪"CodeLang_parser"❫
 ⚞⚟
@@ -10,6 +11,17 @@ class
      //process each file at a time
      for (auto const& path_to_file: program_options.Input_Files()){
       
+        try{
+            Compile_File(path_to_file);
+        }
+        
+        catch(Tokenizer_Exception exception){Exit_With_Error("Error while tokenizing");}
+        catch(...){Exit_With_Error("Now way to handle."); }
+        //might want just the catch all and then a call to an error handler where we rethrow
+     }
+❱
+◀private: static▶ void ☀Compile_File(std::string const& path_to_file)❰
+
         //exit if anything is initially wrong with the file name sent to the compiler
         Immediate_Checks_On_Filename_Sent_To_Compiler(path_to_file);
 
@@ -18,9 +30,7 @@ class
     
         //compile that structure into the appropriate files (hcp -> hpp and cpp)
         //Hcp_Compiler::Compile(structure,program_options.Utility_Functions());
-  }
 ❱
-
 
 ◀private: static▶ void ☀Immediate_Checks_On_Filename_Sent_To_Compiler(std::string const& path_to_file)❰
     
