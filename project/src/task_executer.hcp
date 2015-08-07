@@ -6,6 +6,7 @@ class
 ❪"CodeLang_structure"❫
 ⚯
 ❪"CodeLang_parser"❫
+❪"CodeLang_compiler"❫
 ❪"exception_handler"❫
 ⚞⚟
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options)❰
@@ -14,11 +15,11 @@ class
      for (auto const& path_to_file: program_options.Input_Files()){
       
         //compile the file, but stop at any time if there are compiler errors
-        try{ Compile_File(path_to_file); }
+        try{ Compile_File(path_to_file,program_options.Exporter(),program_options.Language()); }
         catch(...){Exception_Handler::Handle_Parse_Exceptions();}
      }
 ❱
-◀private: static▶ void ☀Compile_File(std::string const& path_to_file)❰
+◀private: static▶ void ☀Compile_File(std::string const& path_to_file, std::string const& exporter, std::string const& language)❰
 
         //exit if anything is initially wrong with the file name sent to the compiler
         Immediate_Checks_On_Filename_Sent_To_Compiler(path_to_file);
@@ -27,8 +28,8 @@ class
         //might throw...
         auto code_structure = CodeLang_Parser::Parse(path_to_file);
     
-        //compile that structure into the appropriate files (hcp -> hpp and cpp)
-        //Hcp_Compiler::Compile(structure,program_options.Utility_Functions());
+        //compile that structure into the appropriate source code files
+        CodeLang_Compiler::Compile(code_structure,exporter,language);
 ❱
 
 ◀private: static▶ void ☀Immediate_Checks_On_Filename_Sent_To_Compiler(std::string const& path_to_file)❰

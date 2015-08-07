@@ -96,6 +96,27 @@ class
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Interface_Imports(std::vector<Parser_Token> const& tokens)❰
     std::vector<Import_Item> items;
     
+    Import_Item item;
+    
+    bool hit_import = false;
+    for (auto const& token: tokens){
+        
+        //store the import name when you see it
+        if (token.token.name == "import-interface"){
+            item.name = token.content;
+            hit_import = true;
+        }
+        
+        //the next token has to be a comment, or you don't get it
+        else if (hit_import){
+            if (token.token.name == "import-comment"){
+                item.comment = token.content;
+                items.push_back(item);
+            }
+            hit_import = false;
+        }
+    }
+    
     return items;
 ❱
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Implementation_Imports(std::vector<Parser_Token> const& tokens)❰
