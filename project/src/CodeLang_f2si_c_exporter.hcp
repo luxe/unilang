@@ -30,37 +30,111 @@ class
 ❱
 
 ◀private: static▶ void ☀Create_Global_Files(CodeLang_Structure const& structure)❰
+
+    //create all the files
     std::wofstream header(structure.name + ".h");
     std::wofstream source(structure.name + ".c");
     
-    Print_Meta_Block(header,"Interface",structure.meta);
-    Print_Meta_Block(source,"Implementation",structure.meta);
+    //create the big top comment for them all
+    Print_Meta_Block(structure.name,header,"Interface",structure.meta);
+    Print_Meta_Block(structure.name,source,"Implementation",structure.meta);
+    
+    //create the include guards
+    Print_Beginning_Of_Header_Include_Gaurd(structure.name,header);
+    
+    //wrap up the file by ending any doxygen group blocks or the include guard if needed
+    Possibly_Print_Close_Markers(header,structure.name,structure.meta,true);
+    Possibly_Print_Close_Markers(source,structure.name,structure.meta,false);
 ❱
 ◀private: static▶ void ☀Create_Object_Files(CodeLang_Structure const& structure)❰
+
+    //create all the files
     std::wofstream header(structure.name + ".h");
     std::wofstream source(structure.name + ".c");
     std::wofstream data(structure.name + "Data.h");
     
-    Print_Meta_Block(header,"Interface",structure.meta);
-    Print_Meta_Block(source,"Implementation",structure.meta);
-    Print_Meta_Block(data,"Data",structure.meta);
+    //create the big top comment for them all
+    Print_Meta_Block(structure.name,header,"Interface",structure.meta);
+    Print_Meta_Block(structure.name,source,"Implementation",structure.meta);
+    Print_Meta_Block(structure.name,data,"Data",structure.meta);
+    
+    //create the include guards
+    Print_Beginning_Of_Header_Include_Gaurd(structure.name,header);
+    Print_Beginning_Of_Header_Include_Gaurd(structure.name,data);
+    
+    //wrap up the file by ending any doxygen group blocks or the include guard if needed
+    Possibly_Print_Close_Markers(header,structure.name,structure.meta,true);
+    Possibly_Print_Close_Markers(source,structure.name,structure.meta,false);
+    Possibly_Print_Close_Markers(data,structure.name,structure.meta,true);
+❱
+
+◀private: static▶ void ☀Print_Beginning_Of_Header_Include_Gaurd(std::string file_name,std::wofstream & out)❰
+        Print_To_Stream_With_Newline(out,"#ifndef " + As_Capital_And_Pushed_Together(file_name) + "H");
+        Print_To_Stream_With_Newline(out,"#define " + As_Capital_And_Pushed_Together(file_name) + "H");
+        Print_To_Stream_With_Newline(out,"");
 ❱
 
 
+◀private: static▶ void ☀Possibly_Print_Close_Markers(std::wofstream & out, std::string file_name,Meta_Section const& meta, bool is_header)❰
 
-◀private: static▶ void ☀Print_Meta_Block(std::wofstream & out, std::string file_meaning, Meta_Section const& meta)❰
-Print_To_Stream_With_Newline(out,"test");
-Print_To_Stream_With_Newline(out,"test");
+    if (is_header){
+        Print_To_Stream_With_Newline(out,"#endif");
+    }
+    if (!meta.group_names.empty()){
+        Print_To_Stream_With_Newline(out,"///@}");
+    }
+    Print_To_Stream_With_Newline(out,"");
+    
+❱
+
+◀private: static▶ void ☀Print_Meta_Block(std::string file_name, std::wofstream & out, std::string file_meaning, Meta_Section const& meta)❰
 Print_To_Stream_With_Newline(out,"/**");
 Print_To_Stream_With_Newline(out,"*    @file");
-Print_To_Stream(out,"*    @authors ");
-Call_Function_On_First_Element_And_Function_On_The_Rest_Of_The_Elements(meta.authors,
-                                                                        [&](std::wstring s){Print_To_Stream_With_Newline(out,s); return},
-                                                                        [&](std::wstring s){Print_To_Stream_With_Newline(out,L"*            " + s); return});
 Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream(out,"*    @brief ");
-Flight Timer Interface
+
+//possibly print authors
+if (!meta.authors.empty()){
+    for (auto const& it: meta.authors){
+        Print_To_Stream_With_Newline(out,L"*    @author " + it);
+    }
+    Print_To_Stream_With_Newline(out,"*");
+}
+
+//show generic and obvious statement about the file
+Print_To_Stream(out,"*    @note ");
+Print_To_Stream_With_Newline(out,Capitalize_Each_With_Space_In_Between(file_name) + " " + file_meaning);
 Print_To_Stream_With_Newline(out,"*");
+
+//possibly print brief
+if (!meta.brief_description.empty()){
+    Print_To_Stream(out,"*    @brief ");
+    Print_To_Stream_With_Newline(out,meta.brief_description);
+    Print_To_Stream_With_Newline(out,"*");
+}
+
+//possibly print details
+if (!meta.detailed_description.empty()){
+    Print_To_Stream(out,"*    @details ");
+    Print_To_Stream_With_Newline(out,meta.detailed_description);
+    Print_To_Stream_With_Newline(out,"*");
+}
+
+//possibly print bugs
+if (!meta.bugs.empty()){
+    for (auto const& it: meta.bugs){
+        Print_To_Stream_With_Newline(out,L"*    @bug " + it);
+    }
+    Print_To_Stream_With_Newline(out,"*");
+}
+
+//possibly print warnings
+if (!meta.warnings.empty()){
+    for (auto const& it: meta.warnings){
+        Print_To_Stream_With_Newline(out,L"*    @warning " + it);
+    }
+    Print_To_Stream_With_Newline(out,"*");
+}
+
 Print_To_Stream_With_Newline(out,"*    @copyright Copyright 2015.");
 Print_To_Stream_With_Newline(out,"*    @n         Fidelity Flight Simulation, Inc. (F2Si)");
 Print_To_Stream_With_Newline(out,"*    @n         All rights reserved.");
@@ -85,10 +159,20 @@ Print_To_Stream_With_Newline(out,"*    @n    Fidelity Flight Simulation, Inc. (F
 Print_To_Stream_With_Newline(out,"*    @n    1815 Parkway View Drive");
 Print_To_Stream_With_Newline(out,"*    @n    Pittsburgh, PA 15205");
 Print_To_Stream_With_Newline(out,"*    @n    (412) 321-3280");
-Print_To_Stream_With_Newline(out,"*");
 
+//possibly print group names
+if (!meta.group_names.empty()){
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream(out,"*    @addtogroup ");
+    Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(meta.group_names,
+                                                                                         [&](std::wstring str){Print_To_Stream(out,str + L" "); return;},
+                                                                                         [&](std::wstring str){Print_To_Stream_With_Newline(out,str); return;});
+    Print_To_Stream_With_Newline(out,"*    @{");
+}
 
-*    @addtogroup Time_System
-*    @{
 Print_To_Stream_With_Newline(out,"*/");
+Print_To_Stream_With_Newline(out,"");
+
 ❱
+
+
