@@ -20,6 +20,8 @@ class
 ❪"data_member_item"❫
 ⚯
 
+//state specifiers
+
 ⚞⚟
 
 //turn the entire stream of tokens into a CodeLang data structure
@@ -97,35 +99,125 @@ class
 
 //sub strippers
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Interface_Imports(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Import_Item> items;
+
+    auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
     
+    std::vector<Import_Item> return_items;
     Import_Item item;
+    bool last_saw = false;
     
-    bool hit_import = false;
-    for (auto const& token: tokens){
+    for (it: import_related){
         
-        //store the import name when you see it
-        if (token.token.name == "import-interface"){
-            item.name = token.content;
-            hit_import = true;
+        //import line
+        if(it.token.name == "import-implementation" || it.token.name == "import-interface"){
+            
+            if (last_saw){
+                Add_Import_Item_To_List(return_items,item);
+                item.comment.clear();
+            }
+            
+            if (it.token.name == "import-implementation"){
+                last_saw = false;
+            }
+            else if (it.token.name == "import-interface"){
+                last_saw = true;
+                item.name = it.content;
+            }
         }
         
-        //the next token has to be a comment, or you don't get it
-        else if (hit_import){
-            if (token.token.name == "import-comment"){
-                item.comment = token.content;
-                items.push_back(item);
+        //comment line
+        else if(it.token.name == "import-comment"){
+            if (last_saw){
+                item.comment = it.content;
+                Add_Import_Item_To_List(return_items,item);
+                item.comment.clear();
+                last_saw = false;
             }
-            hit_import = false;
         }
     }
     
-    return items;
+    if (last_saw){
+        Add_Import_Item_To_List(return_items,item);
+    }
+    
+    return return_items;
 ❱
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Implementation_Imports(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Import_Item> items;
+
+    auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
     
-    return items;
+    std::vector<Import_Item> return_items;
+    Import_Item item;
+    bool last_saw = false;
+    
+    for (it: import_related){
+        
+        //import line
+        if(it.token.name == "import-implementation" || it.token.name == "import-interface"){
+            
+            if (last_saw){
+                Add_Import_Item_To_List(return_items,item);
+                item.comment.clear();
+            }
+            
+            if (it.token.name == "import-interface"){
+                last_saw = false;
+            }
+            else if (it.token.name == "import-implementation"){
+                last_saw = true;
+                item.name = it.content;
+            }
+        }
+        
+        //comment line
+        else if(it.token.name == "import-comment"){
+            if (last_saw){
+                item.comment = it.content;
+                Add_Import_Item_To_List(return_items,item);
+                item.comment.clear();
+                last_saw = false;
+            }
+        }
+    }
+    
+    if (last_saw){
+        Add_Import_Item_To_List(return_items,item);
+    }
+    
+    return return_items;
+❱
+
+◀public: static▶ void ☀Add_Import_Item_To_List(std::vector<Import_Item> & imports, Import_Item item)❰
+    if (item.name.front() == L'"' && item.name.back() == L'"'){
+        item.system = false;
+        
+        //remove the quotes
+        item.name.pop_back();
+        if (item.name.size() > 0){
+            item.name.erase(0,1);
+        }
+    }
+    imports.push_back(item);
+    
+❱
+
+
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Import_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
+
+    //filter
+    std::vector<Parser_Token> new_tokens;
+    for (it: tokens){
+        if (it.token.name == "import-interface"){
+            new_tokens.push_back(it);
+        }
+        else if(it.token.name == "import-implementation"){
+            new_tokens.push_back(it);
+        }
+        else if(it.token.name == "import-comment"){
+            new_tokens.push_back(it);
+        }
+    }
+    return new_tokens;
 ❱
 ◀public: static▶ std::vector<Namespace_Item> ☀Strip_Out_Namespaces(std::vector<Parser_Token> const& tokens)❰
     std::vector<Namespace_Item> items;
