@@ -12,7 +12,7 @@ class
     //ensure valid values for all the tokens that must contain only certain values
     Ensure_Tokens_Have_Valid_Values(tokens);
     
-    Ensure_Appropiate_Tokens_Are_Being_Used(tokens);
+    Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used(tokens);
     
     Ensure_Tokens_Are_In_The_Correct_Order(tokens);
 ❱
@@ -31,10 +31,47 @@ class
     Ensure_Data_Member_State_Specifier_Are_Valid(tokens);
     
 ❱
-◀private: static▶ void ☀Ensure_Appropiate_Tokens_Are_Being_Used(std::vector<Parser_Token> const& tokens)❰
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used(std::vector<Parser_Token> const& tokens)❰
+    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,"meta-data-code-type");
+    if (code_type_token.content == L"global"){
+        Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Global_Code(tokens);
+    }
+    else if(code_type_token.content == L"object"){
+        Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Object_Code(tokens);
+    }
+    else if(code_type_token.content == L"enumerated"){
+        Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Enumerated_Code(tokens);
+    }
 ❱
 ◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order(std::vector<Parser_Token> const& tokens)❰
+    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,"meta-data-code-type");
+    if (code_type_token.content == L"global"){
+        Ensure_Tokens_Are_In_The_Correct_Order_For_Global_Code(tokens);
+    }
+    else if(code_type_token.content == L"object"){
+        Ensure_Tokens_Are_In_The_Correct_Order_For_Object_Code(tokens);
+    }
+    else if(code_type_token.content == L"enumerated"){
+        Ensure_Tokens_Are_In_The_Correct_Order_For_Enumerated_Code(tokens);
+    }
 ❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Global_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Object_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Enumerated_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order_For_Global_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order_For_Object_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order_For_Enumerated_Code(std::vector<Parser_Token> tokens)❰
+❱
+
+
+
+
+
 
 ◀private: static▶ void ☀Validate_Code_Type(std::vector<Parser_Token> tokens)❰
 
@@ -271,6 +308,15 @@ class
 tokens.erase( std::remove_if( tokens.begin(), tokens.end(),
              [&](Parser_Token x){return x.token.name != name;}), tokens.end() ); 
 
+❱
+
+◀public: static▶ Parser_Token ☀Get_First_Of_Parser_Token_Name(std::vector<Parser_Token> const& tokens, std::string name)❰
+    for (auto it : tokens){
+        if (it.token.name == name){
+            return it;
+        }
+    }
+    return tokens[0];
 ❱
 
 
