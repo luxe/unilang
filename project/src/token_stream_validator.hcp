@@ -32,7 +32,7 @@ class
     
 ❱
 ◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used(std::vector<Parser_Token> const& tokens)❰
-    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,"meta-data-code-type");
+    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,Token_Name::META_DATA_CODE_TYPE);
     if (code_type_token.content == L"global"){
         Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Global_Code(tokens);
     }
@@ -44,7 +44,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order(std::vector<Parser_Token> const& tokens)❰
-    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,"meta-data-code-type");
+    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,Token_Name::META_DATA_CODE_TYPE);
     if (code_type_token.content == L"global"){
         Ensure_Tokens_Are_In_The_Correct_Order_For_Global_Code(tokens);
     }
@@ -75,7 +75,7 @@ class
 
 ◀private: static▶ void ☀Validate_Code_Type(std::vector<Parser_Token> tokens)❰
 
-    Reduce_To_Just_Tokens_Of_Name(tokens,"meta-data-code-type");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::META_DATA_CODE_TYPE);
     
     if (tokens.empty()){
         throw "No Code Type token given.";
@@ -90,7 +90,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Ensure_Namespace_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"namespace-specifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::NAMESPACE_SPECIFIERS);
     for (auto it: tokens){
         if (it.content != L"i"){
             throw Token_Stream_Validation_Exception("Invalid namespace specifier",it);
@@ -98,7 +98,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Ensure_Inheritance_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"inheritance-specifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::INHERITANCE_SPECIFIERS);
     
 //[inheritence-specifiers] =
 //public / protected / private
@@ -134,7 +134,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Ensure_Function_Class_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"function-class-specifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_CLASS_SPECIFIERS);
 
 // [function class specifiers] =
 // public / protected / private
@@ -195,11 +195,11 @@ class
     
 ❱
 ◀private: static▶ void ☀Ensure_Function_Operation_Categories_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"function-operation-category");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_OPERATION_CATEGORY);
     //might not be needed now
 ❱
 ◀private: static▶ void ☀Ensure_Function_Argument_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"function-argument-type-qualifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS);
     
     //just const is allowed I think
     for (auto it: tokens){
@@ -217,7 +217,7 @@ class
     
 ❱
 ◀private: static▶ void ☀Ensure_Function_Result_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"function-result-type-qualifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS);
     
     //just const is allowed I think
     for (auto it: tokens){
@@ -234,7 +234,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Ensure_Data_Member_Class_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"data-member-class-specifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::DATA_MEMBER_CLASS_SPECIFIERS);
     //[type-qualifiers] = 
     //static extern
     //public private protected
@@ -273,7 +273,7 @@ class
     
 ❱
 ◀private: static▶ void ☀Ensure_Data_Member_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"data-member-type-qualifiers");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::DATA_MEMBER_TYPE_QUALIFIERS);
     
     //just const is allowed I think
     for (auto it: tokens){
@@ -290,7 +290,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Ensure_Data_Member_State_Specifier_Are_Valid(std::vector<Parser_Token> tokens)❰
-    Reduce_To_Just_Tokens_Of_Name(tokens,"data-state-specifier");
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::DATA_STATE_SPECIFIER);
     
     //used to generate functions for access on variables
     for (auto it: tokens){
@@ -304,13 +304,13 @@ class
 
 
 //utility
-◀public: static▶ void ☀Reduce_To_Just_Tokens_Of_Name(std::vector<Parser_Token> & tokens, std::string name)❰
+◀public: static▶ void ☀Reduce_To_Just_Tokens_Of_Name(std::vector<Parser_Token> & tokens, Token_Name name)❰
 tokens.erase( std::remove_if( tokens.begin(), tokens.end(),
              [&](Parser_Token x){return x.token.name != name;}), tokens.end() ); 
 
 ❱
 
-◀public: static▶ Parser_Token ☀Get_First_Of_Parser_Token_Name(std::vector<Parser_Token> const& tokens, std::string name)❰
+◀public: static▶ Parser_Token ☀Get_First_Of_Parser_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
     for (auto it : tokens){
         if (it.token.name == name){
             return it;
