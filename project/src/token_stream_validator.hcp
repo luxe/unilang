@@ -10,6 +10,15 @@ class
 ◀public: static▶ void ☀Run_Validations_Over_Token_Stream(std::vector<Parser_Token> const& tokens)❰
 
     //ensure valid values for all the tokens that must contain only certain values
+    Ensure_Tokens_Have_Valid_Values(tokens);
+    
+    Ensure_Appropiate_Tokens_Are_Being_Used(tokens);
+    
+    Ensure_Tokens_Are_In_The_Correct_Order(tokens);
+❱
+
+◀private: static▶ void ☀Ensure_Tokens_Have_Valid_Values(std::vector<Parser_Token> const& tokens)❰
+
     Validate_Code_Type(tokens);
     Ensure_Namespace_Specifiers_Are_Valid(tokens);
     Ensure_Inheritance_Specifiers_Are_Valid(tokens);
@@ -21,8 +30,10 @@ class
     Ensure_Data_Member_Type_Qualifiers_Are_Valid(tokens);
     Ensure_Data_Member_State_Specifier_Are_Valid(tokens);
     
-    //ensure valid token order
-    //Ensure_Valid_Token_Order(tokens);
+❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_Are_Being_Used(std::vector<Parser_Token> const& tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order(std::vector<Parser_Token> const& tokens)❰
 ❱
 
 ◀private: static▶ void ☀Validate_Code_Type(std::vector<Parser_Token> tokens)❰
@@ -125,10 +136,16 @@ class
         if (inlines > 1){throw Token_Stream_Validation_Exception("More than one inline method specifier",it);}
         if (explicits > 1){throw Token_Stream_Validation_Exception("More than one explicit method specifier",it);}
         
-        //throw if no access specifier is given
-        if (publics + protecteds + privates == 0){
-            throw Token_Stream_Validation_Exception("No access specifier given",it);
+        //ensure only 1 access specifier is given
+        auto total_access_specifiers = publics + protecteds + privates;
+        if (total_access_specifiers > 1){
+            throw Token_Stream_Validation_Exception("More than one class access specifier given",it);
         }
+        
+        //throw if no access specifier is given
+        //if (publics + protecteds + privates == 0){
+        //    throw Token_Stream_Validation_Exception("No access specifier given",it);
+        //}
         
         //ensure no invalid characters were given
         auto number_of_valid_chars = publics + protecteds + privates + virtuals + consts + refs + externs + inlines + explicits;
@@ -149,20 +166,102 @@ class
     
     //just const is allowed I think
     for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto consts = Count_Instances_Of_Character(str,'c');
+        
+        //throw if there is is too much of something
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const argument qualifier",it);}
+        
+        //ensure no invalid characters were given
+        if (consts < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
     }
     
 ❱
 ◀private: static▶ void ☀Ensure_Function_Result_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"function-result-type-qualifiers");
+    
+    //just const is allowed I think
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto consts = Count_Instances_Of_Character(str,'c');
+        
+        //throw if there is is too much of something
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const argument qualifier",it);}
+        
+        //ensure no invalid characters were given
+        if (consts < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
 ❱
 ◀private: static▶ void ☀Ensure_Data_Member_Class_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"data-member-class-specifiers");
+    //[type-qualifiers] = 
+    //static extern
+    //public private protected
+
+    //looks like:
+    //se+#-
+    
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto statics = Count_Instances_Of_Character(str,'s');
+        auto externs = Count_Instances_Of_Character(str,'e');
+        auto publics = Count_Instances_Of_Character(str,'+');
+        auto protecteds = Count_Instances_Of_Character(str,'#');
+        auto privates = Count_Instances_Of_Character(str,'-');
+        
+        //throw if there is is too much of something
+        if (statics > 1){throw Token_Stream_Validation_Exception("More than one static data member specifier",it);}
+        if (externs > 1){throw Token_Stream_Validation_Exception("More than one extern data member specifier",it);}
+        if (publics > 1){throw Token_Stream_Validation_Exception("More than one public data member specifier",it);}
+        if (protecteds > 1){throw Token_Stream_Validation_Exception("More than one protected data member specifier",it);}
+        if (privates > 1){throw Token_Stream_Validation_Exception("More than one private data member specifier",it);}
+        
+        //ensure only 1 access specifier is given
+        auto total_access_specifiers = publics + protecteds + privates;
+        if (total_access_specifiers > 1){
+            throw Token_Stream_Validation_Exception("More than one class access specifier given",it);
+        }
+        
+        //ensure no invalid characters were given
+        auto number_of_valid_chars = statics + externs + publics + protecteds + privates;
+        if (number_of_valid_chars < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
+    
+    
 ❱
 ◀private: static▶ void ☀Ensure_Data_Member_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"data-member-type-qualifiers");
+    
+    //just const is allowed I think
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto consts = Count_Instances_Of_Character(str,'c');
+        
+        //throw if there is is too much of something
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const argument qualifier",it);}
+        
+        //ensure no invalid characters were given
+        if (consts < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
 ❱
 ◀private: static▶ void ☀Ensure_Data_Member_State_Specifier_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"data-state-specifier");
+    
+    //used to generate functions for access on variables
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        if (str != "inject" && str != "observe" && str != "retrieve"){
+            throw Token_Stream_Validation_Exception("Invalid data state specifier given",it);
+        }
+    }
 ❱
 
 
@@ -173,3 +272,13 @@ tokens.erase( std::remove_if( tokens.begin(), tokens.end(),
              [&](Parser_Token x){return x.token.name != name;}), tokens.end() ); 
 
 ❱
+
+
+
+
+
+
+
+
+
+
