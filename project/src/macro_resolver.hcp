@@ -1,0 +1,69 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"parser_token"❫
+❪"global_token_table"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ void ☀Resolve_Macros(std::vector<Parser_Token> tokens, std::string const& path_to_file)❰
+    for (auto it: tokens){
+        it.content = As_Reolved_Macro_String(it.content);
+    }
+❱
+
+◀private: static▶ std::wstring ☀As_Reolved_Macro_String(std::wstring str)❰
+    std::wstring new_str;
+    
+    bool saw_escape = false;
+    for (auto it: str){
+        
+        
+        //handle escape character encounter
+        if (it == ESCAPE_CHARACTER){
+            
+            if (!saw_espace){
+                saw_escape = true;
+            }else{
+                new_str += ESCAPE_CHARACTER;
+                saw_escape = false;
+            }
+        }
+        
+        //handle code form macro encounter
+        else if (it == CLASS_NAME_CODE_FORM_MACRO){
+            if (saw_escape){
+                new_str += CLASS_NAME_CODE_FORM_MACRO;
+            }
+            else{
+                new_str+= Turn_Path_To_File_To_Code_Name_Form(path_to_file);
+            }
+            saw_escape = false;
+        }
+        
+        //handle print form macro encounter
+        else if (it == CLASS_NAME_PRINT_FORM_MACRO){
+            if (saw_escape){
+                new_str += CLASS_NAME_PRINT_FORM_MACRO;
+            }
+            else{
+                new_str+= Turn_Path_To_File_To_Printable_Name_Form(path_to_file);
+            }
+            saw_escape = false;
+        }
+        
+        
+        else {
+            if (saw_escape){
+                //doesn't make sense to escape this character
+            }
+            new_str += it;
+            saw_escape = false;
+        }
+    }
+    
+    return new_str;
+❱
+Turn_Path_To_File_To_Printable_Name_Form
+Turn_Path_To_File_To_Code_Name_Form
