@@ -99,50 +99,13 @@ class
 
 //sub strippers
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Interface_Imports(std::vector<Parser_Token> const& tokens)❰
-
-    auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
-    
-    std::vector<Import_Item> return_items;
-    Import_Item item;
-    bool last_saw = false;
-    
-    for (it: import_related){
-        
-        //import line
-        if(it.token.name == "import-implementation" || it.token.name == "import-interface"){
-            
-            if (last_saw){
-                Add_Import_Item_To_List(return_items,item);
-                item.comment.clear();
-            }
-            
-            if (it.token.name == "import-implementation"){
-                last_saw = false;
-            }
-            else if (it.token.name == "import-interface"){
-                last_saw = true;
-                item.name = it.content;
-            }
-        }
-        
-        //comment line
-        else if(it.token.name == "import-comment"){
-            if (last_saw){
-                item.comment = it.content;
-                Add_Import_Item_To_List(return_items,item);
-                item.comment.clear();
-                last_saw = false;
-            }
-        }
-    }
-    
-    if (last_saw){
-        Add_Import_Item_To_List(return_items,item);
-    }
-    
-    return return_items;
+    return Strip_Out_Import_Type(tokens,"import-interface");
 ❱
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Implementation_Imports(std::vector<Parser_Token> const& tokens)❰
+    return Strip_Out_Import_Type(tokens,"import-implementation");
+❱
+
+◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Import_Type(std::vector<Parser_Token> const& tokens, std::string const& import_type)❰
 
     auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
     
@@ -160,10 +123,10 @@ class
                 item.comment.clear();
             }
             
-            if (it.token.name == "import-interface"){
+            if (it.token.name != import_type){
                 last_saw = false;
             }
-            else if (it.token.name == "import-implementation"){
+            else{
                 last_saw = true;
                 item.name = it.content;
             }
@@ -202,6 +165,35 @@ class
 ❱
 
 
+
+◀public: static▶ std::vector<Namespace_Item> ☀Strip_Out_Namespaces(std::vector<Parser_Token> const& tokens)❰
+    std::vector<Namespace_Item> items;
+    //not important right now..
+    return items;
+❱
+◀public: static▶ std::vector<Inheritance_Item> ☀Strip_Out_Inheritances(std::vector<Parser_Token> const& tokens)❰
+    std::vector<Inheritance_Item> items;
+    //not important right now..
+    return items;
+❱
+◀public: static▶ std::vector<Method_Item> ☀Strip_Out_Methods(std::vector<Parser_Token> const& tokens)❰
+    std::vector<Method_Item> items;
+    
+    auto new_tokens = Filter_Out_Method_Related_Tokens(tokens);
+    
+    return items;
+❱
+◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
+    std::vector<Data_Member_Item> items;
+    
+    auto new_tokens = Filter_Out_Just_Data_Member_Related_Tokens(tokens);
+    
+    return items;
+❱
+
+
+
+
 //parser token filters
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Import_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
 
@@ -220,47 +212,54 @@ class
     }
     return new_tokens;
 ❱
+
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Method_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
+
+    //filter
+    std::vector<Parser_Token> new_tokens;
+    for (it: tokens){
+        if     (it.token.name == "function-class-specifiers")             {new_tokens.push_back(it);}
+        else if(it.token.name == "function-attributes")                   {new_tokens.push_back(it);}
+        else if(it.token.name == "function-operation-category")           {new_tokens.push_back(it);}
+        else if(it.token.name == "function-name")                         {new_tokens.push_back(it);}
+        else if(it.token.name == "function-brief-description")            {new_tokens.push_back(it);}
+        else if(it.token.name == "function-detailed-description")         {new_tokens.push_back(it);}
+        else if(it.token.name == "function-template-argument-type")       {new_tokens.push_back(it);}
+        else if(it.token.name == "function-template-argument-identifier") {new_tokens.push_back(it);}
+        else if(it.token.name == "function-template-argument-default")    {new_tokens.push_back(it);}
+        else if(it.token.name == "function-template-argument-comment")    {new_tokens.push_back(it);}
+        else if(it.token.name == "function-argument-type-qualifiers")     {new_tokens.push_back(it);}
+        else if(it.token.name == "function-argument-type")                {new_tokens.push_back(it);}
+        else if(it.token.name == "function-argument-identifier")          {new_tokens.push_back(it);}
+        else if(it.token.name == "function-argument-default")             {new_tokens.push_back(it);}
+        else if(it.token.name == "function-argument-comment")             {new_tokens.push_back(it);}
+        else if(it.token.name == "function-result-type-qualifiers")       {new_tokens.push_back(it);}
+        else if(it.token.name == "function-result-type")                  {new_tokens.push_back(it);}
+        else if(it.token.name == "function-result-identifier")            {new_tokens.push_back(it);}
+        else if(it.token.name == "function-result-comment")               {new_tokens.push_back(it);}
+        else if(it.token.name == "except-expression")                     {new_tokens.push_back(it);}
+        else if(it.token.name == "except-comment")                        {new_tokens.push_back(it);}
+        else if(it.token.name == "function-body")                         {new_tokens.push_back(it);}
+    }
+    return new_tokens;
+❱
+
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Data_Member_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
 
     //filter
     std::vector<Parser_Token> new_tokens;
     for (it: tokens){
-        if (it.token.name == "data-member-class-specifiers"){new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-type-qualifiers"){new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-type"){new_tokens.push_back(it);}
-        
-        else if(it.token.name == "data-member-identifier"){new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-default-value"){new_tokens.push_back(it);}
-        //else if(it.token.name == "data-member-brief-comment"){new_tokens.push_back(it);}
-        //else if(it.token.name == "data-member-detailed-comment"){new_tokens.push_back(it);}
+        if     (it.token.name == "data-member-class-specifiers") {new_tokens.push_back(it);}
+        else if(it.token.name == "data-member-type-qualifiers")  {new_tokens.push_back(it);}
+        else if(it.token.name == "data-member-type")             {new_tokens.push_back(it);}
+        else if(it.token.name == "data-member-identifier")       {new_tokens.push_back(it);}
+        else if(it.token.name == "data-member-default-value")    {new_tokens.push_back(it);}
+        else if(it.token.name == "data-member-brief")            {new_tokens.push_back(it);}
+        else if(it.token.name == "data-member-detailed")         {new_tokens.push_back(it);}
+        else if(it.token.name == "data-state-specifier")         {new_tokens.push_back(it);}
     }
     return new_tokens;
 ❱
-
-
-
-◀public: static▶ std::vector<Namespace_Item> ☀Strip_Out_Namespaces(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Namespace_Item> items;
-    
-    return items;
-❱
-◀public: static▶ std::vector<Inheritance_Item> ☀Strip_Out_Inheritances(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Inheritance_Item> items;
-    
-    return items;
-❱
-◀public: static▶ std::vector<Method_Item> ☀Strip_Out_Methods(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Method_Item> items;
-    
-    return items;
-❱
-◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Data_Member_Item> items;
-    
-    return items;
-❱
-
-
 
 
 //utilities for stream of parser tokens
