@@ -20,6 +20,9 @@ class
     Ensure_Data_Member_Class_Specifiers_Are_Valid(tokens);
     Ensure_Data_Member_Type_Qualifiers_Are_Valid(tokens);
     Ensure_Data_Member_State_Specifier_Are_Valid(tokens);
+    
+    //ensure valid token order
+    //Ensure_Valid_Token_Order(tokens);
 ❱
 
 ◀private: static▶ void ☀Validate_Code_Type(std::vector<Parser_Token> tokens)❰
@@ -84,27 +87,70 @@ class
 ❱
 ◀private: static▶ void ☀Ensure_Function_Class_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"function-class-specifiers");
-    // [function class specifiers] =
-    // public / protected / private
-    // static
-    // const (observer)
-    // & / && overload
-    // virtual
-    // extern
-    // inline
-    // explicit (x)
-    // LEAVE OUT FRIEND FOR NOW (bad design)
 
-    // looks like:
-    // +#-scveix&&&
+// [function class specifiers] =
+// public / protected / private
+// static
+// const (observer)
+// & / && overload
+// virtual
+// extern
+// inline
+// explicit (x)
+// LEAVE OUT FRIEND FOR NOW (bad design)
+
+// looks like:
+// +#-scveix&&&
+    
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto publics = Count_Instances_Of_Character(str,'+');
+        auto protecteds = Count_Instances_Of_Character(str,'#');
+        auto privates = Count_Instances_Of_Character(str,'-');
+        auto virtuals = Count_Instances_Of_Character(str,'s');
+        auto consts = Count_Instances_Of_Character(str,'c');
+        auto refs = Count_Instances_Of_Character(str,'&');
+        auto externs = Count_Instances_Of_Character(str,'e');
+        auto inlines = Count_Instances_Of_Character(str,'i');
+        auto explicits = Count_Instances_Of_Character(str,'e');
+        
+        //throw if there is is too much of something
+        if (publics > 1){throw Token_Stream_Validation_Exception("More than one public access specifier",it);}
+        if (protecteds > 1){throw Token_Stream_Validation_Exception("More than one protected access specifier",it);}
+        if (privates > 1){throw Token_Stream_Validation_Exception("More than one private access specifier",it);}
+        if (virtuals > 1){throw Token_Stream_Validation_Exception("More than one virtual method specifier",it);}
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const method specifier",it);}
+        if (refs > 2){throw Token_Stream_Validation_Exception("More than two ref method specifiers",it);}
+        if (externs > 1){throw Token_Stream_Validation_Exception("More than one extern method specifier",it);}
+        if (inlines > 1){throw Token_Stream_Validation_Exception("More than one inline method specifier",it);}
+        if (explicits > 1){throw Token_Stream_Validation_Exception("More than one explicit method specifier",it);}
+        
+        //throw if no access specifier is given
+        if (publics + protecteds + privates == 0){
+            throw Token_Stream_Validation_Exception("No access specifier given",it);
+        }
+        
+        //ensure no invalid characters were given
+        auto number_of_valid_chars = publics + protecteds + privates + virtuals + consts + refs + externs + inlines + explicits;
+        if (number_of_valid_chars < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+        
+    }
     
     
 ❱
 ◀private: static▶ void ☀Ensure_Function_Operation_Categories_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"function-operation-category");
+    //might not be needed now
 ❱
 ◀private: static▶ void ☀Ensure_Function_Argument_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"function-argument-type-qualifiers");
+    
+    //just const is allowed I think
+    for (auto it: tokens){
+    }
+    
 ❱
 ◀private: static▶ void ☀Ensure_Function_Result_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,"function-result-type-qualifiers");
