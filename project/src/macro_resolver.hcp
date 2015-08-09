@@ -9,11 +9,11 @@ class
 
 ◀public: static▶ void ☀Resolve_Macros(std::vector<Parser_Token> tokens, std::string const& path_to_file)❰
     for (auto it: tokens){
-        it.content = As_Reolved_Macro_String(it.content);
+        it.content = As_Reolved_Macro_String(it.content,path_to_file);
     }
 ❱
 
-◀private: static▶ std::wstring ☀As_Reolved_Macro_String(std::wstring str)❰
+◀private: static▶ std::wstring ☀As_Reolved_Macro_String(std::wstring str, std::string const& path_to_file)❰
     std::wstring new_str;
     
     bool saw_escape = false;
@@ -23,7 +23,7 @@ class
         //handle escape character encounter
         if (it == ESCAPE_CHARACTER){
             
-            if (!saw_espace){
+            if (!saw_escape){
                 saw_escape = true;
             }else{
                 new_str += ESCAPE_CHARACTER;
@@ -33,23 +33,15 @@ class
         
         //handle code form macro encounter
         else if (it == CLASS_NAME_CODE_FORM_MACRO){
-            if (saw_escape){
-                new_str += CLASS_NAME_CODE_FORM_MACRO;
-            }
-            else{
-                new_str+= Turn_Path_To_File_To_Code_Name_Form(path_to_file);
-            }
+            if (saw_escape){new_str += CLASS_NAME_CODE_FORM_MACRO;}
+            else{new_str+= as_wstring(Turn_Path_To_File_To_Code_Name_Form(path_to_file));}
             saw_escape = false;
         }
         
         //handle print form macro encounter
         else if (it == CLASS_NAME_PRINT_FORM_MACRO){
-            if (saw_escape){
-                new_str += CLASS_NAME_PRINT_FORM_MACRO;
-            }
-            else{
-                new_str+= Turn_Path_To_File_To_Printable_Name_Form(path_to_file);
-            }
+            if (saw_escape){new_str += CLASS_NAME_PRINT_FORM_MACRO;}
+            else{new_str+= as_wstring(Turn_Path_To_File_To_Printable_Name_Form(path_to_file));}
             saw_escape = false;
         }
         
@@ -65,5 +57,9 @@ class
     
     return new_str;
 ❱
-Turn_Path_To_File_To_Printable_Name_Form
-Turn_Path_To_File_To_Code_Name_Form
+◀private: static▶ std::string ☀Turn_Path_To_File_To_Printable_Name_Form(std::string const& path_to_file)❰
+    return As_Capital_And_Pushed_Together(As_Removed_Suffix(Get_File_Name_From_File_Path(path_to_file)));
+❱
+◀private: static▶ std::string ☀Turn_Path_To_File_To_Code_Name_Form(std::string const& path_to_file)❰
+    return Capitalize_Each_With_Space_In_Between(As_Removed_Suffix(Get_File_Name_From_File_Path(path_to_file)));
+❱
