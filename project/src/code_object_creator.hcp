@@ -47,15 +47,15 @@ class
     Meta_Section section;
     
     //singles
-    section.code_type            = Get_Value_Of_Token_Name(tokens, "meta-data-code-type");
-    section.brief_description    = Get_Value_Of_Token_Name(tokens, "meta-data-brief-description");
-    section.detailed_description = Get_Value_Of_Token_Name(tokens, "meta-data-detailed-description");
+    section.code_type            = Get_Value_Of_Token_Name(tokens, Token_Name::META_DATA_CODE_TYPE);
+    section.brief_description    = Get_Value_Of_Token_Name(tokens, Token_Name::META_DATA_BRIEF_DESCRIPTION);
+    section.detailed_description = Get_Value_Of_Token_Name(tokens, Token_Name::META_DATA_DETAILED_DESCRIPTION);
     
     //multiple instances
-    section.group_names = Get_Values_Of_Token_Name(tokens, "meta-data-group-name");
-    section.authors     = Get_Values_Of_Token_Name(tokens, "meta-data-author");
-    section.bugs        = Get_Values_Of_Token_Name(tokens, "meta-data-bug");
-    section.warnings    = Get_Values_Of_Token_Name(tokens, "meta-data-warning");
+    section.group_names = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_GROUP_NAME);
+    section.authors     = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_AUTHOR);
+    section.bugs        = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_BUG);
+    section.warnings    = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_WARNING);
     
     return section;
 ❱
@@ -99,13 +99,13 @@ class
 
 //sub strippers
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Interface_Imports(std::vector<Parser_Token> const& tokens)❰
-    return Strip_Out_Import_Type(tokens,"import-interface");
+    return Strip_Out_Import_Type(tokens,Token_Name::IMPORT_INTERFACE);
 ❱
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Implementation_Imports(std::vector<Parser_Token> const& tokens)❰
-    return Strip_Out_Import_Type(tokens,"import-implementation");
+    return Strip_Out_Import_Type(tokens,Token_Name::IMPORT_IMPLEMENTATION);
 ❱
 
-◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Import_Type(std::vector<Parser_Token> const& tokens, std::string const& import_type)❰
+◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Import_Type(std::vector<Parser_Token> const& tokens, Token_Name const& import_type)❰
 
     auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
     
@@ -116,7 +116,7 @@ class
     for (it: import_related){
         
         //import line
-        if(it.token.name == "import-implementation" || it.token.name == "import-interface"){
+        if(it.token.name == Token_Name::IMPORT_IMPLEMENTATION || it.token.name == Token_Name::IMPORT_INTERFACE){
             
             if (last_saw){
                 Add_Import_Item_To_List(return_items,item);
@@ -133,7 +133,7 @@ class
         }
         
         //comment line
-        else if(it.token.name == "import-comment"){
+        else if(it.token.name == Token_Name::IMPORT_COMMENT){
             if (last_saw){
                 item.comment = it.content;
                 Add_Import_Item_To_List(return_items,item);
@@ -200,13 +200,13 @@ class
     //filter
     std::vector<Parser_Token> new_tokens;
     for (it: tokens){
-        if (it.token.name == "import-interface"){
+        if (it.token.name == Token_Name::IMPORT_INTERFACE){
             new_tokens.push_back(it);
         }
-        else if(it.token.name == "import-implementation"){
+        else if(it.token.name == Token_Name::IMPORT_IMPLEMENTATION){
             new_tokens.push_back(it);
         }
-        else if(it.token.name == "import-comment"){
+        else if(it.token.name == Token_Name::IMPORT_COMMENT){
             new_tokens.push_back(it);
         }
     }
@@ -218,28 +218,28 @@ class
     //filter
     std::vector<Parser_Token> new_tokens;
     for (it: tokens){
-        if     (it.token.name == "function-class-specifiers")             {new_tokens.push_back(it);}
-        else if(it.token.name == "function-attributes")                   {new_tokens.push_back(it);}
-        else if(it.token.name == "function-operation-category")           {new_tokens.push_back(it);}
-        else if(it.token.name == "function-name")                         {new_tokens.push_back(it);}
-        else if(it.token.name == "function-brief-description")            {new_tokens.push_back(it);}
-        else if(it.token.name == "function-detailed-description")         {new_tokens.push_back(it);}
-        else if(it.token.name == "function-template-argument-type")       {new_tokens.push_back(it);}
-        else if(it.token.name == "function-template-argument-identifier") {new_tokens.push_back(it);}
-        else if(it.token.name == "function-template-argument-default")    {new_tokens.push_back(it);}
-        else if(it.token.name == "function-template-argument-comment")    {new_tokens.push_back(it);}
-        else if(it.token.name == "function-argument-type-qualifiers")     {new_tokens.push_back(it);}
-        else if(it.token.name == "function-argument-type")                {new_tokens.push_back(it);}
-        else if(it.token.name == "function-argument-identifier")          {new_tokens.push_back(it);}
-        else if(it.token.name == "function-argument-default")             {new_tokens.push_back(it);}
-        else if(it.token.name == "function-argument-comment")             {new_tokens.push_back(it);}
-        else if(it.token.name == "function-result-type-qualifiers")       {new_tokens.push_back(it);}
-        else if(it.token.name == "function-result-type")                  {new_tokens.push_back(it);}
-        else if(it.token.name == "function-result-identifier")            {new_tokens.push_back(it);}
-        else if(it.token.name == "function-result-comment")               {new_tokens.push_back(it);}
-        else if(it.token.name == "except-expression")                     {new_tokens.push_back(it);}
-        else if(it.token.name == "except-comment")                        {new_tokens.push_back(it);}
-        else if(it.token.name == "function-body")                         {new_tokens.push_back(it);}
+        if     (it.token.name == Token_Name::FUNCTION_CLASS_SPECIFIERS)             {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_ATTRIBUTES)                   {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_OPERATION_CATEGORY)           {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_NAME)                         {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_BRIEF_DESCRIPTION)            {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_DETAILED_DESCRIPTION)         {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_TYPE)       {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_IDENTIFIER) {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_DEFAULT)    {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_COMMENT)    {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS)     {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_ARGUMENT_TYPE)                {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_ARGUMENT_IDENTIFIER)          {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_ARGUMENT_DEFAULT)             {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_ARGUMENT_COMMENT)             {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS)       {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_RESULT_TYPE)                  {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_RESULT_IDENTIFIER)            {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_RESULT_COMMENT)               {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::EXCEPT_EXPRESSION)                     {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::EXCEPT_COMMENT)                        {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::FUNCTION_BODY)                         {new_tokens.push_back(it);}
     }
     return new_tokens;
 ❱
@@ -249,21 +249,21 @@ class
     //filter
     std::vector<Parser_Token> new_tokens;
     for (it: tokens){
-        if     (it.token.name == "data-member-class-specifiers") {new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-type-qualifiers")  {new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-type")             {new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-identifier")       {new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-default-value")    {new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-brief")            {new_tokens.push_back(it);}
-        else if(it.token.name == "data-member-detailed")         {new_tokens.push_back(it);}
-        else if(it.token.name == "data-state-specifier")         {new_tokens.push_back(it);}
+        if     (it.token.name == Token_Name::DATA_MEMBER_CLASS_SPECIFIERS) {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_MEMBER_TYPE_QUALIFIERS)  {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_MEMBER_TYPE)             {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_MEMBER_IDENTIFIER)       {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_MEMBER_DEFAULT_VALUE)    {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_MEMBER_BRIEF)            {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_MEMBER_DETAILED)         {new_tokens.push_back(it);}
+        else if(it.token.name == Token_Name::DATA_STATE_SPECIFIER)         {new_tokens.push_back(it);}
     }
     return new_tokens;
 ❱
 
 
 //utilities for stream of parser tokens
-◀public: static▶ std::wstring ☀Get_Value_Of_Token_Name(std::vector<Parser_Token> const& tokens, std::string token_name)❰
+◀public: static▶ std::wstring ☀Get_Value_Of_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name token_name)❰
     std::wstring content;
     
     for (auto i: tokens){
@@ -275,7 +275,7 @@ class
     
     return content;
 ❱
-◀public: static▶ std::vector<std::wstring> ☀Get_Values_Of_Token_Name(std::vector<Parser_Token> const& tokens, std::string token_name)❰
+◀public: static▶ std::vector<std::wstring> ☀Get_Values_Of_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name token_name)❰
     std::vector<std::wstring> contents;
     
     for (auto i: tokens){
