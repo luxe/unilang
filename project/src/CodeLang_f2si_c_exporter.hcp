@@ -3,7 +3,7 @@ class
 ❪"utilities"❫
 ❪"CodeLang_structure"❫
 ⚯
-
+❪"meta_block_printer"❫
 ⚞⚟
 
 //options:
@@ -60,7 +60,7 @@ class
 ◀private: static▶ void ☀Print_Object_Interface_File(CodeLang_Structure const& structure)❰
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
-    Print_Meta_Block(structure.name,out,"Interface",structure.meta);
+    Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
@@ -68,14 +68,14 @@ class
 ◀private: static▶ void ☀Print_Object_Implementation_File(CodeLang_Structure const& structure)❰
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
-    Print_Meta_Block(structure.name,out,"Implementation",structure.meta);
+    Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
     Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 ❱
 ◀private: static▶ void ☀Print_Object_Data_File(CodeLang_Structure const& structure)❰
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + "Data.h");
-    Print_Meta_Block(structure.name,out,"Data",structure.meta);
+    Meta_Block_Printer::Print(structure.name,out,"Data",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
@@ -84,7 +84,7 @@ class
 ◀private: static▶ void ☀Print_Global_Interface_File(CodeLang_Structure const& structure)❰
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
-    Print_Meta_Block(structure.name,out,"Interface",structure.meta);
+    Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
     Print_Global_Interface_Methods(out,structure.methods.methods);
@@ -93,7 +93,7 @@ class
 ◀private: static▶ void ☀Print_Global_Implementation_File(CodeLang_Structure const& structure)❰
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
-    Print_Meta_Block(structure.name,out,"Implementation",structure.meta);
+    Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
     Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
     Print_Global_Implementation_Methods(out,structure.methods.methods);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
@@ -212,94 +212,6 @@ class
     }
     Print_To_Stream_With_Newline(out,"");
     
-❱
-
-◀private: static▶ void ☀Print_Meta_Block(std::string file_name, std::wofstream & out, std::string file_meaning, Meta_Section const& meta)❰
-Print_To_Stream_With_Newline(out,"/**");
-Print_To_Stream_With_Newline(out,"*    @file");
-Print_To_Stream_With_Newline(out,"*");
-
-//possibly print authors
-if (!meta.authors.empty()){
-    for (auto const& it: meta.authors){
-        Print_To_Stream_With_Newline(out,L"*    @author " + it);
-    }
-    Print_To_Stream_With_Newline(out,"*");
-}
-
-//show generic and obvious statement about the file
-Print_To_Stream(out,"*    @note ");
-Print_To_Stream_With_Newline(out,Capitalize_Each_With_Space_In_Between(file_name) + " " + file_meaning);
-Print_To_Stream_With_Newline(out,"*");
-
-//possibly print brief
-if (!meta.brief_description.empty()){
-    Print_To_Stream(out,"*    @brief ");
-    Print_To_Stream_With_Newline(out,meta.brief_description);
-    Print_To_Stream_With_Newline(out,"*");
-}
-
-//possibly print details
-if (!meta.detailed_description.empty()){
-    Print_To_Stream(out,"*    @details ");
-    Print_To_Stream_With_Newline(out,meta.detailed_description);
-    Print_To_Stream_With_Newline(out,"*");
-}
-
-//possibly print bugs
-if (!meta.bugs.empty()){
-    for (auto const& it: meta.bugs){
-        Print_To_Stream_With_Newline(out,L"*    @bug " + it);
-    }
-    Print_To_Stream_With_Newline(out,"*");
-}
-
-//possibly print warnings
-if (!meta.warnings.empty()){
-    for (auto const& it: meta.warnings){
-        Print_To_Stream_With_Newline(out,L"*    @warning " + it);
-    }
-    Print_To_Stream_With_Newline(out,"*");
-}
-
-Print_To_Stream_With_Newline(out,"*    @copyright Copyright 2015.");
-Print_To_Stream_With_Newline(out,"*    @n         Fidelity Flight Simulation, Inc. (F2Si)");
-Print_To_Stream_With_Newline(out,"*    @n         All rights reserved.");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    @b Classification:      Unclassified");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    @b Project @b Name:     UH-72A Synthetic Flight Training System (SFTS)");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    @b Contract @b Number:  #W900KK-09-D-0577");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    @b Task @b Order:       0002");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    This work was generated under U.S. Government contract and the");
-Print_To_Stream_With_Newline(out,"*    government has unlimited data rights therein.");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    @b DISTRIBUTION @b STATEMENT @b D:");
-Print_To_Stream_With_Newline(out,"*    @n    Distribution authorized to the Department of Defense and U.S. DoD contractors only.");
-Print_To_Stream_With_Newline(out,"*    @n    Other requests shall be referred to the controlling DoD office.");
-Print_To_Stream_With_Newline(out,"*");
-Print_To_Stream_With_Newline(out,"*    @b Organizations:");
-Print_To_Stream_With_Newline(out,"*    @n    Fidelity Flight Simulation, Inc. (F2Si)");
-Print_To_Stream_With_Newline(out,"*    @n    1815 Parkway View Drive");
-Print_To_Stream_With_Newline(out,"*    @n    Pittsburgh, PA 15205");
-Print_To_Stream_With_Newline(out,"*    @n    (412) 321-3280");
-
-//possibly print group names
-if (!meta.group_names.empty()){
-    Print_To_Stream_With_Newline(out,"*");
-    Print_To_Stream(out,"*    @addtogroup ");
-    Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(meta.group_names,
-                                                                                         [&](std::wstring str){Print_To_Stream(out,str + L" "); return;},
-                                                                                         [&](std::wstring str){Print_To_Stream_With_Newline(out,str); return;});
-    Print_To_Stream_With_Newline(out,"*    @{");
-}
-
-Print_To_Stream_With_Newline(out,"*/");
-Print_To_Stream_With_Newline(out,"");
-
 ❱
 
 

@@ -1,0 +1,135 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"meta_section"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ void ☀Print(std::string file_name, std::wofstream & out, std::string file_meaning, Meta_Section const& meta)❰
+    Print_To_Stream_With_Newline(out,"/**");
+    Print_File_Part(out);
+    Print_To_Stream_With_Newline(out,"*");
+    
+    Print_Author_Part(out,meta.authors);
+    Print_Note_Part(out,file_name,file_meaning);
+    
+    Print_To_Stream_With_Newline(out,"*");
+    
+    Print_Brief_Part(out,meta.brief_description);
+    Print_Details_Part(out,meta.detailed_description);
+
+    //possibly print bugs
+    if (!meta.bugs.empty()){
+        for (auto const& it: meta.bugs){
+            Print_To_Stream_With_Newline(out,L"*    @bug " + it);
+        }
+        Print_To_Stream_With_Newline(out,"*");
+    }
+
+    //possibly print warnings
+    if (!meta.warnings.empty()){
+        for (auto const& it: meta.warnings){
+            Print_To_Stream_With_Newline(out,L"*    @warning " + it);
+        }
+        Print_To_Stream_With_Newline(out,"*");
+    }
+
+    Print_To_Stream_With_Newline(out,"*    @copyright Copyright 2015.");
+    Print_To_Stream_With_Newline(out,"*    @n         Fidelity Flight Simulation, Inc. (F2Si)");
+    Print_To_Stream_With_Newline(out,"*    @n         All rights reserved.");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    @b Classification:      Unclassified");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    @b Project @b Name:     UH-72A Synthetic Flight Training System (SFTS)");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    @b Contract @b Number:  #W900KK-09-D-0577");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    @b Task @b Order:       0002");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    This work was generated under U.S. Government contract and the");
+    Print_To_Stream_With_Newline(out,"*    government has unlimited data rights therein.");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    @b DISTRIBUTION @b STATEMENT @b D:");
+    Print_To_Stream_With_Newline(out,"*    @n    Distribution authorized to the Department of Defense and U.S. DoD contractors only.");
+    Print_To_Stream_With_Newline(out,"*    @n    Other requests shall be referred to the controlling DoD office.");
+    Print_To_Stream_With_Newline(out,"*");
+    Print_To_Stream_With_Newline(out,"*    @b Organizations:");
+    Print_To_Stream_With_Newline(out,"*    @n    Fidelity Flight Simulation, Inc. (F2Si)");
+    Print_To_Stream_With_Newline(out,"*    @n    1815 Parkway View Drive");
+    Print_To_Stream_With_Newline(out,"*    @n    Pittsburgh, PA 15205");
+    Print_To_Stream_With_Newline(out,"*    @n    (412) 321-3280");
+
+    //possibly print group names
+    if (!meta.group_names.empty()){
+        Print_To_Stream_With_Newline(out,"*");
+        Print_To_Stream(out,"*    @addtogroup ");
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(meta.group_names,
+                                                                                             [&](std::wstring str){Print_To_Stream(out,str + L" "); return;},
+                                                                                             [&](std::wstring str){Print_To_Stream_With_Newline(out,str); return;});
+        Print_To_Stream_With_Newline(out,"*    @{");
+    }
+
+    Print_To_Stream_With_Newline(out,"*/");
+    Print_To_Stream_With_Newline(out,"");
+
+❱
+
+
+◀public: static▶ void ☀Print_File_Part(std::wofstream & out)❰
+    Print_To_Stream_With_Newline(out,"*    @file");
+❱
+◀public: static▶ void ☀Print_Author_Part(std::wofstream & out, std::vector<std::wstring> authors)❰
+    if (!authors.empty()){
+        for (auto const& it: authors){
+            Print_To_Stream_With_Newline(out,L"*    @author " + it);
+        }
+        Print_To_Stream_With_Newline(out,"*");
+    }
+❱
+◀public: static▶ void ☀Print_Note_Part(std::wofstream & out, std::string file_name, std::string file_meaning)❰
+    //show generic and obvious statement about the file
+    Print_To_Stream(out,"*    @note ");
+    Print_To_Stream_With_Newline(out,Capitalize_Each_With_Space_In_Between(file_name) + " " + file_meaning);
+❱
+◀public: static▶ void ☀Print_Brief_Part(std::wofstream & out, std::wstring brief_description)❰
+    //possibly print brief
+    Print_Multiline_Tag(out,"brief",brief_description);
+❱
+◀public: static▶ void ☀Print_Details_Part(std::wofstream & out, std::wstring detailed_description)❰
+    //possibly print details
+    Print_Multiline_Tag(out,"details",detailed_description);
+❱
+◀public: static▶ void ☀Print_Bugs_Part(std::wofstream & out)❰
+❱
+◀public: static▶ void ☀Print_Warnings_Part(std::wofstream & out)❰
+❱
+◀public: static▶ void ☀Print_Group_Names_Part(std::wofstream & out)❰
+❱
+
+◀public: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, std::string tag, std::wstring content)❰
+
+    std::string start_tag_line = "*    @" + as_string(tag) + " ";
+    if (!content.empty()){
+        Print_To_Stream(out,start_tag_line);
+        auto new_content = as_string(content);
+        trim(new_content);
+        auto lines = Split_Into_Parts_From_Delimiter(new_content,'\n');
+        //std::cout << 
+        
+        Call_Function_On_First_Element_And_Then_Function_On_The_Rest_Of_The_Elements(lines
+        ,[&](std::string s){Print_To_Stream_With_Newline(out,s);}
+        ,[&](std::string s){
+            Print_To_Stream(out,"*");
+            Print_To_Stream_N_Times(out," ",start_tag_line.size()-1);
+            Print_To_Stream_With_Newline(out,s);
+        }
+        );
+        
+        
+        Print_To_Stream_With_Newline(out,"*");
+    }
+❱
+
+
+
