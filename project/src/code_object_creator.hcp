@@ -21,8 +21,6 @@ class
 ❪"token_group"❫
 ⚯
 
-//state specifiers
-
 ⚞⚟
 
 //turn the entire stream of tokens into a CodeLang data structure
@@ -181,11 +179,82 @@ class
     std::vector<Method_Item> items;
     
     auto new_tokens = Filter_Out_Method_Related_Tokens(tokens);
-    for (auto it: new_tokens){
+    auto split =  Filter_Method_Chunks(new_tokens);
+    for(auto it: split){
+        items.push_back(Build_Method_Item(it));
     }
     
     return items;
 ❱
+
+◀public: static▶ Method_Item ☀Build_Method_Item(std::vector<Parser_Token> const& tokens)❰
+    Method_Item item;
+    
+    //get out singles
+    auto class_specifiers = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_CLASS_SPECIFIERS);
+    auto attributes = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_ATTRIBUTES);
+    auto categories = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_OPERATION_CATEGORY);
+    auto name = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_NAME);
+    auto brief = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_BRIEF_DESCRIPTION);
+    auto detailed = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_DETAILED_DESCRIPTION);
+    auto expression = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_EXPRESSION);
+    auto expression_comment = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_COMMENT);
+    auto function_body = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_BODY);
+    
+    //get out multiples
+    auto template_args = Get_Template_Args
+    auto function_args = Get_Function_Args
+    auto return_results = Get_Return_Results
+    
+    //set them all
+    item.template_arguments = template_args;
+    item.function_arguments = function_args;
+    item.return_results     = return_results;
+    
+    
+    for (auto it: class_specifiers){
+        if (Contains,it.contents,L's'){
+        }
+    }
+    for (auto it: attributes){
+    }
+    for (auto it: categories){
+    }
+    for (auto it: name){
+    }
+    for (auto it: brief){
+    }
+    for (auto it: detailed){
+    }
+    for (auto it: expression){
+    }
+    for (auto it: expression_comment){
+    }
+    for (auto it: function_body){
+    }
+    
+    
+    
+    return item;
+❱
+
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
+    std::vector<std::vector<Parser_Token>> all;
+    std::vector<Parser_Token> some;
+    
+    for (it: tokens){
+        some.push_back(it);
+        if (In_Vector(it.token.groups,Token_Group::FUNCTION_BODY)){
+            all.push_back(some);
+            some.clear();
+        }
+    }
+    
+    return all;
+❱
+
+
 ◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
     std::vector<Data_Member_Item> items;
     
@@ -234,6 +303,15 @@ class
     std::vector<Parser_Token> new_tokens;
     for (it: tokens){
         if(In_Vector(it.token.groups,Token_Group::DATA_MEMBER)) {new_tokens.push_back(it);}
+    }
+    return new_tokens;
+❱
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Taken_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
+
+    //filter
+    std::vector<Parser_Token> new_tokens;
+    for (it: tokens){
+        if(it.token.name == name) {new_tokens.push_back(it);}
     }
     return new_tokens;
 ❱
