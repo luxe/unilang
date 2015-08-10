@@ -200,8 +200,8 @@ class
     auto name = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_NAME);
     auto brief = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_BRIEF_DESCRIPTION);
     auto detailed = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_DETAILED_DESCRIPTION);
-    auto expression = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_EXPRESSION);
-    auto expression_comment = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_COMMENT);
+    auto exception = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_EXPRESSION);
+    auto exception_comment = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_COMMENT);
     auto function_body = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_BODY);
     
     //get out multiples
@@ -216,25 +216,31 @@ class
     
     
     for (auto it: class_specifiers){
-        if (Contains(it.content,L's')){
-        }
+        
+        //set value lvalue / rvalue overload
+             if (Contains(it.content,L'l')){item.value_overload = Value_Overload::LVALUE;}
+        else if (Contains(it.content,L'r')){item.value_overload = Value_Overload::RVALUE;}
+        
+        //set the class accessor
+             if (Contains(it.content,L'+')){item.class_access = Class_Access::PUBLIC;}
+        else if (Contains(it.content,L'#')){item.class_access = Class_Access::PROTECTED;}
+        else if (Contains(it.content,L'-')){item.class_access = Class_Access::PRIVATE;}
+        
+        //set other specific things related to methods
+        if (Contains(it.content,L's')){item.is_static = true;}else{item.is_static = false;}
+        if (Contains(it.content,L'c')){item.is_const = true;}else{item.is_static = false;}
+        if (Contains(it.content,L'v')){item.is_virtual = true;}else{item.is_static = false;}
     }
-    for (auto it: attributes){
-    }
-    for (auto it: categories){
-    }
-    for (auto it: name){
-    }
-    for (auto it: brief){
-    }
-    for (auto it: detailed){
-    }
-    for (auto it: expression){
-    }
-    for (auto it: expression_comment){
-    }
-    for (auto it: function_body){
-    }
+    
+    
+    for (auto it: attributes){item.attributes.push_back(it.content);}
+    //for (auto it: categories){item.categories = it.content;}
+    for (auto it: name)      {item.function_name = it.content;}
+    for (auto it: brief){item.brief_description = it.content;}
+    for (auto it: detailed){item.detailed_description = it.content;}
+    for (auto it: exception){item.exception_expression = it.content;}
+    for (auto it: exception_comment){item.exception_comment = it.content;}
+    for (auto it: function_body){item.body = it.content;}
     
     
     
@@ -294,9 +300,6 @@ class
     
     return all;
 ❱
-
-
-
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
     std::vector<std::vector<Parser_Token>> all;
     std::vector<Parser_Token> some;
@@ -322,9 +325,6 @@ class
     
     return items;
 ❱
-
-
-
 
 //parser token filters
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Import_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
