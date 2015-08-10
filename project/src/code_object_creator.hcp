@@ -220,6 +220,7 @@ class
         //set value lvalue / rvalue overload
              if (Contains(it.content,L'l')){item.value_overload = Value_Overload::LVALUE;}
         else if (Contains(it.content,L'r')){item.value_overload = Value_Overload::RVALUE;}
+        else {item.value_overload = Value_Overload::NONE;}
         
         //set the class accessor
              if (Contains(it.content,L'+')){item.class_access = Class_Access::PUBLIC;}
@@ -228,8 +229,8 @@ class
         
         //set other specific things related to methods
         if (Contains(it.content,L's')){item.is_static = true;}else{item.is_static = false;}
-        if (Contains(it.content,L'c')){item.is_const = true;}else{item.is_static = false;}
-        if (Contains(it.content,L'v')){item.is_virtual = true;}else{item.is_static = false;}
+        if (Contains(it.content,L'c')){item.is_const = true;}else{item.is_const = false;}
+        if (Contains(it.content,L'v')){item.is_virtual = true;}else{item.is_virtual = false;}
     }
     
     
@@ -317,13 +318,52 @@ class
 
 
 ◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Data_Member_Item> items;
+    std::vector<Data_Member_Item> all;
+    
+    auto new_tokens = Filter_Out_Just_Data_Member_Related_Tokens(tokens);
+    auto split =  Filter_By_Data_Member_Uniqueness(new_tokens);
+    for(auto it: split){
+        all.push_back(Build_Data_Member_Item(it));
+    }
+    
+    return all;
+❱
+
+◀public: static▶ Data_Member_Item ☀Build_Data_Member_Item(std::vector<Parser_Token> const& tokens)❰
     
     Data_Member_Item item;
-    auto new_tokens = Filter_Out_Just_Data_Member_Related_Tokens(tokens);
+    for (auto it: tokens){
+        
+        //handle class accessors
+        if(it.token.name == Token_Name::DATA_MEMBER_CLASS_SPECIFIERS) {
+                 if (Contains(it.content,L'+')){item.class_access = Class_Access::PUBLIC;}
+            else if (Contains(it.content,L'#')){item.class_access = Class_Access::PROTECTED;}
+            else if (Contains(it.content,L'-')){item.class_access = Class_Access::PRIVATE;}
+        }
+        
+        //handle other qualifiers
+        else if (it.token.name == Token_Name::DATA_MEMBER_TYPE_QUALIFIERS)  {
+            
+            if (Contains(it.content,L's')){item.storage = Storage_Specifier::STATIC;}
+            else if (Contains(it.content,L'e')){item.storage = Storage_Specifier::EXTERN;}
+            else {item.storage = Storage_Specifier::NONE;}
+            
+            
+            if (Contains(it.content,L'c')){item.is_const = true;}else{item.is_const = false;}
+        }
+        
+        //handle singles
+        else if (it.token.name == Token_Name::DATA_MEMBER_TYPE)             {item.type = it.content;}
+        else if (it.token.name == Token_Name::DATA_MEMBER_IDENTIFIER)       {item.name = it.content;}
+        else if (it.token.name == Token_Name::DATA_MEMBER_DEFAULT_VALUE)    {item.default_value = it.content;}
+        else if (it.token.name == Token_Name::DATA_MEMBER_BRIEF)            {item.brief = it.content;}
+        else if (it.token.name == Token_Name::DATA_MEMBER_DETAILED)         {item.detail = it.content;}
+        else if (it.token.name == Token_Name::DATA_MEMBER_STATE_SPECIFIER)  {item.state_specifier = it.content;}
+
+    }
     
     
-    return items;
+    return item;
 ❱
 
 //parser token filters
