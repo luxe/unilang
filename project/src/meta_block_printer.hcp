@@ -7,33 +7,17 @@ class
 ⚞⚟
 
 ◀public: static▶ void ☀Print(std::string file_name, std::wofstream & out, std::string file_meaning, Meta_Section const& meta)❰
+
     Print_To_Stream_With_Newline(out,"/**");
     Print_File_Part(out);
     Print_To_Stream_With_Newline(out,"*");
-    
     Print_Author_Part(out,meta.authors);
     Print_Note_Part(out,file_name,file_meaning);
-    
     Print_To_Stream_With_Newline(out,"*");
-    
     Print_Brief_Part(out,meta.brief_description);
     Print_Details_Part(out,meta.detailed_description);
-
-    //possibly print bugs
-    if (!meta.bugs.empty()){
-        for (auto const& it: meta.bugs){
-            Print_To_Stream_With_Newline(out,L"*    @bug " + it);
-        }
-        Print_To_Stream_With_Newline(out,"*");
-    }
-
-    //possibly print warnings
-    if (!meta.warnings.empty()){
-        for (auto const& it: meta.warnings){
-            Print_To_Stream_With_Newline(out,L"*    @warning " + it);
-        }
-        Print_To_Stream_With_Newline(out,"*");
-    }
+    Print_Bugs_Part(out,meta.bugs);
+    Print_Warnings_Part(out,meta.warnings);
 
     Print_To_Stream_With_Newline(out,"*    @copyright Copyright 2015.");
     Print_To_Stream_With_Newline(out,"*    @n         Fidelity Flight Simulation, Inc. (F2Si)");
@@ -60,15 +44,7 @@ class
     Print_To_Stream_With_Newline(out,"*    @n    Pittsburgh, PA 15205");
     Print_To_Stream_With_Newline(out,"*    @n    (412) 321-3280");
 
-    //possibly print group names
-    if (!meta.group_names.empty()){
-        Print_To_Stream_With_Newline(out,"*");
-        Print_To_Stream(out,"*    @addtogroup ");
-        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(meta.group_names,
-                                                                                             [&](std::wstring str){Print_To_Stream(out,str + L" "); return;},
-                                                                                             [&](std::wstring str){Print_To_Stream_With_Newline(out,str); return;});
-        Print_To_Stream_With_Newline(out,"*    @{");
-    }
+    Print_Group_Names_Part(out,meta.group_names);
 
     Print_To_Stream_With_Newline(out,"*/");
     Print_To_Stream_With_Newline(out,"");
@@ -100,11 +76,29 @@ class
     //possibly print details
     Print_Multiline_Tag(out,"details",detailed_description);
 ❱
-◀public: static▶ void ☀Print_Bugs_Part(std::wofstream & out)❰
+◀public: static▶ void ☀Print_Bugs_Part(std::wofstream & out, std::vector<std::wstring> const& bugs)❰
+    if (!bugs.empty()){
+        for (auto const& it: bugs){
+            Print_Multiline_Tag(out,"bug",it);
+        }
+    }
 ❱
-◀public: static▶ void ☀Print_Warnings_Part(std::wofstream & out)❰
+◀public: static▶ void ☀Print_Warnings_Part(std::wofstream & out, std::vector<std::wstring> const& warnings)❰
+    if (!warnings.empty()){
+        for (auto const& it: warnings){
+            Print_Multiline_Tag(out,"warning",it);
+        }
+    }
 ❱
-◀public: static▶ void ☀Print_Group_Names_Part(std::wofstream & out)❰
+◀public: static▶ void ☀Print_Group_Names_Part(std::wofstream & out, std::vector<std::wstring> const& group_names)❰
+    if (!group_names.empty()){
+        Print_To_Stream_With_Newline(out,"*");
+        Print_To_Stream(out,"*    @addtogroup ");
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(group_names,
+                                                            [&](std::wstring str){Print_To_Stream(out,Make_Capital_And_Underscored_In_User_Type_Format(as_string(str)) + " ");},
+                                                            [&](std::wstring str){Print_To_Stream_With_Newline(out,Make_Capital_And_Underscored_In_User_Type_Format(as_string(str)));});
+        Print_To_Stream_With_Newline(out,"*    @{");
+    }
 ❱
 
 ◀public: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, std::string tag, std::wstring content)❰
@@ -115,7 +109,6 @@ class
         auto new_content = as_string(content);
         trim(new_content);
         auto lines = Split_Into_Parts_From_Delimiter(new_content,'\n');
-        //std::cout << 
         
         Call_Function_On_First_Element_And_Then_Function_On_The_Rest_Of_The_Elements(lines
         ,[&](std::string s){Print_To_Stream_With_Newline(out,s);}

@@ -194,20 +194,20 @@ class
     Method_Item item;
     
     //get out singles
-    auto class_specifiers = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_CLASS_SPECIFIERS);
-    auto attributes = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_ATTRIBUTES);
-    auto categories = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_OPERATION_CATEGORY);
-    auto name = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_NAME);
-    auto brief = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_BRIEF_DESCRIPTION);
-    auto detailed = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_DETAILED_DESCRIPTION);
-    auto exception = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_EXPRESSION);
-    auto exception_comment = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::EXCEPT_COMMENT);
-    auto function_body = Filter_Out_Tokens_By_Taken_Name(tokens,Token_Name::FUNCTION_BODY);
+    auto class_specifiers = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_CLASS_SPECIFIERS);
+    auto attributes = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_ATTRIBUTES);
+    auto categories = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_OPERATION_CATEGORY);
+    auto name = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_NAME);
+    auto brief = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_BRIEF_DESCRIPTION);
+    auto detailed = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_DETAILED_DESCRIPTION);
+    auto exception = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::EXCEPT_EXPRESSION);
+    auto exception_comment = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::EXCEPT_COMMENT);
+    auto function_body = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_BODY);
     
     //get out multiples
-    auto template_args = Get_Template_Args(tokens);
-    auto function_args = Get_Function_Args(tokens);
-    auto return_results = Get_Return_Results(tokens);
+    auto template_args = Get_Template_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT));
+    auto function_args = Get_Function_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::FUNCTION_ARGUMENT));
+    auto return_results = Get_Return_Results(Filter_Out_Tokens_By_Group(tokens,Token_Group::FUNCTION_RESULT));
     
     //set them all
     item.template_arguments = template_args;
@@ -404,7 +404,7 @@ class
     }
     return new_tokens;
 ❱
-◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Taken_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
 
     //filter
     std::vector<Parser_Token> new_tokens;
@@ -413,6 +413,20 @@ class
     }
     return new_tokens;
 ❱
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Group(std::vector<Parser_Token> const& tokens, Token_Group name)❰
+
+    //filter
+    std::vector<Parser_Token> new_tokens;
+    for (it: tokens){
+        for (y: it.token.groups){
+            if(y == name) {new_tokens.push_back(it);}
+        }
+    }
+    return new_tokens;
+❱
+
+
+
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_By_Data_Member_Uniqueness(std::vector<Parser_Token> const& tokens)❰
     std::vector<std::vector<Parser_Token>> all;
