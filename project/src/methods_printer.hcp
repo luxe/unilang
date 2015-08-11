@@ -15,14 +15,14 @@ class
 ❱
 ◀public: static▶ void ☀Print_Global_Implementation_Methods(std::wofstream & out, std::vector<Method_Item> const& methods)❰
     for (auto it: methods){
-        Print_Method_Definition(out,it);
+        Print_Method_Implementation(out,it);
     }
 ❱
 ◀private: static▶ void ☀Print_Method_Interface(std::wofstream & out, Method_Item const& method)❰
     Print_Doxygen_Method_Comment(out,method);
     Print_Method_Deceleration(out,method);
 ❱
-◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
+◀private: static▶ void ☀Print_Method_Implementation(std::wofstream & out, Method_Item const& method)❰
     Print_Doxygen_Method_Comment(out,method);
     Print_Method_Definition(out,method);
 ❱
@@ -34,7 +34,7 @@ class
     Print_Doxygen_Template_Arguments(out,method.template_arguments);
     Print_Doxygen_Function_Arguments(out,method.function_arguments);
     Print_Doxygen_Return_Results(out,method.return_results);
-    Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out," */");
     
 ❱
 
@@ -50,7 +50,7 @@ class
         auto type       = as_string(it.type);
         bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
         auto prefix     = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(type,is_pointer,false,false,false,false);
-        auto new_identifier = prefix + As_Capital_And_Pushed_Together(identifier);
+        auto new_identifier = Derive_Argument_Identifier_Name(it);
         auto new_description = as_wstring(new_identifier) + L" " + it.comment;
         
         std::string dir;
@@ -66,8 +66,9 @@ class
         Print_Multiline_Tag(out,"param"+dir,new_description);
     }
 ❱
+
+
 ◀private: static▶ void ☀Print_Doxygen_Return_Results(std::wofstream & out, std::vector<Function_Result> const& return_results)❰
-    std::cout << return_results.size() << std::endl;
     for (auto it: return_results){
         Print_Multiline_Tag(out,"return",it.comment);
     }
@@ -99,19 +100,76 @@ class
 
 
 ◀private: static▶ void ☀Print_Method_Deceleration(std::wofstream & out, Method_Item const& method)❰
+
+     Print_Template_Argument_List(out,method.template_arguments);
+     
+    //print the return type
     if (!method.return_results.empty()){
+        
+        //maybe print const
+        if (method.return_results[0].is_const){
+            Print_To_Stream(out,"const ");
+        }
+        //print the type
         Print_To_Stream(out,method.return_results[0].type);
         Print_To_Stream(out," ");
     }
-    else{
-        Print_To_Stream(out,"void ");
-    }
+    
+    //if no return type was given assume the type is void
+    else{Print_To_Stream(out,"void ");}
+    
+    
+    Print_To_Stream(out,"void ");
+    
+    Print_To_Stream(out,Derive_Function_Name(method.function_name));
+    Print_Template_Argument_List(out,method.function_arguments);
+    
+    Print_To_Stream(out,";");
+    
 ❱
 ◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
 ❱
 
 
+◀private: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Template_Argument> const& arguments)❰
+❱
+◀private: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Function_Argument> const& arguments)❰
+    Print_To_Stream(out,"(");
+    if (arguments.empty()){
+        Print_To_Stream(out,"void");
+    }else{
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
+                                                                     ,[&](Function_Argument arg){
+                                                                       Print_To_Stream(out,arg.type);
+                                                                       Print_To_Stream(out," ");
+                                                                       Print_To_Stream(out,Derive_Argument_Identifier_Name(arg));
+                                                                       Print_To_Stream(out,", ");
+                                                                     }
+                                                                     ,[&](Function_Argument arg){
+                                                                       Print_To_Stream(out,arg.type);
+                                                                       Print_To_Stream(out," ");
+                                                                       Print_To_Stream(out,Derive_Argument_Identifier_Name(arg));
+                                                                     });
+    }
+    Print_To_Stream(out,")");
+❱
 
+
+
+◀private: static▶ std::string ☀Derive_Function_Name(std::wstring const& name)❰
+    auto str = as_string(name);
+    As_Capital_And_Pushed_Together(str);
+    return str;
+❱
+
+◀private: static▶ std::string ☀Derive_Argument_Identifier_Name(Function_Argument const& arg)❰
+        auto identifier = as_string(arg.identifier);
+        auto type       = as_string(arg.type);
+        bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
+        auto prefix     = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(type,is_pointer,false,false,false,false);
+        auto new_identifier = prefix + As_Capital_And_Pushed_Together(identifier);
+        return new_identifier;
+❱
 
 
 
