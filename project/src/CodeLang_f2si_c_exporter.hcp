@@ -5,6 +5,7 @@ class
 ⚯
 //printers
 ❪"meta_block_printer"❫
+❪"header_printer"❫
 ❪"methods_printer"❫
 ⚞⚟
 
@@ -64,14 +65,14 @@ class
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
     Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
-    Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
+    Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 ❱
 ◀private: static▶ void ☀Print_Object_Implementation_File(CodeLang_Structure const& structure)❰
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
     Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
-    Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
+    Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 ❱
 ◀private: static▶ void ☀Print_Object_Data_File(CodeLang_Structure const& structure)❰
@@ -79,7 +80,8 @@ class
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + "Data.h");
     Meta_Block_Printer::Print(structure.name,out,"Data",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
-    Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies);
+    Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies);
+    Print_Data_Structs(structure);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 ❱
 
@@ -88,7 +90,7 @@ class
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
     Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
-    Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
+    Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
     Methods_Printer::Print_Global_Interface_Methods(out,structure.methods.methods);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 ❱
@@ -96,97 +98,48 @@ class
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
     Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
-    Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
+    Header_Printer::Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
     Methods_Printer::Print_Global_Implementation_Methods(out,structure.methods.methods);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 ❱
 
-//header related
+
+
+//printing f2si objects
+◀private: static▶ void ☀Print_Data_Structs(CodeLang_Structure const& structure)❰
+    PrintLocalStruct(structure);
+    PrintInputStruct(structure);
+    PrintOutputStruct(structure);
+❱
+◀private: static▶ void ☀PrintLocalStruct(structure)❰
+
+
+    //get all the variables that qualify for locals
+    std::vector<Data_Member_Item> locals;
+    for (auto it: structure.data_members.data_members){
+        if (it.is_observable || it.is_obtainable){
+            locals.push_back(iy);
+        }
+    }
+    
+    
+❱
+◀private: static▶ void ☀PrintInputStruct(structure)❰
+❱
+◀private: static▶ void ☀PrintOutputStruct(structure)❰
+❱
+
+
+
+
+
+
+//begin and end wrappers
 ◀private: static▶ void ☀Print_Beginning_Of_Header_Include_Gaurd(std::string file_name,std::wofstream & out)❰
         Print_To_Stream_With_Newline(out,"#ifndef " + As_Capital_And_Pushed_Together(file_name) + "H");
         Print_To_Stream_With_Newline(out,"#define " + As_Capital_And_Pushed_Together(file_name) + "H");
         Print_To_Stream_With_Newline(out,"");
 ❱
-◀private: static▶ void ☀Print_Object_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
-    Print_To_Stream(out,"#include \"" + As_Capital_And_Pushed_Together(file_name) + "Data.h\"");
-    Print_To_Stream_With_Newline(out," //USES: " + As_Capital_And_Pushed_Together(file_name) + "InputsT " + As_Capital_And_Pushed_Together(file_name) + "OutputsT");
-❱
-◀private: static▶ void ☀Print_Object_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
-        auto max_length = Max_Header_File_Length(imports);
-        
-        //adjust for the obligatory header needed
-        auto needed_header = As_Capital_And_Pushed_Together(file_name) + ".h";
-        if (needed_header.length() > max_length){ max_length = needed_header.length();}
-        
-        Print_To_Stream(out,"#include \"" + needed_header + "\"");
-        Print_To_Stream_N_Times(out," ",max_length+1-needed_header.length());
-        Print_To_Stream_With_Newline(out," //USES: " + As_Capital_And_Pushed_Together(file_name) + "InputsT " + As_Capital_And_Pushed_Together(file_name) + "OutputsT");
-        Print_Each_Include_Line(out,imports,max_length);
-❱
-◀private: static▶ void ☀Print_Object_Data_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
-        auto max_length = Max_Header_File_Length(imports);
-        Print_Each_Include_Line(out,imports,max_length);
-❱
-◀private: static▶ void ☀Print_Global_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
-    if (!imports.empty()){
-        auto max_length = Max_Header_File_Length(imports);
-        Print_Each_Include_Line(out,imports,max_length);
-        Print_To_Stream_With_Newline(out,"");
-    }
-❱
-◀private: static▶ void ☀Print_Global_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
-
-        auto max_length = Max_Header_File_Length(imports);
-        
-        //adjust for the obligatory header needed
-        auto needed_header = file_name + ".h";
-        if (needed_header.length() > max_length){ max_length = needed_header.length();}
-        
-        Print_To_Stream(out,"#include \"" + needed_header + "\"");
-        Print_To_Stream_N_Times(out," ",max_length+1-needed_header.length());
-        Print_To_Stream_With_Newline(out," //header");
-        Print_Each_Include_Line(out,imports,max_length);
-        Print_To_Stream_With_Newline(out,"");
-❱
-◀private: static▶ size_t ☀Max_Header_File_Length(std::vector<Import_Item> const& imports)❰
-
-    //get max length of the imports so we can align the comments
-    size_t max_length = 0;
-    for (auto it: imports){
-        if (it.name.size() > max_length){
-            max_length = it.name.size();
-        }
-    }
-    return max_length;
-❱
-◀private: static▶ void ☀Print_Each_Include_Line(std::wofstream & out, std::vector<Import_Item> const& imports, size_t const& max_length)❰
-    
-    for (auto it: imports){
-        Print_To_Stream(out,"#include ");
-        if (it.system){
-            Print_To_Stream(out,L"<" + it.name + L">");
-            Print_To_Stream_N_Times(out," ",max_length+1-it.name.length());
-            Print_To_Stream(out," //");
-            Print_To_Stream_With_Newline(out,it.comment);
-            
-        }
-        else{
-            Print_To_Stream(out,L"\"" + it.name + L"\"");
-            Print_To_Stream_N_Times(out," ",max_length+1-it.name.length());
-            Print_To_Stream(out," //");
-            Print_To_Stream_With_Newline(out,it.comment);
-        }
-    }
-❱
-
-
-
-
-
-
-
-
-
 ◀private: static▶ void ☀Possibly_Print_Close_Markers(std::wofstream & out, std::string file_name,Meta_Section const& meta, bool is_header)❰
 
     if (is_header){

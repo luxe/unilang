@@ -1,0 +1,87 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"import_item"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ void ☀Print_Object_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
+    Print_To_Stream(out,"#include \"" + As_Capital_And_Pushed_Together(file_name) + "Data.h\"");
+    Print_To_Stream_With_Newline(out," //USES: " + As_Capital_And_Pushed_Together(file_name) + "InputsT " + As_Capital_And_Pushed_Together(file_name) + "OutputsT");
+❱
+◀public: static▶ void ☀Print_Object_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
+        auto max_length = Max_Header_File_Length(imports);
+        
+        //adjust for the obligatory header needed
+        auto needed_header = As_Capital_And_Pushed_Together(file_name) + ".h";
+        if (needed_header.length() > max_length){ max_length = needed_header.length();}
+        
+        Print_To_Stream(out,"#include \"" + needed_header + "\"");
+        Print_To_Stream_N_Times(out," ",max_length+1-needed_header.length());
+        Print_To_Stream_With_Newline(out," //USES: " + As_Capital_And_Pushed_Together(file_name) + "InputsT " + As_Capital_And_Pushed_Together(file_name) + "OutputsT");
+        Print_Each_Include_Line(out,imports,max_length);
+❱
+◀public: static▶ void ☀Print_Object_Data_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
+        auto max_length = Max_Header_File_Length(imports);
+        Print_Each_Include_Line(out,imports,max_length);
+❱
+◀public: static▶ void ☀Print_Global_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
+    if (!imports.empty()){
+        auto max_length = Max_Header_File_Length(imports);
+        Print_Each_Include_Line(out,imports,max_length);
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+◀public: static▶ void ☀Print_Global_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> const& imports)❰
+
+        auto max_length = Max_Header_File_Length(imports);
+        
+        //adjust for the obligatory header needed
+        auto needed_header = file_name + ".h";
+        if (needed_header.length() > max_length){ max_length = needed_header.length();}
+        
+        Print_To_Stream(out,"#include \"" + needed_header + "\"");
+        Print_To_Stream_N_Times(out," ",max_length+1-needed_header.length());
+        Print_To_Stream_With_Newline(out," //header");
+        Print_Each_Include_Line(out,imports,max_length);
+        Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ size_t ☀Max_Header_File_Length(std::vector<Import_Item> const& imports)❰
+
+    //get max length of the imports so we can align the comments
+    size_t max_length = 0;
+    for (auto it: imports){
+        if (it.name.size() > max_length){
+            max_length = it.name.size();
+        }
+    }
+    return max_length;
+❱
+◀private: static▶ void ☀Print_Each_Include_Line(std::wofstream & out, std::vector<Import_Item> const& imports, size_t const& max_length)❰
+    
+    for (auto it: imports){
+        Print_To_Stream(out,"#include ");
+        if (it.system){
+            Print_To_Stream(out,L"<" + it.name + L">");
+            Print_To_Stream_N_Times(out," ",max_length+1-it.name.length());
+            Print_To_Stream(out," //");
+            Print_To_Stream_With_Newline(out,it.comment);
+            
+        }
+        else{
+            auto str = as_string(it.name);
+            if (!File_Has_Extension(str,"hpp") && !File_Has_Extension(str,"hpp")){
+                str += ".h";
+            }
+            
+            Print_To_Stream(out,"\"" + str + "\"");
+            Print_To_Stream_N_Times(out," ",max_length+1-str.length());
+            Print_To_Stream(out," //");
+            Print_To_Stream_With_Newline(out,it.comment);
+        }
+    }
+❱
+
+
+
