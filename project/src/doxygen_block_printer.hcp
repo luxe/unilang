@@ -1,0 +1,51 @@
+class
+❪"systems"❫
+❪"utilities"❫
+⚯
+
+⚞⚟
+
+
+
+
+
+
+
+
+
+
+
+◀public: static▶ void ☀Print_Block(std::wofstream & out, unsigned int indent_amount,std::string const& brief, std::string const& details)❰
+    std::string buffer;
+    buffer.append(" " ,indent_amount);
+    auto start = buffer + "/**";
+    auto end = buffer + "*/";
+    Print_To_Stream_With_Newline(out,start);
+    Print_Multiline_Tag(out,indent_amount,"brief",brief);
+    Print_Multiline_Tag(out,indent_amount,"details",details);
+    Print_To_Stream_With_Newline(out,end);
+❱
+
+
+◀private: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, unsigned int indent_amount, std::string tag, std::string content)❰
+
+    std::string buffer;
+    buffer.append(" " ,indent_amount);
+
+    std::string start_tag_line = buffer + " * @" + tag + " ";
+    if (!content.empty()){
+        Print_To_Stream(out,start_tag_line);
+        auto new_content = content;
+        trim(new_content);
+        auto lines = Split_Into_Parts_From_Delimiter(new_content,'\n');
+        
+        Call_Function_On_First_Element_And_Then_Function_On_The_Rest_Of_The_Elements(lines
+        ,[&](std::string s){Print_To_Stream_With_Newline(out,s);}
+        ,[&](std::string s){
+            Print_To_Stream(out,"*");
+            Print_To_Stream_N_Times(out," ",start_tag_line.size()-1);
+            Print_To_Stream_With_Newline(out,s);
+        }
+        );
+    }
+❱
