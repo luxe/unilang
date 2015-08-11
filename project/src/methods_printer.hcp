@@ -6,11 +6,25 @@ class
 ❪"type_to_hungarian_notation_converter"❫
 ⚞⚟
 
-◀public: static▶ void ☀Print_Method_Interface(std::wofstream & out, Method_Item const& method)❰
-    Print_Doxygen_Method_Comment(out,method);
+//method related
+◀public: static▶ void ☀Print_Global_Interface_Methods(std::wofstream & out, std::vector<Method_Item> const& methods)❰
+
+    for (auto it: methods){
+        Print_Method_Interface(out,it);
+    }
 ❱
-◀public: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
+◀public: static▶ void ☀Print_Global_Implementation_Methods(std::wofstream & out, std::vector<Method_Item> const& methods)❰
+    for (auto it: methods){
+        Print_Method_Definition(out,it);
+    }
+❱
+◀private: static▶ void ☀Print_Method_Interface(std::wofstream & out, Method_Item const& method)❰
     Print_Doxygen_Method_Comment(out,method);
+    Print_Method_Deceleration(out,method);
+❱
+◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
+    Print_Doxygen_Method_Comment(out,method);
+    Print_Method_Definition(out,method);
 ❱
 
 ◀private: static▶ void ☀Print_Doxygen_Method_Comment(std::wofstream & out, Method_Item const& method)❰
@@ -24,13 +38,13 @@ class
     
 ❱
 
-◀public: static▶ void ☀Print_Doxygen_Template_Arguments(std::wofstream & out, std::vector<Template_Argument> const& template_arguments)❰
+◀private: static▶ void ☀Print_Doxygen_Template_Arguments(std::wofstream & out, std::vector<Template_Argument> const& template_arguments)❰
 
     for (auto it: template_arguments){
         Print_Multiline_Tag(out,"tparam",it.comment);
     }
 ❱
-◀public: static▶ void ☀Print_Doxygen_Function_Arguments(std::wofstream & out, std::vector<Function_Argument> const& function_arguments)❰
+◀private: static▶ void ☀Print_Doxygen_Function_Arguments(std::wofstream & out, std::vector<Function_Argument> const& function_arguments)❰
     for (auto it: function_arguments){
         auto identifier = as_string(it.identifier);
         auto type       = as_string(it.type);
@@ -52,7 +66,7 @@ class
         Print_Multiline_Tag(out,"param"+dir,new_description);
     }
 ❱
-◀public: static▶ void ☀Print_Doxygen_Return_Results(std::wofstream & out, std::vector<Function_Result> const& return_results)❰
+◀private: static▶ void ☀Print_Doxygen_Return_Results(std::wofstream & out, std::vector<Function_Result> const& return_results)❰
     std::cout << return_results.size() << std::endl;
     for (auto it: return_results){
         Print_Multiline_Tag(out,"return",it.comment);
@@ -60,7 +74,7 @@ class
 ❱
 
 
-◀public: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, std::string tag, std::wstring content)❰
+◀private: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, std::string tag, std::wstring content)❰
 
     std::string start_tag_line = " * @" + as_string(tag) + " ";
     if (!content.empty()){
@@ -82,3 +96,24 @@ class
         //Print_To_Stream_With_Newline(out," *");
     }
 ❱
+
+
+◀private: static▶ void ☀Print_Method_Deceleration(std::wofstream & out, Method_Item const& method)❰
+    if (!method.return_results.empty()){
+        Print_To_Stream(out,method.return_results[0].type);
+        Print_To_Stream(out," ");
+    }
+    else{
+        Print_To_Stream(out,"void ");
+    }
+❱
+◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
+❱
+
+
+
+
+
+
+
+
