@@ -3,8 +3,9 @@ class
 ❪"utilities"❫
 ❪"CodeLang_structure"❫
 ⚯
+//printers
 ❪"meta_block_printer"❫
-❪"type_to_hungarian_notation_converter"❫
+❪"methods_printer"❫
 ⚞⚟
 
 //options:
@@ -88,7 +89,7 @@ class
     Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
-    Print_Global_Interface_Methods(out,structure.methods.methods);
+    Methods_Printer::Print_Global_Interface_Methods(out,structure.methods.methods);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 ❱
 ◀private: static▶ void ☀Print_Global_Implementation_File(CodeLang_Structure const& structure)❰
@@ -96,7 +97,7 @@ class
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
     Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
     Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
-    Print_Global_Implementation_Methods(out,structure.methods.methods);
+    Methods_Printer::Print_Global_Implementation_Methods(out,structure.methods.methods);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 ❱
 
@@ -190,82 +191,6 @@ class
 ◀private: static▶ void ☀Print_Global_Implementation_Methods(std::wofstream & out, std::vector<Method_Item> const& methods)❰
     for (auto it: methods){
         Print_Method_Definition(out,it);
-    }
-❱
-◀private: static▶ void ☀Print_Method_Interface(std::wofstream & out, Method_Item const& method)❰
-    Print_Doxygen_Method_Comment(out,method);
-❱
-◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
-    Print_Doxygen_Method_Comment(out,method);
-❱
-
-◀private: static▶ void ☀Print_Doxygen_Method_Comment(std::wofstream & out, Method_Item const& method)❰
-    Print_To_Stream_With_Newline(out,"/**");
-    Print_Multiline_Tag(out,"brief",method.brief_description);
-    Print_Multiline_Tag(out,"details",method.detailed_description);
-    Print_Doxygen_Template_Arguments(out,method.template_arguments);
-    Print_Doxygen_Function_Arguments(out,method.function_arguments);
-    Print_Doxygen_Return_Results(out,method.return_results);
-    Print_To_Stream_With_Newline(out,"");
-    
-❱
-
-◀public: static▶ void ☀Print_Doxygen_Template_Arguments(std::wofstream & out, std::vector<Template_Argument> const& template_arguments)❰
-
-    for (auto it: template_arguments){
-        Print_Multiline_Tag(out,"tparam",it.comment);
-    }
-❱
-◀public: static▶ void ☀Print_Doxygen_Function_Arguments(std::wofstream & out, std::vector<Function_Argument> const& function_arguments)❰
-    for (auto it: function_arguments){
-        auto identifier = as_string(it.identifier);
-        auto type       = as_string(it.type);
-        bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
-        auto prefix     = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(type,is_pointer,false,false,false,false);
-        auto new_identifier = prefix + As_Capital_And_Pushed_Together(identifier);
-        auto new_description = as_wstring(new_identifier) + L" " + it.comment;
-        
-        std::string dir;
-        if (!it.is_const){
-            dir="[in]";
-        }
-        else if(is_pointer){
-            dir="[in,out]";
-        }
-        else{
-            dir="[in]";
-        }
-        Print_Multiline_Tag(out,"param"+dir,new_description);
-    }
-❱
-◀public: static▶ void ☀Print_Doxygen_Return_Results(std::wofstream & out, std::vector<Function_Result> const& return_results)❰
-    std::cout << return_results.size() << std::endl;
-    for (auto it: return_results){
-        Print_Multiline_Tag(out,"return",it.comment);
-    }
-❱
-
-
-◀public: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, std::string tag, std::wstring content)❰
-
-    std::string start_tag_line = " * @" + as_string(tag) + " ";
-    if (!content.empty()){
-        Print_To_Stream(out,start_tag_line);
-        auto new_content = as_string(content);
-        trim(new_content);
-        auto lines = Split_Into_Parts_From_Delimiter(new_content,'\n');
-        
-        Call_Function_On_First_Element_And_Then_Function_On_The_Rest_Of_The_Elements(lines
-        ,[&](std::string s){Print_To_Stream_With_Newline(out,s);}
-        ,[&](std::string s){
-            Print_To_Stream(out,"*");
-            Print_To_Stream_N_Times(out," ",start_tag_line.size()-1);
-            Print_To_Stream_With_Newline(out,s);
-        }
-        );
-        
-        
-        //Print_To_Stream_With_Newline(out," *");
     }
 ❱
 
