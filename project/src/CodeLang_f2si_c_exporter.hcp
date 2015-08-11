@@ -8,6 +8,7 @@ class
 ❪"header_printer"❫
 ❪"methods_printer"❫
 ❪"doxygen_block_printer"❫
+❪"component_struct_printer"❫
 ⚞⚟
 
 //options:
@@ -82,7 +83,7 @@ class
     Meta_Block_Printer::Print(structure.name,out,"Data",structure.meta);
     Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies);
-    Print_Data_Structs(out,structure);
+    Component_Struct_Printer::Print_Data_Structs(out,structure);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 ❱
 
@@ -103,79 +104,6 @@ class
     Methods_Printer::Print_Global_Implementation_Methods(out,structure.methods.methods);
     Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 ❱
-
-
-
-//printing f2si objects
-◀private: static▶ void ☀Print_Data_Structs(std::wofstream & out, CodeLang_Structure const& structure)❰
-    Print_Local_Struct(out,structure);
-    Print_Input_Struct(out,structure);
-    Print_Output_Struct(out,structure);
-❱
-◀private: static▶ void ☀Print_Local_Struct(std::wofstream & out, CodeLang_Structure const& structure)❰
-
-
-    //get all the variables that qualify for locals
-    std::vector<Data_Member_Item> locals;
-    for (auto it: structure.data_members.data_members){
-        if (!it.is_observable || !it.is_obtainable){
-            locals.push_back(it);
-        }
-    }
-    
-    if (!locals.empty()){
-        
-        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Locals_t";
-        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "LocalsT";
-        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
-        Doxygen_Block_Printer::Print_Block(out,0,print_name + " Locals", "Contains internal state that should not be referenced by the client");
-        Print_To_Stream(out,"typedef struct ");
-        Print_To_Stream_With_Newline(out,dumb_name);
-        Print_To_Stream_With_Newline(out,"{");
-        Print_Local_Struct_Variables(out,locals);
-        Print_To_Stream(out,"} ");
-        Print_To_Stream(out,used_name);
-        Print_To_Stream_With_Newline(out,";");
-    }
-❱
-
-◀private: static▶ void ☀Print_Input_Struct(std::wofstream & out, CodeLang_Structure const& structure)❰
-        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Inputs_t";
-        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "InputsT";
-        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
-        Doxygen_Block_Printer::Print_Block(out,0,print_name + " Inputs", "All of the conceivable inputs,\nthat may influence the state of the component, \nand potentially change any of the outputs");
-        Print_To_Stream(out,"typedef struct ");
-        Print_To_Stream_With_Newline(out,dumb_name);
-        Print_To_Stream_With_Newline(out,"{");
-        Print_Input_Struct_Variables(out,structure);
-        Print_To_Stream(out,"} ");
-        Print_To_Stream(out,used_name);
-        Print_To_Stream_With_Newline(out,";");
-❱
-◀private: static▶ void ☀Print_Output_Struct(std::wofstream & out, CodeLang_Structure const& structure)❰
-        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Outputs_t";
-        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "OutputsT";
-        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
-        Doxygen_Block_Printer::Print_Block(out,0,print_name + " Outputs", "All of the conceivable outputs,\nthat may be influenced by any of outputs during and update");
-        Print_To_Stream(out,"typedef struct ");
-        Print_To_Stream_With_Newline(out,dumb_name);
-        Print_To_Stream_With_Newline(out,"{");
-        Print_Output_Struct_Variables(out,structure);
-        Print_To_Stream(out,"} ");
-        Print_To_Stream(out,used_name);
-        Print_To_Stream_With_Newline(out,";");
-❱
-
-◀private: static▶ void ☀Print_Local_Struct_Variables(std::wofstream & out, std::vector<Data_Member_Item> const& locals)❰
-    Print_To_Stream_With_Newline(out,"blah");
-❱
-◀private: static▶ void ☀Print_Input_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
-    Print_To_Stream_With_Newline(out,"blah");
-❱
-◀private: static▶ void ☀Print_Output_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
-    Print_To_Stream_With_Newline(out,"blah");
-❱
-
 
 
 
