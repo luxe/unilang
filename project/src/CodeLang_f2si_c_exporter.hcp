@@ -213,9 +213,6 @@ class
 ◀public: static▶ void ☀Print_Doxygen_Template_Arguments(std::wofstream & out, std::vector<Template_Argument> const& template_arguments)❰
 
     for (auto it: template_arguments){
-        auto identifier = as_string(it.identifier);
-        auto type       = as_string(it.type);
-        bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
         Print_Multiline_Tag(out,"tparam",it.comment);
     }
 ❱
@@ -223,16 +220,28 @@ class
     for (auto it: function_arguments){
         auto identifier = as_string(it.identifier);
         auto type       = as_string(it.type);
-        std::cout << type << std::endl;
-        std::cout << identifier << std::endl;
         bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
         auto prefix     = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(type,is_pointer,false,false,false,false);
         auto new_identifier = prefix + As_Capital_And_Pushed_Together(identifier);
         auto new_description = as_wstring(new_identifier) + L" " + it.comment;
-        Print_Multiline_Tag(out,"param",new_description);
+        
+        std::string dir;
+        if (!it.is_const){
+            dir="[in]";
+        }
+        else if(is_pointer){
+            dir="[in,out]";
+        }
+        else{
+            dir="[in]";
+        }
+        Print_Multiline_Tag(out,"param"+dir,new_description);
     }
 ❱
 ◀public: static▶ void ☀Print_Doxygen_Return_Results(std::wofstream & out, std::vector<Function_Result> const& return_results)❰
+    for (auto it: return_results){
+        Print_Multiline_Tag(out,"return",it.comment);
+    }
 ❱
 
 
