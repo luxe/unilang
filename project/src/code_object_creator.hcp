@@ -78,7 +78,7 @@ class
 ◀public: static▶ Inheritance_Section ☀Parse_Out_Inheritance_Section(std::vector<Parser_Token> const& tokens)❰
     Inheritance_Section section;
     
-    section.inherited_objects = Strip_Out_Inheritances(tokens);
+    //section.inherited_objects = Strip_Out_Inheritances(tokens);
     
     return section;
 ❱
@@ -96,8 +96,8 @@ class
     
     return section;
 ❱
-◀public: static▶ Enum_Member_Section ☀Parse_Out_Enum_Section(std::vector<Parser_Token> const& tokens)❰
-    Enum_Member_Section section;
+◀public: static▶ Enum_Section ☀Parse_Out_Enum_Section(std::vector<Parser_Token> const& tokens)❰
+    Enum_Section section;
     
     section.enumerated_types = Strip_Out_Enumerated_Types(tokens);
     
@@ -112,7 +112,6 @@ class
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Implementation_Imports(std::vector<Parser_Token> const& tokens)❰
     return Strip_Out_Import_Type(tokens,Token_Name::IMPORT_IMPLEMENTATION);
 ❱
-
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Import_Type(std::vector<Parser_Token> const& tokens, Token_Name const& import_type)❰
 
     auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
@@ -157,7 +156,6 @@ class
     
     return return_items;
 ❱
-
 ◀public: static▶ void ☀Add_Import_Item_To_List(std::vector<Import_Item> & imports, Import_Item item)❰
     if (item.name.front() == L'"' && item.name.back() == L'"'){
         item.system = false;
@@ -169,11 +167,7 @@ class
         }
     }
     imports.push_back(item);
-    
 ❱
-
-
-
 ◀public: static▶ std::vector<Namespace_Item> ☀Strip_Out_Namespaces(std::vector<Parser_Token> const& tokens)❰
     std::vector<Namespace_Item> items;
     //not important right now..
@@ -181,7 +175,7 @@ class
 ❱
 ◀public: static▶ std::vector<Enum_Item> ☀Strip_Out_Enumerated_Types(std::vector<Parser_Token> const& tokens)❰
     std::vector<Enum_Item> items;
-    auto new_tokens = Filter_Out_Enum_Related_Tokens(tokens);
+    auto new_tokens = Filter_Out_Tokens_By_Group_Name(tokens,Token_Group::ENUM);
     auto split = Filter_Enum_Chunks(new_tokens);
     for (auto it: split){
         items.push_back(Build_Enum_Item(it));
@@ -191,7 +185,7 @@ class
 ◀public: static▶ std::vector<Method_Item> ☀Strip_Out_Methods(std::vector<Parser_Token> const& tokens)❰
     std::vector<Method_Item> items;
     
-    auto new_tokens = Filter_Out_Method_Related_Tokens(tokens);
+    auto new_tokens = Filter_Out_Tokens_By_Group_Name(tokens,Token_Group::FUNCTION);
     auto split =  Filter_Method_Chunks(new_tokens);
     for(auto it: split){
         items.push_back(Build_Method_Item(it));
@@ -199,18 +193,23 @@ class
     
     return items;
 ❱
+
+
+
+
+//builders
 ◀public: static▶ Enum_Item ☀Build_Enum_Item(std::vector<Parser_Token> const& tokens)❰
     Enum_Item item;
     
     //get out singles
-    auto name = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_NAME);
+    //auto name = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_NAME);
     
     //get out multiples
-    auto args = Get_Enum_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::ENUM_ARG));
+    //auto args = Get_Enum_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::ENUM_ARG));
     
     //set them all
-    item.name = name;
-    item.args = args;
+    //item.name = name;
+    //item.args = args;
 ❱
 
 ◀public: static▶ Method_Item ☀Build_Method_Item(std::vector<Parser_Token> const& tokens)❰
@@ -270,6 +269,9 @@ class
     
     return item;
 ❱
+
+
+
 
 ◀public: static▶ std::vector<Template_Argument> ☀Get_Template_Args(std::vector<Parser_Token> const& tokens)❰
     std::vector<Template_Argument> all;
@@ -345,8 +347,7 @@ class
     
     return all;
 ❱
-◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
-
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Enum_Chunks(std::vector<Parser_Token> const& tokens)❰
 ❱
 
 ◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
@@ -421,15 +422,6 @@ class
     }
     return new_tokens;
 ❱
-◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Method_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
-
-    //filter
-    std::vector<Parser_Token> new_tokens;
-    for (it: tokens){
-        if(In_Vector(it.token.groups,Token_Group::FUNCTION)){new_tokens.push_back(it);}
-    }
-    return new_tokens;
-❱
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Data_Member_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
 
     //filter
@@ -439,15 +431,33 @@ class
     }
     return new_tokens;
 ❱
-◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
 
-    //filter
+
+
+
+
+//filtering stream of parse tokens
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
     std::vector<Parser_Token> new_tokens;
     for (it: tokens){
         if(it.token.name == name) {new_tokens.push_back(it);}
     }
     return new_tokens;
 ❱
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Group_Name(std::vector<Parser_Token> const& tokens, Token_Group group_name)❰
+    std::vector<Parser_Token> new_tokens;
+    for (it: tokens){
+        if(In_Vector(it.token.groups,group_name)){new_tokens.push_back(it);}
+    }
+    return new_tokens;
+❱
+
+
+
+
+
+
+
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Group(std::vector<Parser_Token> const& tokens, Token_Group name)❰
 
     //filter
@@ -459,17 +469,6 @@ class
     }
     return new_tokens;
 ❱
-◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Enum_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
-
-    //filter
-    std::vector<Parser_Token> new_tokens;
-    for (it: tokens){
-        if(In_Vector(it.token.groups,Token_Group::ENUM)){new_tokens.push_back(it);}
-    }
-    return new_tokens;
-❱
-
-
 
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_By_Data_Member_Uniqueness(std::vector<Parser_Token> const& tokens)❰
