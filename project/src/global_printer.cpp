@@ -2,6 +2,7 @@
 #include "meta_block_printer.hpp"
 #include "code_wrap_printer.hpp"
 #include "header_printer.hpp"
+#include "enum_section_printer.hpp"
 #include "methods_printer.hpp"
 
 
@@ -18,12 +19,14 @@
 
 
 
+
  void Global_Printer::Print_Global_Interface_File(CodeLang_Structure const& structure){
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
     Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Code_Wrap_Printer::Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
+    Enum_Section_Printer::Print_Types(out,structure.enums.enumerated_types);
     Methods_Printer::Print_Global_Interface_Methods(out,structure.methods.methods);
     Code_Wrap_Printer::Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 }
