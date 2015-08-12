@@ -114,7 +114,7 @@ class
 ❱
 ◀public: static▶ std::vector<Import_Item> ☀Strip_Out_Import_Type(std::vector<Parser_Token> const& tokens, Token_Name const& import_type)❰
 
-    auto import_related = Filter_Out_Just_Import_Related_Tokens(tokens);
+    auto import_related = Filter_Out_Tokens_By_Group_Name(tokens,Token_Group::IMPORT);
     
     std::vector<Import_Item> return_items;
     Import_Item item;
@@ -273,6 +273,8 @@ class
 
 
 
+
+
 ◀public: static▶ std::vector<Template_Argument> ☀Get_Template_Args(std::vector<Parser_Token> const& tokens)❰
     std::vector<Template_Argument> all;
     Template_Argument t;
@@ -353,7 +355,7 @@ class
 ◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
     std::vector<Data_Member_Item> all;
     
-    auto new_tokens = Filter_Out_Just_Data_Member_Related_Tokens(tokens);
+    auto new_tokens = Filter_Out_Tokens_By_Group_Name(tokens,Token_Group::DATA_MEMBER);
     auto split =  Filter_By_Data_Member_Uniqueness(new_tokens);
     for(auto it: split){
         all.push_back(Build_Data_Member_Item(it));
@@ -403,35 +405,6 @@ class
     
     return item;
 ❱
-
-//filters
-◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Import_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
-
-    //filter
-    std::vector<Parser_Token> new_tokens;
-    for (it: tokens){
-        if (it.token.name == Token_Name::IMPORT_INTERFACE){
-            new_tokens.push_back(it);
-        }
-        else if(it.token.name == Token_Name::IMPORT_IMPLEMENTATION){
-            new_tokens.push_back(it);
-        }
-        else if(it.token.name == Token_Name::IMPORT_COMMENT){
-            new_tokens.push_back(it);
-        }
-    }
-    return new_tokens;
-❱
-◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Data_Member_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
-
-    //filter
-    std::vector<Parser_Token> new_tokens;
-    for (it: tokens){
-        if(In_Vector(it.token.groups,Token_Group::DATA_MEMBER)) {new_tokens.push_back(it);}
-    }
-    return new_tokens;
-❱
-
 
 
 
