@@ -36,6 +36,7 @@ class
     code.inheritance  = Parse_Out_Inheritance_Section(tokens);
     code.methods      = Parse_Out_Method_Section(tokens);
     code.data_members = Parse_Out_Data_Member_Section(tokens);
+    code.enums        = Parse_Out_Enum_Section(tokens);
     
     //set the file name that the code structure was derived from
     code.name = As_Removed_Suffix(Get_File_Name_From_File_Path(path_to_file));
@@ -92,6 +93,13 @@ class
     Data_Member_Section section;
     
     section.data_members = Strip_Out_Data_Members(tokens);
+    
+    return section;
+❱
+◀public: static▶ Enum_Member_Section ☀Parse_Out_Enum_Section(std::vector<Parser_Token> const& tokens)❰
+    Enum_Member_Section section;
+    
+    section.enumerated_types = Strip_Out_Enumerated_Types(tokens);
     
     return section;
 ❱
@@ -171,9 +179,13 @@ class
     //not important right now..
     return items;
 ❱
-◀public: static▶ std::vector<Inheritance_Item> ☀Strip_Out_Inheritances(std::vector<Parser_Token> const& tokens)❰
-    std::vector<Inheritance_Item> items;
-    //not important right now..
+◀public: static▶ std::vector<Enum_Item> ☀Strip_Out_Enumerated_Types(std::vector<Parser_Token> const& tokens)❰
+    std::vector<Enum_Item> items;
+    auto new_tokens = Filter_Out_Enum_Related_Tokens(tokens);
+    auto split = Filter_Enum_Chunks(new_tokens);
+    for (auto it: split){
+        items.push_back(Build_Enum_Item(it));
+    }
     return items;
 ❱
 ◀public: static▶ std::vector<Method_Item> ☀Strip_Out_Methods(std::vector<Parser_Token> const& tokens)❰
@@ -186,6 +198,19 @@ class
     }
     
     return items;
+❱
+◀public: static▶ Enum_Item ☀Build_Enum_Item(std::vector<Parser_Token> const& tokens)❰
+    Enum_Item item;
+    
+    //get out singles
+    auto name = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_NAME);
+    
+    //get out multiples
+    auto args = Get_Enum_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::ENUM_ARG));
+    
+    //set them all
+    item.name = name;
+    item.args = args;
 ❱
 
 ◀public: static▶ Method_Item ☀Build_Method_Item(std::vector<Parser_Token> const& tokens)❰
@@ -304,6 +329,8 @@ class
     
     return all;
 ❱
+
+
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
     std::vector<std::vector<Parser_Token>> all;
     std::vector<Parser_Token> some;
@@ -318,7 +345,9 @@ class
     
     return all;
 ❱
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
 
+❱
 
 ◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
     std::vector<Data_Member_Item> all;
@@ -374,7 +403,7 @@ class
     return item;
 ❱
 
-//parser token filters
+//filters
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Import_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
 
     //filter
@@ -392,7 +421,6 @@ class
     }
     return new_tokens;
 ❱
-
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Method_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
 
     //filter
@@ -402,7 +430,6 @@ class
     }
     return new_tokens;
 ❱
-
 ◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Just_Data_Member_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
 
     //filter
@@ -429,6 +456,15 @@ class
         for (y: it.token.groups){
             if(y == name) {new_tokens.push_back(it);}
         }
+    }
+    return new_tokens;
+❱
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Enum_Related_Tokens(std::vector<Parser_Token> const& tokens)❰
+
+    //filter
+    std::vector<Parser_Token> new_tokens;
+    for (it: tokens){
+        if(In_Vector(it.token.groups,Token_Group::ENUM)){new_tokens.push_back(it);}
     }
     return new_tokens;
 ❱
