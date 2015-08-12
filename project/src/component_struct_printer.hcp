@@ -64,6 +64,25 @@ class
     std::vector<Component_Input> inputs;
     
     for (auto it: structure.methods.methods){
+        if (!Is_Method_Constructor(structure.name,as_string(it.function_name))){ //<- sow we don't add constructor params to the input strut
+            Potentially_Add_Component_Inputs(it,inputs);
+        }
+    }
+    
+    //print bools for all of the public methods
+    Print_Component_Methods(out,structure.name,structure.methods.methods);
+    
+    //print all the input parameters needed for all of the public methods
+    Print_Component_Inputs(out,inputs);
+❱
+
+
+◀private: static▶ bool ☀Is_Method_Constructor(std::string file_name, std::string function_name)❰
+    return As_Capital_And_Pushed_Together(file_name) == As_Capital_And_Pushed_Together(function_name);
+❱
+
+
+◀private: static▶ void ☀Potentially_Add_Component_Inputs(Method_Item const& it, std::vector<Component_Input> & inputs)❰
         for (x: it.function_arguments){
             if (!Exists(inputs,as_string(x.identifier))){
                 Component_Input d;
@@ -75,14 +94,6 @@ class
                 Find(inputs,as_string(x.identifier)).from.push_back(as_string(it.function_name));
             }
         }
-        
-    }
-    
-    //print bools for all of the public methods
-    Print_Component_Methods(out,structure.methods.methods);
-    
-    //print all the input parameters needed for all of the public methods
-    Print_Component_Inputs(out,inputs);
 ❱
 
 ◀private: static▶ bool ☀Exists(std::vector<Component_Input> const& inputs, std::string name)❰
@@ -128,9 +139,20 @@ class
 ❱
 
 
-◀private: static▶ void ☀Print_Component_Methods(std::wofstream & out, std::vector<Method_Item> const& inputs)❰
-    if (inputs.size() > 1){
-        for (auto it: inputs){
+◀private: static▶ void ☀Print_Component_Methods(std::wofstream & out, std::string file_name, std::vector<Method_Item> const& inputs)❰
+
+    //methods that are not constructors
+    std::vector<Method_Item> new_inputs;
+    for (auto it: inputs){
+        if (!Is_Method_Constructor(file_name,as_string(it.function_name))){
+            new_inputs.push_back(it);
+        }else{
+        }
+    }
+
+
+    if (new_inputs.size() > 1){
+        for (auto it: new_inputs){
             Doxygen_Block_Printer::Print_Block(out,4,as_string(it.brief_description),as_string(it.detailed_description));
             auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix("BOOL",false,true,false,false,false);
             Print_To_Stream_With_Newline(out,"    BOOL " + prefix + As_Capital_And_Pushed_Together(as_string(it.function_name)) + ";");
@@ -139,28 +161,6 @@ class
 ❱
 
 ◀private: static▶ void ☀Print_Component_Inputs(std::wofstream & out, std::vector<Component_Input> const& inputs)❰
-        
-        
-        //dump all of the API method triggers
-/*
-        if (inputs.size() > 1){
-            std::vector<std::string> froms;
-            for (auto it: inputs){
-                
-                froms += from;
-            }
-            
-            Sort_And_Remove_Duplicates(froms);
-            
-            for (auto it: froms){
-                //print
-                Doxygen_Block_Printer::Print_Block(out,4,it,detail);
-                //auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.arg.type),false,true,false,false,false);
-                //Print_To_Stream_With_Newline(out,"    " + as_string(it.arg.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.arg.identifier)) + ";");
-                //Print_To_Stream_With_Newline(out,"");
-            }
-        }*/
-        
         
         
         //dump all of the parameters
