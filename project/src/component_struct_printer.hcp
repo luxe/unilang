@@ -22,7 +22,6 @@ class
     std::vector<Data_Member_Item> locals;
     for (auto it: structure.data_members.data_members){
         if (!it.is_observable && !it.is_obtainable){
-            std::cout << "sdf" << std::endl;
             locals.push_back(it);
         }
     }
@@ -36,7 +35,7 @@ class
         Print_To_Stream(out,"typedef struct ");
         Print_To_Stream_With_Newline(out,dumb_name);
         Print_To_Stream_With_Newline(out,"{");
-        Print_Local_Struct_Variables(out,locals);
+        Print_List_Of_Data_Members(out,locals);
         Print_To_Stream(out,"} ");
         Print_To_Stream(out,used_name);
         Print_To_Stream_With_Newline(out,";");
@@ -58,6 +57,51 @@ class
         Print_To_Stream_With_Newline(out,";");
         Print_To_Stream_With_Newline(out,"");
 ❱
+◀private: static▶ void ☀Print_Input_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
+
+    
+    std::vector<Component_Input> derInputs;
+    
+    for (auto it: structure.methods.methods){
+        for (x: it.function_arguments){
+            if (!Exists(derInputs,as_string(x.identifier))){
+                Component_Input> d;
+                d.name = as_string(x.identifier);
+                d.from.push_back(as_string(function_name));
+                derInputs.push_back(d);
+            }else{
+                Find(derInputs,as_string(x.identifier)).push_back(as_string(function_name));
+            }
+        }
+        
+    }
+    
+    //print time:
+    for (auto it: derInputs){
+        std::cout << it.name << "=" << std::endl;
+        std::cout << it.from << std::endl;
+    }
+❱
+
+◀private: static▶ bool ☀Exists(std::vector<Component_Input>> const& derInputs, std::string name)❰
+    for (auto it: derInputs){
+        if (it.name == name){
+            return true;
+        }
+    }
+    return false;
+❱
+◀private: static▶ Component_Input& ☀Find(std::vector<Component_Input>> const& derInputs, std::string name)❰
+    for (auto it: derInputs){
+        if (it.name == name){
+            return &it;
+        }
+    }
+    return Component_Input>{};
+❱
+
+
+
 ◀private: static▶ void ☀Print_Output_Struct(std::wofstream & out, CodeLang_Structure const& structure)❰
         auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Outputs_t";
         auto used_name = As_Capital_And_Pushed_Together(structure.name) + "OutputsT";
@@ -66,31 +110,32 @@ class
         Print_To_Stream(out,"typedef struct ");
         Print_To_Stream_With_Newline(out,dumb_name);
         Print_To_Stream_With_Newline(out,"{");
-        Print_Output_Struct_Variables(out,structure);
+        Print_Output_Data_Variables(out,structure);
+        Print_Output_Return_Variables(out,structure);
         Print_To_Stream(out,"} ");
         Print_To_Stream(out,used_name);
         Print_To_Stream_With_Newline(out,";");
         Print_To_Stream_With_Newline(out,"");
 ❱
 
-◀private: static▶ void ☀Print_Local_Struct_Variables(std::wofstream & out, std::vector<Data_Member_Item> const& locals)❰
-    for (auto it: locals){
-        Doxygen_Block_Printer::Print_Block(out,4,as_string(it.brief),as_string(it.detail));
-        auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false,true,false,false,false);
-        Print_To_Stream_With_Newline(out,"    " + as_string(it.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.name)) + ";");
-        Print_To_Stream_With_Newline(out,"");
-    }
-❱
-◀private: static▶ void ☀Print_Input_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
-    Print_To_Stream_With_Newline(out,"blah");
-❱
-◀private: static▶ void ☀Print_Output_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
 
-    //print outputs due to state specifiers
+
+◀private: static▶ void ☀Print_Output_Data_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
 
     //get all the necessary members based on state specifiers
     auto members = structure.data_members.data_members;
-    Remove_Elements_Where_Function_Is_True(members,[](Data_Member_Item const& x){ return x.is_observable || x.is_injectable;});
+    Remove_Elements_Where_Function_Is_True(members,[](Data_Member_Item const& x){ return !x.is_observable && !x.is_injectable;});
+    Print_List_Of_Data_Members(out,members);
+❱
+◀private: static▶ void ☀Print_Output_Return_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
+
+❱
+
+
+
+
+//utility
+◀private: static▶ void ☀Print_List_Of_Data_Members(std::wofstream & out, std::vector<Data_Member_Item> const& members)❰
     for (auto it: members){
         Doxygen_Block_Printer::Print_Block(out,4,as_string(it.brief),as_string(it.detail));
         auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false,true,false,false,false);
@@ -103,5 +148,27 @@ class
 //◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Local_Struct_Variables
 //◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Input_Struct_Variables
 //◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Output_Struct_Variables
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
