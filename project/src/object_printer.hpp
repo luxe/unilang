@@ -16,6 +16,10 @@ class Object_Printer{
 
 
 
+
+
+
+
 public: static void Print_Object_Interface_File(CodeLang_Structure const& structure);
 public: static void Print_Object_Implementation_File(CodeLang_Structure const& structure);
 public: static void Print_Object_Data_File(CodeLang_Structure const& structure);//functions added automatically by hcp-compiler

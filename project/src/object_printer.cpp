@@ -3,6 +3,9 @@
 #include "code_wrap_printer.hpp"
 #include "header_printer.hpp"
 #include "component_struct_printer.hpp"
+#include "initialize_printer.hpp"
+#include "update_printer.hpp"
+#include "api_printer.hpp"
 
 
 
@@ -16,12 +19,20 @@
 
 
 
+
+
+
+
  void Object_Printer::Print_Object_Interface_File(CodeLang_Structure const& structure){
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
     Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
     Code_Wrap_Printer::Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
+    
+    Initialize_Printer::Print_Initialize_Declaration(out,structure);
+    Update_Printer::Print_Update_Declaration(out,structure);
+    
     Code_Wrap_Printer::Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 }
  void Object_Printer::Print_Object_Implementation_File(CodeLang_Structure const& structure){
@@ -29,6 +40,12 @@
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
     Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
     Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
+    
+    Api_Printer::Print_Declerations(out,structure);
+    Initialize_Printer::Print_Initialize_Definition(out,structure);
+    Update_Printer::Print_Update_Definition(out,structure);
+    Api_Printer::Print_Definitions(out,structure);
+    
     Code_Wrap_Printer::Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 }
  void Object_Printer::Print_Object_Data_File(CodeLang_Structure const& structure){

@@ -4,6 +4,7 @@ class
 ❪"method_item"❫
 ⚯
 ❪"type_to_hungarian_notation_converter"❫
+❪"doxygen_block_printer"❫
 ⚞⚟
 
 //method related
@@ -19,80 +20,12 @@ class
     }
 ❱
 ◀private: static▶ void ☀Print_Method_Interface(std::wofstream & out, Method_Item const& method)❰
-    Print_Doxygen_Method_Comment(out,method);
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
     Print_Method_Deceleration(out,method);
 ❱
 ◀private: static▶ void ☀Print_Method_Implementation(std::wofstream & out, Method_Item const& method)❰
-    Print_Doxygen_Method_Comment(out,method);
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
     Print_Method_Definition(out,method);
-❱
-
-◀private: static▶ void ☀Print_Doxygen_Method_Comment(std::wofstream & out, Method_Item const& method)❰
-    Print_To_Stream_With_Newline(out,"/**");
-    Print_Multiline_Tag(out,"brief",method.brief_description);
-    Print_Multiline_Tag(out,"details",method.detailed_description);
-    Print_Doxygen_Template_Arguments(out,method.template_arguments);
-    Print_Doxygen_Function_Arguments(out,method.function_arguments);
-    Print_Doxygen_Return_Results(out,method.return_results);
-    Print_To_Stream_With_Newline(out," */");
-    
-❱
-
-◀private: static▶ void ☀Print_Doxygen_Template_Arguments(std::wofstream & out, std::vector<Template_Argument> const& template_arguments)❰
-
-    for (auto it: template_arguments){
-        Print_Multiline_Tag(out,"tparam",it.comment);
-    }
-❱
-◀private: static▶ void ☀Print_Doxygen_Function_Arguments(std::wofstream & out, std::vector<Function_Argument> const& function_arguments)❰
-    for (auto it: function_arguments){
-        auto identifier = as_string(it.identifier);
-        auto type       = as_string(it.type);
-        bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
-        auto prefix     = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(type,is_pointer,false,false,false,false);
-        auto new_identifier = Derive_Argument_Identifier_Name(it);
-        auto new_description = as_wstring(new_identifier) + L" " + it.comment;
-        
-        std::string dir;
-        if (!it.is_const){
-            dir="[in]";
-        }
-        else if(is_pointer){
-            dir="[in,out]";
-        }
-        else{
-            dir="[in]";
-        }
-        Print_Multiline_Tag(out,"param"+dir,new_description);
-    }
-❱
-
-
-◀private: static▶ void ☀Print_Doxygen_Return_Results(std::wofstream & out, std::vector<Function_Result> const& return_results)❰
-    for (auto it: return_results){
-        Print_Multiline_Tag(out,"return",it.comment);
-    }
-❱
-
-
-◀private: static▶ void ☀Print_Multiline_Tag(std::wofstream & out, std::string tag, std::wstring content)❰
-
-    std::string start_tag_line = " * @" + as_string(tag) + " ";
-    if (!content.empty()){
-        Print_To_Stream(out,start_tag_line);
-        auto new_content = as_string(content);
-        trim(new_content);
-        auto lines = Split_Into_Parts_From_Delimiter(new_content,'\n');
-        
-        Call_Function_On_First_Element_And_Then_Function_On_The_Rest_Of_The_Elements(lines
-        ,[&](std::string s){Print_To_Stream_With_Newline(out,s);}
-        ,[&](std::string s){
-            Print_To_Stream(out,"*");
-            Print_To_Stream_N_Times(out," ",start_tag_line.size()-1);
-            Print_To_Stream_With_Newline(out,s);
-        }
-        );
-    }
 ❱
 
 
@@ -172,7 +105,7 @@ class
     return str;
 ❱
 
-◀private: static▶ std::string ☀Derive_Argument_Identifier_Name(Function_Argument const& arg)❰
+◀public: static▶ std::string ☀Derive_Argument_Identifier_Name(Function_Argument const& arg)❰
         auto identifier = as_string(arg.identifier);
         auto type       = as_string(arg.type);
         bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
