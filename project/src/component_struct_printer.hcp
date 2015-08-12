@@ -4,6 +4,7 @@ class
 ❪"CodeLang_structure"❫
 ❪"doxygen_block_printer"❫
 ❪"type_to_hungarian_notation_converter"❫
+❪"component_input"❫
 ⚯
 
 ⚞⚟
@@ -65,12 +66,12 @@ class
     for (auto it: structure.methods.methods){
         for (x: it.function_arguments){
             if (!Exists(derInputs,as_string(x.identifier))){
-                Component_Input> d;
+                Component_Input d;
                 d.name = as_string(x.identifier);
-                d.from.push_back(as_string(function_name));
+                d.from.push_back(as_string(it.function_name));
                 derInputs.push_back(d);
             }else{
-                Find(derInputs,as_string(x.identifier)).push_back(as_string(function_name));
+                Find(derInputs,as_string(x.identifier)).from.push_back(as_string(it.function_name));
             }
         }
         
@@ -83,7 +84,7 @@ class
     }
 ❱
 
-◀private: static▶ bool ☀Exists(std::vector<Component_Input>> const& derInputs, std::string name)❰
+◀private: static▶ bool ☀Exists(std::vector<Component_Input> const& derInputs, std::string name)❰
     for (auto it: derInputs){
         if (it.name == name){
             return true;
@@ -91,13 +92,13 @@ class
     }
     return false;
 ❱
-◀private: static▶ Component_Input& ☀Find(std::vector<Component_Input>> const& derInputs, std::string name)❰
-    for (auto it: derInputs){
+◀private: static▶ Component_Input& ☀Find(std::vector<Component_Input> & derInputs, std::string name)❰
+    for (auto & it: derInputs){
         if (it.name == name){
-            return &it;
+            return it;
         }
     }
-    return Component_Input>{};
+    return derInputs[0];
 ❱
 
 
