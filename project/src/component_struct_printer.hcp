@@ -61,48 +61,46 @@ class
 ◀private: static▶ void ☀Print_Input_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
 
     
-    std::vector<Component_Input> derInputs;
+    std::vector<Component_Input> inputs;
     
     for (auto it: structure.methods.methods){
         for (x: it.function_arguments){
-            if (!Exists(derInputs,as_string(x.identifier))){
+            if (!Exists(inputs,as_string(x.identifier))){
                 Component_Input d;
                 d.name = as_string(x.identifier);
                 d.from.push_back(as_string(it.function_name));
-                derInputs.push_back(d);
+                d.arg = x;
+                inputs.push_back(d);
             }else{
-                Find(derInputs,as_string(x.identifier)).from.push_back(as_string(it.function_name));
+                Find(inputs,as_string(x.identifier)).from.push_back(as_string(it.function_name));
             }
         }
         
     }
     
-    //print time:
-    for (auto it: derInputs){
-        std::cout << it.name << "=" << std::endl;
-        std::cout << it.from << std::endl;
-    }
+    //print bools for all of the public methods
+    Print_Component_Methods(out,structure.methods.methods);
+    
+    //print all the input parameters needed for all of the public methods
+    Print_Component_Inputs(out,inputs);
 ❱
 
-◀private: static▶ bool ☀Exists(std::vector<Component_Input> const& derInputs, std::string name)❰
-    for (auto it: derInputs){
+◀private: static▶ bool ☀Exists(std::vector<Component_Input> const& inputs, std::string name)❰
+    for (auto it: inputs){
         if (it.name == name){
             return true;
         }
     }
     return false;
 ❱
-◀private: static▶ Component_Input& ☀Find(std::vector<Component_Input> & derInputs, std::string name)❰
-    for (auto & it: derInputs){
+◀private: static▶ Component_Input& ☀Find(std::vector<Component_Input> & inputs, std::string name)❰
+    for (auto & it: inputs){
         if (it.name == name){
             return it;
         }
     }
-    return derInputs[0];
+    return inputs[0];
 ❱
-
-
-
 ◀private: static▶ void ☀Print_Output_Struct(std::wofstream & out, CodeLang_Structure const& structure)❰
         auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Outputs_t";
         auto used_name = As_Capital_And_Pushed_Together(structure.name) + "OutputsT";
@@ -119,8 +117,6 @@ class
         Print_To_Stream_With_Newline(out,"");
 ❱
 
-
-
 ◀private: static▶ void ☀Print_Output_Data_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
 
     //get all the necessary members based on state specifiers
@@ -129,21 +125,77 @@ class
     Print_List_Of_Data_Members(out,members);
 ❱
 ◀private: static▶ void ☀Print_Output_Return_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
-
 ❱
 
 
+◀private: static▶ void ☀Print_Component_Methods(std::wofstream & out, std::vector<Method_Item> const& inputs)❰
+    if (inputs.size() > 1){
+        for (auto it: inputs){
+            Doxygen_Block_Printer::Print_Block(out,4,as_string(it.brief_description),as_string(it.detailed_description));
+            auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix("BOOL",false,true,false,false,false);
+            Print_To_Stream_With_Newline(out,"    BOOL " + prefix + As_Capital_And_Pushed_Together(as_string(it.function_name)) + ";");
+        }
+    }
+❱
+
+◀private: static▶ void ☀Print_Component_Inputs(std::wofstream & out, std::vector<Component_Input> const& inputs)❰
+        
+        
+        //dump all of the API method triggers
+/*
+        if (inputs.size() > 1){
+            std::vector<std::string> froms;
+            for (auto it: inputs){
+                
+                froms += from;
+            }
+            
+            Sort_And_Remove_Duplicates(froms);
+            
+            for (auto it: froms){
+                //print
+                Doxygen_Block_Printer::Print_Block(out,4,it,detail);
+                //auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.arg.type),false,true,false,false,false);
+                //Print_To_Stream_With_Newline(out,"    " + as_string(it.arg.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.arg.identifier)) + ";");
+                //Print_To_Stream_With_Newline(out,"");
+            }
+        }*/
+        
+        
+        
+        //dump all of the parameters
+        for (auto it: inputs){
+            //build string that shows what functions it applies to:
+            std::string detail;
+            detail += "This parameter is applied to the following functions:\n";
+            for (auto x: it.from){
+                detail += As_Capital_And_Pushed_Together(x) + "\n";
+            }
+            
+            
+            //print
+            Doxygen_Block_Printer::Print_Block(out,4,as_string(it.arg.comment),detail);
+            auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.arg.type),false,true,false,false,false);
+            Print_To_Stream_With_Newline(out,"    " + as_string(it.arg.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.arg.identifier)) + ";");
+            Print_To_Stream_With_Newline(out,"");
+        }
+        
+❱
 
 
 //utility
 ◀private: static▶ void ☀Print_List_Of_Data_Members(std::wofstream & out, std::vector<Data_Member_Item> const& members)❰
     for (auto it: members){
+        Print_Data_Member(out,it);
+    }
+❱
+
+
+◀private: static▶ void ☀Print_Data_Member(std::wofstream & out, Data_Member_Item const& it)❰
         Doxygen_Block_Printer::Print_Block(out,4,as_string(it.brief),as_string(it.detail));
         auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false,true,false,false,false);
-        Print_To_Stream_With_Newline(out,"    " + as_string(it.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.name)) + ";");
+        Print_To_Stream_With_Newline(out,"    " + as_string(it.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.name)) + ";" );
         Print_To_Stream_With_Newline(out,"");
-        
-    }
 ❱
 
 //◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Local_Struct_Variables
