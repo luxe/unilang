@@ -21,7 +21,8 @@ class
     //get all the variables that qualify for locals
     std::vector<Data_Member_Item> locals;
     for (auto it: structure.data_members.data_members){
-        if (!it.is_observable || !it.is_obtainable){
+        if (!it.is_observable && !it.is_obtainable){
+            std::cout << "sdf" << std::endl;
             locals.push_back(it);
         }
     }
@@ -73,7 +74,12 @@ class
 ❱
 
 ◀private: static▶ void ☀Print_Local_Struct_Variables(std::wofstream & out, std::vector<Data_Member_Item> const& locals)❰
-    Print_To_Stream_With_Newline(out,"blah");
+    for (auto it: locals){
+        Doxygen_Block_Printer::Print_Block(out,4,as_string(it.brief),as_string(it.detail));
+        auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false,true,false,false,false);
+        Print_To_Stream_With_Newline(out,"    " + as_string(it.type) + " " + prefix + As_Capital_And_Pushed_Together(as_string(it.name)) + ";");
+        Print_To_Stream_With_Newline(out,"");
+    }
 ❱
 ◀private: static▶ void ☀Print_Input_Struct_Variables(std::wofstream & out, CodeLang_Structure const& structure)❰
     Print_To_Stream_With_Newline(out,"blah");
@@ -93,5 +99,9 @@ class
         
     }
 ❱
+
+//◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Local_Struct_Variables
+//◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Input_Struct_Variables
+//◀private: static▶ std::vector<Data_Member_Item> ☀Extract_Output_Struct_Variables
 
 
