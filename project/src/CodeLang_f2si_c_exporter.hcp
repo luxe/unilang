@@ -4,10 +4,8 @@ class
 ❪"CodeLang_structure"❫
 ⚯
 //printers
-❪"meta_block_printer"❫
-❪"header_printer"❫
-❪"methods_printer"❫
-❪"component_struct_printer"❫
+❪"global_printer"❫
+❪"object_printer"❫
 ⚞⚟
 
 //options:
@@ -28,91 +26,21 @@ class
     
     if (structure.meta.code_type == L"global"){     Create_Global_Files(structure);}
     else if(structure.meta.code_type == L"object"){ Create_Object_Files(structure);}
-    else if(structure.meta.code_type == L"enum"){   Create_Enum_Files(structure);}
     
     Step_Out_Of_Folder();
 ❱
 
+//print global files
 ◀private: static▶ void ☀Create_Global_Files(CodeLang_Structure const& structure)❰
     Print_Global_Interface_File(structure);
     Print_Global_Implementation_File(structure);
 ❱
-◀private: static▶ void ☀Create_Object_Files(CodeLang_Structure const& structure)❰
 
-    //create all the files
+//print object files
+◀private: static▶ void ☀Create_Object_Files(CodeLang_Structure const& structure)❰
     Print_Object_Interface_File(structure);
     Print_Object_Implementation_File(structure);
     Print_Object_Data_File(structure);
-❱
-◀private: static▶ void ☀Create_Enum_Files(CodeLang_Structure const& structure)❰
-    Print_Enum_Interface_File(structure);
-    Print_Enum_Implementation_File(structure);
-❱
-◀private: static▶ void ☀Print_Enum_Interface_File(CodeLang_Structure const& structure)❰
-❱
-◀private: static▶ void ☀Print_Enum_Implementation_File(CodeLang_Structure const& structure)❰
-❱
-
-
-◀private: static▶ void ☀Print_Object_Interface_File(CodeLang_Structure const& structure)❰
-
-    std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
-    Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
-    Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
-    Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
-    Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
-❱
-◀private: static▶ void ☀Print_Object_Implementation_File(CodeLang_Structure const& structure)❰
-
-    std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
-    Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
-    Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
-    Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
-❱
-◀private: static▶ void ☀Print_Object_Data_File(CodeLang_Structure const& structure)❰
-
-    std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + "Data.h");
-    Meta_Block_Printer::Print(structure.name,out,"Data",structure.meta);
-    Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
-    Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies);
-    Component_Struct_Printer::Print_Data_Structs(out,structure);
-    Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
-❱
-
-◀private: static▶ void ☀Print_Global_Interface_File(CodeLang_Structure const& structure)❰
-
-    std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
-    Meta_Block_Printer::Print(structure.name,out,"Interface",structure.meta);
-    Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
-    Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
-    Methods_Printer::Print_Global_Interface_Methods(out,structure.methods.methods);
-    Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
-❱
-◀private: static▶ void ☀Print_Global_Implementation_File(CodeLang_Structure const& structure)❰
-
-    std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
-    Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
-    Header_Printer::Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
-    Methods_Printer::Print_Global_Implementation_Methods(out,structure.methods.methods);
-    Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
-❱
-
-//begin and end wrappers
-◀private: static▶ void ☀Print_Beginning_Of_Header_Include_Gaurd(std::string file_name,std::wofstream & out)❰
-        Print_To_Stream_With_Newline(out,"#ifndef " + As_Capital_And_Pushed_Together(file_name) + "H");
-        Print_To_Stream_With_Newline(out,"#define " + As_Capital_And_Pushed_Together(file_name) + "H");
-        Print_To_Stream_With_Newline(out,"");
-❱
-◀private: static▶ void ☀Possibly_Print_Close_Markers(std::wofstream & out, std::string file_name,Meta_Section const& meta, bool is_header)❰
-
-    if (is_header){
-        Print_To_Stream_With_Newline(out,"#endif /* " + As_Capital_And_Pushed_Together(file_name) + "H */");
-    }
-    if (!meta.group_names.empty()){
-        Print_To_Stream_With_Newline(out,"///@}");
-    }
-    Print_To_Stream_With_Newline(out,"");
-    
 ❱
 
 

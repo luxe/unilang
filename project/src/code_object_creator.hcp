@@ -205,11 +205,11 @@ class
     auto name = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_NAME);
     
     //get out multiples
-    //auto args = Get_Enum_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::ENUM_ARG));
+    auto args = Get_Enum_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::ENUM_ARG));
     
     //set them all
-    item.name = name;
-    //item.args = args;
+    for (auto it: name){item.name = it.content;}
+    item.args = args;
 ❱
 
 ◀public: static▶ Method_Item ☀Build_Method_Item(std::vector<Parser_Token> const& tokens)❰
@@ -333,6 +333,23 @@ class
     
     return all;
 ❱
+◀public: static▶ std::vector<Enum_Arg>    ☀Get_Enum_Args(std::vector<Parser_Token> const& tokens)❰
+    std::vector<Enum_Arg> all;
+    Enum_Arg t;
+    auto splits = Filter_By_Data_Member_Uniqueness(tokens);
+    for (auto x : splits){
+        t = Enum_Arg{};
+        for (auto y : x){
+            if      (y.token.name == Token_Name::ENUM_ARG_NAME)      {t.name = y.content;}
+            else if (y.token.name == Token_Name::ENUM_ARG_VALUE)     {t.value = y.content;}
+            else if (y.token.name == Token_Name::ENUM_ARG_COMMENT)   {t.comment = y.content;}
+        }
+        all.push_back(t);
+    }
+    
+    
+    return all;
+❱
 
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
@@ -350,7 +367,16 @@ class
     return all;
 ❱
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Enum_Chunks(std::vector<Parser_Token> const& tokens)❰
+    //for now, assume only one enum per file
+    std::vector<std::vector<Parser_Token>> all;
+    all.push_back(tokens);
+    return all;
 ❱
+
+
+
+
+
 
 ◀public: static▶ std::vector<Data_Member_Item> ☀Strip_Out_Data_Members(std::vector<Parser_Token> const& tokens)❰
     std::vector<Data_Member_Item> all;
