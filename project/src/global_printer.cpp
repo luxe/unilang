@@ -3,6 +3,7 @@
 #include "code_wrap_printer.hpp"
 #include "header_printer.hpp"
 #include "enum_section_printer.hpp"
+#include "data_member_printer.hpp"
 #include "methods_printer.hpp"
 
 
@@ -20,6 +21,7 @@
 
 
 
+
  void Global_Printer::Print_Global_Interface_File(CodeLang_Structure const& structure){
 
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".h");
@@ -27,6 +29,7 @@
     Code_Wrap_Printer::Print_Beginning_Of_Header_Include_Gaurd(structure.name,out);
     Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
     Enum_Section_Printer::Print_Types(out,structure.enums.enumerated_types);
+    Data_Member_Printer::Print_Global_Decelerations(out,structure.data_members.data_members);
     Methods_Printer::Print_Global_Interface_Methods(out,structure.methods.methods);
     Code_Wrap_Printer::Possibly_Print_Close_Markers(out,structure.name,structure.meta,true);
 }
@@ -35,6 +38,7 @@
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + ".c");
     Meta_Block_Printer::Print(structure.name,out,"Implementation",structure.meta);
     Header_Printer::Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
+    Data_Member_Printer::Print_Global_Definitions(out,structure.data_members.data_members);
     Methods_Printer::Print_Global_Implementation_Methods(out,structure.methods.methods);
     Code_Wrap_Printer::Possibly_Print_Close_Markers(out,structure.name,structure.meta,false);
 }//functions added automatically by hcp-compiler

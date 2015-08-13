@@ -1,0 +1,58 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"data_member_item"❫
+❪"doxygen_block_printer"❫
+⚯
+
+⚞⚟
+
+
+◀public: static▶ void ☀Print_Global_Decelerations(std::wofstream & out, std::vector<Data_Member_Item> const& data_members)❰
+    for (auto it: data_members){
+        Doxygen_Block_Printer::Print_Block(out,0,as_string(it.brief),as_string(it.detail));
+        
+        
+        //print the specifiers
+        if (it.storage == Storage_Specifier::EXTERN){
+            Print_To_Stream(out,"extern ");
+        }
+        else if (it.storage == Storage_Specifier::STATIC){
+            Print_To_Stream(out,"static ");
+        }
+        if (it.is_const){
+            Print_To_Stream(out,"const ");
+        }
+        
+        //print the type
+        Print_To_Stream(out,it.type);
+        Print_To_Stream(out," ");
+        
+        //print the identifier
+        if (it.is_const){
+            Print_To_Stream(out,As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(it.name)));
+        }
+        else{
+            //probably would need to Hungarian convert here
+            Print_To_Stream(out,As_Capital_And_Pushed_Together(as_string(it.name)));
+        }
+        
+        //decide whether to print the default value
+        if (it.storage != Storage_Specifier::EXTERN){
+            if (!it.default_value.empty()){
+                Print_To_Stream(out," = ");
+                Print_To_Stream(out,it.default_value);
+            }
+        }
+        
+        Print_To_Stream_With_Newline(out,";");
+        Print_To_Stream_With_Newline(out,"");
+        
+        
+    }
+❱
+◀public: static▶ void ☀Print_Global_Definitions(std::wofstream & out, std::vector<Data_Member_Item> const& data_members)❰
+    for (auto it: data_members){
+        Doxygen_Block_Printer::Print_Block(out,0,as_string(it.brief),as_string(it.detail));
+    }
+❱

@@ -275,16 +275,21 @@ class
 ◀private: static▶ void ☀Ensure_Data_Member_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
     Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::DATA_MEMBER_TYPE_QUALIFIERS);
     
-    //just const is allowed I think
+    //just const and storage specifier
     for (auto it: tokens){
         auto str = as_string(it.content);
         auto consts = Count_Instances_Of_Character(str,'c');
+        auto statics = Count_Instances_Of_Character(str,'s');
+        auto externs = Count_Instances_Of_Character(str,'e');
         
         //throw if there is is too much of something
-        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const argument qualifier",it);}
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const data member qualifier",it);}
+        if (statics > 1){throw Token_Stream_Validation_Exception("More than one static data member qualifier",it);}
+        if (externs > 1){throw Token_Stream_Validation_Exception("More than one extern data member qualifier",it);}
         
         //ensure no invalid characters were given
-        if (consts < it.content.size()){
+        auto number_of_valid_chars = consts + statics + externs;
+        if (number_of_valid_chars < it.content.size()){
             throw Token_Stream_Validation_Exception("Invalid characters given",it);
         }
     }

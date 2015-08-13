@@ -19,6 +19,7 @@ class Global_Printer{
 
 
 
+
 public: static void Print_Global_Interface_File(CodeLang_Structure const& structure);
 public: static void Print_Global_Implementation_File(CodeLang_Structure const& structure);//functions added automatically by hcp-compiler
 public:
