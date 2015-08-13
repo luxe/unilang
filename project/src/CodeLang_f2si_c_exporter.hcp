@@ -6,6 +6,7 @@ class
 //printers
 ❪"global_printer"❫
 ❪"object_printer"❫
+❪"CPP_wrapper_printer"❫
 ⚞⚟
 
 //Options to one day get worked in:
@@ -22,12 +23,21 @@ class
 
 ◀public: static▶ void ☀Export(CodeLang_Structure const& structure)❰
     
+    //create a directory for the global or object code, and export it in an f2si fashion
     Create_Path_If_It_Doesnt_Already_Exist_And_Step_Into_It(As_Capital_And_Pushed_Together(structure.name));
     
     if (structure.meta.code_type == L"global"){     Create_Global_Files(structure);}
     else if(structure.meta.code_type == L"object"){ Create_Object_Files(structure);}
     
     Step_Out_Of_Folder();
+    
+    
+    //additionally, export a c++ wrapper for the object to make the testing easier
+    if(structure.meta.code_type == L"object"){
+        Create_Path_If_It_Doesnt_Already_Exist_And_Step_Into_It(As_Capital_And_Pushed_Together(structure.name) + "_wrapper");
+        CPP_Wrapper_Printer::Print_Wrapper_Class(structure);
+        Step_Out_Of_Folder();
+    }
 ❱
 
 //print global files
