@@ -7,7 +7,7 @@ class
 ❪"doxygen_block_printer"❫
 ⚞⚟
 
-//method related
+//non-wrapped methods
 ◀public: static▶ void ☀Print_Global_Interface_Methods(std::wofstream & out, std::vector<Method_Item> const& methods)❰
 
     for (auto it: methods){
@@ -27,16 +27,12 @@ class
     Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
     Print_Method_Definition(out,method);
 ❱
-
-
 ◀private: static▶ void ☀Print_Method_Deceleration(std::wofstream & out, Method_Item const& method)❰
     
     Print_Method_Signature(out,method);
     Print_To_Stream_With_Newline(out,";");
     Print_To_Stream_With_Newline(out,"");
-    
 ❱
-
 ◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, Method_Item const& method)❰
     Print_Method_Signature(out,method);
     Print_To_Stream_With_Newline(out,"");
@@ -45,9 +41,6 @@ class
     Print_To_Stream_With_Newline(out,"}");
     Print_To_Stream_With_Newline(out,"");
 ❱
-
-
-
 ◀private: static▶ void ☀Print_Method_Signature(std::wofstream & out, Method_Item const& method)❰
 
      Print_Template_Argument_List(out,method.template_arguments);
@@ -74,6 +67,77 @@ class
     Print_To_Stream(out,Derive_Function_Name(method.function_name));
     Print_Function_Argument_List(out,method.function_arguments);
 ❱
+
+
+
+//wrapped methods
+◀public: static▶ void ☀Print_Wrapper_Decleration_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods)❰
+    for (auto it: methods){
+        Print_Wrapper_Interface(file_name,out,it);
+    }
+❱
+◀public: static▶ void ☀Print_Wrapper_Definition_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods)❰
+    for (auto it: methods){
+        Print_Wrapper_Implementation(file_name,out,it);
+    }
+❱
+◀public: static▶ void ☀Print_Wrapper_Interface(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
+    Print_Wrapper_Method_Deceleration(file_name,out,method);
+❱
+◀public: static▶ void ☀Print_Wrapper_Implementation(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
+    Print_Wrapper_Method_Definition(file_name,out,method);
+❱
+◀private: static▶ void ☀Print_Wrapper_Method_Deceleration(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    
+    Print_Wrapper_Method_Signature(file_name,out,method);
+    Print_To_Stream_With_Newline(out,";");
+    Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ void ☀Print_Wrapper_Method_Definition(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    Print_Wrapper_Method_Signature(file_name, out,method);
+    Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out,"{");
+    Print_To_Stream_With_Newline(out,As_Trimmed(as_string(method.body)));
+    Print_To_Stream_With_Newline(out,"}");
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+
+
+
+◀private: static▶ void ☀Print_Wrapper_Method_Signature(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+     
+    //print the return type
+    if (!method.return_results.empty()){
+        
+        //maybe print const
+        if (method.return_results[0].is_const){
+            Print_To_Stream(out,"const ");
+        }
+            Print_To_Stream(out,method.return_results[0].type);
+            Print_To_Stream(out," ");
+    }
+    
+    //if no return type was given assume the type is void
+    else{
+        
+        //print the type (unless its a constructor)
+        if (!Is_Constructor(file_name,method)){
+            Print_To_Stream(out,"void ");
+        }
+    }
+    
+    Print_To_Stream(out,Derive_Function_Name(method.function_name));
+    Print_Function_Argument_List(out,method.function_arguments);
+❱
+
+
+
+
+
+//other goodies
 
 
 ◀private: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Template_Argument> const& arguments)❰
@@ -125,6 +189,14 @@ class
         auto prefix     = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(type,is_pointer,false,false,false,false);
         auto new_identifier = prefix + As_Capital_And_Pushed_Together(identifier);
         return new_identifier;
+❱
+
+
+◀private: static▶ bool ☀Is_Constructor(std::string file_name, Method_Item const& m)❰
+        if (As_Capital_And_Pushed_Together(file_name) == As_Capital_And_Pushed_Together(as_string(m.function_name))){
+            return true;
+        }
+        return false;
 ❱
 
 
