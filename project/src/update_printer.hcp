@@ -58,15 +58,10 @@ class
 ◀private: static▶ void ☀Add_Body(std::string file_name, Method_Item & m, std::vector<Method_Item> const& methods)❰
 
     //first get the number of callable methods
-    unsigned int number_of_methods_not_counting_constructor = 0;
-    for (auto it: methods){
-        if (!Is_Constructor(file_name,it)){
-            ++number_of_methods_not_counting_constructor;
-        }
-    }
+    unsigned int method_count = Number_Of_Non_Constructing_Methods(file_name,methods);
     
     //if it's only, we just call it.
-    if (number_of_methods_not_counting_constructor <= 1){
+    if (method_count <= 1){
         Update_Calls_One_Function(file_name,m.body,methods);
     }
     
@@ -76,6 +71,17 @@ class
         Update_Calls_Many_Functions(file_name,m.body,methods);
     }
     
+❱
+
+◀private: static▶ unsigned int ☀Number_Of_Non_Constructing_Methods(std::string file_name, std::vector<Method_Item> methods)❰
+    //first get the number of callable methods
+    unsigned int number_of_methods_not_counting_constructor = 0;
+    for (auto it: methods){
+        if (!Is_Constructor(file_name,it)){
+            ++number_of_methods_not_counting_constructor;
+        }
+    }
+    return number_of_methods_not_counting_constructor;
 ❱
 
 

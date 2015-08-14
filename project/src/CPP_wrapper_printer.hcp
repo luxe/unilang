@@ -42,11 +42,31 @@ class
     Print_To_Stream(out,object_we_are_wrapping + "Wrapper.hpp");
     Print_To_Stream_With_Newline(out, "\"");
     Print_To_Stream_With_Newline(out, "");
-    Methods_Printer::Print_Wrapper_Definition_Methods(structure.name,out,structure.methods.methods);
+    auto method_count = Number_Of_Non_Constructing_Methods(structure.name,structure.methods.methods);
+    Methods_Printer::Print_Wrapper_Definition_Methods(structure.name,out,structure.methods.methods,method_count);
 ❱
 
 ◀public: static▶ void ☀Print_Declerations(std::wofstream & out, CodeLang_Structure const& structure)❰
     Print_To_Stream_With_Newline(out,"public:");
     Methods_Printer::Print_Wrapper_Decleration_Methods(structure.name,out,structure.methods.methods);
 ❱
+
+◀private: static▶ unsigned int ☀Number_Of_Non_Constructing_Methods(std::string file_name, std::vector<Method_Item> methods)❰
+    //first get the number of callable methods
+    unsigned int number_of_methods_not_counting_constructor = 0;
+    for (auto it: methods){
+        if (!Is_Constructor(file_name,it)){
+            ++number_of_methods_not_counting_constructor;
+        }
+    }
+    return number_of_methods_not_counting_constructor;
+❱
+
+◀private: static▶ bool ☀Is_Constructor(std::string file_name, Method_Item const& m)❰
+        if (As_Capital_And_Pushed_Together(file_name) == As_Capital_And_Pushed_Together(as_string(m.function_name))){
+            return true;
+        }
+        return false;
+❱
+
 

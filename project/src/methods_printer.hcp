@@ -70,24 +70,40 @@ class
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //wrapped methods
 ◀public: static▶ void ☀Print_Wrapper_Decleration_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods)❰
     for (auto it: methods){
         Print_Wrapper_Interface(file_name,out,it);
     }
 ❱
-◀public: static▶ void ☀Print_Wrapper_Definition_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods)❰
+◀public: static▶ void ☀Print_Wrapper_Definition_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods, unsigned int method_count)❰
     for (auto it: methods){
-        Print_Wrapper_Implementation(file_name,out,it);
+        Print_Wrapper_Implementation(file_name,out,it,method_count);
     }
 ❱
 ◀public: static▶ void ☀Print_Wrapper_Interface(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
     Print_Wrapper_Method_Deceleration(file_name,out,method);
 ❱
-◀public: static▶ void ☀Print_Wrapper_Implementation(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+◀public: static▶ void ☀Print_Wrapper_Implementation(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
     Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
-    Print_Wrapper_Method_Definition(file_name,out,method);
+    Print_Wrapper_Method_Definition(file_name,out,method,method_count);
 ❱
 ◀private: static▶ void ☀Print_Wrapper_Method_Deceleration(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     
@@ -95,11 +111,11 @@ class
     Print_To_Stream_With_Newline(out,";");
     Print_To_Stream_With_Newline(out,"");
 ❱
-◀private: static▶ void ☀Print_Wrapper_Method_Definition(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+◀private: static▶ void ☀Print_Wrapper_Method_Definition(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
     Print_Wrapper_Method_Signature_Source_Side(file_name, out,method);
     Print_To_Stream_With_Newline(out,"");
     Print_To_Stream_With_Newline(out,"{");
-    Print_Wrapper_Body(file_name,out,method);
+    Print_Wrapper_Body(file_name,out,method,method_count);
     Print_To_Stream_With_Newline(out,"}");
     Print_To_Stream_With_Newline(out,"");
 ❱
@@ -158,24 +174,40 @@ class
 ❱
 
 
-◀private: static▶ void ☀Print_Wrapper_Body(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+◀private: static▶ void ☀Print_Wrapper_Body(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
     
-    Print_To_Stream(out,As_Capital_And_Pushed_Together(file_name) + "InputsT i;");
-    Set_Backend_API_Trigger(file_name,out,method);
+    Print_To_Stream_With_Newline(out,As_Capital_And_Pushed_Together(file_name) + "InputsT i;");
+    Print_To_Stream_With_Newline(out,"");
+    Set_Backend_API_Trigger(file_name,out,method,method_count);
     Set_Trigger_Method_Parameters(file_name,out,method);
     Call_Backend_API_Method(file_name,out,method);
-    Detrigger_The_Call(file_name,out,method);
+    Detrigger_The_Call(file_name,out,method,method_count);
     Destructure_The_Observables(file_name,out,method);
     Return_The_Value_If_Needed(file_name,out,method);
 ❱
 
-◀private: static▶ void ☀Set_Backend_API_Trigger(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+◀private: static▶ void ☀Set_Backend_API_Trigger(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
     Print_To_Stream_With_Newline(out,"//set the trigger for the backend API method");
-    Print_To_Stream_With_Newline(out,"i.");
+    
+    if (method_count > 1){
+        Print_To_Stream(out,"i.m_b");
+        Print_To_Stream(out,As_Capital_And_Pushed_Together(as_string(method.function_name)));
+        Print_To_Stream_With_Newline(out,"=true;");
+    }
+    else{
+        Print_To_Stream_With_Newline(out,"//No trigger needs to be set. Only one backend API method");
+    }
+    
     Print_To_Stream_With_Newline(out,"");
 ❱
 ◀private: static▶ void ☀Set_Trigger_Method_Parameters(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     Print_To_Stream_With_Newline(out,"//set the triggered method parameters");
+    for ( auto it: method.function_arguments){
+        auto name = As_Capital_And_Pushed_Together(as_string(it.identifier));
+        auto prefix_left = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false, true, false,false,false);
+        auto prefix_right = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false, false, false,false,false);
+        Print_To_Stream_With_Newline(out,"i." + prefix_left + name + " = " + prefix_right + name + ";");
+    }
     Print_To_Stream_With_Newline(out,"");
 ❱
 ◀private: static▶ void ☀Call_Backend_API_Method(std::string file_name, std::wofstream & out, Method_Item const& method)❰
@@ -186,16 +218,37 @@ class
     Print_To_Stream_With_Newline(out,"");
                     
 ❱
-◀private: static▶ void ☀Detrigger_The_Call(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+◀private: static▶ void ☀Detrigger_The_Call(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
     Print_To_Stream_With_Newline(out,"//de-trigger the call");
-    Print_To_Stream_With_Newline(out,"i.");
+    
+    if (method_count > 1){
+        Print_To_Stream(out,"i.m_b");
+        Print_To_Stream(out,As_Capital_And_Pushed_Together(as_string(method.function_name)));
+        Print_To_Stream_With_Newline(out,"=false;");
+    }
+    else{
+        Print_To_Stream_With_Newline(out,"//No trigger needs to be unset. Only one backend API method");
+    }
+    
+    Print_To_Stream_With_Newline(out,"");
 ❱
 ◀private: static▶ void ☀Destructure_The_Observables(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     Print_To_Stream_With_Newline(out,"//destructure the observables");
     Print_To_Stream_With_Newline(out,"DeStructure();");
+    Print_To_Stream_With_Newline(out,"");
 ❱
 ◀private: static▶ void ☀Return_The_Value_If_Needed(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     Print_To_Stream_With_Newline(out,"//return the API result if applicable");
+    
+    if (method.return_results.empty()){
+        Print_To_Stream_With_Newline(out,"return; //backend API method is void");
+    }
+    else{
+        auto return_result = As_Capital_And_Pushed_Together(as_string(method.return_results[0].identifier));
+        auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(method.return_results[0].type),false, true, false,false,false);
+        Print_To_Stream_With_Newline(out,"return " + prefix + return_result + ";");
+    }
+    
     Print_To_Stream_With_Newline(out,"");
 ❱
 
