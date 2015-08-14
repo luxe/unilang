@@ -21,7 +21,7 @@ class
     auto object_we_are_wrapping = As_Capital_And_Pushed_Together(structure.name) + ".h";
     Print_To_Stream_With_Newline(out,"#include \"" + object_we_are_wrapping + "\"");
     Print_To_Stream_With_Newline(out,"");
-    Print_To_Stream(out,"struct " + As_Capital_And_Pushed_Together(structure.name));
+    Print_To_Stream(out,"class " + As_Capital_And_Pushed_Together(structure.name));
     Print_To_Stream_With_Newline(out," {");
     Print_To_Stream_With_Newline(out,"");
     Print_To_Stream_With_Newline(out,"//the component we are wrapping in order to make testing easier");
@@ -37,10 +37,16 @@ class
 ◀public: static▶ void ☀Print_Wrapper_Source(CodeLang_Structure const& structure)❰
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + "Wrapper.cpp");
     Print_To_Stream_With_Newline(out,"//Wrapper file for testing");
-    Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies);
+    auto object_we_are_wrapping = As_Capital_And_Pushed_Together(structure.name);
+    Print_To_Stream(out, "#include \"");
+    Print_To_Stream(out,object_we_are_wrapping + "Wrapper.hpp");
+    Print_To_Stream_With_Newline(out, "\"");
+    Print_To_Stream_With_Newline(out, "");
+    Methods_Printer::Print_Wrapper_Definition_Methods(structure.name,out,structure.methods.methods);
 ❱
 
 ◀public: static▶ void ☀Print_Declerations(std::wofstream & out, CodeLang_Structure const& structure)❰
-    Methods_Printer::Print_Global_Interface_Methods(out,structure.methods.methods);
+    Print_To_Stream_With_Newline(out,"public:");
+    Methods_Printer::Print_Wrapper_Decleration_Methods(structure.name,out,structure.methods.methods);
 ❱
 
