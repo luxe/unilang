@@ -12,7 +12,7 @@ class
     for (auto it: structure.methods.methods){
         if (!Is_Constructor(structure.name,it)){
             it.is_static = true;
-            auto implicit = Get_The_Implicit_Argument();
+            auto implicit = Get_The_Implicit_Argument(structure);
             Add_To_Front(it.function_arguments,implicit);
             
             Methods_Printer::Print_Method_Interface(out,it);
@@ -23,7 +23,7 @@ class
     for (auto it: structure.methods.methods){
         if (!Is_Constructor(structure.name,it)){
             it.is_static = true;
-            auto implicit = Get_The_Implicit_Argument();
+            auto implicit = Get_The_Implicit_Argument(structure);
             Add_To_Front(it.function_arguments,implicit);
             
             Methods_Printer::Print_Method_Implementation(out,it);
@@ -33,6 +33,13 @@ class
 
 ◀public: static▶ Function_Argument ☀Get_The_Implicit_Argument(CodeLang_Structure const& structure)❰
     Function_Argument implicit;
+    auto name = as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name));
+    auto type = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    implicit.is_const = false;
+    implicit.type =  type + L"OutputsT *const";
+    implicit.identifier = L" outputs";
+    implicit.comment = L"the internal state of " + name;
+    
     
     return implicit;
 ❱
