@@ -5,6 +5,7 @@ class
 ⚯
 ❪"header_printer"❫
 ❪"methods_printer"❫
+❪"type_to_hungarian_notation_converter"❫
 ⚞⚟
 
 
@@ -15,7 +16,8 @@ class
 
 ◀public: static▶ void ☀Print_Wrapper_Header(CodeLang_Structure const& structure)❰
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + "Wrapper.hpp");
-    Print_To_Stream_With_Newline(out,"//Wrapper struct for better testing");
+    Print_To_Stream_With_Newline(out,"//Wrapper struct for easier testing");
+    Print_To_Stream_With_Newline(out,"//DO NOT EDIT; this is generated code");
     Print_To_Stream_With_Newline(out,"#pragma once");
     Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies);
     auto object_we_are_wrapping = As_Capital_And_Pushed_Together(structure.name) + ".h";
@@ -24,19 +26,53 @@ class
     Print_To_Stream(out,"class " + As_Capital_And_Pushed_Together(structure.name));
     Print_To_Stream_With_Newline(out," {");
     Print_To_Stream_With_Newline(out,"");
-    Print_To_Stream_With_Newline(out,"//the component we are wrapping in order to make testing easier");
+    Print_To_Stream_With_Newline(out,"//the component state we are wrapping in order to make testing easier");
     Print_To_Stream_With_Newline(out,As_Capital_And_Pushed_Together(structure.name) + "OutputsT o;");
+    Print_Destructure_Deceleration(out,structure);
     Print_To_Stream_With_Newline(out,"");
     Print_Declerations(out,structure);
+    Print_Data_Members(out,structure);
     Print_To_Stream_With_Newline(out,"};");
     
     
     
     
 ❱
+
+//destructure method
+◀public: static▶ void ☀Print_Destructure_Deceleration(std::wofstream & out, CodeLang_Structure const& structure)❰
+    Print_To_Stream_With_Newline(out,"void Destructure();");
+❱
+
+◀public: static▶ void ☀Print_Data_Members(std::wofstream & out, CodeLang_Structure const& structure)❰
+    Print_To_Stream_With_Newline(out,"//data members for direct access");
+    for (auto it: structure.data_members.data_members){
+        Print_To_Stream(out,as_string(it.type) + " ");
+        Print_To_Stream_With_Newline(out,As_All_Lowercase_Letters_With_Spaces_As_Underscores(as_string(it.name)) + ";");
+    }
+❱
+
+◀public: static▶ void ☀Print_Destructure_Definition(std::wofstream & out, CodeLang_Structure const& structure)❰
+    Print_To_Stream_With_Newline(out,"void " + As_Capital_And_Pushed_Together(structure.name) + "::Destructure(){");
+    Print_Destructure_Body(out,structure);
+    Print_To_Stream_With_Newline(out,"}");
+❱
+◀public: static▶ void ☀Print_Destructure_Body(std::wofstream & out, CodeLang_Structure const& structure)❰
+for (auto it: structure.data_members.data_members){
+    Print_To_Stream(out,As_All_Lowercase_Letters_With_Spaces_As_Underscores(as_string(it.name)));
+    Print_To_Stream(out, " = ");
+
+        auto name = As_Capital_And_Pushed_Together(as_string(it.name));
+        auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(as_string(it.type),false, true, false,false,false);
+        Print_To_Stream_With_Newline(out,"o." + prefix + name + ";");
+}
+❱
+
+
 ◀public: static▶ void ☀Print_Wrapper_Source(CodeLang_Structure const& structure)❰
     std::wofstream out(As_Capital_And_Pushed_Together(structure.name) + "Wrapper.cpp");
-    Print_To_Stream_With_Newline(out,"//Wrapper file for testing");
+    Print_To_Stream_With_Newline(out,"//Wrapper struct for easier testing");
+    Print_To_Stream_With_Newline(out,"//DO NOT EDIT; this is generated code");
     auto object_we_are_wrapping = As_Capital_And_Pushed_Together(structure.name);
     Print_To_Stream(out, "#include \"");
     Print_To_Stream(out,object_we_are_wrapping + "Wrapper.hpp");
@@ -44,10 +80,13 @@ class
     Print_To_Stream_With_Newline(out, "");
     auto method_count = Number_Of_Non_Constructing_Methods(structure.name,structure.methods.methods);
     Methods_Printer::Print_Wrapper_Definition_Methods(structure.name,out,structure.methods.methods,method_count);
+    Print_Destructure_Definition(out,structure);
 ❱
 
 ◀public: static▶ void ☀Print_Declerations(std::wofstream & out, CodeLang_Structure const& structure)❰
     Print_To_Stream_With_Newline(out,"public:");
+    Print_To_Stream_With_Newline(out,"//expose the backend API of the component");
+    Print_To_Stream_With_Newline(out,"");
     Methods_Printer::Print_Wrapper_Decleration_Methods(structure.name,out,structure.methods.methods);
 ❱
 

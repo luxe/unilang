@@ -97,6 +97,14 @@ class
         Print_Wrapper_Implementation(file_name,out,it,method_count);
     }
 ❱
+
+◀public: static▶ void ☀Print_Wrapper_Constructor(std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    Print_To_Stream(out,"Initialize" + As_Capital_And_Pushed_Together(file_name) + "(o,");
+    Print_Function_Argument_Call(out,method.function_arguments);
+    Print_To_Stream_With_Newline(out,");");
+❱
+
+
 ◀public: static▶ void ☀Print_Wrapper_Interface(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method);
     Print_Wrapper_Method_Deceleration(file_name,out,method);
@@ -115,7 +123,8 @@ class
     Print_Wrapper_Method_Signature_Source_Side(file_name, out,method);
     Print_To_Stream_With_Newline(out,"");
     Print_To_Stream_With_Newline(out,"{");
-    Print_Wrapper_Body(file_name,out,method,method_count);
+    if (Is_Constructor(file_name,method)){Print_Wrapper_Constructor(file_name,out,method);}
+    else{Print_Wrapper_Body(file_name,out,method,method_count);}
     Print_To_Stream_With_Newline(out,"}");
     Print_To_Stream_With_Newline(out,"");
 ❱
@@ -234,7 +243,7 @@ class
 ❱
 ◀private: static▶ void ☀Destructure_The_Observables(std::string file_name, std::wofstream & out, Method_Item const& method)❰
     Print_To_Stream_With_Newline(out,"//destructure the observables");
-    Print_To_Stream_With_Newline(out,"DeStructure();");
+    Print_To_Stream_With_Newline(out,"Destructure();");
     Print_To_Stream_With_Newline(out,"");
 ❱
 ◀private: static▶ void ☀Return_The_Value_If_Needed(std::string file_name, std::wofstream & out, Method_Item const& method)❰
@@ -284,6 +293,16 @@ class
                                                                      });
     }
     Print_To_Stream(out,")");
+❱
+◀private: static▶ void ☀Print_Function_Argument_Call(std::wofstream & out, std::vector<Function_Argument> const& arguments)❰
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
+                                                                     ,[&](Function_Argument arg){
+                                                                       Print_To_Stream(out,Derive_Argument_Identifier_Name(arg));
+                                                                       Print_To_Stream(out,", ");
+                                                                     }
+                                                                     ,[&](Function_Argument arg){
+                                                                       Print_To_Stream(out,Derive_Argument_Identifier_Name(arg));
+                                                                     });
 ❱
 
 
