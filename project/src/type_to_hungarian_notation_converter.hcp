@@ -7,14 +7,14 @@ class
 
 
 //assumes that any kind of namespace or scoping has been stripped away from the base_type name
-◀public: static▶ std::string ☀Get_Hungarian_Notation_Prefix(std::string base_type, bool is_pointer, bool is_member, bool is_global, bool is_static, bool is_enum) ❰
+◀public: static▶ std::string ☀Get_Hungarian_Notation_Prefix(std::string base_type, bool is_pointer, bool is_member, bool is_global, bool is_static, bool is_enum, bool is_array) ❰
     std::string prefix;
     bool type_found_early = false;
     
     if(is_member){prefix += "m_";}
     if(is_global){prefix += "g";}
     if(is_static){prefix += "s";}
-    if(is_pointer){
+    if(is_pointer || is_array){
         
         if (base_type != All_Of(std::string("char"),
                                  std::string("signed char"),
@@ -23,7 +23,7 @@ class
                                  std::string("signed wchar_t"),
                                  std::string("unsigned wchar_t"),
                                  std::string("char16_t"),
-                                 std::string("char32_t"))){ prefix += "p";}
+                                 std::string("char32_t"))){ if (is_pointer){prefix += "p";} }
         else{
             prefix += "sz";
             type_found_early = true;
