@@ -3,6 +3,7 @@ class
 ❪"utilities"❫
 ❪"type_to_hungarian_notation_converter"❫
 ❪"data_member_item"❫
+❪"function_argument"❫
 ⚯
 
 ⚞⚟
@@ -28,4 +29,25 @@ class
     return Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix
     (type,is_pointer,is_member,is_global,is_static,is_enum,is_array);
 ❱
+
+◀public: static▶ std::string ☀Get_Hungarian_Notation_Prefix(Function_Argument item, bool is_global, bool is_member)❰
+
+    auto type       = as_string(item.type);
+    auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+    bool is_array = true;
+    if (array_part.empty()){
+        is_array = false;
+    }
+    bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
+    
+    bool is_enum = false;
+    if(Ends_With(type,"E")){is_enum = true;}
+    
+    //*assume that function argument is not static
+    bool is_static = false;
+
+    return Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix
+    (type,is_pointer,is_member,is_global,is_static,is_enum,is_array);
+❱
+
 
