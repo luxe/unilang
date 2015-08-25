@@ -11,9 +11,16 @@ class
     std::string prefix;
     bool type_found_early = false;
     
-    if(is_member){prefix += "m_";}
+    //left precedence
     if(is_global){prefix += "g";}
     if(is_static){prefix += "s";}
+    if(is_member){prefix += "m";}
+    
+    //potentially add underscore
+    if(is_global || is_static || is_member){ prefix += "_";}
+    
+    //decide if it's a pointer,
+    //some pointers are 'sz', while others are just 'p'
     if(is_pointer || is_array){
         
         if (base_type != All_Of( std::string("char"),
@@ -41,7 +48,11 @@ class
     }
     
     
+    //we should get rid of is_enum as an input param.  
+    //it is deduced further down.
     if(is_enum){prefix += "e"; type_found_early = true;}
+    
+    //assuming it wasn't a cstring (sz) type..
     if (!type_found_early){
     
         //miscellaneous
