@@ -31,6 +31,7 @@ class
 //turn the entire stream of tokens into a CodeLang data structure
 ◀public: static▶ CodeLang_Structure ☀Create_Code_Object_From_Token_Stream(std::vector<Parser_Token> const& tokens, std::string const& path_to_file)❰
     CodeLang_Structure code;
+    
     //the overall structure of any CodeLang file
     code.meta         = Parse_Out_Meta_Section(tokens);
     code.imports      = Parse_Out_Import_Section(tokens);
@@ -78,7 +79,6 @@ class
     
     return section;
 ❱
-
 ◀public: static▶ Namespace_Section ☀Parse_Out_Namespace_Section(std::vector<Parser_Token> const& tokens)❰
     Namespace_Section section;
     
@@ -235,16 +235,13 @@ class
     item.args = args;
     
     for (auto it: name){
-        item.name.value = it.content;
-        item.name.location = it.location;
+        Set_Token_Value_From_Parser_Token(item.name,it);
     }
     for (auto it: brief){
-        item.brief.value = it.content;
-        item.brief.location = it.location;
+        Set_Token_Value_From_Parser_Token(item.brief,it);
     }
     for (auto it: detail){
-        item.detail.value = it.content;
-        item.detail.location = it.location;
+        Set_Token_Value_From_Parser_Token(item.detail,it);
     }
         
     return item;
@@ -294,14 +291,29 @@ class
     }
     
     
-    for (auto it: attributes){item.attributes.push_back(it.content);}
-    //for (auto it: categories){item.categories = it.content;}
-    for (auto it: name)      {item.function_name = it.content;}
-    for (auto it: brief){item.brief_description = it.content;}
-    for (auto it: detailed){item.detailed_description = it.content;}
-    for (auto it: exception){item.exception_expression = it.content;}
-    for (auto it: exception_comment){item.exception_comment = it.content;}
-    for (auto it: function_body){item.body = it.content;}
+    for (auto it: attributes){
+        Token_Value t;
+        Set_Token_Value_From_Parser_Token(t,it);
+        item.attributes.push_back(t);
+    }
+    for (auto it: name)      {
+        Set_Token_Value_From_Parser_Token(item.function_name,it);
+    }
+    for (auto it: brief){
+        Set_Token_Value_From_Parser_Token(item.brief_description,it);
+    }
+    for (auto it: detailed){
+        Set_Token_Value_From_Parser_Token(item.detailed_description,it);
+    }
+    for (auto it: exception){
+        Set_Token_Value_From_Parser_Token(item.exception_expression,it);
+    }
+    for (auto it: exception_comment){
+        Set_Token_Value_From_Parser_Token(item.exception_comment,it);
+    }
+    for (auto it: function_body){
+        Set_Token_Value_From_Parser_Token(item.body,it);
+    }
     
     
     
@@ -339,6 +351,10 @@ class
 ❱
 
 
+◀public: static▶ void ☀Set_Token_Value_From_Parser_Token(Token_Value & token_value, Parser_Token const& parser_token)❰
+    token_value.value = parser_token.content;
+    token_value.location = parser_token.location;
+❱
 
 
 
@@ -349,10 +365,18 @@ class
     for (auto x : splits){
         t = Template_Argument{};
         for (auto y : x){
-            if      (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_TYPE)      {t.type = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_IDENTIFIER){t.identifier = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_DEFAULT)   {t.default_value = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_COMMENT)   {t.comment = y.content;}
+            if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_TYPE)      {
+                Set_Token_Value_From_Parser_Token(t.type,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_IDENTIFIER){
+                Set_Token_Value_From_Parser_Token(t.identifier,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_DEFAULT)   {
+                Set_Token_Value_From_Parser_Token(t.default_value,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_TEMPLATE_ARGUMENT_COMMENT)   {
+                Set_Token_Value_From_Parser_Token(t.comment,y);
+            }
         }
         all.push_back(t);
     }
@@ -370,10 +394,18 @@ class
             if      (y.token.name == Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS) {
                 t.is_const = Contains(y.content,L'c');
             }
-            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_TYPE)            {t.type = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_IDENTIFIER)      {t.identifier = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_DEFAULT)         {t.default_value = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_COMMENT)         {t.comment = y.content;}
+            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_TYPE)            {
+                Set_Token_Value_From_Parser_Token(t.type,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_IDENTIFIER)      {
+                Set_Token_Value_From_Parser_Token(t.identifier,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_DEFAULT)         {
+                Set_Token_Value_From_Parser_Token(t.default_value,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_ARGUMENT_COMMENT)         {
+                Set_Token_Value_From_Parser_Token(t.comment,y);
+            }
         }
 
         all.push_back(t);
@@ -391,9 +423,15 @@ class
             if      (y.token.name == Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS) {
                 t.is_const = Contains(y.content,L'c');
             }
-            else if (y.token.name == Token_Name::FUNCTION_RESULT_TYPE)            {t.type = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_RESULT_IDENTIFIER)      {t.identifier = y.content;}
-            else if (y.token.name == Token_Name::FUNCTION_RESULT_COMMENT)         {t.comment = y.content;}
+            else if (y.token.name == Token_Name::FUNCTION_RESULT_TYPE)            {
+                Set_Token_Value_From_Parser_Token(t.type,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_RESULT_IDENTIFIER)      {
+                Set_Token_Value_From_Parser_Token(t.identifier,y);
+            }
+            else if (y.token.name == Token_Name::FUNCTION_RESULT_COMMENT)         {
+                Set_Token_Value_From_Parser_Token(t.comment,y);
+            }
         }
         all.push_back(t);
     }
@@ -498,11 +536,30 @@ class
         }
         
         //handle singles
-        else if (it.token.name == Token_Name::DATA_MEMBER_TYPE)             {item.type = it.content;}
-        else if (it.token.name == Token_Name::DATA_MEMBER_IDENTIFIER)       {item.name = it.content;}
-        else if (it.token.name == Token_Name::DATA_MEMBER_DEFAULT_VALUE)    {item.default_value = it.content;}
-        else if (it.token.name == Token_Name::DATA_MEMBER_BRIEF)            {item.brief = it.content;}
-        else if (it.token.name == Token_Name::DATA_MEMBER_DETAILED)         {item.detail = it.content;}
+        else if (it.token.name == Token_Name::DATA_MEMBER_TYPE)             {
+            item.type.value = it.content;
+            item.type.location = it.location;
+        }
+        else if (it.token.name == Token_Name::DATA_MEMBER_IDENTIFIER)       {
+            item.name.value = it.content;
+            item.name.location = it.location;
+        }
+        else if (it.token.name == Token_Name::DATA_MEMBER_DEFAULT_VALUE)    {
+            item.default_value.value = it.content;
+            item.default_value.location = it.location;
+        }
+        else if (it.token.name == Token_Name::DATA_MEMBER_BRIEF)            {
+            item.brief.value = it.content;
+            item.brief.location = it.location;
+        }
+        else if (it.token.name == Token_Name::DATA_MEMBER_DETAILED)         {
+            item.detail.value = it.content;
+            item.detail.location = it.location;
+        }
+        
+        
+        
+        
         else if (it.token.name == Token_Name::DATA_MEMBER_STATE_SPECIFIER)  {
             auto str = as_string(it.content);
             if (str == "observe"){ item.is_observable = true;}
