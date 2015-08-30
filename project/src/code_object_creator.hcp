@@ -22,6 +22,8 @@ class
 ❪"template_argument"❫
 ❪"function_result"❫
 ❪"function_argument"❫
+
+❪"token_value"❫
 ⚯
 
 ⚞⚟
@@ -50,14 +52,14 @@ class
     
     //singles
     section.code_type            = Get_Token_Value_Of_Token_Name(tokens, Token_Name::META_DATA_CODE_TYPE);
-    section.brief_description    = Get_Value_Of_Token_Name(tokens, Token_Name::META_DATA_BRIEF_DESCRIPTION);
-    section.detailed_description = Get_Value_Of_Token_Name(tokens, Token_Name::META_DATA_DETAILED_DESCRIPTION);
+    section.brief_description    = Get_Token_Value_Of_Token_Name(tokens, Token_Name::META_DATA_BRIEF_DESCRIPTION);
+    section.detailed_description = Get_Token_Value_Of_Token_Name(tokens, Token_Name::META_DATA_DETAILED_DESCRIPTION);
     
     //multiple instances
-    section.group_names = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_GROUP_NAME);
-    section.authors     = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_AUTHOR);
-    section.bugs        = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_BUG);
-    section.warnings    = Get_Values_Of_Token_Name(tokens, Token_Name::META_DATA_WARNING);
+    section.group_names = Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_GROUP_NAME);
+    section.authors     = Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_AUTHOR);
+    section.bugs        = Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_BUG);
+    section.warnings    = Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_WARNING);
     
     return section;
 ❱
@@ -135,8 +137,9 @@ class
         if(it.token.name == Token_Name::IMPORT_IMPLEMENTATION || it.token.name == Token_Name::IMPORT_INTERFACE){
             
             if (last_saw){
+                item.name.location = it.location;
                 Add_Import_Item_To_List(return_items,item);
-                item.comment.clear();
+                item.comment.value.clear();
             }
             
             if (it.token.name != import_type){
@@ -144,16 +147,17 @@ class
             }
             else{
                 last_saw = true;
-                item.name = it.content;
+                item.name.value = it.content;
             }
         }
         
         //comment line
         else if(it.token.name == Token_Name::IMPORT_COMMENT){
             if (last_saw){
-                item.comment = it.content;
+                item.comment.value = it.content;
+                item.comment.location = it.location;
                 Add_Import_Item_To_List(return_items,item);
-                item.comment.clear();
+                item.comment.value.clear();
                 last_saw = false;
             }
         }
@@ -169,9 +173,9 @@ class
 
 
     //decide if its a system or a local header
-    if (item.name.front() == L'/'){
+    if (item.name.value.front() == L'/'){
         item.system = true;
-        item.name.erase(0,1);
+        item.name.value.erase(0,1);
     }
     else{
         item.system = false;
@@ -230,9 +234,18 @@ class
     //set them all
     item.args = args;
     
-    for (auto it: name){item.name = it.content;}
-    for (auto it: brief){item.brief = it.content;}
-    for (auto it: detail){item.detail = it.content;}
+    for (auto it: name){
+        item.name.value = it.content;
+        item.name.location = it.location;
+    }
+    for (auto it: brief){
+        item.brief.value = it.content;
+        item.brief.location = it.location;
+    }
+    for (auto it: detail){
+        item.detail.value = it.content;
+        item.detail.location = it.location;
+    }
         
     return item;
 ❱
@@ -301,10 +314,22 @@ class
     for (auto x : splits){
         t = Macro_Item{};
         for (auto y : x){
-            if      (y.token.name == Token_Name::MACRO_NAME)      {t.name = y.content;}
-            else if (y.token.name == Token_Name::MACRO_BRIEF)     {t.brief = y.content;}
-            else if (y.token.name == Token_Name::MACRO_DETAIL)    {t.detail = y.content;}
-            else if (y.token.name == Token_Name::MACRO_VALUE)     {t.value = y.content;}
+            if      (y.token.name == Token_Name::MACRO_NAME)      {
+                t.name.value = y.content;
+                t.name.location = y.location;
+            }
+            else if (y.token.name == Token_Name::MACRO_BRIEF)     {
+                t.brief.value = y.content;
+                t.brief.location = y.location;
+            }
+            else if (y.token.name == Token_Name::MACRO_DETAIL)    {
+                t.detail.value = y.content;
+                t.detail.location = y.location;
+            }
+            else if (y.token.name == Token_Name::MACRO_VALUE)     {
+                t.value.value = y.content;
+                t.value.location = y.location;
+            }
         }
         all.push_back(t);
     }
@@ -382,9 +407,18 @@ class
     for (auto x : splits){
         t = Enum_Arg{};
         for (auto y : x){
-            if      (y.token.name == Token_Name::ENUM_ARG_NAME)      {t.name = y.content;}
-            else if (y.token.name == Token_Name::ENUM_ARG_VALUE)     {t.value = y.content;}
-            else if (y.token.name == Token_Name::ENUM_ARG_COMMENT)   {t.comment = y.content;}
+            if      (y.token.name == Token_Name::ENUM_ARG_NAME)      {
+                t.name.value = y.content;
+                t.name.location = y.location;
+            }
+            else if (y.token.name == Token_Name::ENUM_ARG_VALUE)     {
+                t.value.value = y.content;
+                t.value.location = y.location;
+            }
+            else if (y.token.name == Token_Name::ENUM_ARG_COMMENT)   {
+                t.comment.value = y.content;
+                t.comment.location = y.location;
+            }
         }
         all.push_back(t);
     }
