@@ -35,14 +35,34 @@ static std::string Get_Hungarian_Notation_Prefix(T item, bool is_global, bool is
 public: 
 template <typename T>
 static std::string Get_Hungarian_Notation_Prefix(T item, bool is_global, bool is_member, bool is_static){
-
+    
+    //firstly, there might be some const/&/* junk on a certain side of the type name, so let's check that, and remove it if it's there.
+    
     auto type       = as_string(item.type.value);
+    
+    
+    trim(type); //handle any whitespace on either side
+    
+    
+    //decide if the type is a pointer or not.
+    //if it is, also strip out the information that told us that.
+    bool is_pointer = true;
+    if (Begins_Or_Ends_With(type,"&")){ Remove_Match_Found_At_Beginning_Or_End(type,"&"); }
+    else if(Ends_With(type,"*const")){ Remove_Match_Found_At_End(type,"*const"); }
+    else if(Ends_With(type,"*")){ Remove_Match_Found_At_End(type,"*"); }
+    else{ is_pointer = false;}
+    
+    
+    //decide if the type is an array or not
+    //if it is, also strip out the information that told us that.
     auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
     bool is_array = true;
     if (array_part.empty()){
         is_array = false;
     }
-    bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*");
+    
+    //at this point, the 'type' should be the absolute base type.  
+    //we'll use this absolute base type to derive the right notation alongside all of our derived boolean values about the type
 
     return Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix
     (type,is_pointer,is_member,is_global,is_static,is_array);
