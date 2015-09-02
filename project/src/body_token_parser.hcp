@@ -1,0 +1,79 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"body_token_value"❫
+❪"token_name"❫
+⚯
+❪"global_tokens_table_utilities"❫
+⚞⚟
+
+//this is a really poor hand written parser
+
+◀public: static▶ std::vector<Body_Token_Value> ☀Parse_Method_Body_Into_Stream_Of_Tokens(std::wstring body)❰
+    
+    
+    //ughhh
+    auto body2 = as_string(body);
+    trim(body2);
+    body = as_wstring(body2);
+    
+    
+    
+    std::vector<Body_Token_Value> result;
+    
+    std::wstring buffer;
+    bool in_token = false;
+    for (auto c: body){
+        Handle_Char(result,buffer,in_token,c);
+    }
+    
+    if (!buffer.empty()){
+        Body_Token_Value t;
+        t.value = buffer;
+        t.name = Body_Token_Name::REGULAR;
+        result.push_back(t);
+    }
+    
+    return result;
+❱
+
+
+◀public: static▶ void ☀Handle_Char(std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
+    
+    //when not in a token
+    if (!in_token){
+        Handle_Char_When_Out_Of_Token(result,buffer,in_token,c);
+    }
+    else{
+        Handle_Char_When_In_Token(result,buffer,in_token,c);
+    }
+❱
+
+
+◀public: static▶ void ☀Handle_Char_When_Out_Of_Token(std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
+
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
+        Body_Token_Value t;
+        t.value = buffer;
+        t.name = Body_Token_Name::REGULAR;
+        result.push_back(t);
+        in_token = true;
+        buffer.clear();
+    }else{
+        buffer += c;
+    }
+❱
+◀public: static▶ void ☀Handle_Char_When_In_Token(std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
+    
+    
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c)){
+        Body_Token_Value t;
+        t.value = buffer;
+        t.name = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(c).name;
+        result.push_back(t);
+        in_token = false;
+        buffer.clear();
+    }else{
+        buffer += c;
+    }
+❱
