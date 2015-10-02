@@ -174,8 +174,25 @@ class
     
     //get out singles
     auto name = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_NAME);
+    for (auto it: name){ Set_Token_Value_From_Parser_Token(item.name,it);}
+        
     auto brief = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_BRIEF);
+    for (auto it: brief){Set_Token_Value_From_Parser_Token(item.brief,it);}
+    
     auto detail = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_DETAIL);
+    for (auto it: detail){Set_Token_Value_From_Parser_Token(item.detail,it);}
+        
+    auto base_type = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_BASE_TYPE);
+    for (auto it: base_type){Set_Token_Value_From_Parser_Token(item.base_type,it);}
+        
+    auto specifiers = Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::ENUM_SPECIFIERS);
+    for (auto it: specifiers){
+        
+        //apply specifiers
+        if (Contains(it.content,L'i')){item.is_iterable = true;}
+    }
+    
+    
     
     //get out multiples
     auto args = Get_Enum_Args(Filter_Out_Tokens_By_Group(tokens,Token_Group::ENUM_ARG));
@@ -183,15 +200,7 @@ class
     //set them all
     item.args = args;
     
-    for (auto it: name){
-        Set_Token_Value_From_Parser_Token(item.name,it);
-    }
-    for (auto it: brief){
-        Set_Token_Value_From_Parser_Token(item.brief,it);
-    }
-    for (auto it: detail){
-        Set_Token_Value_From_Parser_Token(item.detail,it);
-    }
+    
         
     return item;
 ❱
@@ -431,11 +440,46 @@ class
     return all;
 ❱
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Enum_Chunks(std::vector<Parser_Token> const& tokens)❰
+    
     //for now, assume only one enum per file
     std::vector<std::vector<Parser_Token>> all;
-    if (!tokens.empty()){
-        all.push_back(tokens);
+    std::vector<Parser_Token> some;
+    std::set<Token_Name> seen;
+    
+    for (auto it: tokens){
+        
+        //one of the base enum tokens
+        if (!Contains(it.token.groups,Token_Group::ENUM_ARG)){
+            
+            //new value found
+            if (!Exists_In_Set(seen,it.token.name)){
+                Add_To_Set(seen,it.token.name);
+            }
+            
+            //non-new value send.
+            else{
+                seen.clear();
+                Add_To_Set(seen,it.token.name);
+                all.push_back(some);
+                some.clear();
+            }
+            some.push_back(it);
+        }
+        
+        
+        //one of the enum value types
+        else{
+            some.push_back(it);
+        }
+        
     }
+    
+    
+    
+    if (!some.empty()){
+        all.push_back(some);
+    }
+    
     return all;
 ❱
 
