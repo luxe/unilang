@@ -3,6 +3,9 @@ class
 ❪"utilities"❫
 ❪"CodeLang_structure"❫
 ⚯
+
+❪"export_spawner"❫
+
 ❪"CodeLang_trevor_exporter"❫
 ❪"CodeLang_f2si_exporter"❫
 ⚞⚟
@@ -44,14 +47,16 @@ class
 
 //style = variations to take on the exported language.  For example,
 //f2si has a really bad "component design".  However, they are slowly starting to realize how bad it is, and I've been allowed to turn other
-//code into our "data structure design".  So these are both styles, that I can apply on the same object code.
+//code into our "data structure design".  (Data structure design is bad name for it; it's a normal C design).  
+//So these are both styles that I can apply on the same object code.
+//Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
 
 ◀public: static▶ void ☀Compile(CodeLang_Structure structure, std::string const& exporter, std::string const& language, std::string const& style)❰
 
-    //call the exporter to use
-    if     (exporter == "trevor"){ CodeLang_Trevor_Exporter::Export (structure,language,style)  ;}
-    else if(exporter == "f2si")  { CodeLang_F2si_Exporter::Export   (structure,language,style)  ;}
+    Export_Spawner spawner("UniLang");
+    spawner.Add("trevor",CodeLang_Trevor_Exporter::Export);
+    spawner.Add("f2si",CodeLang_F2si_Exporter::Export);
+    //spawner.Add("New Company",CodeLang_Company_Exporter::Export);
     
-    //handle any exporter that does not exist
-    else { Exit_With_Error("CodeLang exporter " + exporter + " does not exist."); }
+    spawner.Spawn_Exporter(exporter,structure,language,style);
 ❱
