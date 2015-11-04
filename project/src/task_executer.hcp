@@ -8,6 +8,7 @@ class
 ❪"CodeLang_structure_analyzer"❫
 ❪"CodeLang_compiler"❫
 ❪"exception_handler"❫
+❪"dependency_paths"❫
 ⚞⚟
 
 //things that are dumb, that code generation will fix:
@@ -38,15 +39,21 @@ class
         //compile the file
         //stop immediately if there are problems
         //always continue onto the next file
-        try{ Compile_File(path_to_file,program_options.Exporter(),program_options.Language(),program_options.Style()); }
-        catch(...){Exception_Handler::Handle_Parse_Exceptions();}
+        try{ Compile_File(path_to_file
+                ,program_options.Exporter()
+                ,program_options.Language()
+                ,program_options.Style()
+                ,Dependency_Paths(program_options.Recursive_Dependency_Paths()
+                                 ,program_options.Dependency_Paths()));
+           }
+        catch(...){Exception_Handler::Handle_Exceptions();}
      }
 ❱
-◀private: static▶ void ☀Compile_File(std::string const& path_to_file, std::string const& exporter, std::string const& language, std::string const& style)❰
+◀private: static▶ void ☀Compile_File(std::string const& path_to_file, std::string const& exporter, std::string const& language, std::string const& style, Dependency_Paths const& dependency_paths)❰
 
         //check if something is initially wrong with the path and filename sent to the compiler
         //might throw..
-        Filename_Validator::Validate_Input_File(path_to_file);
+        Filename_Validator::Validate_Input_File(path_to_file,"UniLang");
 
         //parse the CodeLang file and get back a class that represents it
         //might throw...
