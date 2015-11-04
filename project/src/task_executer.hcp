@@ -3,6 +3,7 @@ class
 ❪"systems"❫
 ❪"program_options"❫
 ❪"dependency_paths"❫
+❪"code_graph"❫
 ⚯
 ❪"filename_validator"❫
 ❪"CodeLang_parser"❫
@@ -35,15 +36,16 @@ class
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options)❰
 
     //process each file at a time
+    //NOTE: looking for an alternative "For_Each(container,func);"
     for (auto const& path_to_file: program_options.Input_Files()){
         Process_File(path_to_file,program_options);
     }
-❱
-◀private: static▶ void ☀Process_File(std::string const& path_to_file, Program_Options const& program_options)❰
+
+❱a◀private: static▶ void ☀Process_File(std::string const& path_to_file, Program_Options const& program_options)❰
 
     //compile the file
-    //stop immediately if there are problems (done by throwing exceptions and catching them.
-    //we don't exit the program on a thrown exception; we continue onto the next file (if there is one).
+    //stop immediately if there are problems (this is done by throwing exceptions and catching them.)
+    //We don't exit the program on a thrown exception though; we continue onto the next file (if there is one).
     try{ Compile_File(path_to_file
             ,program_options.Exporter()
             ,program_options.Language()
@@ -55,18 +57,30 @@ class
 ❱
 
 ◀private: static▶ void ☀Compile_File(std::string const& path_to_file, std::string const& exporter, std::string const& language, std::string const& style, Dependency_Paths const& dependency_paths)❰
+        
+        auto code_graph = Do_Parsing_And_Validation(path_to_file,dependency_paths);
+    
+        //compile the code structure into the appropriate source code files
+        CodeLang_Compiler::Compile(code_graph.structure,exporter,language,style);
+❱
+◀private: static▶ Code_Graph ☀Do_Parsing_And_Validation(std::string const& path_to_file, Dependency_Paths const& dependency_paths)❰
 
         //check if something is initially wrong with the path and filename sent to the compiler
         //might throw..
         Filename_Validator::Validate_Input_File(path_to_file,global_constants::EXPECTED_FILE_EXTENSION);
+        
+        //make sure the dependency paths all exist, and possibly print warnings to the user.
+        //Dependency_Paths_Warner::Warn(dependency_paths);
 
         //parse the CodeLang file and get back a class that represents it
         //might throw...
-        auto structure = CodeLang_Parser::Parse(path_to_file);//parsing out tokens does not do the macros correct yet
+        auto code_graph = CodeLang_Parser::Parse(path_to_file);//parsing out tokens does not do the macros correct yet
+        
+        //use the structure imports to derive structure dependencies
+        //auto structure_dependencies = 
         
         //doesn't throw, but may print to std error
-        CodeLang_Structure_Analyzer::Print_Warnings(structure);
-    
-        //compile the code structure into the appropriate source code files
-        CodeLang_Compiler::Compile(structure,exporter,language,style);
+        //CodeLang_Structure_Analyzer::Print_Warnings(structure);
+        
+        return code_graph;
 ❱
