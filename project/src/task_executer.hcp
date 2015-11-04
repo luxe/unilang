@@ -2,13 +2,13 @@ class
 ❪"utilities"❫
 ❪"systems"❫
 ❪"program_options"❫
+❪"dependency_paths"❫
 ⚯
 ❪"filename_validator"❫
 ❪"CodeLang_parser"❫
 ❪"CodeLang_structure_analyzer"❫
 ❪"CodeLang_compiler"❫
 ❪"exception_handler"❫
-❪"dependency_paths"❫
 ⚞⚟
 
 //things that are dumb, that code generation will fix:
@@ -33,22 +33,26 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options)❰
 
-     //process each file at a time
-     for (auto const& path_to_file: program_options.Input_Files()){
-      
-        //compile the file
-        //stop immediately if there are problems
-        //always continue onto the next file
-        try{ Compile_File(path_to_file
-                ,program_options.Exporter()
-                ,program_options.Language()
-                ,program_options.Style()
-                ,Dependency_Paths(program_options.Recursive_Dependency_Paths()
-                                 ,program_options.Dependency_Paths()));
-           }
-        catch(...){Exception_Handler::Handle_Exceptions();}
-     }
+    //process each file at a time
+    for (auto const& path_to_file: program_options.Input_Files()){
+        Process_File(path_to_file,program_options);
+    }
 ❱
+◀private: static▶ void ☀Process_File(std::string const& path_to_file, Program_Options const& program_options)❰
+
+    //compile the file
+    //stop immediately if there are problems (done by throwing exceptions and catching them.
+    //we don't exit the program on a thrown exception; we continue onto the next file (if there is one).
+    try{ Compile_File(path_to_file
+            ,program_options.Exporter()
+            ,program_options.Language()
+            ,program_options.Style()
+            ,Dependency_Paths(program_options.Recursive_Dependency_Paths()
+                             ,program_options.Dependency_Paths()));
+       }
+    catch(...){Exception_Handler::Handle_Exceptions();}
+❱
+
 ◀private: static▶ void ☀Compile_File(std::string const& path_to_file, std::string const& exporter, std::string const& language, std::string const& style, Dependency_Paths const& dependency_paths)❰
 
         //check if something is initially wrong with the path and filename sent to the compiler
