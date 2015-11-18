@@ -7,8 +7,7 @@ class
 ⚯
 ❪"filename_validator"❫
 ❪"parser"❫
-❪"CodeLang_structure_analyzer"❫
-❪"CodeLang_compiler"❫
+❪"compiler"❫
 ❪"exception_handler"❫
 ❪"global_constants"❫
 ❪"dependency_path_validator"❫
@@ -73,19 +72,17 @@ class
     
         //compile the code structure into the appropriate source code files
         //TODO: pass in the code graph
-        CodeLang_Compiler::Compile(code_graph.structure,exporter,language,style);
+        Compiler::Compile(code_graph.structure,exporter,language,style);
 ❱
 ◀private: static▶ Code_Graph ☀Do_Validation_And_Parsing(std::string const& path_to_file, Dependency_Paths dependency_paths)❰
 
         //validate program options before parsing the file.
         Do_Program_Option_Validation(path_to_file,dependency_paths);
 
-        //parse the CodeLang file and get back a class that represents it.
+        //parse the file and get back a class that represents it.
         //create a graph of these classes to handle the dependencies.
         //might throw...
-        auto code_graph = Parser::Parse(path_to_file,dependency_paths);
-        
-        return code_graph;
+        return Parser::Parse(path_to_file,dependency_paths);
 ❱
 ◀private: static▶ void ☀Do_Program_Option_Validation(std::string const& path_to_file, Dependency_Paths & dependency_paths)❰
     //check if something is initially wrong with the path and filename sent to the compiler
@@ -93,7 +90,7 @@ class
     Filename_Validator::Validate_Input_File(path_to_file,global_constants::EXPECTED_FILE_EXTENSION);
     
     //Remove the unreachable paths and warns about them. Does not throw.
-    Dependency_Path_Validator::Validate_Paths(dependency_paths);
+    Dependency_Path_Validator::Validate_Paths_By_Removing_And_Warning_About_Invalid_Paths(dependency_paths);
 ❱
 
 
