@@ -1,0 +1,66 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/namespace/namespace_section"❫
+❪"code/transcompilers/unilang/options/sections/namespace/namespace_options"❫
+❪"code/transcompilers/unilang/structure/sections/namespace/namespace_item"❫
+⚯
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data_getter"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+
+⚞⚟
+
+
+
+◀private: static▶ void ☀Print_As_Nested(std::wofstream & out, Namespace_Section const& section, Namespace_Options const& options)❰
+	
+	if (!section.namespaces.empty()){
+		Print_Keyword_Part(out,options);
+
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(section.namespaces, [&](Namespace_Item it){
+		     auto name = Case_Modifier::As_Modified_Casing(options.casing,as_string(it.name.value));
+		     Print_To_Stream(out,name);
+             Print_To_Stream(out,options.nested_seperator);	
+		},
+        [&](Namespace_Item it){
+		     auto name = Case_Modifier::As_Modified_Casing(options.casing,as_string(it.name.value));
+		     Print_To_Stream(out,name);
+		});
+
+		Print_End_Part(out,options);
+	}
+❱
+◀private: static▶ void ☀Print_As_NonNested(std::wofstream & out, Namespace_Section const& section, Namespace_Options const& options)❰
+
+	for (auto const& it: section.namespaces)
+	{
+         Print_Keyword_Part(out,options);
+         auto name = Case_Modifier::As_Modified_Casing(options.casing,as_string(it.name.value));
+         Print_To_Stream(out,name);
+         Print_End_Part(out,options);
+	}
+❱
+
+◀private: static▶ void ☀Print_Keyword_Part(std::wofstream & out, Namespace_Options const& options)❰
+     Print_To_Stream(out,options.namespace_identifier);
+     Print_To_Stream(out,options.after_namespace_identifier);
+❱
+
+◀private: static▶ void ☀Print_End_Part(std::wofstream & out, Namespace_Options const& options)❰
+     Print_To_Stream(out,options.before_delim);
+     Print_To_Stream(out,options.delim);
+     Print_To_Stream(out,options.after_delim);
+❱
+
+◀public: static▶ void ☀Print_Namespace(std::wofstream & out, Namespace_Section const& section, Namespace_Options const& options)❰
+
+	if (options.nested){
+		Print_As_Nested(out, section, options);
+	}
+	else{
+		Print_As_NonNested(out, section, options);
+	}
+❱

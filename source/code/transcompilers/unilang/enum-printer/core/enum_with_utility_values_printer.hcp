@@ -1,0 +1,89 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+⚯
+❪"enum_argument_printer"❫
+❪"enum_boilerplate_printer"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Type(std::wofstream & out, Enum_Item const& item, General_Options const& general, Portion_Options const& portion)❰
+
+    
+    //BASE_NAME
+    auto base_type_name_for_values = As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(item.name.value));
+
+    //start shell
+    Enum_Boilerplate_Printer::Print_Beginning_Part(out,item,general,portion);
+    
+    //utility 1
+    Print_First_Utility_Value(out,base_type_name_for_values,item,portion.enum_options);
+    
+    //values part
+    Call_Function_On_First_Element(item.args,[&](Enum_Arg x){Print_First_Real_Value(out,x,base_type_name_for_values);});
+    Call_Function_On_All_Elements_Except_First(item.args,[&](Enum_Arg x){Print_All_Other_Real_Values(out,x,base_type_name_for_values,portion);});
+    
+    //utility 2 & 3
+    Print_Last_Utility_Value(out,base_type_name_for_values,item,portion.enum_options);
+    Print_Num_Utility_Value(out,base_type_name_for_values,portion.enum_options);
+    
+    //end shell
+    Enum_Boilerplate_Printer::Print_End_Part(out,item,portion);
+❱
+
+
+//utility value line 
+◀private: static▶ void ☀Print_First_Utility_Value(std::wofstream & out,std::string const& base_type_name,Enum_Item const& item, Enum_Options const& options)❰
+
+    //prints the first value
+    std::string first_value = options.utility_values.first.name + "_" + base_type_name + " = ";
+    
+    auto first_element = First_Element(item.args);
+    if (!first_element.value.value.empty()){
+        first_value += as_string(first_element.value.value);
+    }else{
+        first_value += "0";
+    }
+    
+    first_value +=",";
+    Print_To_Stream_N_Times(out," ",4);
+    Print_To_Stream_With_Newline(out,first_value);
+❱
+◀private: static▶ void ☀Print_Last_Utility_Value(std::wofstream & out,std::string const& base_type_name,Enum_Item const& item, Enum_Options const& options)❰
+
+    //print utility last
+    auto last_item = Last_Element(item.args);
+    std::string last_value = options.utility_values.last.name + "_" + base_type_name + " = " + base_type_name + "_" + As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(last_item.name.value)) + ",";
+    
+    Print_To_Stream_N_Times(out," ",4);
+    Print_To_Stream_With_Newline(out,last_value);
+❱
+◀private: static▶ void ☀Print_Num_Utility_Value(std::wofstream & out, std::string const& base_type_name, Enum_Options const& options)❰
+
+    //print utility num
+    Print_To_Stream_N_Times(out," ",4);
+    Print_To_Stream_With_Newline(out,options.utility_values.num.name + "_" + base_type_name);
+❱
+
+
+
+//individual elements
+◀private: static▶ void ☀Print_First_Real_Value(std::wofstream & out, Enum_Arg const& arg,std::string const& base_type_name)❰
+    Print_To_Stream_N_Times(out," ",4);
+    
+    std::string first_utility_value = "FIRST_" + base_type_name;
+    std::string first_value = base_type_name + "_" + As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(arg.name.value));
+    Print_To_Stream_With_Newline(out,first_value + " = " + first_utility_value + ",");
+❱
+
+◀private: static▶ void ☀Print_All_Other_Real_Values(std::wofstream & out, Enum_Arg const& arg,std::string const& base_type_name, Portion_Options const& portion)❰
+    Enum_Argument_Printer::Print(4,out,base_type_name,arg,false,portion.enum_options);
+❱

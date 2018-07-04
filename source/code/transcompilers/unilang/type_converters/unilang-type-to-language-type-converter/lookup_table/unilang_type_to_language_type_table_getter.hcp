@@ -1,0 +1,225 @@
+class
+
+
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/lookup_table/type_conversion_lookup_table"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/lookup_table/equivalent_type_deriver"❫
+⚯
+❪"code/utilities/types/map/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ Type_Conversion_Lookup_Table ☀Get_Lookup_Table()❰
+    Type_Conversion_Lookup_Table table;
+    
+    
+    //nothing
+    Add_Type_Conversion_Entry(table,"void",Equivalent_Type_Deriver::Void());
+    Add_Type_Conversion_Entry(table,"null_ptr",Equivalent_Type_Deriver::NullPtr());
+    
+    //bytes
+    Add_Type_Conversion_Entry(table,"xbyte",Equivalent_Type_Deriver::Xbyte());
+    Add_Type_Conversion_Entry(table,"byte",Equivalent_Type_Deriver::Byte());
+    Add_Type_Conversion_Entry(table,"ubyte",Equivalent_Type_Deriver::UByte());
+    
+    //shorts
+    Add_Type_Conversion_Entry(table,"s",Equivalent_Type_Deriver::S());
+    Add_Type_Conversion_Entry(table,"us",Equivalent_Type_Deriver::Us());
+    
+    //ints
+    Add_Type_Conversion_Entry(table,"i",Equivalent_Type_Deriver::I());
+    Add_Type_Conversion_Entry(table,"ui",Equivalent_Type_Deriver::Ui());
+    Add_Type_Conversion_Entry(table,"l",Equivalent_Type_Deriver::L());
+    Add_Type_Conversion_Entry(table,"ul",Equivalent_Type_Deriver::Ul());
+    Add_Type_Conversion_Entry(table,"ll",Equivalent_Type_Deriver::Ll());
+    Add_Type_Conversion_Entry(table,"ull",Equivalent_Type_Deriver::Ull());
+    
+    //floating
+    Add_Type_Conversion_Entry(table,"f",Equivalent_Type_Deriver::F());
+    Add_Type_Conversion_Entry(table,"d",Equivalent_Type_Deriver::D());
+    Add_Type_Conversion_Entry(table,"ld",Equivalent_Type_Deriver::Ld());
+    
+    //imaginary
+    Add_Type_Conversion_Entry(table,"if",Equivalent_Type_Deriver::If());
+    Add_Type_Conversion_Entry(table,"id",Equivalent_Type_Deriver::Id());
+    Add_Type_Conversion_Entry(table,"ild",Equivalent_Type_Deriver::Ild());
+    
+    //complexes
+    Add_Type_Conversion_Entry(table,"cf",Equivalent_Type_Deriver::Cf());
+    Add_Type_Conversion_Entry(table,"cd",Equivalent_Type_Deriver::Cd());
+    Add_Type_Conversion_Entry(table,"cld",Equivalent_Type_Deriver::Cld());
+    
+    //characters
+    Add_Type_Conversion_Entry(table,"ascii_char",Equivalent_Type_Deriver::AsciiChar()); 
+    Add_Type_Conversion_Entry(table,"utf8_char",Equivalent_Type_Deriver::Utf8Char());
+    Add_Type_Conversion_Entry(table,"utf16_char",Equivalent_Type_Deriver::Utf16Char());
+    Add_Type_Conversion_Entry(table,"utf32_char",Equivalent_Type_Deriver::Utf32Char());
+    //for unicode code points, GoLang has a "rune".  It's an alias for int32
+    //what about wstrings and whar_t in C++?  I think those were a mistake...
+    
+    //strings
+    Add_Type_Conversion_Entry(table,"ascii_string",Equivalent_Type_Deriver::AsciiString()); 
+    Add_Type_Conversion_Entry(table,"utf8_string",Equivalent_Type_Deriver::Utf8String());
+    Add_Type_Conversion_Entry(table,"utf16_string",Equivalent_Type_Deriver::Utf16String());
+    Add_Type_Conversion_Entry(table,"utf32_string",Equivalent_Type_Deriver::Utf32String());
+    
+    //multiple precision numerical types
+    Add_Type_Conversion_Entry(table,"z",Equivalent_Type_Deriver::Z());
+    Add_Type_Conversion_Entry(table,"r",Equivalent_Type_Deriver::R());
+    Add_Type_Conversion_Entry(table,"c",Equivalent_Type_Deriver::C());
+    //GMP has a few other types we may want to consider later
+    
+    //poiner/memory related carry over nonsense
+    Add_Type_Conversion_Entry(table,"size",Equivalent_Type_Deriver::Size());
+    Add_Type_Conversion_Entry(table,"iptr",Equivalent_Type_Deriver::Iptr());
+    Add_Type_Conversion_Entry(table,"uptr",Equivalent_Type_Deriver::Uptr());
+    Add_Type_Conversion_Entry(table,"imax",Equivalent_Type_Deriver::Imax());
+    Add_Type_Conversion_Entry(table,"umax",Equivalent_Type_Deriver::Umax());
+    
+    Add_Type_Conversion_Entry(table,"imin",Equivalent_Type_Deriver::Imin());
+    Add_Type_Conversion_Entry(table,"umin",Equivalent_Type_Deriver::Umin());
+    //(maybe stupid.  Because it would just be a byte.  I added it for consistency with "max".  idk)
+    
+    //ptrdiff_t ?
+    //max_align_t ?
+    
+    //OTHER DISCUSSION:
+    
+    //pascal also has "Currency".  Is that for money?
+    //They seem more like formats of the same type, but still more specific that we may want to include them.
+    //maybe we don't need them, because we can add the right units and that would detect whether something is moey.  
+    //we'll leave it out for now.  The only reason I'm considering it, is because Pascal had at.  It might make sense though
+    //We do want a large type system that covers all bases.  We'll see at happens as time goes by.  By that same logic,
+    //we would have a 'time' type.  You can see how this could snowball out of control.  We'll have to decide where we draw the line
+    //between Unilang types, and relying on custom data types.
+    //maybe decimal in C#?
+    //decimal is an exception because you are using base 10.  binary encoded type.
+    
+    //safe ints? (oh boy... safe_i8 safe_i safe_fast_i8, safe_least_i8, etc)
+    //atomics?   (oh boy... atomic_i8 atomic_i atomic_fast_i8, atomic_least_i8, etc)
+    //I think this will end up happening, but I'll at least wait to see what safe_ints looks like in C++
+    //if the proposal ever gets accepted.  The author has told me that he's gotten a lot of push_back.  
+    //I'm assuming final impl will be something like Safe<T>, but we'll see.  I still think its better for unilang
+    //to have individual types.. not rely on .  Template version can still exist for custom types that behave like integers though.
+    //giving this some more thought, I think I might extend the languge to allow you to notate whether you want something to be safe and/or atomic.  
+    //you could even make a custom structs "safe" and "atmoic".  Safety could be applied transitively down though the composition.
+    //that might work best.  //this is actually not bad of an idea.  
+    //any common type/idom that is normally templated to work on any type, and still just reprent that type with some kind of property
+    //should probably exist as a type characteristic in unilang, NOT a part of the type system.  
+    //another good example I can think of is memory management, and ownership.  
+    //things like unique ptr and shared ptr aren't types in unilang, but characteristics you can add to the type.
+ 
+
+    
+    //fixed sizes
+    
+    //normal (signed)
+    Add_Type_Conversion_Entry(table,"i8",Equivalent_Type_Deriver::I8());
+    Add_Type_Conversion_Entry(table,"i16",Equivalent_Type_Deriver::I16());
+    Add_Type_Conversion_Entry(table,"i32",Equivalent_Type_Deriver::I32());
+    Add_Type_Conversion_Entry(table,"i64",Equivalent_Type_Deriver::I64());
+    Add_Type_Conversion_Entry(table,"i128",Equivalent_Type_Deriver::I128());
+    
+    //normal (unsigned)
+    Add_Type_Conversion_Entry(table,"u8",Equivalent_Type_Deriver::U8());
+    Add_Type_Conversion_Entry(table,"u16",Equivalent_Type_Deriver::U16());
+    Add_Type_Conversion_Entry(table,"u32",Equivalent_Type_Deriver::U32());
+    Add_Type_Conversion_Entry(table,"u64",Equivalent_Type_Deriver::U64());
+    Add_Type_Conversion_Entry(table,"u128",Equivalent_Type_Deriver::U128());
+    
+    //fast (signed)
+    Add_Type_Conversion_Entry(table,"fast_i8",Equivalent_Type_Deriver::Fast_I8());
+    Add_Type_Conversion_Entry(table,"fast_i16",Equivalent_Type_Deriver::Fast_I16());
+    Add_Type_Conversion_Entry(table,"fast_i32",Equivalent_Type_Deriver::Fast_I32());
+    Add_Type_Conversion_Entry(table,"fast_i64",Equivalent_Type_Deriver::Fast_I64());
+    Add_Type_Conversion_Entry(table,"fast_i128",Equivalent_Type_Deriver::Fast_I128());
+    
+    //fast (unsigned)
+    Add_Type_Conversion_Entry(table,"fast_u8",Equivalent_Type_Deriver::Fast_U8());
+    Add_Type_Conversion_Entry(table,"fast_u16",Equivalent_Type_Deriver::Fast_U16());
+    Add_Type_Conversion_Entry(table,"fast_u32",Equivalent_Type_Deriver::Fast_U32());
+    Add_Type_Conversion_Entry(table,"fast_u64",Equivalent_Type_Deriver::Fast_U64());
+    Add_Type_Conversion_Entry(table,"fast_u128",Equivalent_Type_Deriver::Fast_U128());
+    
+    //least (signed)
+    Add_Type_Conversion_Entry(table,"least_i8",Equivalent_Type_Deriver::Least_I8());
+    Add_Type_Conversion_Entry(table,"least_i16",Equivalent_Type_Deriver::Least_I16());
+    Add_Type_Conversion_Entry(table,"least_i32",Equivalent_Type_Deriver::Least_I32());
+    Add_Type_Conversion_Entry(table,"least_i64",Equivalent_Type_Deriver::Least_I64());
+    Add_Type_Conversion_Entry(table,"least_i128",Equivalent_Type_Deriver::Least_I128());
+    
+    //least (unsigned)
+    Add_Type_Conversion_Entry(table,"least_u8",Equivalent_Type_Deriver::Least_U8());
+    Add_Type_Conversion_Entry(table,"least_u16",Equivalent_Type_Deriver::Least_U16());
+    Add_Type_Conversion_Entry(table,"least_u32",Equivalent_Type_Deriver::Least_U32());
+    Add_Type_Conversion_Entry(table,"least_u64",Equivalent_Type_Deriver::Least_U64());
+    Add_Type_Conversion_Entry(table,"least_u128",Equivalent_Type_Deriver::Least_U128());
+    
+    //floating point
+    Add_Type_Conversion_Entry(table,"f32",Equivalent_Type_Deriver::F32());
+    Add_Type_Conversion_Entry(table,"f64",Equivalent_Type_Deriver::F64());
+    Add_Type_Conversion_Entry(table,"f128",Equivalent_Type_Deriver::F128());
+    
+    
+    //OTHER:  
+    
+    //bool
+    Add_Type_Conversion_Entry(table,"bool",Equivalent_Type_Deriver::Bool());
+    
+    //threading related:  
+    //thread
+    //mutex
+    //locks
+    //promise / future
+    
+    
+    //CONTAINERS
+    
+    //SEQUENCE
+    //think about how to deal with the existing []
+    //I'd like to get rid of it if possible
+    Add_Type_Conversion_Entry(table,"seq",Equivalent_Type_Deriver::Sequence());
+    Add_Type_Conversion_Entry(table,"array",Equivalent_Type_Deriver::Array());
+    Add_Type_Conversion_Entry(table,"vector",Equivalent_Type_Deriver::Vector());
+    Add_Type_Conversion_Entry(table,"deque",Equivalent_Type_Deriver::Deque());
+    Add_Type_Conversion_Entry(table,"flist",Equivalent_Type_Deriver::Flist());
+    Add_Type_Conversion_Entry(table,"dlist",Equivalent_Type_Deriver::Dlist());
+    
+    //ASSOCIATIVE
+    Add_Type_Conversion_Entry(table,"set",Equivalent_Type_Deriver::Set());
+    Add_Type_Conversion_Entry(table,"map",Equivalent_Type_Deriver::Map());
+    Add_Type_Conversion_Entry(table,"mset",Equivalent_Type_Deriver::Mset());
+    Add_Type_Conversion_Entry(table,"mmap",Equivalent_Type_Deriver::Mmap());
+    
+    //UNORDERED ASSOCIATIVE
+    Add_Type_Conversion_Entry(table,"uset",Equivalent_Type_Deriver::Uset());
+    Add_Type_Conversion_Entry(table,"umap",Equivalent_Type_Deriver::Umap());
+    Add_Type_Conversion_Entry(table,"umset",Equivalent_Type_Deriver::Umset());
+    Add_Type_Conversion_Entry(table,"ummap",Equivalent_Type_Deriver::Ummap());
+    
+    //ADAPTERS
+    Add_Type_Conversion_Entry(table,"stack",Equivalent_Type_Deriver::Stack());
+    Add_Type_Conversion_Entry(table,"queue",Equivalent_Type_Deriver::Queue());
+    Add_Type_Conversion_Entry(table,"pqueue",Equivalent_Type_Deriver::Pqueue());
+    
+    //add more as needed...
+    
+    //vocabulary
+    Add_Type_Conversion_Entry(table,"any",Equivalent_Type_Deriver::Any());
+    Add_Type_Conversion_Entry(table,"optional",Equivalent_Type_Deriver::Optional());
+    Add_Type_Conversion_Entry(table,"variant",Equivalent_Type_Deriver::Variant());
+    Add_Type_Conversion_Entry(table,"result",Equivalent_Type_Deriver::Result()); //rust:  variant<value,error>
+    
+    
+    return table;
+❱
+
+◀private: static▶ void ☀Add_Type_Conversion_Entry(Type_Conversion_Lookup_Table & table, std::string const& unilang_type, Equivalent_Language_Types const& equivalent_languages)❰
+    const std::string exception{"unilang type \"" + unilang_type + "\" is already in the type lookup table!"};
+    Throw_On_Failure_To_Insert_Item(table.values,unilang_type,equivalent_languages,exception);
+❱
+
+
+
+

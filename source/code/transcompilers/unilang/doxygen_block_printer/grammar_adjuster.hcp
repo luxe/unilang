@@ -1,0 +1,139 @@
+class
+
+
+❪"code/transcompilers/unilang/options/comment/comment_grammar_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-adjuster/words_deriver"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Adjusted(std::string comment_text, Comment_Grammar_Settings grammar)❰
+    std::string str = comment_text;
+    trim(str);
+   
+    //apply possible grammar changes
+    Potentially_Capitalize(str,grammar);
+    Potentially_Punctuate(str,grammar);
+    Potentially_Sensor_Bad_Words(str,grammar);
+    Potentially_Auto_Correct(str,grammar);
+    Potentially_Auto_Capitalize_Words(str,grammar);
+    Potentially_Auto_Full_Caps_Words(str,grammar);
+    
+    return str;
+❱
+
+◀private: static▶ void ☀Potentially_Capitalize(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+  if (grammar.auto_capitalize_comments){
+    CapitalizeFirstChar(comment_text);
+  }
+❱
+◀private: static▶ void ☀Potentially_Punctuate(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+  if (grammar.auto_puncuate_comments){
+  
+      //decide whether there is currently puncuation at the end of the comment
+      bool puncuation_found = Has_Punctuation(comment_text,grammar);
+      
+      //add puncutuation if there isn't already any
+      if (!puncuation_found){
+        comment_text += grammar.default_puncuation;
+      }
+  }
+❱
+
+◀private: static▶ bool ☀Has_Punctuation(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.puncuations){
+		if (Ends_With(sentence,it)){
+			return true;
+		}
+	}
+	return false;
+❱
+◀private: static▶ std::string ☀Strip_Off_Puncuation(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.puncuations){
+		if (Ends_With(word,it)){
+			Remove_Last_N_Chars(word,it.size());
+			return it;
+		}
+	}
+	return "";
+❱
+
+
+◀private: static▶ std::string ☀Strip_Off_Non_Word_Puncuation_From_End(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.non_word_puncuations){
+		if (Ends_With(word,it)){
+			Remove_Last_N_Chars(word,it.size());
+			return it;
+		}
+	}
+	return "";
+❱
+◀private: static▶ std::string ☀Strip_Off_Non_Word_Puncuation_From_Front(std::string & word, Comment_Grammar_Settings const& grammar)❰
+	for (auto it: grammar.non_word_puncuations){
+		if (Begins_With(word,it)){
+			Remove_First_N_Chars(word,it.size());
+			return it;
+		}
+	}
+	return "";
+❱
+
+◀private: static▶ void ☀Potentially_Sensor_Bad_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+
+  if (grammar.auto_sensor_bad_words){
+    //TODO: use bad word filter
+  }
+❱
+◀private: static▶ void ☀Potentially_Auto_Correct(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+  if (grammar.use_auto_corrects){
+    //TODO: implement
+  }
+❱
+◀private: static▶ void ☀Potentially_Auto_Capitalize_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+  if (grammar.auto_capitalize_certain_words){
+    //TODO: implement
+  }
+❱
+◀private: static▶ void ☀Potentially_Auto_Full_Caps_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+  if (grammar.auto_full_caps_certain_words){
+    auto words = Words_Deriver::Derive(comment_text);
+    for (auto & word: words){
+        //caps a possibly puncuated word
+        Possibly_Caps_A_Possibly_Puncuated_Word(word,grammar);
+	}
+     //put words back into the sentence
+	 comment_text = Put_Words_Into_A_Sentence(words);
+  }
+❱
+
+◀private: static▶ void ☀Possibly_Caps_A_Possibly_Puncuated_Word(std::string & word, Comment_Grammar_Settings grammar)❰
+	std::string word_copy = word;
+
+    auto front_punc = Strip_Off_Non_Word_Puncuation_From_Front(word_copy,grammar);
+    auto end_punc = Strip_Off_Non_Word_Puncuation_From_End(word_copy,grammar);
+
+    Lowercase(word_copy);
+    for (auto const& it: grammar.full_caps_words){
+		if (it == word_copy){
+			Uppercase(word_copy);
+            word = front_punc + word_copy + end_punc;
+			break;
+		}
+	}
+	
+❱
+
+◀private: static▶ std::string ☀Put_Words_Into_A_Sentence(std::vector<std::string> const& words)❰
+
+     //put words back into the sentence
+	std::string comment_text = "";
+	for (auto const& word: words){
+		comment_text += word;
+        comment_text += " ";
+	}
+    rtrim(comment_text);
+    return comment_text;
+❱

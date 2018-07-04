@@ -1,0 +1,86 @@
+􏶞p􏶟
+􏷲A stopwatch with millisecond precision􏷱
+􏷰A timer that starts paused at 0 milliseconds once constructed.
+It can be paused/unpaused, and reset.
+The millisecond timer only keeps track of the entire duration as an amount of milliseconds.
+It specializes over the generic timer by using Flight Model specific tick functions􏷯
+􏷮Time􏷭 􏷮Timer􏷭 􏷮Component􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦stdioLib􏷥􏷢HASA: BOOL􏷡
+􏷤􏷣􏷦millisecond_timer􏷥􏷢HASA: MillisecondTimerT􏷡
+􏶔􏶕􏶒frame_count_utilities􏶓􏶖USES: GetCurrentFrameCount(), FrameCountToMilliseconds()􏶗
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Create a timer􏷏
+􏶠The timer is created paused and at 0 milliseconds􏶡
+􏶴
+    􏶲specialize the generic timer so that it is specific to the flight model clock􏶱
+    InitializeMillisecondTimer(&􏵴millisecond timer􏵵,ConstructTimerSettings(&GetCurrentFrameCount,&FrameCountToMilliseconds));
+􏶳
+
+Getters:
+􏷘+c􏷗􏷒is paused􏷑
+􏷐returns whether the timer is paused or not􏷏
+􏶠does not affect whether the timer is paused, just returns the pause status􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is paused􏶻􏶺true if the timer is paused, false if it is not􏶹
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    return MillisecondTimerIsPaused(&􏵴millisecond timer􏵵);
+􏶳
+
+􏷘+c􏷗􏷒elapsed time􏷑
+􏷐returns the duration of the timer􏷏
+􏶠does not affect whether the duration of the timer, just returns the elapsed time􏶡
+􏶚m􏶛􏶾double􏶽􏶼elapsed time􏶻􏵜milliseconds􏵝􏶺the elapsed time of the timer􏶹
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    return MillisecondTimerElapsedTime(&􏵴millisecond timer􏵵);
+􏶳
+
+Transformers:
+􏷘+􏷗􏷒update􏷑
+􏷐Updates the state of the timer in regards to total elapsed time􏷏
+􏶠Only call this function if you do not plan on changing the pause/reset.
+Pause and reset functions will also update the total elapsed time.􏶡
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    MillisecondTimerUpdate(&􏵴millisecond timer􏵵);
+􏶳
+
+􏷘+􏷗􏷒set pause state􏷑
+􏷐Update the pause state of the timer􏷏
+􏶠Pausing the timer may also derive a new total elapsed time􏶡
+􏶜􏶝􏷆BOOL􏷅􏷄pause􏷃􏷀whether or not to pause the timer􏶿
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    MillisecondTimerSetPauseState(&􏵴millisecond timer􏵵,􏵶pause􏵷);
+􏶳
+
+􏷘+􏷗􏷒reset􏷑
+􏷐resets the timer􏷏
+􏶠This function can be called whether the timer is paused or not.
+Resetting the timer will not affect the pause state.􏶡
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    MillisecondTimerReset(&􏵴millisecond timer􏵵);
+􏶳
+
+􏷘+􏷗􏷒pause􏷑
+􏷐pauses the timer􏷏
+􏶠This function is ok to call even if the timer is already paused.􏶡
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    MillisecondTimerPause(&􏵴millisecond timer􏵵);
+􏶳
+
+􏷘+􏷗􏷒un pause􏷑
+􏷐unpauses the timer􏷏
+􏶠This function is ok to call even if the timer is already unpaused.􏶡
+􏶴
+    􏶲forward the responsibility to the internal millisecond timer􏶱
+    MillisecondTimerUnPause(&􏵴millisecond timer􏵵);
+􏶳
+
+􏶨Internal timer used􏶧
+􏶦specialized by providing the appropriate tick getting function as well as the tick to millisecond conversion function􏶥
+􏶘-􏶙􏶮MillisecondTimerT􏶭􏶬millisecond timer􏶫􏶪0􏶩

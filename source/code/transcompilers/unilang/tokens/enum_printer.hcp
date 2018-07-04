@@ -1,0 +1,82 @@
+class
+❪"all_ast_markers"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ void ☀Create_Enum_Files(All_Ast_Markers const& all_ast_markers,std::string output_directory) ❰
+
+  //root
+  Create_Token_Group_Enum_Header(all_ast_markers.root,all_ast_markers.body_root,output_directory);
+  Create_Token_Group_Enum_Source(all_ast_markers.root,all_ast_markers.body_root,output_directory);
+
+  //leaves
+  Create_Token_Name_Enum_Header(all_ast_markers.root,all_ast_markers.body_root,output_directory);
+  Create_Token_Name_Enum_Source(all_ast_markers.root,all_ast_markers.body_root,output_directory);
+❱
+
+
+◀private: static▶ void ☀Create_Token_Group_Enum_Header(Ast_Markers const& root, Ast_Markers const& body_root,std::string output_directory) ❰
+    
+    std::ofstream out(output_directory + "/token_group.hpp");
+    Print_To_Stream_With_Newline(out,"#pragma once");
+    Print_To_Stream_With_Newline(out,"#include <string>");
+    Print_To_Stream_With_Newline(out,"//a conceptual category that is applied across individual tokens.");
+    
+    Print_Token_Decl(out,root.groups);
+    Print_Token_Decl(out,body_root.groups);
+    
+    Print_To_Stream_With_Newline(out,"//eventually add:");
+    Print_To_Stream_With_Newline(out,"//enum class Contract_Condition_Token_Group");
+❱
+
+
+◀private: static▶ void ☀Create_Token_Group_Enum_Source(Ast_Markers const& root, Ast_Markers const& body_root,std::string output_directory) ❰
+    std::ofstream out(output_directory + "/token_group.cpp");
+    Print_To_Stream_With_Newline(out,"#include \"token_group.hpp\"");
+    Print_Token_Def(out,root.groups);
+    Print_Token_Def(out,body_root.groups);
+❱
+
+
+//print enums in various capacities
+◀private: static▶ void ☀Print_Token_Decl(std::ofstream & out, Enum e)❰
+
+    Print_To_Stream_With_Newline(out,"enum class " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "{");
+    for (auto const& it: e.values){
+        Print_To_Stream_With_Newline(out,As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ",");
+    }
+    Print_To_Stream_With_Newline(out,"};");
+    Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t);");
+❱
+◀private: static▶ void ☀Print_Token_Def(std::ofstream & out, Enum e)❰
+
+    Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t){");
+    Print_To_Stream_With_Newline(out,"switch (t){");
+    for (auto const& it: e.values){
+        Print_To_Stream_With_Newline(out,"case " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "::" + As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ": return \"" + As_All_Capital_Letters_With_Spaces_As_Underscores(it) + "\";");
+    }
+    Print_To_Stream_With_Newline(out,"}");
+    Print_To_Stream_With_Newline(out,"return \"unknown\";");
+    Print_To_Stream_With_Newline(out,"}");
+❱
+
+
+
+◀private: static▶ void ☀Create_Token_Name_Enum_Header(Ast_Markers const& root, Ast_Markers const& body_root,std::string output_directory) ❰
+    std::ofstream out(output_directory + "/token_name.hpp");
+    Print_To_Stream_With_Newline(out,"#pragma once");
+    Print_To_Stream_With_Newline(out,"#include <string>");
+    Print_Token_Decl(out,root.leaves);
+    Print_Token_Decl(out,body_root.leaves);
+❱
+
+
+◀private: static▶ void ☀Create_Token_Name_Enum_Source(Ast_Markers const& root, Ast_Markers const& body_root,std::string output_directory) ❰
+    std::ofstream out(output_directory + "/token_name.cpp");
+    Print_To_Stream_With_Newline(out,"#include \"code/transcompilers/unilang/tokens/token_name.hpp\"");
+    Print_Token_Def(out,root.leaves);
+    Print_Token_Def(out,body_root.leaves);
+❱

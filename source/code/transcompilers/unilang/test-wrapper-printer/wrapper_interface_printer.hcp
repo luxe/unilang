@@ -1,0 +1,141 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/stream_creator"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_utilities"❫
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/type_name_deriver"❫
+❪"code/transcompilers/unilang/structure-printer/data_member_printer"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print(Structure const& structure, C_Export_Settings const& options, bool dumb_name)❰
+
+    //create settings for file stream creation
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::CPP;
+    file_settings.code = Code_Type::PRODUCT_TYPE;
+    file_settings.special = Special_File_Type::TEST;
+    file_settings.file = File_Type::INTERFACE;
+    
+    //open file stream
+    auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    
+    //print top stuff
+    Print_To_Stream_With_Newline(out,Test_Wrapper_Utilities::Get_Top_Comment());
+    Print_To_Stream_With_Newline(out,"#pragma once");
+    auto object_we_are_wrapping = As_Capital_And_Pushed_Together(structure.name) + ".h";
+    Print_To_Stream_With_Newline(out,"    #include \"" + object_we_are_wrapping + "\"");
+    Print_To_Stream_With_Newline(out,"");
+    
+    //class body
+    Print_To_Stream(out,"class " + As_Capital_And_Pushed_Together(structure.name));
+    Print_To_Stream_With_Newline(out," {");
+    Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out,"//the component state we are wrapping in order to make testing easier");
+    
+    
+    auto type_name = Test_Wrapper_Utilities::Get_Wrapped_Object_Type_Name(structure.name,dumb_name);
+    Print_To_Stream_With_Newline(out,type_name + " o" + Get_Semicolon_As_String());
+                                 
+    Possibly_Print_Destructure_Deceleration(out,structure);
+    Print_To_Stream_With_Newline(out,"");
+    
+    //functions and data members
+    Print_Declerations(out,structure,options,type_name);
+    Print_Data_Members(out,structure,options);
+
+    //end of class body
+    Print_To_Stream_With_Newline(out,"};");
+❱
+
+
+//syntax highlighter work-around
+◀private: static▶ std::string ☀Get_Semicolon_As_String()❰
+    return ";";
+❱
+
+
+◀public: static▶ void ☀Print_Declerations(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, std::string type_name)❰
+    Print_To_Stream_With_Newline(out,"public:");
+    
+    //print utility methods for the client
+    Possibly_Print_Underlying_Getter_Deceleration(out,structure,options,type_name);
+    
+    //print actual methods for the client
+    Print_To_Stream_With_Newline(out,"\n//expose the backend API of the component");
+    Print_To_Stream_With_Newline(out,"");
+    Test_Wrapper_Methods_Printer::Print_Wrapper_Decleration_Methods(structure.name,out,structure.methods.methods,options);
+❱
+
+◀private: static▶ void ☀Possibly_Print_Destructure_Deceleration(std::wofstream & out, Structure const& structure)❰
+    
+    if (Test_Wrapper_Utilities::Contains_Data_Members_That_Can_Be_Destructured(structure.data_members.data_members)){
+        Print_Destructure_Deceleration(out,structure);
+    }
+❱
+
+//underlying getter method
+◀private: static▶ void ☀Possibly_Print_Underlying_Getter_Deceleration(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, std::string type_name)❰
+    if (options.test_wrapper.add_underlying_object_utility_method){
+        Print_Underlying_Getter_Deceleration(out,structure,options,type_name);
+    }
+❱
+◀private: static▶ void ☀Print_Underlying_Getter_Deceleration(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, std::string type_name)❰
+    Print_To_Stream_With_Newline(out,"//utility functions provided from the wrapper");
+    Print_To_Stream_With_Newline(out,type_name + "* " + "Underlying();");
+❱
+
+
+//destructure method
+◀private: static▶ void ☀Print_Destructure_Deceleration(std::wofstream & out, Structure const& structure)❰
+    Print_To_Stream_With_Newline(out,"void Destructure();");
+❱
+
+◀private: static▶ void ☀Print_Data_Members(std::wofstream & out, Structure const& structure, C_Export_Settings options)❰
+    Print_To_Stream_With_Newline(out,"//data members for direct access");
+    
+    //we want data members to look a certain way in testing
+    options.portion.method_options.parameters.notation.use_hungarian_prefix = false;
+    options.portion.method_options.parameters.notation.use_unit_suffix = false;
+    options.portion.data_member_options.notation.use_hungarian_prefix = false;
+    options.portion.data_member_options.notation.use_unit_suffix = false;
+    options.portion.data_member_options.casing.casing = Case_Format_Style::SNAKE_CASE;
+    options.portion.data_member_options.casing.global_non_const_casing = Case_Format_Style::SNAKE_CASE;
+    options.portion.data_member_options.casing.global_const_casing = Case_Format_Style::SNAKE_CASE;
+              
+    for (auto it: structure.data_members.data_members){
+        
+        if (it.is_observable || it.is_obtainable){
+            
+              //split potential array parts
+              auto type       = as_string(it.type.value);
+              
+              auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+                
+              //now that we have the base unilang type
+              //we will convert it to the appropriate language type
+              auto real_language_type = Type_Name_Deriver::Derive_Name(it,options);
+              
+              Print_To_Stream(out,real_language_type);
+              Print_To_Stream(out," ");
+              
+              
+              Print_To_Stream(out,Data_Member_Printer::Decide_How_To_Print_After_Type_Specifier(it,options,Code_Type::PRODUCT_TYPE));
+              Print_To_Stream(out,";");
+              
+              //Print_To_Stream(out,derived_name + " ");
+              //Print_To_Stream_With_Newline(out,As_All_Lowercase_Letters_With_Spaces_As_Underscores(as_string(it.name.value)) + array_part + ";");
+            
+        }
+    }
+❱

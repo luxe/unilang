@@ -1,0 +1,113 @@
+class
+
+
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/parser/structure_creator"❫
+❪"code/transcompilers/unilang/dependency_graph_creator/seen_structure_dependencies"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+⚯
+❪"code/transcompilers/unilang/dependency_graph_creator/dependency_looker_upper"❫
+❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+❪"code/utilities/types/sets/lib"❫
+⚞⚟
+
+
+◀public: static▶ Code_Graph ☀Create_Graph_From_Structure(Structure & structure, std::set<std::string> const& dependency_paths, Parser_Settings const& settings)❰
+    Code_Graph g;
+    
+    
+    //build a unique vertex graph for both the interface, and the implementation of the structure
+    Seen_Structure_Dependencies seen_structure_dependencies;
+    Derive_Structure_Dependencies(g,structure,seen_structure_dependencies,dependency_paths,settings);
+    
+    //a marker to the structure we are actually transcompiling
+    g.structure = structure;
+    
+    
+    //g.interface_deps.Print();
+    //std::cout << "----" << std::endl;
+    //g.source_deps.Print();
+    //std::cout << "--end--\n" << std::endl;
+    
+    return g;
+❱
+
+
+◀private: static▶ void ☀Derive_Structure_Dependencies(Code_Graph & g, Structure & structure, Seen_Structure_Dependencies & seen_structure_dependencies, std::set<std::string> const& dependency_paths, Parser_Settings const& settings)❰
+
+        Iterate_Over_Set_Of_Imports_Applying_Them_To_Graph(structure, g.interface_deps, seen_structure_dependencies.interfaces,      dependency_paths,structure.imports.interface_dependencies,settings);
+        Iterate_Over_Set_Of_Imports_Applying_Them_To_Graph(structure, g.source_deps,    seen_structure_dependencies.implementations, dependency_paths,structure.imports.implementation_dependencies,settings);
+❱
+
+◀private: static▶ void ☀Iterate_Over_Set_Of_Imports_Applying_Them_To_Graph(Structure & structure, Unique_Vertex_Graph<Structure> & graph, std::set<std::string> & seen, std::set<std::string> const& dependency_paths, std::vector<Import_Item> & import_items, Parser_Settings const& settings)❰
+    for (auto & import_item: import_items){
+        Add_To_Graph_If_Dependency_File_Can_Be_Found(structure, graph, seen, dependency_paths,import_item,settings);
+    }
+❱
+
+
+◀private: static▶ void ☀Add_To_Graph_If_Dependency_File_Can_Be_Found(Structure & root_struct, Unique_Vertex_Graph<Structure> & graph, std::set<std::string> & seen, std::set<std::string> const& dependency_paths, Import_Item & import_item, Parser_Settings const& settings)❰
+    
+    //gives a full path to the unilang file, or returns an empty string, if the file could not be found
+    auto full_path_to_structure = Dependency_Looker_Upper::Lookup_Full_Path_To_Unilang_Import_Item(dependency_paths,import_item,settings);
+    
+    //only attempt to derive a structure if a unilang file path was found for the dependency
+    if (!full_path_to_structure.empty()){
+        Parse_And_Add_Structure_Subgraph_From_Discovered_Dependency(full_path_to_structure,root_struct,graph,seen,dependency_paths,settings);
+    }
+    
+    //if no unilang file path was found for the dependency, we ought to check that a nonunilang depdnency path exists in our known paths
+    else{
+      Handle_The_Fact_That_The_Dependency_Isnt_A_Unilang_File(dependency_paths,import_item,settings);
+    }
+❱
+◀private: static▶ void ☀ Handle_The_Fact_That_The_Dependency_Isnt_A_Unilang_File(std::set<std::string> const& dependency_paths, Import_Item & import_item, Parser_Settings const& settings)❰
+
+  //not a unilang file that we know about huh?
+  //is it a nonunilang file that we know about?
+  auto nonunilang_path = Dependency_Looker_Upper::Lookup_Full_Path_To_NonUnilang_Import_Item(dependency_paths,import_item,settings);
+  
+  //handle non unilang file that we know about
+  if (!nonunilang_path.empty()){
+    Handle_Unknown_Import(import_item,settings);
+  }
+  
+  //handle non unilang file that we DONT know about
+  else{
+    Handle_Found_NonUnilang_Import(nonunilang_path,import_item,settings);
+  }
+❱
+
+◀private: static▶ void ☀Handle_Unknown_Import(Import_Item & import_item, Parser_Settings const& settings)❰
+  //TODO:
+    std::cerr << "unknown import: " << as_string(import_item.name.value) << '\n';
+❱
+◀private: static▶ void ☀Handle_Found_NonUnilang_Import(std::string path, Import_Item & import_item, Parser_Settings const& settings)❰
+  //TODO:
+❱
+
+
+
+◀private: static▶ void ☀Parse_And_Add_Structure_Subgraph_From_Discovered_Dependency(std::string const& full_path_to_structure, Structure & root_struct, Unique_Vertex_Graph<Structure> & graph, std::set<std::string> & seen, std::set<std::string> const& dependency_paths, Parser_Settings const& settings)❰
+
+    //TODO: (efficiency) check if the path already exists in the graph before doing the struct parse
+    //I don't think I care, but at the same time, the parser is probably going to emit warnings twice
+
+    //create a struct based off the import item path
+    Fully_Read_File file(full_path_to_structure);
+    auto dep_struct = Structure_Creator::Create_Structure_From_Path(file,settings);
+
+    //internally, this will handle creating a new vertex, or just connecting an existing vertex
+    graph.Connect(root_struct,dep_struct);
+
+    //recursively search if we have not seen the header yet
+    if (!Exists_In_Set(seen,full_path_to_structure)){
+        Add_To_Set(seen,full_path_to_structure);
+        Iterate_Over_Set_Of_Imports_Applying_Them_To_Graph(dep_struct,graph,seen,dependency_paths,dep_struct.imports.interface_dependencies,settings);
+    }
+❱
+
+
+
+

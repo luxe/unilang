@@ -1,0 +1,102 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/stream_creator"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_utilities"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Print(Structure const& structure, C_Export_Settings const& options, bool dumb_methods)❰
+
+    //create settings for file stream creation
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::CPP;
+    file_settings.code = Code_Type::PRODUCT_TYPE;
+    file_settings.special = Special_File_Type::TEST;
+    file_settings.file = File_Type::IMPLEMENTATION;
+    
+    //open file stream
+    auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    
+    Print_To_Stream_With_Newline(out,Test_Wrapper_Utilities::Get_Top_Comment());
+    auto object_we_are_wrapping = As_Capital_And_Pushed_Together(structure.name);
+    Print_To_Stream(out, "#include \"");
+    Print_To_Stream(out,object_we_are_wrapping + "Wrapper.hpp");
+    Print_To_Stream_With_Newline(out, "\"");
+    
+    Add_Additional_Headers(out,options.test_wrapper.additional_headers);
+    Print_To_Stream_With_Newline(out, "");
+    Print_To_Stream_With_Newline(out, "");
+    
+    //potentially add utility methods
+    auto type_name = Test_Wrapper_Utilities::Get_Wrapped_Object_Type_Name(structure.name,dumb_methods);
+    Possibly_Print_Underlying_Getter_Def(out,structure,options,type_name);
+    
+    if (dumb_methods){
+        auto method_count = Shared_Printer::Number_Of_Non_Constructing_Public_Methods(structure.name,structure.methods.methods);
+        Test_Wrapper_Methods_Printer::Print_Wrapper_Definition_Methods(structure.name,out,structure.methods.methods,method_count,options,structure.data_members.data_members);
+    }
+    else{
+        Test_Wrapper_Methods_Printer::Print_Wrapper_Definition_Methods_For_Good_Design(structure.name,out,structure.methods.methods,options,structure.data_members.data_members);
+    }
+    
+    Possibly_Print_Destructure_Definition(out,structure,options);
+❱
+
+
+//underlying getter method
+◀private: static▶ void ☀Possibly_Print_Underlying_Getter_Def(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, std::string type_name)❰
+    if (options.test_wrapper.add_underlying_object_utility_method){
+        Print_Underlying_Getter_Def(out,structure,options,type_name);
+    }
+❱
+◀private: static▶ void ☀Print_Underlying_Getter_Def(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, std::string type_name)❰
+    Print_To_Stream_With_Newline(out,"//utility functions provided from the wrapper");
+    Print_To_Stream_With_Newline(out,type_name + "* " + As_Capital_And_Pushed_Together(structure.name) + "::Underlying(){ return &o; }");
+❱
+
+◀private: static▶ void ☀Add_Additional_Headers(std::wofstream & out, std::vector<std::string> const& additional_headers)❰
+    for (auto it : additional_headers){
+        Print_To_Stream(out, "#include \"" + it + "\"");
+    }
+❱
+
+
+◀private: static▶ void ☀Possibly_Print_Destructure_Definition(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    
+    if (Test_Wrapper_Utilities::Contains_Data_Members_That_Can_Be_Destructured(structure.data_members.data_members)){
+        Print_Destructure_Definition(out,structure,options);
+    }
+❱
+
+◀private: static▶ void ☀Print_Destructure_Body(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+for (auto it: structure.data_members.data_members){
+
+    if (it.is_observable || it.is_obtainable){
+        Print_To_Stream(out,"util::Assign(");
+        Print_To_Stream(out,As_All_Lowercase_Letters_With_Spaces_As_Underscores(as_string(it.name.value)));
+        Print_To_Stream(out, ",");
+        Print_To_Stream_With_Newline(out,"o." + Identifier_Name_Deriver::Derive_Name(it,options,false,true) + ");");
+   }
+}
+❱
+
+
+
+◀private: static▶ void ☀Print_Destructure_Definition(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Print_To_Stream_With_Newline(out,"void " + As_Capital_And_Pushed_Together(structure.name) + "::Destructure(){");
+    Print_Destructure_Body(out,structure,options);
+    Print_To_Stream_With_Newline(out,"}");
+❱

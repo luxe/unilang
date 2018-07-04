@@ -1,0 +1,134 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/parser/body_parser/body_token_value"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"update_with_bools_printer"❫
+❪"update_with_enums_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Update_Declaration(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    //only print the deceleration if there is api methods to call
+    if (Shared_Printer::Number_Of_Non_Constructing_Non_Destructing_Public_Methods(structure.name,structure.methods.methods) > 0){
+        auto func = Create_Method(structure,options);
+        Methods_Printer::Print_Global_Interface_Methods(out,structure.name,Code_Type::GLOBAL,func,options);
+    }
+❱
+◀public: static▶ void ☀Print_Update_Definition(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    //only print the definition if there is api methods to call
+    if (Shared_Printer::Number_Of_Non_Constructing_Non_Destructing_Public_Methods(structure.name,structure.methods.methods) > 0){
+        Print_To_Stream_With_Newline(out,"");
+        auto func = Create_Method(structure,options);
+        std::vector<Data_Member_Item> blah;
+        Methods_Printer::Print_Global_Implementation_Methods(out,structure.name,Code_Type::GLOBAL,func,blah,options,options.general.object_export_method);
+    }
+❱
+
+
+
+◀private: static▶ std::vector<Method_Item> ☀Create_Method(Structure const& structure,C_Export_Settings const& options)❰
+
+    //build up fake params
+    std::vector<Method_Item> func;
+    Method_Item m;
+    
+    m.class_access = Class_Access::PUBLIC;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    m.storage=Storage_Specifier::NONE;
+    m.names.function_name.value = L"update " + as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name));
+    m.brief_description.value = L"Updates the state of " + as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L" and generate new output";
+    m.detailed_description.value = L"The input is used against the internal state of the output to generate a new output";
+    
+    //set expected params
+    Function_Argument one;
+    one.is_mutable = true;
+    one.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L"OutputsT *const";
+    one.identifier.value = L"outputs";
+    one.comment.value = L"Represents the internal state of the object.\nThe internal state of the object, will be updated,\nbased on the new inputs.";
+    
+    //set expected params
+    Function_Argument two;
+    two.is_mutable = false;
+    two.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L"InputsT *const";
+    two.identifier.value = L"inputs";
+    two.comment.value = L"All of the conceivable inputs used to transform the outputs.";
+    
+    m.function_arguments.push_back(one);
+    m.function_arguments.push_back(two);
+    
+    Add_Body(structure.name,m,structure.methods.methods,options);
+    
+    func.push_back(m);
+    
+    return func;
+❱
+
+◀private: static▶ void ☀Add_Body(std::string file_name, Method_Item & m, std::vector<Method_Item> const& methods,C_Export_Settings const& options)❰
+
+    //first get the number of callable methods
+    unsigned int method_count = Shared_Printer::Number_Of_Non_Constructing_Non_Destructing_Public_Methods(file_name,methods);
+    
+    
+    //a single token that holds the whole body
+    std::wstring whole_body;
+    Body_Token_Value v;
+    
+    
+    //if it's only one, we just call it.
+    if (method_count <= 1){
+        Update_Calls_One_Function(file_name,whole_body,methods,options);
+    }
+    
+    //if it's more than one, we produce and if chain using bools 
+    //from the input as to whether or not the functions need called
+    else{
+        Update_Calls_Many_Functions(file_name,whole_body,methods,options);
+    }
+    
+    //add the whole body as a single token
+    v.value = whole_body;
+    m.body.push_back(v);
+    
+❱
+
+
+◀private: static▶ void ☀Update_Calls_One_Function(std::string file_name, std::wstring & body, std::vector<Method_Item> const& methods,C_Export_Settings const& options)❰
+    
+    auto filtered = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,methods);
+    for (auto it: filtered){
+        auto func_name = as_wstring(As_Capital_And_Pushed_Together(as_string(it.names.function_name.value)));
+        body += func_name;
+        body += L"(";
+        body += L"ptOutputs";
+        for (auto x: it.function_arguments){
+            body +=L",";
+            body += L"ptInputs->m_";
+            auto arg = Identifier_Name_Deriver::Derive_Name(x,options);
+            body += as_wstring(arg);
+        }
+        body += L");\n";
+    }
+❱
+◀private: static▶ void ☀Update_Calls_Many_Functions(std::string file_name, std::wstring & body, std::vector<Method_Item> const& methods,C_Export_Settings const& options)❰
+    //try to do decisions like this sooner or later
+    switch (options.general.in_out_export_api_style){
+        case In_Out_Export_Api_Style::BOOLEANS: Update_With_Bools_Printer::Print(file_name,body,methods,options); break;
+        case In_Out_Export_Api_Style::ENUM: Update_With_Enums_Printer::Print(file_name,body,methods,options); break;
+    }
+❱
+
+
+
+
+

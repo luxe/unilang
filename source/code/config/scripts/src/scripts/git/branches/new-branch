@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#WHAT IT DOES:
+# - Creates a new branch from master regardless of where you are
+
+#WHY:
+# - Most of the time I start a new branch, I want to branch off from master (regardless of what branch I'm currently on).
+#now that's not always the case, and so if I don't want to branch from master(for whatever reason), 
+#then I wouldn't call this script.
+
+#take all the parameters condense them into one string
+#replace any whitespace with a single dash
+#this will ensure proper formatting regardless of the branch name given
+branch_name=`echo "$@" | tr -s ' ' | tr ' ' '-'`;
+
+#This script will always put me back to master first, and also do a pull to try and stay up to date
+#Often times, other branches have recently gotten merged while I'm in the process of going from say, 
+#one branch to another branch and so this tries to stay up to date and reduce the chances of merge conflicts
+git checkout master;
+git pull;
+
+#Let's also remove any local branches that no longer exist on remote.  Chances are, they've gotten merged and deleted
+#and so we don't need them locally anymore either.  This could be dangerous to do if you created a branch to do things, but never pushed it upstream.
+#However, creating a branch with this script will always push it upstream.  You also need to be careful, that if a branch no longer exists remotely, but you have uncommitted changes on it locally, they will be lost
+#remove-merged-branches;
+
+git checkout -b $branch_name;
+
+#push the new branch upstream
+git push --set-upstream origin $branch_name;

@@ -1,0 +1,141 @@
+class
+❪unordered_set❫
+❪"identifier_with_type_info"❫
+❪"extra_type_suffix_settings"❫
+❪"code/utilities/types/tri_bool"❫
+❪"code/utilities/types/tri_string"❫
+❪"weighted_type_property_word"❫
+⚯
+❪"code/utilities/types/strings/transformers/inflection/getters/inflection_settings_getter"❫
+❪"code/utilities/types/strings/transformers/inflection/inflection_converter"❫
+⚞⚟
+
+◀public: static▶ std::unordered_set<std::string> ☀Get() ❰
+    std::unordered_set<std::string> words;
+	words.insert("collection");
+    words.insert("sequence");
+    words.insert("group");
+    words.insert("assemblage");
+    words.insert("assortment");
+    words.insert("stockpile");
+    words.insert("medly");
+    words.insert("accumulation");
+    words.insert("arrangement"); //maybe
+    words.insert("array");
+    words.insert("chain");
+    words.insert("association");
+    words.insert("aggregation");
+    words.insert("congregation");
+    words.insert("combination");
+	words.insert("permutation");
+	return words;
+❱
+◀public: static▶ std::string ☀Modify(Identifier_With_Type_Info const& data_properties, Extra_Type_Suffix_Settings const& settings) ❰
+	
+	//derive all of the possible words that could be attached based on the properties
+    auto decided_optional = Decide(data_properties.optional,settings.words.optional);
+    auto decided_serializable = Decide(data_properties.serializable,settings.words.serializable);
+    auto decided_collection = Decide(data_properties.collection,settings.words.collection);
+    auto decided_sequence = Decide(data_properties.sequence,settings.words.sequence);
+    auto decided_state = Decide(data_properties.sequence,settings.words.state);
+
+	//build weighted grouping based on activated words
+    std::vector<Weighted_Type_Property_Word> weighted;
+    if (!decided_optional.empty()){
+		Weighted_Type_Property_Word yo;
+		yo.word = decided_optional;
+        yo.property = Type_Property_Word::OPTIONAL;
+        yo.weight = settings.words.optional_weight;
+		weighted.emplace_back(yo);
+	}
+    if (!decided_serializable.empty()){
+		Weighted_Type_Property_Word yo;
+		yo.word = decided_serializable;
+        yo.property = Type_Property_Word::SERIALIZABLE;
+        yo.weight = settings.words.serializable_weight;
+		weighted.emplace_back(yo);
+	}
+    if (!decided_collection.empty()){
+		Weighted_Type_Property_Word yo;
+		yo.word = decided_collection;
+        yo.property = Type_Property_Word::COLLECTION;
+        yo.weight = settings.words.collection_weight;
+		weighted.emplace_back(yo);
+	}
+    if (!decided_sequence.empty()){
+		Weighted_Type_Property_Word yo;
+		yo.word = decided_sequence;
+        yo.property = Type_Property_Word::SEQUENCE;
+        yo.weight = settings.words.sequence_weight;
+		weighted.emplace_back(yo);
+	}
+    if (!decided_state.empty()){
+		Weighted_Type_Property_Word yo;
+		yo.word = decided_state;
+        yo.property = Type_Property_Word::STATE;
+        yo.weight = settings.words.state_weight;
+		weighted.emplace_back(yo);
+	}
+
+	//sort by their weight
+	std::sort(weighted.begin(), weighted.end(),[&](Weighted_Type_Property_Word const& l, Weighted_Type_Property_Word const& r){
+		return l.weight < r.weight;
+	});
+
+   //take n elements? or just the first one?
+   size_t number_of_words_to_take = 1;
+   std::vector<Weighted_Type_Property_Word> filtered;
+   for (size_t i = 0; i < weighted.size() && i != number_of_words_to_take; ++i){
+		filtered.emplace_back(weighted[i]);
+   }
+
+	//the new identifier we are going to tweak and return
+	std::string new_indentifier = data_properties.identifier;
+
+
+   //remove any plural/collection related words
+   if (settings.remove_existing_plurality_indicator){
+		//TODO: remove existing plural related words attached to identifier
+        //ideally this shouldn't happen from a unilang purist view.  
+        //collection related information would be codifed at the type level or through other data member properties
+        //nonetheless we still might do it by accident and not actually have a manipulator change it or static analyzer warn it.  
+        
+   }
+
+   //decide if we forcing a singular inflection even makes sense
+   bool is_forcing_singularity_even_a_feasible_operation = false;
+   for (auto it: filtered){
+      if (it.property == Type_Property_Word::COLLECTION || it.property == Type_Property_Word::SEQUENCE){
+			is_forcing_singularity_even_a_feasible_operation = true;
+			break;
+		}
+	}
+
+	//if its feasible(makes sense), and we're configured to do so, force a singular inflection
+    //(with the intention of having it make plural sense with the added word after)
+    if (is_forcing_singularity_even_a_feasible_operation && settings.enforce_singularity_on_plural_appended_words){
+		auto settings = Inflection_Settings_Getter::Get();
+        new_indentifier = Inflection_Converter::As_Singular(new_indentifier,settings);
+	}
+
+   //special rules...
+   //TODO: add if needed
+
+    //append the selected_words
+    for (auto const& it: filtered){
+		new_indentifier += std::string("_") + it.word; 
+	}
+    
+	return new_indentifier;
+❱
+
+◀private: static▶ std::string ☀Decide(Tri_Bool const& state, Tri_String const& word)❰
+	if (state == Tri_Bool::YES){
+		return word.yes;
+	}
+	if (state == Tri_Bool::NO){
+		return word.no;
+	}
+	return word.unknown;
+❱
+

@@ -1,0 +1,84 @@
+class
+❪"code/transcompilers/unilang/structure/forward_decls"❫
+❪boost/variant/recursive_wrapper.hpp❫
+
+//sections that make up the whole structure for a file of code
+❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
+❪"code/transcompilers/unilang/structure/sections/types/type_section"❫
+❪"code/transcompilers/unilang/structure/sections/import/import_section"❫
+❪"code/transcompilers/unilang/structure/sections/macro/macro_section"❫
+❪"code/transcompilers/unilang/structure/sections/namespace/namespace_section"❫
+❪"code/transcompilers/unilang/structure/sections/templates/template_section"❫
+❪"code/transcompilers/unilang/structure/sections/inheritance/inheritance_section"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_section"❫
+❪"code/transcompilers/unilang/structure/sections/typedef/typedef_section"❫
+❪"code/transcompilers/unilang/structure/sections/forward_declare/forward_declare_section"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_section"❫
+❪"code/transcompilers/unilang/structure/sections/enum/enum_section"❫
+❪"code/transcompilers/unilang/structure/unit_tests/unit_tests"❫
+⚯
+
+⚞⚟
+
+
+◀public:
+
+
+//FILENAME PATH STUFF:
+//the file name(minus the extension) that this structure was derived from
+std::string name;
+
+//the full file path of the file.
+//this is how we should uniquely identify code structures.
+//(although hardlinks/symlinks may be an issue, we could possibly carry an inode later)
+std::string full_file_path;
+
+//what directory to output the file in
+std::string output_directory;
+
+//collection of data.  All of the sections that make up a code file
+//I'd like to put this into a separate section called Structure_Sections eventually
+//CODE SECTIONS:
+Meta_Section meta;
+Type_Section types;
+Import_Section imports;
+Namespace_Section namespaces;
+Template_Section templates;
+Inheritance_Section inheritance;
+Macro_Section macros;
+Enum_Section enums;
+Method_Section methods;
+Typedef_Section typedefs;
+Forward_Declare_Section forwards;
+Data_Member_Section data_members;
+
+//interface and implementation structures that have been inlined into this structure
+//1. inlined headers are removed and replaced with inlined structures
+//2. inlined structures CANNOT be removed with data concatenated into the corresponding sections
+//(because multiple structures can't be represented in a structure-- except through these inlines)
+//*These inline structs may or may not be moved outside of this object.
+//recursive wrapper used because we can't compose recursive incomplete types (not even with forward decelerations)
+boost::recursive_wrapper<Inlined_Structures> inlined_structures;
+
+
+//Aimed at C++ Catch, but hopefully
+//one day generic enough to be exported to other test suites
+Unit_Tests unit_tests;
+
+//we compare uniqueness of a code structure based on what file it was derived from
+friend bool operator< (Structure const& l, Structure const& r) { return l.full_file_path <  r.full_file_path; }
+friend bool operator> (Structure const& l, Structure const& r) { return l.full_file_path >  r.full_file_path; }
+friend bool operator!=(Structure const& l, Structure const& r) { return l.full_file_path != r.full_file_path; }
+friend bool operator==(Structure const& l, Structure const& r) { return l.full_file_path == r.full_file_path; }
+
+//we print a code structure based on the full path of the file that it was derived from
+//this was done because I think boost will allow me to print it this way using some graphicvz print thing,
+//and I think that function uses the overloaded insertion operator of the object.
+//either way, it makes sense to have some functionality for this for now, even if it is to change later.
+//update: turns out, boost graph prints vertex numbers and not the name of the actual objects...
+friend std::ostream& operator<<(std::ostream& os, Structure const& s){
+    os << s.full_file_path;
+    return os;
+}
+▶
+

@@ -1,0 +1,72 @@
+class
+
+
+❪"code/transcompilers/unilang/tokens/generic_token"❫
+❪"code/transcompilers/unilang/tokens/global_token_table"❫
+⚯
+❪"code/transcompilers/unilang/language-and-theme-creator/global"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/shared"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Create_Language_File() ❰
+
+    Create_Path_If_It_Doesnt_Already_Exist("User");
+    std::wofstream out(LANGUAGE_FILE);
+    
+    Shared::Print_DocType_Starter(out);
+    out << "<dict><key>fileTypes</key><array>" << '\n';
+    out << "<string>" << as_wstring(LANGUAGE_NAME) << "</string></array>" << '\n';
+    out << "<key>name</key><string>" << as_wstring(LANGUAGE_NAME) << "</string><key>patterns</key><array>" << '\n';
+    
+    Macro_And_Nested_Targeting(out);
+    
+    
+    //all the root element themes
+    for(auto const& it: TOKENS){
+        out << "<dict><key>begin</key><string>" << it.start << "</string><key>end</key><string>" << it.end << "\\n|" << it.end << "</string><key>name</key><string>";
+        out << as_wstring(as_string(it.name)) << "</string></dict>\n";
+    }
+
+    //this "text" instead of "source" enables spell checking EVERYWHERE.
+    //I'm hoping to at least get rid of it on the individual unicode characters.
+    //but at least they are showing up as separate words
+    out << "</array><key>scopeName</key><string>text." << as_wstring(LANGUAGE_NAME) << "</string><key>uuid</key>" << '\n';
+    out << "<string>" << as_wstring(LANGUAGE_UUID) << "</string></dict></plist>" << '\n';
+❱
+
+
+◀public: static▶ void ☀Macro_And_Nested_Targeting(std::wofstream & out) ❰
+
+    out << L"<dict><key>begin</key><string>􏶴</string><key>end</key><string>􏶳</string><key>name</key><string>FUNCTION_BODY</string><key>patterns</key><array>\n";
+        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO_IN_BODY</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO_IN_BODY</string></dict>\n";
+        
+        //all the body root element themes
+        for(auto const& it: BODY_TOKENS){
+            out << "<dict><key>begin</key><string>" << it.start << "</string><key>end</key><string>" << it.end << "\\n|" << it.end << "</string><key>name</key><string>";
+            out << as_wstring(as_string(it.name)) << "</string></dict>\n";
+        }
+    out << L"</array></dict>\n";
+    
+    out << L"<dict><key>begin</key><string>􏷀</string><key>end</key><string>􏶿</string><key>name</key><string>FUNCTION_ARGUMENT_COMMENT</string><key>patterns</key><array>\n";
+        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+    out << L"</array></dict>\n";
+    
+    out << L"<dict><key>begin</key><string>􏶺</string><key>end</key><string>􏶹</string><key>name</key><string>FUNCTION_RESULT_COMMENT</string><key>patterns</key><array>\n";
+        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+    out << L"</array></dict>\n";
+    
+    out << L"<dict><key>begin</key><string>􏶠</string><key>end</key><string>􏶡</string><key>name</key><string>FUNCTION_DETAILED_DESCRIPTION</string><key>patterns</key><array>\n";
+        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+    out << L"</array></dict>\n";
+    
+    out << L"<dict><key>begin</key><string>􏷐</string><key>end</key><string>􏷏</string><key>name</key><string>FUNCTION_BRIEF_DESCRIPTION</string><key>patterns</key><array>\n";
+        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+    out << L"</array></dict>\n";
+❱

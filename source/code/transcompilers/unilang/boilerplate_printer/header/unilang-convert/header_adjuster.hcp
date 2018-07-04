@@ -1,0 +1,30 @@
+class
+
+❪"code/transcompilers/unilang/structure/sections/import/import_section"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/exits/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Adjust_UniLang_Header_Names_To_Match_Actual_Exported_File_Casing(std::vector<Import_Item> & imports, General_Filesystem_Naming const& general_filesystem_naming)❰
+    
+    //loop through each import. if it was previously marked as a unilang include file during the parsing phase,
+    //modify the casing to match the expected exported file casing
+    for (auto & import: imports){
+        if (import.found_as_unilang_file){
+        
+            //they shouldn't have been found in the first place if they are system headers, but we will do a sanity check here before deciding to change any casing
+            //I don't ever want to change casing on a file, just because a system header has the same name.
+            if (import.type != Import_Type::SYSTEM){
+              auto new_str = Case_Modifier::As_Modified_Casing(general_filesystem_naming.file_casing,as_string(import.name.value));
+              import.name.value = as_wstring(new_str);
+            }
+            
+            //handle the case that shouldn't happen
+            else{
+              Exit_With_Error(as_string(import.name.value) + " was marked as a unilang file, but that's not possible if its a system header");
+            }
+        }
+    }
+❱

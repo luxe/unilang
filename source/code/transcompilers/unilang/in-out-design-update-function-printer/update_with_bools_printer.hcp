@@ -1,0 +1,67 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Print(std::string file_name, std::wstring & body, std::vector<Method_Item> const& methods,C_Export_Settings const& options)❰
+    
+    
+    auto public_methods = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,methods);
+    for (auto it: public_methods){
+        Add_Body_Part(body,it,options);
+    }
+❱
+
+◀private: static▶ void ☀Add_Body_Part(std::wstring & body, Method_Item const& m, C_Export_Settings const& options)❰
+    
+    body += Comment_For_Each_Api_Trigger(m,options);
+    
+    auto func_name = as_wstring(As_Capital_And_Pushed_Together(as_string(m.names.function_name.value)));
+    body += L"if (ptInputs->m_b" + func_name + L")\n";
+    body += L"{\n";
+    if (!m.return_results.empty()){
+        body += L"ptOutputs->m_";
+        body += as_wstring(Identifier_Name_Deriver::Derive_Name(m.return_results[0],options)) + L" = ";
+    }
+    body += Function_Call(m,options);
+    body += L";\n}\n\n";
+    
+❱
+
+◀private: static▶ std::wstring ☀Comment_For_Each_Api_Trigger(Method_Item const& m, C_Export_Settings const& options)❰
+
+    std::wstring body;
+
+    auto func_name = as_wstring(As_Capital_And_Pushed_Together(as_string(m.names.function_name.value)));
+    body += L"//If specified by the client,\n//call the backend API method " + func_name + L" while forwarding its arguments." + L"\n";
+    body += L"//*capture any return values specified by the API method\n";
+    
+    return body;
+❱
+
+◀private: static▶ std::wstring ☀Function_Call(Method_Item const& m, C_Export_Settings const& options)❰
+    std::wstring body;
+    
+    auto func_name = as_wstring(As_Capital_And_Pushed_Together(as_string(m.names.function_name.value)));
+    body += func_name;
+    body += L"(";
+    body += L"ptOutputs";
+    for (auto it: m.function_arguments){
+        body +=L",";
+        body += L"ptInputs->m_";
+        auto arg = Identifier_Name_Deriver::Derive_Name(it,options);
+        body += as_wstring(arg);
+        
+    }   
+    body += L")";
+    return body;
+❱

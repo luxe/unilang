@@ -1,0 +1,747 @@
+􏶞p􏶟
+􏷲The entire UH72A DC circuit diagram.􏷱
+􏷰Contains both the DC circuit diagram circuit represented through a generic electrical graph,
+as well as a collection of node IDs to target any node on the graph directly.􏷯
+􏷮Electrical_System􏷭 􏷮Electrical_Circuit􏷭
+􏷬Trevor Hickey􏷫
+
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦DCSystemSide􏷥􏴓1􏴔􏴑DCSystemSideT􏴒
+􏷤􏷣􏷦BatteryBox􏷥􏴓1􏴔􏴑BatteryBoxT􏴒
+􏷤􏷣􏷦OverheadPanel􏷥􏴓1􏴔􏴑OverheadPanelT􏴒
+􏷤􏷣􏷦FloorPanel􏷥􏴓1􏴔􏴑FloorPanelT􏴒
+􏷤􏷣􏷦SystemDevices􏷥􏴓1􏴔􏴑SystemDevicesT􏴒
+􏷤􏷣􏷦Vector􏷥􏴓d􏴔􏴑VectorT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+􏶔􏶕􏶒AircraftGeneralConst􏶓􏴏d􏴐􏴍ElectricalSystemSideE􏴎
+􏶔􏶕􏶒MissionBusPanelData􏶓􏴏d􏴐􏴍MissionBusSwitchTypeE􏴎
+􏶔􏶕􏶒pole􏶓􏴏d􏴐􏴍PoleT􏴎
+
+
+
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct the entire graph, and provide valid ideas to query any node on the graph
+Internally, it uses a generic electrical graph data structure to build a specific graph for the UH72A.
+Portions of the graph are grouped as boxes (as seen in the DC System - Block Diagram)
+The DC System block diagram can be found on page 343 of the UH-72A Training Manual)
+All of the boxes contain electrical component ids 
+which can be used to query the graph and get back the actual node.􏶡
+􏶴
+  􏶲Create an empty generic electrical graph􏶱
+  InitializeElectricalGraph(&􏵴graph􏵵,"UH72A");
+  
+  􏶲Initialize the subcomponents of the DC circuit diagram􏶱
+  InitializeBatteryBox(&􏵴battery box􏵵,&􏵴graph􏵵,"Battery Box");
+  InitializeDCSystemSide(&􏵴system side􏵵[0],&􏵴graph􏵵,"Copilot System");
+  InitializeDCSystemSide(&􏵴system side􏵵[1],&􏵴graph􏵵,"Pilot System");
+  InitializeOverheadPanel(&􏵴overhead panel􏵵,&􏵴graph􏵵,"Overhead Panel");
+  InitializeFloorPanel(&􏵴floor panel􏵵,&􏵴graph􏵵,"Floor Panel");
+  InitializeSystemDevices(&􏵴system devices􏵵,&􏵴graph􏵵,"System Devices");
+  
+  􏶲connect all of the boxes together
+  i.e. apply connections that aren't visible inside any of the individual boxes􏶱
+  􏵲make connections􏵳);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲copy􏵳􏵶self􏵷);
+􏶳
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆ElectricalCircuitT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+    􏶲perform deep copy􏶱
+    CopyInitializeElectricalGraphT(&􏵴graph􏵵,&􏵶self􏵷->m_tGraph);
+    CopyInitializeDCSystemSideT(&􏵴system side􏵵[0],&􏵶self􏵷->m_ptSystemSide[0]);
+    CopyInitializeDCSystemSideT(&􏵴system side􏵵[1],&􏵶self􏵷->m_ptSystemSide[1]);
+    􏵴battery box􏵵 = 􏵶self􏵷->m_tBatteryBox;
+    􏵴overhead panel􏵵 = 􏵶self􏵷->m_tOverheadPanel;
+    􏵴floor panel􏵵 = 􏵶self􏵷->m_tFloorPanel;
+    CopyInitializeSystemDevicesT(&􏵴system devices􏵵,&􏵶self􏵷->m_tSystemDevices);
+􏶳
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲destruct􏶱
+  􏵲destruct􏵳);
+􏶳
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructElectricalGraphT(&􏵴graph􏵵);
+  DestructDCSystemSideT(&􏵴system side􏵵[0]);
+  DestructDCSystemSideT(&􏵴system side􏵵[1]);
+  DestructSystemDevicesT(&􏵴system devices􏵵);
+􏶳
+
+
+
+
+
+
+􏷘-􏷗􏷒make connections􏷑
+􏷐Combine all the DC Power circuit portions together􏷏
+􏶴
+  􏵲connect boxes together􏵳);
+  􏵲connect circuit breakers􏵳);
+  􏵲connect devices􏵳);
+􏶳
+
+
+􏷘-􏷗􏷒connect boxes together􏷑
+􏷐After all of the electrical boxes ares created,
+this stage adds the remaining wires to connect components in the boxes together􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶴
+
+  􏶲connect nodes from other boxes together:􏶱
+    
+  􏶲a junction point used to connect boxes􏶱
+  􏶲add the junction to graph􏶱
+  size_t nJunction = ElectricalGraphAddJunction(&􏵴graph􏵵,"junction","",0.0f,0.0f,CAN_BE_POWERED_YES);
+  
+  􏶲connects battery bus to diode boxes􏶱
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴battery box􏵵.m_uFuse1,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDiodeBox.m_uDiode3);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴battery box􏵵.m_uFuse3,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDiodeBox.m_uDiode3);
+  
+  􏶲connects sides and battery box to the junction􏶱
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,nJunction,􏵴battery box􏵵.m_uFuse2);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,nJunction,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_tBusTie.m_uRelay);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,nJunction,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_tBusTie.m_uRelay);
+  
+  􏶲system sides:􏶱
+  􏶲distribution to diode box crossovers􏶱
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDiodeBox.m_uDiode2,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_uFuse4);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDiodeBox.m_uDiode2,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_uFuse4);
+  
+  􏶲connect avionic sub buses to parent buses with breakers in between􏶱
+  􏶲coils that connect to master CB􏶱
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tShedPowerRelay.m_uCoil,􏵴overhead panel􏵵.m_puAvioMstr[ELECTRICAL_SYSTEM_SIDE_LEFT]);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tEssentialPowerRelay.m_uCoil,􏵴overhead panel􏵵.m_puAvioMstr[ELECTRICAL_SYSTEM_SIDE_LEFT]);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tBuses.m_tShedPowerRelay.m_uCoil,􏵴overhead panel􏵵.m_puAvioMstr[ELECTRICAL_SYSTEM_SIDE_RIGHT]);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tBuses.m_tEssentialPowerRelay.m_uCoil,􏵴overhead panel􏵵.m_puAvioMstr[ELECTRICAL_SYSTEM_SIDE_RIGHT]);
+  
+  􏶲relays connect to avio main CBs􏶱
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tShedPowerRelay.m_tPoles,0))->m_uInputTerminal,􏵴overhead panel􏵵.m_uAvioMain1);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,0))->m_uInputTerminal,􏵴overhead panel􏵵.m_puEssAvioMain[ELECTRICAL_SYSTEM_SIDE_LEFT]);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tBuses.m_tShedPowerRelay.m_tPoles,0))->m_uInputTerminal,􏵴overhead panel􏵵.m_uAvioMain2);
+  ElectricalGraphAddNonDirectedWire(&􏵴graph􏵵,((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,0))->m_uInputTerminal,􏵴overhead panel􏵵.m_puEssAvioMain[ELECTRICAL_SYSTEM_SIDE_RIGHT]);
+  
+  􏶲relays connect to each other􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,
+  ((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,1))->m_uClosedTerminal,
+  ((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,1))->m_uInputTerminal);
+  
+  􏶲copilot ess relay has grounding􏶱
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,
+  ((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,1))->m_uClosedTerminal);
+  
+  
+􏶳
+
+
+􏷘-􏷗􏷒connect circuit breakers􏷑
+􏷐Connects all of the necessary 􏶐 devices and buses together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶴
+
+  􏶲mirrored devices􏶱
+  size_t unIndex = FIRST_ELECTRICAL_SYSTEM_SIDE;
+  for (; unIndex < NUM_ELECTRICAL_SYSTEM_SIDES; ++unIndex){
+  
+      􏶲connect the sub buses􏶱
+      
+      //row 1
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puDimmTest[unIndex]);
+      
+      //row 3
+      􏵲connect cb with shed􏵳unIndex,􏵴overhead panel􏵵.m_puPwr[unIndex]);
+
+      //row 4
+      􏵲connect cb with avio essential􏵳unIndex,􏵴overhead panel􏵵.m_puFcdm[unIndex]);
+      􏵲connect cb with avio essential􏵳unIndex,􏵴overhead panel􏵵.m_puNd[unIndex]);
+      􏵲connect cb with avio essential􏵳unIndex,􏵴overhead panel􏵵.m_puPfd[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puBlwPel[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puAhrs1[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puAhrs2[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puAdc[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puAvioMstr[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puEssAvioMain[unIndex]);
+
+      //row 5
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puIcs[unIndex]);
+      
+      //row 6
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puFloats[unIndex]);
+      
+      //row 7
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puOvsp[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puPrimeP[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puFireD[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puFuelV[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puIgn[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puStart[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puTqN2[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puSandFilt[unIndex]);
+
+      //row 8
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puGen[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puBt[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puFireE[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puFuelL[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puHydP[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puWu[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puCad[unIndex]);
+      􏵲connect cb with essential􏵳unIndex,􏵴overhead panel􏵵.m_puVemd[unIndex]);
+  }
+  
+  //row 1
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uStbyHorBat);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uIcAmp);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uIcsCab);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCom4Xcvr);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCom4Ctrl);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uIcsBackup);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uNms2);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uBatEmExLt);
+
+  //row 2
+  􏵲connect cb with avio essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uVhfTx1);
+  􏵲connect cb with avio essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uNms1);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uNmsBlw);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uLhMon);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uBambiBucket);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uAvioMain1);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uAvioMain2);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uEmerBat);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uVideoDist);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uRhMon);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uMovMap);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uRadAlt);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uDme);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uCm3Ant);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uCm3Rt);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uMkr);
+  􏵲connect cb with avio shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uCom5Xcvr);
+
+  //row 3
+  􏵲connect cb with avio essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uFcds2Backup);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uPtStCp);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uAp2);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uMir);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCargoPaxLt);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCont1LsLt);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uXferaPump);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uHtgv);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uInstCool);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uPaxBlw);
+  􏵲connect cb with shed􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uCont2);
+  􏵲connect cb with avio essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uAtc);
+  􏵲connect cb with avio essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uWaasRelay);
+
+  //row 4
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uNms12Relay);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uRoll2Sema);
+
+  //row 5
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uInstrLights);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uP1Sas);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uHtgCont);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCkptVent);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uFtr);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uRoll1Sas);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uYawSas);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uBeepTrim);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uMastMom);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uXferfPump);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uP2Sema);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uAp1);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uAltmVibr);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uVhfTx2);
+
+  //row 6
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCont);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCcPil);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uBoom);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uPos);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uLdg);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uCkpt);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uVarNr);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uN2Trim);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uInstr);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uAcol);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uEmEx);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uCcPedWinch);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uAuxTank);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uPtStPlt);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uDwnlnkAduB);
+
+  //row 7
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴overhead panel􏵵.m_uWiper);
+  􏵲connect cb with essential􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴overhead panel􏵵.m_uRotorRpm);
+  
+  􏶲center console􏶱
+  􏵲connect cb with mission􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴floor panel􏵵.m_uCabinMonitor);
+  􏵲connect cb with mission􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴floor panel􏵵.m_uDvr);
+  􏵲connect cb with mission􏵳ELECTRICAL_SYSTEM_SIDE_LEFT,􏵴floor panel􏵵.m_uMx15Imager);
+  􏵲connect cb with mission􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴floor panel􏵵.m_uLs16Cntl);
+  􏵲connect cb with mission􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴floor panel􏵵.m_uDwnlnkCntl);
+  􏵲connect cb with mission􏵳ELECTRICAL_SYSTEM_SIDE_RIGHT,􏵴floor panel􏵵.m_uDwnlnkAdu);
+  
+􏶳
+
+􏷘-􏷗􏷒connect devices􏷑
+􏷐Connects all of the system devices.  Most likely off of CBs􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶴
+    􏶲connects system devices􏶱
+    􏵲connect avionics devices􏵳);
+    􏵲connect engine devices􏵳);
+    􏵲connect fire devices􏵳);
+    􏵲connect flight control devices􏵳);
+    􏵲connect flight guidance devices􏵳);
+    􏵲connect fuel devices􏵳);
+    􏵲connect hydraulic devices􏵳);
+    􏵲connect lighting devices􏵳);
+    􏵲connect mep devices􏵳);
+    􏵲connect pneumatic devices􏵳);
+    􏵲connect radio devices􏵳);
+􏶳
+
+
+
+
+􏷘-􏷗􏷒connect avionics devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+
+
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPfd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puPfdBezels[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPfd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puPfdBezels[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puBlwPel[AVI_PILOT], 􏵴system devices􏵵.m_tAvionics.m_uPelicanRackFan);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puBlwPel[AVI_COPILOT], 􏵴system devices􏵵.m_tAvionics.m_uPelicanRackFan);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puNd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puNdBezels[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puNd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puNdBezels[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puCad[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_uCadBezel);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puCad[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_uCadBezel);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_uVemdBezel);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_uVemdBezel);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tAvionics.m_puIcps[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_COPILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tAvionics.m_puIcps[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tAvionics.m_uRcu);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPtStPlt,􏵴system devices􏵵.m_tAvionics.m_puPilotDecider[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPtStCp,􏵴system devices􏵵.m_tAvionics.m_puPilotDecider[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPtStPlt,􏵴system devices􏵵.m_tAvionics.m_puStaticDecider[AVI_COPILOT][AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPtStCp,􏵴system devices􏵵.m_tAvionics.m_puStaticDecider[AVI_COPILOT][AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPtStPlt,􏵴system devices􏵵.m_tAvionics.m_puStaticDecider[AVI_PILOT][AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPtStCp,􏵴system devices􏵵.m_tAvionics.m_puStaticDecider[AVI_PILOT][AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uDeckFan);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uCenterInstrumentFan);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uCadFan);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uVemdFan);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAdc[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puRamTemperatureSensor[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAdc[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puRamTemperatureSensor[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uDeckTemperatureSensor);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uCenterInstrumentTemperatureSensor);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uCenterInstrumentCoolingFanOnMicroswitch);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uCenterInstrumentOverheatMicroswitch);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uAionicsDeckCoolingFanOnMicroswitch);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstCool,􏵴system devices􏵵.m_tAvionics.m_uAvionicsDeckOverheatMicroswitch);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puEssAvioMain[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puMagnetometers[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puEssAvioMain[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puMagnetometers[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAhrs2[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puAhrus[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAhrs2[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puAhrus[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAhrs1[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puAhrus[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAhrs1[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puAhrus[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFcdm[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puFcdms[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFcdm[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puFcdms[AVI_COPILOT]);
+  
+  //backup breaker on copilot side provides backup power to pilot side
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uFcds2Backup,􏵴system devices􏵵.m_tAvionics.m_puFcdms[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uFcds2Backup,􏵴system devices􏵵.m_tAvionics.m_puPfds[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uFcds2Backup,􏵴system devices􏵵.m_tAvionics.m_puNds[AVI_PILOT]);
+  
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAdc[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puAdcs[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAdc[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puAdcs[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPfd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puPfds[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPfd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puPfds[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puNd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puNds[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puNd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puNds[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_uVemd);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_uVemd);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puVemdLanes[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puVemdLanes[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puVemdLanes[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puVemdLanes[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puCad[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_uCad);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puCad[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_uCad);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puCad[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_uCadLane);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puCad[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_uCadLane);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puWu[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_uWarningUnit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puWu[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_uWarningUnit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstrLights,􏵴system devices􏵵.m_tAvionics.m_uWetCompassLighting);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tAvionics.m_uTripleTach);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uStbyHorBat,􏵴system devices􏵵.m_tAvionics.m_uStandbyArtificialHorizon);
+
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_PILOT],􏵴system devices􏵵.m_tAvionics.m_puVoltageSensor[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puVemd[AVI_COPILOT],􏵴system devices􏵵.m_tAvionics.m_puVoltageSensor[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uNms12Relay,􏵴system devices􏵵.m_tAvionics.m_uNmsSelector);
+  
+
+
+􏶳
+􏷘-􏷗􏷒connect engine devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineN1Sensor[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineN1Sensor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puTqN2[ENGINE_LEFT],􏵴system devices􏵵.m_tEngine.m_puEngineTorqueSensor[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puTqN2[ENGINE_RIGHT],􏵴system devices􏵵.m_tEngine.m_puEngineTorqueSensor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puTotSensor[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puTotSensor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineFailLimitSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineFailLimitSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineFreewheelLimitSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineFreewheelLimitSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilTemperatureSensor[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilTemperatureSensor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilPressureSensor[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilPressureSensor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilPressureLimitSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilPressureLimitSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilFilterClogSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilFilterClogSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilChipDetectSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puEngineOilChipDetectSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puTransmissionOilPressureSensor[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puTransmissionOilPressureSensor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puTransmissionOilPressureLimitSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[ENGINE_RIGHT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tEngine.m_puTransmissionOilPressureLimitSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puStart[ENGINE_LEFT],􏵴system devices􏵵.m_tEngine.m_puStarterRelay[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puStart[ENGINE_RIGHT],􏵴system devices􏵵.m_tEngine.m_puStarterRelay[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puStart[ENGINE_LEFT],􏵴system devices􏵵.m_tEngine.m_puStarterHoldRelay[ENGINE_LEFT]);
+ElectricalGraphAddDirectedWire(&ptElectricalCircuit->m_tGraph, ptElectricalCircuit->m_tOverheadPanel.m_puStart[ENGINE_RIGHT], ptElectricalCircuit->m_tSystemDevices.m_tEngine.m_puStarterHoldRelay[ENGINE_RIGHT]);
+ElectricalGraphAddDirectedWire(&ptElectricalCircuit->m_tGraph, ptElectricalCircuit->m_ptSystemSide[ENGINE_LEFT].m_tAfterJunctionBox.m_uGeneratorBus, ptElectricalCircuit->m_tSystemDevices.m_tEngine.m_puStarterMotor[ENGINE_LEFT]);
+ElectricalGraphAddDirectedWire(&ptElectricalCircuit->m_tGraph, ptElectricalCircuit->m_ptSystemSide[ENGINE_RIGHT].m_tAfterJunctionBox.m_uGeneratorBus, ptElectricalCircuit->m_tSystemDevices.m_tEngine.m_puStarterMotor[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puIgn[ENGINE_LEFT], 􏵴system devices􏵵.m_tEngine.m_puIgnitor[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puIgn[ENGINE_RIGHT], 􏵴system devices􏵵.m_tEngine.m_puIgnitor[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puOvsp[ENGINE_LEFT], 􏵴system devices􏵵.m_tEngine.m_puOverspeedShutdownSystem[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puOvsp[ENGINE_RIGHT], 􏵴system devices􏵵.m_tEngine.m_puOverspeedShutdownSystem[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puSandFilt[ENGINE_LEFT], 􏵴system devices􏵵.m_tEngine.m_puSandFilter[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puSandFilt[ENGINE_RIGHT], 􏵴system devices􏵵.m_tEngine.m_puSandFilter[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puSandFilt[ENGINE_LEFT], 􏵴system devices􏵵.m_tEngine.m_puSandFilterDoorClosedSwitch[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puSandFilt[ENGINE_RIGHT], 􏵴system devices􏵵.m_tEngine.m_puSandFilterDoorClosedSwitch[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puSandFilt[ENGINE_LEFT], 􏵴system devices􏵵.m_tEngine.m_puSandFilterClogSwitch[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puSandFilt[ENGINE_RIGHT], 􏵴system devices􏵵.m_tEngine.m_puSandFilterClogSwitch[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uN2Trim, 􏵴system devices􏵵.m_tEngine.m_puEngineTrimActuators[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uN2Trim, 􏵴system devices􏵵.m_tEngine.m_puEngineTrimActuators[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puTqN2[ENGINE_LEFT], 􏵴system devices􏵵.m_tEngine.m_puEngineN2Sensor[ENGINE_LEFT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puTqN2[ENGINE_RIGHT], 􏵴system devices􏵵.m_tEngine.m_puEngineN2Sensor[ENGINE_RIGHT]);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, ptElectricalCircuit->m_ptSystemSide[ENGINE_RIGHT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tEngine.m_uTransmissionOilTemperatureSensor);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, ptElectricalCircuit->m_ptSystemSide[ENGINE_RIGHT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tEngine.m_uTransmissionOilOverTemperatureLimitSwitch);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, ptElectricalCircuit->m_ptSystemSide[ENGINE_RIGHT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tEngine.m_uTransmissionOilContaminationSwitch);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uRotorRpm, 􏵴system devices􏵵.m_tEngine.m_uRotorSpeedSensor);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uMastMom, 􏵴system devices􏵵.m_tEngine.m_uMastMomentSensor);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uRotorRpm, 􏵴system devices􏵵.m_tEngine.m_uRotorMinSpeedLimitSwitch);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uRotorRpm, 􏵴system devices􏵵.m_tEngine.m_uRotorMaxDrivenSpeedLimitSwitch);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uRotorRpm, 􏵴system devices􏵵.m_tEngine.m_uRotorMaxFreewheelSpeedLimitSwitch);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, ptElectricalCircuit->m_ptSystemSide[ENGINE_RIGHT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tEngine.m_uVartomsModeSelector);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uVarNr, 􏵴system devices􏵵.m_tEngine.m_uVartomsController);
+    ElectricalGraphAddDirectedWire(&ptElectricalCircuit->m_tGraph, ptElectricalCircuit->m_tOverheadPanel.m_uWiper, ptElectricalCircuit->m_tSystemDevices.m_tEngine.m_uWindshieldWipers);
+􏶳
+
+􏷘-􏷗􏷒connect fire devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFireD[AVI_PILOT],􏵴system devices􏵵.m_tFire.m_puFireDetection[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFireD[AVI_COPILOT],􏵴system devices􏵵.m_tFire.m_puFireDetection[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFireE[AVI_PILOT],􏵴system devices􏵵.m_tFire.m_puFireExtinguisher[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFireE[AVI_COPILOT],􏵴system devices􏵵.m_tFire.m_puFireExtinguisher[AVI_COPILOT]);
+􏶳
+􏷘-􏷗􏷒connect flight control devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uBeepTrim,􏵴system devices􏵵.m_tFlightControl.m_uCyclicBeepTrim);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCont,􏵴system devices􏵵.m_tFlightControl.m_uWinch);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCcPil,􏵴system devices􏵵.m_tFlightControl.m_uWinchCableCutter);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCargoPaxLt,􏵴system devices􏵵.m_tFlightControl.m_uCargoHook);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uMir,􏵴system devices􏵵.m_tFlightControl.m_uCargoHookMirror);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uFtr,􏵴system devices􏵵.m_tFlightControl.m_uForceTrimRelease);
+􏶳
+􏷘-􏷗􏷒connect flight guidance devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tFlightGuidance.m_uApms);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uAp2,((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tShedPowerRelay.m_tPoles,1))->m_uInputTerminal);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,((PoleT*)VectorAt(&􏵴system side􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_tShedPowerRelay.m_tPoles,1))->m_uOpenTerminal,􏵴system devices􏵵.m_tFlightGuidance.m_puAutopilotModules[AVI_PILOT]);
+  
+  􏶲ess 1 devices􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uP1Sas,((PoleT*)VectorAt(&􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus1ApRelay.m_tPoles,1))->m_uOpenTerminal);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uRoll1Sas,((PoleT*)VectorAt(&􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus1ApRelay.m_tPoles,0))->m_uOpenTerminal);
+  
+  
+  􏶲ess 2 devices􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uAp1,((PoleT*)VectorAt(&􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus2ApRelay.m_tPoles,3))->m_uOpenTerminal);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uYawSas,((PoleT*)VectorAt(&􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus2ApRelay.m_tPoles,2))->m_uOpenTerminal);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uP2Sema,((PoleT*)VectorAt(&􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus2ApRelay.m_tPoles,1))->m_uOpenTerminal);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uRoll2Sema,((PoleT*)VectorAt(&􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus2ApRelay.m_tPoles,0))->m_uOpenTerminal);
+  
+  􏶲coil chargers􏶱
+  
+  􏶲each coil gets power form corresponding master breaker􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAvioMstr[AVI_COPILOT],􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus1ApRelay.m_uCoil);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puAvioMstr[AVI_PILOT],􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus2ApRelay.m_uCoil);
+  
+  􏶲both coils go to the same input relay􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus1ApRelay.m_uCoil,((PoleT*)VectorAt(&􏵴system side􏵵[AVI_PILOT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,1))->m_uInputTerminal);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system devices􏵵.m_tFlightGuidance.m_tEssentialBus2ApRelay.m_uCoil,((PoleT*)VectorAt(&􏵴system side􏵵[AVI_PILOT].m_tBuses.m_tEssentialPowerRelay.m_tPoles,1))->m_uInputTerminal);
+􏶳
+􏷘-􏷗􏷒connect fuel devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPrimeP[ENGINE_LEFT],􏵴system devices􏵵.m_tFuel.m_puPrimePump[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPrimeP[ENGINE_RIGHT],􏵴system devices􏵵.m_tFuel.m_puPrimePump[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uXferfPump,􏵴system devices􏵵.m_tFuel.m_uFwdTransferPump);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uXferaPump,􏵴system devices􏵵.m_tFuel.m_uAftTransferPump);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFuelL[ENGINE_LEFT],􏵴system devices􏵵.m_tFuel.m_puSupplyTankLowFuelLimitSwitch[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFuelL[ENGINE_RIGHT],􏵴system devices􏵵.m_tFuel.m_puSupplyTankLowFuelLimitSwitch[ENGINE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[0].m_tBuses.m_uShedBus,􏵴system devices􏵵.m_tFuel.m_uAftMainTankLowFuelIndicator);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[1].m_tBuses.m_uShedBus,􏵴system devices􏵵.m_tFuel.m_uAftMainTankLowFuelIndicator);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFuelV[ENGINE_LEFT],􏵴system devices􏵵.m_tFuel.m_puEmergencyShutOffValve[ENGINE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puFuelV[ENGINE_RIGHT],􏵴system devices􏵵.m_tFuel.m_puEmergencyShutOffValve[ENGINE_RIGHT]);
+􏶳
+􏷘-􏷗􏷒connect hydraulic devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tHydraulic.m_uPressureIndicator);
+    ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system side􏵵[ENGINE_LEFT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tHydraulic.m_uSolenoidValve);
+
+􏶳
+􏷘-􏷗􏷒connect lighting devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCkpt,􏵴system devices􏵵.m_tLighting.m_uMap);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uPos,􏵴system devices􏵵.m_tLighting.m_uPosition);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uAcol,􏵴system devices􏵵.m_tLighting.m_uAntiCollision);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uLdg,􏵴system devices􏵵.m_tLighting.m_uLanding);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puPwr[AVI_PILOT],􏵴system devices􏵵.m_tLighting.m_uLandingSearch);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[0].m_tBuses.m_uMissionBus,􏵴system devices􏵵.m_tLighting.m_uLs16SearchLight);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴floor panel􏵵.m_uLs16Cntl, 􏵴system devices􏵵.m_tLighting.m_uLs16Controller);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uStbyHorBat,􏵴system devices􏵵.m_tLighting.m_uStandbyHorizon);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCont2,􏵴system devices􏵵.m_tLighting.m_uPilotLsControls);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCont1LsLt,􏵴system devices􏵵.m_tLighting.m_uCopilotLsControls);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstr,􏵴system devices􏵵.m_tLighting.m_uInstrumentsOn);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstr,􏵴system devices􏵵.m_tLighting.m_uInstrumentsNvg);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstrLights,􏵴system devices􏵵.m_tLighting.m_uInstrumentLights);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uEmEx,􏵴system devices􏵵.m_tLighting.m_uEmergencyExit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uBatEmExLt,􏵴system devices􏵵.m_tLighting.m_uEmergencyExit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴floor panel􏵵.m_uMx15Imager,􏵴system devices􏵵.m_tLighting.m_uMx15Camera);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tLighting.m_uLaserArmPanel);
+  
+  //emergency bat connection
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system devices􏵵.m_tLighting.m_uEmergencyBattery,􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryTestRelay);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system devices􏵵.m_tLighting.m_uEmergencyBattery, 􏵴overhead panel􏵵.m_uEmerBat);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_uEmerBat, 􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryRelay);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryRelay, 􏵴system devices􏵵.m_tLighting.m_uDischargeSensor);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryTestRelay, 􏵴system devices􏵵.m_tLighting.m_uDischargeSensor);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryTestRelay,􏵴system devices􏵵.m_tLighting.m_uBatteryTestGreen);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryTestRelay,􏵴system devices􏵵.m_tLighting.m_uBatteryTestRed);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system devices􏵵.m_tLighting.m_uEmergencyBatteryRelay,􏵴overhead panel􏵵.m_uStbyHorBat);
+􏶳
+􏷘-􏷗􏷒connect mep devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uMovMap,􏵴system devices􏵵.m_tMep.m_uMapControlUnit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uRhMon,􏵴system devices􏵵.m_tMep.m_puVdu[ELECTRICAL_SYSTEM_SIDE_RIGHT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uLhMon,􏵴system devices􏵵.m_tMep.m_puVdu[ELECTRICAL_SYSTEM_SIDE_LEFT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴floor panel􏵵.m_uDvr,􏵴system devices􏵵.m_tMep.m_uDvrPanel);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴floor panel􏵵.m_uDwnlnkAdu,􏵴system devices􏵵.m_tMep.m_uAntennaDeployUnitPrimary);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uDwnlnkAduB,􏵴system devices􏵵.m_tMep.m_uAntennaDeployUnitSecondary);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus, 􏵴system devices􏵵.m_tMep.m_uAduAnnunciator);
+  
+  􏶲this is to decide whether the buttons are illuminated or not􏶱
+  􏶲maintenance test shows that DIMM TEST 2 CB disables mission bus panel lights􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_RIGHT], 􏵴system devices􏵵.m_tMep.m_puMissionButtonLights[MISSION_BUS_DVR_AUD_REC]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_RIGHT], 􏵴system devices􏵵.m_tMep.m_puMissionButtonLights[MISSION_BUS_SEARCHLIGHT_POWER]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_RIGHT], 􏵴system devices􏵵.m_tMep.m_puMissionButtonLights[MISSION_BUS_MSN_BUS_POWER]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_RIGHT], 􏵴system devices􏵵.m_tMep.m_puMissionButtonLights[MISSION_BUS_AAUD_LINK]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_RIGHT], 􏵴system devices􏵵.m_tMep.m_puMissionButtonLights[MISSION_BUS_DOWNLINK_POWER]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_RIGHT], 􏵴system devices􏵵.m_tMep.m_puMissionButtonLights[MISSION_BUS_DAUD_LINK]);
+  
+  􏶲we have determined that the dwnlink panel is directly powered off the essential bus because of the PWR B breaker􏶱
+  􏶲so what does the DL PWR button do on the mission bus panel?􏶱
+  􏶲In our current simulation, nothing.􏶱
+  􏶲Maybe we will have the button light only be possible from the dwnlink cntrl breaker, yet still give the button no functionality (TBD)􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uDwnlnkAduB, 􏵴system devices􏵵.m_tMep.m_uDwnlinkPanel);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴floor panel􏵵.m_uDwnlnkAdu, 􏵴system devices􏵵.m_tMep.m_uDwnlinkPanel);
+  
+  􏶲the mission button is only functional if one of the non-essential buses have power􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uNonessentialBus, 􏵴system devices􏵵.m_tMep.m_uMissionButton);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵, 􏵴system side􏵵[AVI_COPILOT].m_tBuses.m_uNonessentialBus, 􏵴system devices􏵵.m_tMep.m_uMissionButton);
+  
+  ElectricalGraphAddDirectedWire(&ptElectricalCircuit->m_tGraph, ptElectricalCircuit->m_tOverheadPanel.m_uVideoDist, ptElectricalCircuit->m_tSystemDevices.m_tMep.m_uVms);
+  
+􏶳
+
+􏷘-􏷗􏷒connect pneumatic devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_puBleedAirShutOffValve[AVI_PILOT]);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_COPILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_puBleedAirShutOffValve[AVI_COPILOT]);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_puBleedAirMixingValve[AVI_PILOT]);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_COPILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_puBleedAirMixingValve[AVI_COPILOT]);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_uCabinVentilationValve);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_uCabinTemperatureSensor);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_uMixingManifoldOverTemperatureLimitSwitch);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[AVI_PILOT].m_tBuses.m_uEssentialBus,􏵴system devices􏵵.m_tPneumatic.m_uReturnManifoldOverTemperatureLimitSwitch);
+ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uHtgCont,􏵴system devices􏵵.m_tPneumatic.m_uHvacControlBox);
+􏶳
+
+􏷘-􏷗􏷒connect radio devices􏷑
+􏷐􏷏􏶠connect all of the system devices to the rest of the graph􏶡
+􏶴
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uRadAlt,􏵴system devices􏵵.m_tRadio.m_uRadioAltimeter);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCom4Ctrl,􏵴system devices􏵵.m_tRadio.m_uWulfsbergC5000);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uNms1,􏵴system devices􏵵.m_tRadio.m_puGarmin430[0]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uNms2,􏵴system devices􏵵.m_tRadio.m_puGarmin430[1]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uNms1,􏵴system devices􏵵.m_tRadio.m_puNavReceiver[0]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uNms2,􏵴system devices􏵵.m_tRadio.m_puNavReceiver[1]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uAtc,􏵴system devices􏵵.m_tRadio.m_uGtx330);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCm3Rt,􏵴system devices􏵵.m_tRadio.m_uArc231Control);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcsBackup,􏵴system devices􏵵.m_tRadio.m_puAudioPanelBackup[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcsBackup,􏵴system devices􏵵.m_tRadio.m_puAudioPanelBackup[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puIcs[AVI_PILOT],􏵴system devices􏵵.m_tRadio.m_puAudioPanel[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puIcs[AVI_COPILOT],􏵴system devices􏵵.m_tRadio.m_puAudioPanel[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcsCab,􏵴system devices􏵵.m_tRadio.m_puAudioPanelIcsCabin[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcsCab,􏵴system devices􏵵.m_tRadio.m_puAudioPanelIcsCabin[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcAmp,􏵴system devices􏵵.m_tRadio.m_puAudioPanelIcsSpeaker[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcAmp,􏵴system devices􏵵.m_tRadio.m_puAudioPanelIcsSpeaker[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uMkr,􏵴system devices􏵵.m_tRadio.m_uMarkerBeacon);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uDme,􏵴system devices􏵵.m_tRadio.m_puDmeReceiver[AVI_PILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uDme,􏵴system devices􏵵.m_tRadio.m_puDmeReceiver[AVI_COPILOT]);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uVhfTx1,􏵴system devices􏵵.m_tRadio.m_uComReceiver1);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uVhfTx2,􏵴system devices􏵵.m_tRadio.m_uComReceiver2);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCm3Ant,􏵴system devices􏵵.m_tRadio.m_uComReceiver3);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCom4Xcvr,􏵴system devices􏵵.m_tRadio.m_uComReceiver4);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uCom5Xcvr,􏵴system devices􏵵.m_tRadio.m_uComReceiver5);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstrLights,􏵴system devices􏵵.m_tRadio.m_uPanelLights);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uInstrLights,􏵴system devices􏵵.m_tRadio.m_uWaasIndicatorPanelLights);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uNms12Relay,􏵴system devices􏵵.m_tRadio.m_uNmsBacklight);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puDimmTest[ELECTRICAL_SYSTEM_SIDE_LEFT],􏵴system devices􏵵.m_tRadio.m_uDmeButtonLights);
+  
+  􏶲Despite popping an ICS breaker, we think that you can still hear over that ICS.􏶱
+  􏶲Its only after popping both ICS breakers and the ICS Backup breaker that you lose the ability to talk􏶱
+  􏶲Based on the wiring diagrams we think this ability to talk comes from an REU (Remote Electronic Unit)􏶱
+  􏶲We also think that it has power as long as any of the 3 mentioned breakers are receiving power􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puIcs[AVI_PILOT],􏵴system devices􏵵.m_tRadio.m_uRemoteElectronicUnit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_puIcs[AVI_COPILOT],􏵴system devices􏵵.m_tRadio.m_uRemoteElectronicUnit);
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴overhead panel􏵵.m_uIcsBackup,􏵴system devices􏵵.m_tRadio.m_uRemoteElectronicUnit);
+􏶳
+
+􏷘-􏷗􏷒connect cb with essential􏷑
+􏷐Connects all of the necessary 􏶐 cbs to the essential bus􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀Specify what side on the overhead panel.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄cb􏷃􏷀The cb in which to connect to the bus.􏶿
+􏶴
+  􏶲connect cb and bus􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[􏵶side􏵷].m_tBuses.m_uEssentialBus,􏵶cb􏵷);
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,􏵶cb􏵷);
+􏶳
+
+􏷘-􏷗􏷒connect cb with nonessential􏷑
+􏷐Connects all of the necessary 􏶐 cbs to the nonessential bus􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀Specify what side on the overhead panel.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄cb􏷃􏷀The cb in which to connect to the bus.􏶿
+􏶴
+  􏶲connect cb and bus􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[􏵶side􏵷].m_tBuses.m_uNonessentialBus,􏵶cb􏵷);
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,􏵶cb􏵷);
+􏶳
+􏷘-􏷗􏷒connect cb with shed􏷑
+􏷐Connects all of the necessary 􏶐 cbs to the shed bus􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀Specify what side on the overhead panel.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄cb􏷃􏷀The cb in which to connect to the bus.􏶿
+􏶴
+  􏶲connect cb and bus􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[􏵶side􏵷].m_tBuses.m_uShedBus,􏵶cb􏵷);
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,􏵶cb􏵷);
+􏶳
+
+􏷘-􏷗􏷒connect cb with avio shed􏷑
+􏷐Connects all of the necessary 􏶐 cbs to the avio shed bus􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀Specify what side on the overhead panel.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄cb􏷃􏷀The cb in which to connect to the bus.􏶿
+􏶴
+  􏶲connect cb and bus􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[􏵶side􏵷].m_tBuses.m_uAvionicShedBus,􏵶cb􏵷);
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,􏵶cb􏵷);
+􏶳
+
+􏷘-􏷗􏷒connect cb with avio essential􏷑
+􏷐Connects all of the necessary 􏶐 cbs to the avio essential bus􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀Specify what side on the overhead panel.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄cb􏷃􏷀The cb in which to connect to the bus.􏶿
+􏶴
+  􏶲connect cb and bus􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[􏵶side􏵷].m_tBuses.m_uAvionicEssentialBus,􏵶cb􏵷);
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,􏵶cb􏵷);
+􏶳
+
+􏷘-􏷗􏷒connect cb with mission􏷑
+􏷐Connects all of the necessary 􏶐 cbs to the mission bus􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀Specify what side on the overhead panel.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄cb􏷃􏷀The cb in which to connect to the bus.􏶿
+􏶴
+  􏶲connect cb and bus􏶱
+  ElectricalGraphAddDirectedWire(&􏵴graph􏵵,􏵴system side􏵵[􏵶side􏵷].m_tBuses.m_uMissionBus,􏵶cb􏵷);
+  ElectricalGraphConnectNodeToCommonGround(&􏵴graph􏵵,􏵶cb􏵷);
+􏶳
+
+􏶨The entire electrical system represented in a generic electrical graph data structure.􏶧
+􏶦Using the Ids in the electrical boxes below,
+individual nodes on the electrical graph may be queried directly.􏶥
+􏶘-g􏶙􏶰􏶯􏶮ElectricalGraphT􏶭􏶬graph􏶫􏶪0􏶩
+
+􏶨An electrical box of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.􏶥
+􏶘-g􏶙􏶰􏶯􏶮BatteryBoxT􏶭􏶬battery box􏶫􏶪0􏶩
+
+􏶨A system side of the UH72A 􏶏􏶧
+􏶦The redundancy of the DC circuit diagram􏶥
+􏶘-g􏶙􏶰􏶯􏶮DCSystemSideT[2]􏶭􏶬system side􏶫􏶪0􏶩
+
+􏶨The overhead panel of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.
+The panel contains both left and right sides of symmetric devices internally.􏶥
+􏶘-g􏶙􏶰􏶯􏶮OverheadPanelT􏶭􏶬overhead panel􏶫􏶪0􏶩
+
+􏶨The floor panel of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.􏶥
+􏶘-g􏶙􏶰􏶯􏶮FloorPanelT􏶭􏶬floor panel􏶫􏶪0􏶩
+
+􏶨The system devices of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.  
+These are the devices of other systems and will most likely be the leaf nodes.  
+We will try to have device map directly to the power flags between electrical and other systems􏶥
+􏶘-g􏶙􏶰􏶯􏶮SystemDevicesT􏶭􏶬system devices􏶫􏶪0􏶩

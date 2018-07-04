@@ -1,0 +1,102 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Adjust_Functions_To_Allow_Message_Chaining(Structure & structure, C_Export_Settings const& settings)❰
+
+    //TODO: what about functions that the programmer explicitly already chained themselves?
+    //we won't be able to collect/document them.  Yes, we may adjust these conditionals to find methods that are already returning self
+	//I'd prefer if programmers didn't specify it all.  Maybe we can warn them when they do.
+	if (structure.meta.code_type != Code_Type::GLOBAL){
+		for (auto & method: structure.methods.methods){
+			if (Method_Qualifies_To_Have_Method_Chaining_Enforced(method)){
+				Force_Method_Chaining(method,settings);
+			}
+		}
+	}
+❱
+
+◀public: static▶ bool ☀Method_Qualifies_To_Have_Method_Chaining_Enforced(Method_Item const& method)❰
+
+	//we only want to enforce method chaining on
+    //object methods that are:
+	//public and currently returning nothing
+	if (method.class_access == Class_Access::PUBLIC){
+		if (method.return_results.empty()){
+			if (!method.function_arguments.empty()){
+				return true;
+			}
+		}
+	}
+	return false;
+❱
+
+◀private: static▶ void ☀Force_Method_Chaining(Method_Item & item, C_Export_Settings const& settings)❰
+	//to enable method chaining, we take the following steps
+	Add_Return_Argument(item,settings);
+	Adjust_Body_To_Return_Self(item,settings);
+❱
+
+◀private: static▶ void ☀Add_Return_Argument(Method_Item & item, C_Export_Settings const& settings)❰
+	Function_Result result;
+    
+    //steal from first argument
+	result.type = item.function_arguments[0].type;
+    result.identifier = item.function_arguments[0].identifier;
+
+	result.is_mutable = true;
+	result.is_reference = true;
+	result.infinitely_more = false;
+    result.comment.value = as_wstring("return the transformed object to facilitate method chaining");
+    result.usage_requirement = Usage_Requirement::POSSIBLY_IGNORED;
+	item.return_results.push_back(result);
+❱
+◀private: static▶ void ☀Adjust_Body_To_Return_Self(Method_Item & item, C_Export_Settings const& settings)❰
+
+	Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n\n";
+    item.body.push_back(t);
+
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("return self to facilitate method chaining"); 
+    item.body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nreturn ";
+    item.body.push_back(t);
+
+	//add a cast if one is needed to please the compiler
+	Possibly_Add_Const_Cast(item);
+
+    //self
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value =  item.function_arguments[0].identifier.value;
+    item.body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L";\n";
+    item.body.push_back(t);
+	
+❱
+
+◀private: static▶ void ☀Possibly_Add_Const_Cast(Method_Item & item)❰
+
+	//if the parameter passed in was const,
+	//we need to cast away the const before returning it.
+	//is this safe to do?  In C, I think its ok.
+	if (!item.function_arguments[0].is_mutable){
+			Body_Token_Value t;
+		    t.name = Body_Token_Name::REGULAR;
+			t.value =   L"(";
+			t.value +=  item.function_arguments[0].type.value;
+			t.value +=  L"*)";
+			item.body.push_back(t);
+	}
+❱

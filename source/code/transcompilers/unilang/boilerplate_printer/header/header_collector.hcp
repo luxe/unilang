@@ -1,0 +1,287 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/import/import_section"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/unilang-convert/header_extension_deriver"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/implicit_global_header_comment_deriver"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/relationships/import_relationship_comment_deriver"❫
+❪"code/transcompilers/unilang/comment_creator/comment_creator"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/sets/lib"❫
+⚞⚟
+
+//actual string builder functions
+◀public: static▶ std::string ☀Get_Object_Interface_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options)❰
+    std::string str;
+    
+    
+    //create settings for file stream creation
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::C;
+    file_settings.code = Code_Type::PRODUCT_TYPE;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::DATA;
+    
+    auto cased_file_name = File_Name_Getter::Get(file_settings,file_name,options.general.filesystem_naming);
+    
+    Append(str,"#include \"" + cased_file_name + "\"");
+    
+    Append_With_Newline(str,Get_Header_Comment_Start(options.portion.import_options) + "USES: " + Derive_The_Object_Name(file_name,options));
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Derive_The_Object_Name(std::string const& file_name, C_Export_Settings const& options)❰
+
+        switch (options.general.object_export_method){
+        case Object_Export_Method::NORMAL:       return As_Capital_And_Pushed_Together(file_name) + "T";
+        case Object_Export_Method::INPUT_OUTPUT: return As_Capital_And_Pushed_Together(file_name) + "InputsT " + As_Capital_And_Pushed_Together(file_name) + "OutputsT";
+    }
+    return "Invalid";
+❱
+
+
+◀public: static▶ std::string ☀Get_Object_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options)❰
+    std::string str;
+    
+    //recursively pull in the inlined flags (implementation)
+    Remove_Duplicates(imports);
+    
+    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+    auto max_length = Max_Header_File_Length(imports);
+    
+    //create settings for file stream creation
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::C;
+    file_settings.code = Code_Type::PRODUCT_TYPE;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::INTERFACE;
+    
+    //adjust for the obligatory header needed
+    auto needed_header = File_Name_Getter::Get(file_settings,file_name,options.general.filesystem_naming);
+    if (needed_header.length() > max_length){ max_length = needed_header.length();}
+    
+    Append(str,"#include \"" + needed_header + "\"");
+    Append_N_Times(str," ",max_length+1-needed_header.length());
+    Append_With_Newline(str,Get_Header_Comment_Start(options.portion.import_options) + "USES: " + Derive_The_Object_Name(file_name,options));
+    str += Get_Each_Include_Line(imports,max_length,options.portion.import_options);
+        
+    return str;
+❱
+
+//DEPREICATE THIS ONE (C_EXPORT_SETTINGS TOO SPECIFIC)
+◀public: static▶ std::string ☀Get_Object_Data_Headers_For_C(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options)❰
+    std::string str;
+
+	//TODO: settings
+	bool remove_duplicates = true;
+    bool add_header_extensions_if_needed = true; //maybe this should happen in the structure adjust phase?
+    
+    //recursively pull in the inlined flags (interface)
+    if (remove_duplicates){
+    	Remove_Duplicates(imports);
+	}
+    
+    if (add_header_extensions_if_needed){
+    	Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+	}
+    auto max_length = Max_Header_File_Length(imports);
+    str += Get_Each_Include_Line(imports,max_length,options.portion.import_options);
+    Append_With_Newline(str,"");
+    
+    return str;
+❱
+
+
+
+◀public: static▶ std::string ☀Get_Object_Data_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& options)❰
+    std::string str;
+
+	//TODO: settings
+	bool remove_duplicates = true;
+    bool add_header_extensions_if_needed = true; //maybe this should happen in the structure adjust phase?
+    
+    //recursively pull in the inlined flags (interface)
+    if (remove_duplicates){
+    	Remove_Duplicates(imports);
+	}
+    
+    if (add_header_extensions_if_needed){
+    	Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+	}
+    auto max_length = Max_Header_File_Length(imports);
+    str += Get_Each_Include_Line(imports,max_length,options);
+    
+    return str;
+❱
+
+◀public: static▶ std::string ☀Get_Global_Interface_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines,C_Export_Settings const& options)❰
+    std::string str;
+    
+    //recursively pull in the inlined flags (interface)
+    Remove_Duplicates(imports);
+    
+    if (!imports.empty()){
+        Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+        auto max_length = Max_Header_File_Length(imports);
+        str += Get_Each_Include_Line(imports,max_length,options.portion.import_options);
+        Append_With_Newline(str,"");
+    }
+    
+    return str;
+❱
+◀public: static▶ std::string ☀Get_Global_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& settings, std::vector<Method_Item> const& methods)❰
+    std::string str;
+    
+    //recursively pull in the inlined flags (implementation)
+    Remove_Duplicates(imports);
+    
+    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+    auto max_length = Max_Header_File_Length(imports);
+    
+    //adjust for the obligatory header needed
+    auto needed_header = As_Capital_And_Pushed_Together(file_name) + ".h";
+    if (needed_header.length() > max_length){ max_length = needed_header.length();}
+    
+    Append(str,"#include \"" + needed_header + "\"");
+    Append_N_Times(str," ",max_length+1-needed_header.length());
+    
+    //get the implicit comment for the global header's self include
+    auto implicit_comment = Implicit_Global_Header_Comment_Deriver::Derive(methods,settings);
+    
+    Append_With_Newline(str,Get_Header_Comment_Start(settings)  + implicit_comment);
+    str += Get_Each_Include_Line(imports,max_length,settings);
+    Append_With_Newline(str,"");
+    
+    return str;
+❱
+◀public: static▶ std::string ☀Get_Object_Data_And_Interface(std::string file_name,std::vector<Import_Item> imports, Inlined_Structures const& inlines,C_Export_Settings const& options)❰
+
+    std::string str;
+    
+    //recursively pull in the inlined flags (interface)
+    Remove_Duplicates(imports);
+    
+    str += Get_Object_Data_Headers_For_C(file_name,imports,inlines,options);
+    return str;
+❱
+◀public: static▶ std::string ☀Get_Object_Data_Interface_And_Implementation(std::string file_name, Import_Section imports, Inlined_Structures const& inlines,C_Export_Settings const& options)❰
+    std::string str;
+    
+    //recursively pull in the inlined flags (both)
+    auto combined = imports.interface_dependencies + imports.implementation_dependencies;
+    Remove_Duplicates(combined);
+    
+    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(combined);
+    auto max_length = Max_Header_File_Length(combined);
+    str += Get_Each_Include_Line(combined,max_length,options.portion.import_options);
+    Append_With_Newline(str,"");
+    
+    return str;
+❱
+
+
+
+//utility
+◀private: static▶ size_t ☀Max_Header_File_Length(std::vector<Import_Item> const& imports)❰
+
+    //get max length of the imports so we can align the comments
+    size_t max_length = 0;
+    for (auto it: imports){
+        if (it.name.value.size() > max_length){
+            max_length = it.name.value.size();
+        }
+    }
+    return max_length;
+❱
+◀private: static▶ std::string ☀Get_Each_Include_Line(std::vector<Import_Item> const& imports, size_t const& max_length,Import_Options const& settings)❰
+    
+    std::string str;
+
+	//for C/C++
+    //std::string include_keyword = "#include";
+	//std::string after_include_keyword = " ";
+    //std::string system_start = "<";
+    //std::string system_end = ">";
+    //std::string local_start = "\"";
+    //std::string local_end = "\"";
+    //std::string import_statement_delim = "";
+
+	//for HIDL
+    std::string include_keyword = "include";
+	std::string after_include_keyword = " ";
+    std::string system_start = "\"";
+    std::string system_end = "\"";
+    std::string local_start = "\"";
+    std::string local_end = "\"";
+    std::string import_statement_delim = ";";
+
+	bool add_comment_after_delim_statement = false;
+    
+    for (auto it: imports){
+        Append(str,include_keyword);
+        Append(str,after_include_keyword);
+        if (it.type == Import_Type::SYSTEM){
+			auto name = as_string(it.name.value);
+       		Append(str,system_start);
+			Append(str,name);
+			Append(str,system_end);
+            
+        }
+        else{
+            auto name = as_string(it.name.value);
+       		Append(str,local_start);
+			Append(str,name);
+			Append(str,local_end);
+        }
+		
+		//delim and comment stuff
+		Append(str,import_statement_delim);
+		if (add_comment_after_delim_statement){
+		    Append_N_Times(str," ",max_length+1-it.name.value.length());
+		    Append(str,Get_Header_String(it,settings));
+		}
+		Append_With_Newline(str,"");
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Header_String(Import_Item const& item, Import_Options const& settings)❰
+
+  //get relationship string (possibly multi-line, and turn it into a comment
+  auto comment_content = Import_Relationship_Comment_Deriver::Derive(item,settings);
+  auto commented = Comment_Creator::Create_Comment_From_String(comment_content,settings.comment.language);
+  
+  return commented;
+❱
+
+
+◀private: static▶ std::string ☀Get_Header_Comment_Start(Import_Options const& settings)❰
+    std::string comment_start;
+    
+    //left buffer
+    if(settings.space_between_header_and_comment_start){
+      comment_start+=" ";
+    }
+    
+    //real comment start
+    comment_start += "//";
+    
+    //right buffer
+    if (settings.space_between_comment_start_and_comment){
+      comment_start+=" ";
+    }
+    
+    return comment_start;
+❱
+
+
+

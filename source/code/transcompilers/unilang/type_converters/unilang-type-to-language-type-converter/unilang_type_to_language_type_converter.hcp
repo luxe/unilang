@@ -1,0 +1,76 @@
+class
+
+
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/lookup_table/type_conversion_lookup_table"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/lookup_table/unilang_type_to_language_type_table_getter"❫
+⚯
+❪"code/utilities/types/map/lib"❫
+⚞⚟
+
+◀public: static▶ Language_Type ☀Convert_To_Language_Type(std::string unilang_type,Source_Language source_language)❰
+    
+    //get lookup table (eventually from YAML)
+    auto table = Unilang_Type_To_Language_Type_Table_Getter::Get_Lookup_Table();
+    
+    //get the value out of the table if it exists
+    if (Exists_In_Unordered_Map(table.values,unilang_type)){
+        auto value = table.values.at(unilang_type);
+        return Convert_Equivalent_Language_Type_To_Specific_Language(value,source_language);
+    }
+    
+    //if we couldn't convert the unilang type, just use the unilang type as a fallback
+    //for the time being we expect this to happen as we'll be referencing types outside of UniLang's view
+    Language_Type not_found;
+    not_found.name = unilang_type;
+    
+    return not_found;
+❱
+
+◀public: static▶ Inferred_Type_Properties ☀Get_Infered_Type_Properties(std::string unilang_type)❰
+
+    //get lookup table (eventually from YAML)
+    auto table = Unilang_Type_To_Language_Type_Table_Getter::Get_Lookup_Table();
+
+	Equivalent_Language_Types results;
+    if (Exists_In_Unordered_Map(table.values,unilang_type)){
+        results = table.values.at(unilang_type);
+	}
+	return results.inferred_properties;
+❱
+
+◀private: static▶ Language_Type ☀Convert_Equivalent_Language_Type_To_Specific_Language(Equivalent_Language_Types type_collection, Source_Language source_language)❰
+
+    //get correct language type based on enumeration
+    switch (source_language){
+        case Source_Language::C: return type_collection.c;
+        case Source_Language::CPP: return type_collection.cpp;
+        case Source_Language::D:return type_collection.d;
+        case Source_Language::Rust: return type_collection.rust;
+        case Source_Language::HolyC: return type_collection.holyC;
+        case Source_Language::Java: return type_collection.java;
+        case Source_Language::CSharp: return type_collection.csharp;
+        case Source_Language::Pascal: return type_collection.pascal;
+        case Source_Language::Ml: return type_collection.ml;
+        case Source_Language::Go: return type_collection.go;
+        case Source_Language::Elm: return type_collection.elm;
+        case Source_Language::Cobol: return type_collection.cobol;
+        case Source_Language::Ada: return type_collection.ada;
+        case Source_Language::Fsharp: return type_collection.fsharp;
+        case Source_Language::Fortran: return type_collection.fortran;
+        case Source_Language::Haskell: return type_collection.haskell;
+        case Source_Language::Kotlin: return type_collection.kotlin;
+        case Source_Language::Nim: return type_collection.nim;
+        case Source_Language::Scheme: return type_collection.scheme;
+        case Source_Language::Racket: return type_collection.racket;
+        case Source_Language::Scala: return type_collection.scala;
+        case Source_Language::Swift: return type_collection.swift;
+        case Source_Language::Python: return type_collection.python;
+        case Source_Language::BrainFuck: return type_collection.brain_fuck;
+        case Source_Language::HIDL: return type_collection.hidl;
+        default:;
+    }
+    
+    return type_collection.c;
+❱
+

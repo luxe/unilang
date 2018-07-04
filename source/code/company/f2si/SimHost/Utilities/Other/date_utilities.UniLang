@@ -1,0 +1,56 @@
+􏶞g􏶟
+􏷲Common functions relating to calendar dates.􏷱
+􏷰
+Function for determing if a year is a leap year.
+Function for looking up how many days are in a certain month.
+􏷯
+􏷮Date Utilities􏷭 􏷮Date􏷭 􏷮Utilities􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦month􏷥􏷢USES: MonthE􏷡
+􏷤􏷣􏷦stdioLib􏷥􏷢USES: BOOL􏷡
+
+
+􏶘+e􏶙􏶰c􏶯􏶮unsigned int􏶭􏶬number of milliseconds in a day􏶫􏶪86400000􏶩
+􏶘+e􏶙􏶰c􏶯􏶮unsigned int􏶭􏶬number of months in a year􏶫􏶪12􏶩
+
+􏷘+􏷗􏷒number of days in the month􏷑
+􏷐Determine the number of days in a particular month based on the particular year􏷏
+􏶠The number of days in February is contingent on whether the year is a leap year or not.
+This function will abstract that edge case, and allow for querying any month based on the year.􏶡
+􏵪month >= 1 && month <= 12􏵫􏵨The month must be a valid range from the enums (1 - 12)􏵩
+􏶜􏶝􏷆MonthE􏷅􏷄month􏷃􏷀a month given in return for its number of days􏶿
+􏶜􏶝􏷆unsigned int􏷅􏷄year􏷃􏷀the year in which to look up the number of days in the month􏶿
+􏶚m􏶛􏶾unsigned int􏶽􏶼number of days􏶻􏶺the number of days in the given month on the given year; 0 on error􏶹
+􏶴
+􏶲default number of days for each month.
+February is the only exception here. It's not always being 28.􏶱
+static const unsigned int DEFAULT_NUMBER_OF_DAYS[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    􏶲ensure the month passed in is valid􏶱
+    if (􏵶month􏵷 >= MONTH_JAN && 􏵶month􏵷 <= MONTH_DEC){
+
+        􏶲the special case for when it's February and a leap year􏶱
+        if(􏵶month􏵷 == MONTH_FEB && IsLeapYear(􏵶year􏵷))
+        {
+            return 29;
+        }
+
+        􏶲not February on a leap year.  Use the lookup table to get the number of days.􏶱
+        return DEFAULT_NUMBER_OF_DAYS[􏵶month􏵷 - 1];
+    }
+    
+    􏶲if the month is invalid, return 0􏶱
+    return 0;
+
+􏶳
+
+􏷘+􏷗􏷒is leap year􏷑
+􏷐Determine whether the given year is a leap year􏷏
+􏶠An equation is applied that will work on any year to determine whether it is a leap year or not􏶡
+􏶜􏶝􏷆unsigned int􏷅􏷄year􏷃􏷀the year in which to look up the number of days in the month􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼is leap year􏶻􏶺􏵱 if the passed in year is a leap year; 􏵰 if it is not􏶹
+􏶴
+􏶲a well known algorithm for determining if a given year is a leap year
+https://en.wikipedia.org/wiki/Leap_year#Algorithm􏶱
+return (􏵶year􏵷 % 4 == 0 && 􏵶year􏵷 % 100 != 0) || 􏵶year􏵷 % 400 == 0;
+􏶳

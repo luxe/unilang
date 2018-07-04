@@ -1,0 +1,61 @@
+class
+
+❪unordered_set❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_section"❫
+❪"code/transcompilers/unilang/structure/sections/types/type_section"❫
+❪"code/transcompilers/unilang/structure/sections/enum/enum_section"❫
+⚯
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<Data_Member_Item> ☀Find_Data_Members_Of_Type(Data_Member_Section const& data_members, Type_Item const& t)❰
+    std::vector<Data_Member_Item> found;
+    for (auto const& d: data_members.data_members){
+        for (auto const& p: d.parent_types){
+            if (as_string(p.type.value) == as_string(t.name.value)){
+                found.emplace_back(d);
+            }
+        }
+    }
+    return found;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Find_Root_Composition_Parents(Data_Member_Section const& data_members, Enum_Section const& enums)❰
+    
+    //get all parent type names.
+    //these are all the names that might exist as actual data member types later.
+    //if these parent types exist as actual data member types later, then we know they
+    //are not at the root of the composition hierarchy
+    std::unordered_set<std::string> types;
+    for (auto const& a: data_members.data_members){
+        for (auto const& b: a.parent_types){
+            Insert_If_Non_Empty(types,b.type);
+        }
+    }
+    for (auto const& a: enums.enumerated_types){
+        Insert_If_Non_Empty(types,a.name);
+    }
+    
+    //we'll just look at data member types and keep removing them until we are left with the parents
+    for (auto const& a: data_members.data_members){
+        
+        Remove_If_Found(types,as_string(a.type.value));
+        
+        for (auto const& b: a.type_specializations){
+            Remove_If_Found(types,as_string(b.type.value));
+        }
+    }
+    
+    std::vector<std::string> root_names(types.begin(),types.end());
+    return root_names;
+❱
+
+◀private: static▶ void ☀Remove_If_Found(std::unordered_set<std::string> & s, std::string const& str)❰
+    s.erase(str);
+❱
+◀private: static▶ void ☀Insert_If_Non_Empty(std::unordered_set<std::string> & s, Token_Value const& t)❰
+    std::string str = as_string(t.value);
+    if (!str.empty()){
+        s.insert(str);
+    }
+❱

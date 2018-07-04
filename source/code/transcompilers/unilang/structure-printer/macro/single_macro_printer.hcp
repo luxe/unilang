@@ -1,0 +1,151 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/macro/macro_item"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+⚯
+❪"macro_redefinition_message_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/extern_c/macro_define_check_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/extern_c/macro_endif_getter"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+
+⚞⚟
+
+◀public: static▶ void ☀Print(std::wofstream & out, Macro_Item const& item, C_Export_Settings const& options)❰
+    Doxygen_Block_Printer::Print_Block(out,0,as_string(item.brief.value),as_string(item.detail.value),options);
+    auto printable = Get_Printable_Macro(item,options.portion.macro_options);
+    Print_To_Stream(out,printable);
+❱
+
+
+
+//actual grunt work:
+◀private: static▶ std::string ☀Get_Printable_Macro(Macro_Item const& item, Macro_Options const& options)❰
+    
+    //get identifier and value
+    auto name = Case_Modifier::As_Modified_Casing(options.casing,as_string(item.name.value));
+    auto value = as_string(item.value.value);
+
+    auto actual_definition = Get_Actual_Definition(name,value,options);
+    auto redefinition_error = Macro_Redefinition_Message_Getter::Get(name,value,options);
+
+    //possibly wrap with an ifndef guard (useful for changing MACROS during a build
+    //http://stackoverflow.com/questions/32398612/why-only-define-a-macro-if-its-not-already-defined
+    //we will also potentially add an error on redefinition.
+    return As_Macro_With_Optional_Guards(actual_definition,redefinition_error,name,options);
+❱
+
+◀private: static▶ std::string ☀As_Macro_With_Optional_Guards(std::string definition, std::string redefinition_error, std::string name, Macro_Options const& options)❰
+    if (options.redefinition_guards){
+        definition = Decide_How_To_Wrap_Guards(definition,redefinition_error,name,options);
+    }
+    
+    return definition;
+❱
+
+◀private: static▶ std::string ☀Decide_How_To_Wrap_Guards(std::string definition, std::string redefinition_error, std::string name, Macro_Options const& options)❰
+  
+  std::string str;
+  
+  std::string trimmed_macro_name = Trim_Off_Parens_If_Macro_Function(name);
+  
+  //we swap these values based on how we are printing
+  if (options.if_else_style == If_Else_Style::IF_FALSE_ELSE){
+  
+    //definition first
+    str += Macro_Define_Check_Getter::Get_False(options.check,trimmed_macro_name) + "\n";
+    str += Definition_When_First(definition,trimmed_macro_name,options);
+    str += Redef_Message_When_Last(redefinition_error,options);
+    str += Macro_Endif_Getter::Get(trimmed_macro_name,options.end_comment,options.directives) + "\n";
+    
+    
+  }else{
+  
+    //definition second
+    str += Macro_Define_Check_Getter::Get_True(options.check,trimmed_macro_name) + "\n";
+    str += Redef_Message_When_First(redefinition_error,options);
+    str += Definition_When_Last(definition,trimmed_macro_name,options);
+    str += Macro_Endif_Getter::Get(trimmed_macro_name,options.end_comment,options.directives) + "\n";
+    
+  }
+  
+  return str;
+❱
+
+◀private: static▶ std::string ☀Definition_When_First(std::string definition, std::string trimmed_macro_name, Macro_Options const& options)❰
+  std::string str;
+    str += definition + "\n";
+  
+  return str;
+❱
+◀private: static▶ std::string ☀Definition_When_Last(std::string definition, std::string trimmed_macro_name, Macro_Options const& options)❰
+  std::string str;
+  
+    str += options.directives.ELSE_STR + "\n";
+    str += definition + "\n";
+  
+  return str;
+❱
+◀private: static▶ std::string ☀Redef_Message_When_First(std::string redefinition_error, Macro_Options const& options)❰
+  std::string str;
+    
+    if (options.redefinition.print_redefinition_message){
+      str += Decide_Redefinition_Value(redefinition_error,options);
+    }
+  
+  return str;
+❱
+◀private: static▶ std::string ☀Redef_Message_When_Last(std::string redefinition_error, Macro_Options const& options)❰
+  std::string str;
+  
+    if (options.redefinition.print_redefinition_message){
+      str += options.directives.ELSE_STR + "\n";
+      str += Decide_Redefinition_Value(redefinition_error,options);
+    }
+  
+  return str;
+❱
+
+
+◀private: static▶ std::string ☀Decide_Redefinition_Value(std::string redefinition_error, Macro_Options const& options)❰
+    std::string str;
+    if (options.redefinition.print_redefinition_message){
+     if (redefinition_error.empty()){
+       if (!options.only_show_else_portion_when_there_is_content_there){
+        str += redefinition_error + "\n";
+       }
+     }
+     else{
+      str += redefinition_error + "\n";
+     }
+    }
+    return str;
+❱
+
+
+◀private: static▶ std::string ☀Get_Actual_Definition(std::string name, std::string value, Macro_Options const& options)❰
+  std::string actual_definition = options.directives.DEFINE_STR + " " + name + " " + value;
+  return actual_definition;
+❱
+
+
+
+◀private: static▶ std::string ☀Trim_Off_Parens_If_Macro_Function(std::string str)❰
+    std::string ret;
+    
+    for (auto it: str){
+        if (it != '('){
+            ret += it;
+        }else{
+            break;
+        }
+    }
+    
+    trim(ret);
+    
+    return ret;
+❱

@@ -1,0 +1,69 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure-printer/implicit_contract_adder"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ Method_Item ☀Create(Structure const& structure, bool dumb_way)❰
+
+    //build up fake params
+    Method_Item m;
+    
+    m.class_access = Class_Access::PUBLIC;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    m.storage = Storage_Specifier::NONE;
+    m.overload_specifiers.is_const = false;
+    m.names.function_name.value = L"destruct " + as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name) + " T");
+    m.brief_description.value = L"Destructs the " + as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L" in order to free its dynamic allocations";
+    m.detailed_description.value = L"Before the lifetime is over, this function must be called. After this function is called, the " + as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name)) + L" can no longer be used";
+    m.subgroup.value = L"memory management";
+    
+    //set expected params
+    Function_Argument one;
+    one.is_mutable = true;
+    one.is_reference = true;
+    one.type.value = L"void";
+    if (dumb_way){
+        one.identifier.value = L"outputs";
+    }
+    else{
+        one.identifier.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    }
+    
+    one.comment.value = L"Represents the internal state of the object.\nThe internal state of the object will be destructed,\nand this will free any internally allocated memory.";
+    
+    m.function_arguments.push_back(one);
+    
+    Add_Body(structure.name,m,structure.methods.methods);
+    
+    m.contracts += Implicit_Contract_Adder::Get_Implicit_Contracts_For_Destructor_Method(as_string(one.identifier.value));
+    
+    return m;
+❱
+
+◀private: static▶ void ☀Add_Body(std::string file_name, Method_Item & m, std::vector<Method_Item> const& methods)❰
+
+    auto destructor = Get_Destructor(file_name,methods);
+    m.body = destructor.body;
+❱
+
+◀private: static▶ Method_Item ☀Get_Destructor(std::string file_name, std::vector<Method_Item> const& methods)❰
+
+    for (auto it: methods){
+        if (Shared_Printer::Is_Destructor(file_name,it)){
+            return it;
+        }
+    }
+    
+    
+    return Method_Item{};
+❱

@@ -1,0 +1,101 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Printable_Data_Member_Without_Obj(std::vector<Data_Member_Item> const& members, std::string const& used, C_Export_Settings const& options, std::string implicit_name, bool const& object_method)❰
+    
+    //get the data member
+    auto item = Look_Up_Data_Member_And_Throw_If_We_Cant_Find_It(members,used);
+    
+    std::string derived;
+    
+    //decide how to print it based on the context of being an object or a global set of functions
+    if (object_method){ derived = Handle_Object_Member(options,implicit_name,item,false); }
+    else{ derived = Handle_Global_Member(options,item); }
+    
+    return derived;
+    
+❱
+◀public: static▶ std::string ☀Get_Printable_Data_Member(std::vector<Data_Member_Item> const& members, std::string const& used, C_Export_Settings const& options, std::string implicit_name, bool const& object_method)❰
+    
+    //get the data member
+    auto item = Look_Up_Data_Member_And_Throw_If_We_Cant_Find_It(members,used);
+    
+    std::string derived;
+    
+    //decide how to print it based on the context of being an object or a global set of functions
+    if (object_method){derived = Handle_Object_Member(options,implicit_name,item,true);}
+    else{derived = Handle_Global_Member(options,item);}
+    
+    return derived;
+    
+❱
+
+◀private: static▶ std::string ☀Handle_Object_Member(C_Export_Settings const& options, std::string implicit_name, Data_Member_Item const& item, bool include_obj_part)❰
+    
+	std::string derived = Get_Implicit_Parameter_Part(item,include_obj_part,implicit_name);
+    
+    //derive the actual data member name
+    derived += Identifier_Name_Deriver::Derive_Name(item,options,false,true);
+    
+    
+    return derived;
+❱
+
+◀private: static▶ std::string ☀Get_Implicit_Parameter_Part(Data_Member_Item const& item, bool const& include_obj_part, std::string implicit_name)❰
+	std::string derived;
+
+	if (include_obj_part){
+		derived += Self_Identifier(implicit_name) + "->";
+	}
+
+	if (Shared_Printer::Data_Member_Qualifies_As_Local(item)){
+	    derived += "m_tLocals.";
+	}
+	
+	return derived;
+❱
+
+◀private: static▶ std::string ☀Handle_Global_Member(C_Export_Settings const& options, Data_Member_Item const& item)❰
+    std::string derived;
+    
+    derived += Identifier_Name_Deriver::Derive_Name(item,options,true,false);
+    
+    return derived;
+❱
+
+
+
+◀private: static▶ Data_Member_Item ☀Look_Up_Data_Member_And_Throw_If_We_Cant_Find_It(std::vector<Data_Member_Item> const& members, std::string const& used)❰
+    
+    //first make sure that the data member actually exists.
+    Data_Member_Item item;
+    bool found = false;
+    for (auto it: members){
+        if (as_string(it.name.value) == used){
+            found=true;
+            item = it;
+        }
+    }
+    
+    if (!found){
+        Exit_With_Red_Error("Didn't find the data member " + used + " when looking it up from the method body.");
+    }
+    
+    return item;
+❱
+
+◀private: static▶ std::string ☀Self_Identifier(std::string const& implicit_name)❰
+	return std::string("pt") + As_Capital_And_Pushed_Together(implicit_name);
+❱

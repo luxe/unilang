@@ -1,0 +1,127 @@
+􏶞p􏶟
+􏷲electrical debug actions applied by the user during runtime􏷱
+􏷰The user can call methods to set these values which will tell the electrical system that a debug action is requested􏷯
+􏷮electrical􏷭􏷮debug settings􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦D_C_power_system􏷥􏴓1􏴔􏴑DCPowerSystemT􏴒
+􏷤􏷣􏷦electrical_debug_actions􏷥􏴓1􏴔􏴑ElectricalDebugE􏴒
+
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be set to no actions and no logging􏶡
+􏴅memory management􏴆
+􏶴
+    􏶲ensure that no action is set􏶱
+    􏵲clear􏵳);
+    
+    􏶲initialize logging state􏶱
+    􏵴logging􏵵 = 􏵰;
+    􏵴up to date􏵵 = 􏵰;
+    
+    􏶲initialize a DC Power System for comparing against􏶱
+    InitializeDCPowerSystem(&􏵴previous state􏵵);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏴅memory management􏴆
+􏶜r􏶝􏷆ElectricalDebugSettingsT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏴅memory management􏴆
+􏶜r􏶝􏷆ElectricalDebugSettingsT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform shallow copy􏶱
+    􏵴ready to inspect􏵵 = 􏵶self􏵷->m_bReadyToInspect;
+    􏵴node search id􏵵 = 􏵶self􏵷->m_uNodeSearchId;
+    􏵴action􏵵 = 􏵶self􏵷->m_eAction;
+    
+    􏶲copy logging state􏶱
+    􏵴logging􏵵 = 􏵶self􏵷->m_bLogging;
+    􏵴up to date􏵵 = 􏵶self􏵷->m_bUpToDate;
+    
+    􏶲perform deep copy􏶱
+    CopyInitializeDCPowerSystemT(&􏵴previous state􏵵,&􏵶self􏵷->m_tPreviousState);
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏴅memory management􏴆
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏴅memory management􏴆
+􏶴
+    DestructDCPowerSystemT(&􏵴previous state􏵵);
+􏶳
+
+
+􏷘+􏷗􏷒clear􏷑
+􏷐clears the current debug actions􏷏
+􏶠this is called after the debug actions have been performed􏶡
+􏴅transformer􏴆
+􏶴
+    􏶲clear the debug settings􏶱
+    􏵴ready to inspect􏵵 = 􏵰;
+    􏵴action􏵵 = ELECTRICAL_DEBUG_NO_ACTION;
+􏶳
+
+􏷘+􏷗􏷒ready􏷑
+􏷐sets the current debug actions as ready to execute􏷏
+􏶠this is called to inform the system that the parameters are ready and the debug action can be processed􏶡
+􏴅transformer􏴆
+􏶴
+    􏶲clear the debug settings􏶱
+    􏵴ready to inspect􏵵 = 􏵱;
+􏶳
+
+􏷘+􏷗􏷒is ready􏷑
+􏷐checks whether the debug action is ready to be executed􏷏
+􏶠this is checked by the system to ensure there is a debug action ready and all the debug action parameters have been loaded􏶡
+􏴅observer􏴆
+􏶚m􏶛􏶾bool􏶽􏶼is ready􏶻􏶺whether or not there is a pending debug action􏶹
+􏶴
+    return 􏵴ready to inspect􏵵;
+􏶳
+
+AVOID RACE CONDITIONS:
+􏶨indicates to the electrical system that a debugging action is required􏶧
+􏶦it's important to tell the system that the user would like to inspect the graph,
+because we want not want to  observe it in the middle of an update.  The debugging action
+is checked after the graph has been updated and is stable.  
+A debugging action may also take additional parameters.  We set the debugging flag last
+to ensure that all of the parameters are set before executing the user command.􏶥
+􏶘-g􏶙􏶰􏶯􏶮bool􏶭􏶬ready to inspect􏶫􏵚􏵛􏶪􏶩
+
+ACTION:
+􏶨the action taken by the user􏶧
+􏶦Set to an action decided by the user at runtime􏶥
+􏶘-g􏶙􏶰􏶯􏶮ElectricalDebugE􏶭􏶬action􏶫􏵚􏵛􏶪􏶩
+
+SEARCH PARAMS
+􏶨perform a node lookup based on an input string or id􏶧
+􏶦Used to query the state of nodes based on a matching substring in the node's name or via id􏶥
+􏶘-g􏶙􏶰􏶯􏶮size􏶭􏶬node search id􏶫􏵚􏵛􏶪􏶩
+􏶘-g􏶙􏶰􏶯􏶮char*􏶭􏶬node search name􏶫􏵚􏵛􏶪􏶩
+
+
+LOGGING STATE:
+􏶘-g􏶙􏶰􏶯􏶮bool􏶭􏶬logging􏶫􏵚􏵛􏶪􏶩
+􏶘-g􏶙􏶰􏶯􏶮bool􏶭􏶬up to date􏶫􏵚􏵛􏶪􏶩
+􏶘-g􏶙􏶰􏶯􏶮DCPowerSystemT􏶭􏶬previous state􏶫􏵚􏵛􏶪􏶩

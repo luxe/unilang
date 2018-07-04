@@ -1,0 +1,50 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+
+⚞⚟
+
+◀public: static▶ void ☀Print_Declerations(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    for (auto it: structure.methods.methods){
+        if (!Shared_Printer::Is_Constructor_Or_Destructor(structure.name,it)){
+            it.storage = Storage_Specifier::STATIC;
+            auto implicit = Get_The_Implicit_Argument(structure);
+            Add_To_Front(it.function_arguments,implicit);
+            Methods_Printer::Print_Method_Interface(out,structure.name,Code_Type::GLOBAL,it,options);
+        }
+    }
+❱
+◀public: static▶ void ☀Print_Definitions(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    for (auto it: structure.methods.methods){
+        if (!Shared_Printer::Is_Constructor_Or_Destructor(structure.name,it)){
+            it.storage = Storage_Specifier::STATIC;
+            auto implicit = Get_The_Implicit_Argument(structure);
+            Add_To_Front(it.function_arguments,implicit);
+            Methods_Printer::Print_Method_Implementation(out,structure.name,Code_Type::GLOBAL,it,structure.data_members.data_members,structure.methods.methods,true,options,"outputs",Object_Export_Method::INPUT_OUTPUT);
+        }
+    }
+❱
+
+◀private: static▶ Function_Argument ☀Get_The_Implicit_Argument(Structure const& structure)❰
+    Function_Argument implicit;
+    auto name = as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name));
+    auto type = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    implicit.is_mutable = true;
+    implicit.is_reference = true;
+    implicit.type.value =  type + L"OutputsT";
+    implicit.identifier.value = L" outputs";
+    implicit.comment.value = L"the internal state of " + name;
+    
+    
+    return implicit;
+❱

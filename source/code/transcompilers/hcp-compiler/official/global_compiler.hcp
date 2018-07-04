@@ -1,0 +1,78 @@
+class
+❪iostream❫
+❪string❫
+❪fstream❫
+❪"class_structure"❫
+⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/wstrings/transformers/trimming/lib"❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public:▶
+
+◀static▶ void ☀Compile_HCP_File(Class_Structure const& structure, std::string const& directory)❰
+
+	std::string header_name = As_Removed_Suffix(structure.Path_To_File_Name())+ ".hpp";
+	std::string source_name = As_Removed_Suffix(structure.Path_To_File_Name()) + ".cpp";
+
+	  if (!directory.empty()){
+		header_name = directory + "/" + Get_File_Name(header_name);
+		source_name = directory + "/" + Get_File_Name(source_name);
+	}
+
+    //std::cout << structure.Path_To_File_Name() << std::endl;
+    //std::cout << header_name << std::endl;
+    //std::cout << source_name << std::endl;
+
+    std::wofstream hpp_stream(header_name);
+    std::wofstream cpp_stream(source_name);
+
+    auto str = As_Removed_Suffix(structure.File_Name());
+    std::wstring wstr(str.begin(),str.end());
+    cpp_stream << "#include " << '"' << wstr << ".hpp" << '"' << '\n';
+    hpp_stream << "#pragma once\n";
+    Print_Include_Files(hpp_stream,structure.Header_Includes());
+    Print_Include_Files(cpp_stream,structure.Source_Includes());
+    hpp_stream << '\n';
+    cpp_stream << '\n';
+
+    //dump hpp code wrapped in class name
+    Dump_HPP(hpp_stream,structure,structure.File_Name());
+
+    //dump cpp
+    cpp_stream << structure.CPP_Code();
+❱
+
+◀static▶ void ☀Print_Include_Files(std::wofstream & outfile, std::vector<std::pair<std::wstring,bool>> const& includes)❰
+
+    for (auto it: includes){
+        if (it.second){
+            outfile << "#include ";
+            if (Begins_And_Ends_With(it.first,L'"')){
+                outfile << As_Last_Char_Removed(it.first) << ".hpp\"";
+            }else{
+                outfile << "<" << it.first << ">";
+            }
+            outfile << '\n';
+        }
+    }
+❱
+
+◀static▶ void ☀Dump_HPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file)❰
+
+    //dump
+    outfile << structure.HPP_Code();
+    
+❱
+
+◀
+friend std::ostream &operator<<( std::ostream & out, ◈ const& self){
+	return out;
+}
+▶
+◀private:▶

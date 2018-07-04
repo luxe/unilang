@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+TRUE=0
+FALSE=1
+
+#the full path to this script
+DIR_OF_THIS_SCRIPT=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd );
+
+#pull in all the functions
+for f in $(find $DIR_OF_THIS_SCRIPT/functions -type f); do . $f; done;
+
+#Check the internet connection before continuing
+Check_Internet_Connection;
+if [ $? -eq $TRUE ]; then 	green_message "Internet Connection Is Good";
+else Exit_With_Error "Internet Connection Failed"; fi;
+
+#set the terminal tab width and clear the screen
+tabs 2; clear;
+
+#with sudo
+if [ "$UID" -eq 0 ]; then Do_Root_Configuration;
+
+#without sudo
+else Do_User_Configuration; fi;

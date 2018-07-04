@@ -1,0 +1,238 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
+❪"code/transcompilers/unilang/options/sections/meta/meta_options"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_author_printer"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/options/sections/meta/meta_watermark_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/notes/meta_note_creator"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_company_name_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_copyright_statement_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_classification_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_project_name_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_contract_number_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_task_order_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_contract_statement_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_distribution_statement_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_organizations_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_copyright_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_file_statement_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/notes/meta_notes_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_external_links_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_group_names_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_blank_line_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_contract_statement_getter"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/transformers/watermark/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print(std::string file_name, std::wofstream & out, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options,bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+
+    auto str = Get_Printable_Meta_Block_Comment(file_name,file_settings,meta,options,contains_data,contains_methods, final_file_name);
+    Print_To_Stream_With_Newline(out,str);
+
+❱
+
+
+◀private: static▶ std::string ☀Get_Printable_Meta_Block_Comment(std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+    
+    std::string str;
+    
+    if (options.print_block){
+        
+        auto block_text = Get_Block_Text(file_name,file_settings,meta,options,contains_data,contains_methods,final_file_name);
+        str = As_Comment(block_text,options);
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀As_Comment(std::string block_text, Meta_Options const& options)❰
+
+    //turn block text into a comment
+    //TODO: choose between language / doxygen comment
+    //its called comment category...
+    
+    //first indent the string
+    rtrim(block_text);
+    Indent_Each_Line(block_text,3);
+    
+    //convert into doxygen input
+    auto vec_pair = Put_Each_Line_Of_String_Into_A_Vector_Of_Pairs_Where_The_First_Pair_Elements_Are_Empty(block_text);
+    Doxygen_Data dox_data;
+    dox_data.lines = vec_pair;
+    
+    //create doxygen comment
+    auto final = Doxygen_Block_Maker::Create_Doxygen_Block(dox_data,options.comment_settings.doxygen);
+    
+    
+    return final;
+❱
+
+◀private: static▶ std::string ☀Get_Block_Text(std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+    std::string block_text;
+    for (auto const& section_name: options.section_order){
+        
+        auto section = Get_Printable_Section(section_name,file_name,file_settings,meta,options,contains_data,contains_methods,final_file_name);
+        Append(block_text,section);
+    }
+    return block_text;
+❱
+
+◀private: static▶ std::string ☀Get_Printable_Section(Meta_Section_Name const& section_name, std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+    std::string str;
+    
+    switch (section_name){
+        case Meta_Section_Name::FILE_TAG:             Append(str,Meta_File_Statement_Getter::Get(final_file_name,options.file));                                              break;
+        case Meta_Section_Name::BLANK_LINE:           Append(str,Meta_Blank_Line_Getter::Get(options.blank_lines));                                                     break;
+        case Meta_Section_Name::GENERIC_NOTE:         Append(str,Meta_Notes_Getter::Get(file_name,file_settings,options.generic_note,contains_data,contains_methods));  break;
+        case Meta_Section_Name::BRIEF:                Append(str,Get_Brief_Part(as_string(meta.brief_description.value),options.brief));                                break;
+        case Meta_Section_Name::DETAILS:              Append(str,Get_Details_Part(as_string(meta.detailed_description.value),options.details));                         break;
+        
+        case Meta_Section_Name::COMPANY_NAME:            Append(str,Meta_Company_Name_Getter::Get(options.organizations));                                              break;
+        case Meta_Section_Name::COPYRIGHT_STATEMENT:     Append(str,Meta_Copyright_Statement_Getter::Get(options.copyright_statement));                                 break;
+        case Meta_Section_Name::CLASSIFICATION:          Append(str,Meta_Classification_Getter::Get(options.classification,options.classification_settings));           break;
+        case Meta_Section_Name::PROJECT_NAME:            Append(str,Meta_Project_Name_Getter::Get(options.project_name,options.project_name_settings));                                               break;
+        case Meta_Section_Name::CONTRACT_NUMBER:         Append(str,Meta_Contract_Number_Getter::Get(options.contract_number,options.contract_number_settings));        break;
+        case Meta_Section_Name::TASK_ORDER:              Append(str,Meta_Task_Order_Getter::Get(options.task_order,options.task_order_settings));                                                   break;
+        case Meta_Section_Name::CONTRACT_STATEMENT:      Append(str,Meta_Contract_Statement_Getter::Get(options.contract_statement));                                   break;
+        case Meta_Section_Name::DISTRIBUTION_STATEMENT:  Append(str,Meta_Distribution_Statement_Getter::Get(options.distribution_statement,options.distribution_statement_settings));                           break;
+        case Meta_Section_Name::ORGANIZATIONS:           Append(str,Meta_Organizations_Getter::Get(options.organizations,options.organization_settings));               break;
+        
+        case Meta_Section_Name::EXTERNAL_LINKS: Append(str,Meta_External_Links_Getter::Get());                                                                          break;
+        case Meta_Section_Name::COPYRIGHT:      Append(str,Meta_Copyright_Getter::Get(options.copyright,options.organizations));                                                              break;
+        case Meta_Section_Name::GROUP_NAMES:    Append(str,Meta_Group_Names_Getter::Get(meta.group_names,options.group_names));                                         break;
+        case Meta_Section_Name::AUTHOR:         Append(str,Meta_Author_Printer::Get(meta.authors,options.authors));                                                     break;
+        case Meta_Section_Name::BUG:            Append(str,Get_Bugs_Part(meta.bugs,options.bugs));                                                                      break;
+        case Meta_Section_Name::WARNING:        Append(str,Get_Warnings_Part(meta.warnings,options.warnings));                                                          break;
+        case Meta_Section_Name::WATERMARK:      Append(str,Get_Watermark_Part(options.watermark_settings)); break;
+        default: Exit_With_Error("unknown meta section name\n");
+    }
+    
+    return str;
+❱
+
+
+
+
+◀private: static▶ std::string ☀Get_Brief_Part(std::string brief_description, Meta_Brief_Tag_Options const& options)❰
+    std::string str;
+    if (options.existence.print){
+        str += Potentially_Print_Multiline_Tag("brief",brief_description,options.existence.print_when_empty);
+    }
+    return str;
+❱
+◀private: static▶ std::string ☀Get_Details_Part(std::string detailed_description, Meta_Details_Tag_Options const& options)❰
+    std::string str;
+    if (options.existence.print){
+        str += Potentially_Print_Multiline_Tag("details",detailed_description,options.existence.print_when_empty);
+    }
+    return str;
+❱
+◀private: static▶ std::string ☀Get_Bugs_Part(std::vector<Token_Value> const& bugs, Meta_Bug_Tag_Options const& options)❰
+    std::string str;
+    if (options.existence.print){
+        str += Potentially_Print_Multiline_Tag("bug",bugs,options.existence.print_when_empty);
+    }
+    return str;
+❱
+◀private: static▶ std::string ☀Get_Warnings_Part(std::vector<Token_Value> const& warnings, Meta_Warning_Tag_Options const& options)❰
+    std::string str;
+    if (options.existence.print){
+        str += Potentially_Print_Multiline_Tag("warning",warnings,options.existence.print_when_empty);
+    }
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Watermark_Part(Meta_Watermark_Settings const& options)❰
+    std::string str;
+    if (options.print){
+        auto watermark = as_string(Flatten(Str_To_Watermark(options.message)));
+        str += watermark;
+    }
+    return str;
+❱
+
+
+◀private: static▶ std::string ☀Potentially_Print_Multiline_Tag(std::string tag_name, std::vector<Token_Value> tokens, bool print_when_empty)❰
+    std::string str;
+    
+        //if there is data to print
+        if (!tokens.empty()){
+            for (auto const& it: tokens){
+                str += Get_Multiline_Tag(tag_name,as_string(it.value));
+            }
+        }
+        
+        //if there is NOT data to print
+        else{
+            if (print_when_empty){
+                str += Get_Multiline_Tag(tag_name,"");
+            }
+        }
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Potentially_Print_Multiline_Tag(std::string tag_name, std::string token, bool print_when_empty)❰
+    std::string str;
+    
+        if (!token.empty()){
+            str += Get_Multiline_Tag(tag_name,token);
+        }
+        
+        //if there is NOT data to print
+        else{
+            if (print_when_empty){
+                str += Get_Multiline_Tag(tag_name,token);
+            }
+        }
+    
+    return str;
+❱
+
+
+
+◀public: static▶ std::string ☀Get_Multiline_Tag(std::string tag, std::string content)❰
+
+    std::string str;
+    
+    if (!content.empty()){
+        std::string start_tag_line = "@" + as_string(tag) + " ";
+        Append(str,start_tag_line);
+        auto new_content = as_string(content);
+        trim(new_content);
+        auto lines = Split_Into_Parts_From_Delimiter(new_content,'\n');
+        
+        Call_Function_On_First_Element_And_Then_Function_On_The_Rest_Of_The_Elements(lines
+        ,[&](std::string s){Append_With_Newline(str,s);}
+        ,[&](std::string s){
+            Append(str,"");
+            Append_N_Times(str," ",start_tag_line.size());
+            Append_With_Newline(str,s);
+        }
+        );
+        
+        bool append_line_after_each_tag = false;
+        if (append_line_after_each_tag){
+            Append_With_Newline(str,"");
+        }
+    }
+    
+    return str;
+❱
+
+
+

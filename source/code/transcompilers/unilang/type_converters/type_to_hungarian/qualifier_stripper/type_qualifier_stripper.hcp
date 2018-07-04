@@ -1,0 +1,84 @@
+class
+❪string❫
+❪"stripped_unilang_type_with_qualifiers"❫
+
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ Stripped_Unilang_Type_With_Qualifiers ☀Strip_To_Base_Unilang_Type(std::string const& stored_type, bool const& is_reference◀=false▶)❰
+    Stripped_Unilang_Type_With_Qualifiers qualifiers;
+    
+    
+    //firstly, there might be some const/&/*/[] junk on a certain side of the type name, so let's check that, and remove it if it's there.
+    auto type       = stored_type;
+    trim(type); //handle any whitespace on either side
+    
+    //decide if the type is a pointer or not.
+    //if it is, also strip out the information that told us that.
+    //we don't need it anymore, because we're trying to derive the actual base type
+    Get_Pointer_Data_From_Type(qualifiers,type);
+    
+    //In C, it is also a pointer if the argument qualifies as a reference
+    //we store this as just a reference notifier, and rely on the dresser, to add the appropriate *const
+    qualifiers.is_reference = is_reference;
+    
+    //decide if the type is an array or not
+    //if it is, also strip out the information that told us that.
+    //we want that base type!
+    Decide_Array_Details(qualifiers,type);
+    
+    //the type has been adjusted while stripping out pointers, arrays, and references
+    //we can now store the base type
+    qualifiers.base_type = type;
+    
+    return qualifiers;
+❱
+
+◀private: static▶ void ☀Get_Pointer_Data_From_Type(Stripped_Unilang_Type_With_Qualifiers & qualifiers, std::string & raw_type)❰
+
+    //C/C++ specific right now
+    const std::string REFERENCE = "&";
+    const std::string CONST_PTR = "*const";
+    const std::string PTR = "*";
+    
+    //if it can be categorized as a pointer, trim off these pointer indications to be get the base type
+    if (Begins_Or_Ends_With(raw_type,REFERENCE)){
+        Remove_Match_Found_At_Beginning_Or_End(raw_type,REFERENCE);
+        qualifiers.is_pointer = true;
+        qualifiers.is_const_on_pointer = true;
+    }
+    
+    else if(Ends_With(raw_type,CONST_PTR)){
+        Remove_Match_Found_At_End(raw_type,CONST_PTR);
+        qualifiers.is_pointer = true;
+        qualifiers.is_const_on_pointer = true;
+    }
+    
+    else if(Ends_With(raw_type,PTR)){
+        Remove_Match_Found_At_End(raw_type,PTR);
+        qualifiers.is_pointer = true;
+        qualifiers.is_const_on_pointer = false;
+    }
+    
+    else{
+        qualifiers.is_pointer = false;
+        qualifiers.is_const_on_pointer = false;
+    }
+❱
+
+◀private: static▶ void ☀Decide_Array_Details(Stripped_Unilang_Type_With_Qualifiers & qualifiers, std::string & type)❰
+
+    //get the array part out (if there is one)
+    qualifiers.array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+    
+    //decide if it is an array based on what we parsed out
+    qualifiers.is_array = true;
+    if (qualifiers.array_part.empty()){
+        qualifiers.is_array = false;
+    }
+❱

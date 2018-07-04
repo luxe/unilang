@@ -1,0 +1,108 @@
+class
+
+❪vector❫
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/tokens/token_group"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+//TODO: it sucks that I have to specify the tokens that "do not need to be specified for uniqueness
+//Aren't they just any token that's on a deeper level.  I suspect we can clean this up.
+//Plus, I added a new token and forgot to update it here, and caused me problems.
+
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Dont_Split(std::vector<Parser_Token> const& tokens)❰
+    std::vector<std::vector<Parser_Token>> all;
+    all.push_back(tokens);
+    return all;
+❱
+
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
+    std::vector<std::vector<Parser_Token>> all;
+    std::vector<Parser_Token> some;
+    
+    for (auto it: tokens){
+        some.push_back(it);
+        if (In_Vector(it.token.groups,Token_Group::FUNCTION_BODY)){
+            all.push_back(some);
+            some.clear();
+        }
+    }
+    
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Object_Template_Chunks(std::vector<Parser_Token> const& tokens)❰
+    
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+	{Token_Group::OBJECT_TEMPLATE_ARGUMENT_CONCEPTS});
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Stamp_Chunks(std::vector<Parser_Token> const& tokens)❰
+    
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+	{Token_Group::FUNCTION_STAMP_VALUE});
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Data_Member_Chunks(std::vector<Parser_Token> const& tokens)❰
+    
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+	{Token_Group::DATA_MEMBER_KEY_VALUES
+    ,Token_Group::DATA_MEMBER_VALUE_CONSTRAINTS
+    ,Token_Group::DATA_MEMBER_VALUE_MEANING
+	,Token_Group::DATA_MEMBER_VALUE_TRANSITION_MEANING
+    ,Token_Group::DATA_MEMBER_SCOPE
+    ,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS
+    ,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE
+    ,Token_Group::DATA_MEMBER_TYPE_MODULE_DEPENDENCIES
+    ,Token_Group::DATA_MEMBER_TYPE_LIBRARY_DEPENDENCIES
+    ,Token_Group::PARENT_TYPES
+	});
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Specialization_Scopes(std::vector<Parser_Token> const& tokens)❰
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+    {Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE
+	});
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Typedef_Chunks(std::vector<Parser_Token> const& tokens)❰
+    
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+	{Token_Group::TYPEDEF_RESULT, Token_Group::TYPEDEF_ARGUMENT}
+	);
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Interface_Import_Chunks(std::vector<Parser_Token> const& tokens)❰
+
+	auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+	{Token_Group::IMPORT_INTERFACE_RELATIONSHIP}
+	);
+	return all;
+❱
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Implementation_Import_Chunks(std::vector<Parser_Token> const& tokens)❰
+  auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,{Token_Group::IMPORT_IMPLEMENTATION_RELATIONSHIP});
+  return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Enum_Chunks(std::vector<Parser_Token> const& tokens)❰
+   
+
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
+	{Token_Group::ENUM_SUBGROUP
+    ,Token_Group::ENUM_ARG
+    ,Token_Group::ENUM_GROUP_AFFILIATION
+	});
+
+    return all;
+❱

@@ -1,0 +1,101 @@
+class
+
+❪fstream❫
+❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/streams/filestreams/lib"❫
+⚞⚟
+
+//begin wrapper
+◀public: static▶ void ☀Print_Beginning_Of_Header_Include_Guard(std::string file_name,std::wofstream & out, Include_Guard_Options const& settings)❰
+        auto guard_name = Get_Cased_Guard_Name(file_name,settings);
+        auto str = Get_Include_Guard_Start(file_name,settings,guard_name);
+        Print_To_Stream_With_Newline(out,str);
+        Print_To_Stream_With_Newline(out,"");
+❱
+◀public: static▶ void ☀Print_End_Of_Header_Include_Guard(std::string const& file_name, std::wofstream & out, Include_Guard_Options const& settings)❰
+
+        auto guard_name = Get_Cased_Guard_Name(file_name,settings);
+        auto str = Get_Include_Guard_End(file_name,settings.end_include_guard,guard_name);
+        Print_To_Stream_With_Newline(out,str);
+        Print_To_Stream_With_Newline(out,"");
+❱
+
+
+◀private: static▶ std::string ☀Get_Cased_Guard_Name(std::string file_name, Include_Guard_Options const& settings)❰
+    return Case_Modifier::As_Modified_Casing(settings.casing,file_name);
+❱
+
+
+//begin implementations:
+◀private: static▶ std::string ☀Get_Include_Guard_Start(std::string file_name, Include_Guard_Options const& options, std::string const& guard_name)❰
+    std::string str;
+    
+    //pragma once
+    if (options.use_pragma_once){
+        str+= Get_Pragma_Once_Guard();
+    }
+    
+    //old named guard
+    if (options.use_include_guard){
+        str+= Get_Old_Named_Beginning_Guard(file_name,options.begin_include_guard,guard_name);
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Pragma_Once_Guard()❰
+    return "#pragma once\n";
+❱
+◀private: static▶ std::string ☀Get_Old_Named_Beginning_Guard(std::string file_name, Begin_Include_Guard_Options const& options, std::string const& guard_name)❰
+    std::string str;
+    
+    //create #ifdef part
+    if (options.use_old_macro_define_method){str += "#if !defined(" + guard_name + "H)\n";    }
+    else{str+= "#ifndef " + guard_name + "H\n";}
+    
+    //create #define part
+    str += "#define " + guard_name + "H";
+    if (options.define_the_guard_to_1){str += " 1";}
+    
+    str += "\n";
+    
+    return str;
+❱
+
+
+//end implementations:
+◀private: static▶ std::string ☀Get_Include_Guard_End(std::string file_name, End_Include_Guard_Options const& options, std::string const& guard_name)❰
+    std::string str;
+    
+    str += "#endif";
+    
+    if (options.put_comment_at_guard_ending){
+        str+= " " + Get_Include_Guard_End_Comment(file_name,options.comment_style,guard_name);
+    }
+    
+    return str;
+❱
+
+
+◀private: static▶ std::string ☀Get_Include_Guard_End_Comment(std::string file_name, Comment_Style const& style, std::string const& guard_name)❰
+    std::string str;
+    
+    std::string name = guard_name + "H";
+    
+    if (style == Comment_Style::LINE){
+        str += "//";
+        str += name;
+    }
+    else if(style == Comment_Style::BLOCK){
+        str += "/* ";
+        str += name;
+        str += " */";
+    }
+    
+    return str;
+❱
+
+

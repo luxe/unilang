@@ -1,0 +1,229 @@
+􏶞g􏶟
+􏷲packs the relevant J2 messages􏷱
+􏷰Based off version 2.4 of the ICD.
+It would have been nice to automate the network packing/unpacking.
+Or use compiler pragmas to stop padding, and make grabbing of struct chunks possible.
+
+Message sent from Flight Model to Sim Host
++----------------+----------------+----------------+------------------+----------------+
+|        0       |       1-2      |        3       |       4-7        |     4-4095     |
++----------------+----------------+----------------+------------------+----------------+
+|  Message Type  |   Byte Count   |  Message Ver.  | Frame Counter    |     Payload    |
++----------------+----------------+----------------+------------------+----------------+
+^                                                                     ^
++--------------------- HEADER ----------------------------------------+
+
+
+Message sent from Sim Host to Flight Model
++----------------+----------------+----------------+----------------+
+|        0       |       1-2      |        3       |     4-4095     |
++----------------+----------------+----------------+----------------+
+|  Message Type  |   Byte Count   |  Message Ver.  |     Payload    |
++----------------+----------------+----------------+----------------+
+^                                                  ^
++--------------------- HEADER ---------------------+
+
+ - Message Packing (callable)
+ - Header Packing (hidden)
+􏷯
+􏷮J2_Connection􏷭􏷮Network􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦J2MessageTypes.h􏷥􏷢USES: FlightModelMessageTypeE􏷡
+􏷤􏷣􏷦SendToJ2Messages.h􏷥􏷢USES: SendHighSpeedMessageT, SendLowSpeedMessageT, SendRepositionMessageT, SendVersionRequestMessageT􏷡
+􏷤􏷣􏷦ReceiveFromJ2Messages.h􏷥􏷢USES: RcvHighSpeedMessageT, RcvLowSpeedMessageT, RcvEngineDataMessageT, FlightModelEngineMessageT, FlightModelPropellerMessageT, RepositionMessageReplyT, VersionMessageReplyT􏷡
+􏷤􏷣􏷦stddef.h􏷥􏷢USES: size_t􏷡
+􏷤􏷣􏷦Defs.h􏷥􏷢USES: BYTE􏷡
+􏶔􏶕􏶒BytePacking􏶓􏶖USES: PackBigEndian4ByteInvariance(), PackFirstNArrayElements()􏶗
+􏶔􏶕􏶒J2MessageHeader.h􏶓􏶖USES: J2MessageHeaderT􏶗
+􏶔􏶕􏶒strLib.h􏶓􏶖USES: memcpy()􏶗
+􏶔􏶕􏶒stdio.h􏶓􏶖USES: fprintf()􏶗
+􏶔􏶕􏶒J2General􏶓􏶖USES: Serialization functions for payloads􏶗
+
+􏷘+􏷗􏷒pack j2 high speed send message􏷑
+􏷐Used to fill buffer for sending J2 high speed messages.  
+From SimHost to Flight Model􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆SendHighSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = SIMHOST_TO_FLIGHT_MODEL_HEADER_SIZE;
+    SerializeJ2HighSpeedSendMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_HIGH_SPEED);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 low speed send message􏷑
+􏷐Used to fill buffer for sending J2 low speed messages.
+From SimHost to Flight Model􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆SendLowSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = SIMHOST_TO_FLIGHT_MODEL_HEADER_SIZE;
+    SerializeJ2LowSpeedSendMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_LOW_SPEED);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 reposition send message􏷑
+􏷐Used to fill buffer for sending J2 reposition messages.
+From SimHost to Flight Model􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆SendRepositionMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = SIMHOST_TO_FLIGHT_MODEL_HEADER_SIZE;
+    SerializeJ2RepositionSendMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_REPOSITION);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 version request message􏷑
+􏷐Used to fill buffer for sending J2 version request messages.
+From SimHost to Flight Model􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆SendVersionRequestMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = SIMHOST_TO_FLIGHT_MODEL_HEADER_SIZE;
+    SerializeJ2VersionRequestMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_VERSION);
+    return uByteIterator;
+􏶳
+
+
+
+
+
+􏷘+􏷗􏷒pack j2 high speed received message􏷑
+􏷐Used to fill buffer for sending J2 high speed message.
+From Flight Model to SimHost􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆RcvHighSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE;
+    SerializeJ2HighSpeedReceivedMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_J2_HIGH_SPEED);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 low speed received message􏷑
+􏷐Used to fill buffer for sending J2 low speed message.
+From Flight Model to SimHost􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆RcvLowSpeedMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE;
+    SerializeJ2LowSpeedReceivedMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_J2_LOW_SPEED);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 engine received message􏷑
+􏷐Used to fill buffer for sending J2 engine message.
+From Flight Model to SimHost􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆RcvEngineDataMessageT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE;
+    SerializeJ2EngineReceivedMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_J2_ENGINE);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 reposition received message􏷑
+􏷐Used to fill buffer for sending J2 reposition message.
+From Flight Model to SimHost􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆RepositionMessageReplyT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE;
+    SerializeJ2RepositionReceivedMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_J2_REPOSITION_REPLY);
+    return uByteIterator;
+􏶳
+
+􏷘+􏷗􏷒pack j2 version received message􏷑
+􏷐Used to fill buffer for sending J2 version message.
+From Flight Model to SimHost􏷏
+􏶠Called before sending out a J2 Message.􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜rm􏶝􏷆VersionMessageReplyT􏷅􏷄message􏷃􏷀The message to pack􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼byte count􏶻􏶺The byte count of the filled buffer􏶹
+􏶴
+    size_t uByteIterator = FLIGHT_MODEL_TO_SIMHOST_HEADER_SIZE;
+    SerializeJ2VersionReceivedMessagePayload(􏵶buffer􏵷,&uByteIterator,􏵶message􏵷,SERIALIZATION_ACTION_PACK);
+    􏵲pack header􏵳􏵶buffer􏵷,uByteIterator,FLIGHT_MODEL_MESSAGE_TYPE_J2_VERSION);
+    return uByteIterator;
+􏶳
+
+
+
+
+􏷘-􏷗􏷒pack header􏷑
+􏷐Used to fill the buffer header that comes before the payload.􏷏
+􏶠The byte count portion is filled based on the iterated payload􏶡
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀The data buffer to pack the message in􏶿
+􏶜m􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜􏶝􏷆FlightModelMessageTypeE􏷅􏷄message type􏷃􏷀The message header to pack􏶿
+􏶴
+    􏶲the header of the message is 4 bytes􏶱
+    
+    􏶲the first byte is the message type􏶱
+    BYTE pucHeader[4];
+    size_t uIndex = 0;
+    short sSpecifiedSize = 0;
+    
+    􏶲we aren't the flight model, but we'll increment this each time we pack a flight model header for testing􏶱
+    static unsigned int uFrameCounter = 0;
+    
+    
+    switch (􏵶message type􏵷){
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_HIGH_SPEED: pucHeader[0] = 1; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_LOW_SPEED: pucHeader[0] = 2; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_REPOSITION: pucHeader[0] = 3; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_SIMHOST_VERSION: pucHeader[0] = 4; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_HIGH_SPEED: pucHeader[0] = 1; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_LOW_SPEED: pucHeader[0] = 2; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_ENGINE: pucHeader[0] = 3; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_REPOSITION_REPLY: pucHeader[0] = 4; break;
+        case FLIGHT_MODEL_MESSAGE_TYPE_J2_VERSION: pucHeader[0] = 5; break;
+        default: fprintf(stderr,"invalid message type requested for J2 header");
+    }
+    
+    􏶲the next two bytes are the total byte count􏶱
+    􏶲(this gets derived from filling the payload + an extra 4 bytes for the header itself)􏶱
+    uIndex=1;
+    sSpecifiedSize = (short)􏵶buffer iterator􏵷;
+    PackBigEndian4ByteInvariance(pucHeader,&uIndex,&sSpecifiedSize,sizeof(short));
+    
+    􏶲the last byte is the version number􏶱
+    pucHeader[3] = 1;
+    uIndex = 0;
+    PackBigEndian4ByteInvariance(􏵶buffer􏵷,&uIndex,pucHeader,sizeof(pucHeader));
+    
+    􏶲conditionally pack frame counter􏶱
+    􏶲we only pack the frame counter if the message type is from J2􏶱
+    if (MessageTypeSentFromFlightModel(􏵶message type􏵷)){
+    
+        􏶲only the flight model enters this if statement􏶱
+        􏶲we'll increment the frame counter for testing purposes􏶱
+        ++uFrameCounter;
+        PackBigEndian4ByteInvariance(􏵶buffer􏵷,&uIndex, &uFrameCounter, sizeof(uFrameCounter));
+    }
+    
+􏶳
+

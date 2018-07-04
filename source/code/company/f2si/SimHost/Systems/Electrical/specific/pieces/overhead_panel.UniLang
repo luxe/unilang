@@ -1,0 +1,538 @@
+􏶞p􏶟
+􏷲􏶏 specific to the UH72A DC power system.􏷱
+􏷰Stores a collection of 􏶏 node IDs and builds them into the generic electrical graph.  
+The node Ids are for the left, center, and right circuit breaker panels.  
+The left and right panels are apart of the overhead panel.
+The left and right panel circuit breakers are derived from the Aircraft Instrument Functionality Matrix VER 4.xlsx
+The center panel circuit breakers are derived from MEP Instrument Functionality Matrix VER 4.xlsx􏷯
+􏷮Electrical_System􏷭 􏷮Circuit_Box􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦AircraftGeneralConst􏷥􏴓d􏴔􏴑ElectricalSystemSideE􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏵲connect nodes􏵳􏵶graph􏵷);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical devices into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created nodes a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲if you tilt the "Wiring Diagram Manual (WDM) MBB BK117 C-2" on its side, you will have the 􏶏
+  portion of the schematic on top of he other DC boxes.  From this position, you will will be able to differentiate
+  the left from the right portion of the 􏶏.  That file is the Eurocopter though, so don't rely on the actual names there.􏶱
+
+  􏶲creates all of the left and right portions of the 􏶏
+  *buses do not need created here(they are created elsewhere).􏶱
+
+  􏶲create left panel breakers under copilot tag􏶱
+  AsciiStringT tNewTag = ConstructAsciiString(􏵶tag name􏵷);
+  AsciiStringAppendCString(&tNewTag,",Copilot");
+  􏵲create left panel devices􏵳􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+  
+  􏶲create left panel breakers under pilot tag􏶱
+  AsciiStringAssignCString(&tNewTag,􏵶tag name􏵷);
+  AsciiStringAppendCString(&tNewTag,",Pilot");
+  􏵲create right panel devices􏵳􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+  
+  􏶲destruct local tag􏶱
+  DestructAsciiStringT(&tNewTag);
+  
+  􏶲create fake breakers􏶱
+  􏵴avio mstr fake􏵵[0] = ElectricalGraphAddBreaker(􏵶graph􏵷,"avio mstr fake 1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  􏵴avio mstr fake􏵵[1] = ElectricalGraphAddBreaker(􏵶graph􏵷,"avio mstr fake 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);
+  
+􏶳
+
+􏷘-􏷗􏷒create left panel devices􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏,
+and puts them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created panel devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  //construct all the devices that are a part of 
+  //the left portion of the 􏶏.
+  􏵲create left panel devices for row 1􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 2􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 3􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 4􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 5􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 6􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 7􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create left panel devices for row 8􏵳􏵶graph􏵷,􏵶tag name􏵷);
+􏶳
+
+􏷘-􏷗􏷒create right panel devices􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏,
+and puts them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created panel devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  //construct all the devices that are a part of 
+  //the right portion of the 􏶏.
+  􏵲create right panel devices for row 1􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 2􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 3􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 4􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 5􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 6􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 7􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  􏵲create right panel devices for row 8􏵳􏵶graph􏵷,􏵶tag name􏵷);
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 1􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 2,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴stby hor bat􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"Stby Nor Bat",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES); //CB135
+                                                                                                             //CB136 (vacant)
+    􏵴ic amp􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"IC-AMP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);             //CB137
+    􏵴ics cab􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ICS-CAB",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);           //CB138
+    􏵴dimm test􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"DIMM TEST",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB139
+    􏵴com4 xcvr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"COM4 XCVR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB140
+    􏵴com4 ctrl􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"COM4 CTRL",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB141
+                                                                                                             //CB142 (vacant)
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 2􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 2,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏵴vhf tx1􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"VHF TX1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                 //CB113
+  􏵴nms1􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"NMS1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                       //CB114
+  􏵴nms blw􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"NMS BLW",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                 //CB115
+                                                                                    //CB116 (vacant)
+  􏵴lh mon􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"L/H MON",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                  //CB117
+                                                                                  //CB118 (inactive)
+                                                                                  //CB119 (inactive)
+                                                                                    //CB120 (vacant)
+  􏵴bambi bucket􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"BAMBI BUCKET",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB121
+                                                                                    //CB122 (vacant)
+  􏵴avio main1􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"AVIO MAIN 1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB123
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 3􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 3,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴fcds2 backup􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"FCDS2 BACKUP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES); //CB093
+                                                                              //CB094 (inactive)
+                                                                              //CB095 (inactive)
+    􏵴pt st cp􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"PT ST CP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB096
+    􏵴ap2􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"AP2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                   //CB097
+    􏵴mir􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"MIR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                   //CB098
+    􏵴pwr􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"PWR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                   //CB099
+    􏵴cargo pax lt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CARGO PAX LT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES); //CB100
+    􏵴cont1 ls lt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CONT1 LS LT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);   //CB101
+    􏵴xfera pump􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"XFERA PUMP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB102
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 4􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 4,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  
+    􏵴fcdm􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FCDM1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                  //CB073
+    􏵴nd􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ND1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                      //CB074
+    􏵴pfd􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"PFD1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                    //CB075
+    􏵴blw pel􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"BLW PEL",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);              //CB076
+    􏵴nms12 relay􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"NMS12 RELAY",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);      //CB077
+    􏵴ahrs1􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"AHRS 1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                  //CB078
+    􏵴ahrs2􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"AHRS 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                  //CB079
+    􏵴adc􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ADC",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);                      //CB080
+    􏵴avio mstr􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"AVIO MSTER",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB081
+    􏵴ess avio main􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ESS AVIO MAIN",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES); //CB082
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 5􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 5,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    //CB053 (vacant)
+    􏵴ics􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ICS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB054
+    //CB055 (vacant)
+    􏵴instr lights􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"INSTR LIGHTS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);  //CB056
+    􏵴p1 sas􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"P1 SAS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB057
+    //CB058 (vacant)
+    􏵴htg cont􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"HTG CONT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);      //CB059
+    􏵴ckpt vent􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CKPT VENT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB060
+    􏵴ftr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"FTR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB061
+    􏵴roll1 sas􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ROLL1 SAS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB062
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 6􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 6,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    //CB035 (inactive)
+    􏵴floats􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FLOATS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB036
+    􏵴cont􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CONT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB037
+    􏵴cc pil􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CC PIL",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB038
+    􏵴boom􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"BOOM",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB039
+    􏵴pos􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"POS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB040
+    􏵴ldg􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"LDG",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB041
+    􏵴ckpt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CKPT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB042
+    􏵴var nr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"VAR NR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB043
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 7􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 7,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴sand filt􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"SAND FILT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB017
+    􏵴wiper􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"WIPER",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB018
+    􏵴tq n2􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"TQ N2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB019
+    􏵴ovsp􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"OVSP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB020
+    􏵴prime p􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"PRIME P",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB021
+    􏵴fire d􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FIRE D",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB022
+    􏵴fuel v􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FIRE V",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB023
+    􏵴ign􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"IGN",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB024
+    􏵴start􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"START",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB025
+􏶳
+
+􏷘-􏷗􏷒create left panel devices for row 8􏷑
+􏷐Constructs all of the electrical components that make up the left portion of the 􏶏 in row 8,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴gen􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"GEN",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB001
+    􏵴bt􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"BT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);           //CB002
+    􏵴fire e􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FIRE E",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB003
+    􏵴fuel l􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FUEL L",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB004
+    􏵴hyd p􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"HYD-P",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB005
+    􏵴wu􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"WU",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);           //CB006
+    􏵴cad􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"CAD",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB007
+    􏵴vemd􏵵[ELECTRICAL_SYSTEM_SIDE_LEFT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"VEMD",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB008
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 1􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 1,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    //CB143 (vacant)
+    //CB144 (vacant)
+    //CB145 (vacant)
+    􏵴dimm test􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"DIMM TEST 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB146
+    􏵴ics backup􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ICS BACKUP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB147
+    􏵴nms2􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"NMS2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB148
+    􏵴bat em ex lt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"BAT EM EX LT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB149
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 2􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 2,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴avio main 2􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"AVIO MAIN 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB124
+    􏵴emer bat􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"EMER BAT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);      //CB125
+    􏵴video dist􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"VIDEO DIST",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB126
+    􏵴rh mon􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"RH MON",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB127
+    􏵴mov map􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"MOV MAP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB128
+    􏵴rad alt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"RAD ALT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB129
+    􏵴dme􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"DME",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB130
+    􏵴cm3 ant􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CM3 ANT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB131
+    􏵴cm3 rt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CM3 RT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB132
+    􏵴mkr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"MKR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB133
+    􏵴com5 xcvr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"COM5 XCVR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB134
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 3􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 3,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴htgv􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"HTGV",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB103
+    􏵴inst cool􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"INST COOL",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB104
+    􏵴pax blw􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"PAX BLW",􏵶tag name􏵷,0,.0f,CAN_BE_POWERED_YES);       //CB105
+    􏵴pwr􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"PWR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB106
+    􏵴cont2􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CONT 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB107
+                         //CB108 (vacant)
+                       //CB109 (inactive)
+    􏵴atc􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ATC",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB110
+    􏵴waas relay􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"WAAS RELAY",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB111
+                       //CB112 (inactive)
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 4􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 4,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴ess avio main􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ESS AVIO MAIN 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES); //CB083
+    􏵴avio mstr􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"AVIO MAST",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB084
+    􏵴adc􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ADC",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB085
+    􏵴ahrs1􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"AHRS 1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB086
+    􏵴ahrs2􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"AHRS 2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB087
+    􏵴roll2 sema􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ROLL2 SEMA",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB088
+    􏵴blw pel􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"BLW PEL",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB089
+    􏵴pfd􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"PFD2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB090
+    􏵴nd􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ND2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB091
+    􏵴fcdm􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FCDM2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB092
+
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 5􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 5,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴yaw sas􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"YAW SAS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB063
+    􏵴beep trim􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"BEEP TRIM",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB064
+    􏵴mast mom􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"MAST MON",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);      //CB065
+    􏵴xferf pump􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"XFERF PUMP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);    //CB066
+                        //CB067 (vacant)
+    􏵴p2 sema􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"P2 SEMA",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB068
+    􏵴ap1􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"AP1",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB069
+    􏵴altm vibr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ALTM VIBR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB070
+    􏵴ics􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"ICS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB071
+    􏵴vhf tx2􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"VHF TX2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB072
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 6􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 6,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴n2 trim􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"N2 TRIM",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB044
+    􏵴instr􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"INSTR",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB045
+    􏵴acol􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ACOL",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB046
+    􏵴em ex􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"EM/EX",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB047
+    􏵴cc ped winch􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"CC-PED WINCH",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);   //CB048
+    􏵴aux tank􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"AUX TANK",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);      //CB049
+    􏵴pt st plt􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"PT ST PLT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);      //CB050
+    􏵴floats􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FLOATS",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB051
+    􏵴dwnlnk adu b􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"DWNLNK ADU B",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);   //CB052
+􏶳
+
+􏷘-􏷗􏷒create right panel devices for row 7􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 7,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡  
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴start􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"START",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB026
+    􏵴ign􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"IGN",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB027
+    􏵴fuel v􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FUEL V",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB028
+    􏵴fire d􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FIRE D",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB029
+    􏵴prime p􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"PRIME P",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);       //CB030
+    􏵴ovsp􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"OVSP",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB031
+    􏵴tq n2􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"TQ N2",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB032
+    􏵴rotor rpm􏵵 = ElectricalGraphAddBreaker(􏵶graph􏵷,"ROTOR RPM",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);     //CB033
+    􏵴sand filt􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"SAND FILT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES); //CB034
+􏶳
+
+
+􏷘-􏷗􏷒create right panel devices for row 8􏷑
+􏷐Constructs all of the electrical components that make up the right portion of the 􏶏 in row 8,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its right panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+    􏵴vemd􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"VEMD",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB009
+    􏵴cad􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"CAD",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB010
+    􏵴wu􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"WU",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);           //CB011
+    􏵴hyd p􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"HYD P",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);         //CB012
+    􏵴fuel l􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FUEL L",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB013
+    􏵴fire e􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"FUEL E",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);        //CB014
+    􏵴bt􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"BT",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);           //CB015
+    􏵴gen􏵵[ELECTRICAL_SYSTEM_SIDE_RIGHT] = ElectricalGraphAddBreaker(􏵶graph􏵷,"GEN",􏵶tag name􏵷,0,0.0f,CAN_BE_POWERED_YES);          //CB016
+􏶳
+
+􏷘-􏷗􏷒connect nodes􏷑
+􏷐􏷏
+􏶠Connect any circuit breakers together that are directly connected􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶴
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴avio mstr􏵵[0],􏵴ess avio main􏵵[0]);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴avio mstr􏵵[1],􏵴ess avio main􏵵[1]);
+􏶳
+
+􏶨Row 1 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬stby hor bat􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ic amp􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ics cab􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬com4 xcvr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬com4 ctrl􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬dimm test􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ics backup􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬nms2􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬bat em ex lt􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+􏶨Row 2 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬vhf tx1􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬nms1􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬nms blw􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬lh mon􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬bambi bucket􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬avio main1􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬avio main 2􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬emer bat􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬video dist􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬rh mon􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬mov map􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬rad alt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬dme􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cm3 ant􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cm3 rt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬mkr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬com5 xcvr􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+􏶨Row 3 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬fcds2 backup􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬pt st cp􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ap2􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬mir􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬pwr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cargo pax lt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cont1 ls lt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬xfera pump􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬htgv􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬inst cool􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬pax blw􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cont2􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬atc􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬waas relay􏶫􏶪0􏶩
+􏶨􏶧􏶦􏶥
+
+􏶨Row 4 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬fcdm􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬nd􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬pfd􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬blw pel􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬nms12 relay􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬ahrs1􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬ahrs2􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬adc􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬avio mstr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬ess avio main􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬roll2 sema􏶫􏶪0􏶩
+􏶨􏶧􏶦􏶥
+
+
+􏶨Row 5 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬ics􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬instr lights􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬p1 sas􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬htg cont􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ckpt vent􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ftr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬roll1 sas􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬yaw sas􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬beep trim􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬mast mom􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬xferf pump􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬p2 sema􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ap1􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬altm vibr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬vhf tx2􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+􏶨Row 6 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬floats􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cont􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cc pil􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬boom􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬pos􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ldg􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬ckpt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬var nr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬n2 trim􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬instr􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬acol􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬em ex􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬cc ped winch􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬aux tank􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬pt st plt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬dwnlnk adu b􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+􏶨Row 7 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬sand filt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬wiper􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬ovsp􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬prime p􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬fire d􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬fuel v􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬ign􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬start􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬tq n2􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬rotor rpm􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+
+􏶨Row 8 􏶏 devices􏶧
+􏶦This ID will be used to query the generic electrical graph and receive back the actual device node.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬gen􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬bt􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬fire e􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬fuel l􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬hyd p􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬wu􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬cad􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[NUM_ELECTRICAL_SYSTEM_SIDES]􏶭􏶬vemd􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+􏶨Avio Mstr Cbs􏶧
+􏶦the expected behavior of pulling the avio mstr CB is to disable the avio switch.
+this contradicts the electrical schematics.  We will pop fake breakers internally, 
+and handle the behavior as a malfunction􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[2]􏶭􏶬avio mstr fake􏶫􏶪0􏶩
+

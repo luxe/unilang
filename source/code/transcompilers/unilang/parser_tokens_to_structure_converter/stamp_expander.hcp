@@ -1,0 +1,107 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/parser/token_value"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/important/sub_structure_builder"❫
+❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
+⚯
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_token_stripper"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/special_parser_filters"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Perform_Expansion(std::vector<Parser_Token> & tokens, Token_Attribute_Settings const& settings)❰
+    
+    //strip out the function tokens
+    auto new_tokens = Parser_Utilities::Filter_Out_Tokens_By_Group_Name(tokens,Token_Group::FUNCTION);
+	auto chunks = Special_Parser_Filters::Filter_Method_Chunks(new_tokens);
+
+    //remove the current function tokens
+    Remove_Elements_Where_Function_Is_True(tokens,[](auto t){
+		return In_Vector(t.token.groups,Token_Group::FUNCTION);
+	});
+
+   //add back the function tokens while performing the mustache stamping
+   for (auto it: chunks){
+		tokens += Perform_Individual_Function_Stamp_Expansion(it,settings);
+   }
+❱
+
+◀private: static▶ std::vector<Parser_Token> ☀Perform_Individual_Function_Stamp_Expansion(std::vector<Parser_Token> const& tokens, Token_Attribute_Settings const& settings)❰
+
+	//get the stamps
+    auto stamps = Parser_Token_Stripper::Strip_Out_Type<Method_Stamp>(settings,tokens,Token_Group::FUNCTION_STAMP,Sub_Structure_Builder::Build_Stamp_Item,Special_Parser_Filters::Filter_Stamp_Chunks);
+
+    //if there aren't any stamps, just restore the function chunk
+	if (stamps.empty()){
+		return tokens;
+	}
+
+   //if there ARE function chunks,
+   //find which one has the most values
+   size_t value_amount = 0;
+   for (auto it: stamps){
+		if (it.values.size() > value_amount){
+			value_amount = it.values.size();
+		}
+   }
+   
+   //stamp set
+   std::vector<std::pair<std::string,std::string>> stamp_set;
+   std::vector<Parser_Token> new_tokens;
+   for (size_t i = 0; i < value_amount; ++i){
+		for (auto it: stamps){
+			Add_To_Stamp_Set(stamp_set,it,i);
+		}
+        new_tokens += Transform_Using_Stamps(tokens,stamp_set);
+        stamp_set.clear();
+   }
+
+   return new_tokens;
+
+❱
+
+◀private: static▶ void ☀Add_To_Stamp_Set(std::vector<std::pair<std::string,std::string>> & stamp_set, Method_Stamp const& stamp, size_t i)❰
+    
+    //if i is a valid index
+	if (i < stamp.values.size()){
+		stamp_set.emplace_back(as_string(stamp.name.value),as_string(stamp.values[i].value.value));
+	}
+    else
+	{
+       stamp_set.emplace_back(as_string(stamp.name.value),"");
+	}
+❱
+
+
+
+◀private: static▶ std::vector<Parser_Token> ☀Transform_Using_Stamps(std::vector<Parser_Token> tokens, std::vector<std::pair<std::string,std::string>> const& stamp_set)❰
+
+	std::vector<Parser_Token> new_tokens;
+	
+	for (auto token: tokens){
+		for (auto stamp: stamp_set){
+		    auto str = as_string(token.content);
+		    str = string_replace_all(str,"{{" + stamp.first + "}}",stamp.second);
+			token.content = as_wstring(str);
+		}
+		new_tokens.push_back(token);
+    }
+
+	return new_tokens;
+❱
+
+
+
+
+
+
+
+
+
+
+

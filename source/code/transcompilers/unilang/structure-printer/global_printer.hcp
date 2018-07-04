@@ -1,0 +1,138 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/stream_creator"❫
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/meta_block_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/code_wrap_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/header_printer"❫
+❪"code/transcompilers/unilang/structure-printer/macro/macro_printer"❫
+❪"code/transcompilers/unilang/enum-printer/enum_section_printer"❫
+❪"code/transcompilers/unilang/structure-printer/data_member_printer"❫
+❪"code/transcompilers/unilang/structure-printer/typedef/typedef_printer"❫
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/extern_c/extern_wrap_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure-printer/actual_structure_printer"❫
+❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Global_Files(Structure const& structure, C_Export_Settings const& options)❰
+
+    //decide how many files we are going to make
+    if (options.general.global_partition == Global_Code_Partition_Method::ONE){
+        Print_Interface_And_Implementation_In_The_Same_File(structure,options);
+    }
+    else if (options.general.global_partition == Global_Code_Partition_Method::TWO){
+        Print_Interface_And_Implementation_Across_Two_Files(structure,options);
+    }
+❱
+
+◀public: static▶ void ☀Print_Interface_And_Implementation_In_The_Same_File(Structure const& structure, C_Export_Settings const& options)❰
+    //needs implemented..
+❱
+
+◀public: static▶ void ☀Print_Interface_And_Implementation_Across_Two_Files(Structure const& structure, C_Export_Settings const& options)❰
+    Print_Global_Interface_File(structure,options);
+    
+    //has an implementation
+    if (Structure_Has_Implementation(structure) ||
+        !options.general.single_global_file_if_there_is_nothing_to_put_in_the_source){
+        Print_Global_Implementation_File(structure,options);
+    }
+❱
+
+
+◀private: static▶ void ☀Print_Global_Interface_File(Structure const& structure, C_Export_Settings const& options)❰
+    
+    //create file settings for interface
+    Export_File_Settings interface;
+    interface.language = Source_Language::C;
+    interface.code = Code_Type::GLOBAL;
+    interface.special = Special_File_Type::NORMAL;
+    interface.file = File_Type::INTERFACE;
+    
+    //create file settings for interface and data
+    Export_File_Settings data_interface;
+    data_interface.language = Source_Language::C;
+    data_interface.code = Code_Type::GLOBAL;
+    data_interface.special = Special_File_Type::NORMAL;
+    data_interface.file = File_Type::DATA_AND_INTERFACE;
+   
+   //create stream
+    auto out = Create_Stream_And_Print_Boilerplate_Beginning(structure,options,interface);
+    
+    
+        Print_Newline_To_Stream(out);
+        
+        //print the inlined structures
+        Actual_Structure_Printer::Handle_Inlined_Structures(out,data_interface,structure,options);
+        
+        Typedef_Printer::Print_Interface_Typedefs(out,structure.typedefs.typedefs,options);
+        Macro_Printer::Print_Interface_Macros(out,structure.macros.macros,options);
+        Enum_Section_Printer::Print_Interface_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options);
+        Data_Member_Printer::Print_Global_Decelerations(out,structure.data_members.data_members,options,Code_Type::GLOBAL);
+        Print_Newline_To_Stream(out);
+        Methods_Printer::Print_Global_Interface_Methods2(out,structure.name,structure.methods.methods,options);
+    
+    Boilerplate_Printer::Print_End(out,structure,interface,options);
+❱
+◀private: static▶ void ☀Print_Global_Implementation_File(Structure const& structure, C_Export_Settings const& options)❰
+    
+    //create file settings for interface
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::C;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::IMPLEMENTATION;
+    
+    //create stream
+    auto out = Create_Stream_And_Print_Boilerplate_Beginning(structure,options,file_settings);
+    
+        Typedef_Printer::Print_Implementation_Typedefs(out,structure.typedefs.typedefs,options);
+        Macro_Printer::Print_Implementation_Macros(out,structure.macros.macros,options);
+        Enum_Section_Printer::Print_Implementation_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options);
+        Data_Member_Printer::Print_Global_Definitions(out,structure.data_members.data_members,options);
+        Print_Newline_To_Stream(out);
+
+        Methods_Printer::Print_Global_Implementation_Methods2(out,structure.name,structure.methods.methods,structure.data_members.data_members,options,Object_Export_Method::NORMAL);
+    
+    Boilerplate_Printer::Print_End(out,structure,file_settings,options);
+❱
+
+◀private: static▶ std::wofstream ☀Create_Stream_And_Print_Boilerplate_Beginning(Structure const& structure, C_Export_Settings const& options,Export_File_Settings const& file_settings)❰
+    auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    
+    //create the final file name that the stream is set to
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,options.general.filesystem_naming);
+    
+    //print the giant meta block
+    Boilerplate_Printer::Print_Begin(out,structure,file_settings,options,final_file_name);
+    return out;
+❱
+
+
+◀private: static▶ bool ☀Structure_Has_Implementation(Structure const& structure)❰
+    
+    //reasons we expect to write to the source:
+    //if none of these reasons pass, we assume that we don't "HAVE" to write to the source
+    //(but we still may or may not based on settings)
+    if (structure.imports.implementation_dependencies.size() > 0){return true;}
+    if (structure.methods.methods.size() > 0){return true;}
+    for (auto it: structure.data_members.data_members){
+        if (it.storage == Storage_Specifier::EXTERN){
+            return true;
+        }
+    }
+    
+    return false;
+❱
+
+

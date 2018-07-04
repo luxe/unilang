@@ -1,0 +1,55 @@
+class
+
+
+❪"component_input"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<Component_Input> ☀Get_All_Of_The_Component_Inputs(std::string file_name, std::vector<Method_Item> const& methods)❰
+
+    //parse through the methods, and get a derived list of component inputs
+    std::vector<Component_Input> inputs;
+    auto filtered = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,methods);
+    for (auto it: filtered){
+            Potentially_Add_Component_Inputs(it,inputs);
+    }
+    
+    return inputs;
+❱
+
+
+◀private: static▶ void ☀Potentially_Add_Component_Inputs(Method_Item const& it, std::vector<Component_Input> & inputs)❰
+        
+    for (auto x: it.function_arguments){
+        if (!Exists(inputs,as_string(x.identifier.value))){
+            Component_Input d;
+            d.name = as_string(x.identifier.value);
+            d.from.push_back(as_string(it.names.function_name.value));
+            d.arg = x;
+            inputs.push_back(d);
+        }else{
+            Find(inputs,as_string(x.identifier.value)).from.push_back(as_string(it.names.function_name.value));
+        }
+    }
+❱
+
+◀private: static▶ bool ☀Exists(std::vector<Component_Input> const& inputs, std::string name)❰
+    for (auto it: inputs){
+        if (it.name == name){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ Component_Input& ☀Find(std::vector<Component_Input> & inputs, std::string name)❰
+    for (auto & it: inputs){
+        if (it.name == name){
+            return it;
+        }
+    }
+    return inputs[0];
+❱

@@ -1,0 +1,86 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_data_member/data_member_utility_function_options"❫
+❪"code/transcompilers/unilang/options/language-specific/c_language_version"❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-comparison/settings/special_comparison_type"❫
+❪"code/transcompilers/unilang/type_converters/type-to-json-serialization-call/json_function_name_getter"❫
+❪"code/transcompilers/unilang/type_converters/type-to-json-serialization-call/settings/json_function_settings"❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-json/special_type_json_specifier_getter"❫
+⚯
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+⚞⚟
+
+◀public: static▶ Method_Item ☀Get(std::string const& self_type, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Data_Member_Utility_Function_Options const& sub_settings, C_Language_Version const& version)❰
+    Method_Item m;
+
+    m.subgroup.value = L"debug";
+    
+    //property related
+    m.class_access  = sub_settings.json_print.access;
+    m.storage = Storage_Specifier::NONE;
+    
+    //doesnt matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    
+    //documentation related
+    auto generated_function_name = sub_settings.json_print.function_name;
+    m.names.function_name.value = as_wstring(generated_function_name);
+    m.brief_description.value = L"prints the current state of the object as a json string";
+    m.detailed_description.value = L"called recursively on nested objects to create the type as a json string";
+    
+    Add_Body(m,items,options,sub_settings,version);
+    
+    return m;
+❱
+
+◀private: static▶ void ☀Add_Body(Method_Item & m, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Data_Member_Utility_Function_Options const& sub_settings, C_Language_Version const& version)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("get object in string in json string representation"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nAsciiStringT tStr = ";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::SELF_FUNCTION_CALL;
+    t.value =  L"to json";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L");\n\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("print the string"); 
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nAsciiStringPrint(&tStr);\n\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("destruct the local string"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nDestructAsciiStringT(&tStr);\n\n";
+    body.push_back(t);
+
+    
+    //assign
+    m.body = body;
+❱

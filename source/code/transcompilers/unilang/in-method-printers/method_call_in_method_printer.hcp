@@ -1,0 +1,117 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/colors/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Printable_Method_Call(C_Export_Settings const& settings, std::vector<Method_Item> const& methods, std::string const& used, bool const& object_method, std::string implicit_name, std::string file_name,  Object_Export_Method const& export_method)❰
+    
+    //first make sure that the data member actually exists.
+    bool found;
+    auto item = Find_Method_Locally(methods,used,found);
+    
+    std::string derived;
+    //if the function doesn't exist, we're warn about it, but still apply it.
+    if (found){
+        derived = Get_Local_Function_Call(settings,item,object_method,implicit_name,file_name,export_method);
+    }else{
+        Red_Error_Message("Didn't find the local method call [" + used + "] when looking it up from the method body.\n");
+        derived = Get_NonLocal_Function_Call(settings,used,file_name);
+    }
+    
+    return derived;
+❱
+
+//TODO: should return an optional instead
+◀public: static▶ Method_Item ☀Find_Method_Locally(std::vector<Method_Item> const& methods, std::string const& used, bool & was_found)❰
+    Method_Item item;
+    
+    was_found = false;
+    for (auto it: methods){
+        if (as_string(it.names.original_function_name.value) == used){
+            was_found=true;
+            item = it;
+            break;
+        }
+    }
+    
+    return item;
+❱
+
+
+◀private: static▶ std::string ☀Get_Local_Function_Call(C_Export_Settings const& settings, Method_Item const& item, bool const& object_method, std::string implicit_name, std::string file_name,  Object_Export_Method const& export_method)❰
+
+    std::string derived;
+    if (object_method){
+        derived = Get_Local_Object_Function_Call(settings,item,file_name,export_method);
+    }
+    else{
+        derived = Get_Local_Global_Function_Call(settings,item,file_name);
+    }
+    
+    //implicit open for now.
+    derived += "(";
+    
+    //add implicit first argument if needed
+    if (object_method){
+        derived += "pt" + As_Capital_And_Pushed_Together(implicit_name);
+        if (item.function_arguments.size() > 1){ //the first argument being the implicit self
+            derived += ",";
+        }
+    }
+    
+    return derived;
+❱
+
+
+
+◀private: static▶ std::string ☀Get_Local_Object_Function_Call(C_Export_Settings const& settings, Method_Item const& item, std::string file_name, Object_Export_Method const& export_method)❰
+    std::string derived;
+    
+      if (export_method == Object_Export_Method::INPUT_OUTPUT){
+        derived = Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,item,settings);
+      }else{
+        
+
+            //for good objects, print the hidden statics WITHOUT the class name,
+            //but print the public methods WITH the class
+            if (item.class_access == Class_Access::PUBLIC){
+                derived = Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,item,settings);
+            }
+            else{
+                derived = Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,item,settings);
+            }
+      }
+    
+    return derived;
+❱
+
+◀private: static▶ std::string ☀Get_Local_Global_Function_Call(C_Export_Settings const& settings, Method_Item const& item, std::string file_name)❰
+    std::string str;
+    
+    str = Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,item,settings);
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_NonLocal_Function_Call(C_Export_Settings const& settings, std::string const& used, std::string const& file_name)❰
+    std::string derived;
+    Method_Item item;
+    item.names.function_name.value = as_wstring(used);
+    derived = Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,item,settings);
+    derived += "(";
+    return derived;
+❱
+
+
+
+
+

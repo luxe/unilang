@@ -1,0 +1,426 @@
+􏶞g􏶟
+􏷲Applies electrical malfunctions to the electrical graph triggered from the IOS data􏷱
+􏷰We assume the malfunctions have already been read into the input struct.􏷯
+􏷮Electrical_System􏷭 􏷮Malfunction_Applier􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦ElectricalData􏷥􏴓d􏴔􏴑ElectricalMalfunctionsT􏴒
+􏷤􏷣􏷦DCPowerSystem􏷥􏴓d􏴔􏴑DCPowerSystemT􏴒
+􏷤􏷣􏷦vector􏷥􏴓d􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦malfunction_binding􏷥􏴓d􏴔􏴑MalfunctionBindingT􏴒
+
+􏷘+􏷗􏷒apply electrical malfunctions􏷑
+􏷐Applies electrical malfunctions to the electrical graph triggered from the IOS data􏷏
+􏶠These malfunctions will turn off flow for the particular graph nodes.􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that malfunctions will lock nodes in place􏶿
+􏶜r􏶝􏷆ElectricalMalfunctionsT􏷅􏷄malfunctions􏷃􏷀All of the possible malfunctions that can be applied to the electrical system.􏶿
+􏶜r􏶝􏷆ElectricalPowerTriggersT􏷅􏷄electrical power triggers􏷃􏷀All of the power triggers performed by the instructor (they behave like malfunctions)􏶿
+􏶴
+    􏶲create vector of malfunction modifiers􏶱
+    VectorT tBindings = ConstructVector(SPECIALIZE_UNMANAGED(MalfunctionBindingT),16);
+    􏵲build malfunctions list􏵳&tBindings,􏵶system􏵷,􏵶malfunctions􏵷,􏵶electrical power triggers􏵷);
+    
+    􏶲apply the malfunctions onto the graph􏶱
+    􏵲apply malfunctions􏵳&tBindings,􏵶priority􏵷,􏵶system􏵷);
+    
+    􏶲deallocate the vector􏶱
+    DestructVectorT(&tBindings);
+􏶳
+
+􏷘-􏷗􏷒build malfunctions list􏷑
+􏴅building􏴆
+􏷐Construct a list of all the malfunction modifications to perform the graph􏷏
+􏶠The list will contain the appropriate actions each malfunction should take depending on whether its active􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜r􏶝􏷆ElectricalMalfunctionsT􏷅􏷄malfunctions􏷃􏷀All of the possible malfunctions that can be applied to the electrical system.􏶿
+􏶜r􏶝􏷆ElectricalPowerTriggersT􏷅􏷄electrical power triggers􏷃􏷀All of the power triggers performed by the instructor (they behave like malfunctions)􏶿
+􏶴
+    
+    􏶲build the electrical malfunctions by category􏶱
+    􏵲build system malfunctions􏵳􏵶bindings􏵷,􏵶system􏵷,􏵶malfunctions􏵷->m_ptSystem);
+    􏵲build generator malfunctions􏵳􏵶bindings􏵷,􏵶system􏵷,􏵶malfunctions􏵷->m_ptGenerator);
+    􏵲build battery malfunctions􏵳􏵶bindings􏵷,􏵶system􏵷,&􏵶malfunctions􏵷->m_tBattery);
+    􏵲build epu malfunctions􏵳􏵶bindings􏵷,􏵶system􏵷,&􏵶malfunctions􏵷->m_tEpu,􏵶electrical power triggers􏵷);
+    
+􏶳
+
+􏷘-􏷗􏷒build system malfunctions􏷑
+􏴅building􏴆
+􏷐Construct a list of all the system malfunction modifications to perform the graph􏷏
+􏶠The list will contain the appropriate actions each malfunction should take depending on whether its active􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜r􏶝􏷆ElectricalSystemMalfunctionsT􏷅􏷄malfunctions􏷃􏷀All of the possible system malfunctions that can be applied to the electrical system.􏶿
+􏶴
+    􏶲add malfunctions for each side􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 2; ++uIndex){
+    
+        􏶲create modifier for a short circuited main bus􏶱
+        􏵲add malfunction􏵳􏵶bindings􏵷,"short circuit of main bus",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tDistributionBox.m_uMainBus,
+        MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_CAN_BE_POWERED,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bShortCircuitMainBus);
+        
+        􏶲short circuiting the main bus opens up the bus tie, the shed bus relay, and the nonessential bus relay.􏶱
+        􏶲these 3 relays are directly connected to the main bus􏶱
+        􏵲add malfunction􏵳􏵶bindings􏵷,"short circuit of main bus",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tDistributionBox.m_tBusTie.m_uRelay,
+        MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bShortCircuitMainBus);
+        
+        􏵲add malfunction􏵳􏵶bindings􏵷,"short circuit of main bus",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tDistributionBox.m_uShedBusRelay,
+        MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bShortCircuitMainBus);
+        
+        􏵲add malfunction􏵳􏵶bindings􏵷,"short circuit of main bus",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tDistributionBox.m_uNonessentialBusRelay,
+        MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bShortCircuitMainBus);
+        
+        􏶲short circuiting the main bus will also cause a GEN DISCON.􏶱
+        􏶲Q: Does the pilot see a GEN DISCON because the generator has shutdown, or is the generator still running, and the gen relay has opened?􏶱
+        􏶲A: The generator is still running, but the gen relay has opened.􏶱
+        􏵲add malfunction􏵳􏵶bindings􏵷,"short circuit of main bus",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uGeneratorRelay,
+        MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED, MALFUNCTION_EFFECT_NONE,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bShortCircuitMainBus);
+        
+        􏶲create modifier for a failed open bus tie􏶱
+        􏵲add malfunction􏵳􏵶bindings􏵷,"bus tie failure",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tDistributionBox.m_tBusTie.m_uRelay,
+        MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bBusTieFailsOpen);
+        
+        􏶲create modifier for a failed avionic switch􏶱
+        􏵲add malfunction􏵳􏵶bindings􏵷,"avionic switch failure",
+        􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tBuses.m_uAvionicSwitch,
+        MALFUNCTION_EFFECT_NONE,MALFUNCTION_EFFECT_NONE,
+        USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+        􏵶malfunctions􏵷[uIndex].m_bAvionicSwitchInoperable);
+    }
+􏶳
+
+􏷘-􏷗􏷒build generator malfunctions􏷑
+􏴅building􏴆
+􏷐Construct a list of all the generator malfunction modifications to perform the graph􏷏
+􏶠The list will contain the appropriate actions each malfunction should take depending on whether its active􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜r􏶝􏷆ElectricalGeneratorMalfunctionsT􏷅􏷄malfunctions􏷃􏷀All of the possible generator malfunctions that can be applied to the electrical system.􏶿
+􏶴
+    􏶲add malfunctions for each side􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 2; ++uIndex){
+    
+    􏶲create modifier for an overheat malfunction􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator overheat",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uOverheatSensor,
+    MALFUNCTION_EFFECT_CAN_BE_POWERED,MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    OptionalHasValue(&􏵶malfunctions􏵷[uIndex].m_tStarterOverheat_degc));
+    
+    􏶲create modifier for an over voltage malfunction􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator overvoltage",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uOverVoltageRelay,
+    MALFUNCTION_EFFECT_CAN_BE_POWERED,MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    OptionalHasValue(&􏵶malfunctions􏵷[uIndex].m_tOvervoltage_v));
+    
+    􏶲open relay on over voltage􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator overvoltage",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uGeneratorRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    OptionalHasValue(&􏵶malfunctions􏵷[uIndex].m_tOvervoltage_v));
+    
+    􏶲power down generator on over-voltage􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator overvoltage",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uGenerator,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    OptionalHasValue(&􏵶malfunctions􏵷[uIndex].m_tOvervoltage_v));
+    
+    􏶲failed generator:􏶱
+    
+    􏶲shutdown generator􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator fail",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uGenerator,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷[uIndex].m_bFail);
+    
+    􏶲open relays􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"starter fail",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uGeneratorRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷[uIndex].m_bFail);
+    
+    􏵲add malfunction􏵳􏵶bindings􏵷,"starter fail",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[uIndex].m_tAfterJunctionBox.m_uStarterRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷[uIndex].m_bFail);
+    
+    􏶲disconnect non-essential buses􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator fail",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[0].m_tDistributionBox.m_uNonessentialBusRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷[uIndex].m_bFail);
+    
+    􏵲add malfunction􏵳􏵶bindings􏵷,"generator fail",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[1].m_tDistributionBox.m_uNonessentialBusRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷[uIndex].m_bFail);
+
+    }
+􏶳
+􏷘-􏷗􏷒build battery malfunctions􏷑
+􏴅building􏴆
+􏷐Construct a list of all the battery malfunction modifications to perform the graph􏷏
+􏶠The list will contain the appropriate actions each malfunction should take depending on whether its active􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜r􏶝􏷆ElectricalBatteryMalfunctionsT􏷅􏷄malfunctions􏷃􏷀All of the possible battery malfunctions that can be applied to the electrical system.􏶿
+􏶴
+    
+    􏶲create modifier for a battery relay malfunction􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"failed battery relay",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷->m_bRelayFails);
+    
+    􏵲add malfunction􏵳􏵶bindings􏵷,"failed battery relay",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uBattery,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_CAN_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷->m_bRelayFails);
+    
+    􏶲create modifier for a battery bus malfunction􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"short circuit of battery hot bus",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uHotBus,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,MALFUNCTION_EFFECT_CAN_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶malfunctions􏵷->m_bShortCircuitBus);
+􏶳
+􏷘-􏷗􏷒build epu malfunctions􏷑
+􏴅building􏴆
+􏷐Construct a list of all the battery malfunction modifications to perform the graph􏷏
+􏶠The list will contain the appropriate actions each malfunction should take depending on whether its active􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to apply to the DC Power System􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜r􏶝􏷆ElectricalEpuMalfunctionsT􏷅􏷄malfunctions􏷃􏷀All of the possible epu malfunctions that can be applied to the electrical system.􏶿
+􏶜r􏶝􏷆ElectricalPowerTriggersT􏷅􏷄electrical power triggers􏷃􏷀All of the power triggers performed by the instructor (they behave like malfunctions)􏶿
+􏶴
+    
+    􏶲when the EPU is connected:􏶱
+    􏶲close the external power relay􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"epu connected",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uExternalPowerRelay,
+    MALFUNCTION_EFFECT_CAN_BE_POWERED, MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶electrical power triggers􏵷->m_bEpuConnected);
+
+    􏶲open the battery relay􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"epu connected",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uRelay,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED, MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶electrical power triggers􏵷->m_bEpuConnected);
+    
+    􏶲turn on the EPU􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"epu connected",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uExternalPowerUnit,
+    MALFUNCTION_EFFECT_CAN_BE_POWERED, MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶electrical power triggers􏵷->m_bEpuConnected);
+    
+    􏶲set the EPU door to "open"􏶱
+    􏶲it either open because we have the EPU connected, or because somebody left the door open􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"epu door open",
+    􏵶system􏵷->m_tCircuit.m_tBatteryBox.m_uExternalPowerDoor,
+    MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED, MALFUNCTION_EFFECT_CAN_BE_POWERED,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶electrical power triggers􏵷->m_bEpuConnected || 􏵶malfunctions􏵷->m_bDoorLeftOpen);
+    
+    􏶲force close the shed relays􏶱
+    􏵲add malfunction􏵳􏵶bindings􏵷,"epu connected",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay,
+    MALFUNCTION_EFFECT_CAN_BE_POWERED, MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶electrical power triggers􏵷->m_bEpuConnected);
+    
+    􏵲add malfunction􏵳􏵶bindings􏵷,"epu connected",
+    􏵶system􏵷->m_tCircuit.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay,
+    MALFUNCTION_EFFECT_CAN_BE_POWERED, MALFUNCTION_EFFECT_NONE,
+    USE_LOCK_YES,USE_LOCK_YES,UNLOCK_ACTION_MATCH_PRIORITY,
+    􏵶electrical power triggers􏵷->m_bEpuConnected);
+    
+􏶳
+
+􏷘-􏷗􏷒add malfunction􏷑
+􏴅building􏴆
+􏷐adds a malfunction to the malfunction list􏷏
+􏶠creates a malfunction binding based on the parameters and pushes it into the vector􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to add the new malfunction to􏶿
+􏶜m􏶝􏷆char*􏷅􏷄name􏷃􏷀the name of the malfunction􏶿
+􏶜􏶝􏷆size􏷅􏷄id􏷃􏷀The ID of the circuit component that the malfunction is occurring on􏶿
+􏶜􏶝􏷆MalfunctionEffectE􏷅􏷄inflict effect􏷃􏷀what the malfunction will do when it is inflicted􏶿
+􏶜􏶝􏷆MalfunctionEffectE􏷅􏷄withdrawn effect􏷃􏷀what the malfunction will do when it is withdrawn􏶿
+􏶜􏶝􏷆UseLockE􏷅􏷄lock􏷃􏷀decide whether or not to lock the node in its "can be powered" state while the malfunction is active􏶿
+􏶜􏶝􏷆UseLockE􏷅􏷄unlock􏷃􏷀decide whether or not to unlock the node when relinquishing a malfunction􏶿
+􏶜􏶝􏷆UnlockActionE􏷅􏷄unlock action􏷃􏷀priority conditions of the lock that must be met before unlocking (how we will attempt to unlock)􏶿
+􏶜􏶝􏷆bool􏷅􏷄active􏷃􏷀whether or not the current malfunction is active􏶿
+􏶴
+    􏶲create malfunction􏶱
+    MalfunctionBindingT tModifier = ConstructMalfunctionBinding(􏵶name􏵷,􏵶id􏵷,
+    􏵶inflict effect􏵷,􏵶withdrawn effect􏵷,􏵶lock􏵷,􏵶unlock􏵷,􏵶unlock action􏵷,􏵶active􏵷);
+
+    􏶲store malfunction􏶱
+    VectorPushBack(􏵶bindings􏵷, &tModifier);
+􏶳
+
+
+
+
+
+
+􏷘-􏷗􏷒apply malfunctions􏷑
+􏴅applying􏴆
+􏷐Perform actions to the graph based on all malfunction modifiers􏷏
+􏶠The list will contain the appropriate actions each malfunction should take depending on whether its active􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄bindings􏷃􏷀The list of malfunction bindings to apply to the DC Power System􏶿
+􏶜m􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that malfunctions will lock nodes in place􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶴
+  􏶲iterate over all of the registered graph malfunctions􏶱
+  􏶲perform graph actions based on each of the malfunctions􏶱
+  VectorForEach2(􏵶bindings􏵷,(TernaryActionT)ApplyMalfunction,&􏵶priority􏵷,􏵶system􏵷);
+􏶳
+
+􏷘-􏷗􏷒apply malfunction􏷑
+􏴅applying􏴆
+􏷐perform any actions warranted by the malfunction􏷏
+􏶠actions may take place whether the malfunction is active or not􏶡
+􏶜mr􏶝􏷆MalfunctionBindingT􏷅􏷄malfunction􏷃􏷀A registered graph malfunction􏶿
+􏶜r􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that malfunctions will lock nodes in place􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶴
+  􏶲take action depending on whether the malfunction is being inflicted or withdrawn􏶱
+  􏶲some malfunctions may have an effect when they are withdrawn.  Others may not.􏶱
+  􏶲Some malfunctions may trigger a change that can be changed by other influences,􏶱
+  􏶲other malfunctions may need to lock the changes in place until the malfunction is de-activated􏶱
+  if (􏵶malfunction􏵷->m_bActive){
+    􏵲apply active malfunction􏵳􏵶malfunction􏵷,*􏵶priority􏵷,􏵶system􏵷);
+  }
+  else{
+    􏵲apply inactive malfunction􏵳􏵶malfunction􏵷,*􏵶priority􏵷,􏵶system􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒apply active malfunction􏷑
+􏴅applying􏴆
+􏷐perform any actions warranted by the active malfunction􏷏
+􏶠this will only take place when the malfunctions is active􏶡
+􏶜mr􏶝􏷆MalfunctionBindingT􏷅􏷄malfunction􏷃􏷀A registered graph malfunction􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that malfunctions will lock nodes in place􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶴
+    􏶲possibly unlock the node based on the malfunction settings􏶱
+    􏵲possibly unlock node􏵳􏵶malfunction􏵷,􏵶priority􏵷,􏵶system􏵷);
+    
+    􏶲modify the circuit component with the inflict action􏶱
+    􏵲modify node􏵳􏵶system􏵷,􏵶malfunction􏵷->m_uId,􏵶malfunction􏵷->m_eInflictEffect);
+    
+    􏶲activate node's malfunction state􏶱
+    NodeActivateMalfunction(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶malfunction􏵷->m_uId),􏵶malfunction􏵷->m_szName);
+    
+    􏶲if specified, lock the circuit component in this state􏶱
+    􏶲this will prevent other influences from changing the state after the malfunction􏶱
+    if (􏵶malfunction􏵷->m_eLock == USE_LOCK_YES){
+        NodeLock(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶malfunction􏵷->m_uId),􏵶priority􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒apply inactive malfunction􏷑
+􏴅applying􏴆
+􏷐perform any actions warranted by the inactive malfunction􏷏
+􏶠this will only take place when the malfunctions is active􏶡
+􏶜mr􏶝􏷆MalfunctionBindingT􏷅􏷄malfunction􏷃􏷀A registered graph malfunction􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that malfunctions will lock nodes in place􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶴
+    􏶲possibly unlock the node based on the malfunction settings􏶱
+    􏵲possibly unlock node􏵳􏵶malfunction􏵷,􏵶priority􏵷,􏵶system􏵷);
+    
+    􏶲modify the circuit component with the withdrawn action􏶱
+    􏵲modify node􏵳􏵶system􏵷,􏵶malfunction􏵷->m_uId,􏵶malfunction􏵷->m_eWithdrawnEffect);
+    
+    􏶲deactivate node's malfunction state􏶱
+    NodeDeactivateMalfunction(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶malfunction􏵷->m_uId));
+    
+    􏶲if we don't intend to unlock the node when the malfunction is relinquished, we must re-lock the node after applying the withdrawn effect􏶱
+    􏶲we had to unlock it in the first place just to apply the withdrawn effect􏶱
+    if (􏵶malfunction􏵷->m_eUnlock != USE_LOCK_YES){
+        NodeLock(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶malfunction􏵷->m_uId),􏵶priority􏵷);
+    }
+􏶳
+
+􏷘-􏷗􏷒possibly unlock node􏷑
+􏴅applying􏴆
+􏷐decide whether the malfunction requires unlocking the node and attempt to do so if it does􏷏
+􏶠if we never locked the node to apply the malfunction, there is no reason we should try unlocking it􏶡
+􏶜mr􏶝􏷆MalfunctionBindingT􏷅􏷄malfunction􏷃􏷀A registered graph malfunction􏶿
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority that malfunctions will lock nodes in place􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶴
+    􏶲if the malfunction was specified to lock,􏶱
+    􏶲release the lock to allow other influences to affect the circuit component􏶱
+    if (􏵶malfunction􏵷->m_eLock == USE_LOCK_YES){
+        if (􏵶malfunction􏵷->m_eUnlockAction == UNLOCK_ACTION_MATCH_PRIORITY){
+            NodeUnlockMatching(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶malfunction􏵷->m_uId),􏵶priority􏵷);
+        }
+        else{
+            NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶malfunction􏵷->m_uId),􏵶priority􏵷);
+        }
+    }
+􏶳
+
+􏷘-􏷗􏷒modify node􏷑
+􏴅applying􏴆
+􏷐perform a malfunction action on a particular node􏷏
+􏶠this performs actions regardless of whether it was from an active or inactive malfunction􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄system􏷃􏷀The DC Power system that will be effected by the triggered malfunctions.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄id􏷃􏷀The ID of the node􏶿
+􏶜􏶝􏷆MalfunctionEffectE􏷅􏷄effect􏷃􏷀The effect to perform on the node􏶿
+􏶴
+    􏶲decide how to affect the node based on the specified action􏶱
+    switch (􏵶effect􏵷){
+        case MALFUNCTION_EFFECT_CAN_BE_POWERED:
+        NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶id􏵷),TRUE);
+        break;
+        
+        case MALFUNCTION_EFFECT_CAN_NOT_BE_POWERED:
+        NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵶system􏵷->m_tCircuit.m_tGraph,􏵶id􏵷),FALSE);
+        break;
+        
+        case MALFUNCTION_EFFECT_NONE:
+        /* do nothing when the malfunction is inactive */
+        break;
+    }
+    
+􏶳
+

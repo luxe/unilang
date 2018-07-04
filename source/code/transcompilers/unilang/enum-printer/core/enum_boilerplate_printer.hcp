@@ -1,0 +1,103 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/casing/case_format_style"❫
+❪"code/transcompilers/unilang/enum-printer/core/enum_value_creator"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/casing/case_format_style"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+//with structure shell
+◀public: static▶ void ☀Print_Beginning_Part(std::wofstream & out, Enum_Item const& item, General_Options const& general, Portion_Options const& portion)❰
+    
+    //TODO: pull out to settings
+    std::string typedef_decl = "typedef ";
+    std::string enum_identifier = "enum ";
+    std::string mini_hungarian = "_" + portion.data_member_options.notation.identifier.type.special_type_suffixes_and_prefixes.enumerated.identifier_prefix;
+    std::string opening_bracket = "{";
+
+    //TODO: pull out to settings
+    bool print_typedef = false;
+    bool print_enum_identifier = true;
+    bool print_base_type_name = true;
+    bool print_mini_hungarian = false;
+    bool print_opening_bracket = true;
+    bool space_before_opening_bracket = true;
+    bool new_line_after_opening_bracket = true;
+    int comment_indent_amount = 0;
+
+    //doxygen block
+    Doxygen_Block_Printer::Print_Block(out,comment_indent_amount,as_string(item.brief.value),as_string(item.detail.value),portion.enum_options.comment.doxygen);
+    
+    //get casing
+    auto base_type_name = Case_Modifier::As_Modified_Casing(portion.enum_options.base_type_casing,as_string(item.name.value));
+    
+    //beginning name part
+    if (print_typedef){
+    	Print_To_Stream(out,typedef_decl);
+	}
+	if (print_enum_identifier){
+    	Print_To_Stream(out,enum_identifier);
+	}
+    if (print_base_type_name){
+		Print_To_Stream(out,base_type_name);
+		if (print_mini_hungarian){
+			Print_To_Stream_With_Newline(out,mini_hungarian);
+		}
+	}
+
+    //opening bracket related
+    if (new_line_after_opening_bracket){
+        Print_To_Stream(out," ");
+    }
+	if (print_opening_bracket){
+    	Print_To_Stream_With_Newline(out,opening_bracket);
+	}
+    if (new_line_after_opening_bracket){
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+◀public: static▶ void ☀Print_End_Part(std::wofstream & out, Enum_Item const& item, Portion_Options const& portion)❰
+    
+    //get casing
+    auto base_type_name = As_Capital_And_Pushed_Together(as_string(item.name.value));
+    
+    //TODO: pull out to settings
+    std::string closing_bracket = "} ";
+    std::string big_hungarian = portion.data_member_options.notation.identifier.type.special_type_suffixes_and_prefixes.enumerated.type_suffix;
+    std::string decl_delim = ";";
+    std::string after_decl = "";
+
+    //TODO: pull out settings
+    bool print_closing_bracket = true;
+    bool print_base_type_name = false;
+    bool print_big_hungarian = false;
+    bool print_decl_delim = false;
+    bool print_after_decl = true; 
+    
+    //actual name part
+    if (print_closing_bracket){
+        Print_To_Stream(out,closing_bracket);
+    }
+    if (print_base_type_name){
+        Print_To_Stream(out,base_type_name);
+        if (print_big_hungarian){
+            Print_To_Stream(out,big_hungarian);
+        }
+    }
+    if (print_decl_delim){
+    	Print_To_Stream_With_Newline(out,decl_delim);
+	}
+    if (print_after_decl){
+        Print_To_Stream_With_Newline(out,after_decl);
+    }
+❱

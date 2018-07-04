@@ -1,0 +1,96 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/typedef/typedef_item"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/derivers/type_name_deriver"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Interface_Typedefs(std::wofstream & out, std::vector<Typedef_Item> const& typedefs, C_Export_Settings const& options)❰
+    
+    for (auto it: typedefs){
+        if (it.access == Class_Access::PUBLIC){
+            Print_Typedef(out,it,options);
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+◀public: static▶ void ☀Print_Implementation_Typedefs(std::wofstream & out, std::vector<Typedef_Item> const& typedefs, C_Export_Settings const& options)❰
+    for (auto it: typedefs){
+        if (it.access == Class_Access::PRIVATE){
+            Print_Typedef(out,it,options);
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+◀private: static▶ void ☀Print_Typedef(std::wofstream & out, Typedef_Item const& item, C_Export_Settings const& options)❰
+    Doxygen_Block_Printer::Print_Block(out,0,as_string(item.brief_description.value),as_string(item.detailed_description.value),options);
+    auto printable = Get_Printable_Typedef(item,options);
+    Print_To_Stream(out,printable);
+❱
+
+//portion.typedef_options
+
+◀private: static▶ std::string ☀Get_Printable_Typedef(Typedef_Item const& item, C_Export_Settings const& options)❰
+    
+    //deduce some casing
+    auto name = Case_Modifier::As_Modified_Casing(options.portion.typedef_options.casing,as_string(item.name.value));
+    
+    //print the typedef
+    std::string print;
+    print += "typedef ";
+    print += Get_Return_Type(item,options);
+    print += " (*";
+    print += name;
+    print += "T)(";
+    print += Get_Comma_Seperated_List_Of_Arguments(item,options);
+    print += ");\n";
+    
+    
+    return print;
+❱
+
+◀private: static▶ std::string ☀Get_Return_Type(Typedef_Item const& item, C_Export_Settings const& options)❰
+    std::string str;
+    
+    if (!item.results.empty()){
+        str = Type_Name_Deriver::Derive_Name_Keep_Qualifiers(item.results[0],options);
+    }
+    else{
+        str = Get_Void_Type(options);
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Comma_Seperated_List_Of_Arguments(Typedef_Item const& item, C_Export_Settings const& options)❰
+    
+    std::vector<std::string> strings;
+    for (auto it: item.arguments){
+        auto derived_name = Type_Name_Deriver::Derive_Name_Keep_Qualifiers(it,options);
+        strings.push_back(derived_name);
+    }
+    
+    if (!strings.empty()){
+        return Get_As_Comma_Seperated_String(strings);
+    }
+    
+    return Get_Void_Type(options);
+❱
+
+◀private: static▶ std::string ☀Get_Void_Type(C_Export_Settings const& options)❰
+  Function_Result result;
+  result.type.value = as_wstring("void");
+  auto real_type = Type_Name_Deriver::Derive_Name(result,options);
+  return real_type;
+❱
+
+

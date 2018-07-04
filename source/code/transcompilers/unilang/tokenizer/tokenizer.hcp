@@ -1,0 +1,115 @@
+class
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/file_marker/file_marker"❫
+❪"code/transcompilers/unilang/tokenizer/tokenizer_marker"❫
+❪"code/transcompilers/unilang/tokenizer/tokenizer_testing_settings"❫
+❪"code/transcompilers/unilang/parser/body_parser/file_range_location"❫
+❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+⚯
+❪"code/transcompilers/unilang/parser/global_tokens_table_utilities"❫
+❪"code/transcompilers/unilang/tokenizer/tokenizer_exception"❫
+❪"code/transcompilers/unilang/parser/body_parser/file_range_location"❫
+
+⚞⚟
+
+//default constructor at file beginning
+◀public:▶ ☀◈(Fully_Read_File const& file)◖
+              :file(file)
+             ◗❰❱
+
+◀public:▶ std::vector<Parser_Token> ☀Get_Stream_Of_Tokens()❰
+
+    std::vector<Parser_Token> tokens;
+    Build_Up_Tokens_By_Parsing_File(tokens,file);
+    return tokens;
+❱
+
+◀private:▶ void ☀Build_Up_Tokens_By_Parsing_File(std::vector<Parser_Token> & tokens, Fully_Read_File const& file)❰
+
+    collecting_token = false;
+
+	//create token marker settings
+	Tokenizer_Testing_Settings settings;
+	settings.starter_test = Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Starter_Char;
+	settings.matching_set_test = Global_Tokens_Table_Utilities::Chars_Make_Valid_CodeLang_Enclosure_Block;
+
+    Tokenizer_Marker tokenizer_marker(file,settings);
+    while (tokenizer_marker.Current_Char() != EOF){
+        Proccess_Marker(tokens,tokenizer_marker);
+        tokenizer_marker.Move_Forward();
+    }
+    
+    Check_For_Unfinished_Token(tokenizer_marker);
+❱
+
+◀private:▶ void ☀Proccess_Marker(std::vector<Parser_Token> & tokens, Tokenizer_Marker & tokenizer_marker)❰
+
+
+    if (tokenizer_marker.Current_Char() == ESCAPE_CHARACTER){
+        Process_Escaped_Character(tokens,tokenizer_marker);
+    }
+    else{
+        Process_NonEscape_Character(tokens,tokenizer_marker);
+    }
+❱
+
+
+◀private:▶ void ☀Process_NonEscape_Character(std::vector<Parser_Token> & tokens, Tokenizer_Marker const& tokenizer_marker)❰
+    
+
+    //not yet collecting
+    if (!collecting_token){
+        collecting_token = tokenizer_marker.Inside_Marker();
+        if (collecting_token){
+            start_marker = tokenizer_marker.File_Mark();
+            start_symbol = tokenizer_marker.Current_Char();
+        }
+    }
+    
+    //already collecting
+    else{
+        collecting_token = tokenizer_marker.Inside_Marker();
+        if (collecting_token){
+            token_value += tokenizer_marker.Current_Char();
+        }
+        
+        //reached the end of the token
+        else{
+            tokens.emplace_back(Global_Tokens_Table_Utilities::Get_Token_Through_Character_LookUp(start_symbol),token_value,File_Range_Location{start_marker,tokenizer_marker.File_Mark()});
+            token_value.clear();
+        }
+    }
+❱
+◀private:▶ void ☀Process_Escaped_Character(std::vector<Parser_Token> & tokens, Tokenizer_Marker & tokenizer_marker)❰
+    if (collecting_token){
+        tokenizer_marker.Move_Forward();
+        token_value += tokenizer_marker.Current_Char();
+    }
+    else{
+        throw Tokenizer_Exception{file.file_name, start_marker, start_symbol, token_value};
+    }
+❱
+
+◀private:▶ void ☀Check_For_Unfinished_Token(Tokenizer_Marker const& tokenizer_marker)❰
+    
+    //throw the tokenizer parse state if there was a problem
+    if (collecting_token){
+        throw Tokenizer_Exception{file.file_name, start_marker, start_symbol, token_value};
+    }
+❱
+
+
+◀private:
+
+//the file associated with the tokenizer
+Fully_Read_File file;
+
+//parsed out data
+std::wstring token_value;
+File_Marker start_marker;
+wchar_t start_symbol;
+
+//important for keeping track of parse
+bool collecting_token;
+
+▶

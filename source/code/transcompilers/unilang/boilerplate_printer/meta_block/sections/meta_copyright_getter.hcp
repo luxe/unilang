@@ -1,0 +1,59 @@
+class
+
+❪string❫
+❪utility❫
+❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
+❪"code/transcompilers/unilang/options/sections/meta/meta_options"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/time/calendar/tm_wrappers/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Meta_Copyright_Tag_Options const& options, std::vector<Organization> const& orgs)❰
+    std::string str;
+    if (options.print){
+        
+        
+        //possibly use doxygen tag
+        std::string optional_tag_name;
+        if (options.use_tag){
+            optional_tag_name = options.copyright_tag_symbol + options.copyright_tag_name + " ";
+        }
+        
+        //possibly show company name first
+        if (options.show_company_before){
+            for (auto org: orgs){
+			 str += org.company_name + " ";
+            }
+        }
+        
+        //print copyright with possible date
+        auto other_stuff = optional_tag_name + options.copyright_date_prefix_statement;
+        Append(str,other_stuff);
+        
+        if (!other_stuff.empty())
+        {
+            str += " ";
+        }
+        
+        std::string date_part = Get_Date_Part(options.print_method,options.start_date,options.end_date,options.year_separator);
+        Append_With_Newline(str,date_part + options.copyright_date_suffix_statement);
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Date_Part(Meta_Copyright_Print_Method const& method, std::string start, std::string end, std::string year_separator)❰
+    std::string str;
+    
+    switch (method){
+        case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_ONLY: str+=start; break;
+        case Meta_Copyright_Print_Method::DERIVED_START_DATE_ONLY: str+=std::to_string(Current_Year()); break;
+        case Meta_Copyright_Print_Method::SPECIFIED_DATE_RANGE: str+=start + year_separator + end; break;
+        case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_WITH_DERIVED_END_DATE: str+=start + year_separator + std::to_string(Current_Year()); break;
+        default:;
+    }
+    
+    
+    return str;
+❱

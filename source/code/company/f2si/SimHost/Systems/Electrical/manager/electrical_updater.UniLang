@@ -1,0 +1,519 @@
+􏶞g􏶟
+􏷲Update the electrical system logic􏷱
+􏷰Updates the electrical system using its inputs and setting its output􏷯
+􏷮Electrical_System􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦ElectricalData􏷥􏴓d􏴔􏴑ElectricalSystemT􏴒􏴓d􏴔􏴑DCPowerSystemT􏴒
+􏷤􏷣􏷦ElectricalSettings􏷥􏴓d􏴔􏴑ElectricalSettingsT􏴒
+􏷤􏷣􏷦AircraftGeneralConst􏷥􏴓d􏴔􏴑NUM_ENGINES􏴒
+􏶔􏶕􏶒ElectricalMalfunctionApplier􏶓􏴏d􏴐􏴍ApplyElectricalMalfunctions()􏴎
+􏶔􏶕􏶒ElectricalBreakerApplier􏶓􏴏d􏴐􏴍ApplyElectricalBreakerChanges()􏴎
+􏶔􏶕􏶒ElectricalSwitchApplier􏶓􏴏d􏴐􏴍ApplyElectricalSwitchChanges()􏴎
+􏶔􏶕􏶒ElectricalVoltageDrop.h􏶓􏴏d􏴐􏴍HandleVoltageFluctuationOnEngineStart()􏴎
+􏶔􏶕􏶒ElectricalWattageApplier􏶓􏴏d􏴐􏴍ApplyElectricalWattageChanges()􏴎
+􏶔􏶕􏶒ElectricalPowerFlagDecider􏶓􏴏d􏴐􏴍DecidePowerFlagsForOtherSystems()􏴎
+􏶔􏶕􏶒ElectricalIndicationsDecider􏶓􏴏d􏴐􏴍DecideElectricalScreenIndications()􏴎
+􏶔􏶕􏶒FfsCommon􏶓􏴏d􏴐􏴍ScaleValue()􏴎
+
+􏷘+􏷗􏷒update electrical logic􏷑
+􏷐Update the electrical system logic􏷏
+􏶠Updates the electrical system using its inputs and setting its output􏶡
+􏶜mr􏶝􏷆ElectricalSystemT􏷅􏷄system􏷃􏷀The entire electrical system with all of its inputs and outputs.􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀Delta time since the last update􏶿
+􏶴
+  􏶲decide how to update the electrical system􏶱
+  􏶲the always power override is useful if the system needs to power things regardless of switch and graph state􏶱
+  if (􏵶system􏵷->m_tInputs.m_tSettings.m_tPower.m_bAlwaysPowerOverride){
+    􏵲update in always powered operation􏵳􏵶system􏵷,􏵶dc system􏵷,􏵶time delta􏵷);
+  }
+  else{
+    􏵲update in normal operation􏵳􏵶system􏵷,􏵶dc system􏵷,􏵶time delta􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒update in always powered operation􏷑
+􏷐Update the electrical system in always powered operation􏷏
+􏶠This is useful for debugging or situations where we need the electrical system, providing power to everything􏶡
+􏶜mr􏶝􏷆ElectricalSystemT􏷅􏷄system􏷃􏷀The entire electrical system with all of its inputs and outputs.􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀Delta time since the last update􏶿
+􏶴
+  􏶲power everything in this update mode􏶱
+  DCPowerSystemFullyPowerAllComponents(􏵶dc system􏵷,&􏵶system􏵷->m_tInputs.m_tSettings);
+  DecidePowerFlagsForOtherSystems(􏵶dc system􏵷, &􏵶system􏵷->m_tInputs.m_tPotentialPowerFlags, &􏵶system􏵷->m_tOutputs.m_tSystemPower);
+􏶳
+
+􏷘-􏷗􏷒update in normal operation􏷑
+􏷐Update the electrical system logic􏷏
+􏶠Updates the electrical system using its inputs and setting its output􏶡
+􏶜mr􏶝􏷆ElectricalSystemT􏷅􏷄system􏷃􏷀The entire electrical system with all of its inputs and outputs.􏶿
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀Delta time since the last update􏶿
+􏶴
+    􏶲Update the DC power system based on inputs, and compute the new electrical flow.􏶱
+    􏶲This handles changes needed to the graph from switches, malfunctions, breakers, and other power triggers.􏶱
+    􏵲transform dc power system􏵳􏵶dc system􏵷,&􏵶system􏵷->m_tInputs,􏵶time delta􏵷);
+    
+    􏶲Now that the DC power system has been updated, observe it to derive relevant data for other systems􏶱
+    􏵲derive relevant data from dc power system􏵳􏵶dc system􏵷,􏵶system􏵷,􏵶time delta􏵷);
+􏶳
+
+
+􏷘-􏷗􏷒transform dc power system􏷑
+􏷐transform the graph appropriately based on inputs and current state􏷏
+􏶠changes the state of various electrical components in the graph, and compute the new flow􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀Delta time since the last update􏶿
+􏶴
+    􏶲Change the state of particular nodes in the graph based on the input data coming in.
+    This involves:
+    Turning off flow on nodes whose electrical components are signaled to be off.
+        - popping circuit breakers
+        - opening/closing relays
+        - applying malfunctions
+     All of which are done by just setting the "flow" of the electrical node to TRUE/FALSE
+     The IOS dictates malfunctions
+     The PLC dictates breakers/relays
+    
+    Consider the following situation:  
+    - The IOS triggers a breaker to pop.  
+    - We tell the PLC to pop it via DO.
+    - Until we see this reflected in the DI, it will not affect the graph.
+    So one iteration of the update may tell the PLC to pop something,  
+    And its only on a following update that those changes are reflected throughout the system.􏶱
+    􏵲change electrical graph state if sourced data is ready􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+
+    􏶲Run algorithm to compute new electrical data among the nodes.􏶱
+    􏶲We'll use the visitor pattern to keep the traversal and algorithm of change separated􏶱
+    􏵲update electrical data across graph􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶time delta􏵷);
+􏶳
+
+􏷘-􏷗􏷒derive relevant data from dc power system􏷑
+􏷐based on the updated DC power system, derive the relevant information for other systems􏷏
+􏶠This decides indications, component statuses, and electrical values􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemT􏷅􏷄system􏷃􏷀The entire electrical system with all of its inputs and outputs.􏶿
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀Delta time since the last update􏶿
+􏶴
+    􏶲there may be a need to simulate a spike when the generator or battery is turned on.
+    I have no information on this, so for the time being, I'll leave a comment only.􏶱
+    
+    􏶲Potentially fudge data to match the documents on what should ACTUALLY be displayed on the screens.
+       - Hopefully this does not need to be done if the resistances are set appropriately on each of the nodes.
+       - However, I suspect that we might end up checking to see if a node's amperage is between some range, and then set it to an exact value based on that.
+         because documents such as the LUH-CUSTOMIZED-REV-11-VOL-1.pdf give exact values down to two decimal places.
+         Deriving these perfectly seems unlikely without spending too much time tweaking resistances.􏶱
+    􏶲for the time being, many of the output values will be known, and we can output constants that we expect.􏶱
+    
+    􏶲Provide power flags for other systems􏶱
+    DecidePowerFlagsForOtherSystems(􏵶dc system􏵷,&􏵶system􏵷->m_tInputs.m_tPotentialPowerFlags,&􏵶system􏵷->m_tOutputs.m_tSystemPower);
+    
+    􏶲Decide what data should be available for screens and other systems􏶱
+    DecideElectricalScreenIndications(􏵶dc system􏵷,􏵶system􏵷);
+􏶳
+
+
+􏷘-􏷗􏷒change electrical graph state if sourced data is ready􏷑
+􏷐only changes the state of the electrical graph when we know that the sourced data is ready to be used􏷏
+􏶠This avoids various problems that can occur when memset data is used without first being initialized by a connection􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+  􏶲only update the electrical graph if we know the sourced data is valid and ready􏶱
+  if(􏵲all sourced data is ready􏵳&􏵶inputs􏵷->m_tSourceStatuses)){
+    􏵲change electrical graph state􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒all sourced data is ready􏷑
+􏷐determines whether all of the sourced data is ready􏷏
+􏶠We may want to avoid certain computations until we know that the data has been properly initialized􏶡
+􏶜r􏶝􏷆ElectricalSourceStatusesT􏷅􏷄statuses􏷃􏷀status flags for various sourced data􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼all sourced data is ready􏶻􏶺whether all of the sourced electrical data is ready􏶹
+􏶴
+  􏶲return true if everything is ready􏶱
+  return 􏵶statuses􏵷->m_bBreakerDataIsReady
+  && 􏵶statuses􏵷->m_bSwitchDataIsReady
+  && 􏵶statuses􏵷->m_bPowerTriggerDataIsReady
+  && 􏵶statuses􏵷->m_bMalfunctionDataIsReady;
+􏶳
+
+
+
+
+􏷘-􏷗􏷒change electrical graph state􏷑
+􏷐change the state of the electrical graph􏷏
+􏶠apply changes via malfunctions, switches, engine states, and various triggers􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+    􏶲In order to change the state of the DC power system, we will
+     - Trigger changes from bus/relay states
+     - Adjust wattages
+     - Change bus tie relays, and power sources based on physical switch states
+     - Pop any breakers, and report problems
+     - Trigger changes from engine state
+     - Apply malfunctions
+     - Trigger changes from over voltages
+     􏶱
+     
+    􏶲We observe the state of electrical bus power flags􏶱
+    􏶲If the buses cause relays to open or close, we update the appropriate component power flags􏶱
+    ChangeCircuitryBasedOnBusState(ptDcSystem);
+
+     
+    􏶲Use the wattage changes from other devices to change the active wattage of the graph nodes􏶱
+    ApplyElectricalWattageChanges(􏵶dc system􏵷, &􏵶inputs􏵷->m_tWattageChanges);
+    
+    􏶲We observe the switch states from the PLC, 
+    and apply changes to the circuitry based on the switch positions and internal state􏶱
+    ApplyElectricalSwitchChanges(􏵶dc system􏵷,􏵶inputs􏵷->m_tSettings.m_tPriority.m_nSwitches, &􏵶inputs􏵷->m_tSwitches);
+    
+    􏶲apply breaker changes to the graph as well as the output (to affect the real world)􏶱
+    ApplyElectricalBreakerChanges(􏵶dc system􏵷, &􏵶inputs􏵷->m_tBreakerModifiers);
+    
+    􏶲We observe the state of the engines
+    If the engines N1 is at a particular percent, we switch to generator mode􏶱
+    􏵲change circuitry based on engine state􏵳􏵶dc system􏵷,&􏵶inputs􏵷->m_tSettings, &􏵶inputs􏵷->m_tEngine);
+    
+    􏶲We take in the DC Power system, and a list of failures.􏶱
+    􏶲We apply the failures to the DC Power system.􏶱
+    􏶲We are going to perform power triggers as if they are malfunctions􏶱
+    􏶲The behavior is similar.  For example, triggering the EPU will force close the EPU relay, and force open the Battery Relay.􏶱
+    􏶲The battery switch will no longer work while the EPU is connected.􏶱
+    􏶲We apply the failures to the DC Power system.􏶱
+    ApplyElectricalMalfunctions(􏵶dc system􏵷,􏵶inputs􏵷->m_tSettings.m_tPriority.m_nMalfunctions, &􏵶inputs􏵷->m_tMalfunctions, &ptInputs->m_tPowerTriggers);
+    
+    􏶲based on the real life helicopter start videos, we will need to emulate voltage spikes/drops during engine starts􏶱
+    􏶲we can determine these values based on what power nodes are already running, and what N1 is currently at􏶱
+    􏶲high and low values can be tweaked in the settings, and our result is setting that the DC Power system uses for traversal􏶱
+    􏵲change the distributing voltage of power devices􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+    
+    􏶲if instructed, recharge the battery􏶱
+    if (ptInputs->m_tPowerTriggers.m_bFullyChargeBattery)
+    {
+        BatteryFullyCharge(&ptInputs->m_tBattery);
+    }
+
+􏶳
+
+􏷘-􏷗􏷒change the distributing voltage of power devices􏷑
+􏷐decide what voltage all the power sources should be running at􏷏
+􏶠Switching to generator mode, closes the appropriate relays and allows the generators to start􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+
+  􏶲start assuming that we will use normal voltages􏶱
+  􏵲use normal voltages􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+  
+   􏶲handle potential drops and spikes during engine start up􏶱
+   HandleVoltageFluctuationOnEngineStart(ptDcSystem, ptInputs);
+  
+  􏶲an outside influence may also be offsetting the current voltage suppliers􏶱
+  􏵲apply outside voltage influences􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+􏶳
+
+􏷘-􏷗􏷒use normal voltages􏷑
+􏷐since we are not in an engine startup, we will use the normal voltages of the power sources􏷏
+􏶠these normal voltage come from settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+
+  􏶲when we aren't simulating drops and spikes,􏶱
+  􏶲we set all the actual voltages to be normal.􏶱
+  􏵲set all actual voltages to normal􏵳&􏵶inputs􏵷->m_tSettings.m_tPower);
+􏶳
+
+􏷘-􏷗􏷒set all actual voltages to normal􏷑
+􏷐set the actual voltage of all the power sources to what we deem their normal voltage􏷏
+􏶠these normal voltage come from settings􏶡
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀The electrical power settings􏶿
+􏶴
+
+  􏶲we will traverse based off the normal voltages we have configured􏶱
+  􏵶settings􏵷->m_ptGenerator[0].m_fActualVoltage_v = 􏵶settings􏵷->m_ptGenerator[0].m_fNormalVoltage_v;
+  􏵶settings􏵷->m_ptGenerator[1].m_fActualVoltage_v = 􏵶settings􏵷->m_ptGenerator[1].m_fNormalVoltage_v;
+  􏵶settings􏵷->m_ptBattery[0].m_fActualVoltage_v = 􏵶settings􏵷->m_ptBattery[0].m_fNormalVoltage_v;
+  􏵶settings􏵷->m_ptBattery[1].m_fActualVoltage_v = 􏵶settings􏵷->m_ptBattery[1].m_fNormalVoltage_v;
+  􏵶settings􏵷->m_tEpu.m_fActualVoltage_v = 􏵶settings􏵷->m_tEpu.m_fNormalVoltage_v;
+  􏵶settings􏵷->m_tEmergencyBattery.m_fActualVoltage_v = 􏵶settings􏵷->m_tEmergencyBattery.m_fNormalVoltage_v;
+􏶳
+
+􏷘-􏷗􏷒apply outside voltage influences􏷑
+􏷐Outside parties may trigger under/over voltages􏷏
+􏶠apply these offsets to our current values􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+
+  􏵲apply generator overvoltages􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+  􏵲apply battery malfunction voltages􏵳􏵶dc system􏵷,􏵶inputs􏵷);
+􏶳
+
+􏷘-􏷗􏷒apply generator overvoltages􏷑
+􏷐adjust voltages based on malfunctions􏷏
+􏶠malfunctions adjust the current voltage of the existing power source􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+  if (OptionalHasValue(&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_tOvervoltage_v)){
+    􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[0].m_fActualVoltage_v += *(float*)OptionalGet(&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_tOvervoltage_v);
+  }
+  
+  if (OptionalHasValue(&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_tOvervoltage_v)){
+    􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[1].m_fActualVoltage_v += *(float*)OptionalGet(&􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_tOvervoltage_v);
+  }
+􏶳
+
+􏷘-􏷗􏷒apply battery malfunction voltages􏷑
+􏷐adjust voltages based on malfunctions􏷏
+􏶠malfunctions adjust the current voltage of the existing power source􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+  􏶲use the short circuit voltage for the generator if the corresponding main bus has malfunctioned􏶱
+  if(!NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵶dc system􏵷->m_tCircuit.m_tGraph,􏵶dc system􏵷->m_tCircuit.m_ptSystemSide[0].m_tDistributionBox.m_uMainBus))){
+    􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[0].m_fActualVoltage_v = 􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[0].m_fNewVoltageOnShortCircuit_v;
+  }
+  
+  􏶲use the short circuit voltage for the generator if the corresponding main bus has malfunctioned􏶱
+  if(!NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵶dc system􏵷->m_tCircuit.m_tGraph,􏵶dc system􏵷->m_tCircuit.m_ptSystemSide[1].m_tDistributionBox.m_uMainBus))){
+    􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[1].m_fActualVoltage_v = 􏵶inputs􏵷->m_tMalfunctions.m_ptGenerator[1].m_fNewVoltageOnShortCircuit_v;
+  }
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒change circuitry based on engine state􏷑
+􏷐The engine's N1 will change the electrical system into generator mode􏷏
+􏶠Switching to generator mode, closes the appropriate relays and allows the generators to start􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶴
+
+  􏶲power on and off generators based on engine states􏶱
+  􏵲perform necessary actions on generator 1􏵳􏵶dc system􏵷,􏵶settings􏵷,􏵶engine􏵷);
+  􏵲perform necessary actions on generator 2􏵳􏵶dc system􏵷,􏵶settings􏵷,􏵶engine􏵷);
+􏶳
+
+􏷘-􏷗􏷒perform necessary actions on generator 1􏷑
+􏷐The engine's N1 will change the electrical system into generator mode􏷏
+􏶠Switching to generator mode, closes the appropriate relays and allows the generators to start􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶴
+
+  􏶲enter generator mode if the engine is in a valid state to do so􏶱
+  if(􏵲engine indicates we should start generator 1􏵳􏵶settings􏵷,􏵶engine􏵷)){
+    􏵲start generator 1􏵳􏵶dc system􏵷);
+  }
+  
+  􏶲leave generator mode if the engines are in a valid state to do so􏶱
+  if(􏵲engine indicates we should shutdown generator 1􏵳􏵶settings􏵷,􏵶engine􏵷)){
+    􏵲shutdown generator 1􏵳􏵶dc system􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒perform necessary actions on generator 2􏷑
+􏷐The engine's N1 will change the electrical system into generator mode􏷏
+􏶠Switching to generator mode, closes the appropriate relays and allows the generators to start􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶴
+
+  􏶲enter generator mode if the engine is in a valid state to do so􏶱
+  if(􏵲engine indicates we should start generator 2􏵳􏵶settings􏵷,􏵶engine􏵷)){
+    􏵲start generator 2􏵳􏵶dc system􏵷);
+  }
+  
+  􏶲leave generator mode if the engines are in a valid state to do so􏶱
+  if(􏵲engine indicates we should shutdown generator 2􏵳􏵶settings􏵷,􏵶engine􏵷)){
+    􏵲shutdown generator 2􏵳􏵶dc system􏵷);
+  }
+􏶳
+
+
+
+􏷘-􏷗􏷒change circuitry based on bus state􏷑
+􏷐The powering or de-powering of certain buses can trigger relay changes in the electrical system􏷏
+􏶠Checking bus power states, opens or closes the appropriate relays􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+    //shed bus 1 & 2 relays are energized closed as long as either generator 1 or generator 2 is online
+    DCPowerSystemUpdateShedBusRelays(􏵶dc system􏵷);
+
+    //non-essential bus 1 & 2 relays are energized closed as long as both generator 1 and generator 2 are online
+    DCPowerSystemUpdateNonEssentialBusRelays(􏵶dc system􏵷);
+
+    //essential bus 1 losing power causes emergency battery relay to close
+    DCPowerSystemUpdateEmergencyBatRelay(􏵶dc system􏵷);
+􏶳
+
+
+
+
+
+􏷘-􏷗􏷒engine indicates we should start generator 1􏷑
+􏷐decide whether the dc power system should enter generator mode􏷏
+􏶠the engine state and the settings data are used to determine this􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼system should enter generator mode􏶻􏶺whether or not the system should enter generator mode􏶹
+􏶴
+  􏶲power up generators if the battery has been engaged and the N1 is a valid percentage􏶱
+  return 􏵶engine􏵷->m_pfN1_pct[ENGINE_LEFT] > 􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct;
+􏶳
+
+􏷘-􏷗􏷒engine indicates we should shutdown generator 1􏷑
+􏷐decide whether the dc power system should leave generator mode􏷏
+􏶠the engine state and the settings data are used to determine this􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼system should leave generator mode􏶻􏶺whether or not the system should leave generator mode􏶹
+􏶴
+  􏶲power up generators if the battery has been engaged and the N1 is a valid percentage􏶱
+  return 􏵶engine􏵷->m_pfN1_pct[ENGINE_LEFT] < 􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct;
+􏶳
+
+􏷘-􏷗􏷒engine indicates we should start generator 2􏷑
+􏷐decide whether the dc power system should enter generator mode􏷏
+􏶠the engine state and the settings data are used to determine this􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼system should enter generator mode􏶻􏶺whether or not the system should enter generator mode􏶹
+􏶴
+  􏶲power up generators if the battery has been engaged and the N1 is a valid percentage􏶱
+  return 􏵶engine􏵷->m_pfN1_pct[ENGINE_RIGHT] > 􏵶settings􏵷->m_tPower.m_ptGenerator[1].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct;
+􏶳
+
+􏷘-􏷗􏷒engine indicates we should shutdown generator 2􏷑
+􏷐decide whether the dc power system should leave generator mode􏷏
+􏶠the engine state and the settings data are used to determine this􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜r􏶝􏷆ElectricalEngineDataT􏷅􏷄engine􏷃􏷀The engine data sourced from the engine system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼system should leave generator mode􏶻􏶺whether or not the system should leave generator mode􏶹
+􏶴
+  􏶲power up generators if the battery has been engaged and the N1 is a valid percentage􏶱
+  return 􏵶engine􏵷->m_pfN1_pct[ENGINE_RIGHT] < 􏵶settings􏵷->m_tPower.m_ptGenerator[1].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct;
+􏶳
+
+􏷘-􏷗􏷒start generator 1􏷑
+􏷐performs the necessary circuit changes when generator 1 starts􏷏
+􏶠assumes N1 has reached the appropriate value􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+    􏶲steps taken while entering generator mode􏶱
+    DCPowerSystemTurnGenerator1On(􏵶dc system􏵷);
+    DCPowerSystemCloseGeneratorRelay1(􏵶dc system􏵷);
+􏶳
+􏷘-􏷗􏷒start generator 2􏷑
+􏷐performs the necessary circuit changes when generator 2 starts􏷏
+􏶠assumes N1 has reached the appropriate value􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+    􏶲steps taken while entering generator mode􏶱
+    DCPowerSystemTurnGenerator2On(􏵶dc system􏵷);
+    DCPowerSystemCloseGeneratorRelay2(􏵶dc system􏵷);
+􏶳
+􏷘-􏷗􏷒shutdown generator 1􏷑
+􏷐performs the necessary circuit changes when generator 1 shuts down􏷏
+􏶠assumes N1 has reached the appropriate value􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+    􏶲steps taken while leaving generator mode􏶱
+    DCPowerSystemTurnGenerator1Off(􏵶dc system􏵷);
+    DCPowerSystemOpenGeneratorRelay1(􏵶dc system􏵷);
+􏶳
+􏷘-􏷗􏷒shutdown generator 2􏷑
+􏷐performs the necessary circuit changes when generator 2 shuts down􏷏
+􏶠assumes N1 has reached the appropriate value􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶴
+    􏶲steps taken while leaving generator mode􏶱
+    DCPowerSystemTurnGenerator2Off(􏵶dc system􏵷);
+    DCPowerSystemOpenGeneratorRelay2(􏵶dc system􏵷);
+􏶳
+
+
+􏷘-􏷗􏷒update electrical data across graph􏷑
+􏷐perform an electrical traversal algorithm to update the electrical flow across the graph􏷏
+􏶠this may give power or take away power from different electrical components in the graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The electrical inputs of the system􏶿
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀Delta time since the last update􏶿
+􏶴
+  􏶲perform normal power distribution across available power sources􏶱
+  DCPowerSystemUpdateNormalPowerDistribution(ptDcSystem, &ptInputs->m_tSettings);
+
+    //update the battery
+
+    //if the battery is discharging
+    if (DCPowerSystemBatteryDischarging(ptDcSystem, &ptInputs->m_tSettings))
+    {
+        BatteryDrain(&ptInputs->m_tBattery, fTimeDelta_ms, ptInputs->m_tSettings.m_tPower.m_ptBattery[0].m_fActiveCurrent_amp);
+    }
+
+    //if the battery is charging
+    else
+    {
+        BatteryCharge(&ptInputs->m_tBattery, fTimeDelta_ms, ptInputs->m_tSettings.m_tPower.m_ptBattery[0].m_fActiveCurrent_amp);
+    }
+
+    //set the actual voltage for the next traversal
+    ptInputs->m_tSettings.m_tPower.m_ptBattery[0].m_fActualVoltage_v = BatteryDistributionVoltage(&ptInputs->m_tBattery);
+􏶳
+
+
+
+
+

@@ -1,0 +1,55 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/control-structure-printer/switch/switch_block"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+⚯
+❪"code/transcompilers/unilang/control-structure-printer/switch/switch_block_printer"❫
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print(std::string file_name, std::wstring & body, std::vector<Method_Item> const& methods,C_Export_Settings const& options)❰
+    auto s = Build_A_Switch_Block(file_name,methods,options);
+    body += Switch_Block_Printer::Print(s,options);
+❱
+
+◀private: static▶ Switch_Block ☀Build_A_Switch_Block(std::string file_name,std::vector<Method_Item> const& methods,C_Export_Settings const& options)❰
+    Switch_Block s;
+    s.test_expression = "ptInputs->m_eApiCall";
+    
+    auto public_methods = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,methods);
+    for (auto it: public_methods){
+        s.case_statements.push_back(Get_As_Case_Statement(file_name,it,options));
+    }
+    
+    return s;
+❱
+
+◀private: static▶ Switch_Case_Statement ☀Get_As_Case_Statement(std::string file_name, Method_Item const& m,C_Export_Settings const& options)❰
+    Switch_Case_Statement s;
+    s.constant_expression = As_All_Capital_Letters_With_Spaces_As_Underscores(file_name) + "_API_" + As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(m.names.function_name.value));
+    s.statement = as_string(Function_Call(m,options));
+    return s;
+❱
+◀private: static▶ std::wstring ☀Function_Call(Method_Item const& m, C_Export_Settings const& options)❰
+    std::wstring body;
+    
+    auto func_name = as_wstring(As_Capital_And_Pushed_Together(as_string(m.names.function_name.value)));
+    body += func_name;
+    body += L"(";
+    body += L"ptOutputs";
+    for (auto it: m.function_arguments){
+        body +=L",";
+        body += L"ptInputs->m_";
+        auto arg = Identifier_Name_Deriver::Derive_Name(it,options);
+        body += as_wstring(arg);
+        
+    }   
+    body += L");";
+    return body;
+❱

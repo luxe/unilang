@@ -1,0 +1,116 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure-printer/implicit_contract_adder"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ std::vector<Method_Item> ☀Create(Structure const& structure, C_Export_Settings const& options)❰
+  std::vector<Method_Item> new_methods;
+  
+  //create all of the public methods
+  auto public_filtered = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(structure.name,structure.methods.methods);
+  for (auto it: public_filtered){
+	  if (structure.meta.code_type != Code_Type::GLOBAL){
+		Perform_Adjustments_On_Object_Public_Interfaces(it,structure,options);
+	  }
+      new_methods.push_back(it);
+  }
+  
+  //create all of the private methods
+  auto private_filtered = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Private_Methods(structure.name,structure.methods.methods);
+  for (auto it: private_filtered){
+      it.storage = Storage_Specifier::STATIC;
+	  if (structure.meta.code_type != Code_Type::GLOBAL){
+		Perform_Adjustments_On_Object_Private_Interfaces(it,structure,options);
+	  }
+      new_methods.push_back(it);
+  }
+  
+  return new_methods;
+❱
+
+
+◀private: static▶ void ☀Perform_Adjustments_On_Object_Public_Interfaces(Method_Item & it, Structure const& structure, C_Export_Settings const& options)❰
+      Add_Implicit_Name_Onto_Function(structure,it,options); //we only see a need to do this for public functions
+      Add_Implicit_Characteristics(structure,it,options);
+❱
+◀private: static▶ void ☀Perform_Adjustments_On_Object_Private_Interfaces(Method_Item & it, Structure const& structure, C_Export_Settings const& options)❰
+	Add_Implicit_Characteristics(structure,it,options);
+❱
+
+
+◀private: static▶ void ☀Add_Implicit_Name_Onto_Function(Structure const& structure, Method_Item & method_item, C_Export_Settings const& options)❰
+
+  //if the option allows, append the name of the class to the front of the function
+  if (options.portion.method_options.prefix_object_api_methods_with_object_name){
+      method_item.names.function_name.value = as_wstring(structure.name + " " + as_string(method_item.names.function_name.value));
+  }
+  
+❱
+
+
+
+◀private: static▶ void ☀Add_Implicit_Characteristics(Structure const& structure, Method_Item & method_item, C_Export_Settings const& options)❰
+  Add_The_Implicit_Self_Argument(structure,method_item);
+  Add_The_Implicit_Contracts(structure,method_item,options);
+❱
+
+
+◀private: static▶ void ☀Add_The_Implicit_Self_Argument(Structure const& structure, Method_Item & method_item)❰
+        auto implicit = Decide_Implicit_Argument(structure,method_item);
+        Add_To_Front(method_item.function_arguments,implicit);
+❱
+◀private: static▶ void ☀Add_The_Implicit_Contracts(Structure const& structure, Method_Item & method_item, C_Export_Settings const& options)❰
+  auto hi = Decide_Implicit_Argument(structure,method_item);
+  auto param_name = Identifier_Name_Deriver::Derive_Name(hi,options);
+  method_item.contracts += Implicit_Contract_Adder::Get_Implicit_Contracts_For_Non_Manager_Method(param_name);
+❱
+
+◀private: static▶ Function_Argument ☀Decide_Implicit_Argument(Structure const& structure, Method_Item & method_item)❰
+    
+    //return typed implicit first parameter
+    return Get_The_Normal_Implicit_Argument(structure,method_item);
+❱
+
+◀private: static▶ Function_Argument ☀Get_The_Normal_Implicit_Argument(Structure const& structure, Method_Item const& method_item)❰
+    Function_Argument implicit;
+    auto name = as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name));
+    auto type = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    
+    implicit.is_mutable = Decide_Whether_Implicit_Arg_Should_Be_Mutable(method_item);
+    implicit.is_reference = true;
+    implicit.type.value =  type + L"T";
+    implicit.identifier.value = name;
+    implicit.comment.value = L"the internal state of " + name;
+    
+    return implicit;
+❱
+
+//FEARURE REQUESTS AND A NOTE ON CONST OVERLOADING
+//one day I wish to be able to derive this automatically.
+//we know if the object should be const overloaded... when its not changing any of its data members
+//simple as that.  Although, there may be some weird cases where we want the same function to be overloaded based on const
+//I mean, I know the STL does it for things like getting iterators.  So it may be necessary.
+//Either way, it's not bad to have a symbol for it.  If anything, we can just extend the intelligence to either suggest making it const
+//or making it const regardless of what the user specified, because of the context of the object not having any overloads-- and then
+//issue a warning to the user, that we ignored their notation of const, because they are changing the object and we had no choice
+//or warn the user that we added const because they aren't chaning any data members, but forgot to tag it as such.
+//We'll have to take into account whether there are overloads, and there may be really strange scenarios where we want to be a certain way anyways.
+//that's why having the symbol is still good.  we would be able to turn of the warning portion, and trust the user.  
+//but we would also have machinery to aid the user for normal use of object const overloading.
+◀private: static▶ bool ☀Decide_Whether_Implicit_Arg_Should_Be_Mutable(Method_Item const& method_item)❰
+    return !method_item.overload_specifiers.is_const;
+❱

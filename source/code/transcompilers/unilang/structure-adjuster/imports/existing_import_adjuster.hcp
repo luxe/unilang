@@ -1,0 +1,113 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/manipulation/struct_manipulation_settings"❫
+⚯
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Adjust(Structure & structure,Import_Manipulation_Settings const& settings)❰
+
+    //rename headers as necessary:
+    //we may only want to do this under certain file contexts.
+    //we wouldn't want to re-name a header file to the same header file that we are already in
+    Rename_Imports(structure.imports,settings.header_renames);
+    
+    //change any headers to be local or system based on the settings
+    Adjust_Import_Types(structure.imports,settings);
+    
+    //add or remove file extensions based on settings
+    Adjust_Import_Extensions(structure.imports,settings);
+❱
+
+◀private: static▶ void ☀Adjust_Import_Types(Import_Section & import_section, Import_Manipulation_Settings const& settings)❰
+
+    //some headers we force to be system headers.  
+    //change the type flag to 'a system flag', if we see this:
+    Adjust_Imports_To_Be_System(import_section,settings.force_to_be_system_imports);
+    
+    //some headers we force to be local headers.  
+    //change the type flag to 'a local flag', if we see this:
+    Adjust_Imports_To_Be_Local(import_section,settings.force_to_be_local_imports);
+❱
+
+◀private: static▶ void ☀Adjust_Import_Extensions(Import_Section & import_section, Import_Manipulation_Settings const& settings)❰
+
+    //some header files we force to have a file extension at the end
+    //we already add extensions for local headers by default, and so
+    //this is a common setting to adjust system headers.  By default, we don't add extensions to system headers.
+    //I don't think system headers should have an extension, but this is not always the case (and often system headers DO have extensions).
+    Adjust_Imports_To_Have_Extension(import_section,settings.force_header_to_have_a_dot_h,settings.file_extension);
+    
+    //some header files we force to remove a file extension at the end 
+    Adjust_Imports_To_Not_Have_Extension(import_section,settings.force_header_to_not_have_a_dot_h,settings.file_extension);
+❱
+
+◀private: static▶ void ☀Rename_Imports(Import_Section & import_section, std::vector<std::pair<std::string,std::string>> const& header_renames)❰
+
+    Rename_Imports(import_section.interface_dependencies,header_renames);
+    Rename_Imports(import_section.implementation_dependencies,header_renames);
+❱
+◀private: static▶ void ☀Adjust_Imports_To_Be_System(Import_Section & import_section, std::vector<std::string> const& header_names)❰
+
+    Adjust_Imports_To_Be_Of_Type(import_section.interface_dependencies,header_names,Import_Type::SYSTEM);
+    Adjust_Imports_To_Be_Of_Type(import_section.implementation_dependencies,header_names,Import_Type::SYSTEM);
+❱
+
+◀private: static▶ void ☀Adjust_Imports_To_Be_Local(Import_Section & import_section, std::vector<std::string> const& header_names)❰
+
+    Adjust_Imports_To_Be_Of_Type(import_section.interface_dependencies,header_names,Import_Type::LOCAL);
+    Adjust_Imports_To_Be_Of_Type(import_section.implementation_dependencies,header_names,Import_Type::LOCAL);
+❱
+
+◀private: static▶ void ☀Adjust_Imports_To_Have_Extension(Import_Section & import_section, std::vector<std::string> const& header_names, std::string const& file_extension)❰
+
+    Adjust_Imports_To_Have_Extension(import_section.interface_dependencies,header_names,file_extension);
+    Adjust_Imports_To_Have_Extension(import_section.implementation_dependencies,header_names,file_extension);
+❱
+◀private: static▶ void ☀Adjust_Imports_To_Not_Have_Extension(Import_Section & import_section, std::vector<std::string> const& header_names, std::string const& file_extension)❰
+
+    Adjust_Imports_To_Not_Have_Extension(import_section.interface_dependencies,header_names,file_extension);
+    Adjust_Imports_To_Not_Have_Extension(import_section.implementation_dependencies,header_names,file_extension);
+❱
+
+
+
+//actual
+◀private: static▶ void ☀Rename_Imports(std::vector<Import_Item> & imports, std::vector<std::pair<std::string,std::string>> const& header_renames)❰
+    for (auto & it: imports){
+        for (auto const& pair: header_renames){
+            if (as_string(it.name.value) == pair.first){
+                it.name.value = as_wstring(pair.second);
+                break;
+            }
+        }
+    }
+❱
+◀private: static▶ void ☀Adjust_Imports_To_Be_Of_Type(std::vector<Import_Item> & imports, std::vector<std::string> const& header_names, Import_Type const& type)❰
+    for (auto & it: imports){
+        if (In_Vector(header_names,as_string(it.name.value))){
+            it.type = type;
+        }
+    }
+❱
+
+◀private: static▶ void ☀Adjust_Imports_To_Have_Extension(std::vector<Import_Item> & imports, std::vector<std::string> const& header_names, std::string const& file_extension)❰
+    for (auto & it: imports){
+        if (In_Vector(header_names,as_string(it.name.value))){
+            it.name.value = it.name.value + as_wstring(file_extension);
+        }
+    }
+❱
+◀private: static▶ void ☀Adjust_Imports_To_Not_Have_Extension(std::vector<Import_Item> & imports, std::vector<std::string> const& header_names, std::string const& file_extension)❰
+    for (auto & it: imports){
+        if (In_Vector(header_names,as_string(it.name.value))){
+            if (Ends_With(as_string(it.name.value),file_extension)){
+              it.name.value = as_wstring(As_Removed_Suffix(as_string(it.name.value)));
+            }
+        }
+    }
+❱

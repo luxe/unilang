@@ -1,0 +1,153 @@
+class
+
+❪set❫
+❪vector❫
+❪"code/transcompilers/unilang/parser/token_value"❫
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/tokens/token_name"❫
+❪"code/transcompilers/unilang/tokens/token_group"❫
+⚯
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/sets/lib"❫
+⚞⚟
+
+
+//setting a token value based on a parser token
+◀public: static▶ void ☀Set_Token_Value_From_Parser_Token(Token_Value & token_value, Parser_Token const& parser_token)❰
+    token_value.value = parser_token.content;
+    token_value.location = parser_token.location;
+    token_value.name = parser_token.token.name;
+❱
+
+//filtering stream of parse tokens
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
+    std::vector<Parser_Token> new_tokens;
+    for (auto it: tokens){
+        if(it.token.name == name) {new_tokens.push_back(it);}
+    }
+    return new_tokens;
+❱
+◀public: static▶ std::vector<Parser_Token> ☀Filter_Out_Tokens_By_Group_Name(std::vector<Parser_Token> const& tokens, Token_Group group_name)❰
+    std::vector<Parser_Token> new_tokens;
+    for (auto it: tokens){
+        if(In_Vector(it.token.groups,group_name)){new_tokens.push_back(it);}
+    }
+    return new_tokens;
+❱
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_By_Data_Member_Uniqueness(std::vector<Parser_Token> const& tokens)❰
+    std::vector<std::vector<Parser_Token>> all;
+    std::vector<Parser_Token> some;
+    std::set<Token_Name> s;
+    
+    for (auto const& it: tokens){
+        if (Exists_In_Set(s,it.token.name)){
+          all.push_back(some);
+          some.clear();
+          s.clear();
+          
+          //then add the one we just found
+          some.push_back(it);
+          Add_To_Set(s,it.token.name);
+        }
+        else{
+          some.push_back(it);
+          Add_To_Set(s,it.token.name);
+        }
+    }
+    
+  if (!some.empty()){
+    all.push_back(some);
+  }
+    
+    return all;
+❱
+
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_By_Data_Member_Uniqueness(std::vector<Parser_Token> const& tokens, std::vector<Token_Group> uniqueness_not_required)❰
+    std::vector<std::vector<Parser_Token>> all;
+    std::vector<Parser_Token> some;
+    std::set<Token_Name> s;
+    
+    for (auto const& it: tokens){
+        if (Exists_In_Set(s,it.token.name) && Required_To_Be_Unique(it,uniqueness_not_required)){
+          all.push_back(some);
+          some.clear();
+          s.clear();
+          
+          //then add the one we just found
+          some.push_back(it);
+          Add_To_Set(s,it.token.name);
+        }
+        else{
+          some.push_back(it);
+          Add_To_Set(s,it.token.name);
+        }
+    }
+    
+  if (!some.empty()){
+    all.push_back(some);
+  }
+    
+    return all;
+❱
+
+
+◀public: static▶ bool ☀Required_To_Be_Unique(Parser_Token const& token, std::vector<Token_Group> const& uniqueness_not_required)❰
+    for (auto group: uniqueness_not_required){
+        if (In_Vector(token.token.groups,group)){
+            return false;
+        }
+    }
+    return true;
+❱
+
+//utilities for stream of parser tokens
+◀public: static▶ Token_Value ☀Get_Token_Value_Of_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name token_name)❰
+    Token_Value t;
+    
+    for (auto i: tokens){
+        if (i.token.name == token_name){
+            t.value = i.content;
+            t.location = i.location;
+            break;
+        }
+    }
+    
+    return t;
+❱
+◀public: static▶ std::vector<Token_Value> ☀Get_Token_Values_Of_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name token_name)❰
+    std::vector<Token_Value> t;
+    
+    for (auto i: tokens){
+        if (i.token.name == token_name){
+            Token_Value yo;
+            yo.value = i.content;
+            yo.location = i.location;
+            t.push_back(yo);
+        }
+    }
+    
+    return t;
+❱
+◀public: static▶ std::wstring ☀Get_Value_Of_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name token_name)❰
+    std::wstring content;
+    
+    for (auto i: tokens){
+        if (i.token.name == token_name){
+            content = i.content;
+            break;
+        }
+    }
+    
+    return content;
+❱
+◀public: static▶ std::vector<std::wstring> ☀Get_Values_Of_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name token_name)❰
+    std::vector<std::wstring> contents;
+    
+    for (auto i: tokens){
+        if (i.token.name == token_name){
+            contents.push_back(i.content);
+        }
+    }
+    
+    return contents;
+❱

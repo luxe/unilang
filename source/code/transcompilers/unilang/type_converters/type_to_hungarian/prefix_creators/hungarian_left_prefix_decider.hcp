@@ -1,0 +1,119 @@
+class
+❪vector❫
+❪utility❫
+❪string❫
+❪algorithm❫
+❪"code/transcompilers/unilang/options/hungarian/characteristic/hungarian_characteristic_settings"❫
+❪"code/utilities/exits/lib"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ std::string ☀Create_Prefix(bool is_global, bool is_static, bool is_member, Hungarian_Characteristic_Settings const& settings)❰
+
+    //first we create a list of all the characteristics, tied with a bool.  
+    //at the end we will have a list of prefixes that should be printed/not printed
+    //they will also be in the correct left precedence order:
+    auto characteristics = Create_Boolean_Tagged_Characteristics(settings);
+    
+    //first sort them all by their specified priority
+    Sort_By_Priority(characteristics);
+    
+    //then disable any to reflect the real characteristics
+    Disable_Based_On_Actual_Characteristics(characteristics,is_global,is_static,is_member);
+    
+    //then disable additional characteristics based on trump rules
+    //we lose information from trump rules.
+    //hungarian notation is so god damn retarted anyway, that I really don't care.
+    //if they want to use hungarian notation, and then not even do it right, fine.  
+    //congratulations on being incompetent while doing something already incompetent.  
+    Disable_Based_On_Trump_Rules(characteristics,settings);
+    
+    //now that we have a data structure that accurately represents what characters should be printed, we create the prefix string
+    return Create_Characteristic_Prefix_Based_On_Tagged_Set(characteristics,settings);
+❱
+
+
+◀private: static▶ std::string ☀Create_Characteristic_Prefix_Based_On_Tagged_Set(std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> const& characteristics, Hungarian_Characteristic_Settings const& settings)❰
+    std::string prefix;
+    
+    //append the hungarian characteristics
+    for (auto const& it: characteristics){
+        if (it.second){
+            prefix += it.first.prefix;
+        }
+    }
+    
+    //append an optional string divider after the set of characteristic prefixes (usually something like an underscore)
+    if (!prefix.empty()){
+        prefix += settings.suffix_after;
+    }
+    
+    return prefix;
+❱
+
+
+◀private: static▶ std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> ☀Create_Boolean_Tagged_Characteristics(Hungarian_Characteristic_Settings const& settings)❰
+
+    std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> characteristics;
+    
+    //add the data, and make them all true by default:
+    for (auto it: settings.qualifiers){characteristics.emplace_back(it,true);}
+        
+    return characteristics;
+❱
+
+
+◀private: static▶ void ☀Disable_Based_On_Trump_Rules(std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> & characteristics, Hungarian_Characteristic_Settings const& settings)❰
+    //disable any additional ones based on trump rules
+    for (auto const& it: settings.trump_rules.trumps){
+        Possibly_Disable_Based_On_Trump_Rule(characteristics,it.first,it.second);
+    }
+❱
+
+
+
+◀private: static▶ void ☀Possibly_Disable_Based_On_Trump_Rule(std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> & characteristics, Hungarian_Characteristic const& trump_winner, Hungarian_Characteristic const& trump_loser)❰
+    
+    //find winner
+    auto winner_iter = std::find_if(std::begin(characteristics),std::end(characteristics),[&](auto it){
+        return it.first.characteristic == trump_winner;
+    });
+    
+    //find loser
+    auto loser_iter = std::find_if(std::begin(characteristics),std::end(characteristics),[&](auto it){
+        return it.first.characteristic == trump_loser;
+    });
+    
+    //make sure we definitely found them
+    if (winner_iter == std::end(characteristics)){Exit_With_Error("searching for the winner on hungarian trumping rules somehow failed");}
+    if (loser_iter == std::end(characteristics)){Exit_With_Error("searching for the loser on hungarian trumping rules somehow failed");}
+    
+    //if the winner is true, we will trump over (and make false) the loser
+    //there is no need to check if the loser is true or false. we will be setting it to false regardless
+    if (winner_iter->second){
+        loser_iter->second = false;
+    }
+❱
+
+◀private: static▶ void ☀Sort_By_Priority(std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> & characteristics)❰
+
+    //sort them based on their priority
+    std::sort(std::begin(characteristics),std::end(characteristics),[](auto x, auto y){
+        return x.first.left_priority < y.first.left_priority;
+    });
+❱
+
+◀private: static▶ void ☀Disable_Based_On_Actual_Characteristics(std::vector<std::pair<Hungarian_Characteristic_Qualifier,bool>> & characteristics,bool is_global, bool is_static, bool is_member)❰
+
+    //disable any based on actual characteristics
+    for (auto & it: characteristics){
+        switch (it.first.characteristic){
+            case Hungarian_Characteristic::GLOBAL: if (!is_global){it.second = false;} break;
+            case Hungarian_Characteristic::STATIC: if (!is_static){it.second = false;} break;
+            case Hungarian_Characteristic::MEMBER: if (!is_member){it.second = false;} break;
+        }
+    }
+❱
+
+

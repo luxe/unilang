@@ -1,0 +1,103 @@
+class
+❪string❫
+❪"code/transcompilers/unilang/options/hungarian/type/hungarian_type_settings"❫
+⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Create_Prefix(Hungarian_Type_Settings const& settings, std::string base_type, bool is_pointer, bool is_array, bool is_reference) ❰
+    
+    std::string prefix;
+    trim(base_type);
+    
+    auto type_found_early = Prefix_Adjustments_Based_On_Pointers_And_Arrays(prefix,settings,base_type,is_pointer,is_array,is_reference);
+    
+    //assuming it wasn't a cstring (sz) type..
+    if (!type_found_early){
+        prefix += Get_Type_Prefix_Based_On_Type(settings,base_type);
+    }
+
+    return prefix; 
+❱
+
+
+◀private: static▶ std::string ☀Get_Type_Prefix_Based_On_Type(Hungarian_Type_Settings const& settings, std::string base_type)❰
+    std::string prefix;
+    if (Potentially_Append_Prefix_Based_On_Lookup_Table(settings.type_notations.values,base_type,prefix)){}
+        
+    
+    else{
+        prefix += Get_A_NonFundamental_Identifier_Prefix(settings.special_type_suffixes_and_prefixes,base_type);
+    }
+    
+    return prefix;
+❱
+
+◀private: static▶ std::string ☀Get_A_NonFundamental_Identifier_Prefix(Special_Type_Hungarian_Notation_Prefixes_And_Suffixes const& settings, std::string base_type)❰
+
+    std::string prefix;
+    
+    //possibly assume it's an enum type
+    if(Ends_With(base_type,settings.enumerated.type_suffix)){prefix += settings.enumerated.identifier_prefix;}
+    
+    //possibly assume it's a union
+    else if(Ends_With(base_type,settings.unions.type_suffix)){prefix += settings.unions.identifier_prefix;}
+    
+    //possibly assume it's a struct
+    else if(Ends_With(base_type,settings.structs.type_suffix)){prefix += settings.structs.identifier_prefix;}
+        
+    //assume its a user-defined type- we're not sure
+    else{
+        
+        prefix += settings.structs.identifier_prefix;
+        
+        
+        //I change the base type to my test wrapper, and that triggers this warnings.  
+        //It's kind of an edge case.  I'll leave this commented out for now, because in theory
+        //I shouldn't be able to create a type in unilang that doesn't generate the right suffix (T) anyway.
+        //What I'm saying is, this fall through catches all other variables and tags them appropriately.  
+        //There would never be a time where we don't tag a variable, so its not an error/warning to hit this else case.
+        //I might be able to do a quick alias though in the testing, that way we can still print this warning.
+        //TODO: think about.
+        //std::cerr << "base type " + base_type << " didn't make any sense- so we assumed user-defined type for Hungarian notation.\n";
+    }
+    
+    return prefix;
+❱
+
+
+
+◀private: static▶ bool ☀Prefix_Adjustments_Based_On_Pointers_And_Arrays(std::string & prefix, Hungarian_Type_Settings const& settings, std::string base_type, bool is_pointer, bool is_array, bool is_reference)❰
+
+    //decide if it's a pointer,
+    //some pointers are 'sz', while others are just 'p'
+    bool type_found_early = false;
+    if(is_pointer || is_array || is_reference){
+        
+        if (Is_A_Signed_Or_Unknown_Signess_Char(base_type)){
+            prefix += settings.special_type_suffixes_and_prefixes.null_terminated_c_string_prefix;
+            type_found_early = true;
+        }
+        else{
+            prefix += settings.special_type_suffixes_and_prefixes.unspecial_pointer_prefix;
+        }
+    }
+    
+    return type_found_early;
+❱
+
+◀private: static▶ bool ☀Is_A_Signed_Or_Unknown_Signess_Char(std::string const& base_type)❰
+    return base_type == "char" || base_type == "signed char";
+❱
+
+
+◀private: static▶ bool ☀Potentially_Append_Prefix_Based_On_Lookup_Table(std::unordered_map<std::string,std::string> const& lookup_table, std::string const& base_type, std::string & prefix)❰
+
+    auto found = lookup_table.find(base_type);
+    if (found != lookup_table.end()){
+        prefix += found->second;
+        return true;
+    }
+    return false;
+❱

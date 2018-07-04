@@ -1,0 +1,344 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/structure-printer/function_declaration_location"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_other_methods/method_utility_function_options"❫
+⚯
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<Method_Item> ☀Get(std::string const& self_type, std::vector<Method_Item> const& items, Method_Utility_Function_Options const& manipulations)❰
+    
+    std::vector<Method_Item> all_methods;
+    
+    if (manipulations.add){
+      
+	  Possibly_Add_Algorithm_Methods(all_methods,items,manipulations);
+	}
+    
+    return all_methods;
+❱
+
+
+◀private: static▶ void ☀Possibly_Add_Algorithm_Methods(std::vector<Method_Item> & all_methods, std::vector<Method_Item> const& items, Method_Utility_Function_Options const& manipulations)❰
+
+	std::vector<std::string> actions {"UnaryActionT","BinaryActionT","TernaryActionT","QuaternaryActionT"};
+    std::vector<std::string> predicates {"UnaryPredicateT","BinaryPredicateT","TernaryPredicateT","QuaternaryPredicateT"};
+
+	//"for each","range based iteration over the vector of elements","uses the vector's iterators to iterate over the range"
+
+	if (Has_Iterator_Methods(items)){
+		all_methods.push_back(Create_Action_Method(false,"for each","UnaryActionT","unary",0));
+		all_methods.push_back(Create_Action_Method(false,"for each 1","BinaryActionT","binary",1));
+		all_methods.push_back(Create_Action_Method(false,"for each 2","TernaryActionT","ternary",2));
+		all_methods.push_back(Create_Action_Method(false,"for each 3","QuaternaryActionT","quaternary",3));
+		all_methods.push_back(Create_Action_Method(true, "for each","BinaryActionT","unary",0));
+		all_methods.push_back(Create_Action_Method(true, "for each 1","TernaryActionT","binary",1));
+		all_methods.push_back(Create_Action_Method(true, "for each 2","QuaternaryActionT","ternary",2));
+
+		all_methods.push_back(Create_Pred_Method(false,"find if","UnaryPredicateT","unary",0));
+		all_methods.push_back(Create_Pred_Method(false,"find if 1","BinaryPredicateT","binary",1));
+		all_methods.push_back(Create_Pred_Method(false,"find if 2","TernaryPredicateT","ternary",2));
+		all_methods.push_back(Create_Pred_Method(false,"find if 3","QuaternaryPredicateT","quaternary",3));
+		all_methods.push_back(Create_Pred_Method(true, "find if","BinaryPredicateT","unary",0));
+		all_methods.push_back(Create_Pred_Method(true, "find if 1","TernaryPredicateT","binary",1));
+		all_methods.push_back(Create_Pred_Method(true, "find if 2","QuaternaryPredicateT","ternary",2));
+	}
+❱
+
+
+◀private: static▶ Method_Item ☀Create_Action_Method(bool is_obj, std::string func_name, std::string function_type_name, std::string describe_name, int extra_arguments)❰
+	Method_Item m;
+
+
+	//possibly adjust name
+	if (is_obj){
+		func_name = "obj " + func_name;
+	}
+
+    //property related
+    m.class_access  = Class_Access::PUBLIC;
+    m.storage = Storage_Specifier::NONE;
+
+    //doesnt matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+
+    //documentation related
+    m.names.original_function_name.value = as_wstring(func_name);
+    m.names.function_name.value = as_wstring(func_name);
+    m.brief_description.value = L"range based iteration over the vector of elements.";
+    m.detailed_description.value = L"uses the vector's iterators to iterate over the range";
+	m.subgroup.value = L"range algorithm";
+
+	Extend_Brief_If_Needed(m.brief_description.value,extra_arguments);
+	Extend_Details_If_Needed(m.detailed_description.value,is_obj);
+
+	//main function argument
+	Add_Main_Argument(m,function_type_name,describe_name);
+
+	//add any extra arguments that are needed
+	Add_Extra_Arguments_As_Needed(m,is_obj,extra_arguments);
+
+	//body
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+	
+	body += Get_Forwarding_Range_Comment();
+	body += Get_Algo_Function_Call(func_name,is_obj,extra_arguments);
+	m.body = body;
+
+	return m;
+❱
+◀private: static▶ Method_Item ☀Create_Pred_Method(bool is_obj, std::string func_name, std::string function_type_name, std::string describe_name, int extra_arguments)❰
+	Method_Item m;
+
+
+	//possibly adjust name
+	if (is_obj){
+		func_name = "obj " + func_name;
+	}
+
+    //property related
+    m.class_access  = Class_Access::PUBLIC;
+    m.storage = Storage_Specifier::NONE;
+
+    //doesnt matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+
+    //documentation related
+    m.names.original_function_name.value = as_wstring(func_name);
+    m.names.function_name.value = as_wstring(func_name);
+    m.brief_description.value = L"searches for an element for which predicate p returns true";
+    m.detailed_description.value = L"uses predicate over range of elements";
+	m.subgroup.value = L"range algorithm";
+
+	//Extend_Brief_If_Needed(m.brief_description.value,extra_arguments);
+	//Extend_Details_If_Needed(m.detailed_description.value,is_obj);
+
+	//main function argument
+	Add_Main_Argument(m,function_type_name,describe_name);
+
+	//add any extra arguments that are needed
+	Add_Extra_Arguments_As_Needed(m,is_obj,extra_arguments);
+
+	//the return argument
+	Add_Return_Argument(m);
+
+	//body
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+	
+	body += Get_Forwarding_Range_Comment();
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"return ";
+    body.push_back(t);
+
+	body += Get_Algo_Function_Call(func_name,is_obj,extra_arguments);
+	m.body = body;
+
+	return m;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Forwarding_Range_Comment()❰
+	//body
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+	t.name = Body_Token_Name::COMMENT;
+    t.value = L"pass the range into the algorithm";
+	body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n";
+    body.push_back(t);
+
+	return body;
+❱
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Algo_Function_Call(std::string func_name, bool is_obj, int extra_arguments)❰
+	//body
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+	auto foreign_function = As_Capital_And_Pushed_Together(func_name);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring(foreign_function) + L"(";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::SELF_FUNCTION_CALL;
+    t.value =  L"begin";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"),";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::SELF_FUNCTION_CALL;
+    t.value =  L"end";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"),";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value =  L"function";
+    body.push_back(t);
+
+	body += Forward_Extra_Arguments_As_Needed(is_obj,extra_arguments);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L");\n";
+    body.push_back(t);
+
+	return body;
+❱
+
+◀private: static▶ void ☀Add_Main_Argument(Method_Item & m, std::string function_type_name, std::string describe_name)❰
+	//main function argument
+	Function_Argument arg;
+	arg.type.value = as_wstring(function_type_name);
+	arg.identifier.value = L"function";
+	arg.is_mutable = true;
+	arg.is_reference = false;
+	arg.infinitely_more = false;
+	arg.comment.value = L"the " + as_wstring(describe_name) + L" action used across the range";
+	m.function_arguments.push_back(arg);
+❱
+
+◀private: static▶ void ☀Add_Return_Argument(Method_Item & m)❰
+	//return argument
+	Function_Result arg;
+	arg.type.value = L"IteratorT";
+	arg.identifier.value = L"result";
+	arg.is_mutable = true;
+	arg.is_reference = false;
+	arg.infinitely_more = false;
+	arg.comment.value = L"Iterator to the first element satisfying the condition or last if no such element is found.";
+	m.return_results.push_back(arg);
+❱
+
+◀private: static▶ void ☀Add_Extra_Arguments_As_Needed(Method_Item & m, bool is_obj, int extra_arguments)❰
+
+	//possible self parameter
+	if (is_obj){
+		Function_Argument arg;
+		arg.type.value = L"void";
+		arg.identifier.value = L"self";
+		arg.is_mutable = true;
+		arg.is_reference = true;
+		arg.infinitely_more = false;
+		arg.comment.value = L"the \"this\" pointer of an object";
+		m.function_arguments.push_back(arg);
+	}
+
+
+	//possible additional arguments
+	for (int i = 0; i < extra_arguments; ++i){
+		Function_Argument arg;
+		arg.type.value = L"void";
+		arg.identifier.value = L"argument" + as_wstring(std::to_string(i+1));
+		arg.is_mutable = true;
+		arg.is_reference = true;
+		arg.infinitely_more = false;
+		arg.comment.value = L"an additional argument forwarded to the action";
+		m.function_arguments.push_back(arg);
+	}
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Forward_Extra_Arguments_As_Needed(bool is_obj, int extra_arguments)❰
+	
+	//body
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+	//possible self parameter
+	if (is_obj){
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L",";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::BODY_PARAMETER;
+		t.value =  L"self";
+		body.push_back(t);
+	}
+
+	//possible additional arguments
+	for (int i = 0; i < extra_arguments; ++i){
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L",";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::BODY_PARAMETER;
+		t.value = L"argument" + as_wstring(std::to_string(i+1));
+		body.push_back(t);
+	}
+
+	return body;
+❱
+◀private: static▶ void ☀Extend_Brief_If_Needed(std::wstring & str, int extra_arguments)❰
+
+	if (extra_arguments > 0){
+		str += L"\nAccepts ";
+		str += as_wstring(std::to_string(extra_arguments));
+		str += L" extra argument";
+		if (extra_arguments != 1){
+			str += L"s";
+		}
+	str += L" to forward to the action";
+	}
+❱
+◀private: static▶ void ☀Extend_Details_If_Needed(std::wstring & str, bool is_obj)❰
+	if (is_obj){
+		str += L"\nexpects first forwarding argument to be \"this\" pointer";
+	}
+❱
+
+
+
+
+
+
+
+
+//check yourself, before you implement yourself
+◀private: static▶ bool ☀Has_Iterator_Methods(std::vector<Method_Item> const& items)❰
+	bool has_begin = false;
+	bool has_end = false;
+
+	for (auto it: items){
+
+		//returns an iterator
+		if (Method_Returns_An_Iterator(it)){
+
+			//the function is either begin / end
+			if (as_string(it.names.original_function_name.value) == "begin"){
+				has_begin = true;
+			}
+			else if(as_string(it.names.original_function_name.value) == "end"){
+				has_end = true;
+			}
+		}
+	}
+
+	return has_begin && has_end;
+❱
+
+◀private: static▶ bool ☀Method_Returns_An_Iterator(Method_Item const& it)❰
+
+	if (!it.return_results.empty()){
+		if (as_string(it.return_results[0].type.value) == "IteratorT"){
+			return true;
+		}
+	}
+	return false;
+❱

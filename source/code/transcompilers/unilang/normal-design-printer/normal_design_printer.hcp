@@ -1,0 +1,82 @@
+class
+
+
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/in-out-design-printer/component_struct_printer"❫
+❪"code/transcompilers/unilang/structure-printer/forward_declares/forward_declare_printer"❫
+❪"code/transcompilers/unilang/structure-printer/typedef/typedef_printer"❫
+❪"code/transcompilers/unilang/structure-printer/macro/macro_printer"❫
+❪"code/transcompilers/unilang/enum-printer/enum_section_printer"❫
+❪"code/transcompilers/unilang/normal-design-printer/method_sorting_and_grouping_order_printer"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/api_and_lifetime/api_and_lifetime_creator"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ void ☀Print(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+    switch (file_settings.file){
+        case File_Type::INTERFACE:                         Print_Interface(out,structure,options);                         break;
+        case File_Type::IMPLEMENTATION:                    Print_Implementation(out,structure,options);                    break;
+        case File_Type::DATA:                              Print_Interface_Data(out,structure,options);                    break;
+        case File_Type::DATA_AND_INTERFACE:                Print_Data_And_Interface(out,structure,options);                break;
+        case File_Type::ALL:                               Print_Data_Interface_And_Implementation(out,structure,options); break;
+        default:;
+    }
+❱
+
+//main interface
+◀private: static▶ void ☀Print_Interface(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    auto fix = Api_And_Lifetime_Creator::Get_All_Methods_After_Necessary_Transformation(structure,options);
+    //Method_Sorting_And_Grouping_Order_Printer::Print_Interface_According_To_Sorting_And_Grouping_Settings(out,fix,structure,options);
+    Method_Sorting_And_Grouping_Order_Printer::Print_Interface_According_To_Sorting_And_Grouping_Settings(out,structure.methods,structure,options);
+    
+❱
+
+//main implementation
+◀private: static▶ void ☀Print_Implementation(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    
+    
+    Print_Implementation_Data(out,structure,options);
+    auto fix = Api_And_Lifetime_Creator::Get_All_Methods_After_Necessary_Transformation(structure,options);
+    //Method_Sorting_And_Grouping_Order_Printer::Print_Implementation_According_To_Sorting_And_Grouping_Settings(out,fix,structure,options);
+    Method_Sorting_And_Grouping_Order_Printer::Print_Implementation_According_To_Sorting_And_Grouping_Settings(out,structure.methods,structure,options);
+    
+❱
+◀private: static▶ void ☀Print_Data_And_Interface(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Print_Interface_Data(out,structure,options);
+    Print_Interface(out,structure,options);
+❱
+
+◀private: static▶ void ☀Print_Data_Interface_And_Implementation(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Print_Interface_Data(out,structure,options);
+    Print_Implementation_Data(out,structure,options);
+    Print_Implementation_Data(out,structure,options);
+    Print_Interface(out,structure,options);
+    Print_Implementation(out,structure,options);
+❱
+
+
+
+
+
+
+//printing data
+◀private: static▶ void ☀Print_Interface_Data(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Forward_Declare_Printer::Print_Interface(out,structure.forwards.forwards,options);
+    Typedef_Printer::Print_Interface_Typedefs(out,structure.typedefs.typedefs,options);
+    Macro_Printer::Print_Interface_Macros(out,structure.macros.macros,options);
+    Enum_Section_Printer::Print_Interface_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options);
+    Component_Struct_Printer::Print_Data_Structs(out,structure,options,false);
+❱
+
+◀private: static▶ void ☀Print_Implementation_Data(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Forward_Declare_Printer::Print_Implementation(out,structure.forwards.forwards,options);
+    Typedef_Printer::Print_Implementation_Typedefs(out,structure.typedefs.typedefs,options);
+    Macro_Printer::Print_Implementation_Macros(out,structure.macros.macros,options);
+    Enum_Section_Printer::Print_Implementation_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options);
+❱

@@ -1,0 +1,103 @@
+􏶞p􏶟
+􏷲A 􏶏 specific to the UH72A DC power system.􏷱
+􏷰Stores a collection of 􏶏 node IDs and builds them into the generic electrical graph.􏷯
+􏷮Electrical_System􏷭 􏷮Circuit_Box􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical components into the generic electrical graph data structure.􏷏
+􏶠This will give all of the node a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all of the vertices that are part of the 􏶐
+  the essential bus is technically outside the 􏶐,
+  but we include it here for conceptual organization􏶱
+  
+  􏶲add nodes to graph􏶱
+  􏵴generator relay􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"generator relay",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴starter relay􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"starter relay",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴overheat relay􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"overheat relay",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴over voltage relay􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"over voltage relay",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴generator bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"generator bus",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  􏵴generator􏵵 = ElectricalGraphAddGroundedGenerator(􏵶graph􏵷,"generator",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴overheat sensor􏵵 = ElectricalGraphAddGroundedSensor(􏵶graph􏵷,"overheat sensor",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴over voltage sensor􏵵 = ElectricalGraphAddGroundedSensor(􏵶graph􏵷,"over voltage sensor",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲connect the related components􏶱
+  
+  􏶲connect two nodes together􏶱
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴generator􏵵,􏵴generator relay􏵵);
+  //ElectricalGraphAddNonDirectedWire(􏵶graph􏵷, 􏵴generator􏵵, 􏵴starter relay􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴generator􏵵,􏵴overheat relay􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴generator􏵵,􏵴over voltage relay􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴generator relay􏵵,􏵴generator bus􏵵);
+  //ElectricalGraphAddNonDirectedWire(􏵶graph􏵷, 􏵴starter relay􏵵, 􏵴generator bus􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴overheat relay􏵵,􏵴overheat sensor􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴over voltage relay􏵵,􏵴over voltage sensor􏵵);
+􏶳
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬generator relay􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬starter relay􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬overheat relay􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬over voltage relay􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬over voltage sensor􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬overheat sensor􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬generator bus􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬generator􏶫􏶪0􏶩

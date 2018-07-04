@@ -1,0 +1,52 @@
+class
+
+
+❪"code/transcompilers/unilang/options/filesystem/general_filesystem_naming"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/file_extension_getter/file_extension_getter"❫
+⚞⚟
+
+
+
+//main
+◀public: static▶ std::string ☀Create_Header_Name(std::string const& raw_file_name, General_Filesystem_Naming const& settings, Source_Language const& language, std::string const& file_name_append◀=""▶)❰
+    auto file_extension = File_Extension_Getter::Get_For_Interface(language);
+    return Create_Full_Filename(raw_file_name,settings,file_name_append,file_extension);
+❱
+
+◀public: static▶ std::string ☀Create_Source_Name(std::string const& raw_file_name, General_Filesystem_Naming const& settings, Source_Language const& language, std::string const& file_name_append◀=""▶)❰
+    auto file_extension = File_Extension_Getter::Get_For_Implementation(language);
+    return Create_Full_Filename(raw_file_name,settings,file_name_append,file_extension);
+❱
+
+
+
+
+
+
+
+//utility
+◀private: static▶ std::string ☀Create_Full_Filename(std::string const& raw_file_name, General_Filesystem_Naming const& settings, std::string const& file_name_append, std::string const& file_extension)❰
+    
+    //add file name suffix
+    auto full_filename = raw_file_name + " " + file_name_append;
+    
+    //set casing
+    auto full_cased_file_name = Get_As_Cased_Filename(full_filename,settings);
+    
+    //add extension
+    auto full_cased_file_name_with_extension = With_File_Extension_Added(full_cased_file_name,file_extension);
+    
+    //return
+    return full_cased_file_name_with_extension;
+❱
+
+◀private: static▶ std::string ☀With_File_Extension_Added(std::string base_name, std::string file_extension)❰
+	const std::string before_extension = ".";
+    return base_name + before_extension + file_extension;
+❱
+◀private: static▶ std::string ☀Get_As_Cased_Filename(std::string const& file_name, General_Filesystem_Naming const& settings)❰
+    return Case_Modifier::As_Modified_Casing(settings.file_casing,file_name);
+❱

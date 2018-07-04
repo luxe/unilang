@@ -1,0 +1,57 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+⚯
+❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/value_constraint_comment_deriver"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data_shared"❫
+❪"code/transcompilers/unilang/units_to_variable_suffix_converter/unit_suffix_lookuper"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Add(Doxygen_Data & data, Method_Item const& method, C_Export_Settings const& options)❰
+    
+    auto brief = Potentially_Derive_Brief_Statement(method,options);
+    auto details = Potentially_Derive_Details_Statement(method,options);
+    
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"brief",brief,options.portion.method_options.comment.grammar);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"details",details,options.portion.method_options.comment.grammar);
+❱
+
+
+
+◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(Method_Item const& it, C_Export_Settings const& options)❰
+    
+    std::string derived = "";
+    
+    if (as_string(it.brief_description.value).empty() && options.portion.method_options.derive_brief_comment){
+      derived = as_string(it.names.original_function_name.value);
+    }
+    else{
+      derived = as_string(it.brief_description.value);
+    }
+    
+    return derived;
+❱
+
+
+◀private: static▶ std::string ☀Potentially_Derive_Details_Statement(Method_Item const& it, C_Export_Settings const& options)❰
+    
+    std::string derived = "";
+    
+    if (as_string(it.detailed_description.value).empty() && options.portion.method_options.derive_details_comment){
+      derived = as_string(it.names.original_function_name.value);
+    }
+    else{
+      derived = as_string(it.detailed_description.value);
+    }
+    
+    return derived;
+❱

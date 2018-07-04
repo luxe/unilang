@@ -1,0 +1,49 @@
+class
+❪vector❫
+❪"code/transcompilers/unilang/parser/token_value"❫
+❪"alternative_expression_name"❫
+⚯
+
+⚞⚟
+
+◀public:
+
+  //the name of the function.  
+  //the transcompilation process may transform this function name into something more suitable.
+  //For example, using special symbols in a function name, can sometimes cause different behaviour. 
+  //There are special symbols for constructors, copy constructors, destructors, and pretty much every operator you can think of.
+  //In those cases, the function name could be a unicode symbol, or something small with a unicode symbol thrown in.
+  //It's up to the parser settings what the special function names are.
+  Token_Value function_name;
+  
+  //this is is the original function name without any influence from the transcompilation process.
+  //Why is this important to have?  Sometimes we will transform a function name, and then later we want to derive
+  //frivoulous documentation about it.  It would be best to have access to the origninal function name before it was modified
+  //if "function_name" changes, the original will be preserved here
+  Token_Value original_function_name;
+
+  //not all languages have function overloading or templates (*cough* C)
+  //although we can derive readable mangle names, we may also consider a fallback name that expresses intent better than how it would be generated
+  //if left empty, it will still be considered as part of the otherload set, and will receive a generated name based on settings.
+  //The particular example that provoked this, was vector's constructors.  
+  //I wanted a constructor that took an initial allocator ammount, and another one that didn't care.
+  //well, there is no function overloading by number of arguments, and I describe functions through a special symbol, so that UniLang
+  //knows it is a constructor.  With this attribute, I can name both the functions with the special symbol that deems it a constructor,
+  //and I can also include a unique mangle name, so that once we realize there is a clash, we can choose this mangle name instead.  
+  //that will allow two nice constructor functions in C, that aren't generated to something weird based.  
+  //Granted, if we had a smart enough exporter, we may be able to generate a meaningful name.  
+  //For example, it would see that the only difference between the two constructors was that one took a size_t for the initial capacity.  
+  //Since the variable is named "initial capacity", the exporter can figure out that the best two names for the constructors would be:  
+  //ConstructVector(...);
+  //ConstructVectorWithInitialCapacity(...);
+  Token_Value unique_mangle_name;
+
+  //The Jstd allows functions to be called based on a modified regular expression like match
+  //this stores expressions that can be matched to consider the function called
+  //whether we actually create the function with that name, or we simply use the actual function name(also called the base name)
+  //is completely up to the setings of the Jstd.
+  //What kind of regular expression language should we use?
+  //I think its best to use a custom one I invented for the pre-Jstd llibrary.
+  std::vector<Alternative_Expression_Name> alternative_expression_names;
+
+▶

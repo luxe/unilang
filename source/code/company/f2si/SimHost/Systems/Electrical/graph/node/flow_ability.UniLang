@@ -1,0 +1,112 @@
+􏶞p􏶟
+􏷲Properties of electrical flow given to each electrical component in an electrical graph.􏷱
+􏷰Similar to the system communication of power, this describes whether a node allows electricity to flow through it,
+and expresses whether electricity is flowing through after some traversal algorithm has been ran.􏷯
+􏷮Electrical􏷭 􏷮Node􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stdioLib􏷥􏴓1􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦can_be_powered􏷥􏴓d􏴔􏴑CanBePoweredE􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Object􏴒
+
+CONSTRUCTOR:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether the node allows current to pass through it or not􏶿
+􏶴
+  
+  􏶲store whether the component can be powered􏶱
+  switch (􏵶can be powered􏵷){
+    case CAN_BE_POWERED_YES: 􏵴can be powered􏵵 = 􏵱; break;
+    case CAN_BE_POWERED_NO: 􏵴can be powered􏵵 = 􏵰; break;
+  }
+  
+  􏶲start with the node unlocked in its current "can be powered" state􏶱
+  􏶲this is will allow anyone to initially change the "can be powered" state of the node􏶱
+  􏵴locked􏵵 = 􏵰;
+  
+  􏶲since we aren't locked, our priority will also need to be zero􏶱
+  􏵴currently locked priority􏵵 = 0;
+  
+  􏶲start by not giving the component power􏶱
+  􏶲a traversal algorithm will come in later and set this􏶱
+  􏵴is powered􏵵 = 􏵰;
+  
+  􏶲we start under the assumption that the node is not grounded􏶱
+  􏶲a traversal algorithm will come in later and set this􏶱
+  􏵴grounded􏵵 = 􏵰;
+  
+  􏶲nodes are not self-powering by default􏶱
+  􏶲they are usually turned on during run-time by a debugging user􏶱
+  􏵴is self powering􏵵 = 􏵰;
+  
+􏶳
+
+
+DATA:
+􏶨whether a node can be powered.
+(AKA electricity can flow through it)􏶧
+􏶦You set this to 􏵱 if you consider the node functional.  
+You set it to 􏵰 if you consider the node broken, popped, open, or nonfunctional,
+and you don't want electricity to power it or flow through it.  
+Even if the particular node is grounded, electricity will not sustain after reaching the node.
+For example: if nodes are arranged such that A->B->C->Ground
+where A is a power source and B and C are devices.  
+C's grounding as well as its ability to be powered ensures that B is powered.  
+If C "cannot be powered", it will lose grounding resulting in B losing power as well.
+
+Conceptually, not having power can mean a lot of things:  
+Set to 􏵰 if it is a breaker that is popped.
+Set to 􏵰 if it is a relay that is open.
+Set to 􏵰 if it is a power source that is off.
+Set to 􏵰 if it is a a bus that is nonfunctional
+Set to 􏵰 if it some other component that has a malfunction.
+Set as 􏵱 otherwise.
+􏶥
+􏶘-gip~=􏶙􏶮bool􏶭􏶬can be powered􏶫􏶪􏵰􏶩
+􏳷==􏳸􏳵􏵰􏳶􏳳==􏳴􏳱􏵱􏳲􏳯is now able to be powered􏳰
+􏳷==􏳸􏳵􏵱􏳶􏳳==􏳴􏳱􏵰􏳲􏳯has lost the ability to be powered􏳰
+
+􏶨whether the node is locked in its current "can be powered" state􏶧
+􏶦this is important when there are multiple forces attempting to change the state of the same node
+For example, a malfunction can keep a node in a particular "can be powered state" despite a switches position􏶥
+􏶘-gip~=􏶙􏶮bool􏶭􏶬locked􏶫􏶪􏵰􏶩
+􏳷==􏳸􏳵􏵰􏳶􏳳==􏳴􏳱􏵱􏳲􏳯has locked􏳰
+􏳷==􏳸􏳵􏵱􏳶􏳳==􏳴􏳱􏵰􏳲􏳯has unlocked􏳰
+
+􏶨A node's can be powered state can be locked into a certain behavior􏶧
+􏶦Some outside forces have a higher priority when it comes to locking behavior.  
+This will keep the currently locked priority number to prevent others from unlocking and locking􏶥
+􏶘-gip~=􏶙􏶮i􏶭􏶬currently locked priority􏶫􏶪􏶩
+
+􏶨whether a node is being powered.
+(AKA the traversal has revealed that electricity is flowing through it)􏶧
+􏶦The only entity I can see responsible for changing this value, is a traversal algorithm.
+A user should not decide whether something is powered or not.  
+They decide if it "can be" powered based on the state of the node, and the traversal algorithm, runs
+threw and decides if the component actually has power.  A user will only want to observe this value.􏶥
+􏶘-gip~=􏶙􏶮bool􏶭􏶬is powered􏶫􏶪􏵰􏶩
+􏳷==􏳸􏳵􏵰􏳶􏳳==􏳴􏳱􏵱􏳲􏳯has become powered􏳰
+􏳷==􏳸􏳵􏵱􏳶􏳳==􏳴􏳱􏵰􏳲􏳯has lost powered􏳰
+
+􏶨whether a node is self-powering itself.􏶧
+􏶦A part from power sources which will be self-powering themselves, this is an important
+attribute for debugging.  A user can force nodes to self-power themselves as a means of debugging.
+A self-powered node tells the traversal algorithm, that there is no need to clear its power before traversing.
+To clarify, this does not mean that the node starts acting like a power source distributing power to nodes it is connected to.  
+It is a special property that allows a node to be powered despite what the power sources are nodes around it are doing.􏶥
+􏶘-gip~=􏶙􏶮bool􏶭􏶬is self powering􏶫􏶪􏵰􏶩
+􏳷==􏳸􏳵􏵰􏳶􏳳==􏳴􏳱􏵱􏳲􏳯is now self-powering itself􏳰
+􏳷==􏳸􏳵􏵱􏳶􏳳==􏳴􏳱􏵰􏳲􏳯is no longer self-powering itself􏳰
+
+􏶨whether or not the node is grounded􏶧
+􏶦This is not something a user building a graph can decide
+It might change if other nodes on the graph change state.  
+It is a property, much like "is powered" that gets derived from a traversal"
+If something is not grounded, it can't be powered.  
+Something that is grounded, has the potential to be powered, but sill might not be.􏶥
+􏶘-gip~=􏶙􏶮bool􏶭􏶬grounded􏶫􏶪􏵰􏶩
+􏳷==􏳸􏳵􏵰􏳶􏳳==􏳴􏳱􏵱􏳲􏳯is now grounded􏳰
+􏳷==􏳸􏳵􏵱􏳶􏳳==􏳴􏳱􏵰􏳲􏳯has lost grounding􏳰

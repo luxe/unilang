@@ -1,0 +1,330 @@
+􏶞g􏶟
+􏷲Performs voltage drops and climbs during engine start􏷱
+􏷰Uses settings to adjust voltage drop/climb rates during engine starts based off N1􏷯
+􏷮Electrical_System􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦ElectricalData.h􏷥􏴓d􏴔􏴑ElectricalSystemT􏴒􏴑DCPowerSystemT􏴒
+􏶔􏶕􏶒FfsCommon􏶓􏴏d􏴐􏴍ScaleValue()􏴎
+􏶔􏶕􏶒FloatApproximation􏶓􏴏d􏴐􏴍ApproximatelyGreaterEqualF()􏴎
+􏶔􏶕􏶒Interval􏶓􏴏d􏴐􏴍IntervalT􏴎
+
+􏷘+􏷗􏷒handle voltage fluctuation on engine start􏷑
+􏷐The voltage drops and rises at particular rates during an engine start􏷏
+􏶠Factors such as N1 and whether the other engine is already running affects the generator drop and rise voltages􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶴
+
+  􏶲determine if the generator should have started the drop/spike emulation􏶱
+  BOOL bGen1Starting = 􏵲is generator starting􏵳􏵶dc system􏵷,􏵶inputs􏵷,ENGINE_LEFT);
+  BOOL bGen2Starting = 􏵲is generator starting􏵳􏵶dc system􏵷,􏵶inputs􏵷,ENGINE_RIGHT);
+  
+  􏶲What the pilot expects to see when starting an engine:􏶱
+  􏶲1. starter switch goes up􏶱
+  􏶲2. volt drop (we customize where it drops to)􏶱
+  􏶲3. a steady volt rise with N1 (we customize the N1 we expect to meet)􏶱
+  􏶲4. starter switch goes down (we customize our end voltage)􏶱
+  􏶲5. faster volt rise with N1 (we customize our next N1 goal with end voltage)􏶱
+  􏶲we will deduce what we should do based on other contexts􏶱
+  􏶲A state machine may have been better􏶱
+  
+  􏶲analyze the context of the engines and the current state of the generators to􏶱
+  􏶲determine whether the fluctuation adjustments are needed􏶱
+  􏵲possibly simulate voltage fluctuations􏵳􏵶dc system􏵷,􏵶inputs􏵷,&bGen1Starting,&bGen2Starting);
+􏶳
+
+
+􏷘-􏷗􏷒possibly simulate voltage fluctuations􏷑
+􏷐analyze the context of the engines and the current state of the generators to􏷏
+􏶠determine whether the fluctuation adjustments are needed􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 1 starting􏷃􏷀whether gen 1 is starting􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 2 starting􏷃􏷀whether gen 2 is starting􏶿
+􏶴
+  􏶲perform the necessary drop spike emulation for generators that are starting up􏶱
+  􏵲possibly simulate generator start fluctuations􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶gen 1 starting􏵷,􏵶gen 2 starting􏵷);
+  
+  􏶲when the starter switch drops down, there is an additional spike􏶱
+  􏵲possibly simulate after starter spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶gen 1 starting􏵷,􏵶gen 2 starting􏵷);
+  
+  􏶲perform the necessary drop spike emulation for generators that are experiencing venting engines􏶱
+  􏵲possibly simulate generator engine vent fluctuations􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶gen 1 starting􏵷,􏵶gen 2 starting􏵷);
+􏶳
+
+
+􏷘-􏷗􏷒possibly simulate generator start fluctuations􏷑
+􏷐Provides a drop and rise of voltage based on starting generators and engine data􏷏
+􏶠if neither generator is starting, this will have no effect.􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 1 starting􏷃􏷀whether gen 1 is starting􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 2 starting􏷃􏷀whether gen 2 is starting􏶿
+􏶴
+  􏶲perform the necessary drop spike emulation for either generators starting up􏶱
+  if (*􏵶gen 1 starting􏵷){
+    􏵲simulate drop and spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_LEFT],􏵶gen 1 starting􏵷);
+  }
+  
+  if (*􏵶gen 2 starting􏵷){
+    􏵲simulate drop and spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_RIGHT],􏵶gen 2 starting􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒possibly simulate after starter spike􏷑
+􏷐Provides a final spike on a generator after the generator has started􏷏
+􏶠if neither generator has just started, this will have no effect.􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 1 starting􏷃􏷀whether gen 1 is starting􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 2 starting􏷃􏷀whether gen 2 is starting􏶿
+􏶴
+
+  􏶲create an N1 interval to check that the first spike is over􏶱
+  IntervalT tN1Interval = ConstructInterval(INTERVAL_TYPE_CLOSED,
+  􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct,
+  􏵶inputs􏵷->m_tSettings.m_tDrops.m_fSingleEngineSpikeEnd_pct,
+  INTERVAL_TYPE_CLOSED);
+  
+  􏶲the final spike can only occur if neither generator is starting􏶱
+  if (􏵲neither generator is starting􏵳􏵶gen 1 starting􏵷,􏵶gen 2 starting􏵷)){
+  
+    􏶲if the engine's N1 is equal or above our initial spike endpoint, we can apply the next spike􏶱
+    if (IntervalWithin(&tN1Interval,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_LEFT])){
+      􏵲simulate after starter spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_LEFT],􏵶gen 1 starting􏵷);
+    }
+    else if (IntervalWithin(&tN1Interval,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_RIGHT])){
+      􏵲simulate after starter spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_RIGHT],􏵶gen 2 starting􏵷);
+    }
+  }
+􏶳
+
+􏷘-􏷗􏷒neither generator is starting􏷑
+􏷐Tests whether either both generators is starting􏷏
+􏶠returns true if no generator is starting; false if either or both generators are starting􏶡
+􏶜mr􏶝􏷆bool􏷅􏷄gen 1 starting􏷃􏷀whether gen 1 is starting􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 2 starting􏷃􏷀whether gen 2 is starting􏶿
+􏶚m􏶛􏶾bool􏶽􏶼neither generator is starting􏶻􏶺whether either generator is starting􏶹
+􏶴
+  􏶲check that neither generator is starting􏶱
+  return !*􏵶gen 1 starting􏵷 && !*􏵶gen 2 starting􏵷;
+􏶳
+
+􏷘-􏷗􏷒possibly simulate generator engine vent fluctuations􏷑
+􏷐Provides a drop and rise of voltage based on a generator whose corresponding engine is venting􏷏
+􏶠if neither engine is venting, this will have no effect.􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 1 starting􏷃􏷀whether gen 1 is starting􏶿
+􏶜mr􏶝􏷆bool􏷅􏷄gen 2 starting􏷃􏷀whether gen 2 is starting􏶿
+􏶴
+  􏶲perform the necessary drop spike emulation for either generator whose correlating engine is venting􏶱
+  if (!*􏵶gen 1 starting􏵷 && 􏵶inputs􏵷->m_tEngine.m_pbVenting[ENGINE_LEFT]){
+  
+    􏶲set surge back and simulate voltage fluctuation􏶱
+    􏵲apply venting surge back􏵳&􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[ENGINE_LEFT]);
+    􏵲simulate drop and spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_LEFT],􏵶gen 1 starting􏵷);
+  }
+  
+  if (!*􏵶gen 2 starting􏵷 && 􏵶inputs􏵷->m_tEngine.m_pbVenting[ENGINE_RIGHT]){
+  
+    􏶲set surge back and simulate voltage fluctuation􏶱
+    􏵲apply venting surge back􏵳&􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[ENGINE_RIGHT]);
+    􏵲simulate drop and spike􏵳􏵶dc system􏵷,􏵶inputs􏵷,􏵶inputs􏵷->m_tEngine.m_pfN1_pct[ENGINE_RIGHT],􏵶gen 2 starting􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒apply venting surge back􏷑
+􏷐configures the generator to have a venting surge back for later amperage calculation􏷏
+􏶠applies a surge back value to a generator􏶡
+􏶜mr􏶝􏷆ElectricalGeneratorSettingsT􏷅􏷄generator􏷃􏷀The generator to apply surge back to􏶿
+􏶴
+    􏶲apply surge back􏶱
+    􏵶generator􏵷->m_fSurgeBackCurrent_amp = 􏵶generator􏵷->m_fSurgeBackCurrentDuringVent_amp;
+􏶳
+
+􏷘-􏷗􏷒is generator starting􏷑
+􏷐determine that a drop and spike should be occurring from engine state􏷏
+􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜􏶝􏷆i􏷅􏷄side􏷃􏷀the side relevant to the engine and generator􏶿
+􏶚m􏶛􏶾bool􏶽􏶼emulating drops and spikes􏶻􏶺whether voltage drops and spikes should be occurring on the generator􏶹
+􏶴
+  􏶲decide whether we should be emulating voltage drop/spikes via engine starts􏶱
+  if (!DCPowerSystemStarterRelayIsOpen(􏵶dc system􏵷,􏵶side􏵷)){
+    if (􏵶inputs􏵷->m_tEngine.m_pfN1_pct[􏵶side􏵷] < 􏵶inputs􏵷->m_tSettings.m_tPower.m_ptGenerator[􏵶side􏵷].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct){
+      return TRUE;
+    }
+  }
+    return FALSE;
+􏶳
+
+􏷘-􏷗􏷒simulate drop and spike􏷑
+􏷐since one the engine engage switches are up, we will simulate the voltage drop and spike that occurs during engine startup􏷏
+􏶠based off of videos uses custom settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+
+  􏶲we calculate the number of engines running to decide how to perform the drop and spike􏶱
+  int nNumberOfEnginesRunning = 􏵲number of generators running􏵳􏵶dc system􏵷);
+    
+    􏶲decide how to perform the drop and spike based on already running generators􏶱
+    switch(nNumberOfEnginesRunning){
+      case 0: 􏵲first engine drop spike􏵳􏵶dc system􏵷,&􏵶inputs􏵷->m_tSettings,􏵶relevant n1􏵷,􏵶emulating􏵷); break;
+      case 1: 􏶲the fall through is intentional􏶱
+      case 2: 􏵲last engine drop spike􏵳􏵶dc system􏵷,&􏵶inputs􏵷->m_tSettings,􏵶relevant n1􏵷,􏵶emulating􏵷); break;
+      default:; 􏶲should not happen􏶱
+  }
+􏶳
+
+
+􏷘-􏷗􏷒simulate after starter spike􏷑
+􏷐There is a custom spike after the starter switch drops􏷏
+􏶠based off of videos and uses custom settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemInputsT􏷅􏷄inputs􏷃􏷀The inputs of the system􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+
+  􏶲we calculate the number of engines running to decide how to perform the drop and spike􏶱
+  int nNumberOfEnginesRunning = 􏵲number of generators running􏵳􏵶dc system􏵷);
+    
+    􏶲decide how to perform the drop and spike based on already running generators􏶱
+    switch(nNumberOfEnginesRunning){
+      case 0: 􏶲the fall through is intentional􏶱
+      case 1: 􏵲first engine after starter spike􏵳􏵶dc system􏵷,&􏵶inputs􏵷->m_tSettings,􏵶relevant n1􏵷,􏵶emulating􏵷); break;
+      case 2: 􏵲last engine after starter spike􏵳􏵶dc system􏵷,&􏵶inputs􏵷->m_tSettings,􏵶relevant n1􏵷,􏵶emulating􏵷); break;
+      default:; 􏶲should not happen􏶱
+  }
+􏶳
+
+􏷘-􏷗􏷒number of generators running􏷑
+􏷐returns the number of generators currently running􏷏
+􏶠generators that are in the middle of starting are not counted as running􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾i􏶽􏶼number of generators running􏶻􏶺the number of generators running􏶹
+􏶴
+  􏶲start by assuming no generators are running􏶱
+  int nNumberOfEnginesRunning = 0;
+  
+    􏶲increment our total if generator is running􏶱
+    if(DCPowerSystemGenerator1IsRunning(􏵶dc system􏵷)){
+      ++nNumberOfEnginesRunning;
+    }
+    
+    􏶲increment our total if generator is running􏶱
+    if(DCPowerSystemGenerator2IsRunning(􏵶dc system􏵷)){
+      ++nNumberOfEnginesRunning;
+    }
+    
+    return nNumberOfEnginesRunning;
+􏶳
+
+
+
+N1 MATCHERS:
+􏷘-􏷗􏷒first engine drop spike􏷑
+􏷐adjust the voltage values of power sources assuming no engines are running, but one is starting􏷏
+􏶠uses drop and spike values from settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀The electrical settings􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+
+  􏶲scale and set emulated voltage values􏶱
+  􏵲scale n1 and set emulated voltage􏵳􏵶settings􏵷,􏵶settings􏵷->m_tDrops.m_fWithNoEngines_v,􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fNormalVoltageOnFirstStarterDrop_v,
+  0,􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct,􏵶relevant n1􏵷,􏵶emulating􏵷);
+􏶳
+
+􏷘-􏷗􏷒last engine drop spike􏷑
+􏷐adjust the voltage values of power sources assuming one engine is running, and the other is starting􏷏
+􏶠uses drop and spike values from settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀The electrical settings􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+  
+  􏶲scale and set emulated voltage values􏶱
+  􏵲scale n1 and set emulated voltage􏵳􏵶settings􏵷,􏵶settings􏵷->m_tDrops.m_fWithSingleEngine_v,􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fNormalVoltageOnSecondStarterDrop_v,
+  0,􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct,􏵶relevant n1􏵷,􏵶emulating􏵷);
+􏶳
+
+􏷘-􏷗􏷒first engine after starter spike􏷑
+􏷐adjust the voltage values of power sources assuming no engines are running, but one is starting􏷏
+􏶠uses drop and spike values from settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀The electrical settings􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+
+  􏶲scale and set emulated voltage values􏶱
+  􏵲scale n1 and set emulated voltage􏵳􏵶settings􏵷,􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fNormalVoltageOnFirstStarterDrop_v,
+  􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fNormalVoltage_v,
+  􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct,􏵶settings􏵷->m_tDrops.m_fNoEnginesSpikeEnd_pct,􏵶relevant n1􏵷,􏵶emulating􏵷);
+􏶳
+
+􏷘-􏷗􏷒last engine after starter spike􏷑
+􏷐adjust the voltage values of power sources assuming one engine is running, and the other is starting􏷏
+􏶠uses drop and spike values from settings􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀The electrical settings􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+  
+  􏶲scale and set emulated voltage values􏶱
+  􏵲scale n1 and set emulated voltage􏵳􏵶settings􏵷,􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fNormalVoltageOnSecondStarterDrop_v,
+  􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fNormalVoltage_v,
+  􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fN1GeneratorModeEnableUnderNormalTemperatures_pct,􏵶settings􏵷->m_tDrops.m_fSingleEngineSpikeEnd_pct,􏵶relevant n1􏵷,􏵶emulating􏵷);
+􏶳
+
+􏷘-􏷗􏷒scale n1 and set emulated voltage􏷑
+􏷐adjust the voltage values of power sources assuming one engine is running, and the other is starting􏷏
+􏶠uses drop and spike values from settings􏶡
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀The electrical settings􏶿
+􏶜􏶝􏷆f􏷅􏷄scale min􏷃􏷀min scaling􏶿
+􏶜􏶝􏷆f􏷅􏷄scale max􏷃􏷀max scaling􏶿
+􏶜􏶝􏷆f􏷅􏷄n1 min􏷃􏷀max scaling􏶿
+􏶜􏶝􏷆f􏷅􏷄n1 max􏷃􏷀max scaling􏶿
+􏶜􏶝􏷆f􏷅􏷄relevant n1􏷃􏷀The relevant n1 value of the starting engine􏶿
+􏶜mr􏶝􏷆BOOL􏷅􏷄emulating􏷃􏷀flag to determine if we are emulating voltage drops and spikes􏶿
+􏶴
+  􏶲scale the value based on the engines􏶱
+  float fScaledValue = ScaleValue(􏵶scale min􏵷,􏵶scale max􏵷,􏵶n1 min􏵷,􏵶n1 max􏵷,􏵶relevant n1􏵷);
+  
+  􏶲adjust power distributors to use modified voltage during simulated voltage drop􏶱
+  if (fScaledValue > 0.0f){
+    􏵲set all actual voltages to custom􏵳&􏵶settings􏵷->m_tPower,fScaledValue);
+  }
+  
+  􏶲determine if drop spike emulation is over􏶱
+  if (ApproximatelyGreaterEqualF(fScaledValue,􏵶scale max􏵷)){
+    *􏵶emulating􏵷 = FALSE;
+  }
+􏶳
+
+
+􏷘-􏷗􏷒set all actual voltages to custom􏷑
+􏷐We simulate drops and spikes from engine startups by changing all of the power sources to match a changing value􏷏
+􏶠We do this to all of them to avoid a higher voltage power device preventing lower voltage spikes that would otherwise go unseen.􏶡
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀The electrical power settings􏶿
+􏶜􏶝􏷆float􏷅􏷄custom􏷃􏵘volts􏵙􏷀The electrical settings􏶿
+􏶴
+
+  􏶲we will traverse based off the custom voltage provided􏶱
+  􏵶settings􏵷->m_ptGenerator[0].m_fActualVoltage_v = 􏵶custom􏵷;
+  􏵶settings􏵷->m_ptGenerator[1].m_fActualVoltage_v = 􏵶custom􏵷;
+  􏵶settings􏵷->m_ptBattery[0].m_fActualVoltage_v = 􏵶custom􏵷;
+  􏵶settings􏵷->m_ptBattery[1].m_fActualVoltage_v = 􏵶custom􏵷;
+  􏵶settings􏵷->m_tEpu.m_fActualVoltage_v = 􏵶custom􏵷;
+  􏵶settings􏵷->m_tEmergencyBattery.m_fActualVoltage_v = 􏵶custom􏵷;
+􏶳

@@ -1,0 +1,75 @@
+class
+❪"code/transcompilers/unilang/options/sections/meta/meta_generic_note_options"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Create(std::string file_name, Export_File_Settings const& file_settings, Meta_Generic_Note_Options const& options, bool const& contains_data, bool const& contains_methods)❰
+    std::string str;
+    
+    if (options.print){
+        Append(str,Capitalize_Each_With_Space_In_Between(file_name) + " ");
+        Append_Based_On_File_Settings(str,file_settings,options,contains_data,contains_methods);
+        str += "\n";
+    }
+    
+    return str;
+❱
+
+◀private: static▶ void ☀Append_Based_On_File_Settings(std::string & str, Export_File_Settings const& file_settings, Meta_Generic_Note_Options const& options, bool const& contains_data, bool const& contains_methods)❰
+
+    //print headers for global
+    if (file_settings.code == Code_Type::GLOBAL){
+        switch (file_settings.file){
+            case File_Type::INTERFACE:      Append(str,options.what_to_say_on_global_interfaces);         break;
+            case File_Type::IMPLEMENTATION: Append(str,options.what_to_say_on_global_implementations);    break;
+        }
+    }
+    
+    
+    //print headers for object
+    else if (file_settings.code == Code_Type::PRODUCT_TYPE){
+        switch (file_settings.file){
+            case File_Type::INTERFACE:          Append(str,options.what_to_say_on_object_interfaces);         break;
+            case File_Type::IMPLEMENTATION:     Append(str,options.what_to_say_on_object_implementations);    break;
+            case File_Type::DATA:               Append(str,options.what_to_say_on_object_data);               break;
+            case File_Type::DATA_AND_INTERFACE: Append(str,Decide_Data_Or_Interface_String(contains_data, contains_methods, options));                break;
+            case File_Type::ALL:                Append(str,Decide_Data_Or_Interface_Implementation_String(contains_data, contains_methods, options)); break;
+        }
+    }
+❱
+
+◀private: static▶ std::string ☀Decide_Data_Or_Interface_String(bool const& contains_data, bool const& contains_methods, Meta_Generic_Note_Options const& options)❰
+    std::string str;
+    
+    if (contains_data and contains_methods){
+        return options.what_to_say_on_data_and_interface_when_both_are_present;
+    }
+    if (contains_data and !contains_methods){
+        return options.what_to_say_on_data_and_interface_when_only_data_is_present;
+    }
+    if (!contains_data and contains_methods){
+        return options.what_to_say_on_data_and_interface_when_only_interface_is_present;
+    }
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Decide_Data_Or_Interface_Implementation_String(bool const& contains_data, bool const& contains_methods, Meta_Generic_Note_Options const& options)❰
+    std::string str;
+    
+    if (contains_data and contains_methods){
+        return options.what_to_say_on_data_interface_and_implementation_when_all_are_present;
+    }
+    if (contains_data and !contains_methods){
+        return options.what_to_say_on_data_interface_and_implementation_when_only_data_is_present;
+    }
+    if (!contains_data and contains_methods){
+        return options.what_to_say_on_data_interface_and_implementation_when_data_is_not_present;
+    }
+    
+    return str;
+❱

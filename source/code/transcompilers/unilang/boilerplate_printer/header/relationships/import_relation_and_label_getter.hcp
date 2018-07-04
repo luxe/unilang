@@ -1,0 +1,94 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/relationships/type_relationship"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/relationships/derived_data/related_things_and_their_labels"❫
+⚯
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/exits/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ Related_Things_And_Their_Labels ☀Get(Import_Item const& item, Import_Options const& settings)❰
+    
+    Related_Things_And_Their_Labels related_things_and_their_labels;
+    for (auto it: item.relationships){
+        auto labels = Get_List_Of_Labels_For_Relationships(it.relationships,settings);
+        Add_Or_Adjust_The_Related_Things_Map(related_things_and_their_labels,labels,as_string(it.related.value));
+    }
+    
+    Sort_And_Remove_Any_Duplicate_Label_Names(related_things_and_their_labels);
+    
+    return related_things_and_their_labels;
+❱
+
+◀private: static▶ void ☀Add_Or_Adjust_The_Related_Things_Map(Related_Things_And_Their_Labels & relations, std::vector<std::string> const& labels, std::string const& related)❰
+    
+    //append more label relations if the related item already exists
+    auto found = relations.map.find(related);
+
+    if (found != relations.map.end()){
+        found->second = found->second + labels;
+    }
+
+    //else add a new related item with its related labels
+    else{
+        relations.map.emplace(related,labels);
+    }
+❱
+
+◀private: static▶ void ☀Sort_And_Remove_Any_Duplicate_Label_Names(Related_Things_And_Their_Labels & relations)❰
+
+    for (auto & it: relations.map){
+        Sort_And_Remove_Duplicates(it.second);
+    }
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Get_List_Of_Labels_For_Relationships(Type_Relationships const& relationships, Import_Options const& settings)❰
+    std::vector<std::string> labels;
+    
+    //enum and boolean pairing
+    std::vector<std::pair<Type_Relationship,bool>> pairing = 
+    {{Type_Relationship::ASSOCIATION, relationships.association}
+    ,{Type_Relationship::AGGREGATION, relationships.aggregation}
+    ,{Type_Relationship::COMPOSITION, relationships.composition}
+    ,{Type_Relationship::INHERITANCE, relationships.inheritence}
+    ,{Type_Relationship::GENERALIZATION, relationships.generalization}
+    ,{Type_Relationship::REALIZATION, relationships.realization}
+    ,{Type_Relationship::DEPENDENCY, relationships.dependency}
+    };
+    
+    //add the necessary labels for the relation
+    for (auto const& p: pairing){
+        Add_Appropriate_Label_If_Relationship_Exists(labels,p.first, p.second,settings);
+    }
+    
+    return labels;
+❱
+
+◀private: static▶ void ☀Add_Appropriate_Label_If_Relationship_Exists(std::vector<std::string> & labels, Type_Relationship type_relationship, bool relationship_exists, Import_Options const& settings)❰
+    if (relationship_exists){
+        auto label_name = Convert_Property_To_Label(type_relationship,settings);
+        labels.push_back(label_name);
+    }
+❱
+
+◀private: static▶ std::string ☀Convert_Property_To_Label(Type_Relationship type_relationship, Import_Options const& settings)❰
+    std::string str;
+    
+    switch(type_relationship){
+        case Type_Relationship::ASSOCIATION: str = settings.relation_labels.association; break;
+        case Type_Relationship::AGGREGATION: str = settings.relation_labels.aggregation; break;
+        case Type_Relationship::COMPOSITION: str = settings.relation_labels.composition; break;
+        case Type_Relationship::INHERITANCE: str = settings.relation_labels.inheritence; break;
+        case Type_Relationship::GENERALIZATION: str = settings.relation_labels.generalization; break;
+        case Type_Relationship::REALIZATION: str = settings.relation_labels.realization; break;
+        case Type_Relationship::DEPENDENCY: str = settings.relation_labels.dependency; break;
+        default: Exit_With_Error("a type relationship is unaccounted for in a switch statement");
+    }
+    return str;
+❱

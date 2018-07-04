@@ -1,0 +1,160 @@
+class
+
+❪vector❫
+❪map❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/sections/method/sorting/method_sort_algorithms/method_sort_algorithms"❫
+❪"code/transcompilers/unilang/normal-design-printer/data/subgroup_sorted_methods"❫
+⚯
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ Subgroup_Sorted_Methods ☀Get_As_Sorted(std::vector<Method_Item> methods, Method_Sort_Algorithms const& settings)❰
+  
+  //the sorted method data structure to return
+  //this caneven represent methods that aren't technically sorted
+  Subgroup_Sorted_Methods sorted;
+  
+  //decide the primary sort we are going to apply to the methods
+  //sorting by subgroups
+  if (Primarily_Sorting_By_Subgroup(settings.main)){
+    sorted = Perform_Primary_Subgroup_Sort(methods,settings);
+  }
+  
+  //sorting by method names
+  else if (Primarily_Sorting_By_Method_Name(settings.main)){
+    sorted = Perform_Primary_Method_Sort(methods,settings);
+  }
+  
+  //should never happen
+  else{Exit_With_Error("you have to apply a primary method sort somehow");}
+  
+  return sorted;
+❱
+
+◀private: static▶ Subgroup_Sorted_Methods ☀Perform_Primary_Subgroup_Sort(std::vector<Method_Item> methods, Method_Sort_Algorithms const& settings)❰
+  
+  //put all subgroup methods into a map.  This will sort them automatically
+  auto mapped_methods = Get_Subgroup_Mapped_Methods(methods);
+  auto sorted = Convert_Map_To_Subgroup_Sorted_Methods(mapped_methods);
+  
+  //they are already sorted by subgroup at this point.
+  //decide if we want to sort them by a custom list
+  if (settings.main == Method_Sort_Algorithm::BY_CUSTOM_SUBGROUP_LIST){
+    std::sort(sorted.subgroups.begin(),sorted.subgroups.end(),[&](auto x, auto y){
+    
+        //get indexes based off of subgroups
+        auto index1 = Get_Index_Of_Element(settings.subgroup_sorting_list,x.subgroup);
+        auto index2 = Get_Index_Of_Element(settings.subgroup_sorting_list,y.subgroup);
+        auto size = settings.subgroup_sorting_list.size();
+        
+        //lhs not found | rhs found
+        if (index1 == size && index2 != size){return false;}
+        
+        //lhs found | rhs not found
+        if (index1 != size && index2 == size){ return true;}
+        
+        //both found
+        if (index1 != size && index2 != size){return index1 < index2;}
+        
+        //neither found
+        //sort groups that were not in the custom subgroup list
+        //the KEEP_WRITTEN_ORDER option is currently ignored.
+        //TODO: make this configuration option possible
+        return x.subgroup < y.subgroup;
+        
+      });
+  }
+  
+  //the methods themselves under the subgroups will not be sorted
+  //we now determine wether we should sort them per subgroup as well
+  if (settings.within_subgroup == Method_Sort_Within_Subgroup_Algorithm::ALPHABETICALLY_BY_NAME){
+    Sort_By_Name(sorted);
+  }
+  
+  return sorted;
+❱
+
+
+◀private: static▶ Subgroup_Sorted_Methods ☀Perform_Primary_Method_Sort(std::vector<Method_Item> methods, Method_Sort_Algorithms const& settings)❰
+  
+  if (settings.main == Method_Sort_Algorithm::ALPHABETICALLY_BY_NAME){
+    std::sort(methods.begin(),methods.end(),[](auto x, auto y){
+      return as_string(x.names.function_name.value) < as_string(y.names.function_name.value);
+    });
+  }
+  
+  //convert vector to special type
+  Subgroup_Sorted_Methods sorted;
+  for (auto it: methods){
+    Subgroup_Methods subs;
+    subs.subgroup = as_string(it.subgroup.value);
+    subs.methods = methods;
+    sorted.subgroups.push_back(subs);
+  }
+  
+  return sorted;
+❱
+
+
+◀private: static▶ void ☀Sort_By_Name(Subgroup_Sorted_Methods & all)❰
+  for (auto & groups: all.subgroups){
+    std::sort(groups.methods.begin(),groups.methods.end(),[](auto x, auto y){
+      return as_string(x.names.function_name.value) < as_string(y.names.function_name.value);
+    });
+  }
+❱
+
+◀private: static▶ Subgroup_Sorted_Methods ☀Convert_Map_To_Subgroup_Sorted_Methods(std::map<std::string,std::vector<Method_Item>> const& methods)❰
+  Subgroup_Sorted_Methods sorted;
+  
+  for (auto it: methods){
+    Subgroup_Methods subs;
+    subs.subgroup = it.first;
+    subs.methods = it.second;
+    sorted.subgroups.push_back(subs);
+  }
+  
+  return sorted;
+❱
+
+
+◀private: static▶ bool ☀Primarily_Sorting_By_Subgroup(Method_Sort_Algorithm const& setting)❰
+  return setting == Method_Sort_Algorithm::ALPHABETICALLY_BY_SUBGROUP || setting == Method_Sort_Algorithm::BY_CUSTOM_SUBGROUP_LIST;
+❱
+◀private: static▶ bool ☀Primarily_Sorting_By_Method_Name(Method_Sort_Algorithm const& setting)❰
+  //I know "keep written order" is "not wanting to sort at all",
+  //but I'm considering it a method name sort in which the desired order is what is already specified.
+  //there is potential we might have other sorting options in the future, and my main concern right now
+  //it to seperate out the primary sorts that care about subgroups, and the primary sorts that don't
+  return setting == Method_Sort_Algorithm::KEEP_WRITTEN_ORDER || setting == Method_Sort_Algorithm::ALPHABETICALLY_BY_NAME;
+❱
+
+
+◀private: static▶ std::map<std::string,std::vector<Method_Item>> ☀Get_Subgroup_Mapped_Methods(std::vector<Method_Item> methods)❰
+
+  //store all methods into a map
+  std::map<std::string,std::vector<Method_Item>> map;
+  for (auto const& it: methods){
+    
+    //look to see if it already exists
+    auto subgroup = as_string(it.subgroup.value);
+    auto found = map.find(subgroup);
+    
+    //already exists.  push_back the method
+    if (found != map.end()){
+      found->second.push_back(it);
+    }
+    
+    //does not already exist. create and push_back method
+    else{
+      std::vector<Method_Item> vec{it};
+      map.emplace(subgroup,vec);
+    }
+  }
+  
+  //map is now complete and filled
+  return map;
+❱

@@ -1,0 +1,69 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/manipulation/struct_manipulation_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-adjuster/imports/existing_import_adjuster"❫
+❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Adjust(Structure & structure,Import_Manipulation_Settings const& settings)❰
+
+    //leave out an import?  No problem.  The compiler will look at the type and find the appropriate import for you.
+    //in fact, it is sometimes required to leave out an import if its a non unilang file that needs included.
+    //say you are using a string datatype but leave out the import.  The compiler will know to give you say: <string> for C++
+    //MyString.h for C, etc etc for other languages
+    Include_Imports_Based_On_Types(structure,settings);
+
+	//make other adjustments to the imports assuming all of them are now there
+    Existing_Import_Adjuster::Adjust(structure,settings);
+❱
+
+◀private: static▶ void ☀Include_Imports_Based_On_Types(Structure & structure,Import_Manipulation_Settings const& settings)❰
+    //should get:
+	//-function arguments
+    //-function returns
+    //-method body instantiations
+    //-foreign function calls
+    //-template stuff
+
+	//at least the C style way
+	//because private methods would actually still be in the interface for c++...
+	auto interface_types = Find_All_Interface_Types(structure);
+	auto implementation_types = Find_All_Implementation_Types(structure);
+❱
+
+◀private: static▶ std::set<std::string> ☀Find_All_Interface_Types(Structure const& structure)❰
+	std::set<std::string> found_types;
+	
+	//gather all the argument types of public methods
+	for (auto method: structure.methods.methods){
+		if (method.class_access == Class_Access::PUBLIC){
+			for (auto it: method.return_results){Add_To_Set(found_types,as_string(it.type.value));}
+			for (auto it: method.function_arguments){Add_To_Set(found_types,as_string(it.type.value));}
+		}
+	}
+
+	//gather all the data member types
+	for (auto it: structure.data_members.data_members){
+		Add_To_Set(found_types,as_string(it.type.value));
+	}
+
+	return found_types;
+❱
+
+◀private: static▶ std::set<std::string> ☀Find_All_Implementation_Types(Structure const& structure)❰
+	std::set<std::string> found_types;
+
+	//gather all the argument types of public methods
+	for (auto method: structure.methods.methods){
+		if (method.class_access == Class_Access::PRIVATE){
+			for (auto it: method.return_results){Add_To_Set(found_types,as_string(it.type.value));}
+			for (auto it: method.function_arguments){Add_To_Set(found_types,as_string(it.type.value));}
+		}
+	}
+
+	return found_types;
+❱

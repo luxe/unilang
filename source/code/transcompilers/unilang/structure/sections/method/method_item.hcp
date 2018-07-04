@@ -1,0 +1,86 @@
+class
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/template_argument"❫
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_argument"❫
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_result"❫
+❪"code/transcompilers/unilang/structure/sections/structure_enums"❫
+❪"code/transcompilers/unilang/parser/token_value"❫
+❪"code/transcompilers/unilang/parser/body_parser/body_token_value"❫
+❪"code/transcompilers/unilang/structure/sections/method/contracts/method_contracts_section"❫
+❪"code/transcompilers/unilang/structure/sections/method/properties/method_overload_specifiers"❫
+❪"code/transcompilers/unilang/structure/sections/method/properties/method_inheritence_specifiers"❫
+❪"code/transcompilers/unilang/structure/sections/method/properties/method_event_characteristic"❫
+❪"code/transcompilers/unilang/structure/sections/method/tests/function_test_case"❫
+❪"code/transcompilers/unilang/structure/sections/method/stamps/method_stamp"❫
+❪"code/transcompilers/unilang/structure/sections/method/names/method_names_section"❫
+❪"code/transcompilers/unilang/structure/sections/method/body/function_body"❫
+⚯
+
+⚞⚟
+
+◀public:
+
+
+//mustache stamping for unilang code generation within the language
+std::vector<Method_Stamp> stamps;
+
+
+//function class specifiers
+Class_Access   class_access = Class_Access::PRIVATE;                        // public / protected /private
+Method_Overload_Specifiers overload_specifiers;                             // &, &&, and const
+Storage_Specifier storage=Storage_Specifier::NONE;                          //[static] function(...); or [extern] function(...);
+Implicit_Method_Modifier implict_modifier = Implicit_Method_Modifier::NONE; // = delete / = default
+Method_Event_Characteristic event = Method_Event_Characteristic::NONE;      // slot / signal
+Method_Inheritence_Specifiers inheritence;                                  //override / final / virtual / pure virtual
+bool is_friend=false;                                                       //friend keyword
+bool is_explicit=false;                                                     //explicit keyword
+bool is_inlined=false;            // [inline] void function(...); (also see: the concept of memoizing)
+bool is_cached=false;             // not a syntax thing (more of a, only call this function once, and cache the result forever thing)
+                                  //it basically gets implemented with a static bool to decide whether the function has been called yet, and stores the result in a static var.
+                                  //generators may choose to create both methods, a cached and uncached version, where the cached version calls the uncached version on its first go.
+                                  //this allows the uncached version to still be tested.
+
+//the function may be unused, but you still want to keep it.
+//to avoid a compiler warning, we use an attribute to keep the function without warning                                  
+bool is_unused=false;
+
+std::vector<Token_Value> depreciation_reasons; //if this is not empty, then the function has been depreciated.
+
+//contracts (pre-conditions / post-conditions / invariants)
+Method_Contracts_Section contracts;
+
+//various name properties that describe a name for the function
+Method_Names_Section names;
+
+//documentation
+Token_Value subgroup; //should this be a vector?  Not right now.  I don't think doxygen can even support nested subgroups.
+//I can see a possible need for tagging a function with multiple subgroups, but I think that the majority of cases don't need it.
+//especially if you decompose your objects/functions, to have a small set of responsibilities.  We can reconsider this later,
+//but lets get some experience with the ability to have single subgroup tags on functions
+//I've already run into a few situations where I think a tree structure of subgroup tagging would work nicely
+
+
+
+Token_Value brief_description;     //make a part of general description
+Token_Value detailed_description;  //make a part of general description
+
+//parameters / return values
+std::vector<Template_Argument> template_arguments; //make a part of method_parameters (rename to template parameters)
+std::vector<Function_Argument> function_arguments; //make a part of method_parameters (rename to normal parameters)
+std::vector<Function_Result> return_results;
+
+//exceptions (make object)
+Token_Value exception_expression;
+Token_Value exception_comment;
+
+//body of function
+//WILL ONE DAY BE DEPRECIATED!
+//It needs replaced which a whole other struct that has nested variants
+std::vector<Body_Token_Value> body;
+
+//nested variants to represent the body of a function properly
+Function_Body entire_body;
+
+//bodies of test cases
+std::vector<Function_Test_Case> tests;
+
+▶

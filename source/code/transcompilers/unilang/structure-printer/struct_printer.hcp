@@ -1,0 +1,129 @@
+class
+
+❪iostream❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_section"❫
+❪"code/transcompilers/unilang/structure/sections/types/type_section"❫
+❪"code/transcompilers/unilang/options/sections/portion_options"❫
+❪"code/transcompilers/unilang/options/general_options"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/data_member_printer"❫
+❪"code/transcompilers/unilang/structure-printer/hidl_data_member_printer"❫
+❪"code/transcompilers/unilang/structure-printer/struct_derivers"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Structs(std::wofstream & out, Data_Member_Section const& data_members, Type_Section const& types, General_Options const& general, Portion_Options const& portion)❰
+    
+	for (auto const& t: types.types){
+		auto mems = Struct_Derivers::Find_Data_Members_Of_Type(data_members,t);
+		Print_Struct_For_Hidl(out,t,mems,general,portion);
+	}	
+❱
+
+//made public for normal structure printer for C
+◀public: static▶ void ☀Print_Struct(std::wofstream & out, Type_Item const& t, std::vector<Data_Member_Item> const& mems, General_Options const& general, Portion_Options const& portion)❰
+		
+		//TOTO: settings
+        //C settings
+        //std::string keyword = "typedef struct";
+        //std::string after_keyword = " ";
+		//std::string open_structure = "{";
+        //std::string close_structure = "}";
+        //std::string structure_delim = ";";
+        //bool double_name_c_way = true;
+
+        std::string keyword = "struct";
+        std::string after_keyword = " ";
+		std::string open_structure = "{";
+        std::string close_structure = "}";
+        std::string structure_delim = "";
+        bool double_name_c_way = false;
+
+		//TODO: FIX THIS.  DONT DO THIS:
+        //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
+        //THIS IS A TEMP HACK/FIX.
+        C_Export_Settings bad_temp;
+		bad_temp.portion = portion;
+		bad_temp.general = general;
+
+
+		Doxygen_Block_Printer::Print_Block(out,0,as_string(t.brief.value),as_string(t.detail.value),general.comment.doxygen);
+
+		if (double_name_c_way){
+		    Print_To_Stream(out,keyword);
+		    Print_To_Stream(out,after_keyword);
+			
+			//add dumb name part
+            std::string DUMB_NAME = "dumb"; //derive
+		    Print_To_Stream_With_Newline(out,DUMB_NAME);
+
+		    Print_To_Stream_With_Newline(out,open_structure);
+		    Data_Member_Printer::Print_Global_Decelerations(out,mems,bad_temp,Code_Type::PRODUCT_TYPE);
+		    Print_To_Stream(out,close_structure);
+
+            //add extra name part
+		    Print_To_Stream(out," ");
+		    Print_To_Stream(out,as_string(t.name.value));
+
+		    Print_To_Stream_With_Newline(out,structure_delim);
+		    Print_To_Stream_With_Newline(out,"");
+		}
+		else{
+		    Print_To_Stream(out,keyword);
+		    Print_To_Stream(out,after_keyword);
+
+            //add only name part
+		    Print_To_Stream_With_Newline(out,as_string(t.name.value));
+
+		    Print_To_Stream_With_Newline(out,open_structure);
+			Data_Member_Printer::Print_Global_Decelerations(out,mems,bad_temp,Code_Type::PRODUCT_TYPE);
+		    Print_To_Stream(out,close_structure);
+		    Print_To_Stream_With_Newline(out,structure_delim);
+		    Print_To_Stream_With_Newline(out,"");
+		}
+❱
+
+◀public: static▶ void ☀Print_Struct_For_Hidl(std::wofstream & out, Type_Item const& t, std::vector<Data_Member_Item> const& mems, General_Options const& general, Portion_Options const& portion)❰
+
+        std::string keyword = "struct";
+        std::string after_keyword = " ";
+		std::string open_structure = "{";
+        std::string close_structure = "}";
+        std::string structure_delim = "";
+		bool print_version = true;
+		bool print_minimal_version = true;
+
+		Doxygen_Block_Printer::Print_Struct_Block(out,0,as_string(t.brief.value),as_string(t.detail.value),as_string(t.name.value),general.comment.doxygen);
+
+	    Print_To_Stream(out,keyword);
+	    Print_To_Stream(out,after_keyword);
+
+        //add only name part
+	    Print_To_Stream_With_Newline(out,as_string(t.name.value));
+
+	    Print_To_Stream_With_Newline(out,open_structure);
+		if (print_version){
+            Print_To_Stream(out,"    ");
+			Print_To_Stream(out,"version ");
+			Print_To_Stream(out,as_string(t.version.value));
+			Print_To_Stream(out,";");
+			Print_To_Stream_With_Newline(out,"");
+			Print_To_Stream_With_Newline(out,"");
+		}
+
+		if (print_minimal_version){
+            Print_To_Stream(out,"    ");
+			Print_To_Stream(out,"minimum version ");
+			Print_To_Stream(out,as_string(t.minimum_version.value));
+			Print_To_Stream(out,";");
+			Print_To_Stream_With_Newline(out,"");
+			Print_To_Stream_With_Newline(out,"");
+		}
+		
+		Hidl_Data_Member_Printer::Print(out,mems,general,portion);
+	    Print_To_Stream(out,close_structure);
+	    Print_To_Stream_With_Newline(out,structure_delim);
+        Print_To_Stream_With_Newline(out,"");
+❱

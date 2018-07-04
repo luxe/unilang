@@ -1,0 +1,138 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+last_path_start_new_local_site=`pwd`
+cd ~/Desktop;
+
+#test to make sure we have railo first
+if [[ -d "railo" ]]; then
+else
+    echo "we need the railo server on the desktop first";
+    echo "I'm going to get it for you";
+    download_railo_server;
+fi;
+
+cd "railo";
+
+#add entry to the hosts file
+add_local_fh_site_to_hosts_file $1;
+
+#create the context file
+mkdir -p ./contexts/;
+mkdir -p ./webapps/;
+cat > ./contexts/$1.xml << EOF
+<?xml version="1.0"  encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<!-- ==================================================================
+Configure and deploy the test web application in \$(jetty.home)/webapps/test
+
+Note. If this file did not exist or used a context path other that /test
+then the default configuration of jetty.xml would discover the test
+webapplication with a WebAppDeployer.  By specifying a context in this
+directory, additional configuration may be specified and hot deployments 
+detected.
+===================================================================== -->
+
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+
+
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- Optional context configuration                                  -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  <Set name="extractWAR">false</Set>
+  <Set name="copyWebDir">false</Set>  -->
+ 
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- Required minimal context configuration :                        -->
+  <!--  + contextPath                                                  -->
+  <!--  + war OR resourceBase                                          -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <Set name="contextPath">/</Set>
+  <Set name="resourceBase"><SystemProperty name="jetty.home" default="."/>/webapps/$1/</Set>
+  
+  <!-- <Set name="war"><SystemProperty name="jetty.home" default="."/>/webapps/test.war</Set> -->
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- Optional context configuration                                  -->
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+  <!-- <Set name="extractWAR">false</Set>
+  <Set name="copyWebDir">false</Set> -->
+  <Set name="defaultsDescriptor"><SystemProperty name="jetty.home" default="."/>/etc/webdefault.xml</Set>
+  
+  <!-- <Set name="overrideDescriptor"><SystemProperty name="jetty.home" default="."/>/contexts/test.d/override-web.xml</Set>
+   -->
+
+  <!-- virtual hosts -->
+  <Set name="virtualHosts">
+    <Array type="String">
+      <Item>www.$1.com.fh.dev</Item>
+    </Array>
+  </Set>
+
+  <!-- disable cookies 
+  <Get name="sessionHandler">
+     <Get name="sessionManager">
+        <Set name="usingCookies" type="boolean">false</Set>
+     </Get>
+  </Get>
+  -->
+<!--
+  <Get name="securityHandler">
+    <Set name="loginService">
+      <New class="org.eclipse.jetty.security.HashLoginService">
+        <Set name="name">Test Realm</Set>
+        <Set name="config"><SystemProperty name="jetty.home" default="."/>/etc/realm.properties</Set> -->
+            <!-- To enable reload of realm when properties change, uncomment the following lines -->
+            <!-- changing refreshInterval (in seconds) as desired                                -->
+            <!-- 
+            <Set name="refreshInterval">5</Set>
+            <Call name="start"></Call>
+            -->
+      <!-- </New>
+    </Set>
+    <Set name="checkWelcomeFiles">true</Set>
+  </Get>
+  -->
+  <!-- Non standard error page mapping -->
+  <!--
+  <Get name="errorHandler">
+    <Call name="addErrorPage">
+      <Arg type="int">500</Arg>
+      <Arg type="int">599</Arg>
+      <Arg type="String">/dump/errorCodeRangeMapping</Arg>
+    </Call>
+  </Get>
+  -->
+
+  <!-- Add context specific logger
+  <Set name="handler">
+    <New id="RequestLog" class="org.eclipse.jetty.server.handler.RequestLogHandler">
+      <Set name="requestLog">
+    <New id="RequestLogImpl" class="org.eclipse.jetty.server.NCSARequestLog">
+      <Set name="filename"><Property name="jetty.logs" default="./logs"/>/test-yyyy_mm_dd.request.log</Set>
+      <Set name="filenameDateFormat">yyyy_MM_dd</Set>
+      <Set name="append">true</Set>
+      <Set name="LogTimeZone">GMT</Set>
+    </New>
+      </Set>
+    </New>
+  </Set>
+  -->
+
+</Configure>
+EOF
+
+#make a folder for the mura project
+echo "creating mura project"
+git clone https://github.com/blueriver/MuraCMS.git webapps/$1 >/dev/null 2>&1;
+rm -rf webapps/$1/.git/;
+
+#tell the user where to to configure railo
+echo "go here and configure:"
+echo "http://www.$1.com.fh.dev:8888/railo-context/admin/web.cfm";
+
+cd $last_path_start_new_local_site;

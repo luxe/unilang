@@ -1,0 +1,51 @@
+class
+
+
+❪"code/transcompilers/unilang/options/sections/method/sorting/method_subgroup_tag_settings"❫
+⚯
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Possibly_Print_Start(std::wofstream & out, std::string const& subgroup_name, Method_Subgroup_Tag_Settings const& settings)❰
+  if (settings.print){
+    if (!subgroup_name.empty()){
+      std::string print_str = settings.tag_name + " " + subgroup_name + "\n" + settings.group_start;
+      auto as_comment = As_Comment(print_str,settings.comment);
+      Print_To_Stream_With_Newline(out,as_comment);
+      Print_To_Stream_With_Newline(out,"");
+    }
+  }
+❱
+◀public: static▶ void ☀Possibly_Print_End(std::wofstream & out, std::string const& subgroup_name, Method_Subgroup_Tag_Settings const& settings)❰
+  if (settings.print){
+    if (!subgroup_name.empty()){
+      std::string print_str = settings.group_end;
+      auto as_comment = As_Comment(print_str,settings.comment);
+      Print_To_Stream_With_Newline(out,as_comment);
+      Print_To_Stream_With_Newline(out,"");
+    }
+  }
+❱
+
+◀private: static▶ std::string ☀As_Comment(std::string block_text, Comment_Settings const& settings)❰
+
+    //turn block text into a comment
+    //TODO: choose between language / doxygen comment
+    //its called comment category...
+    
+    //convert into doxygen input
+    auto vec_pair = Put_Each_Line_Of_String_Into_A_Vector_Of_Pairs_Where_The_First_Pair_Elements_Are_Empty(block_text);
+    Doxygen_Data dox_data;
+    dox_data.lines = vec_pair;
+    
+    //create doxygen comment
+    auto final = Doxygen_Block_Maker::Create_Doxygen_Block(dox_data,settings.doxygen);
+    
+    
+    return final;
+❱

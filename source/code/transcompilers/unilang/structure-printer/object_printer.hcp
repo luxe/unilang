@@ -1,0 +1,51 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+//printers used
+❪"object_file_printer"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Object_Files(Structure const& structure, C_Export_Settings const& options)❰
+
+    //decide how many files we are going to make
+    switch(Decide_How_Many_Files_To_Print_As(structure,options)){
+        case Object_Code_Partition_Method::ONE: Object_File_Printer::Print_Object_In_One_File(structure,options);      break;
+        case Object_Code_Partition_Method::TWO: Object_File_Printer::Print_Object_In_Two_Files(structure,options);     break;
+        case Object_Code_Partition_Method::THREE: Object_File_Printer::Print_Object_In_Three_Files(structure,options); break;
+    }
+❱
+
+
+
+◀public: static▶ Object_Code_Partition_Method ☀Decide_How_Many_Files_To_Print_As(Structure const& structure, C_Export_Settings const& options)❰
+        
+    //handle edge case, where having no methods may trigger a single output file desired
+    if (Single_File_Output_Setting_Applies_Based_On_Having_No_Methods(structure,options)){
+        return Object_Code_Partition_Method::ONE;
+    }
+    
+    //assuming the setting above is not triggered, apply the desired output setting
+    return options.general.object_partition;
+❱
+
+
+◀public: static▶ bool ☀Single_File_Output_Setting_Applies_Based_On_Having_No_Methods(Structure const& structure, C_Export_Settings const& options)❰
+    
+    //if the structure does not have methods
+    if (structure.methods.methods.empty()){ 
+        
+        //and if the a no method structure should be printed as one file
+        if (options.general.single_object_header_if_there_are_no_methods){
+            return true;
+        }
+    }
+    
+    return false;
+❱
+

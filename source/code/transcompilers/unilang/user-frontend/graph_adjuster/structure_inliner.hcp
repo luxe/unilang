@@ -1,0 +1,96 @@
+class
+
+
+❪"code/transcompilers/unilang/user-frontend/command_line_arguments/dependency_paths"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
+⚯
+❪algorithm❫
+❪"code/transcompilers/unilang/parser/parser"❫
+❪"code/transcompilers/unilang/user-frontend/compiler/compiler"❫
+❪"code/transcompilers/unilang/user-frontend/exception_handler"❫
+❪"code/transcompilers/unilang/user-frontend/dependency_path_validator"❫
+❪"code/transcompilers/unilang/parser/structure_creator"❫
+❪"code/transcompilers/unilang/parser/parser_shared"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+⚞⚟
+
+
+//structure inliner
+//this is responsible for taking a structure, and deleting the includes based on includes that are inclined
+//it also inlines the structures into the corresponding inline structs
+//What is the point of the Code graph then?
+//The codegraph is used for general lookups when inside functions and such
+//even when a header is inlined, you still lookup the uses of things as external
+◀public: static▶ void ☀Transform_Structure_Based_On_Inlined_Imports(Structure & structure, Dependency_Paths const& dependency_paths, Parser_Settings const& settings)❰
+    Proccess_Interface_Import_Inlining(structure,structure.imports.interface_dependencies,dependency_paths,settings);
+    Proccess_Implementation_Import_Inlining(structure,structure.imports.implementation_dependencies,dependency_paths,settings);
+❱
+
+
+◀private: static▶ void ☀Proccess_Interface_Import_Inlining(Structure & structure, std::vector<Import_Item> & imports, Dependency_Paths const& dependency_paths, Parser_Settings const& settings)❰
+    imports.erase(std::remove_if(imports.begin(), imports.end(),[&](Import_Item const& item){
+        return Potentially_Inline_Inteface_Import(structure,item,dependency_paths,settings);
+    }),imports.end());
+❱
+
+◀private: static▶ void ☀Proccess_Implementation_Import_Inlining(Structure & structure, std::vector<Import_Item> & imports, Dependency_Paths const& dependency_paths, Parser_Settings const& settings)❰
+    imports.erase(std::remove_if(imports.begin(), imports.end(),[&](Import_Item const& item){
+        return Potentially_Inline_Implementation_Import(structure,item,dependency_paths,settings);
+    }),imports.end());
+❱
+
+◀private: static▶ bool ☀Potentially_Inline_Inteface_Import(Structure & structure, Import_Item const& item, Dependency_Paths const& dependency_paths, Parser_Settings const& settings)❰
+
+    bool should_delete=false;
+    if (item.inlined){
+        should_delete=true;
+        structure.inlined_structures.get().inlined_interfaces.push_back(Build_Inlined(item,dependency_paths,settings));
+    }
+    
+    return should_delete;
+❱
+
+◀private: static▶ bool ☀Potentially_Inline_Implementation_Import(Structure & structure, Import_Item const& item, Dependency_Paths const& dependency_paths, Parser_Settings const& settings)❰
+    
+    bool should_delete=false;
+    if (item.inlined){
+        should_delete=true;
+        structure.inlined_structures.get().inlined_interfaces.push_back(Build_Inlined(item,dependency_paths,settings));
+    }
+    
+    return should_delete;
+❱
+
+◀private: static▶ Structure ☀Build_Inlined(Import_Item const& item, Dependency_Paths const& dependency_paths, Parser_Settings const& settings)❰
+    Structure s;
+    
+    auto search_paths = Parser_Shared::Turn_Dependency_Paths_Into_Set_Of_Paths(dependency_paths);
+    auto full_path = Lookup_Full_Path_To_Import_Item(search_paths,item,settings);
+    
+    if (!full_path.empty()){
+        s = Structure_Creator::Create_Structure_From_Path(full_path,settings);
+        Transform_Structure_Based_On_Inlined_Imports(s,dependency_paths,settings); //recursion
+    }
+    else{
+        throw "can't inline file " + as_string(item.name.value) + " as it could not be found";
+    }
+    
+    
+    return s;
+❱
+
+
+
+◀private: static▶ std::string ☀ Lookup_Full_Path_To_Import_Item(std::set<std::string> const& dependency_paths, Import_Item const& import_item, Parser_Settings const& settings)❰
+    
+    for (auto const& dep: dependency_paths){
+        std::string possible_path_to_file = dep + "/" + as_string(import_item.name.value) + "." + settings.input_files.expected_file_extension;
+        if (File_Exists(possible_path_to_file)){
+            return possible_path_to_file;
+        }
+    }
+    
+    return "";
+❱

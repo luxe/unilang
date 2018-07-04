@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#open up the visual file system based on your current working directory
+#this function should work across platforms
+#command: gui        #opens explorer in current directory
+#command: gui <path> #opens explorer in chosen path
+
+#decide what path we are going to open based on cli arguments
+chosen_path="$1"
+if [ "$chosen_path" == "" ]; then
+    chosen_path="."
+fi
+
+#Windows
+if [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+    explorer "$chosen_path" > /dev/null 2>&1;
+
+#Linux
+elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+    xdg-open "$chosen_path" > /dev/null 2>&1;
+
+#Mac
+elif [[ "$OSTYPE" == "darwin" ]]; then
+    open "$chosen_path" > /dev/null 2>&1;
+fi

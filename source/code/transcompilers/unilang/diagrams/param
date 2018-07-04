@@ -1,0 +1,82 @@
+COPY ():
+  C:   no symbols
+  C++: no symbols
+  
+CHANGE (m):
+  C:   *const
+  C++: &
+  
+READ-ONLY (p):
+  C:   const*const
+  C++: const&
+  
+move semantic concerns?
+rvalue references?
+  
+  
+------
+example: int
+
+COPY ():
+  C:   (int a)
+  C++: (int a)
+  
+CHANGE (m):
+  C:   (int *const a)
+  C++: (int & a)
+  
+READ-ONLY (p):
+  copying is expensive:
+  C:   (const int *const a) or (int const*const a)
+  C++: (const int & a)      or (int const& a)
+  
+  copying is NOT expensive:  
+  C:   (const int a) or (int const a)
+  C++: (const int a) or (int const a)
+------
+example: int[] decays to int*
+
+COPY (): (not really true)
+  C:   (int* a)
+  C++: (int* a)
+  
+CHANGE (m):
+  C:   (int *const a)
+  C++: (int * & a)
+  
+READ-ONLY (p):
+  copying is expensive:
+  C:   (const int *const a)   or (int const*const a)
+  C++: (const int*  & a)      or (int* const& a)
+  
+  copying is NOT expensive:  
+  C:   (const int* a) or (int* const a)
+  C++: (const int* a) or (int* const a)
+  
+  
+  
+noncopy-mutable    [*const]
+copy-mutable       []
+copy-immutable     [const]
+noncopy-immutable  [const*const]
+
+
+
+everything should be an immutable copy by default
+this is more in line with functional programming
+[r = reference specifier] [m = mutable specifier]
+*no 'r' assumes copy.  no 'm' assumes immutable (best attempted through const)
++---------------------------------------------------+-------------------------+
+|            C            |           C++           |    UniLang notation     |
++----+-------+------------+-------------------------+-------------------------+
+|copy|mutable|  notation  |copy|mutable|  notation  |copy|mutable|  notation  |
++----+-------+------------+----+-------+------------+----+-------+------------|
+| F  |  F    |const*const |  F |  F    |   const&   | F  | F     |    r_      | 
+| F  |  T    |     *const |  F |  T    |        &   | F  | T     |    rm      |
+| T  |  F    |const       |  T |  F    |   const    | T  | F     |    __      |
+| T  |  T    |___________ |  T |  T    |   ______   | T  | T     |    _m      |
++----+-------+------------+----+-------+------------+----+-------+------------+
+
+  
+
+

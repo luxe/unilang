@@ -1,0 +1,228 @@
+􏶞g􏶟
+􏷲Handles retrieving all of the electrical settings to be used throughout the update􏷱
+􏷰Some of these settings are hard coded, and other come from outside sources􏷯
+􏷮Electrical_System􏷭 􏷮Settings_Getter􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦ElectricalSettings􏷥􏴓d􏴔􏴑ElectricalSettingsT􏴒
+􏷤􏷣􏷦IostoHost􏷥􏴓d􏴔􏴑IOStoHostT􏴒
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦graph_dfs_actions􏷥􏴓d􏴔􏴑GraphDfsActionsT􏴒
+􏷤􏷣􏷦electrical_algorithms􏷥􏴓d􏴔􏴑ElectricalAlgorithmsT􏴒
+􏶔s􏶕􏶒math􏶓􏴏d􏴐􏴍pow()􏴎
+
+
+doesnt need to be mutable but typedefs aren't cont supported in unilang
+􏷐convert the battery's percentage to its current voltage distribution􏷏
+􏶠called when receiving battery voltage􏶡
+􏷘-􏷗􏷒percentage to voltage􏷑
+􏶜m􏶝􏷆f􏷅􏷄life􏷃􏵘percentage􏵙􏷀the current percentage of the battery􏶿
+􏶚m􏶛􏶾f􏶽􏶼voltage􏶻􏵜volts􏵝􏶺the distribution voltage of the battery􏶹
+􏶴
+    􏶲curve fitted to 3 degree polynomial using 4 points􏶱
+    􏶲Correlation coefficient (r^2) = 1.0000000000000004􏶱
+    􏶲Standard error = 4.6560588217509595e-14􏶱
+    􏶲see excel document for points, table, and graph􏶱
+   return  2.4424906541753444e-014 * pow(􏵶life􏵷,0)
+        +  8.3484126984126117e-001 * pow(􏵶life􏵷,1)
+        + -1.4321428571428338e-002 * pow(􏵶life􏵷,2)
+        +  8.3730158730157192e-005 * pow(􏵶life􏵷,3);
+􏶳
+
+􏷘+􏷗􏷒collect electrical settings􏷑
+􏷐Get all of the custom settings for the system􏷏
+􏶠Custom settings may be hardcoded data, come from a file, or come from outside sources􏶡
+􏶜r􏶝􏷆IOStoHostT􏷅􏷄ios􏷃􏷀data received from the IOS􏶿
+􏶚m􏶛􏶾ElectricalSettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior/properties of the electrical system􏶹
+􏶴
+    ElectricalSettingsT tSettings;
+    
+    􏶲get power settings􏶱
+    tSettings.m_tPower = 􏵲get power settings􏵳􏵶ios􏵷);
+    
+    􏶲get drop settings􏶱
+    tSettings.m_tDrops = 􏵲get drop settings􏵳);
+    
+    􏶲traversal settings􏶱
+    tSettings.m_tTraversal = 􏵲get traversal settings􏵳);
+    
+    􏵲collect electrical effect priorities􏵳&tSettings);
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get power settings􏷑
+􏷐get power settings􏷏
+􏶠gets settings for customizing different power source behavior􏶡
+􏶜r􏶝􏷆IOStoHostT􏷅􏷄ios􏷃􏷀data received from the IOS􏶿
+􏶚m􏶛􏶾ElectricalPowerSettingsT􏶽􏶼settings􏶻􏶺the settings for customizing different power source behavior􏶹
+􏶴
+    ElectricalPowerSettingsT tSettings;
+    
+    􏶲optionally keep electrical system fully powered􏶱
+    􏶲useful for debugging / dealing with electrical problems􏶱
+    tSettings.m_bAlwaysPowerOverride = FALSE;
+    
+    􏶲generator settings􏶱
+    tSettings.m_ptGenerator[0] = 􏵲get generator settings􏵳);
+    tSettings.m_ptGenerator[1] = 􏵲get generator settings􏵳);
+    
+    􏶲battery settings􏶱
+    tSettings.m_ptBattery[0] = 􏵲get battery settings􏵳);
+    tSettings.m_ptBattery[1] = 􏵲get empty battery settings􏵳);
+    
+    􏶲emergency battery settings􏶱
+    tSettings.m_tEmergencyBattery = 􏵲get emergency battery settings􏵳);
+    
+    􏶲EPU settings􏶱
+    tSettings.m_tEpu = 􏵲get epu settings􏵳􏵶ios􏵷);
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get drop settings􏷑
+􏷐get drop settings􏷏
+􏶠gets specific drop settings for the behavior of the electrical system􏶡
+􏶚m􏶛􏶾ElectricalDropSettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the voltage distribution of power sources􏶹
+􏶴
+    ElectricalDropSettingsT tSettings;
+    
+    􏶲based on video observations.􏶱
+    
+    􏶲voltage drops􏶱
+    tSettings.m_fWithNoEngines_v = 14.6f;
+    tSettings.m_fWithSingleEngine_v = 19.0f;
+    
+    􏶲voltage spikes end at a particular N1 %􏶱
+    tSettings.m_fNoEnginesSpikeEnd_pct = 52.0f;
+    tSettings.m_fSingleEngineSpikeEnd_pct = 51.3f;
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get generator settings􏷑
+􏷐get generator settings􏷏
+􏶠gets specific generator settings for the behavior of the electrical system􏶡
+􏶚m􏶛􏶾ElectricalGeneratorSettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior of a generator􏶹
+􏶴
+    ElectricalGeneratorSettingsT tSettings;
+    
+    􏶲N1 correlations􏶱
+    tSettings.m_fN1GeneratorModeEnableUnderNormalTemperatures_pct = 40.0f;
+    
+    􏶲voltage related􏶱
+    tSettings.m_fDesignatedOverVoltageAmount_v = 30.5f;
+    tSettings.m_fNormalVoltageOnFirstStarterDrop_v = 19.6f;
+    tSettings.m_fNormalVoltageOnSecondStarterDrop_v = 27.0f;
+    tSettings.m_fNormalVoltage_v = 28.5f;
+    tSettings.m_fUnpoweredCurrent_amp = 0.0f;
+    tSettings.m_fUnpoweredVoltage_v = 0.0f;
+    
+    􏶲current related􏶱
+    tSettings.m_fMaximalCurrent_amp = 180.0f;
+    tSettings.m_fSurgeBackCurrent_amp = 0.0f;
+    tSettings.m_fSurgeBackCurrentDuringVent_amp = 270.0f;
+    tSettings.m_fActiveCurrentOffset_amp = -60.0f;
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get battery settings􏷑
+􏷐get battery settings􏷏
+􏶠gets specific battery settings for the behavior of the electrical system􏶡
+􏶚m􏶛􏶾ElectricalBatterySettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior of a battery􏶹
+􏶴
+    􏶲start with default settings􏶱
+    ElectricalBatterySettingsT tSettings = ConstructElectricalBatterySettings();
+    
+    􏶲charge / drain related􏶱
+    tSettings.m_tLife.m_tPercentageToVoltageFormula = &PercentageToVoltage;
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get emergency battery settings􏷑
+􏷐get emergency battery settings􏷏
+􏶠gets specific battery settings for the behavior of the electrical system􏶡
+􏶚m􏶛􏶾ElectricalBatterySettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior of a battery􏶹
+􏶴
+    ElectricalBatterySettingsT tSettings;
+    
+    tSettings.m_fRequiredVoltageForCharge_v = 25.0f;
+    tSettings.m_fNormalVoltage_v = 24.0f;
+    tSettings.m_fUnpoweredCurrent_amp = 0.0f;
+    tSettings.m_fUnpoweredVoltage_v = 0.0f;
+    tSettings.m_tDischargeSensor_v = ConstructInterval(INTERVAL_TYPE_CLOSED,1.0f,25.0f,INTERVAL_TYPE_CLOSED);
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get empty battery settings􏷑
+􏷐get empty battery settings􏷏
+􏶠gets specific battery settings for the behavior of the electrical system􏶡
+􏶚m􏶛􏶾ElectricalBatterySettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior of an empty battery􏶹
+􏶴
+    ElectricalBatterySettingsT tSettings;
+    
+    􏶲battery doesn't exist􏶱
+    tSettings.m_fRequiredVoltageForCharge_v = 0.0f;
+    tSettings.m_fNormalVoltage_v = 0.0f;
+    tSettings.m_fUnpoweredCurrent_amp = 0.0f;
+    tSettings.m_fUnpoweredVoltage_v = 0.0f;
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get epu settings􏷑
+􏷐get EPU settings􏷏
+􏶠gets specific EPU settings for the behavior of the electrical system􏶡
+􏶚m􏶛􏶾ElectricalEpuSettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior of the EPU􏶹
+􏶜r􏶝􏷆IOStoHostT􏷅􏷄ios􏷃􏷀data received from the IOS􏶿
+􏶴
+    ElectricalEpuSettingsT tSettings;
+    
+    􏶲get EPU voltage from IOS􏶱
+    tSettings.m_fNormalVoltage_v = 􏵶ios􏵷->m_fEpuV;
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒get traversal settings􏷑
+􏷐􏷏
+􏶠custom traversal settings􏶡
+􏶚m􏶛􏶾ElectricalTraversalSettingsT􏶽􏶼settings􏶻􏶺the settings for controlling the behavior of the traversal􏶹
+􏶴
+    ElectricalTraversalSettingsT tSettings;
+    
+    􏶲set custom step functions􏶱
+    
+    􏶲pre/post traversals􏶱
+    tSettings.m_tPreTraversal        = &ClearElectricalProperties;
+    tSettings.m_tPostTraversal       = &PerformTriggers;
+    tSettings.m_tAlwaysPoweredAction = &EnableAllElectricalPower;
+    
+    􏶲dfs􏶱
+    tSettings.m_tActions.m_tForward = &ElectricalForwardStep;
+    tSettings.m_tActions.m_tBackward = &ElectricalBackwardStep;
+    tSettings.m_tActions.m_tChildExhaust = &ElectricalChildrenExhaustStep;
+    
+    
+    
+    􏶲get power sources􏶱
+    //TODO:
+    
+    
+    return tSettings;
+􏶳
+
+􏷘-􏷗􏷒collect electrical effect priorities􏷑
+􏷐Collects priority effects for competing appliers to shared graph nodes􏷏
+􏶠This determines what priority outside forces will have when trying to change the same graph node differently􏶡
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀the electrical settings􏶿
+􏶴
+    􏶲set the priorities􏶱
+    􏵶settings􏵷->m_tPriority.m_nSwitches = 1;
+    􏵶settings􏵷->m_tPriority.m_nMalfunctions = 2;
+􏶳
+
+

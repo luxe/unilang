@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#assumes we branched from master and want all the 
+#new commits of the branch squashed into one
+commit_message="$@";
+
+#if no commit message is given, use a generic commit message
+if [ -z "$commit_message" ]; then
+  commit_message="updates";
+fi
+
+git reset $(git merge-base master `git rev-parse --abbrev-ref HEAD`)
+git add -A :/;
+git commit -am $commit_message;
+git push --force;
+
+#this is perhaps not what we want, since all of the other commit messages become lost, and only one message remains.
+#consider testing and implementing the merge-tree screenshot thing from atalassin blog post (check slack)
+

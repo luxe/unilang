@@ -1,0 +1,109 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/casing/case_format_style"❫
+❪"code/transcompilers/unilang/enum-printer/core/enum_value_creator"❫
+❪"code/transcompilers/unilang/comment_creator/comment_creator"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print(unsigned int indent, std::wofstream & out, std::string base_type_name, Enum_Arg arg, bool last, Enum_Options const& options)❰
+    
+    if (options.comment_on_top){
+		Print_Comment_Part(indent,out,arg,options);
+
+        if (!Derived_Comment_Is_Empty(arg,options)){
+        	Print_To_Stream_With_Newline(out,"");
+		}
+	}
+    Print_Value_Part(indent,out,base_type_name,arg,last,options);
+    if (!options.comment_on_top){
+		Print_Comment_Part(indent,out,arg,options);
+	}
+    
+    if (!last){
+    	Print_To_Stream_With_Newline(out,"");
+
+       //if its not the last enum value, and we have a comment on top of the enum,
+       //add an extra newline
+		if (!Derived_Comment_Is_Empty(arg,options) && options.comment_on_top){
+			Print_To_Stream_With_Newline(out,"");
+		}
+	}
+❱
+
+
+◀private: static▶ void ☀Print_Value_Part(unsigned int indent, std::wofstream & out, std::string base_type_name, Enum_Arg arg, bool last, Enum_Options const& options)❰
+
+    //TODO: pull out to settings
+    std::string equal_expression = " as ";
+    std::string value_delim = ",";
+
+    auto full_value = Enum_Value_Creator::Create(base_type_name,arg,options);
+
+    //apply indent and name part
+    Print_To_Stream_N_Times(out," ",indent);
+    Print_To_Stream(out,full_value);
+    
+    
+    auto value = as_string(arg.value.value);
+    if (!value.empty()){
+        Print_To_Stream(out,equal_expression + value);
+    }
+    
+    if (!last){
+        Print_To_Stream(out,value_delim);
+    }
+❱
+
+◀private: static▶ void ☀Print_Comment_Part(unsigned int indent, std::wofstream & out, Enum_Arg arg, Enum_Options const& options)❰
+    auto comment = as_string(arg.comment.value);
+    auto comment_result = Decide_Enum_Argument_Comment(comment,options);
+    Indent_Each_Line(comment_result,indent);
+    Print_To_Stream(out,comment_result);
+❱
+
+◀private: static▶ bool ☀Derived_Comment_Is_Empty(Enum_Arg arg, Enum_Options const& options)❰
+    //TODO: for now we'll just look right at the value
+    auto comment = as_string(arg.comment.value);
+	return comment.empty();
+❱
+
+◀private: static▶ std::string ☀Decide_Enum_Argument_Comment(std::string const& comment, Enum_Options const& options)❰
+    
+    //when the user has not supplied a comment
+    if (comment.empty()){
+        return Decide_Enum_Argument_Comment_From_User_Empty(options);
+    }
+    
+    //when the user has provided a comment
+    return Decide_Enum_Argument_Comment_From_User_Provided(comment,options);
+❱
+
+◀private: static▶ std::string ☀Decide_Enum_Argument_Comment_From_User_Empty(Enum_Options const& options)❰
+    if (options.allow_empty_comments){
+        switch (options.when_show_empty_comment){
+            
+            case When_To_Show_Empty_Enum_Comment::ALWAYS:
+            return Comment_Creator::Create_Comment_From_String("",options.comment.language);
+            break;
+            
+            case When_To_Show_Empty_Enum_Comment::WHEN_AT_LEAST_ONE_ARGUMENT_HAS_USER_SUPPLIED_CONTENT:
+            return "TODO";
+            break;
+            
+        }
+    }
+    return "";
+❱
+
+◀private: static▶ std::string ☀Decide_Enum_Argument_Comment_From_User_Provided(std::string const& comment, Enum_Options const& options)❰
+    return Comment_Creator::Create_Comment_From_String(comment,options.comment.language);
+❱

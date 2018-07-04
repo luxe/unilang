@@ -1,0 +1,46 @@
+class
+
+❪string❫
+❪"code/transcompilers/unilang/options/language-specific/hidl_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/sections/meta_copyright_getter"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/creators/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Hidl_Export_Settings const& settings)❰
+    std::string result;
+    
+    //maybe add start comment line
+    if (settings.build.comment_empty_start_line){
+        Append_With_Newline(result,settings.build.comment_marker);
+    }
+    
+    //add copyright
+    Append(result,Get_Copyright_Note(settings));
+    
+    //maybe add end comment line
+    if (settings.build.comment_empty_bottom_line){
+        Append_With_Newline(result,settings.build.comment_marker);
+    }
+    
+    return result;
+❱
+
+◀private: static▶ std::string ☀Get_Copyright_Note(Hidl_Export_Settings const& settings)❰
+
+    //should we share these copyright settings? yes, probably fine for now
+    auto copyright_settings = settings.portion.meta.copyright;
+    auto orgs = settings.portion.meta.organizations;
+    
+    //leverage copyright creation from build
+    auto statement = Meta_Copyright_Getter::Get(copyright_settings,orgs);
+
+    //add copyright statement
+    std::string result;
+    Append(result,settings.build.comment_marker);
+    Append(result,Create_String_Of_N_Spaces(settings.build.comment_gap));
+    Append(result,statement);
+    
+    return result;
+❱

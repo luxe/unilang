@@ -1,0 +1,93 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/enum-printer/core/enum_without_utility_values_printer"❫
+❪"code/transcompilers/unilang/enum-printer/core/enum_with_utility_values_printer"❫
+❪"code/transcompilers/unilang/enum-printer/extra/data/enum_utility_value_printer"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+
+//[depreicated]
+◀public: static▶ void ☀Print_Interface_Enums(std::wofstream & out, std::vector<Enum_Item> const& enum_items, Enum_Options const& options, C_Export_Settings const& all_settings)❰
+    
+    for (auto it: enum_items){
+        if (it.access == Class_Access::PUBLIC){
+            Print_Type(out,it,options,all_settings.general,all_settings.portion);
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+//[depreicated]
+◀public: static▶ void ☀Print_Implementation_Enums(std::wofstream & out, std::vector<Enum_Item> const& enum_items, Enum_Options const& options, C_Export_Settings const& all_settings)❰
+    for (auto it: enum_items){
+        if (it.access == Class_Access::PRIVATE){
+            Print_Type(out,it,options,all_settings.general,all_settings.portion);
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+◀public: static▶ void ☀Print_Interface_Enums(std::wofstream & out, std::vector<Enum_Item> const& enum_items, Enum_Options const& options, General_Options const& general, Portion_Options const& portion)❰
+    
+    for (auto it: enum_items){
+        if (it.access == Class_Access::PUBLIC){
+            Print_Type(out,it,options,general,portion);
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+//[depreicated]
+◀public: static▶ void ☀Print_Implementation_Enums(std::wofstream & out, std::vector<Enum_Item> const& enum_items, Enum_Options const& options, General_Options const& general, Portion_Options const& portion)❰
+    for (auto it: enum_items){
+        if (it.access == Class_Access::PRIVATE){
+            Print_Type(out,it,options,general,portion);
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+◀private: static▶ void ☀Print_Type(std::wofstream & out, Enum_Item const& item, Enum_Options const& options, General_Options const& general, Portion_Options const& portion)❰
+
+
+    switch (options.utility_values.placement){
+        case Enum_Utility_Values_Placement::IN: Print_Internal_Utility_Enum(out,item,options,general,portion); break;
+        case Enum_Utility_Values_Placement::OUT: Print_External_Utility_Enum(out,item,options,general,portion); break;
+    }
+❱
+
+◀private: static▶ void ☀Print_Internal_Utility_Enum(std::wofstream & out, Enum_Item const& item, Enum_Options const& options, General_Options const& general, Portion_Options const& portion)❰
+    
+    bool should_print_utility_values = item.is_iterable && options.utility_values.add_utility_values;
+    
+    if (should_print_utility_values){
+        Enum_With_Utility_Values_Printer::Print_Type(out,item,general,portion);
+    }else{
+        Enum_Without_Utility_Values_Printer::Print_Type(out,item,options,general,portion);
+    }
+❱
+
+◀private: static▶ void ☀Print_External_Utility_Enum(std::wofstream & out, Enum_Item const& item, Enum_Options const& options, General_Options const& general, Portion_Options const& portion)❰
+    
+    bool should_print_utility_values = item.is_iterable && options.utility_values.add_utility_values;
+    
+    //print the enum without any utility values in it
+    Enum_Without_Utility_Values_Printer::Print_Type(out,item,options,general,portion);
+        
+    //only print the utilities if the UniLang files has set it to 'iterable'
+    if (should_print_utility_values){
+        //TODO: add back
+        //Enum_Utility_Value_Printer::Print_Constants_Outside_Of_Enum(out, item, options,general,portion);
+    }
+
+❱
+

@@ -1,0 +1,56 @@
+class
+
+❪utility❫
+❪vector❫
+❪functional❫
+❪string❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+⚯
+
+⚞⚟
+
+//default constructor at file beginning
+◀public:▶ ☀◈(std::string const& exporter_name)◖
+							:exporter_name(exporter_name)
+						 ◗❰❱
+
+◀public:▶ void ☀Add(std::string const& language, std::function<void(const Structure&, const std::vector<Contributor> &, const std::string &, bool)> const& func)❰
+		
+	execute_paths.emplace_back(language,func);
+❱
+
+
+◀public:▶ void ☀Spawn_Language_Exporter(Structure const& structure, std::vector<Contributor> const& contributors, std::string const& language, std::string const& style, bool transfer)❰
+
+	for (auto const& it: execute_paths){
+		if (it.first == language){
+			it.second(structure,contributors,style,transfer);
+			return;
+		}
+	}
+	
+	throw Build_Error_Message(language);
+❱
+
+
+◀private:▶ std::string ☀Build_Error_Message(std::string const& language)❰
+	std::string error;
+	
+	error += "The " + exporter_name + " exporter does not support the following language: " + language + '\n';
+	error += "It supports:\n";
+	for (auto it: execute_paths){
+		error += "\t" + it.first + '\n';
+	}
+	
+	return error;
+❱
+
+
+
+
+◀private:
+std::string exporter_name;
+std::vector<std::pair<std::string,std::function<void(const Structure&, const std::vector<Contributor> &, const std::string &, bool)>>> execute_paths;
+
+▶

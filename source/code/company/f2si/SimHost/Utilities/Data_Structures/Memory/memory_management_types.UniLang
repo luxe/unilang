@@ -1,0 +1,56 @@
+􏶞g􏶟
+􏷲memory management types used for handling copies and destructions inside type-erasured containers􏷱
+􏷰Containers that can hold any type of element, need a way to copy over the elements and destruct them later.  
+These types are given to the container based on the type it is being specialized with.  
+These types just exist to give clarity to the functions that accept them.
+The two types are expected to be used together when constructing a type that holds allocated objects that need copied in
+This mostly applies to data structures that can hold any type.
+
+In order for a type-erasured container to properly handle the lifetime of its dynamically allocating elements
+it must know at a minimum, how to copy and destruct the elements.  We provide these as typed function pointers􏷯
+􏷮Utilities􏷭􏷮Memory Management􏷭
+􏷬Trevor Hickey􏷫
+
+􏴣a pointer to a type's copy constructor􏴤
+􏴡used internally by a container when an element needs copied
+This type will match to the types copy constructor (if one exists)
+If one does not exist because the type is not using the heap, just use NULL􏴢
+􏴥+􏴦􏴟copy constructor call􏴠
+􏴙void*const􏴚􏴗pointer to the type that will be copy constructed􏴘
+􏴙const void*const􏴚􏴗pointer to the type that it will be copy constructed from􏴘
+􏴝void􏴞􏴛the copy constructor should not return anything􏴜
+
+􏴣a pointer to a type's for destructor􏴤
+􏴡used internally by a container when an element needs deleted
+This type will match to the types destructor (if one exists)
+If one does not exist because the type is not using the heap, just use NULL􏴢
+􏴥+􏴦􏴟destructor call􏴠
+􏴙void*const􏴚􏴗pointer to the type that will be destructed􏴘
+􏴝void􏴞􏴛the destructor should not return anything􏴜
+
+􏴣a pointer to a type's chain-able copy constructor􏴤
+􏴡used internally by a container when an element needs copied
+This type will match to the types copy constructor (if one exists)
+If one does not exist because the type is not using the heap, just use NULL􏴢
+􏴥+􏴦􏴟chainable copy constructor call􏴠
+􏴙void*const􏴚􏴗pointer to the type that will be copy constructed􏴘
+􏴙const void*const􏴚􏴗pointer to the type that it will be copy constructed from􏴘
+􏴝void *􏴞􏴛the copy constructor should return "self"􏴜
+
+􏴣a pointer to a type's chain-able destructor􏴤
+􏴡used internally by a container when an element needs deleted
+This type will match to the types destructor (if one exists)
+If one does not exist because the type is not using the heap, just use NULL􏴢
+􏴥+􏴦􏴟chainable destructor call􏴠
+􏴙void*const􏴚􏴗pointer to the type that will be destructed􏴘
+􏴝void *􏴞􏴛the destructor should not return "self"􏴜
+
+􏵺shortcut for specializing a containers with custom types􏵻
+􏵸creates the appropriate parameters for specializing a container with a managed type
+Only use this on types that have a corresponding copy constructor and destructor􏵹
+􏵐+􏵑􏵾specialize_managed(instance)􏵿􏵖􏵗􏵼ConstructTypeInformation(sizeof(INSTANCE),&CopyInitialize##INSTANCE,&Destruct##INSTANCE)􏵽
+
+􏵺shortcut for specializing a containers with custom types􏵻
+􏵸creates the appropriate parameters for specializing a container with an unmanaged type
+Only use this on types that do not have a corresponding corresponding copy constructor and destructor􏵹
+􏵐+􏵑􏵾specialize_unmanaged(instance)􏵿􏵖􏵗􏵼ConstructTypeInformation(sizeof(INSTANCE),NULL,NULL)􏵽

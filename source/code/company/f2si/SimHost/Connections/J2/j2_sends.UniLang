@@ -1,0 +1,364 @@
+􏶞g􏶟
+􏷲J2 System Connection􏷱
+􏷰Sends J2 flight model messages􏷯
+􏷮J2_Connection􏷭
+􏷬Trevor Hickey􏷫
+
+􏶔􏶕􏶒Defs􏶓􏶖USES: BYTE, WORD, DWORD􏶗
+􏶔􏶕􏶒strLib􏶓􏶖USES: memcpy()􏶗
+􏶔􏶕􏶒string􏶓􏶖USES: memcmp()􏶗
+􏶔􏶕􏶒SocketManager􏶓􏶖USES: SocketReceive(), MAX_J2_MESSAGE_SIZE􏶗
+􏶔􏶕􏶒SocketList􏶓􏶖USES: SOCKET_GEN_J2_DATA_SEND, SOCKET_GEN_J2_DATA_RECEIVE􏶗
+􏶔􏶕􏶒TimeUtilities􏶓􏶖USES: DelayTaskNumberOfMilliseconds()􏶗
+􏶔􏶕􏶒OwnShip􏶓􏶖USES: WriteJ2Data()􏶗
+􏶔􏶕􏶒J2CommunicationConfig􏶓􏶖USES: J2_TASKDELAY_MS􏶗
+􏶔􏶕􏶒SendToJ2Messages􏶓􏶖USES: all messages that get sent to J2􏶗
+􏶔􏶕􏶒ReceiveFromJ2Messages􏶓􏶖USES: all messages that get received from J2􏶗
+􏶔􏶕􏶒J2MessageTypes􏶓􏶖USES SimhostToJ2MessageTypeE, J2ToSimhostMessageTypeE􏶗
+􏶔􏶕􏶒J2Packing􏶓􏶖USES: pack functions􏶗
+􏶔􏶕􏶒J2Unpacking􏶓􏶖USES: unpack functions􏶗
+􏶔􏶕􏶒stddef.h􏶓􏶖USES: size_t􏶗
+􏶔􏶕􏶒J2ConnectionData􏶓􏶖USES: UpdateJ2HighSpeedOutputData(), UpdateJ2LowSpeedOutputData(), UpdateJ2RepositionRequestData(), UpdateJ2VersionRequestData()􏶗
+􏶔􏶕􏶒J2SendConstraints􏶓􏶖USES: CheckConstraintsOnSendHighSpeedMessage(), CheckConstraintsOnSendLowSpeedMessage(), CheckConstraintsOnSendRepositionMessage(), CheckConstraintsOnSendVersionRequestMessage()􏶗
+􏶔􏶕􏶒SemaphoreManager􏶓􏶖USES: SemaphoreGive()􏶗
+􏶔􏶕􏶒SemaphoreList􏶓􏶖USES: SEMAPHORE_SCHEDULE_IN􏶗
+􏶔􏶕􏶒UdpConnectionUtilities􏶓􏶖USES: SendAndHandleUdpErrors(), ReportUdpRecieveStatus()􏶗
+
+􏷘+􏷗􏷒J2 send􏷑
+􏷐Used to sequence outgoing J2 Messages.􏷏
+􏶠This is an infinitely running task.􏶡
+􏶚m􏶛􏶾int􏶽􏶼status􏶻􏶺The return status of the task.  Not relevant as the task does not return.􏶹
+􏶴
+    
+    􏶲for keeping track of change in time􏶱
+    float fDeltaTime_ms = 0.0f;
+    float fPreviousTime_ms = 0.0f;
+    TimeSystemOutputsT tSimTimer;
+    
+    􏶲for handling individual transmission rates􏶱
+    float fHighTimer_ms = 0;
+    float fLowTimer_ms = 0;
+    
+    􏶲messages that are sent on change􏶱
+    SendRepositionMessageT tReposition;
+    SendVersionRequestMessageT tVersion;
+    
+    􏶲we want to set all the padding to zero.􏶱
+    􏶲this way, we can compare two structs of the same type with memcmp later􏶱
+    memset(&tReposition,0,sizeof(tReposition));
+    memset(&tVersion,0,sizeof(tVersion));
+    
+    􏶲source the current reposition / version messages􏶱
+    􏶲this prevents us from initially sending out a message when the connection starts􏶱
+    UpdateJ2RepositionRequestData(&tReposition);
+    UpdateJ2VersionRequestData(&tVersion);
+    
+    while(1)
+    {
+    
+        􏶲add delta times􏶱
+        ReadTimeSystemOutput(&tSimTimer);
+        fDeltaTime_ms = ((float)tSimTimer.m_dElapsedSimulatorTime_ms - fPreviousTime_ms);
+        fPreviousTime_ms = (float)tSimTimer.m_dElapsedSimulatorTime_ms;
+        
+        􏶲increment time gone by on transmit timers􏶱
+        fHighTimer_ms += fDeltaTime_ms;
+        fLowTimer_ms += fDeltaTime_ms;
+        
+        􏶲sending based on timers􏶱
+        􏵲periodically send high speed􏵳&fHighTimer_ms,SIMHOST_HIGH_SPEED_TRANSMISSION_DELAY_MS);
+        􏵲periodically send low speed􏵳&fLowTimer_ms,SIMHOST_LOW_SPEED_TRANSMISSION_DELAY_MS);
+        
+        􏶲conditional sending based on changed data􏶱
+        􏵲send reposition message on change􏵳&tReposition);
+        􏵲send version message on change􏵳&tVersion);
+
+        􏶲delay the task􏶱
+        DelayTaskNumberOfMilliseconds(J2_TASK_DELAY_MS);
+    }
+
+    return 0;
+􏶳
+
+􏷘-􏷗􏷒periodically send high speed􏷑
+􏷐sends a high speed message at a particular rate􏷏
+􏶠may or may not send message based on timer state􏶡
+􏶜mr􏶝􏷆float􏷅􏷄timer􏷃􏵘milliseconds􏵙􏷀the amount of milliseconds the timer is at􏶿
+􏶜􏶝􏷆float􏷅􏷄total duration􏷃􏵘milliseconds􏵙􏷀the amount of time that the timer will tick to, before starting over􏶿
+􏶴
+        􏶲instantiate the message􏶱
+        SendHighSpeedMessageT tMessage={0};
+        
+        􏶲if too much time has passed􏶱
+        if (􏵲timer expired􏵳􏵶timer􏵷,􏵶total duration􏵷)){
+        
+            􏶲source and send the message􏶱
+            􏵲source and send high speed message􏵳&tMessage);
+        }
+􏶳
+
+􏷘-􏷗􏷒periodically send low speed􏷑
+􏷐sends a low speed message at a particular rate􏷏
+􏶠may or may not send message based on timer state􏶡
+􏶜mr􏶝􏷆float􏷅􏷄timer􏷃􏵘milliseconds􏵙􏷀the amount of milliseconds the timer is at􏶿
+􏶜􏶝􏷆float􏷅􏷄total duration􏷃􏵘milliseconds􏵙􏷀the amount of time that the timer will tick to, before starting over􏶿
+􏶴
+        􏶲instantiate the message􏶱
+        SendLowSpeedMessageT tMessage={0};
+        
+        􏶲if too much time has passed􏶱
+        if (􏵲timer expired􏵳􏵶timer􏵷,􏵶total duration􏵷)){
+        
+            􏶲source and send the message􏶱
+            􏵲source and send high speed message􏵳&tMessage);
+        }
+􏶳
+
+
+􏷘-􏷗􏷒timer expired􏷑
+􏷐determine whether a timer has expired􏷏
+􏶠expired timers are adjusted after expiration has passed􏶡
+􏶜mr􏶝􏷆float􏷅􏷄timer􏷃􏵘milliseconds􏵙􏷀the amount of milliseconds the timer is at􏶿
+􏶜􏶝􏷆float􏷅􏷄total duration􏷃􏵘milliseconds􏵙􏷀the amount of time that the timer will tick to, before starting over􏶿
+􏶚m􏶛􏶾int􏶽􏶼expired􏶻􏶺whether the timer has expired or not􏶹
+􏶴
+        􏶲if too much time has passed􏶱
+        if (*􏵶timer􏵷 > 􏵶total duration􏵷){
+        
+            􏶲keep extra time, and return timer trigger􏶱
+            *􏵶timer􏵷 -= 􏵶total duration􏵷;
+            return 􏵱;
+        }
+        
+    􏶲timer has not yet expired􏶱
+    return 􏵰;
+􏶳
+
+
+􏷘-􏷗􏷒send reposition message on change􏷑
+􏷐sends a reposition message if the structure has changed since the last time it was sent􏷏
+􏶠sourcing the new data happens internally when checking for change􏶡
+􏶜mr􏶝􏷆SendRepositionMessageT􏷅􏷄message􏷃􏷀the current state of the reposition data􏶿
+􏶴
+    􏶲if the message has changed􏶱
+    if (􏵲reposition has changed􏵳􏵶message􏵷)){
+    
+        􏶲send the new message􏶱
+        􏵲source and send reposition message􏵳􏵶message􏵷);
+        
+    }
+􏶳
+
+􏷘-􏷗􏷒send version message on change􏷑
+􏷐sends a reposition message if the structure has changed since the last time it was sent􏷏
+􏶠sourcing the new data happens internally when checking for change􏶡
+􏶜mr􏶝􏷆SendVersionRequestMessageT􏷅􏷄message􏷃􏷀the current state of the version data􏶿
+􏶴
+    􏶲if the message has changed􏶱
+    if (􏵲version has changed􏵳􏵶message􏵷)){
+
+        􏶲send the new message􏶱
+        􏵲source and send version message􏵳􏵶message􏵷);
+        
+    }
+􏶳
+
+􏷘-􏷗􏷒reposition has changed􏷑
+􏷐update the reposition message, and decide if it changed􏷏
+􏶠equality is checked with memcmp, so its important that both structs were memset to zero􏶡
+􏶜r􏶝􏷆SendRepositionMessageT􏷅􏷄message􏷃􏷀the message we are checking for changes in.􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼changed􏶻􏶺whether the message has changed or not􏶹
+􏵦􏵧􏵤the message will be updated as an out parameter while comparing its equality to the previous state􏵥
+􏶴
+    SendRepositionMessageT tNewMessage;
+    BOOL bHasChanged = FALSE;
+    
+    􏶲we want to set all the padding to zero.􏶱
+    􏶲this way, we can compare two structs of the same type with memcmp later􏶱
+    memset(&tNewMessage,0,sizeof(tNewMessage));
+    
+    􏶲source new message􏶱
+    UpdateJ2RepositionRequestData(&tNewMessage);
+    
+    􏶲determine if the message has changed􏶱
+    bHasChanged = memcmp(􏵶message􏵷,&tNewMessage,sizeof(tNewMessage));
+    
+    return bHasChanged;
+􏶳
+
+􏷘-􏷗􏷒version has changed􏷑
+􏷐update the version message, and decide if it changed􏷏
+􏶠equality is checked with memcmp, so its important that both structs were memset to zero􏶡
+􏶜r􏶝􏷆SendVersionRequestMessageT􏷅􏷄message􏷃􏷀the message we are checking for changes in.􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼changed􏶻􏶺whether the message has changed or not􏶹
+􏵦􏵧􏵤the message will be updated as an out parameter while comparing its equality to the previous state􏵥
+􏶴
+    SendVersionRequestMessageT tNewMessage;
+    BOOL bHasChanged = FALSE;
+    
+    􏶲we want to set all the padding to zero.􏶱
+    􏶲this way, we can compare two structs of the same type with memcmp later􏶱
+    memset(&tNewMessage,0,sizeof(tNewMessage));
+    
+    􏶲source new message􏶱
+    UpdateJ2VersionRequestData(&tNewMessage);
+    
+    􏶲determine if the message has changed􏶱
+    bHasChanged = memcmp(􏵶message􏵷,&tNewMessage,sizeof(tNewMessage));
+    
+    return bHasChanged;
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒source and send high speed message􏷑
+􏷐source all of new data for the message, and then send it to the flight model􏷏
+􏶠Warns about failed value constraints for each member of the message􏶡
+􏶜mr􏶝􏷆SendHighSpeedMessageT􏷅􏷄message􏷃􏷀the message to source and send􏶿
+􏶴
+    􏶲source message􏶱
+    UpdateJ2HighSpeedOutputData(􏵶message􏵷);
+    
+    􏶲check that we are sending valid data to J2􏶱
+    􏶲disabled due to sim lag􏶱
+    //CheckConstraintsOnSendHighSpeedMessage(􏵶message􏵷);
+    
+    􏶲send message􏶱
+    􏵲send high speed message􏵳􏵶message􏵷);
+􏶳
+
+􏷘-􏷗􏷒source and send low speed message􏷑
+􏷐source all of new data for the message, and then send it to the flight model􏷏
+􏶠Warns about failed value constraints for each member of the message􏶡
+􏶜mr􏶝􏷆SendLowSpeedMessageT􏷅􏷄message􏷃􏷀the message to source and send􏶿
+􏶴
+    􏶲source message􏶱
+    UpdateJ2LowSpeedOutputData(􏵶message􏵷;
+    
+    􏶲check that we are sending valid data to J2􏶱
+    􏶲disabled due to sim lag􏶱
+    //CheckConstraintsOnSendLowSpeedMessage(􏵶message􏵷;
+    
+    􏶲send message􏶱
+    􏵲send low speed message􏵳􏵶message􏵷;
+􏶳
+
+􏷘-􏷗􏷒source and send reposition message􏷑
+􏷐source all of new data for the message, and then send it to the flight model􏷏
+􏶠Warns about failed value constraints for each member of the message􏶡
+􏶜mr􏶝􏷆SendRepositionMessageT􏷅􏷄message􏷃􏷀the message to source and send􏶿
+􏶴
+    􏶲source new message􏶱
+    UpdateJ2RepositionRequestData(􏵶message􏵷));
+    
+    􏶲check that we are sending valid data to J2􏶱
+    􏶲disabled due to sim lag􏶱
+    //CheckConstraintsOnSendRepositionMessage(􏵶message􏵷);
+
+    􏶲send message􏶱
+    􏵲send reposition message􏵳􏵶message􏵷);
+􏶳
+
+􏷘-􏷗􏷒source and send version message􏷑
+􏷐source all of new data for the message, and then send it to the flight model􏷏
+􏶠Warns about failed value constraints for each member of the message􏶡
+􏶜mr􏶝􏷆SendVersionRequestMessageT􏷅􏷄message􏷃􏷀the message to source and send􏶿
+􏶴
+    􏶲source message􏶱
+    UpdateJ2VersionRequestData(􏵶message􏵷);
+
+    􏶲check that we are sending valid data to J2􏶱
+    􏶲disabled due to sim lag􏶱
+    //CheckConstraintsOnSendVersionRequestMessage(􏵶message􏵷);
+
+    􏶲send message􏶱
+    􏵲send version message􏵳􏵶message􏵷);
+􏶳
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒send high speed message􏷑
+􏷐sends the data message to J2 flight model􏷏
+􏶠Sends the message over UDP, and handles errors􏶡
+􏶜r􏶝􏷆SendHighSpeedMessageT􏷅􏷄message􏷃􏷀the message to send􏶿
+􏶴
+    􏶲initializes data buffer information􏶱
+    BYTE pucDataBuffer[MAX_J2_MESSAGE_SIZE];
+    size_t uByteCount=0;
+    memset(pucDataBuffer, 0, MAX_J2_MESSAGE_SIZE);
+    
+    􏶲fill the data buffer􏶱
+    uByteCount = PackJ2HighSpeedSendMessage(pucDataBuffer,􏵶message􏵷);
+    
+    􏶲call socket send, and handle any errors that occur􏶱
+    SendAndHandleUdpErrors(uByteCount,pucDataBuffer,SOCKET_GEN_J2_DATA_SEND,"J2 High Speed Message");
+􏶳
+􏷘-􏷗􏷒send low speed message􏷑
+􏷐sends the data message to J2 flight model􏷏
+􏶠Sends the message over UDP, and handles errors􏶡
+􏶜r􏶝􏷆SendLowSpeedMessageT􏷅􏷄message􏷃􏷀the message to send􏶿
+􏶴
+    􏶲initializes data buffer information􏶱
+    BYTE pucDataBuffer[MAX_J2_MESSAGE_SIZE];
+    size_t uByteCount=0;
+    memset(pucDataBuffer, 0, MAX_J2_MESSAGE_SIZE);
+    
+    􏶲fill the data buffer􏶱
+    uByteCount = PackJ2LowSpeedSendMessage(pucDataBuffer,􏵶message􏵷);
+    
+    􏶲call socket send, and handle any errors that occur􏶱
+    SendAndHandleUdpErrors(uByteCount,pucDataBuffer,SOCKET_GEN_J2_DATA_SEND,"J2 Low Speed Message");
+􏶳
+
+􏷘-􏷗􏷒send reposition message􏷑
+􏷐sends the data message to J2 flight model􏷏
+􏶠Sends the message over UDP, and handles errors􏶡
+􏶜r􏶝􏷆SendRepositionMessageT􏷅􏷄message􏷃􏷀the message to send􏶿
+􏶴
+    􏶲initializes data buffer information􏶱
+    BYTE pucDataBuffer[MAX_J2_MESSAGE_SIZE];
+    size_t uByteCount=0;
+    memset(pucDataBuffer, 0, MAX_J2_MESSAGE_SIZE);
+    
+    􏶲fill the data buffer􏶱
+    uByteCount = PackJ2RepositionSendMessage(pucDataBuffer,􏵶message􏵷);
+    
+    􏶲call socket send, and handle any errors that occur􏶱
+    SendAndHandleUdpErrors(uByteCount,pucDataBuffer,SOCKET_GEN_J2_CONTROL_SEND,"J2 Reposition Message");
+􏶳
+
+􏷘-􏷗􏷒send version message􏷑
+􏷐sends the data message to J2 flight model􏷏
+􏶠Sends the message over UDP, and handles errors􏶡
+􏶜r􏶝􏷆SendVersionRequestMessageT􏷅􏷄message􏷃􏷀the message to send􏶿
+􏶴
+    􏶲initializes data buffer information􏶱
+    BYTE pucDataBuffer[MAX_J2_MESSAGE_SIZE];
+    size_t uByteCount=0;
+    memset(pucDataBuffer, 0, MAX_J2_MESSAGE_SIZE);
+    
+    􏶲fill the data buffer􏶱
+    uByteCount = PackJ2VersionRequestMessage(pucDataBuffer,􏵶message􏵷);
+    
+    􏶲call socket send, and handle any errors that occur􏶱
+    SendAndHandleUdpErrors(uByteCount,pucDataBuffer,SOCKET_GEN_J2_CONTROL_SEND,"Version Message");
+􏶳

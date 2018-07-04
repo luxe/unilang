@@ -1,0 +1,107 @@
+􏶞p􏶟
+􏷲An interval between two real numbers􏷱
+􏷰A vocabulary type used for checking values between a range of numbers􏷯
+􏷮Vocabulary􏷭􏷮Interval􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦Defs􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Object􏴒
+􏷤􏷣􏷦interval_type􏷥􏴓1􏴔􏴑IntervalTypeE􏴒
+􏶔􏶕􏶒MathUtilities􏶓􏴏d􏴐􏴍BetweenClosedInterval()􏴎􏴏d􏴐􏴍BetweenOpenInterval()􏴎􏴏d􏴐􏴍BetweenOpenClosedInterval()􏴎􏴏d􏴐􏴍BetweenClosedOpenInterval()􏴎
+􏶔􏶕􏶒FloatApproximation􏶓􏴏d􏴐􏴍Approximate functions􏴎
+
+Constructor
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be created based on values passed in􏶡
+􏶜􏶝􏷆IntervalTypeE􏷅􏷄begin􏷃􏷀the begin type of the interval􏶿
+􏶜􏶝􏷆f􏷅􏷄low􏷃􏷀the begin value of the interval􏶿
+􏶜􏶝􏷆f􏷅􏷄high􏷃􏷀the high value of the interval􏶿
+􏶜􏶝􏷆IntervalTypeE􏷅􏷄end􏷃􏷀the closed type of the interval􏶿
+􏶴
+    􏶲store construction parameters􏶱
+    􏵴begin􏵵 = 􏵶begin􏵷;
+    􏵴low􏵵 = 􏵶low􏵷;
+    􏵴high􏵵 = 􏵶high􏵷;
+    􏵴end􏵵 = 􏵶end􏵷;
+􏶳
+
+􏷘+c􏷗􏷒within􏷑
+􏷐the value passed in falls within the interval􏷏
+􏶠the interval type for each end point is known internally, as well as the begin and end values􏶡
+􏶜􏶝􏷆f􏷅􏷄value􏷃􏷀the value to be checked within an interval􏶿
+􏶚m􏶛􏶾bool􏶽􏶼between interval􏶻􏶺whether the number passed in, is in between the specified interval􏶹
+􏶴
+    􏶲decide which interval checking function to use􏶱
+    if (􏵴begin􏵵 == INTERVAL_TYPE_OPEN   && 􏵴end􏵵 == INTERVAL_TYPE_OPEN)     { return BetweenOpenInterval(􏵶value􏵷,􏵴low􏵵,􏵴high􏵵);       }
+    if (􏵴begin􏵵 == INTERVAL_TYPE_OPEN   && 􏵴end􏵵 == INTERVAL_TYPE_CLOSED)   { return BetweenOpenClosedInterval(􏵶value􏵷,􏵴low􏵵,􏵴high􏵵); }
+    if (􏵴begin􏵵 == INTERVAL_TYPE_CLOSED && 􏵴end􏵵 == INTERVAL_TYPE_OPEN)     { return BetweenClosedOpenInterval(􏵶value􏵷,􏵴low􏵵,􏵴high􏵵); }
+    if (􏵴begin􏵵 == INTERVAL_TYPE_CLOSED && 􏵴end􏵵 == INTERVAL_TYPE_CLOSED)   { return BetweenClosedInterval(􏵶value􏵷,􏵴low􏵵,􏵴high􏵵);     }
+    return FALSE;
+􏶳
+
+􏷘+c􏷗􏷒clamp􏷑
+􏷐clamp the value according to the interval􏷏
+􏶠the interval type for each end point is known internally, as well as the begin and end values􏶡
+􏶜mr􏶝􏷆f􏷅􏷄value􏷃􏷀the value to be checked within an interval􏶿
+􏶴
+
+    􏶲need to clamp because the value is under􏶱
+    if (􏵲below interval􏵳􏵶value􏵷)){
+        *􏵶value􏵷 = 􏵴low􏵵;
+    }
+    
+    􏶲need to clamp because the value is over􏶱
+    else if (􏵲above interval􏵳􏵶value􏵷)){
+        *􏵶value􏵷 = 􏵴high􏵵;
+    }
+    
+    else{
+        􏶲value is already within the interval􏶱
+    }
+􏶳
+
+􏷘-c􏷗􏷒below interval􏷑
+􏷐checks to see if the value is below the interval􏷏
+􏶠the interval type for each end point is known internally, as well as the begin and end values􏶡
+􏶜mr􏶝􏷆f􏷅􏷄value􏷃􏷀the value to be checked against the interval􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is below interval􏶻􏶺whether or not the value is below the interval􏶹
+􏶴
+    if (􏵴begin􏵵 == INTERVAL_TYPE_OPEN){
+        return ApproximatelyLessEqualF(*􏵶value􏵷,􏵴low􏵵);
+    }
+    
+    􏶲assume closed interval􏶱
+    return *􏵶value􏵷 < 􏵴low􏵵;
+􏶳
+
+􏷘-c􏷗􏷒above interval􏷑
+􏷐checks to see if the value is above the interval􏷏
+􏶠the interval type for each end point is known internally, as well as the begin and end values􏶡
+􏶜mr􏶝􏷆f􏷅􏷄value􏷃􏷀the value to be checked against the interval􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is above interval􏶻􏶺whether or not the value is above the interval􏶹
+􏶴
+    if (􏵴end􏵵 == INTERVAL_TYPE_OPEN){
+        return ApproximatelyGreaterEqualF(*􏵶value􏵷,􏵴high􏵵);
+    }
+    
+    􏶲assume closed interval􏶱
+    return *􏵶value􏵷 > 􏵴high􏵵;
+􏶳
+
+
+􏶨the begin value of the interval􏶧
+􏶦anything below this value would be outside the interval􏶥
+􏶘-ip~=􏶙􏶮f􏶭􏶬low􏶫􏶪􏶩
+
+􏶨the end value of the interval􏶧
+􏶦anything above this value would be outside the interval􏶥
+􏶘-ip~=􏶙􏶮f􏶭􏶬high􏶫􏶪􏶩
+
+􏶨the notation used for the beginning of the interval􏶧
+􏶦decides whether to include the low value as part of the interval􏶥
+􏶘-ip~=􏶙􏶮IntervalTypeE􏶭􏶬begin􏶫􏶪􏶩
+
+􏶨the notation used for the beginning of the interval􏶧
+􏶦decides whether to include the low value as part of the interval􏶥
+􏶘-ip~=􏶙􏶮IntervalTypeE􏶭􏶬end􏶫􏶪􏶩

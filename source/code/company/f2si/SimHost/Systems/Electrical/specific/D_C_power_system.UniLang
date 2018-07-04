@@ -1,0 +1,1174 @@
+􏶞p􏶟
+􏷲The entire UH72A DC power system.􏷱
+􏷰Contains the circuit diagram and methods to affect the diagram􏷯
+􏷮Electrical_System􏷭 􏷮DC_Power_System􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦ElectricalCircuit􏷥􏴓1􏴔􏴑ElectricalCircuitT􏴒
+􏷤􏷣􏷦ElectricalSettings􏷥􏴓d􏴔􏴑ElectricalSettingsT􏴒
+􏷤􏷣􏷦Vector􏷥􏴓d􏴔􏴑VectorT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+􏶔􏶕􏶒AircraftGeneralConst􏶓􏴏d􏴐􏴍ElectricalSystemSideE􏴎
+􏶔􏶕􏶒ElectricalAlgorithms􏶓􏴏d􏴐􏴍Algorithms􏴎
+􏶔􏶕􏶒GraphTraversalInformation􏶓􏴏d􏴐􏴍GraphTraversalInformationT􏴎
+􏶔􏶕􏶒GraphDfsActions􏶓􏴏d􏴐􏴍GraphDfsActionsT􏴎
+􏶔􏶕􏶒UnorderedGraphAlgorithms􏶓􏴏d􏴐􏴍ApplyActionToAllVertices()􏴎􏴏d􏴐􏴍ApplyActionToAllEdges()􏴎
+􏶔􏶕􏶒electrical_formulas􏶓􏴏d􏴐􏴍CurrentFromPowerAndVoltage()􏴎
+
+
+MEMORY MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 contains the circuit diagram and methods to affect the diagram􏶡
+􏶴
+  􏶲Initialize the entire electrical circuitry􏶱
+  InitializeElectricalCircuit(&􏵴circuit􏵵);
+  
+  􏶲start with battery on􏶱
+  􏶲note: this does not affect the indication􏶱
+  􏶲the battery is technically always on, because the "battery hot bus" is always energized􏶱
+  􏶲the battery is on an energizing the "battery hot bus" even when the battery switch is at OFF􏶱
+  􏶲the battery switch affects the relay after the "battery hot bus"􏶱
+  􏵲turn battery on􏵳);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲copy􏵳􏵶self􏵷);
+􏶳
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆DCPowerSystemT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+    􏶲perform deep copy􏶱
+    CopyInitializeElectricalCircuitT(&􏵴circuit􏵵,&􏵶self􏵷->m_tCircuit);
+􏶳
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲destruct􏶱
+  􏵲destruct􏵳);
+􏶳
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructElectricalCircuitT(&􏵴circuit􏵵);
+􏶳
+
+􏷘+􏷗􏷒update normal power distribution􏷑
+􏷐update electrical flow across system􏷏
+􏶠Update electrical flow through dfs checking what can be powered, and setting what has power􏶡
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  
+  􏶲perform any pre-traversal actions across nodes􏶱
+  􏵲perform pre traversal􏵳􏵶settings􏵷);
+  
+  􏶲perform all of the main traversals􏶱
+  􏵲perform main traversals􏵳􏵶settings􏵷);
+  
+  􏶲perform any post-traversal actions across nodes􏶱
+  􏵲perform post traversal􏵳􏵶settings􏵷);
+􏶳
+
+􏷘-􏷗􏷒perform pre traversal􏷑
+􏷐perform the necessary actions on nodes before the power source traversals take place􏷏
+􏶠uses traversal settings􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲Disable power everywhere, and clear their electrical properties􏶱
+  􏶲This is required for determining what new nodes have power, and ensuring the old ones no longer do􏶱
+  if (􏵶settings􏵷->m_tTraversal.m_tPreTraversal){
+    ApplyActionToAllVertices(&􏵴circuit􏵵.m_tGraph.m_tLocals.m_tGraph,&􏵴circuit􏵵.m_tGraph,􏵶settings􏵷->m_tTraversal.m_tPreTraversal);
+  }
+􏶳
+
+􏷘-􏷗􏷒perform post traversal􏷑
+􏷐perform the necessary actions on nodes after the power source traversals take place􏷏
+􏶠uses traversal settings􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲perform any electrical triggers based on the current power distribution􏶱
+  if (􏵶settings􏵷->m_tTraversal.m_tPostTraversal){
+    ApplyActionToAllVertices(&􏵴circuit􏵵.m_tGraph.m_tLocals.m_tGraph,&􏵴circuit􏵵.m_tGraph,􏵶settings􏵷->m_tTraversal.m_tPostTraversal);
+  }
+􏶳
+
+􏷘-􏷗􏷒perform main traversals􏷑
+􏷐􏷏
+􏶠use power sources as the power distribution starting points.
+traverse the graph applying changes.􏶡
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲create a vector to hold the power sources􏶱
+  VectorT tPowerSources = ConstructVector(SPECIALIZE_UNMANAGED(ElectricalPowerSourceT),5);
+  
+  􏶲fill the vector with all of the power sources we intended to traverse from􏶱
+  􏵲fill vector with power sources􏵳&tPowerSources,&􏵶settings􏵷->m_tPower);
+  
+  􏶲use power sources as the power distribution starting points􏶱
+  􏶲traverse the graph applying changes􏶱
+  􏵲perform traversals across power sources􏵳&tPowerSources,􏵶settings􏵷);
+  
+  􏶲after all the traversals are attempted, we can store and decide that amperage of various power sources􏶱
+  􏶲this will take into account load sharing􏶱
+  􏵲set power source amperages􏵳&tPowerSources,􏵶settings􏵷);
+  
+  􏶲destruct the allocated memory􏶱
+  DestructVectorT(&tPowerSources);
+􏶳
+
+􏷘-􏷗􏷒set power source amperages􏷑
+􏷐set the amperages of all the power sources􏷏
+􏶠this will take into account load sharing􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄power sources􏷃􏷀a collection of power sources to distribute power from􏶿
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲clear all previous amperages (This may not be needed)􏶱
+  􏵲clear current amperages􏵳􏵶settings􏵷);
+  
+  􏶲set amperages for all the power sources􏶱
+  VectorObjForEach1(􏵶power sources􏵷,(TernaryActionT)SetPowerSourceAmperage,ptDCPowerSystem,&􏵶settings􏵷->m_tPower);
+  
+  􏶲adjust current amperages for load sharing􏶱
+  􏵲adjust for load sharing􏵳&􏵶settings􏵷->m_tPower);
+􏶳
+
+􏷘-􏷗􏷒clear current amperages􏷑
+􏷐clears all of the previous amperages so that they can be set again􏷏
+􏶠this will set all of the amperages to zero􏶡
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏵶settings􏵷->m_tPower.m_ptGenerator[0].m_fActiveCurrent_amp = 0;
+  􏵶settings􏵷->m_tPower.m_ptGenerator[1].m_fActiveCurrent_amp = 0;
+  􏵶settings􏵷->m_tPower.m_ptBattery[0].m_fActiveCurrent_amp = 0;
+􏶳
+
+􏷘-􏷗􏷒set power source amperage􏷑
+􏷐sets the amperage of a the power sources􏷏
+􏶠this will take into account load sharing􏶡
+􏶜mr􏶝􏷆ElectricalPowerSourceT􏷅􏷄power source􏷃􏷀a power source􏶿
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀power settings from the electrical system􏶿
+􏶴
+  
+  􏶲potentially set new amperages􏶱
+  if (􏵶power source􏵷->m_uId == 􏵴circuit􏵵.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tAfterJunctionBox.m_uGenerator){
+    􏵲set power source amperage for generator􏵳􏵶power source􏵷,􏵶settings􏵷,ELECTRICAL_SYSTEM_SIDE_LEFT);
+  }
+  else if(􏵶power source􏵷->m_uId == 􏵴circuit􏵵.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tAfterJunctionBox.m_uGenerator){
+    􏵲set power source amperage for generator􏵳􏵶power source􏵷,􏵶settings􏵷,ELECTRICAL_SYSTEM_SIDE_RIGHT);
+  }
+  else if(􏵶power source􏵷->m_uId == 􏵴circuit􏵵.m_tBatteryBox.m_uBattery){
+    􏵶settings􏵷->m_ptBattery[ELECTRICAL_SYSTEM_SIDE_LEFT].m_fActiveCurrent_amp = CurrentFromPowerAndVoltage(􏵶power source􏵷->m_fAccumulatedWattage_w,􏵶power source􏵷->m_fPowerDistribution_v);
+  }
+􏶳
+
+􏷘-􏷗􏷒set power source amperage for generator􏷑
+􏷐sets the amperage of a the particular generator􏷏
+􏶠this is done before load sharing is decided􏶡
+􏶜mr􏶝􏷆ElectricalPowerSourceT􏷅􏷄power source􏷃􏷀a power source􏶿
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀power settings from the electrical system􏶿
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀the particular generator􏶿
+􏶴
+    􏶲Here is where we attempt to calculate amperage based on all the wattage of all the devices.􏶱
+    􏶲We know the voltage of power distributor, and we know the total accumulated wattage because we've traversed the graph.􏶱
+    􏶲Despite doing all of this, the value may still not be correct.  We've yet to take into account surge back current (this can happen when venting the engines).􏶱
+    􏶲We also haven't taken into account load sharing yet.  So there is a possibility that this value is used in a load sharing formula resulting􏶱
+    􏶲in a lower amperage on the generator.  Lastly, we don't have enough aircraft documentation to accurately document wattage pull on all of the devices.􏶱
+    􏶲Although we attempted to do this based on some charts, it still may not bring us to exactly what the pilots expect to see in training.􏶱
+    􏶲Nonetheless, this is the value we get after the graph traversal and we will continue to apply some adjustments to it based on other heuristics.􏶱
+    􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fActiveCurrent_amp = CurrentFromPowerAndVoltage(􏵶power source􏵷->m_fAccumulatedWattage_w,􏵶power source􏵷->m_fPowerDistribution_v);
+    
+    􏶲If there is a surge back current, subtract it from our active current􏶱
+    􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fActiveCurrent_amp -= 􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fSurgeBackCurrent_amp;
+    
+    􏶲Now we apply a forced setting adjustment.  See the description of the setting.􏶱
+    􏶲For a more accurate setting we may want to apply some kind of offset.􏶱
+    if (􏵲should apply current offset􏵳􏵶settings􏵷,􏵶side􏵷)){
+    
+      􏶲apply the offset􏶱
+      􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fActiveCurrent_amp += 􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fActiveCurrentOffset_amp;
+    }
+􏶳
+
+
+􏷘-􏷗􏷒should apply current offset􏷑
+􏷐whether or not we should apply a custom offset to the active current of the generator􏷏
+􏶠checks whether it makes sense to apply a current offset􏶡
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀power settings from the electrical system􏶿
+􏶜􏶝􏷆ElectricalSystemSideE􏷅􏷄side􏷃􏷀the particular generator􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼should apply􏶻􏶺should apply current offset􏶹
+􏶴
+  􏶲We only apply the offset if it will keep the amperage positive􏶱
+  return 􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fActiveCurrent_amp  + 􏵶settings􏵷->m_ptGenerator[􏵶side􏵷].m_fActiveCurrentOffset_amp > 0;
+􏶳
+
+􏷘-􏷗􏷒adjust for load sharing􏷑
+􏷐adjusts the amperages for load sharing􏷏
+􏶠if load sharing is happening, the load sharing algorithm is applied􏶡
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀power settings from the electrical system􏶿
+􏶴
+  􏶲if both generators are running􏶱
+  if (􏵲should load share􏵳)){
+
+      􏶲perform load sharing􏶱
+      􏵲perform load share adjustment􏵳􏵶settings􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒perform load share adjustment􏷑
+􏷐adjusts the active current based on a load sharing algorithm􏷏
+􏶠active currents are adjusted􏶡
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀power settings from the electrical system􏶿
+􏶴
+      􏶲perform load sharing􏶱
+      float fSharedCurrent = 􏵶settings􏵷->m_ptGenerator[0].m_fActiveCurrent_amp + 􏵶settings􏵷->m_ptGenerator[1].m_fActiveCurrent_amp;
+      􏵶settings􏵷->m_ptGenerator[0].m_fActiveCurrent_amp = 􏵲half of􏵳fSharedCurrent);
+      􏵶settings􏵷->m_ptGenerator[1].m_fActiveCurrent_amp = 􏵲half of􏵳fSharedCurrent);
+􏶳
+
+􏷘-􏷗􏷒half of􏷑
+􏷐half of the value passed in􏷏
+􏶜􏶝􏷆f􏷅􏷄number􏷃􏷀the number to divide in half􏶿
+􏶚m􏶛􏶾f􏶽􏶼half􏶻􏶺half of the value passed in􏶹
+􏶴
+  return 􏵶number􏵷 / 2.0f;
+􏶳
+
+􏷘-􏷗􏷒should load share􏷑
+􏷐determines if the generators should load share􏷏
+􏶠checks whether each generator is capable of load sharing to determine if load is shared􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼can load share􏶻􏶺whether we are load sharing􏶹
+􏶴
+  return 􏵲gen 1 can load share􏵳) && 􏵲gen 2 can load share􏵳);
+􏶳
+
+􏷘-􏷗􏷒gen 1 can load share􏷑
+􏷐decides whether the generator is capable of load sharing􏷏
+􏶠checks conditions necessary to determine if generator can load share􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼can load share􏶻􏶺whether the generator is capable of load sharing􏶹
+􏶴
+  return 􏵲generator 1 is running􏵳) && !􏵲bus tie 1 relay is open􏵳) && !􏵲generator 1 relay is open􏵳);
+􏶳
+
+􏷘-􏷗􏷒gen 2 can load share􏷑
+􏷐decides whether the generator is capable of load sharing􏷏
+􏶠checks conditions necessary to determine if generator can load share􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼can load share􏶻􏶺whether the generator is capable of load sharing􏶹
+􏶴
+  return 􏵲generator 2 is running􏵳) && !􏵲bus tie 2 relay is open􏵳) && !􏵲generator 2 relay is open􏵳);
+􏶳
+
+􏷘-􏷗􏷒fill vector with power sources􏷑
+􏷐collect all power sources to traverse from􏷏
+􏶠specifies the necessary power sources and puts into the vector.  
+The order is important.  Its recommended to put higher voltage power sources first.  
+This will result in less traversals from lower source voltage distributors.􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄power sources􏷃􏷀a collection of power sources to distribute power from􏶿
+􏶜mr􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀power settings from the electrical system􏶿
+􏶴
+  􏶲create and add power source􏶱
+  ElectricalPowerSourceT tPowerSource = ConstructElectricalPowerSource(􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGenerator,􏵶settings􏵷->m_ptGenerator[0].m_fActualVoltage_v);
+  VectorPushBack(􏵶power sources􏵷,&tPowerSource);
+  
+  􏶲create and add power source􏶱
+  tPowerSource = ConstructElectricalPowerSource(􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGenerator,􏵶settings􏵷->m_ptGenerator[1].m_fActualVoltage_v);
+  VectorPushBack(􏵶power sources􏵷,&tPowerSource);
+  
+  􏶲create and add power source􏶱
+  tPowerSource = ConstructElectricalPowerSource(􏵴circuit􏵵.m_tBatteryBox.m_uBattery,􏵶settings􏵷->m_ptBattery[0].m_fActualVoltage_v);
+  VectorPushBack(􏵶power sources􏵷,&tPowerSource);
+  
+  􏶲create and add power source􏶱
+  tPowerSource = ConstructElectricalPowerSource(􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerUnit,􏵶settings􏵷->m_tEpu.m_fActualVoltage_v);
+  VectorPushBack(􏵶power sources􏵷,&tPowerSource);
+  
+  􏶲create and add power source􏶱
+  tPowerSource = ConstructElectricalPowerSource(􏵴circuit􏵵.m_tSystemDevices.m_tLighting.m_uEmergencyBattery,􏵶settings􏵷->m_tEmergencyBattery.m_fNormalVoltage_v);
+  VectorPushBack(􏵶power sources􏵷,&tPowerSource);
+􏶳
+
+􏷘-􏷗􏷒perform traversals across power sources􏷑
+􏷐traverse over all of the power sources performing electrical steps􏷏
+􏶠This will distribute power, changes electrical properties, determine what is grounded, determine what devices power sources are reaching􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄power sources􏷃􏷀a collection of power sources to distribute power from􏶿
+􏶜mr􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲we will attempt to traverse from all of the known power sources􏶱
+  􏶲this may not be possible if the power source is off or damaged􏶱
+  VectorObjForEach1(􏵶power sources􏵷,(TernaryActionT)PotentiallyTraverseFromPowerSource,ptDCPowerSystem,􏵶settings􏵷);
+􏶳
+
+􏷘-􏷗􏷒potentially traverse from power source􏷑
+􏷐potentially run a traversal from a power source􏷏
+􏶠the function decides based on input boolean whether to perform the traversal􏶡
+􏶜mr􏶝􏷆ElectricalPowerSourceT􏷅􏷄power source􏷃􏷀The power source to traverse from􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲if the power source is on, lets traverse it as a power source􏶱
+  if (NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵶power source􏵷->m_uId))){
+    􏵲traverse from power source􏵳􏵶power source􏵷,􏵶settings􏵷);
+  }
+􏶳
+
+􏷘-􏷗􏷒traverse from power source􏷑
+􏷐run a traversal from a power source􏷏
+􏶠the traversal takes into account the current state of the electrical nodes􏶡
+􏶜mr􏶝􏷆ElectricalPowerSourceT􏷅􏷄power source􏷃􏷀The power source to traverse from􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲We create our traversal information object (so we can gather and apply information during a traversal)􏶱
+  􏶲We pass in our visitor function to specify our step algorithm􏶱
+  GraphTraversalInformationT tTraversalInfo = ConstructGraphTraversalInformation(*􏵶power source􏵷);
+  
+  􏶲build custom step actions􏶱
+  GraphDfsActionsT tActions =
+  ConstructGraphDfsActions(􏵶settings􏵷->m_tTraversal.m_tActions.m_tForward,
+  􏵶settings􏵷->m_tTraversal.m_tActions.m_tBackward,
+  􏵶settings􏵷->m_tTraversal.m_tActions.m_tChildExhaust);
+  
+  ApplyVertexActionsDuringDfsTraversal(&􏵴circuit􏵵.m_tGraph.m_tLocals.m_tGraph,&tTraversalInfo,􏵶power source􏵷->m_uId,tActions);
+  
+  􏶲store the accumulated wattage from the traversal􏶱
+  􏵶power source􏵷->m_fAccumulatedWattage_w = tTraversalInfo.m_fAccumulatedWattage_w;
+􏶳
+
+􏷘+􏷗􏷒fully power all components􏷑
+􏷐update electrical flow across system􏷏
+􏶠Update electrical flow through dfs checking what can be powered, and setting what has power􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀settings from the electrical system􏶿
+􏶴
+  􏶲enable all power on the electrical components􏶱
+  ApplyActionToAllVertices(&􏵴circuit􏵵.m_tGraph.m_tLocals.m_tGraph,NULL,􏵶settings􏵷->m_tTraversal.m_tAlwaysPoweredAction);
+􏶳
+
+TURNING THINGS ON AND OFF (and checking to see if they are on and off):
+􏷘+􏷗􏷒disable flow to the battery bus􏷑
+􏷐turns off flow capability to the battery bus􏷏
+􏶠turns off flow capability to the battery bus􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uBus),FALSE);􏶳
+
+􏷘+􏷗􏷒enable flow to the battery bus􏷑
+􏷐turns on flow capability to the battery bus􏷏
+􏶠turns on flow capability to the battery bus􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uBus),TRUE);􏶳
+
+
+􏷘+􏷗􏷒turn generator 1 on􏷑
+􏷐turns generator 1 on􏷏
+􏶠turns generator 1 on􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGenerator),TRUE);􏶳
+
+􏷘+􏷗􏷒turn generator 1 off􏷑
+􏷐turns generator 1 off􏷏
+􏶠turns generator 1 off􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGenerator),FALSE);􏶳
+
+􏷘+􏷗􏷒generator 1 is running􏷑
+􏷐checks to see if the generator is on􏷏
+􏶠returns true or false if the generator is on or off􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is on􏶻􏶺whether or not the generator is on and running􏶹
+􏶴return NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGenerator));􏶳
+
+􏷘+􏷗􏷒turn generator 2 on􏷑
+􏷐turns generator 2 on􏷏
+􏶠turns generator 2 on􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGenerator),TRUE);􏶳
+
+􏷘+􏷗􏷒turn generator 2 off􏷑
+􏷐turns generator 2 off􏷏
+􏶠turns generator 2 off􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGenerator),FALSE);􏶳
+
+􏷘+􏷗􏷒generator 2 is running􏷑
+􏷐checks to see if the generator is on􏷏
+􏶠returns true or false if the generator is on or off􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is on􏶻􏶺whether or not the generator is on and running􏶹
+􏶴return NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGenerator));􏶳
+
+􏷘+􏷗􏷒turn battery on􏷑
+􏷐turns battery on􏷏
+􏶠turns battery on􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uBattery),TRUE);􏶳
+
+􏷘+􏷗􏷒turn battery off􏷑
+􏷐turns battery off􏷏
+􏶠turns battery off􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uBattery),FALSE);􏶳
+
+􏷘+􏷗􏷒battery is running􏷑
+􏷐checks to see if the battery is on􏷏
+􏶠returns true or false if the battery is on or off􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is on􏶻􏶺whether or not the battery is on and running􏶹
+􏶴return NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uBattery));􏶳
+
+􏷘+􏷗􏷒turn external power on􏷑
+􏷐turns external power on􏷏
+􏶠turns external power on􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerUnit),TRUE);􏶳
+
+􏷘+􏷗􏷒turn external power off􏷑
+􏷐turns external power off􏷏
+􏶠turns external power off􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerUnit),FALSE);􏶳
+
+􏷘+􏷗􏷒external power unit is running􏷑
+􏷐checks to see if the external power unit is on􏷏
+􏶠returns true or false if the external power unit is on or off􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is on􏶻􏶺whether or not the external power unit is on and running􏶹
+􏶴return NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerUnit));􏶳
+
+
+􏷘+􏷗􏷒supply power to mep devices􏷑
+􏷐supplies power to mep devices􏷏
+􏶠supplies power to mep devices􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tBuses.m_uMissionBus),TRUE);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tBuses.m_uMissionBus),TRUE);
+􏶳
+
+􏷘+􏷗􏷒stop power to mep devices􏷑
+􏷐stops power to mep devices􏷏
+􏶠stops power to mep devices􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tBuses.m_uMissionBus),FALSE);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tBuses.m_uMissionBus),FALSE);
+􏶳
+
+􏷘+􏷗􏷒supply power to antennas􏷑
+􏷐supplies power to antennas􏷏
+􏶠supplies power to antennas􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tMep.m_uAntennaDeployUnitPrimary),TRUE);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tMep.m_uAntennaDeployUnitSecondary),TRUE);
+􏶳
+
+􏷘+􏷗􏷒stop power to antennas􏷑
+􏷐stops power to antennas􏷏
+􏶠stops power to antennas􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tMep.m_uAntennaDeployUnitPrimary),FALSE);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tMep.m_uAntennaDeployUnitSecondary),FALSE);
+􏶳
+
+􏷘+􏷗􏷒supply power to search light􏷑
+􏷐supplies power to search light􏷏
+􏶠supplies power to search light􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tLighting.m_uLs16SearchLight),TRUE);
+􏶳
+
+􏷘+􏷗􏷒stop power to search light􏷑
+􏷐stops power to search light􏷏
+􏶠stops power to search light􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tLighting.m_uLs16SearchLight),FALSE);
+􏶳
+
+
+RELAY MANIPULATION:
+􏷘+􏷗􏷒close battery relay􏷑
+􏷐closes the battery relay􏷏
+􏶠closes the battery relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uRelay),TRUE);􏶳
+􏷘+􏷗􏷒open battery relay􏷑
+􏷐opens the battery relay􏷏
+􏶠opens the battery relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close avionic relay 1􏷑
+􏷐closes the avionic relay 1􏷏
+􏶠closes the avionic relay 1􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tBuses.m_uAvionicSwitch),TRUE);􏶳
+􏷘+􏷗􏷒open avionic relay 1􏷑
+􏷐opens the avionic relay 1􏷏
+􏶠opens the avionic relay 1􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tBuses.m_uAvionicSwitch),FALSE);􏶳
+
+􏷘+􏷗􏷒close avionic relay 2􏷑
+􏷐closes the avionic relay 2􏷏
+􏶠closes the avionic relay 2􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tBuses.m_uAvionicSwitch),TRUE);􏶳
+􏷘+􏷗􏷒open avionic relay 2􏷑
+􏷐opens the avionic relay 2􏷏
+􏶠opens the avionic relay 2􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tBuses.m_uAvionicSwitch),FALSE);􏶳
+
+
+
+
+
+
+REGULAR:
+􏷘+􏷗􏷒close bus tie relay 1􏷑
+􏷐closes the bus tie relay􏷏
+􏶠closes the bus tie relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_tBusTie.m_uRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open bus tie relay 1􏷑
+􏷐opens the bus tie relay􏷏
+􏶠opens the bus tie relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_tBusTie.m_uRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close bus tie relay 2􏷑
+􏷐closes the bus tie relay􏷏
+􏶠closes the bus tie relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_tBusTie.m_uRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open bus tie relay 2􏷑
+􏷐opens the bus tie relay􏷏
+􏶠opens the bus tie relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_tBusTie.m_uRelay),FALSE);􏶳
+
+
+LOCKING:
+􏷘+􏷗􏷒open and lock bus tie relay 1􏷑
+􏷐opens bus tie relay and locks it open􏷏
+􏶠opens bus tie relay and locks it open􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_tBusTie.m_uRelay),FALSE);
+NodeLock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_tBusTie.m_uRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒open and lock bus tie relay 2􏷑
+􏷐opens bus tie relay and locks it open􏷏
+􏶠opens bus tie relay and locks it open􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_tBusTie.m_uRelay),FALSE);
+NodeLock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_tBusTie.m_uRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒unlock bus tie relay 1􏷑
+􏷐unlocks bus tie relay but does not change its state􏷏
+􏶠unlocks bus tie relay but does not change its state􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_tBusTie.m_uRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒unlock bus tie relay 2􏷑
+􏷐unlocks bus tie relay but does not change its state􏷏
+􏶠unlocks bus tie relay but does not change its state􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_tBusTie.m_uRelay),􏵶priority􏵷);
+􏶳
+
+
+
+
+
+
+
+
+􏷘+􏷗􏷒close starter relay 1􏷑
+􏷐closes starter relay􏷏
+􏶠closes starter relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uStarterRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open starter relay 1􏷑
+􏷐opens starter relay􏷏
+􏶠opens starter relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uStarterRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close starter relay 2􏷑
+􏷐closes starter relay􏷏
+􏶠closes starter relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uStarterRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open starter relay 2􏷑
+􏷐opens starter relay􏷏
+􏶠opens starter relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uStarterRelay),FALSE);􏶳
+
+
+REGULAR:
+􏷘+􏷗􏷒close generator relay 1􏷑
+􏷐closes generator relay􏷏
+􏶠closes generator relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGeneratorRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open generator relay 1􏷑
+􏷐opens generator relay􏷏
+􏶠opens generator relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGeneratorRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close generator relay 2􏷑
+􏷐closes generator relay􏷏
+􏶠closes generator relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGeneratorRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open generator relay 2􏷑
+􏷐opens generator relay􏷏
+􏶠opens generator relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGeneratorRelay),FALSE);􏶳
+
+LOCKING:
+􏷘+􏷗􏷒open and lock generator relay 1􏷑
+􏷐opens generator relay and locks it open􏷏
+􏶠opens generator relay and locks it open􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGeneratorRelay),FALSE);
+NodeLock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGeneratorRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒open and lock generator relay 2􏷑
+􏷐opens generator relay and locks it open􏷏
+􏶠opens generator relay and locks it open􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGeneratorRelay),FALSE);
+NodeLock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGeneratorRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒unlock generator relay 1􏷑
+􏷐unlocks generator relay but does not change its state􏷏
+􏶠unlocks generator relay but does not change its state􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGeneratorRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒unlock generator relay 2􏷑
+􏷐unlocks generator relay but does not change its state􏷏
+􏶠unlocks generator relay but does not change its state􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGeneratorRelay),􏵶priority􏵷);
+􏶳
+
+
+
+REGULAR:
+􏷘+􏷗􏷒close shed bus relay 1􏷑
+􏷐closes shed bus relay􏷏
+􏶠closes shed bus relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open shed bus relay 1􏷑
+􏷐opens shed bus relay􏷏
+􏶠opens shed bus relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close shed bus relay 2􏷑
+􏷐closes shed bus relay􏷏
+􏶠closes shed bus relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open shed bus relay 2􏷑
+􏷐opens shed bus relay􏷏
+􏶠opens shed bus relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),FALSE);􏶳
+
+
+
+em bat:
+􏷘+􏷗􏷒enable emergency bat test lights􏷑
+􏷐enable emergency bat test lights􏷏
+􏶠enable emergency bat test lights􏶡
+􏶴
+  NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tLighting.m_uEmergencyBatteryTestRelay),TRUE);
+􏶳
+
+􏷘+􏷗􏷒disable emergency bat test lights􏷑
+􏷐disable emergency bat test lights􏷏
+􏶠disable emergency bat test lights􏶡
+􏶴
+  NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tLighting.m_uEmergencyBatteryTestRelay),FALSE);
+􏶳
+
+
+􏷘+􏷗􏷒update shed bus relays􏷑
+􏷐update shed bus relays􏷏
+􏶠update shed bus relays􏶡
+􏶴
+    BOOL bGeneratorOnlineCommand = FALSE;
+
+    //relays are commanded closed if either generator is online
+    //Note: emergency shed bus switch can still force relays closed, but
+    //      the nodes will be locked and so none of these commands will have any effect
+    if (NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tAfterJunctionBox.m_uGenerator)) ||
+        NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tAfterJunctionBox.m_uGenerator)))
+    {
+        bGeneratorOnlineCommand = TRUE;
+    }
+
+    //relays open if they lose power while closed, otherwise they follow the command
+
+    //shed bus relay 1
+    if (!NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_uShedBusRelay)) &&
+        NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_uShedBusRelay)))
+    {
+        DCPowerSystemOpenShedBusRelay1(ptDCPowerSystem);
+    }
+    else
+    {
+        bGeneratorOnlineCommand ? DCPowerSystemCloseShedBusRelay1(ptDCPowerSystem) : DCPowerSystemOpenShedBusRelay1(ptDCPowerSystem);
+    }
+
+    //shed bus relay 2
+    if (!NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_uShedBusRelay)) &&
+        NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_uShedBusRelay)))
+    {
+        DCPowerSystemOpenShedBusRelay2(ptDCPowerSystem);
+    }
+    else
+    {
+        bGeneratorOnlineCommand ? DCPowerSystemCloseShedBusRelay2(ptDCPowerSystem) : DCPowerSystemOpenShedBusRelay2(ptDCPowerSystem);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒update non essential bus relays􏷑
+􏷐update non essential bus relays􏷏
+􏶠update non essential bus relays􏶡
+􏶴
+    BOOL bGeneratorOnlineCommand = FALSE;
+    
+    //relays are closed if both generators are online
+    if (NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tAfterJunctionBox.m_uGenerator)) &&
+        NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tAfterJunctionBox.m_uGenerator)))
+    {
+        bGeneratorOnlineCommand = TRUE;
+    }
+
+    //relays open if they lose power while closed, otherwise they follow the command
+
+    //non-essential bus relay 1
+    if (!NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_uNonessentialBusRelay)) &&
+        NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_uNonessentialBusRelay)))
+    {
+        DCPowerSystemOpenNonEssentialRelay1(ptDCPowerSystem);
+    }
+    else
+    {
+        bGeneratorOnlineCommand ? DCPowerSystemCloseNonEssentialRelay1(ptDCPowerSystem) : DCPowerSystemOpenNonEssentialRelay1(ptDCPowerSystem);
+    }
+
+    //non-essential bus relay 2
+    if (!NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_uNonessentialBusRelay)) &&
+        NodeCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_uNonessentialBusRelay)))
+    {
+        DCPowerSystemOpenNonEssentialRelay2(ptDCPowerSystem);
+    }
+    else
+    {
+        bGeneratorOnlineCommand ? DCPowerSystemCloseNonEssentialRelay2(ptDCPowerSystem) : DCPowerSystemOpenNonEssentialRelay2(ptDCPowerSystem);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒update emergency bat relay􏷑
+􏷐update emergency bat relay􏷏
+􏶠update emergency bat relay􏶡
+􏶴
+    //relay closes if essential bus 1 is unpowered
+    if (!NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tBuses.m_uEssentialBus)))
+    {
+        NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_tSystemDevices.m_tLighting.m_uEmergencyBatteryRelay), TRUE);
+    }
+    //relay opens if essential bus 1 is powered
+    else
+    {
+        NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&ptDCPowerSystem->m_tCircuit.m_tGraph, ptDCPowerSystem->m_tCircuit.m_tSystemDevices.m_tLighting.m_uEmergencyBatteryRelay), FALSE);
+    }
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+LOCKING:
+􏷘+􏷗􏷒close and lock shed bus relay 1􏷑
+􏷐􏷏
+􏶠􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),TRUE);
+NodeLock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒unlock and open shed bus relay 1􏷑
+􏷐􏷏
+􏶠􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),􏵶priority􏵷);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),FALSE);
+􏶳
+
+􏷘+􏷗􏷒unlock shed bus relay 1􏷑
+􏷐􏷏
+􏶠􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒close and lock shed bus relay 2􏷑
+􏷐􏷏
+􏶠􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),TRUE);
+NodeLock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),􏵶priority􏵷);
+􏶳
+
+􏷘+􏷗􏷒unlock and open shed bus relay 2􏷑
+􏷐􏷏
+􏶠􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),􏵶priority􏵷);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),FALSE);
+􏶳
+
+􏷘+􏷗􏷒unlock shed bus relay 2􏷑
+􏷐􏷏
+􏶠􏶡
+􏶜􏶝􏷆int􏷅􏷄priority􏷃􏷀The priority to lock/unlock the node􏶿
+􏶴
+NodeUnlock(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay),􏵶priority􏵷);
+􏶳
+
+
+
+
+􏷘+􏷗􏷒close non essential relay 1􏷑
+􏷐closes non essential relay􏷏
+􏶠closes non essential relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uNonessentialBusRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open non essential relay 1􏷑
+􏷐opens non essential relay􏷏
+􏶠opens non essential relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uNonessentialBusRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close non essential relay 2􏷑
+􏷐closes non essential relay􏷏
+􏶠closes non essential relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uNonessentialBusRelay),TRUE);􏶳
+
+􏷘+􏷗􏷒open non essential relay 2􏷑
+􏷐opens non essential relay􏷏
+􏶠opens non essential relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uNonessentialBusRelay),FALSE);􏶳
+
+􏷘+􏷗􏷒close external power relay􏷑
+􏷐closes the external power relay􏷏
+􏶠closes the external power relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerRelay),TRUE);􏶳
+􏷘+􏷗􏷒open external power relay􏷑
+􏷐opens the external power relay􏷏
+􏶠opens the external power relay􏶡
+􏶴NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerRelay),FALSE);􏶳
+
+
+
+CHECKING RELAYS:
+􏷘+􏷗􏷒generator 1 relay is open􏷑
+􏷐checks to see if the generator relay is open􏷏
+􏶠returns true or false if the generator relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the generator relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uGeneratorRelay));􏶳
+
+􏷘+􏷗􏷒generator 2 relay is open􏷑
+􏷐checks to see if the generator relay is open􏷏
+􏶠returns true or false if the generator relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the generator relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uGeneratorRelay));􏶳
+
+􏷘+􏷗􏷒bus tie 1 relay is open􏷑
+􏷐checks to see if the bus tie relay is open􏷏
+􏶠returns true or false if the bus tie relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the bus tie relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_tBusTie.m_uRelay));􏶳
+
+􏷘+􏷗􏷒bus tie 2 relay is open􏷑
+􏷐checks to see if the bus tie relay is open􏷏
+􏶠returns true or false if the bus tie relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the bus tie relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_tBusTie.m_uRelay));􏶳
+
+􏷘+􏷗􏷒starter 1 relay is open􏷑
+􏷐checks to see if the starter relay is open􏷏
+􏶠returns true or false if the starter relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the starter relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uStarterRelay));􏶳
+
+􏷘+􏷗􏷒starter 2 relay is open􏷑
+􏷐checks to see if the starter relay is open􏷏
+􏶠returns true or false if the starter relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the starter relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uStarterRelay));􏶳
+
+􏷘+􏷗􏷒starter relay is open􏷑
+􏷐checks to see if the starter relay is open􏷏
+􏶠returns true or false if the starter relay is open.  false if it is not􏶡
+􏶜􏶝􏷆i􏷅􏷄side􏷃􏷀the side relevant to the engine and generator􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the starter relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[􏵶side􏵷].m_tAfterJunctionBox.m_uStarterRelay));􏶳
+
+􏷘+􏷗􏷒shed bus 1 relay is open􏷑
+􏷐checks to see if the shed bus relay is open􏷏
+􏶠returns true or false if the shed bus relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the shed bus relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay));􏶳
+
+􏷘+􏷗􏷒shed bus 2 relay is open􏷑
+􏷐checks to see if the shed bus relay is open􏷏
+􏶠returns true or false if the shed bus relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the shed bus relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay));􏶳
+
+􏷘+􏷗􏷒battery relay is open􏷑
+􏷐checks to see if the battery relay is open􏷏
+􏶠returns true or false if the battery relay is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the battery relay is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uRelay));􏶳
+
+􏷘+􏷗􏷒epu door is open􏷑
+􏷐checks to see if the epu door is open􏷏
+􏶠returns true or false if the epu door is open.  false if it is not􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is open􏶻􏶺whether or not the epu door is open􏶹
+􏶴return !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uExternalPowerDoor));􏶳
+
+
+􏷘+􏷗􏷒generator 1 temperature􏷑
+􏷐the temperature of generator 1􏷏
+􏶠changes based on whether the generator is running as well as from malfunctions􏶡
+􏶚m􏶛􏶾float􏶽􏶼temperature􏶻􏶺the temperature of the generator􏶹
+􏶴return 0.0f;􏶳
+
+􏷘+􏷗􏷒generator 2 temperature􏷑
+􏷐the temperature of generator 2􏷏
+􏶠changes based on whether the generator is running as well as from malfunctions􏶡
+􏶚m􏶛􏶾float􏶽􏶼temperature􏶻􏶺the temperature of the generator􏶹
+􏶴return 0.0f;􏶳
+
+􏷘+􏷗􏷒generator 1 overheat􏷑
+􏷐determines the overheat of generator 1􏷏
+􏶠changes based on whether the generator is running as well as from malfunctions􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is overheated􏶻􏶺the overheat of the generator􏶹
+􏶴return NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tAfterJunctionBox.m_uOverheatSensor));􏶳
+
+􏷘+􏷗􏷒generator 2 overheat􏷑
+􏷐determines the overheat of generator 2􏷏
+􏶠changes based on whether the generator is running as well as from malfunctions􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼is overheated􏶻􏶺the temperature of the generator􏶹
+􏶴return NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tAfterJunctionBox.m_uOverheatSensor));􏶳
+
+
+􏷘+􏷗􏷒turn on emergency shed indicator􏷑
+􏷐turns on the indicator for the emergency shed􏷏
+􏶠triggered by the emergency shed switch􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uEmergencyShedIndicator),TRUE);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uEmergencyShedIndicator),TRUE);
+􏶳
+
+􏷘+􏷗􏷒turn off emergency shed indicator􏷑
+􏷐turns off the indicator for the emergency shed􏷏
+􏶠triggered by the emergency shed switch􏶡
+􏶴
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uEmergencyShedIndicator),FALSE);
+NodeSetCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uEmergencyShedIndicator),FALSE);
+􏶳
+
+􏷘+􏷗􏷒using emergency shed􏷑
+􏷐looks at the sate of the graph to determine of you are using the shed as an emergency􏷏
+􏶠this is done by looking at relay states and whether or not the generators are on􏶡
+􏶚m􏶛􏶾BOOL􏶽􏶼using shed􏶻􏶺whether or not the epu relay is open􏶹
+􏶴
+  􏶲check the two emergency shed bus indicators as well as the shed buses themselves to determine if we should show the CAD indication􏶱
+  BOOL bShed1Down = NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uShedBusRelay));
+  BOOL bShed2Down = NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[1].m_tDistributionBox.m_uShedBusRelay));
+  BOOL bIndicator1On = NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uEmergencyShedIndicator));
+  BOOL bIndicator2On = NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_ptSystemSide[0].m_tDistributionBox.m_uEmergencyShedIndicator));
+  return bShed1Down && bShed2Down && bIndicator1On && bIndicator2On;
+􏶳
+
+􏷘+􏷗􏷒voltage side pilot􏷑
+􏷐returns the sensor indication of the voltage sensor on the pilot side􏷏
+􏶠the sensor may not be powered, in which case it will show 0 voltage.  
+otherwise, it will show what is distributed􏶡
+􏶚m􏶛􏶾float􏶽􏶼voltage of DC power side􏶻􏵜volts􏵝􏶺the voltage of the DC power side􏶹
+􏶴return NodeVoltage(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tAvionics.m_puVoltageSensor[AVI_PILOT]));􏶳
+
+􏷘+􏷗􏷒voltage side copilot􏷑
+􏷐returns the sensor indication of the voltage sensor on the pilot side􏷏
+􏶠the sensor may not be powered, in which case it will show 0 voltage.  
+otherwise, it will show what is distributed􏶡
+􏶚m􏶛􏶾float􏶽􏶼voltage of DC power side􏶻􏵜volts􏵝􏶺the voltage of the DC power side􏶹
+􏶴return NodeVoltage(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tAvionics.m_puVoltageSensor[AVI_COPILOT]));􏶳
+
+
+􏷘+􏷗􏷒battery discharging􏷑
+􏷐determines whether or not the battery should be discharging􏷏
+􏶠this is done by looking at relay states and whether or not the EPU is connected􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼is discharging􏶻􏶺whether or not the battery is discharging􏶹
+􏶴
+   􏶲if the battery discharge sensor is receiving voltage through a certain range, and the battery is on, then the battery is discharging􏶱
+  if (IntervalWithin(&􏵶settings􏵷->m_tPower.m_ptBattery[0].m_tDischargeSensor_v,
+  NodeVoltage(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tBatteryBox.m_uDischargeSensor)))){
+    if (􏵲battery is running􏵳)){
+      return TRUE;
+    }
+  }
+  
+  􏶲otherwise, the battery is either off or charging􏶱
+  return FALSE;
+􏶳
+
+􏷘+􏷗􏷒emergency battery discharging􏷑
+􏷐determines whether or not the emergency battery should be discharging􏷏
+􏶠this is done by looking at relay states and whether or not the EPU is connected􏶡
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼is discharging􏶻􏶺whether or not the emergency battery is discharging􏶹
+􏶴
+   􏶲if the battery discharge sensor is receiving voltage through a certain range􏶱
+   􏶲or a particular breaker is popped, the bat is discharging􏶱
+  BOOL bWithinVoltageRange = IntervalWithin(&􏵶settings􏵷->m_tPower.m_tEmergencyBattery.m_tDischargeSensor_v,
+  NodeVoltage(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tSystemDevices.m_tLighting.m_uDischargeSensor)));
+  BOOL bEmerBatPopped = !NodeCanBePowered(ElectricalGraphGetCircuitComponent(&􏵴circuit􏵵.m_tGraph,􏵴circuit􏵵.m_tOverheadPanel.m_uEmerBat));
+  
+  if (bWithinVoltageRange || bEmerBatPopped){
+      return TRUE;
+  }
+  
+  􏶲otherwise, the battery is either off or charging􏶱
+  return FALSE;
+􏶳
+
+
+DEBUGGING:
+
+
+STATS ACTION
+􏷘+􏷗􏷒print stats􏷑
+􏴅inspect debugging􏴆
+􏷐prints the counts of electrical components currently in the graph􏷏
+􏶠traverses over the graph to accumulate the node type counts􏶡
+􏶴ElectricalGraphPrintStats(&􏵴circuit􏵵.m_tGraph);􏶳
+
+􏷘+􏷗􏷒orphan scan􏷑
+􏴅inspect debugging􏴆
+􏷐scans for particular graph orphans that might be considered logic errors􏷏
+􏶠This is an aid, not a guarantee that something is wrong􏶡
+􏶴ElectricalGraphOrphanScan(&􏵴circuit􏵵.m_tGraph);􏶳
+
+LOOKUP ACTIONS
+􏷘+􏷗􏷒print by name􏷑
+􏴅inspect debugging􏴆
+􏷐prints stats about nodes found by name􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴ElectricalGraphPrintByName(&􏵴circuit􏵵.m_tGraph,􏵶name􏵷);􏶳
+
+􏷘+􏷗􏷒print by id􏷑
+􏴅inspect debugging􏴆
+􏷐prints stats about nodes found by id􏷏
+􏶠ids are unique􏶡
+􏶜􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴ElectricalGraphPrintById(&􏵴circuit􏵵.m_tGraph,􏵶id􏵷);􏶳
+
+FORCE ACTIONS
+􏷘+􏷗􏷒everything on􏷑
+􏴅inspect debugging􏴆
+􏷐forces everything to be on􏷏
+􏶠affects all nodes􏶡
+􏶴ElectricalGraphEverythingOn(&􏵴circuit􏵵.m_tGraph);􏶳
+
+􏷘+􏷗􏷒everything off􏷑
+􏴅inspect debugging􏴆
+􏷐forces everything to be off􏷏
+􏶠affects all nodes􏶡
+􏶴ElectricalGraphEverythingOff(&􏵴circuit􏵵.m_tGraph);􏶳
+
+􏷘+􏷗􏷒everything clear􏷑
+􏴅inspect debugging􏴆
+􏷐clears all nodes of user forces􏷏
+􏶠affects all nodes􏶡
+􏶴ElectricalGraphEverythingClear(&􏵴circuit􏵵.m_tGraph);􏶳
+
+􏷘+􏷗􏷒name on􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be on􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴ElectricalGraphNameOn(&􏵴circuit􏵵.m_tGraph,􏵶name􏵷);􏶳
+
+􏷘+􏷗􏷒name off􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be off􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴ElectricalGraphNameOff(&􏵴circuit􏵵.m_tGraph,􏵶name􏵷);􏶳
+
+􏷘+􏷗􏷒name clear􏷑
+􏴅inspect debugging􏴆
+􏷐clears a node of user forces􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴ElectricalGraphNameClear(&􏵴circuit􏵵.m_tGraph,􏵶name􏵷);􏶳
+
+􏷘+􏷗􏷒id on􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be on􏷏
+􏶠ids are unique􏶡
+􏶜􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴ElectricalGraphIdOn(&􏵴circuit􏵵.m_tGraph,􏵶id􏵷);􏶳
+
+􏷘+􏷗􏷒id off􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be off􏷏
+􏶠ids are unique􏶡
+􏶜􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴ElectricalGraphIdOff(&􏵴circuit􏵵.m_tGraph,􏵶id􏵷);􏶳
+
+􏷘+􏷗􏷒id clear􏷑
+􏴅inspect debugging􏴆
+􏷐clears a node of user forces􏷏
+􏶠ids are unique􏶡
+􏶜􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴ElectricalGraphIdClear(&􏵴circuit􏵵.m_tGraph,􏵶id􏵷);􏶳
+
+
+􏷘+􏷗􏷒print differences􏷑
+􏴅inspect debugging􏴆
+􏷐prints the differences between two power systems􏷏
+􏶠prints the differences between a transitioning system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄before􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴ElectricalGraphPrintDifferences(&􏵴circuit􏵵.m_tGraph,&􏵶before􏵷->􏳉circuit􏳊.m_tGraph);􏶳
+
+􏶨The entire electrical circuit􏶧
+􏶦from power sources to system devices􏶥
+􏶘-g􏶙􏶰􏶯􏶮ElectricalCircuitT􏶭􏶬circuit􏶫􏶪0􏶩

@@ -1,0 +1,245 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+⚞⚟
+
+
+//these are utility functions (they are an unfortunate consequence of complexity)
+//I'd like these to one day not exist, but for now, its the better option until the software matures.
+//eventually they can become X Utilities and Y Utilities, etc
+
+
+//important distinction that is needed based on the in-out-design.
+//since the in-out-design may contain a "locals" sub-struct
+◀public: static▶ bool ☀Data_Member_Qualifies_As_Local(Data_Member_Item const& data_member)❰
+    return !data_member.is_observable && !data_member.is_obtainable;
+❱
+
+
+◀public: static▶ bool ☀Is_Copy_Constructor_Or_Destructor(std::string const& file_name, Method_Item const& m)❰
+    return Is_Copy_Constructor(file_name,m) || Is_Destructor(file_name,m);
+❱
+
+//Checking whether methods are constructors or destructors
+◀public: static▶ bool ☀Is_Constructor(std::string const& file_name, Method_Item const& m)❰
+    return Case_Insensitive_Undercore_And_Space_Ignoring_String_Compare(file_name,as_string(m.names.function_name.value)) || Is_Copy_Constructor(file_name,m);
+❱
+◀public: static▶ bool ☀Is_Constructor_But_Not_Copy_Constructor(std::string const& file_name, Method_Item const& m)❰
+    return Case_Insensitive_Undercore_And_Space_Ignoring_String_Compare(file_name,as_string(m.names.function_name.value));
+❱
+
+
+◀public: static▶ bool ☀Is_Copy_Constructor(std::string const& file_name, Method_Item const& m)❰
+    return Case_Insensitive_Undercore_And_Space_Ignoring_String_Compare("^" + file_name,as_string(m.names.function_name.value));
+❱
+◀public: static▶ bool ☀Is_Destructor(std::string const& file_name, Method_Item const& m)❰
+    return Case_Insensitive_Undercore_And_Space_Ignoring_String_Compare("~" + file_name,as_string(m.names.function_name.value));
+❱
+
+
+◀public: static▶ bool ☀Is_Constructor_Or_Destructor(std::string const& file_name, Method_Item const& m)❰
+    return Is_Constructor(file_name,m) || Is_Destructor(file_name,m);
+❱
+◀public: static▶ bool ☀Is_Not_A_Manager_Method(std::string const& file_name, Method_Item const& m)❰
+    return !(Is_Constructor(file_name,m) || Is_Destructor(file_name,m));
+❱
+◀public: static▶ bool ☀Is_A_Plublic_Non_Manager_Method(std::string const& file_name, Method_Item const& m)❰
+    return Is_Not_A_Manager_Method(file_name,m) && m.class_access == Class_Access::PUBLIC;
+❱
+
+//check for the existence of something
+◀public: static▶ bool ☀Constructor_Exists(std::string const& file_name, std::vector<Method_Item> const& m)❰
+    for (auto it: m){
+        if (Is_Constructor(file_name,it)){
+            return true;
+        }
+    }
+    return false;
+❱
+◀public: static▶ bool ☀Copy_Constructor_Exists(std::string const& file_name, std::vector<Method_Item> const& m)❰
+    for (auto it: m){
+        if (Is_Copy_Constructor(file_name,it)){
+            return true;
+        }
+    }
+    return false;
+❱
+◀public: static▶ bool ☀Destructor_Exists(std::string const& file_name, std::vector<Method_Item> const& m)❰
+    for (auto it: m){
+        if (Is_Destructor(file_name,it)){
+            return true;
+        }
+    }
+    return false;
+❱
+
+//filter methods between public/private and constructor/destructor
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Non_Constructor_Public_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+        if (!Is_Constructor(file_name,it)){
+            if (it.class_access == Class_Access::PUBLIC){filtered.push_back(it);}
+        }
+    }
+    
+    return filtered;
+❱
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Non_Destructor_Public_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+        if (!Is_Destructor(file_name,it)){
+            if (it.class_access == Class_Access::PUBLIC){filtered.push_back(it);}
+        }
+    }
+    
+    return filtered;
+❱
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Non_Constructor_Private_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+        if (!Is_Constructor(file_name,it)){
+            if (it.class_access == Class_Access::PRIVATE){
+                filtered.push_back(it);
+            }
+        }
+    }
+    
+    return filtered;
+❱
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Non_Destructor_Private_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+        if (!Is_Destructor(file_name,it)){
+            if (it.class_access == Class_Access::PRIVATE){
+                filtered.push_back(it);
+            }
+        }
+    }
+    
+    return filtered;
+❱
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Non_Constructor_Non_Destructor_Public_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+        if (!Is_Constructor_Or_Destructor(file_name,it)){
+            if (it.class_access == Class_Access::PUBLIC){
+                filtered.push_back(it);
+            }
+        }
+    }
+    
+    return filtered;
+❱
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Non_Constructor_Non_Destructor_Private_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+        if (!Is_Constructor_Or_Destructor(file_name,it)){
+            if (it.class_access == Class_Access::PRIVATE){
+                filtered.push_back(it);
+            }
+        }
+    }
+    
+    return filtered;
+❱
+
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Public_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+      if (it.class_access == Class_Access::PUBLIC){
+          filtered.push_back(it);
+      }
+    }
+    
+    return filtered;
+❱
+
+◀public: static▶ std::vector<Method_Item> ☀Filter_By_Private_Methods(std::string const& file_name, std::vector<Method_Item> const& all_methods)❰
+    std::vector<Method_Item> filtered;
+    
+    for (auto it: all_methods){
+      if (it.class_access == Class_Access::PRIVATE){
+          filtered.push_back(it);
+      }
+    }
+    
+    return filtered;
+❱
+
+
+//counters
+◀public: static▶ unsigned int ☀Number_Of_Non_Constructing_Public_Methods(std::string const& file_name, std::vector<Method_Item> methods)❰
+    return Filter_By_Non_Constructor_Public_Methods(file_name,methods).size();
+❱
+◀public: static▶ unsigned int ☀Number_Of_Non_Destructing_Public_Methods(std::string const& file_name, std::vector<Method_Item> methods)❰
+    return Filter_By_Non_Constructor_Public_Methods(file_name,methods).size();
+❱
+◀public: static▶ unsigned int ☀Number_Of_Non_Constructing_Private_Methods(std::string const& file_name, std::vector<Method_Item> methods)❰
+    return Filter_By_Non_Constructor_Private_Methods(file_name,methods).size();
+❱
+◀public: static▶ unsigned int ☀Number_Of_Non_Destructing_Private_Methods(std::string const& file_name, std::vector<Method_Item> methods)❰
+    return Filter_By_Non_Constructor_Private_Methods(file_name,methods).size();
+❱
+◀public: static▶ unsigned int ☀Number_Of_Non_Constructing_Non_Destructing_Public_Methods(std::string const& file_name, std::vector<Method_Item> methods)❰
+    return Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,methods).size();
+❱
+◀public: static▶ unsigned int ☀Number_Of_Non_Constructing_Non_Destructing_Private_Methods(std::string const& file_name, std::vector<Method_Item> methods)❰
+    return Filter_By_Non_Constructor_Non_Destructor_Private_Methods(file_name,methods).size();
+❱
+
+
+
+
+
+
+//other stuff that should eventually go away and be a part of the "settings"
+◀public: static▶ std::string ☀Derive_Function_Name(std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options)❰
+
+
+    //here is the base name that we put inside our unilang token
+    auto base_function_name = as_string(method.names.function_name.value);
+    
+    //handle potential function prefix:
+    if (code_type == Code_Type::PRODUCT_TYPE && Is_A_Plublic_Non_Manager_Method(file_name,method)){
+        if (options.portion.method_options.prefix_object_api_methods_with_object_name){
+            base_function_name = file_name + " " + base_function_name;
+        }
+    }
+    
+    std::string print_function_name;
+    if (Is_Copy_Constructor(file_name,method)){
+      print_function_name = Case_Modifier::As_Modified_Casing(options.portion.method_options.function_casing,As_Removed_Suffix(file_name));
+    }
+    else{
+      print_function_name = Case_Modifier::As_Modified_Casing(options.portion.method_options.function_casing,base_function_name);
+    }
+
+    return print_function_name;
+❱
+
+
+
+◀public: static▶ std::string ☀Derive_Data_Member_Name(std::string const& name)❰
+    return As_Capital_And_Pushed_Together_Preserve_Underscores_With_Lowercase_After(name);
+❱
+◀public: static▶ std::string ☀Derive_Function_Arg_Name(std::string const& name)❰
+    return As_Capital_And_Pushed_Together_Preserve_Underscores_With_Lowercase_After(name);
+❱

@@ -1,0 +1,149 @@
+􏶞g􏶟
+􏷲generic serialization functions for different endians􏷱
+􏷰Deals with endianness and address invariance. not padding/offsets.  
+The same functions can be used for both packing and unpacking􏷯
+􏷮Byte Serialization􏷭 􏷮Network􏷭 􏷮Utilities􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦Defs.h􏷥􏷢USES: BYTE􏷡
+􏷤s􏷣􏷦stddef􏷥􏷢USES: size_t􏷡
+􏷤􏷣􏷦SerializationAction.h􏷥􏷢USES: SerializationActionE􏷡
+􏶔􏶕􏶒ByteUnpacking􏶓􏶖USES: unpacking calls􏶗
+􏶔􏶕􏶒BytePacking􏶓􏶖USES: packing calls􏶗
+
+􏷘+􏷗􏷒serialize big endian􏷑
+􏷐serializes network data using a big endian data buffer􏷏
+􏶠decides whether to unpack or pack the buffer based on the serialization action􏶡
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be serialized for the buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be serialized for the buffer􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackBigEndian(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackBigEndian(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        default:;
+    }
+􏶳
+
+􏷘+􏷗􏷒serialize little endian􏷑
+􏷐serializes network data using a little endian data buffer􏷏
+􏶠decides whether to unpack or pack the buffer based on the serialization action􏶡
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be serialized for the buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be serialized for the buffer􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackLittleEndian(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackLittleEndian(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        default:;
+    }
+􏶳
+
+􏷘+􏷗􏷒serialize big endian 4 byte invariance􏷑
+􏷐serializes network data using a big endian data buffer􏷏
+􏶠decides whether to unpack or pack the buffer based on the serialization action􏶡
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be serialized for the buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be serialized for the buffer􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackBigEndian4ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackBigEndian4ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        default:;
+    }
+􏶳
+
+􏷘+􏷗􏷒serialize little endian 4 byte invariance􏷑
+􏷐serializes network data using a little endian data buffer􏷏
+􏶠decides whether to unpack or pack the buffer based on the serialization action􏶡
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be serialized for the buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be serialized for the buffer􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackLittleEndian4ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackLittleEndian4ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        default:;
+    }
+􏶳
+
+
+􏷘+􏷗􏷒serialize big endian 2 byte invariance􏷑
+􏷐serializes network data using a big endian data buffer􏷏
+􏶠decides whether to unpack or pack the buffer based on the serialization action􏶡
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be serialized for the buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be serialized for the buffer􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackBigEndian2ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackBigEndian2ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        default:;
+    }
+􏶳
+
+􏷘+􏷗􏷒serialize little endian 2 byte invariance􏷑
+􏷐serializes network data using a little endian data buffer􏷏
+􏶠decides whether to unpack or pack the buffer based on the serialization action􏶡
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start serializing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be serialized for the buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be serialized for the buffer􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackLittleEndian2ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackLittleEndian2ByteInvariance(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶data􏵷,􏵶data size􏵷); break;
+        default:;
+    }
+􏶳
+
+􏷘+􏷗􏷒serialize first n array elements􏷑
+􏷐Serializes only the first number of array elements specified into a data buffer􏷏
+􏶠Useful for partial serializing based on some other serialized value value􏶡 
+􏶜m􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜m􏶝􏷆void[]􏷅􏷄array􏷃􏷀the array to be packed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄element size􏷃􏷀size of a data element in the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄number of elements􏷃􏷀the number of elements to pack from the start of the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄array size􏷃􏷀the maximum size of the array􏶿
+􏶜􏶝􏷆SerializationActionE􏷅􏷄action􏷃􏷀the serialization action to perform on the data􏶿
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵪uNumberOfElements <= uArraySize􏵫􏵨the number of elements must not exceed the array size􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to serialize the next set of data􏵥
+􏶴
+    􏶲either pack or unpack based on the action sent in􏶱
+    switch(􏵶action􏵷){
+        case SERIALIZATION_ACTION_PACK:    PackFirstNArrayElements(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶array􏵷,􏵶element size􏵷,􏵶number of elements􏵷,􏵶array size􏵷); break;
+        case SERIALIZATION_ACTION_UNPACK:  UnpackFirstNArrayElements(􏵶buffer􏵷,􏵶buffer iterator􏵷,􏵶array􏵷,􏵶element size􏵷,􏵶number of elements􏵷,􏵶array size􏵷); break;
+        default:;
+    }
+􏶳

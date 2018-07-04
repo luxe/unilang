@@ -1,0 +1,74 @@
+class
+
+
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/composed_program_options/composed_program_options"❫
+⚯
+
+❪"code/transcompilers/unilang/compiler-frontends/export_spawner"❫
+❪"code/transcompilers/unilang/trevor_frontend_compiler/trevor_exporter"❫
+❪"code/transcompilers/unilang/trevor_frontend_compiler/trevor_contributors_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_exporter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_exporter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_contributors_getter"❫
+⚞⚟
+
+
+//NOTE: CONSIDER ADDING LANGUAGE STANDARDS AS PART OF THE LANGUAGE
+//should we add dialect for this instead?  Some languages just won't have a dialect (which is fine)
+//c language standards to support: 
+//‘c90’
+//‘c89’
+//‘iso9899:1990’
+//‘iso9899:199409’
+//‘c99’
+//‘iso9899:1999’
+//‘c11’
+//‘iso9899:2011’
+//‘gnu90’
+//‘gnu89’
+//‘gnu99’
+//‘gnu11’
+
+//c++ language standards to support
+//‘c++98’
+//‘c++03’
+//‘gnu++98’
+//‘gnu++03’
+//‘c++11’
+//‘gnu++11’
+//‘c++14’
+//‘gnu++14’
+//‘c++1z’
+//‘gnu++1z’
+
+//other languages and language standards...
+
+
+
+
+//exporter = often a company, organization, or a person of interest.
+//*it's a collection of configurations on how the code should be exported for a particular project, or set of projects.
+
+//language = what language the exporter should export to
+//this doesn't just imply other language code.  Maybe you want to print to UML, maybe you want to print user docs.
+//language options are decided and supported by the exporter.  The exporter has no obligation to support anything it doesn't want to
+
+//style = variations to take on the exported language.  For example,
+//f2si has a really bad "component design".  However, they are slowly starting to realize how bad it is, and I've been allowed to turn other
+//code into our "data structure design".  (Data structure design is bad name for it, but it is normal OO C design).  
+//So these are both styles that I can apply on the same UniLang code.
+//Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
+◀public: static▶ void ☀Compile(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
+    
+    //TODO: maybe make a part of configuration
+    Export_Spawner spawner("UniLang");
+    //spawner.Add("trevor",Trevor_Exporter::Export,Trevor_Contributors_Getter::Get);
+    spawner.Add("f2si",F2si_Exporter::Export,F2si_Contributors_Getter::Get);
+    spawner.Add("uber",Uber_Exporter::Export,Uber_Contributors_Getter::Get);
+    
+    //TODO: pass in the code-graph instead
+    spawner.Spawn_Exporter(code_graph.structure,program_options.user_chosen_export_settings);
+    
+❱

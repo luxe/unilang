@@ -1,0 +1,95 @@
+class
+
+❪string❫
+❪map❫
+❪vector❫
+❪iostream❫
+❪"code/transcompilers/unilang/options/bazel/bazel_build_object"❫
+❪"code/transcompilers/unilang/options/bazel/bazel_load_db_settings"❫
+⚯
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/types/sets/lib"❫
+❪"code/transcompilers/unilang/bazel_printer/path_to_bazel_path"❫
+⚞⚟
+
+//the user wants to build the following bazel build objects in the same file,
+//we will turn them into the appropriate load statements
+◀public: static▶ std::string ☀Get(std::vector<Bazel_Build_Object> build_objects, Bazel_Load_Db_Settings const& settings)❰
+    
+    
+    //remove any duplicate build objects
+    Remove_Duplicates(build_objects);
+    
+    //get a mapping from bazel file to converted rules
+    std::map<std::string,std::vector<std::string>> loads;
+    for (auto it: build_objects){
+        Populate_Loads(loads,it,settings);
+    }
+    
+    //remove the duplicate rules
+    for (auto & it: loads){
+        Remove_Duplicates(it.second);
+    }
+    
+    std::string result = Get_Loads_As_String(loads);
+    return result;
+❱
+
+◀private: static▶ std::string ☀Get_Loads_As_String(std::map<std::string,std::vector<std::string>> const& loads)❰
+    std::string result;
+    for (auto it: loads){
+        result += Get_Load_Line(it.first,it.second) + '\n';
+    }
+    
+    return result;
+❱
+
+◀private: static▶ std::string ☀Get_Load_Line(std::string file, std::vector<std::string> rules)❰
+    std::string load_function = "load";
+    std::string start_function = "(";
+    std::string end_function = ")";
+    std::string rule_seperator = ", ";
+
+    std::string str;
+    Append(str,load_function);
+    Append(str,start_function);
+    str += Get_Double_Quote();
+    Append(str,Path_To_Bazel_Path::Convert(file));
+    str += Get_Double_Quote();
+    Append(str,rule_seperator);
+    str += Get_Double_Quote();
+    for (auto it: rules){
+        Append(str,it);
+    }
+    str += Get_Double_Quote();
+    Append(str,end_function);
+    return str;
+❱
+
+◀private: static▶ void ☀Populate_Loads(std::map<std::string,std::vector<std::string>> & loads, Bazel_Build_Object object, Bazel_Load_Db_Settings const& settings)❰
+
+    auto load_data = Find_Load_Data(object,settings);
+    
+    auto search = loads.find(load_data.file);
+    if (search != loads.end()){
+        search->second.emplace_back(load_data.rule);
+    }
+    else{
+        std::vector<std::string> element;
+        element.emplace_back(load_data.rule);
+        loads[load_data.file] = element;
+    }
+❱
+
+◀private: static▶ Bazel_Load_Data ☀Find_Load_Data(Bazel_Build_Object object, Bazel_Load_Db_Settings const& settings)❰
+    for (auto it: settings.entries){
+        if (it.object == object){
+            return it;
+        }
+    }
+    std::cerr << "NOT FOUND" << std::endl;
+    Bazel_Load_Data data;
+    return data;
+❱

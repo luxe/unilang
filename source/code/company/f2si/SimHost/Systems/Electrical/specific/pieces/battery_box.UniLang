@@ -1,0 +1,123 @@
+􏶞p􏶟
+􏷲A 􏶏 specific to the UH72A DC power system.􏷱
+􏷰Stores a collection of 􏶏 node IDs and builds them into the generic electrical graph.􏷯
+􏷮Electrical_System􏷭 􏷮Circuit_Box􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical components into the generic electrical graph data structure.􏷏
+􏶠This will give all of the node a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all of the vertices that are part of the 􏶐􏶱
+  
+  􏶲add nodes to graph􏶱
+  􏵴battery􏵵 = ElectricalGraphAddGroundedBattery(􏵶graph􏵷,"main battery",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴hot bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"battery hot bus",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  􏵴relay􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"battery relay",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴bus􏵵 = ElectricalGraphAddGroundedBus(􏵶graph􏵷,"battery bus",􏵶tag name􏵷,0.0f,342.0f,CAN_BE_POWERED_YES);
+  􏵴fuse 1􏵵 = ElectricalGraphAddFuse(􏵶graph􏵷,"battery bus fuse 1",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  􏵴fuse 2􏵵 = ElectricalGraphAddFuse(􏵶graph􏵷,"battery bus fuse 2",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  􏵴fuse 3􏵵 = ElectricalGraphAddFuse(􏵶graph􏵷,"battery bus fuse 3",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+  􏵴external power relay􏵵 = ElectricalGraphAddRelay(􏵶graph􏵷,"external power relay",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴external power unit􏵵 = ElectricalGraphAddEpu(􏵶graph􏵷,"external power unit",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴external power door􏵵 = ElectricalGraphAddGroundedSensor(􏵶graph􏵷,"external power unit door",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_NO);
+  􏵴discharge sensor􏵵 = ElectricalGraphAddGroundedSensor(􏵶graph􏵷,"discharge sensor",􏵶tag name􏵷,0.0f,0.0f,CAN_BE_POWERED_YES);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲connect nodes together􏶱
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴battery􏵵,􏵴hot bus􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴hot bus􏵵,􏵴relay􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴relay􏵵,􏵴bus􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴bus􏵵,􏵴external power relay􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴external power relay􏵵,􏵴external power unit􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴external power unit􏵵,􏵴external power door􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴bus􏵵,􏵴fuse 1􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴bus􏵵,􏵴fuse 2􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴bus􏵵,􏵴fuse 3􏵵);
+  ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴battery􏵵,􏵴discharge sensor􏵵);
+  
+  􏶲give EPU the ability to charge the battery􏶱
+  ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴external power unit􏵵,􏵴battery􏵵);
+􏶳
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬battery􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬hot bus􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬relay􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬bus􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬fuse 1􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬fuse 2􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬fuse 3􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬external power relay􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬external power unit􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬external power door􏶫􏶪0􏶩
+
+􏶨The ID of a node that is conceptually stored in a 􏶏􏶧
+􏶦This ID will be used to query the generic electrical graph
+and receive back the actual node object.􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬discharge sensor􏶫􏶪0􏶩
+

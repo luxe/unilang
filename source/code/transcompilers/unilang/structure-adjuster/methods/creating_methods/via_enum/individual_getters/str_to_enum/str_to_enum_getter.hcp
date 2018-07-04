@@ -1,0 +1,164 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_enum/categories/enum_utility_conversion_function_options"❫
+❪"code/transcompilers/unilang/enum-printer/core/enum_value_creator"❫
+⚯
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<Method_Item> ☀Get(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings)❰
+    std::vector<Method_Item> items;
+    
+    for (auto enum_item: enum_items){
+        items.push_back(Create_Method(enum_item,options,sub_settings));
+    }
+    
+    return items;
+❱
+
+◀public: static▶ Method_Item ☀Create_Method(Enum_Item const& item,  Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings)❰
+    Method_Item m;
+    
+    //property related
+    m.class_access = sub_settings.enum_to_string.access;
+    m.storage = Storage_Specifier::NONE;
+    
+    //doesn't matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    
+    //documentation related
+    auto generated_function_name = as_string(item.name.value) + " from str";
+    m.names.function_name.value = as_wstring(generated_function_name);
+	m.names.original_function_name.value = as_wstring(generated_function_name);
+    m.brief_description.value = L"converts a string to a " + item.name.value;
+    m.detailed_description.value = L"converts string to enum";
+    
+    //arguments
+    auto arg = String_Argument(item,options);
+    m.function_arguments.push_back(arg);
+    
+    //return value
+    auto result = Result(item,options);
+    m.return_results.push_back(result);
+    
+    Add_Body(m,item,options,sub_settings);
+    
+    return m;
+❱
+
+◀private: static▶ Function_Argument ☀String_Argument(Enum_Item const& item,  Enum_Options const& options)❰
+    Function_Argument arg;
+    arg.is_mutable = false;
+    arg.is_reference = false;
+    arg.usage_requirement = Usage_Requirement::NOT_IGNORED;
+    arg.type.value = L"char*";
+    arg.identifier.value = item.name.value;
+    arg.comment.value = L"the string to convert to an enum";
+    
+    return arg;
+❱
+
+◀private: static▶ Function_Result ☀Result(Enum_Item const& item,  Enum_Options const& options)❰
+    Function_Result arg;
+    arg.is_mutable = true;
+    arg.is_reference = false;
+    arg.type.value = as_wstring(As_Capital_And_Pushed_Together(as_string(item.name.value) + "E"));
+    arg.identifier.value = L"string in enum form";
+    arg.comment.value = L"an enum representing the string passed in";
+    
+    return arg;
+❱
+
+◀private: static▶ void ☀Add_Body(Method_Item & m, Enum_Item const& item,  Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("convert string to enum"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n";
+    body.push_back(t);
+
+	//check for each enum
+	for (auto it: item.args){
+		body += Add_Comparison_For_Arg(item,it,options,sub_settings);
+	}
+
+	//what to do if the string does not match any enum
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"return ";
+    body.push_back(t);
+
+	auto identifier = as_string(item.name.value);
+	auto name = as_wstring(Enum_Value_Creator::Create(identifier,item.args[0],options));
+    t.name = Body_Token_Name::REGULAR;
+    t.value = name;
+    body.push_back(t);	
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L";\n";
+    body.push_back(t);
+    
+    //assign
+    m.body = body;
+❱
+
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Add_Comparison_For_Arg(Enum_Item const& item,  Enum_Arg const& arg, Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings)❰
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"if(!strcmp(";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value =  item.name.value;
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L",";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\"" + arg.name.value + L"\"";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L")){\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"return ";
+    body.push_back(t);
+
+	auto identifier = as_string(item.name.value);
+	auto name = as_wstring(Enum_Value_Creator::Create(identifier,arg,options));
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  name;
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L";\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"}\n";
+    body.push_back(t);
+
+	return body;
+
+❱
+

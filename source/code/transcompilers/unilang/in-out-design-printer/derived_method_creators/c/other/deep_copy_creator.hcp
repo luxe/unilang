@@ -1,0 +1,128 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure-printer/implicit_contract_adder"❫
+⚯
+❪"code/transcompilers/unilang/in-out-design-printer/object_name_resolver"❫
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+◀public: static▶ Method_Item ☀Create(Structure const& structure, bool dumb_way)❰
+
+    //build up fake params
+    Method_Item m;
+    
+    m.class_access = Class_Access::PUBLIC;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    m.storage = Storage_Specifier::NONE;
+    m.overload_specifiers.is_const = false;
+    m.names.function_name.value = L"deep copy " + as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name));
+    m.brief_description.value = L"performs a deep copy on an existing " + as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    m.detailed_description.value = L"performs the necessary deep copy";
+    m.subgroup.value = L"memory management";
+    
+    //add implicit argument
+    auto one = Implicit_Argument(structure,dumb_way);
+    m.function_arguments.push_back(one);
+    
+    //add self argument
+    auto two = Self_Argument(structure,dumb_way);
+    m.function_arguments.push_back(two);
+    
+    Add_Body(structure,m,structure.methods.methods);
+    
+    //m.contracts += Implicit_Contract_Adder::Get_Implicit_Contracts_For_Initializer_Method(as_string(one.identifier.value));
+    
+    return m;
+❱
+
+◀private: static▶ Function_Argument ☀Implicit_Argument(Structure const& structure, bool dumb_way)❰
+    Function_Argument one;
+    one.is_mutable = true;
+    one.is_reference = true;
+    //one.type.value = L"void";
+    one.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L"T";
+    if (dumb_way){
+        one.identifier.value = L"outputs";
+    }
+    else{
+        one.identifier.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    }
+    
+    one.comment.value = L"Represents the object that will be copied to";
+    
+    return one;
+❱
+
+◀private: static▶ Function_Argument ☀Self_Argument(Structure const& structure, bool dumb_way)❰
+    Function_Argument one;
+    one.is_mutable = false;
+    one.is_reference = true;
+    //one.type.value = L"void";
+    one.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L"T";
+    one.identifier.value = L"self";
+    one.comment.value = L"the " + as_wstring(Capitalize_Each_With_Space_In_Between(structure.name)) + L" to deep copy from";
+    
+    return one;
+❱
+
+◀private: static▶ void ☀Add_Body(Structure const& structure, Method_Item & m, std::vector<Method_Item> const& methods)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("perform a deep copy by destructing current allocations, and performing a copy initialization"); 
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L"\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("Destruct") + Object_Name_Resolver::Resolve_Identifier_Name(structure,false) + L"T(";
+    t.value += L"";
+    body.push_back(t);
+
+    //implicit param
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L"pt" + as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L");\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("CopyInitialize") + Object_Name_Resolver::Resolve_Identifier_Name(structure,false) + L"T(";
+    t.value += L"";
+    body.push_back(t);
+
+    //implicit param
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L"pt" + as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L",";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = L"self";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L");\n";
+    body.push_back(t);
+
+	m.body = body;
+    
+❱

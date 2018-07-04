@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#Given a mura bundle zip, this script will give back the corresponding config.xml.cfm
+#No need to unzip the bundle.
+
+#delete the current unziped bundle and any xml files left over from last time
+rm -rf "TEMP_MURA_BUNDLE_UNZIP";
+rm -rf ~/Desktop/programs/projects/config-maker/src/xml/*.xml >/dev/null 2>&1;
+
+#unzip bundle and move all files into config maker
+unzip $1 -d "TEMP_MURA_BUNDLE_UNZIP" >/dev/null 2>&1;
+cd TEMP_MURA_BUNDLE_UNZIP;
+mv *.xml ~/Desktop/programs/projects/config-maker/src/xml/
+
+#move out and delete the unzipped version
+cd ..;
+rm -rf "TEMP_MURA_BUNDLE_UNZIP";
+
+#run the config maker
+last_path_mura_bundle_as_xml=`pwd`
+cd ~/Desktop/programs/projects/config-maker/src/
+./main
+cd $last_path_mura_bundle_as_xml;

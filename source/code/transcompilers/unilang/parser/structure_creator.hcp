@@ -1,0 +1,44 @@
+class
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
+❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+⚯
+❪"code/transcompilers/unilang/validators/stream/token_stream_validator"❫
+❪"code/transcompilers/unilang/tokenizer/tokenizer"❫
+❪"code/transcompilers/unilang/parser/macro_warner"❫
+❪"code/transcompilers/unilang/parser/macro_resolver"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/code_object_creator"❫
+⚞⚟
+
+
+◀public: static▶ Structure ☀Create_Structure_From_Path(Fully_Read_File const& file, Parser_Settings const& settings)❰
+
+    //TODO:
+    //Shell_Resolver::Resolve_Shell_Commands();
+
+    //run tokenizer (might throw...)
+    auto tokens = Get_Stream_Of_Tokens_Out_Of_File(file);
+
+    //run token stream validator
+    //might throw...
+    Token_Stream_Validator::Run_Validations_Over_Token_Stream(tokens,settings);
+
+    //convert UniLang macros
+    Handle_Macro_Conversions_Inside_Tokens(tokens,file.file_name,settings.macros);
+
+    //shouldn't throw.  this is just a conversion between data structures
+    auto structure = Code_Object_Creator::Create_Code_Object_From_Token_Stream(tokens,file.file_name,settings.tokens.symbols);
+    
+    return structure;
+❱
+
+◀private: static▶ std::vector<Parser_Token> ☀Get_Stream_Of_Tokens_Out_Of_File(Fully_Read_File const& file)❰
+    Tokenizer tokenizer(file);
+    return tokenizer.Get_Stream_Of_Tokens();
+❱
+
+◀private: static▶ void ☀Handle_Macro_Conversions_Inside_Tokens(std::vector<Parser_Token> & tokens, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
+    Macro_Warner::Warn_About_Missed_Macro_Opportunities(tokens,path_to_file);
+    Macro_Resolver::Resolve_Macros(tokens,path_to_file,settings);
+❱

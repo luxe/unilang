@@ -1,0 +1,49 @@
+􏶞g􏶟
+􏷲Allocation and deallocation methods analogous to a standard custom allocator􏷱
+􏷰Without templates, its impractical to give containers custom allocators as we would need to store some kind of size to reference the methods.
+Instead, we'll use global functions and call them in the container internally.  
+I'm using these to track allocations and deallocations when debugging to avoid and catch memory problems
+http://en.cppreference.com/w/cpp/memory/allocator􏷯
+􏷮􏶐􏷭
+􏷬Trevor Hickey􏷫
+􏷤s􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏶔s􏶕􏶒stdlib.h􏶓􏴏d􏴐􏴍malloc()􏴎􏴏d􏴐􏴍free()􏴎􏴏d􏴐􏴍realloc()􏴎
+
+􏷘+􏷗􏷒allocate􏷑
+􏷐allocates memory for the caller based on the size of the type, and the amount of instances to allocate􏷏
+􏶠analogues to std::allocator::allocate􏶡
+􏶜􏶝􏷆size_t􏷅􏷄size􏷃􏷀the size of the object being allocated􏶿
+􏶜􏶝􏷆size_t􏷅􏷄amount􏷃􏷀the number of objects to allocate􏶿
+􏶚m􏶛􏶾void*􏶽􏶼allocated memory􏶻􏶺pointer to the first byte of a memory block suitably aligned and sufficient to hold an array of n objects of the sized type􏶹
+􏶴
+    􏶲additional memory logging if needed...􏶱
+    
+    􏶲use std malloc􏶱
+    return malloc(􏵶size􏵷 * 􏵶amount􏵷);
+􏶳
+
+􏷘+􏷗􏷒deallocate􏷑
+􏷐deallocates memory for the caller based on a pointer to allocated memory􏷏
+􏶠analogues to std::allocator::deallocate􏶡
+􏶜m􏶝􏷆void*􏷅􏷄allocated memory􏷃􏷀a pointer to the first byte of an allocated memory block􏶿
+􏶴
+    􏶲additional memory logging if needed...􏶱
+    
+    􏶲use std free􏶱
+    free(􏵶allocated memory􏵷);
+􏶳
+
+􏷘+􏷗􏷒reallocate􏷑
+􏷐reallocates the given area of memory􏷏
+􏶠expanding or contracting the existing area pointed to by ptr, if possible.  Might allocate a new block􏶡
+􏶜mr􏶝􏷆void*􏷅􏷄allocated memory􏷃􏷀a pointer to the first byte of an allocated memory block􏶿
+􏶜􏶝􏷆size_t􏷅􏷄size􏷃􏷀the size of the object being allocated􏶿
+􏶜􏶝􏷆size_t􏷅􏷄amount􏷃􏷀the number of objects to allocate􏶿
+􏶴
+    􏶲additional memory logging if needed...􏶱
+    
+    􏶲use std realloc􏶱
+    size_t newSize = 􏵶size􏵷 * 􏵶amount􏵷;
+    char *NewElements = realloc(*􏵶allocated memory􏵷,newSize);
+    *􏵶allocated memory􏵷 = NewElements;
+􏶳

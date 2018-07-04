@@ -1,0 +1,93 @@
+class
+
+❪vector❫
+❪iostream❫
+❪fstream❫
+❪string❫
+❪"code/transcompilers/unilang/tokens/generic_token"❫
+❪"code/transcompilers/unilang/tokens/global_token_table"❫
+⚯
+❪"code/transcompilers/unilang/language-and-theme-creator/global"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/shared"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Create_Reference_File() ❰
+
+    std::wofstream out("reference." + LANGUAGE_NAME);
+    
+    Print_Root_Tokens_In_Reference_File(out);
+    
+    out << "\nFUNCTION/METHOD ROOT BODY TOKENS:\n";
+    auto t = Get_First_Object_Whose_Data_Member_Matches_Value(TOKENS.begin(),TOKENS.end(),&decltype(TOKENS)::value_type::name,Token_Name::FUNCTION_BODY);
+    out << t.start << '\n';
+    Print_Root_Body_Tokens_In_Reference_File(out);
+    out << t.end << '\n';
+    
+    
+    
+    //print the code lang macros:
+    out << std::endl;
+    out << as_wstring(LANGUAGE_NAME) << " Macros:" << std::endl;
+    out << ESCAPE_CHARACTER << L" escape character" << std::endl;
+    out << CLASS_NAME_CODE_FORM_MACRO << L" object name (code form)" << std::endl;
+    out << CLASS_NAME_PRINT_FORM_MACRO << L" object name (print form)" << std::endl;
+    out << TEST_OBJECT_CLASS_NAME << L" test object name (code form)" << std::endl;
+    out << TRUE_MACRO << L" true" << std::endl;
+    out << FALSE_MACRO << L" false" << std::endl;
+    out << NULL_MACRO  << L" null" << std::endl;
+❱
+
+◀private: static▶ void ☀Print_Root_Tokens_In_Reference_File(std::wofstream & out)❰
+    //print all the open/close symbols
+    std::vector<Token_Group> last;
+    std::vector<Token_Group> seen;
+    
+    for(auto const& it: TOKENS){
+            seen = it.groups;
+            
+            if (seen != last){
+                Print_To_Stream_With_Newline(out,"");
+                auto last_item = Last_Element(seen);
+                Print_To_Stream_N_Times(out,"    ",seen.size()-1);
+                Print_To_Stream_With_Newline(out,as_string(last_item));
+                Print_To_Stream_N_Times(out,"    ",seen.size()-1);
+            }
+            else{
+                Print_To_Stream_N_Times(out,"    ",seen.size()-1);
+            }
+            
+            
+            out << it.start << as_wstring(as_string(it.name)) << it.end /*<< ' ' << as_wstring(it.description)*/ << '\n';
+            last = seen;
+    }
+❱
+
+◀private: static▶ void ☀Print_Root_Body_Tokens_In_Reference_File(std::wofstream & out)❰
+    //print all the open/close symbols
+    std::vector<Body_Token_Group> last;
+    std::vector<Body_Token_Group> seen;
+    
+    for(auto const& it: BODY_TOKENS){
+            seen = it.groups;
+            
+            if (seen != last){
+                Print_To_Stream_With_Newline(out,"");
+                auto last_item = Last_Element(seen);
+                Print_To_Stream_N_Times(out,"    ",seen.size()-1);
+                Print_To_Stream_With_Newline(out,as_string(last_item));
+                Print_To_Stream_N_Times(out,"    ",seen.size()-1);
+            }
+            else{
+                Print_To_Stream_N_Times(out,"    ",seen.size()-1);
+            }
+            
+            
+            out << it.start << as_wstring(as_string(it.name)) << it.end /*<< ' ' << as_wstring(it.description)*/ << '\n';
+            last = seen;
+    }
+❱

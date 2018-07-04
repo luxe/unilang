@@ -1,0 +1,130 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+⚯
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data_getter"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+⚞⚟
+
+
+
+
+
+//[depricate]
+◀public: static▶ void ☀Print_Block(std::wofstream & out, unsigned int indent_amount,std::string const& brief, std::string const& details, C_Export_Settings const& options)❰
+    
+    //TODO: make this a setting to conditionally decide whether we should print a doxygen block at all
+    //if (!brief.empty() || !details.empty()){
+      auto data = Doxygen_Data_Getter::Get(brief,details);
+      auto str = Doxygen_Block_Maker::Create_Doxygen_Block(data,options.general.comment.doxygen);
+      std::string indent_line(indent_amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      Print_To_Stream_With_Newline(out,str);
+    //}
+❱
+
+//[depricate]
+◀public: static▶ void ☀Print_Block(std::wofstream & out, unsigned int indent_amount,std::string const& brief, std::string const& details, General_Options const& options)❰
+    
+    //TODO: make this a setting to conditionally decide whether we should print a doxygen block at all
+    //if (!brief.empty() || !details.empty()){
+      auto data = Doxygen_Data_Getter::Get(brief,details);
+      auto str = Doxygen_Block_Maker::Create_Doxygen_Block(data,options.comment.doxygen);
+      std::string indent_line(indent_amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      Print_To_Stream_With_Newline(out,str);
+    //}
+❱
+
+◀public: static▶ void ☀Print_Block(std::wofstream & out, unsigned int indent_amount,std::string const& brief, std::string const& details, Doxygen_Block_Options const& options)❰
+    
+    //TODO: make this a setting to conditionally decide whether we should print a doxygen block at all
+    //if (!brief.empty() || !details.empty()){
+      auto data = Doxygen_Data_Getter::Get(brief,details);
+      auto str = Doxygen_Block_Maker::Create_Doxygen_Block(data,options);
+      std::string indent_line(indent_amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      Print_To_Stream_With_Newline(out,str);
+    //}
+❱
+◀public: static▶ void ☀Print_Struct_Block(std::wofstream & out, unsigned int indent_amount,std::string const& brief, std::string const& details, std::string const& name, Doxygen_Block_Options const& options)❰
+    
+    //TODO: make this a setting to conditionally decide whether we should print a doxygen block at all
+    //if (!brief.empty() || !details.empty()){
+      auto data = Doxygen_Data_Getter::Get_For_Struct(brief,details,name);
+      auto str = Doxygen_Block_Maker::Create_Doxygen_Block(data,options);
+      std::string indent_line(indent_amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      Print_To_Stream_With_Newline(out,str);
+    //}
+❱
+
+
+
+◀public: static▶ void ☀Print_Doxygen_Method_Comment(std::wofstream & out, Method_Item const& method, C_Export_Settings const& options, unsigned int indent_amount◀=0▶)❰
+    
+    //TODO: make this a setting to conditionally decide whether we should print a doxygen block at all
+    //if (Should_Print(method)){
+      auto data = Doxygen_Data_Getter::Get(method,options);
+      auto str = Doxygen_Block_Maker::Create_Doxygen_Block(data,options.general.comment.doxygen);
+      std::string indent_line(indent_amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      Print_To_Stream_With_Newline(out,str);
+    //}
+❱
+
+◀public: static▶ void ☀Print_Doxygen_Member_Item_Comment(std::wofstream & out, Data_Member_Item const& item, C_Export_Settings const& options, unsigned int indent_amount◀=4▶)❰
+
+    //TODO: make this a setting to conditionally decide whether we should print a doxygen block at all
+    //if (Should_Print(item,options)){
+      auto data = Doxygen_Data_Getter::Get(item,options);
+      auto str = Doxygen_Block_Maker::Create_Doxygen_Block(data,options.general.comment.doxygen);
+      std::string indent_line(indent_amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      Print_To_Stream_With_Newline(out,str);
+    //}
+❱
+
+
+
+//method related
+◀private: static▶ bool ☀Should_Print(Method_Item const& method)❰
+  return !method.brief_description.value.empty() || !method.detailed_description.value.empty();
+❱
+
+//data member related
+◀private: static▶ bool ☀Should_Print(Data_Member_Item const& item, C_Export_Settings const& options)❰
+
+  if (as_string(item.brief.value).empty() && options.portion.data_member_options.derive_brief_comment){return true;}
+  if (!item.detail.value.empty()){return true;}
+  if (!item.units.value.empty()){return true;}
+  
+  for (auto const& it: item.comment_pair){
+    if (!it.key.value.empty() && !it.value.value.empty()){
+      return true;
+    }
+  }
+  
+  for (auto const& it: item.value_constraints){
+    if (!it.operation.value.empty() && !it.value.value.empty()){
+      return true;
+    }
+  }
+  
+  for (auto const& it: item.value_meaning){
+    if (!it.value.value.empty() && !it.meaning.value.empty()){
+      return true;
+    }
+  }
+  
+  return false;
+  
+  
+❱

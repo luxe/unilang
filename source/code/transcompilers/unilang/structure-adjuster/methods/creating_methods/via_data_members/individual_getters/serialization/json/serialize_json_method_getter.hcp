@@ -1,0 +1,535 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_data_member/data_member_utility_function_options"❫
+❪"code/transcompilers/unilang/options/language-specific/c_language_version"❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-comparison/settings/special_comparison_type"❫
+❪"code/transcompilers/unilang/type_converters/type-to-json-serialization-call/json_function_name_getter"❫
+❪"code/transcompilers/unilang/type_converters/type-to-json-serialization-call/settings/json_function_settings"❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-json/special_type_json_specifier_getter"❫
+⚯
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+⚞⚟
+
+◀public: static▶ Method_Item ☀Get(std::string const& self_type, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Data_Member_Utility_Function_Options const& sub_settings, C_Language_Version const& version)❰
+    Method_Item m;
+
+    m.subgroup.value = L"serialize";
+    
+    //property related
+    m.class_access  = sub_settings.serializable_json.access;
+    m.storage = Storage_Specifier::NONE;
+    
+    //doesnt matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    
+    //documentation related
+    auto generated_function_name = sub_settings.serializable_json.function_name;
+    m.names.function_name.value = as_wstring(generated_function_name);
+	m.names.original_function_name.value = as_wstring(generated_function_name);
+    m.brief_description.value = L"serializes the object into the json tree";
+    m.detailed_description.value = L"called recursively on nested objects to serialize them together into a json tree";
+
+    //arguments
+    auto arg1 = Parent_Argument();
+    m.function_arguments.push_back(arg1);
+    auto arg2 = Before_Argument(self_type);
+    m.function_arguments.push_back(arg2);
+    
+    //return value
+	//none...
+    
+    Add_Body(m,items,options,sub_settings,version);
+    
+    return m;
+❱
+
+◀private: static▶ Function_Argument ☀Parent_Argument()❰
+    Function_Argument arg;
+    arg.is_mutable = false;
+    arg.is_reference = false;
+    arg.usage_requirement = Usage_Requirement::NOT_IGNORED;
+    arg.type.value = as_wstring("char[]");
+    arg.identifier.value = L"parent";
+    arg.comment.value = L"the name of the parent structure the function is being called from";
+    
+    return arg;
+❱
+◀private: static▶ Function_Argument ☀Before_Argument(std::string const& self_type)❰
+    Function_Argument arg;
+    arg.is_mutable = true;
+    arg.is_reference = true;
+    arg.usage_requirement = Usage_Requirement::NOT_IGNORED;
+    arg.type.value = as_wstring("JSON_Object");
+    arg.identifier.value = L"json object";
+    arg.comment.value = L"the json object to serialize into";
+    
+    return arg;
+❱
+
+◀private: static▶ void ☀Add_Body(Method_Item & m, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Data_Member_Utility_Function_Options const& sub_settings, C_Language_Version const& version)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("extend parent string"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nAsciiStringT tParent = ConstructAsciiString(";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value =  as_wstring("parent");
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L");\n";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"AsciiStringT tAdjusted;\n";
+    body.push_back(t);
+
+    body += Add_Potential_Self_Naming_Adjustment(items);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"tAdjusted = CopyConstructAsciiString(&tParent);\n\n";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("serialize data members into json object"); 
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("\n");
+    body.push_back(t);
+
+    for (auto it: items){
+      body += Handle_Transition_For_Data_Member(it,version);
+    }
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n\n";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("destruct local strings"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"DestructAsciiStringT(&tParent);\n";
+    body.push_back(t);
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"DestructAsciiStringT(&tAdjusted);\n";
+    body.push_back(t);
+    
+    //assign
+    m.body = body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Add_Potential_Self_Naming_Adjustment(std::vector<Data_Member_Item> const& items)❰
+	
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+   //look for a self name
+   bool has_a_self_name = false;
+    Data_Member_Item found;
+	for (auto it: items){
+		if (it.is_a_name_for_the_enveloping_type){
+			has_a_self_name = true;
+			found = it;
+			break;
+		}
+	}
+
+	//make self name adjustment if there is a self name
+	if (has_a_self_name){
+
+		t.name = Body_Token_Name::COMMENT;
+		t.value =  L"data member '" + found.name.value + L"' represents the name of the type.";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L"\n";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::COMMENT;
+		t.value =  L"we will use its value instead of the parent name.";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L"\n";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L"AsciiStringRightTrimUntilChar(&tParent,'.');\n";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L"AsciiStringAppend(&tParent,&";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::SELF_DATA_MEMBER;
+		t.value =  found.name.value;
+		body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L");\n";
+        body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L"AsciiStringAppendChar(&tParent,'.'";
+		body.push_back(t);
+
+		t.name = Body_Token_Name::REGULAR;
+		t.value =  L");\n\n";
+		body.push_back(t);
+	}
+
+	return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Handle_Transition_For_Data_Member(Data_Member_Item const& item, C_Language_Version const& version)❰
+  
+  std::vector<Body_Token_Value> body;
+  Body_Token_Value t;
+  
+  if (item.reflection.serializable){
+    body += Serializable_Member(item,version);
+  }
+  
+  //add a comment saying that we don't want to print it
+  else{
+    body += Print_Skip_Message(item);
+  }
+  
+  return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Serializable_Member(Data_Member_Item const& item, C_Language_Version const& version)❰
+    
+    std::vector<Body_Token_Value> body;
+	if (!Custom_Type_Data_Member(item)){
+		body += Serialize_For_Fundamental(item,version);
+	}
+	else{
+		body += Serialize_For_NonFundamental(item,version);
+	}
+    
+    return body;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Serialize_For_Fundamental(Data_Member_Item const& item, C_Language_Version const& version)❰
+    
+    std::vector<Body_Token_Value> body;
+	Body_Token_Value t;
+
+	Add_Comment(body,L"serialize the data member into the json object");
+	Add_Regular(body,L"\n");
+	body += Get_Parent_Append_Portion(item);
+	body += Get_Fundamental_Call(item,version);
+	body += Get_Parent_ReAssign_Portion(item);
+	Add_Regular(body,L"\n\n");
+    
+    return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Fundamental_Call(Data_Member_Item const& item, C_Language_Version const& version)❰
+    std::vector<Body_Token_Value> body;
+	Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("\n"); 
+    body.push_back(t);
+
+   auto function_name = Get_Function_Name(item,version);
+   t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring(function_name);
+    body.push_back(t);
+
+   t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("(");
+    body.push_back(t);
+
+	t.name = Body_Token_Name::BODY_PARAMETER;
+	t.value =  as_wstring("json object");
+	body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L",AsciiStringCStr(&tAdjusted),";
+    body.push_back(t);
+
+	t.name = Body_Token_Name::REGULAR;
+    t.value =  L"";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::SELF_DATA_MEMBER;
+	t.value =  item.name.value;
+	body.push_back(t);
+
+   t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring(");\n");
+    body.push_back(t);
+
+    return body;
+❱
+
+◀private: static▶ std::string ☀Get_Function_Name(Data_Member_Item const& item, C_Language_Version const& version)❰
+	std::string name = "json_object_dotset_";
+
+	std::string type_name = as_string(item.type.value);
+	if (Is_Enum_Data_Member(item)){
+		type_name = "i";
+	}
+	
+	return Get_Function_Name(type_name,version);
+❱
+◀private: static▶ std::string ☀Get_Function_Name(std::string const& item, C_Language_Version const& version)❰
+	std::string name = "json_object_dotset_";
+
+    //attempt to get code for special type printing
+    Json_Function_Settings special_settings;
+    auto special_code = Json_Function_Name_Getter::Get(version,special_settings,item);
+	name += special_code;
+	
+	return name;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Parent_Append_Portion(Data_Member_Item const& item)❰
+
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("AsciiStringAppendCString(&tAdjusted,\"");
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  item.name.value;
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("\");\n");
+    body.push_back(t);
+
+	return body;
+❱
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Parent_Append_Forwarding_Portion(Data_Member_Item const& item)❰
+
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("AsciiStringAppendCString(&tAdjusted,\"");
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  item.name.value + as_wstring(".");
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("\");\n");
+    body.push_back(t);
+
+	return body;
+❱
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Parent_ReAssign_Portion(Data_Member_Item const& item)❰
+    
+	std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("AsciiStringAssign(&tAdjusted,&tParent);\n");
+    body.push_back(t);
+
+	return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Serialize_For_NonFundamental(Data_Member_Item const& item, C_Language_Version const& version)❰
+    
+    std::vector<Body_Token_Value> body;
+
+	//attempt to pull out special
+	bool found = false;
+	Special_Json_Specifier_Settings settings;
+	auto base_type = as_string(item.type.value);
+	auto code = Special_Type_Json_Specifier_Getter::Get(settings,base_type,found);
+
+
+		Add_Comment(body,L"forward parent name to sub structure's json serialization call");
+		Add_Regular(body,L"\n");
+
+	if (found){
+		body += Serialize_For_Special(item,code,version);
+	}
+	else{
+		body += Recursive_Call_Chunk(item);
+	}
+
+Add_Regular(body,L"\n");
+    return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Serialize_For_Special(Data_Member_Item const& item, Special_Json_Type const& code, C_Language_Version const& version)❰
+	std::vector<Body_Token_Value> body;
+
+	body += Get_Parent_Append_Portion(item);
+	body += Get_Special_Call(item,code,version);
+	body += Get_Parent_ReAssign_Portion(item);
+	Mustache_Like_Fill_In(body,item);
+	return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Get_Special_Call(Data_Member_Item const& item, Special_Json_Type const& code, C_Language_Version const& version)❰
+    std::vector<Body_Token_Value> body;
+	Body_Token_Value t;
+
+   auto function_name = Get_Function_Name(code.unilang_type_name,version);
+   t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring(function_name);
+    body.push_back(t);
+
+   t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("(");
+    body.push_back(t);
+
+	t.name = Body_Token_Name::BODY_PARAMETER;
+	t.value =  as_wstring("json object");
+	body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L",AsciiStringCStr(&tAdjusted),";
+    body.push_back(t);
+
+    body += code.body;
+
+   t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring(");\n");
+    body.push_back(t);
+
+    return body;
+❱
+
+◀private: static▶ void ☀Mustache_Like_Fill_In(std::vector<Body_Token_Value> & b, Data_Member_Item const& item)❰
+	//{{MUSTACHE-LIKE FILL IN}} for the the data member name
+    for (auto & it: b){
+      if (it.name == Body_Token_Name::SELF_DATA_MEMBER){
+        it.value = item.name.value;
+      }
+      else if (it.name == Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ){
+        it.value = item.name.value;
+      }
+    }
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Recursive_Call_Chunk(Data_Member_Item const& item)❰
+
+		std::vector<Body_Token_Value> body;
+    	Body_Token_Value t;
+
+		body += Get_Parent_Append_Forwarding_Portion(item);
+auto temp = item.type.value;
+auto temp_str = as_string(temp);
+		Add_Foreign_Function_Call(body,as_wstring(Remove_Last_Char(temp_str)) + L" serialize json");
+		Add_Regular(body,L"&");
+		Add_Self_Data_Member(body,item.name.value);
+		Add_Regular(body,L",AsciiStringCStr(&tAdjusted),");
+		Add_Body_Parameter(body,L"json object");
+		Add_Regular(body,L");");
+		body += Get_Parent_ReAssign_Portion(item);
+		Add_Regular(body,L"\n\n");
+		return body;
+❱
+
+
+//method body builder
+◀private: static▶ void ☀Add_Comment(std::vector<Body_Token_Value> & body, std::wstring str)❰
+	Body_Token_Value t;
+	t.name = Body_Token_Name::COMMENT;
+	t.value = str;
+	body.push_back(t);
+❱
+◀private: static▶ void ☀Add_Regular(std::vector<Body_Token_Value> & body, std::wstring str)❰
+	Body_Token_Value t;
+	t.name = Body_Token_Name::REGULAR;
+	t.value = str;
+	body.push_back(t);
+❱
+◀private: static▶ void ☀Add_Body_Parameter(std::vector<Body_Token_Value> & body, std::wstring str)❰
+	Body_Token_Value t;
+	t.name = Body_Token_Name::BODY_PARAMETER;
+	t.value = str;
+	body.push_back(t);
+❱
+◀private: static▶ void ☀Add_Self_Data_Member(std::vector<Body_Token_Value> & body, std::wstring str)❰
+	Body_Token_Value t;
+	t.name = Body_Token_Name::SELF_DATA_MEMBER;
+	t.value = str;
+	body.push_back(t);
+❱
+◀private: static▶ void ☀Add_Foreign_Function_Call(std::vector<Body_Token_Value> & body, std::wstring str)❰
+	Body_Token_Value t;
+	t.name = Body_Token_Name::FOREIGN_FUNCTION_CALL;
+	t.value = str;
+	body.push_back(t);
+❱
+
+
+
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Print_Skip_Message(Data_Member_Item const& item)❰
+    
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = item.name.value + as_wstring(" is excluded from json serialization\n"); 
+    body.push_back(t);
+    
+    return body;
+❱
+
+
+◀private: static▶  bool ☀Is_Enum_Data_Member(Data_Member_Item const& item)❰
+  //TODO: not good to look for the T at the end because hungarian notation should be an implementation
+  //detail and it can change and we should be bale to reference the type from the unilang name
+  return Ends_With(as_string(item.type.value),"E");
+❱
+◀private: static▶  bool ☀Custom_Type_Data_Member(Data_Member_Item const& item)❰
+  //TODO: not good to look for the T at the end because hungarian notation should be an implementation
+  //detail and it can change and we should be bale to reference the type from the unilang name
+  return Ends_With(as_string(item.type.value),"T");
+❱
+

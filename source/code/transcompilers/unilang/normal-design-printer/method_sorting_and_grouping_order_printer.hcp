@@ -1,0 +1,98 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/normal-design-printer/data/subgroup_sorted_methods"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/in-out-design-printer/object_name_resolver"❫
+❪"code/transcompilers/unilang/normal-design-printer/method_sorter"❫
+❪"code/transcompilers/unilang/normal-design-printer/subgroup_tag_printer"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/exits/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Interface_According_To_Sorting_And_Grouping_Settings(std::wofstream & out, Method_Section const& section, Structure const& structure, C_Export_Settings const& options)❰
+
+  //print all of the interface declarations.
+  //this would be any function that is public.
+  //first we filter out the methods.
+  auto public_methods = Shared_Printer::Filter_By_Public_Methods(structure.name,section.methods);
+  
+  //public decls
+  Sort_And_Print_Interfaces(out,structure,public_methods,options);
+  
+❱
+
+◀public: static▶ void ☀Print_Implementation_According_To_Sorting_And_Grouping_Settings(std::wofstream & out, Method_Section const& section, Structure const& structure, C_Export_Settings const& options)❰
+
+  //get methods in filtered groups
+  auto public_methods = Shared_Printer::Filter_By_Public_Methods(structure.name,section.methods);
+  auto private_methods = Shared_Printer::Filter_By_Private_Methods(structure.name,section.methods);
+  
+  //private decls
+  Sort_And_Print_Interfaces(out,structure,private_methods,options);
+
+  //defs
+  Sort_And_Print_Implementations(out,structure,public_methods,options);
+  Sort_And_Print_Implementations(out,structure,private_methods,options);
+    
+❱
+
+◀private: static▶ void ☀Sort_And_Print_Interfaces(std::wofstream & out, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
+  
+  //sort and print
+  auto sorted_methods = Method_Sorter::Get_As_Sorted(methods,options.portion.method_options.sorting.interface);
+  for (auto group: sorted_methods.subgroups){
+     Print_Interfaces(out,group,structure,methods,options);
+  }
+  
+❱
+◀private: static▶ void ☀Sort_And_Print_Implementations(std::wofstream & out, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
+  
+  //sort and print
+  auto sorted_methods = Method_Sorter::Get_As_Sorted(methods,options.portion.method_options.sorting.implementation);
+  for (auto group: sorted_methods.subgroups){
+    Print_Implementations(out,group,structure,methods,options);
+  }
+  
+❱
+
+◀private: static▶ void ☀Print_Interfaces(std::wofstream & out, Subgroup_Methods const& group, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
+    
+    //possible start tag
+    Subgroup_Tag_Printer::Possibly_Print_Start(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
+    
+    //print each of the methods
+    for (auto const& it: group.methods){
+      Methods_Printer::Print_Method_Interface(out,structure.name,Code_Type::GLOBAL,it,options);
+    }
+    
+    //possible end tag
+    Subgroup_Tag_Printer::Possibly_Print_End(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
+❱
+
+◀private: static▶ void ☀Print_Implementations(std::wofstream & out, Subgroup_Methods const& group, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
+    
+    //implicit name
+    auto implicit_name = as_string(Object_Name_Resolver::Resolve_Identifier_Name(structure,false));
+    
+    //possible start tag
+    Subgroup_Tag_Printer::Possibly_Print_Start(out,group.subgroup,options.portion.method_options.sorting.implementation.tag);
+    
+    //print each of the methods
+    for (auto const& it: group.methods){
+      Methods_Printer::Print_Method_Implementation
+      (out,structure.name,Code_Type::GLOBAL,it,structure.data_members.data_members,structure.methods.methods,true,options,implicit_name,Object_Export_Method::NORMAL);
+    }
+    
+    //possible end tag
+    Subgroup_Tag_Printer::Possibly_Print_End(out,group.subgroup,options.portion.method_options.sorting.implementation.tag);
+❱
+
+
+
+

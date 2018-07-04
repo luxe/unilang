@@ -1,0 +1,131 @@
+class
+❪string❫
+❪"stripped_unilang_type_with_qualifiers"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/regular_argument_location"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚯
+
+⚞⚟
+
+
+//C related side note:
+//regardless of whether we consider the param a reference,
+//the language doesn't allow us to append a *const to an array syntaxed parameter ([])
+//see: http://stackoverflow.com/questions/35689531/since-arrays-decay-to-pointers-why-cant-i-apply-const
+
+//other C note:
+//function return argument pointers can't be const
+//if they are, you will get a warning like this:
+//type qualifiers ignored on function return type [-Wignored-qualifiers]
+
+
+◀public: static▶ std::string ☀Add_Qualifers_Back_To_Derived_Language_Argument_Type(Stripped_Unilang_Type_With_Qualifiers const& qualifiers, std::string const& derived_identifier, C_Export_Settings const& options)❰
+
+
+   std::string str;
+   if (options.portion.method_options.parameters.convert_array_types_to_pointer){
+    
+    Append(str,Get_After_Type_Array_As_Pointer(qualifiers,options.portion.method_options.parameters,Regular_Argument_Location::PARAMETER));
+    Append(str,Get_After_Type_Pointer(qualifiers,options.portion.method_options.parameters,Regular_Argument_Location::PARAMETER));
+     
+       //print identifier (when it is NOT an array)
+       Append(str,derived_identifier);
+   }
+   else{
+    
+     //print identifier[SIZE]
+     Append(str,derived_identifier);
+     Append(str,qualifiers.array_part);
+   }
+   
+   return str;
+❱
+
+◀public: static▶ std::string ☀Add_Qualifers_Back_To_Derived_Language_Data_Member_Type(Stripped_Unilang_Type_With_Qualifiers const& qualifiers, std::string const& derived_identifier, C_Export_Settings const& options)❰
+
+
+   std::string str;
+    
+      Append(str,Get_After_Type_Pointer(qualifiers,options.portion.method_options.parameters,Regular_Argument_Location::PARAMETER));
+     
+     //print identifier
+     Append(str,derived_identifier);
+    
+     //print identifier[SIZE]
+     Append(str,qualifiers.array_part);
+   
+   return str;
+❱
+
+◀public: static▶ std::string ☀Add_Qualifers_Back_To_Derived_Language_Result_Type(Stripped_Unilang_Type_With_Qualifiers const& qualifiers, C_Export_Settings const& options)❰
+
+
+   std::string str;
+   if (options.portion.method_options.parameters.convert_array_types_to_pointer){
+      Append(str,Get_After_Type_Array_As_Pointer(qualifiers,options.portion.method_options.parameters,Regular_Argument_Location::RETURN));
+      Append(str,Get_After_Type_Pointer(qualifiers,options.portion.method_options.parameters,Regular_Argument_Location::RETURN));
+   }
+   else{
+    
+     //print identifier[SIZE]
+     Append(str,qualifiers.array_part);
+   }
+   
+   return str;
+❱
+
+◀private: static▶ std::string ☀Get_After_Type_Array_As_Pointer(Stripped_Unilang_Type_With_Qualifiers const& qualifiers, Method_Parameter_Settings const& settings, Regular_Argument_Location const& location)❰
+    
+    std::string str;
+    
+    if (!qualifiers.array_part.empty()){
+      
+       //print identifier *const (when it is an array)
+       Append(str,Const_Ptr_For_Location(settings,location) + " ");
+     }
+     
+   
+   return str;
+❱
+
+
+◀private: static▶ std::string ☀Get_After_Type_Pointer(Stripped_Unilang_Type_With_Qualifiers const& qualifiers, Method_Parameter_Settings const& settings, Regular_Argument_Location const& location)❰
+   
+   //needs moved to settings
+    
+    
+   std::string str;
+   
+   //decide if we explicitly said the type was a pointer and add that back to the base type
+   
+   //it might be a const pointer
+   if (qualifiers.is_pointer && qualifiers.is_const_on_pointer){
+    Append(str,Const_Ptr_For_Location(settings,location));
+    Append(str," ");
+   }
+   
+   //it might just be a pointer
+   else if(qualifiers.is_pointer && !qualifiers.is_const_on_pointer){
+    Append(str,settings.ptr);
+    Append(str," ");
+   }
+   
+   //add reference portion to the end (regardless of how many pointer stuff there already was on the type itself
+   if (qualifiers.is_reference){
+    Append(str,Const_Ptr_For_Location(settings,location));
+    Append(str," ");
+   }
+   
+   return str;
+❱
+
+
+◀private: static▶ std::string ☀Const_Ptr_For_Location(Method_Parameter_Settings const& settings, Regular_Argument_Location const& location)❰
+	if (location == Regular_Argument_Location::PARAMETER){
+		return settings.const_ptr;
+	}
+	return settings.ptr;
+❱
+
+

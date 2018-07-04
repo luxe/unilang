@@ -1,0 +1,267 @@
+􏶞p􏶟
+􏷲A generic graph data structure􏷱
+􏷰Supports directed/non-directed, cyclic/acyclic.
+Does not support weighted edges.
+can be used with dfs/bfs algorithms via visitor pattern􏷯
+􏷮Data Structure􏷭􏷮Graph􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦vector􏷥􏴓1􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦graph_vertex􏷥􏴓1􏴔􏴑GraphVertexT􏴒
+􏷤􏷣􏷦type_information􏷥􏴓d􏴔􏴑TypeInformationT􏴒
+
+
+LIFE TIME MANAGEMENT:
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜􏶝􏷆TypeInformationT􏷅􏷄vertex info􏷃􏷀the type information of the vertex data that will be held in the graph.􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄edge info􏷃􏷀the type information of the edge data that will be held in the graph.􏶿
+􏶴
+  􏶲the graph starts with zero vertices, and nothing connected􏶱
+  InitializeVector(&􏵴vertices􏵵,SPECIALIZE_MANAGED(GraphVertexT),0);
+  
+  􏶲store the custom type info􏶱
+  􏶲a runtime compromise for not having templates􏶱
+  􏵴vertex info􏵵 = 􏵶vertex info􏵷;
+  􏵴edge info􏵵 = 􏵶edge info􏵷;
+􏶳
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆GraphT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    
+    􏶲shallow copy over the type sizes􏶱
+    􏵴vertex info􏵵 = 􏵶self􏵷->m_tLocals.m_tVertexInfo;
+    􏵴edge info􏵵 = 􏵶self􏵷->m_tLocals.m_tEdgeInfo;
+    
+    􏶲deep copy over the vertices􏶱
+    CopyInitializeVectorT(&􏵴vertices􏵵,&􏵶self􏵷->m_tLocals.m_tVertices);
+􏶳
+
+
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲destruct the vector􏶱
+    DestructVectorT(&􏵴vertices􏵵);
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘+􏷗􏷒add vertex􏷑
+􏷐Adds a vertex to the graph.􏷏
+􏶠The user can construct a vertex into the graph, and then receive back a unique ID to query for it later.􏶡
+􏶜r􏶝􏷆void􏷅􏷄new vertex􏷃􏷀a vertex to add to the 􏶐􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the vertex just created.􏶹
+􏶴
+  􏶲create the new vertex to be added􏶱
+  GraphVertexT tVertex = ConstructGraphVertex(􏵶new vertex􏵷,􏵴vertex info􏵵,􏵴edge info􏵵);
+  
+  􏶲add the new vertex, effectively incrementing the size of the vector􏶱
+  VectorPushBack(&􏵴vertices􏵵,&tVertex);
+  
+  􏶲delete temporary􏶱
+  DestructGraphVertexT(&tVertex);
+  
+  
+  􏶲return the unique id to the user so that it can be later queried with􏶱
+  􏶲This call relies on the vertex already being added􏶱
+  return 􏵲generate unique vertex id􏵳);
+􏶳
+
+􏷘+􏷗􏷒add directed edge􏷑
+􏷐add a directed edge from one vertex to another vertex􏷏
+􏶠This allows a traversal from vertex A to vertex B, but not vertex B back to vertex A.  
+Of course, you could always add another directed edge to do this.  
+Call AddNonDirectedEdge as a short hand for adding two edges between two edges with the same properties
+If you want to add two edges with different properties between two vertices, you would need to call this function twice.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄vertex id from􏷃􏷀a vertex id that will be the started of the directed edge􏶿
+􏶜􏶝􏷆size_t􏷅􏷄vertex id to􏷃􏷀a vertex id that will be the destination of the directed edge􏶿
+􏶜r􏶝􏷆void􏷅􏷄new edge􏷃􏷀the edge to add between the two vertices􏶿
+􏶴
+    􏶲get both of the actual vertex from the vertex id􏶱
+    GraphVertexT* ptSource = 􏵲get vertex from vertex id􏵳􏵶vertex id from􏵷);
+    
+    􏶲add a single directed edge to the vertex􏶱
+    GraphVertexAddEdge(ptSource,􏵶new edge􏵷,􏵶vertex id to􏵷);
+􏶳
+
+􏷘+􏷗􏷒add non directed edge􏷑
+􏷐add a bidirectional edge between two vertices􏷏
+􏶠This is done, by adding two directed edges to and from each vertex.  
+The same ID can be used to create a cycle on the same vertex􏶡
+􏶜􏶝􏷆size_t􏷅􏷄vertex id x􏷃􏷀one of the vertex ids that will be connected with an edge􏶿
+􏶜􏶝􏷆size_t􏷅􏷄vertex id y􏷃􏷀the other vertex ids that will be connected with an edge􏶿
+􏶜r􏶝􏷆void􏷅􏷄new edge􏷃􏷀the edge to add between the two vertices􏶿
+􏶴
+    􏶲get both of the actual vertices from the vertex ids􏶱
+    GraphVertexT* ptX = 􏵲get vertex from vertex id􏵳􏵶vertex id x􏵷);
+    GraphVertexT* ptY = 􏵲get vertex from vertex id􏵳􏵶vertex id y􏵷);
+    
+    􏶲add two directional edges, which will function as a bidirectional or non-directed edge􏶱
+    GraphVertexAddEdge(ptX,􏵶new edge􏵷,􏵶vertex id y􏵷);
+    GraphVertexAddEdge(ptY,􏵶new edge􏵷,􏵶vertex id x􏵷);
+􏶳
+
+
+GETTERS:
+VERTEX RELATED:
+􏷘+􏷗􏷒get vertex􏷑
+􏷐Query the graph with a vertex id to get back the actual vertex.􏷏
+􏶠Vertex ids are given to the client when they tell the graph to create vertices for them.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄vertex id􏷃􏷀The vertex id associated with the actual vertex in the graph􏶿
+􏶚m􏶛􏶾GraphVertexT*􏶽􏶼vertex􏶻􏶺the actual vertex corresponding to the vertex id􏶹
+􏶴
+    􏶲convert a vertex id into a pointer to the actual vertex, and return it to the user􏶱
+    return 􏵲get vertex from vertex id􏵳􏵶vertex id􏵷);
+􏶳
+
+􏷘+􏷗􏷒get all vertices􏷑
+􏷐Get all the vertices of the graph􏷏
+􏶠This is useful when you want to make sweeping changes to all the vertices.  
+There is no need to do some kind of traversal, or rely on all vertices being connected a certain way.
+Get all the vertices.  Apply a change to all the vertices.􏶡
+􏶚m􏶛􏶾VectorT*􏶽􏶼vertices􏶻􏶺all of the vertices in the graph􏶹
+􏶴
+    􏶲return all the vertices so the user can manipulate them without graph traversal􏶱
+    return &􏵴vertices􏵵;
+􏶳
+
+􏷘+􏷗􏷒number of vertices􏷑
+􏷐the number of vertices in the graph􏷏
+􏶠counts the number of vertices stored in the graph.
+It does not account for how the vertices are connected􏶡
+􏶚m􏶛􏶾size_t􏶽􏶼number of vertices􏶻􏶺the number of vertices in the graph􏶹
+􏶴
+  􏶲returns the number of vertices currently in the graph􏶱
+  􏶲it doesn't matter whether they are connected or not􏶱
+  􏶲if they are floating in space, we still count them as part of the graph􏶱
+  return VectorSize(&􏵴vertices􏵵);
+􏶳
+
+EDGE RELATED:
+
+􏷘+􏷗􏷒get all edges of vertex􏷑
+􏷐given a vertex id, it returns all edges leaving that vertex􏷏
+􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄vertex id􏷃􏷀The vertex id associated with the actual vertex in the graph􏶿
+􏶚m􏶛􏶾VectorT*􏶽􏶼edges􏶻􏶺all of the edges for the associated vertex id􏶹
+􏶴
+    return GraphVertexEdges(􏵲get vertex from vertex id􏵳􏵶vertex id􏵷));
+􏶳
+
+􏷘+c􏷗􏷒number of edges􏷑
+􏷐the number of edges in the graph􏷏
+􏶠counts the number of edges stored in the graph.
+It does not account for how the edges are connected
+A bidirectional edge is considered two directed edges􏶡
+􏶚m􏶛􏶾size_t􏶽􏶼number of edges􏶻􏶺the number of edges in the graph􏶹
+􏶴
+    􏶲the number of edges in the graph􏶱
+    􏶲calculated and returned􏶱
+    size_t uTotal = 0u;
+    
+    􏶲iterate over each vertex, accumulating the number of edges􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < VectorSize(&􏵴vertices􏵵); ++uIndex){
+        uTotal += VectorSize(GraphVertexEdges((GraphVertexT*)VectorAt(&􏵴vertices􏵵,uIndex)));
+    }
+    
+    return uTotal;
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒generate unique vertex id􏷑
+􏷐generates a unique vertex id based on the most recent vertex already added to the graph􏷏
+􏶠the generated id corresponds to the most recent vertex added􏶡
+􏶚m􏶛􏶾size_t􏶽􏶼new id􏶻􏶺a new unique id for a new vertex added􏶹
+􏶴
+  􏶲each time we add a vertex, we are going to get a unique id back􏶱
+  􏶲We do this by taking the total number of vertices already added, and using that size as the id􏶱
+  􏶲Adding the new vertex, will increment the vector size (indirectly affecting the next unique vertex id􏶱
+  
+  􏶲From the user's perspective, there is no guarantee the ids will even count up each time􏶱
+  􏶲The fact that they do, is just an implementation detail􏶱
+  􏶲Also note, these ids are NOT direct indexes back into the vector to receive the actual vertex􏶱
+  􏶲This is because we reserve 0 as an invalid vertex id􏶱
+  return 􏵴vertices􏵵.m_uSize;
+􏶳
+
+􏷘-􏷗􏷒resolve vertex id to index􏷑
+􏷐resolves the vertex id to a valid index for receiving the relevant vertex from the vector􏷏
+􏶠the vertex id should not be used to index into the vertex vector directly􏶡
+􏶜􏶝􏷆size_t􏷅􏷄vertex id􏷃􏷀The vertex id associated with the actual vertex in the graph􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼vertex index􏶻􏶺the index value to get back the relevant vertex􏶹
+􏶴
+    􏶲the unique ids correspond to the number of vertices at the time of insertion􏶱
+    return 􏵶vertex id􏵷-1;
+􏶳
+
+􏷘-􏷗􏷒get vertex from vertex id􏷑
+􏷐Query the graph with a vertex id to get back the actual vertex.􏷏
+􏶠Vertex ids are given to the client when they tell the graph to create vertices for them.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄vertex id􏷃􏷀The vertex id associated with the actual vertex in the graph􏶿
+􏶚m􏶛􏶾GraphVertexT*􏶽􏶼vertex􏶻􏶺the actual vertex corresponding to the vertex id􏶹
+􏶴
+    􏶲query the entire list of vertices to get the one that matches the id passed in􏶱
+    􏶲we can cast the void pointer, because the vertex is a generic element in the sense of having an any data member􏶱
+    return (GraphVertexT*)VectorAt(&􏵴vertices􏵵,􏵲resolve vertex id to index􏵳􏵶vertex id􏵷));
+􏶳
+
+􏶨All of the vertices that make up the graph.􏶧
+􏶦The entire graph is represented as a vector of vertices.􏶥
+􏶘-􏶙􏶮VectorT􏶭􏶬vertices􏶫􏶪􏶩
+
+􏶨the custom type info of the data stored inside the graph's vertex􏶧
+􏶦Stored in the vertex's 'any' type􏶥
+􏶘-􏶙􏶮TypeInformationT􏶭􏶬vertex info􏶫􏶪􏶩
+
+􏶨the custom type info of the data stored inside the graph's edge􏶧
+􏶦Stored in the edge's 'any' type􏶥
+􏶘-􏶙􏶮TypeInformationT􏶭􏶬edge info􏶫􏶪􏶩

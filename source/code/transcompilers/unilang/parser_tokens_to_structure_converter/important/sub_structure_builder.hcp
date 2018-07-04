@@ -1,0 +1,517 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_aliases"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
+❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
+❪"code/utilities/types/general/lib"❫
+⚯
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/important/parser_bindings"❫
+❪"code/transcompilers/unilang/parser/body_parser/body_token_parser"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_token_stripper"❫
+❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/special_parser_filters"❫
+❪"code/transcompilers/unilang/parser/entire_body_parser/entire_body_parser"❫
+⚞⚟
+
+
+//meta section
+◀public: static▶ Meta_Section ☀Build_Meta_Section(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Meta_Section part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Meta_Code_Type<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Meta_Pack_Specifiers<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Meta_Description<decltype(part)>);
+    
+    part.group_names          = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_GROUP_NAME);
+    part.authors              = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_AUTHOR);
+    part.bugs                 = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_BUG);
+    part.warnings             = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_WARNING);
+    part.depreciation_reasons = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_DEPRECIATION);
+    
+    part.subgroups           = Parser_Token_Stripper::Strip_Out_Type<Meta_Subgroup>     (settings,tokens,Token_Group::META_SUBGROUP           ,Build_Meta_Subgroups);
+    part.specifications      = Parser_Token_Stripper::Strip_Out_Type<Specification_File>(settings,tokens,Token_Group::META_SPECIFICATION_FILE ,Build_Meta_Specification_Files);
+    part.foreseeable_changes = Parser_Token_Stripper::Strip_Out_Type<Foreseeable_Change>(settings,tokens,Token_Group::META_FORSEEABLE_CHANGE  ,Build_Meta_Foreseeable_Changes);
+    
+    return part;
+❱
+
+◀public: static▶ Type_Item ☀Build_Type_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Type_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Type_Section_Root_Items<decltype(part)>);
+    return part;
+❱
+
+//object template section
+◀public: static▶ Template_Argument ☀Build_Object_Template_Argument(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+	Template_Argument part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Template_Args<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Template_Arg_Qualifiers<decltype(part)>);
+	return part;
+❱
+
+//macro related (DONE)
+◀public: static▶ Macro_Item ☀Build_Macro_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Macro_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Macro<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Macro_Specifiers<decltype(part)>);
+    return part;
+❱
+
+◀public: static▶ Forward_Declare_Item ☀Build_Forward_Declare_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Forward_Declare_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Forward_Declare<decltype(part)>);
+    return part;
+❱
+
+//subgroup related (DONE)
+◀public: static▶ Meta_Subgroup ☀Build_Meta_Subgroups(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Meta_Subgroup part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Meta_Subgroups<decltype(part)>);
+    return part;
+❱
+
+//specification related (DONE)
+◀public: static▶ Specification_File ☀Build_Meta_Specification_Files(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Specification_File part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Meta_Specification_File<decltype(part)>);
+    return part;
+❱
+
+//forseeable changes related (DONE)
+◀public: static▶ Foreseeable_Change ☀Build_Meta_Foreseeable_Changes(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Foreseeable_Change part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Meta_Foreseeable_Change<decltype(part)>);
+    return part;
+❱
+
+//enum (DONE)
+◀public: static▶ Enum_Item ☀Build_Enum_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Enum_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Specifiers<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Access_Specifiers<decltype(part)>);
+	part.subgroups = Parser_Token_Stripper::Strip_Out_Type<Enum_Subgroup>(settings,tokens,Token_Group::ENUM_SUBGROUP,Build_Enum_Subgroup_Item);
+    part.args      = Parser_Token_Stripper::Strip_Out_Type<Enum_Arg>     (settings,tokens,Token_Group::ENUM_ARG,Build_Enum_Arg_Item);
+    return part;
+❱
+
+◀public: static▶ Enum_Subgroup ☀Build_Enum_Subgroup_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+	Enum_Subgroup part;
+	Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Subgroup<decltype(part)>);
+	return part;
+❱
+
+//enum argument (DONE)
+◀public: static▶ Enum_Arg ☀Build_Enum_Arg_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Enum_Arg part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Args<decltype(part)>);
+    part.subscribed_subgroup = Parser_Token_Stripper::Strip_Out_Type<Enum_Arg_Subscribed_Subgroup>(settings,tokens,Token_Group::ENUM_GROUP_AFFILIATION,Build_Enum_Arg_Subscribed_Group);
+    return part;
+❱
+
+//enum argument subscribed subgroup
+◀public: static▶ Enum_Arg_Subscribed_Subgroup ☀Build_Enum_Arg_Subscribed_Group(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+  Enum_Arg_Subscribed_Subgroup part;
+  Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Subscribed_Subgroup<decltype(part)>);
+  return part;
+❱
+
+
+
+//namespace related (DONE)
+◀public: static▶ Namespace_Item ☀Build_Namespace_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Namespace_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Namespace<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Namespace_Specifiers<decltype(part)>);
+    return part;
+❱
+
+//template argument (DONE)
+◀public: static▶ Function_Argument ☀Build_Function_Arg(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Function_Argument part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Args<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Arg_Qualifiers<decltype(part)>);
+
+	part.type_specializations = Parser_Token_Stripper::Strip_Out_Type<Type_Specialization>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_SPECIALIZATIONS,Build_Function_Arg_Type_Specialization);
+    
+    return part;
+❱
+
+//function argument (DONE)
+◀public: static▶ Function_Result    ☀Build_Function_Result(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Function_Result part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Results<decltype(part)>);
+	Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Result_Type_Specializations<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Result_Qualifiers<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Result_Qualifiers2<decltype(part)>);
+
+	part.type_specializations = Parser_Token_Stripper::Strip_Out_Type<Type_Specialization>(settings,tokens,Token_Group::FUNCTION_RESULT_TYPE_SPECIALIZATIONS,Build_Function_Result_Type_Specialization);
+    
+    return part;
+❱
+
+
+◀public: static▶ Type_Specialization ☀Build_Function_Arg_Type_Specialization(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Type_Specialization part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Arg_Type_Specializations<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Type_Specialization ☀Build_Function_Result_Type_Specialization(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Type_Specialization part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Result_Type_Specializations<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Type_Specialization ☀Build_Data_Member_Type_Specializations(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Type_Specialization part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Specializations<decltype(part)>);
+
+    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type<Scope_Specifier>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE,Build_Data_Member_Type_Specializations_Scope_Specifiers);
+    return part;
+❱
+◀public: static▶ Module_Dependency ☀Build_Data_Member_Type_Module_Dependencies(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Module_Dependency part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Module_Dependencies<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Library_Dependency ☀Build_Data_Member_Type_Library_Dependencies(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Library_Dependency part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Library_Dependencies<decltype(part)>);
+    return part;
+❱
+
+◀public: static▶ Scope_Specifier ☀Build_Data_Member_Type_Scope_Specifiers(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Scope_Specifier part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Scope_Specifier<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Parent_Type ☀Build_Data_Member_Parent_Type(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Parent_Type part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Parent_Type<decltype(part)>);
+    return part;
+❱
+
+◀public: static▶ Scope_Specifier ☀Build_Data_Member_Type_Specializations_Scope_Specifiers(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+	Scope_Specifier part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Specializations_Scope_Specifier<decltype(part)>);
+	return part;
+❱
+
+
+
+
+
+
+//Preconditions (DONE)
+◀public: static▶ Contract_Precondition ☀Build_Precondition(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Contract_Precondition part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Preconditions<decltype(part)>);
+    return part;
+❱
+
+//Postconditions (DONE)
+◀public: static▶ Contract_Postcondition ☀Build_Postcondition(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Contract_Postcondition part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Postconditions<decltype(part)>);
+    return part;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//inheritance of class related (DONE)
+◀public: static▶ Inheritance_Item ☀Build_Inheritance_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Inheritance_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Inheritence<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Inheritence_Specifiers<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Inheritence_Specifiers2<decltype(part)>);
+    return part;
+❱
+
+
+
+
+//method related (Look into body parser)
+◀public: static▶ Method_Item ☀Build_Method_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+   
+    Method_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Main_Function_Items<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Class<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Value_Overrides<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Storage<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Virtuality<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Implicit_Method_Modifier<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Event<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Method_Specifiers_Other<decltype(part)>);
+    
+    //go a level deeper
+    part.stamps                             = Parser_Token_Stripper::Strip_Out_Type<Method_Stamp>(settings,tokens,Token_Group::FUNCTION_STAMP,Build_Stamp_Item,Special_Parser_Filters::Filter_Stamp_Chunks);
+    part.names.alternative_expression_names = Parser_Token_Stripper::Strip_Out_Type<Alternative_Expression_Name>(settings,tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT,Build_Alt_Expression_Name_Item);
+    part.template_arguments                 = Parser_Token_Stripper::Strip_Out_Type<Template_Argument>(settings,tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT,Build_Template_Arg_Item);
+    part.function_arguments                 = Parser_Token_Stripper::Strip_Out_Type<Function_Argument>(settings,tokens,Token_Group::FUNCTION_ARGUMENT,Build_Function_Arg);
+    part.return_results                     = Parser_Token_Stripper::Strip_Out_Type<Function_Result>(settings,tokens,Token_Group::FUNCTION_RESULT,Build_Function_Result);
+    part.contracts.preconditions            = Parser_Token_Stripper::Strip_Out_Type<Contract_Precondition>(settings,tokens,Token_Group::FUNCTION_PRECONDITION,Build_Precondition);
+    part.contracts.postconditions           = Parser_Token_Stripper::Strip_Out_Type<Contract_Postcondition>(settings,tokens,Token_Group::FUNCTION_POSTCONDITION,Build_Postcondition);
+    
+    //store the original_function_name as the function_name may change later
+    part.names.original_function_name = part.names.function_name;
+    
+    
+    
+    //body parser
+    auto function_body = Parser_Utilities::Filter_Out_Tokens_By_Token_Name(tokens,Token_Name::FUNCTION_BODY);
+    /* TODO: depreciate this: */ for (auto it: function_body){part.body = Body_Token_Parser::Parse_Method_Body_Into_Stream_Of_Tokens(it.content);}
+    /* in place of this: */       for (auto it: function_body){part.entire_body = Entire_Body_Parser::Parse(it.content);}
+    
+    return part;
+❱
+
+◀public: static▶ Method_Stamp ☀Build_Stamp_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+	Method_Stamp part;
+	Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Stamp_Name<decltype(part)>);
+    part.values = Parser_Token_Stripper::Strip_Out_Type<Method_Stamp_Value>(settings,tokens,Token_Group::FUNCTION_STAMP_VALUE,Build_Stamp_Value);
+	return part;
+❱
+◀public: static▶ Method_Stamp_Value ☀Build_Stamp_Value(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+	Method_Stamp_Value part;
+	Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Stamp_Value<decltype(part)>);
+	return part;
+❱
+
+//Bind_Stamp_Name
+//Bind_Stamp_Value
+
+◀public: static▶ Typedef_Item ☀Build_Typedef_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Typedef_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Typedef_Specifiers_Class<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Typedef_Root_Items<decltype(part)>);
+    
+    part.arguments = Parser_Token_Stripper::Strip_Out_Type<Typedef_Argument>(settings,tokens,Token_Group::TYPEDEF_ARGUMENT,Build_Typedef_Argument);
+    part.results = Parser_Token_Stripper::Strip_Out_Type<Typedef_Result>(settings,tokens,Token_Group::TYPEDEF_RESULT,Build_Typedef_Result);
+    
+    return part;
+❱
+
+◀public: static▶ Typedef_Argument ☀Build_Typedef_Argument(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Typedef_Argument part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Typedef_Argument<decltype(part)>);
+    return part;
+❱
+
+◀public: static▶ Typedef_Result ☀Build_Typedef_Result(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Typedef_Result part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Typedef_Result<decltype(part)>);
+    return part;
+❱
+
+
+//import interface related (DONE)
+◀public: static▶ Import_Item ☀Build_Import_Interface_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Import_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Interface_Import_Names<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Interface_Specifiers<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Interface_Specifiers2<decltype(part)>);
+    part.relationships = Parser_Token_Stripper::Strip_Out_Type<Import_Relationship>(settings,tokens,Token_Group::IMPORT_INTERFACE_RELATIONSHIP,Build_Interface_Relationships);
+    return part;
+❱
+
+//import implementation related (DONE)
+◀public: static▶ Import_Item ☀Build_Import_Implementation_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+
+    Import_Item part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Implementation_Import_Names<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Implementation_Specifiers<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Implementation_Specifiers2<decltype(part)>);
+    part.relationships = Parser_Token_Stripper::Strip_Out_Type<Import_Relationship>(settings,tokens,Token_Group::IMPORT_IMPLEMENTATION_RELATIONSHIP,Build_Implementation_Relationships);
+    return part;
+❱
+
+◀public: static▶ Import_Relationship ☀Build_Interface_Relationships(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+  Import_Relationship part;
+  Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Interface_Import_Related<decltype(part)>);
+  Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Interface_Import_Relationships<decltype(part)>);
+  return part;
+❱
+◀public: static▶ Import_Relationship ☀Build_Implementation_Relationships(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+  Import_Relationship part;
+  Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Implementation_Import_Related<decltype(part)>);
+  Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Implementation_Import_Relationships<decltype(part)>);
+  return part;
+❱
+
+
+//template arguments (DONE)
+◀public: static▶ Template_Argument ☀Build_Template_Arg_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Template_Argument part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Template_Args<decltype(part)>);
+    return part;
+❱
+
+
+//alternate expression names (DONE)
+◀public: static▶ Alternative_Expression_Name ☀Build_Alt_Expression_Name_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    
+    Alternative_Expression_Name part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Alt_Express_Name<decltype(part)>);
+    return part;
+❱
+
+
+//data members (DONE)
+◀public: static▶ Data_Member_Item ☀Build_Data_Member_Item(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Data_Member_Item part;
+    
+    //handle singles
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Members<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Specifiers_Class<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Specifiers_Other<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Qualifiers_Storage<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Qualifiers_Other<decltype(part)>);
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_State_Specifier<decltype(part)>);
+    
+    
+    //sub data member properties
+    part.comment_pair = Parser_Token_Stripper::Strip_Out_Type<Key_Value_Pair>(settings,tokens,Token_Group::DATA_MEMBER_KEY_VALUES,Build_Data_Member_Key_Value_Pair);
+    part.value_constraints = Parser_Token_Stripper::Strip_Out_Type<Value_Constraints>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_CONSTRAINTS,Build_Data_Member_Value_Constraints);
+    part.value_meaning = Parser_Token_Stripper::Strip_Out_Type<Value_Meaning>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_MEANING,Build_Data_Member_Value_Meaning);
+    part.value_transition_meaning = Parser_Token_Stripper::Strip_Out_Type<Value_Transition_Meaning>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_TRANSITION_MEANING,Build_Data_Member_Value_Transition_Meaning);
+	part.type_specializations = Parser_Token_Stripper::Strip_Out_Type<Type_Specialization>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS,Build_Data_Member_Type_Specializations,Special_Parser_Filters::Filter_Specialization_Scopes);
+    part.module_dependencies = Parser_Token_Stripper::Strip_Out_Type<Module_Dependency>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_MODULE_DEPENDENCIES,Build_Data_Member_Type_Module_Dependencies);
+    part.library_dependencies = Parser_Token_Stripper::Strip_Out_Type<Library_Dependency>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_LIBRARY_DEPENDENCIES,Build_Data_Member_Type_Library_Dependencies);
+    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type<Scope_Specifier>(settings,tokens,Token_Group::DATA_MEMBER_SCOPE,Build_Data_Member_Type_Scope_Specifiers);
+    part.parent_types = Parser_Token_Stripper::Strip_Out_Type<Parent_Type>(settings,tokens,Token_Group::DATA_MEMBER,Build_Data_Member_Parent_Type);
+    
+    return part;
+❱
+
+
+//sub data member characteristic
+◀public: static▶ Key_Value_Pair ☀Build_Data_Member_Key_Value_Pair(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Key_Value_Pair part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Key_Value_Pair<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Value_Constraints ☀Build_Data_Member_Value_Constraints(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Value_Constraints part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Value_Constraints<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Value_Meaning ☀Build_Data_Member_Value_Meaning(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Value_Meaning part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Value_Meaning<decltype(part)>);
+    return part;
+❱
+◀public: static▶ Value_Transition_Meaning ☀Build_Data_Member_Value_Transition_Meaning(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    
+    Value_Transition_Meaning part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Value_Transition_Meaning<decltype(part)>);
+    return part;
+❱
+
+
+
+
+
+
+
+//generic functions for bindings
+◀
+public: template <typename T, typename Fun>
+static auto Get_And_Apply_Bindings(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings, T & sub_struct, Fun function) -> void{
+
+  auto bindings = function(sub_struct,settings);
+  Apply_Bindings(tokens,bindings);
+}
+▶
+
+◀private: static▶ void ☀Apply_Bindings(std::vector<Parser_Token> const& tokens, std::vector<std::pair<Token_Name,std::reference_wrapper<Token_Value>>> & bindings)❰
+
+    //parse based on bindings
+    for (auto & binding: bindings){
+        auto members = Parser_Utilities::Filter_Out_Tokens_By_Token_Name(tokens,binding.first);
+        for (auto & member: members){Parser_Utilities::Set_Token_Value_From_Parser_Token(binding.second,member);}
+    }
+❱
+
+◀private: static▶ void ☀Apply_Bindings(std::vector<Parser_Token> const& tokens, std::vector<std::pair<Token_Name,std::vector<std::pair<wchar_t,std::reference_wrapper<bool>>>>>  & bindings)❰
+    for (auto & binding: bindings){
+        auto specifiers = Parser_Utilities::Filter_Out_Tokens_By_Token_Name(tokens,binding.first);
+        for (auto specifier: specifiers){
+            for (auto& spec_binding : binding.second){
+                spec_binding.second.get() = Contains(specifier.content,spec_binding.first);
+            }
+        }
+    }
+❱
+
+
+◀private: template <typename T, typename U>
+static void Apply_Bindings(std::vector<Parser_Token> const& tokens, Parser::Any_Value_Mapping<T,U> & binding){
+    
+    //filter by the token name
+    auto filtered = Parser_Utilities::Filter_Out_Tokens_By_Token_Name(tokens,binding.token_name);
+
+    //start by assuming we couldn't find it and apply the fallback
+    //if we find it later, we simply overwrite the binded result with what is found
+    binding.binded.get() = binding.fallback;
+
+    for (auto token: filtered){
+        for (auto pair: binding.map){
+            
+            //apply match if one exists
+            //return early if we find a match
+            if (Contains(token.content,pair.from)){
+                binding.binded.get() = pair.to;
+                return;
+            }
+        }
+    }
+}▶
+

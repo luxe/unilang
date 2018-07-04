@@ -1,0 +1,60 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
+❪"code/transcompilers/unilang/options/sections/extern_c/extern_c_guard_options"❫
+⚯
+❪"code/transcompilers/unilang/boilerplate_printer/extern_c/macro_define_check_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/extern_c/macro_endif_getter"❫
+❪"code/utilities/streams/filestreams/lib"❫
+⚞⚟
+
+
+
+
+◀public: static▶ void ☀Optionally_Print_Extern_C_Start(std::wofstream & out, Extern_C_Guard_Options const& options)❰
+    if (options.do_extern_c_guards){
+        Print_Beginning_Extern_C_Guard(out,options.begin);
+    }
+❱
+
+
+
+◀public: static▶ void ☀Optionally_Print_Extern_C_End(std::wofstream & out, Extern_C_Guard_Options const& options)❰
+    if (options.do_extern_c_guards){
+        Print_End_Of_Extern_C_Guard(out,options.end);
+    }
+❱
+
+
+//begin wrapper
+◀private: static▶ void ☀Print_Beginning_Extern_C_Guard(std::wofstream & out, Begin_Extern_C_Guard_Options const& options)❰
+
+     auto str = Get_Beginning_Extern_C_Guard(options);
+     Print_To_Stream_With_Newline(out,str);
+❱
+◀private: static▶ void ☀Print_End_Of_Extern_C_Guard(std::wofstream & out, End_Extern_C_Guard_Options const& options)❰
+    
+    auto str = Get_End_Of_Extern_C_Guard(options);
+    Print_To_Stream_With_Newline(out,str);
+❱
+
+
+◀private: static▶ std::string ☀Get_Beginning_Extern_C_Guard(Begin_Extern_C_Guard_Options const& options)❰
+    std::string str;
+    std::string macro_check = Macro_Define_Check_Getter::Get_True(options.guard.define_check,options.cpp_indicator_macro);
+    str+= macro_check + "\n";
+    str+= options.value_when_defined;
+    str+= "\n";
+    str+= Macro_Endif_Getter::Get(macro_check,options.guard.end_comment,options.directives);
+    return str;
+❱
+◀private: static▶ std::string ☀Get_End_Of_Extern_C_Guard(End_Extern_C_Guard_Options const& options)❰
+    std::string str;
+    std::string macro_check = Macro_Define_Check_Getter::Get_True(options.guard.define_check,options.cpp_indicator_macro);
+    str+= macro_check + "\n";
+    str+= options.value_when_defined;
+    str+= "\n";
+    str+= Macro_Endif_Getter::Get(macro_check,options.guard.end_comment,options.directives);
+    return str;
+❱

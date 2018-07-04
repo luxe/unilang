@@ -1,0 +1,96 @@
+class
+❪"code/transcompilers/unilang/file_marker/file_marker"❫
+❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+❪"code/transcompilers/unilang/tokenizer/tokenizer_testing_settings"❫
+⚯
+❪"code/transcompilers/unilang/file_marker/file_marker_adjuster"❫
+❪"code/transcompilers/unilang/tokens/global_token_table"❫
+❪"code/transcompilers/unilang/parser/global_tokens_table_utilities"❫
+
+⚞⚟
+
+//default constructor at file beginning
+◀public:▶ ☀◈(Fully_Read_File const& file, Tokenizer_Testing_Settings const& settings)◖
+              :file(file)
+              ,settings(settings)
+              ,inside_marker(false)
+              ,current_index(0)
+             ◗❰
+                Move_Forward();
+             ❱
+             
+             
+//transformers
+void ☀Move_Forward()❰
+	auto c = Take_Forward_Step_Getting_The_Current_Char();
+    Adjust_Conceptual_Marking_Status(c);
+
+	//TODO: get rid of
+	stored_current_char = c;
+❱
+
+//observers
+File_Marker ☀File_Mark() const❰ return file_marker;❱
+bool ☀Inside_Marker() const❰ return inside_marker;❱
+wchar_t ☀Current_Char() const❰ return stored_current_char;❱
+
+//private functions
+◀private:▶ wchar_t ☀Take_Forward_Step_Getting_The_Current_Char()❰
+
+	//get the next current character based on the index
+    //update the index for next time
+	auto current_char = file.text[current_index];
+	++current_index;
+
+	//advance the file marker based on the current character we just got
+	File_Marker_Adjuster::Move_Forward_Based_On_Char(file_marker,current_char);
+
+	//return current character
+	return current_char;
+	
+❱
+
+
+◀private:▶ void ☀Adjust_Conceptual_Marking_Status(wchar_t const& current_char)❰
+
+    //if were not inside a token, check to see if the next chatacter is the beginning of a token
+    if (!inside_marker){
+        inside_marker = settings.starter_test(current_char);
+        if (inside_marker){
+            start_symbol = current_char;
+        }
+	
+	//otherwise, we are already in a token, and check to see if the next character ends the token
+    }else{
+        inside_marker = !settings.matching_set_test(start_symbol,current_char);
+    }
+    
+❱
+
+
+//member variables
+◀private:
+
+//our curent position in the file being parsed
+File_Marker file_marker;
+
+//the stream we are analyzing
+//*this may not actually be the whole file, (but it's a full stream for the tokenizer with a provided file name)
+Fully_Read_File file;
+
+//the index of the fully_read_file stream
+//*this is an always forward incrementing index, not a conceptual marking in the file like File_Marker
+size_t current_index;
+
+//unilang specific token state
+bool inside_marker;
+wchar_t start_symbol;
+
+//SPECIFIC SETTINGS TO THE TOKENIZER
+Tokenizer_Testing_Settings settings;
+
+//TODO: find a way to get rid of
+wchar_t stored_current_char;
+
+
+ ▶

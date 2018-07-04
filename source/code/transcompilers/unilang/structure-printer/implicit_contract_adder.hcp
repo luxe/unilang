@@ -1,0 +1,62 @@
+class
+
+❪string❫
+❪"code/transcompilers/unilang/structure/sections/method/contracts/method_contracts_section"❫
+⚯
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+
+//prints the public method decelerations in the header file
+◀public: static▶ Method_Contracts_Section ☀Get_Implicit_Contracts_For_Non_Manager_Method(std::string const& object_self_name)❰
+  Method_Contracts_Section contracts;
+  
+  //adds obvious preconditions
+  contracts.preconditions.push_back(Already_Alive_Contract(object_self_name));
+  contracts.preconditions.push_back(Cant_Be_Null_Contract(object_self_name));
+  
+  
+  //Contract_Postcondition post;
+  //post.condition.value = L"";
+  //post.comment.value = L"";
+  //contracts.preconditions.push_back(post);
+   
+  return contracts;
+❱
+◀public: static▶ Method_Contracts_Section ☀Get_Implicit_Contracts_For_Initializer_Method(std::string const& object_self_name)❰
+  Method_Contracts_Section contracts;
+  
+  //adds obvious preconditions
+  contracts.preconditions.push_back(Cant_Be_Null_Contract(object_self_name));
+  
+  return contracts;
+❱
+◀public: static▶ Method_Contracts_Section ☀Get_Implicit_Contracts_For_Destructor_Method(std::string const& object_self_name)❰
+  Method_Contracts_Section contracts;
+  
+  //adds obvious preconditions
+  contracts.preconditions.push_back(Already_Alive_Contract(object_self_name));
+  contracts.preconditions.push_back(Cant_Be_Null_Contract(object_self_name));
+  
+  return contracts;
+❱
+
+◀private: static▶ Contract_Precondition ☀Cant_Be_Null_Contract(std::string const& object_self_name)❰
+  Contract_Precondition pre;
+  
+  pre.condition.value = as_wstring(object_self_name) + L" != NULL";
+  pre.comment.value = as_wstring(object_self_name) + L" must not be NULL.";
+  
+  return pre;
+❱
+◀private: static▶ Contract_Precondition ☀Already_Alive_Contract(std::string const& object_self_name)❰
+  Contract_Precondition pre;
+  
+  pre.condition.value = L"//must be initialized, and not yet destructed. This cannot be checked by assertions.";
+  pre.comment.value = as_wstring(object_self_name) + L" must already be initialized, and not yet destructed.";
+  
+  return pre;
+❱
+

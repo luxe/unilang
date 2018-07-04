@@ -1,0 +1,250 @@
+class
+
+❪vector❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_data_member/data_member_utility_function_options"❫
+❪"code/transcompilers/unilang/relational-operator/relational_operator"❫
+❪"code/transcompilers/unilang/relational-operator/relational_operator_converter"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/comparison/all_comparison_impl_schemes"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/boolean_expression_creator"❫
+⚯
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<Method_Item> ☀Get(std::string const& self_type, std::vector<Data_Member_Item> const& items, Data_Member_Options const& options, Data_Member_Utility_Function_Options const& sub_settings)❰
+    std::vector<Method_Item> results;
+    
+    results.push_back(Create_Method(self_type,items,options,sub_settings.comparison.equals,Relational_Operator::EQUAL));         //==
+    results.push_back(Create_Method(self_type,items,options,sub_settings.comparison.not_equals,Relational_Operator::NOT_EQUAL));     //!=
+    results.push_back(Create_Method(self_type,items,options,sub_settings.comparison.less,Relational_Operator::LESS));           //<
+    results.push_back(Create_Method(self_type,items,options,sub_settings.comparison.less_equals,Relational_Operator::LESS_EQUAL));    //<=
+    results.push_back(Create_Method(self_type,items,options,sub_settings.comparison.greater,Relational_Operator::GREATER));        //>
+    results.push_back(Create_Method(self_type,items,options,sub_settings.comparison.greater_equals,Relational_Operator::GREATER_EQUAL)); //>=
+    
+    return results;
+❱
+
+◀private: static▶ Method_Item ☀Create_Method(std::string const& self_type, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Function_Build_Settings const& sub_settings, Relational_Operator const& op)❰
+    Method_Item m;
+    
+    //property related
+    m.class_access  = sub_settings.access;
+    m.storage = Storage_Specifier::NONE;
+    
+    //doesnt matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    
+    //documentation related
+    auto generated_function_name = sub_settings.function_name;
+    m.names.function_name.value = as_wstring(generated_function_name);
+    m.brief_description.value = L"performs relational operation on structure";
+    m.detailed_description.value = L"equivalent to the overloaded ";
+	m.detailed_description.value += as_wstring(Relational_Operator_Converter::As_String(op));
+	m.detailed_description.value += L" operator";
+    
+	//self argument
+    auto arg = Rhs_Argument(self_type);
+    m.function_arguments.push_back(arg);
+	
+    //return value
+    auto result = Result(options);
+    m.return_results.push_back(result);
+    
+    Add_Body(m,items,options,sub_settings,op);
+    
+    return m;
+❱
+
+◀private: static▶ Function_Argument ☀Rhs_Argument(std::string const& self_type)❰
+    Function_Argument arg;
+    arg.is_mutable = false;
+    arg.is_reference = true;
+    arg.usage_requirement = Usage_Requirement::NOT_IGNORED;
+    arg.type.value = as_wstring(self_type);
+    arg.identifier.value = L"rhs";
+    arg.comment.value = L"the object on the right-hand side of the relational operation";
+    
+    return arg;
+❱
+
+◀private: static▶ Function_Result ☀Result(Data_Member_Options const& options)❰
+    Function_Result arg;
+    arg.is_mutable = true;
+    arg.is_reference = false;
+    arg.type.value = L"bool";
+    arg.identifier.value = L"relational operation succeeds";
+    arg.comment.value = L"whether the relational operation is true or false";
+    
+    return arg;
+❱
+
+◀private: static▶ void ☀Add_Body(Method_Item & m, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Function_Build_Settings const& sub_settings, Relational_Operator const& op)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = L"perform ";
+    t.value += as_wstring(Relational_Operator_Converter::As_String(op));
+    t.value += L" operation";
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n";
+    body.push_back(t);
+
+
+
+    //this is basically an implementation scheme for overloaded operators where we choose to bail out early based on conditions
+    //there are obviously other ways to implement an overloaded comparison on an infinite data stream
+	All_Comparison_Impl_Schemes all_schemes;
+
+    all_schemes.equal.bail_out.emplace_back(Relational_Operator::NOT_EQUAL,false);
+    all_schemes.equal.exhaust_with = true;
+
+    all_schemes.not_equal.bail_out.emplace_back(Relational_Operator::NOT_EQUAL,true);
+    all_schemes.not_equal.exhaust_with = false;
+
+    all_schemes.less.bail_out.emplace_back(Relational_Operator::LESS,true);
+    all_schemes.less.bail_out.emplace_back(Relational_Operator::GREATER,false);
+    all_schemes.less.exhaust_with = false;
+
+    all_schemes.greater.bail_out.emplace_back(Relational_Operator::LESS,false);
+    all_schemes.greater.bail_out.emplace_back(Relational_Operator::GREATER,true);
+    all_schemes.greater.exhaust_with = false;
+
+    all_schemes.less_equal.bail_out.emplace_back(Relational_Operator::LESS,true);
+    all_schemes.less_equal.bail_out.emplace_back(Relational_Operator::GREATER,false);
+    all_schemes.less_equal.exhaust_with = true;
+
+    all_schemes.greater_equal.bail_out.emplace_back(Relational_Operator::LESS,false);
+    all_schemes.greater_equal.bail_out.emplace_back(Relational_Operator::GREATER,true);
+    all_schemes.greater_equal.exhaust_with = true;
+
+
+	auto chosen = Chose_Scheme(all_schemes,op);
+
+	for (auto it: items){
+		body += Possibly_Make_Comparison(it,chosen);
+	}
+
+	t.name = Body_Token_Name::REGULAR;
+	if (chosen.exhaust_with){t.value =  L"return TRUE;";}
+	else{t.value =  L"return FALSE;";}
+	body.push_back(t);
+    
+    //assign
+    m.body = body;
+❱
+
+◀private: static▶ Comparison_Impl_Scheme ☀Chose_Scheme(All_Comparison_Impl_Schemes const& all, Relational_Operator const& op)❰
+	switch(op){
+		case Relational_Operator::EQUAL: return all.equal;
+        case Relational_Operator::NOT_EQUAL: return all.not_equal;
+        case Relational_Operator::LESS: return all.less;
+        case Relational_Operator::LESS_EQUAL: return all.less_equal;
+        case Relational_Operator::GREATER: return all.greater;
+        case Relational_Operator::GREATER_EQUAL: return all.greater_equal;
+	}
+	return all.equal;
+❱
+
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Possibly_Make_Comparison(Data_Member_Item const& item, Comparison_Impl_Scheme const& scheme)❰
+
+	  std::vector<Body_Token_Value> body;
+	  Body_Token_Value t;
+	  
+	  if (item.reflection.comparable){
+		body += Make_Comparison(item,scheme);
+	  }
+	  
+	  //add a comment saying that we don't want to print it
+	  else{
+		body += Print_Skip_Message(item);
+	  }
+	  
+	  return body;
+❱
+◀private: static▶ std::vector<Body_Token_Value> ☀Make_Comparison(Data_Member_Item const& item, Comparison_Impl_Scheme const& scheme)❰
+	  std::vector<Body_Token_Value> body;
+
+	for (auto it: scheme.bail_out){
+
+		//if we don't find any comparison, we don't care.  
+		//the boolean expression creator provides an assumed default
+		//we wouldn't want to use the assumed defualt in a transition functions which is why this bool exists
+		bool unused = false;
+		auto boolean_expression = Boolean_Expression_Creator::Create(item,"rhs",it.first,unused);
+		body += If_Statement_Creator(item,boolean_expression,it.second);
+	}
+
+	return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀If_Statement_Creator(Data_Member_Item const& item, std::vector<Body_Token_Value> const& boolean_expression, bool const& exhaust_with)❰
+
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("\n");
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("if(");
+    body.push_back(t);
+
+    body += boolean_expression;
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("){\n");
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+		if (exhaust_with){
+			t.value =  L"return TRUE;";
+		}
+		else{
+			t.value =  L"return FALSE;";
+		}
+    body.push_back(t);
+	
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("}\n\n");
+    body.push_back(t);
+    
+    return body;
+❱
+
+
+//util
+◀private: static▶ std::vector<Body_Token_Value> ☀Print_Skip_Message(Data_Member_Item const& item)❰
+    
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = item.name.value + as_wstring(" is excluded from the comparison"); 
+    body.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("\n\n");
+    body.push_back(t);
+    
+    return body;
+❱
+
+◀private: static▶  bool ☀Custom_Type_Data_Member(Data_Member_Item const& item)❰
+  //TODO: not good to look for the T at the end because hungarian notation should be an implementation
+  //detail and it can change and we should be bale to reference the type from the unilang name
+  return Ends_With(as_string(item.type.value),"T");
+❱
+
+

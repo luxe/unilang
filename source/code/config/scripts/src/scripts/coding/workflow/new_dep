@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#variables to be sent to project maker
+program_name="$1";
+description="$2";
+project_type="generative dependency";
+username="luxe";
+authorization_key=$(cat "$HOME/Desktop/secret/github_keys/luxe");
+
+#get program name if one was not specified
+if [ -z "$program_name" ]; then
+    vared -p 'dependency name: ' -c program_name;
+fi
+
+#get description if one was not specified
+if [ -z "$description" ]; then
+    vared -p 'description: ' -c description;
+fi
+
+project-maker --project-name="$program_name" --project-description="$description" --project-type="$project_type" --username="$username" --authorization-key="$authorization_key"
+if [ $? -ne 0 ]; then
+   echo "project-maker failed"
+   return;
+fi
+
+cd $program_name;
+
+git-it --all
+if [ $? -ne 0 ]; then
+   echo "git-it failed to get dependencies"
+   return;
+fi
+
+cd "project/src";
+
+make all;
+if [ $? -ne 0 ]; then
+   echo "makefile failed"
+   return;
+fi
+
+update "started with project-maker"
+
+subl -n Sub/;

@@ -1,0 +1,50 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+
+◀public: static▶ std::string ☀Possibly_Get_Start(Method_Item const& method, C_Export_Settings const& options)❰
+	if (Need_Va_List(method)){
+		return Va_List_Start_Part(method,options);
+	}
+	return "";
+❱
+
+◀public: static▶ std::string ☀Possibly_Get_End(Method_Item const& method)❰
+	if (Need_Va_List(method)){
+		return Va_List_End_Part(method);
+	}
+	return "";
+❱
+
+
+◀private: static▶ bool ☀Need_Va_List(Method_Item const& method)❰
+	for (auto it: method.function_arguments){
+		if (it.infinitely_more){return true;}
+	}
+	return false;
+❱
+
+◀private: static▶ std::string ☀Va_List_Start_Part(Method_Item const& method,C_Export_Settings const& options)❰
+	std::string s;
+
+    s+= "va_list va_list_args;";
+    s+= "va_start(va_list_args, ";
+	auto param = Second_To_Last_Element(method.function_arguments);
+	auto formatted_param = Identifier_Name_Deriver::Derive_Name(param,options);
+	s+= formatted_param + ");";
+
+	return s;
+❱
+
+◀private: static▶ std::string ☀Va_List_End_Part(Method_Item const& method)❰
+	std::string s;
+    s+= "va_end(va_list_args);";
+	return s;
+❱

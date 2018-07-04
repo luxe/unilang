@@ -1,0 +1,145 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/structure-printer/function_declaration_location"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_data_member/data_member_utility_function_options"❫
+❪"code/transcompilers/unilang/options/language-specific/c_language_version"❫
+⚯
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/printable_function_getter"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/serialization/serializable_function_getter"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/transition/transition_function_getter"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/comparison/comparison_function_getter"❫
+⚞⚟
+
+◀public: static▶ std::vector<Method_Item> ☀Get(std::string const& self_type, std::vector<Data_Member_Item> const& items, Data_Member_Options const& options, Data_Member_Utility_Function_Options const& manipulations,C_Language_Version const& version)❰
+    
+    std::vector<Method_Item> all_methods;
+    
+    if (manipulations.add){
+      
+	  Possibly_Add_Printable_Functions(all_methods,items,options,manipulations,version);
+      Possibly_Add_Serializable_Functions(self_type,all_methods,items,options,manipulations,version);
+      Possibly_Add_Transition_Functions  (self_type,all_methods,items,options,manipulations,version);
+      Possibly_Add_Comparison_Functions  (self_type,all_methods,items,options,manipulations,version);
+	}
+    
+    return all_methods;
+❱
+
+◀private: static▶ void ☀Possibly_Add_Printable_Functions(std::vector<Method_Item> & all_methods, std::vector<Data_Member_Item> const& items, Data_Member_Options const& options, Data_Member_Utility_Function_Options const& manipulations,C_Language_Version const& version)❰
+	
+	//decide if we should print
+	auto should_print = Decide_Whether_To_Print_Printable_Function(items,manipulations);
+	if (should_print){all_methods += Printable_Function_Getter::Get(items,options,manipulations,version);}
+❱
+◀private: static▶ void ☀Possibly_Add_Serializable_Functions(std::string const& self_type, std::vector<Method_Item> & all_methods, std::vector<Data_Member_Item> const& items, Data_Member_Options const& options, Data_Member_Utility_Function_Options const& manipulations,C_Language_Version const& version)❰
+	
+      //decide if we should print
+      auto should_print = Decide_Whether_To_Print_Serializable_Function(items,manipulations);
+      if (should_print){all_methods += Serializable_Function_Getter::Get(self_type,items,options,manipulations,version);}
+❱
+◀private: static▶ void ☀Possibly_Add_Transition_Functions(std::string const& self_type, std::vector<Method_Item> & all_methods, std::vector<Data_Member_Item> const& items, Data_Member_Options const& options, Data_Member_Utility_Function_Options const& manipulations,C_Language_Version const& version)❰
+	
+      //decide if we should print
+      auto should_print = Decide_Whether_To_Print_Transition_Function(items,manipulations);
+      if (should_print){all_methods += Transition_Function_Getter::Get(self_type,items,options,manipulations,version);}
+❱
+◀private: static▶ void ☀Possibly_Add_Comparison_Functions(std::string const& self_type, std::vector<Method_Item> & all_methods, std::vector<Data_Member_Item> const& items, Data_Member_Options const& options, Data_Member_Utility_Function_Options const& manipulations,C_Language_Version const& version)❰
+      
+//decide if we should print
+      auto should_print = Decide_Whether_To_Print_Comparison_Function(items,manipulations);
+      if (should_print){all_methods += Comparison_Function_Getter::Get(self_type,items,options,manipulations);}
+❱
+
+
+
+
+//duplicate boilerplate stuff
+◀private: static▶ bool ☀Decide_Whether_To_Print_Printable_Function(std::vector<Data_Member_Item> const& items,Data_Member_Utility_Function_Options const& manipulations)❰
+  
+  if (manipulations.printable.print){
+    if (manipulations.dont_create_printable_with_no_printable_members){
+      auto count = Number_Of_Printable_Data_Members(items);
+      if (count > 0){return true;}
+      return false;
+    }
+  }
+  return manipulations.printable.print;
+❱
+◀private: static▶ bool ☀Decide_Whether_To_Print_Serializable_Function(std::vector<Data_Member_Item> const& items,Data_Member_Utility_Function_Options const& manipulations)❰
+  
+  if (manipulations.serializable_json.print){
+    if (manipulations.dont_create_serializable_with_no_serializable_members){
+      auto count = Number_Of_Serializable_Data_Members(items);
+      if (count > 0){return true;}
+      return false;
+    }
+  }
+  return manipulations.serializable_json.print;
+❱
+◀private: static▶ bool ☀Decide_Whether_To_Print_Transition_Function(std::vector<Data_Member_Item> const& items,Data_Member_Utility_Function_Options const& manipulations)❰
+  
+  if (manipulations.transition.print){
+    if (manipulations.dont_create_transition_with_no_transition_members){
+      auto count = Number_Of_Transition_Data_Members(items);
+      if (count > 0){return true;}
+      return false;
+    }
+  }
+  return manipulations.transition.print;
+❱
+
+◀private: static▶ bool ☀Decide_Whether_To_Print_Comparison_Function(std::vector<Data_Member_Item> const& items,Data_Member_Utility_Function_Options const& manipulations)❰
+  
+  if (manipulations.comparison.print){
+    if (manipulations.dont_create_comparison_with_no_comparison_members){
+      auto count = Number_Of_Comparison_Data_Members(items);
+      if (count > 0){return true;}
+      return false;
+    }
+  }
+  return manipulations.comparison.print;
+❱
+
+
+◀private: static▶ int ☀Number_Of_Printable_Data_Members(std::vector<Data_Member_Item> const& items)❰
+  int count=0;
+  for (auto const& it: items){
+    if (it.reflection.printable){
+      ++count;
+    }
+  }
+  return count;
+❱
+◀private: static▶ int ☀Number_Of_Serializable_Data_Members(std::vector<Data_Member_Item> const& items)❰
+  int count=0;
+  for (auto const& it: items){
+    if (it.reflection.serializable){
+      ++count;
+    }
+  }
+  return count;
+❱
+◀private: static▶ int ☀Number_Of_Transition_Data_Members(std::vector<Data_Member_Item> const& items)❰
+  int count=0;
+  for (auto const& it: items){
+    if (it.reflection.log_value_transition){
+      ++count;
+    }
+  }
+  return count;
+❱
+◀private: static▶ int ☀Number_Of_Comparison_Data_Members(std::vector<Data_Member_Item> const& items)❰
+  int count=0;
+  for (auto const& it: items){
+    if (it.reflection.comparable){
+      ++count;
+    }
+  }
+  return count;
+❱
+

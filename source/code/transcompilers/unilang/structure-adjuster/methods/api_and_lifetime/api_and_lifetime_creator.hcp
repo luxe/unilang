@@ -1,0 +1,107 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors/shortcut_constructor_creator"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors/shortcut_copy_constructor_creator"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors/initialize_creator"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors/copy_constructor_creator"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/other/deep_copy_creator"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/destructors/destructor_creator"❫
+❪"code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/other/good_api_creator"❫
+⚞⚟
+
+◀public: static▶ Method_Section ☀Get_All_Methods_After_Necessary_Transformation(Structure const& structure, C_Export_Settings const& options)❰
+  
+  Method_Section transformed;
+    
+  //TODO: clean this up somehow
+  bool dumb_way = false;
+  
+  //take all the methods and create new methods based off them
+  //these new methods will be tweaked to allow proper forwarding to the method printers.  
+  //for example, in C, private functions must be given a static keyword.
+  //member functions must be given an explicit this parameter.
+
+
+  //add the necessary lifetime methods ONLY if it is an abstract data type
+  if (structure.meta.code_type != Code_Type::GLOBAL){
+	  transformed.methods += Add_Constructor_Related_Methods(structure,options,dumb_way);
+	  transformed.methods += Add_Copy_Constructor_Related_Methods(structure,options,dumb_way);
+	  transformed.methods += Add_Destructor_Related_Methods(structure,options,dumb_way);
+	}
+
+	//adjust methods for proper API use
+	transformed.methods += Add_API_Related_Methods(structure,options,dumb_way);
+    
+    return transformed;
+❱
+
+
+◀private: static▶ std::vector<Method_Item> ☀Add_Constructor_Related_Methods(Structure const& structure, C_Export_Settings const& options, bool dumb_way)❰
+  std::vector<Method_Item> new_methods;
+  
+  //if a constructor exists...
+  if (Shared_Printer::Constructor_Exists(structure.name,structure.methods.methods)){
+  
+      //create a shortcut constructor
+      auto shortcut_constructor = Shortcut_Constructor_Creator::Create(structure,dumb_way);
+      new_methods.push_back(shortcut_constructor);
+      
+      //create an initialize constructor
+      auto initialize_constructor = Initialize_Creator::Create(structure,dumb_way);
+      new_methods.push_back(initialize_constructor);
+
+  }
+  
+  return new_methods;
+❱
+
+◀private: static▶ std::vector<Method_Item> ☀Add_Copy_Constructor_Related_Methods(Structure const& structure, C_Export_Settings const& options, bool dumb_way)❰
+  std::vector<Method_Item> new_methods;
+  
+   //if a copy constructor exists...
+  if (Shared_Printer::Copy_Constructor_Exists(structure.name,structure.methods.methods)){
+      
+      //create a copy shortcut constructor
+      auto shortcut_constructor = Shortcut_Copy_Constructor_Creator::Create(structure,dumb_way);
+      new_methods.push_back(shortcut_constructor);
+
+      //create a copy initialize constructor
+      auto initialize_constructor = Copy_Constructor_Creator::Create(structure,dumb_way);
+      new_methods.push_back(initialize_constructor);
+
+      //create deep copy function.  (Basically == )
+      auto deep_copy = Deep_Copy_Creator::Create(structure,dumb_way);
+      new_methods.push_back(deep_copy);
+  }
+  
+  return new_methods;
+❱
+
+◀private: static▶ std::vector<Method_Item> ☀Add_Destructor_Related_Methods(Structure const& structure, C_Export_Settings const& options, bool dumb_way)❰
+  std::vector<Method_Item> new_methods;
+  
+  ///if a destructor exists...
+  if (Shared_Printer::Destructor_Exists(structure.name,structure.methods.methods)){
+  
+      //create a destructor
+      auto destructor = Destructor_Creator::Create(structure,dumb_way);
+      new_methods.push_back(destructor);
+  }
+  
+  return new_methods;
+❱
+
+◀private: static▶ std::vector<Method_Item> ☀Add_API_Related_Methods(Structure const& structure, C_Export_Settings const& options, bool dumb_way)❰
+  std::vector<Method_Item> new_methods;
+  
+  //create all the good APIs
+  new_methods = Good_Api_Creator::Create(structure,options);
+  
+  return new_methods;
+❱
+

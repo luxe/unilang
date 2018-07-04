@@ -1,0 +1,155 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+⚯
+❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/value_constraint_comment_deriver"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data_shared"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ Doxygen_Data ☀Get(Data_Member_Item const& item, C_Export_Settings const& options)❰
+    
+    Doxygen_Data data;
+    Add_Main_Descriptions(data,item,options);
+    
+    if (!as_string(item.units.value).empty()){
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"note","units: " + as_string(item.units.value));
+    }
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"note",Derive_Comment_Pair_Comment(item.comment_pair,options));
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"note",Value_Constraint_Comment_Deriver::Derive(item.value_constraints,options,as_string(item.type.value)));
+    
+    return data;
+❱
+◀private: static▶ std::string ☀Derive_Data_Detail(Data_Member_Item const& item, C_Export_Settings const& options)❰
+    std::string str = as_string(item.detail.value);
+    
+    //add value meanings as part of the detail section
+    if (!str.empty()){
+        str += "\n";
+        for (auto const& it: item.value_meaning){
+            if (!as_string(it.value.value).empty() && !as_string(it.meaning.value).empty()){
+                str += as_string(it.value.value) + " = " + as_string(it.meaning.value) + "\n";
+            }
+        }
+    }
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Derive_Comment_Pair_Comment(std::vector<Key_Value_Pair> comment_pair, C_Export_Settings const& options)❰
+    std::string comment;
+    
+    bool non_empty = false;
+    for (auto const& it: comment_pair){
+        if (!as_string(it.key.value).empty() && !as_string(it.value.value).empty()){
+            non_empty = true;
+            break;
+        }
+    }
+    
+    //print key values if we have any:
+    if (non_empty){
+        auto key = Derive_Pair_Key(comment_pair,options);
+        auto value = Derive_Pair_Value(comment_pair,options);
+        comment = key + ": " + value;
+    }
+    
+    return comment;
+❱
+◀private: static▶ std::string ☀Derive_Pair_Key(std::vector<Key_Value_Pair> comment_pair, C_Export_Settings const& options)❰
+    std::string str;
+    
+    Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(comment_pair,[&](Key_Value_Pair const& p){
+        
+        str += as_string(p.key.value) + " / ";
+        return;},
+    [&](Key_Value_Pair const& p){
+        
+        str += as_string(p.key.value);
+        return;});
+    
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Derive_Pair_Value(std::vector<Key_Value_Pair> comment_pair, C_Export_Settings const& options)❰
+    std::string str;
+    
+    bool all_true=true;
+    for (auto const& it: comment_pair){
+        if (as_string(it.value.value) != "TRUE"){
+            all_true = false;
+        }
+    }
+    
+    bool all_false=true;
+    for (auto const& it: comment_pair){
+        if (as_string(it.value.value) != "FALSE"){
+            all_false = false;
+        }
+    }
+    
+    //what to print when they are all true
+    if (all_true){
+        if (comment_pair.size() == 2){
+            str = "Both";
+        }
+        else{
+            str = "All";
+        }
+    }
+    
+    //what to print when they are all false
+    else if (all_false){
+        if (comment_pair.size() == 2){
+            str = "Neither";
+        }
+        else{
+            str = "None";
+        }
+        
+    //what to print if there is no true/false consistency
+    }else{
+        
+        for (auto const& it: comment_pair){
+            if (as_string(it.value.value) == "TRUE"){
+                str += as_string(it.key.value) + " ";
+            }
+        }
+    }
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(Data_Member_Item const& it,C_Export_Settings const& options)❰
+    
+    std::string derived_brief = "";
+    
+    if (as_string(it.brief.value).empty() && options.portion.data_member_options.derive_brief_comment){
+      derived_brief = as_string(it.name.value);
+    }
+    else{
+      derived_brief = as_string(it.brief.value);
+    }
+    
+    return derived_brief;
+❱
+◀private: static▶ void ☀Add_Main_Descriptions(Doxygen_Data & data, Data_Member_Item const& item, C_Export_Settings const& options)❰
+
+	//TODO: settings
+	bool add_stupid_var_tag = true;
+	if (add_stupid_var_tag){
+		//no grammar on purpose
+        auto derived_name = Identifier_Name_Deriver::Derive_Name(item,options,false,true);
+		Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"var",derived_name);
+	}
+
+    auto brief = Potentially_Derive_Brief_Statement(item,options);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"brief",brief,options.portion.data_member_options.comment.grammar);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"details",Derive_Data_Detail(item,options),options.portion.data_member_options.comment.grammar);
+❱

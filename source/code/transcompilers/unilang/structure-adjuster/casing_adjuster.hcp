@@ -1,0 +1,43 @@
+class
+
+❪iostream❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/transcompilers/unilang/options/manipulation/case_adjustment_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/transcompilers/unilang/structure-printer/struct_derivers"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Adjust(Structure & structure, Case_Adjustment_Settings const& settings)❰
+
+   if (settings.perform_case_adjustments){
+      for (auto & it: structure.types.types){
+        Possibly_Change_Case(it.name,settings.type_name);
+      }
+      
+      //adjust data member parent type names
+      for (auto & it: structure.data_members.data_members){
+        Possibly_Change_Case(it.type,settings.data_member_type);
+        for (auto & jt: it.parent_types){
+          Possibly_Change_Case(jt.type,settings.data_member_parent_type);
+        }
+      }
+      
+      //adjust enum type names
+      for (auto & it: structure.enums.enumerated_types){
+        Possibly_Change_Case(it.name,settings.enum_name);
+      }
+  }
+❱
+
+◀private: static▶ void ☀Possibly_Change_Case(Token_Value & t, Token_Case_Settings const& settings)❰
+    if (settings.change_case){
+        t.value = as_wstring(Case_Modifier::As_Modified_Casing(settings.casing,as_string(t.value)));
+    }
+❱

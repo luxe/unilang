@@ -1,0 +1,167 @@
+class
+
+❪iostream❫
+❪fstream❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+❪"code/transcompilers/unilang/compiler-frontends/call_graph_exporter/call_graph_options"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+⚯
+❪"code/transcompilers/unilang/structure/sections/structure_enums"❫
+❪"code/transcompilers/unilang/parser/body_parser/body_token_parser"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+
+⚞⚟
+
+◀public: static▶ void ☀Export(Structure structure, std::vector<Contributor> const& contributors, std::string const& style, bool transfer)❰
+
+  Call_Graph_Options settings;
+  std::ofstream outfile(structure.name + "." + settings.file_extension);
+  outfile << Structure_As_Local_Call_Graph(structure,settings) << "\n";
+❱
+
+◀private: static▶ std::string ☀Structure_As_Local_Call_Graph(Structure structure, Call_Graph_Options const& settings)❰
+  std::string str;
+  
+  Append_With_Newline(str,"digraph " + structure.name + " {");
+      Append_With_Newline(str,Overall_Graph_Options(settings));
+      Append_With_Newline(str,Create_Interface_Subgraph(structure.methods.methods,settings));
+      Append_With_Newline(str,Create_Implementation_Subgraph(structure.methods.methods,settings));
+      Append_With_Newline(str,Get_Connections_For_Methods(structure.methods.methods));
+  Append_With_Newline(str,"}");
+  
+  return str;
+❱
+
+◀private: static▶ std::string ☀Overall_Graph_Options(Call_Graph_Options const& settings)❰
+  std::string str;
+  Append_With_Newline(str,"rankdir=LR");
+  return str;
+❱
+
+
+
+◀private: static▶ std::string ☀Create_Interface_Subgraph(std::vector<Method_Item> const& methods, Call_Graph_Options const& settings)❰
+  std::string str;
+  Append_With_Newline(str,"subgraph cluster_interface {");
+  Append_With_Newline(str,"label = \"" + settings.interface_label + "\";");
+  Append_With_Newline(str,"color=" + settings.interface_frame_color + ";");
+  Append_With_Newline(str,"rank=1");
+  Append_With_Newline(str,Get_Public_Declarations(methods,settings));
+  Append_With_Newline(str,"}");
+  return str;
+❱
+◀private: static▶ std::string ☀Create_Implementation_Subgraph(std::vector<Method_Item> const& methods, Call_Graph_Options const& settings)❰
+  std::string str;
+  Append_With_Newline(str,"subgraph cluster_implementation {");
+  Append_With_Newline(str,"label = \"" + settings.implementation_label + "\";");
+  Append_With_Newline(str,"color=" + settings.implementation_frame_color + ";");
+  Append_With_Newline(str,"rank=2");
+  Append_With_Newline(str,Get_Private_Declarations(methods,settings));
+  Append_With_Newline(str,"}");
+  return str;
+❱
+
+
+
+◀private: static▶ std::string ☀Get_Connections_For_Methods(std::vector<Method_Item> const& methods)❰
+  std::string str;
+  
+    for (auto item: methods){
+      for (auto it: item.body){
+        if (it.name == Body_Token_Name::SELF_FUNCTION_CALL){
+          str += '"' + as_string(item.names.function_name.value) + "\" -> \"";
+          Append_With_Newline(str,as_string(it.value) + "\";");
+        }
+      }
+    }
+  
+  return str;
+❱
+
+
+
+
+
+
+
+
+//utilities
+◀private: static▶ std::string ☀Get_All_Declarations(std::vector<Method_Item> const& methods, Call_Graph_Options const& settings)❰
+
+  std::string str;
+  for (auto it: methods){
+    str += '"' + as_string(it.names.function_name.value) + "\" " + Get_Node_Style(it,settings) + ";\n";
+  }
+  return str;
+❱
+
+◀private: static▶ std::string ☀Get_Public_Declarations(std::vector<Method_Item> const& methods, Call_Graph_Options const& settings)❰
+
+  std::string str;
+  for (auto it: methods){
+    if (it.class_access == Class_Access::PUBLIC){
+      str += '"' + as_string(it.names.function_name.value) + "\" " + Get_Node_Style(it,settings) + ";\n";
+    }
+  }
+  return str;
+❱
+◀private: static▶ std::string ☀Get_Protected_Declarations(std::vector<Method_Item> const& methods, Call_Graph_Options const& settings)❰
+
+  std::string str;
+  for (auto it: methods){
+    if (it.class_access == Class_Access::PROTECTED){
+      str += '"' + as_string(it.names.function_name.value) + "\" " + Get_Node_Style(it,settings) + ";\n";
+    }
+  }
+  return str;
+❱
+◀private: static▶ std::string ☀Get_Private_Declarations(std::vector<Method_Item> const& methods, Call_Graph_Options const& settings)❰
+
+  std::string str;
+  for (auto it: methods){
+    if (it.class_access == Class_Access::PRIVATE){
+      str += '"' + as_string(it.names.function_name.value) + "\" " + Get_Node_Style(it,settings) + ";\n";
+    }
+  }
+  return str;
+❱
+
+
+
+◀private: static▶ std::string ☀Get_Node_Style(Method_Item const& item, Call_Graph_Options const& settings)❰
+  std::string str;
+  str += "[";
+  str += "style=filled, ";
+  
+   if (Method_Contains_Todo_Comment(item)){
+    str += "color=red";
+   }
+   else{
+    str += "color=green";
+   }
+  
+  str += "]";
+  return str;
+❱
+
+◀private: static▶ bool ☀Method_Contains_Todo_Comment(Method_Item const& item)❰
+  
+  
+  for (auto it: item.body){
+    if (it.name == Body_Token_Name::COMMENT){
+      auto str = as_string(it.value);
+      if (Contains_Substring(str,"TODO")){
+        return true;
+      }
+    }
+  }
+  
+  return false;
+❱
+
+
+
+

@@ -1,0 +1,132 @@
+􏶞p􏶟
+􏷲A generic graph vertex to be used with the graph data structure􏷱
+􏷰Stores the client decided vertex data along with a list of directed edges to other graph vertices􏷯
+􏷮Data Structure􏷭􏷮Graph􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stddef􏷥􏴓d􏴔􏴑size_t􏴒
+􏷤􏷣􏷦vector􏷥􏴓1􏴔􏴑VectorT􏴒
+􏷤􏷣􏷦any􏷥􏴓1􏴔􏴑AnyT􏴒
+􏷤􏷣􏷦graph_edge􏷥􏴓d􏴔􏴑GraphEdgeT􏴒
+
+
+MEMORY MANAGEMENT
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the custom value to be stored in the vertex􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄custom type info􏷃􏷀type information to specialize data in 􏶐􏶿
+􏶜􏶝􏷆TypeInformationT􏷅􏷄edge type info􏷃􏷀type information to specialize edges in 􏶐􏶿
+􏶴
+  􏶲store the custom vertex data􏶱
+  InitializeAny(&􏵴data􏵵,􏵶value􏵷,􏵶custom type info􏵷);
+  
+  􏶲a vertex is first created without any edges to other vertices􏶱
+  InitializeVector(&􏵴edges􏵵,SPECIALIZE_MANAGED(GraphEdgeT),0);
+  
+  􏵴edge type info􏵵 = 􏵶edge type info􏵷;
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆GraphVertexT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform shallow copy on edge type information􏶱
+    􏵴edge type info􏵵 = 􏵶self􏵷->m_tLocals.m_tEdgeTypeInfo;
+    
+    􏶲perform deep copy of custom data􏶱
+    CopyInitializeAnyT(&􏵴data􏵵,&􏵶self􏵷->m_tLocals.m_tData);
+    
+    􏶲perform deep copy of elements􏶱
+    CopyInitializeVectorT(&􏵴edges􏵵,&􏵶self􏵷->m_tLocals.m_tEdges);
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐 type􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏶴
+    􏶲destruct the custom user data􏶱
+    DestructAnyT(&􏵴data􏵵);
+    
+    􏶲destruct the vector􏶱
+    DestructVectorT(&􏵴edges􏵵);
+􏶳
+
+
+
+
+
+􏷘+􏷗􏷒add edge􏷑
+􏷐adds an edge leaving the vertex to connect another vertex􏷏
+􏶠the data of the edge is copied in and stored􏶡
+􏶜r􏶝􏷆void􏷅􏷄value􏷃􏷀the custom value to be stored in the edge􏶿
+􏶜􏶝􏷆size_t􏷅􏷄vertex id􏷃􏷀the vertex that the edge is pointing to􏶿
+􏶴
+
+    􏶲create the edge based on the passed in values􏶱
+    GraphEdgeT tEdge = ConstructGraphEdge(􏵶value􏵷,􏵴edge type info􏵵,􏵶vertex id􏵷);
+    
+    􏶲push it back into the vector􏶱
+    VectorPushBack(&􏵴edges􏵵,&tEdge);
+    
+    DestructGraphEdgeT(&tEdge);
+􏶳
+
+􏷘+􏷗􏷒data􏷑
+􏷐get the custom data of the vertex􏷏
+􏶠returned to the client so they can observe/modify the custom vertex data􏶡
+􏶚m􏶛􏶾AnyT*􏶽􏶼custom data􏶻􏶺the custom data of the vertex􏶹
+􏶴
+    􏶲returns the custom data of the vertex􏶱
+    return &􏵴data􏵵;
+􏶳
+
+􏷘+􏷗􏷒raw data􏷑
+􏷐get the custom data of the vertex􏷏
+􏶠returned to the client so they can observe/modify the custom vertex data􏶡
+􏶚m􏶛􏶾void*􏶽􏶼custom data􏶻􏶺the custom data of the vertex􏶹
+􏶴
+    􏶲returns the custom data of the vertex􏶱
+    return AnyGet(&􏵴data􏵵);
+􏶳
+
+􏷘+􏷗􏷒edges􏷑
+􏷐get the edges leaving the vertex􏷏
+􏶠returned to the client so they can observe/modify the edge data
+Most likely retrieved to facilitate traversal􏶡
+􏶚m􏶛􏶾VectorT*􏶽􏶼edges􏶻􏶺the edges leaving the vertex􏶹
+􏶴
+    􏶲returns all the edges leaving the vertex􏶱
+    return &􏵴edges􏵵;
+􏶳
+
+􏶨the client specified data of the vertex􏶧
+􏶦The user chooses what a vertex means, and the graph stores it alongside the edges􏶥
+􏶘-􏶙􏶮AnyT􏶭􏶬data􏶫􏶪􏶩
+
+􏶨All of the directed edges of a particular vertex􏶧
+􏶦The edges are ids to other vertices􏶥
+􏶘-􏶙􏶮VectorT􏶭􏶬edges􏶫􏶪􏶩
+
+􏶨the necessary type information for the edges􏶧
+􏶦Type information is needed for memory allocations, as well as constructing/destructing managed types􏶥
+􏶘+􏶙􏶮TypeInformationT􏶭􏶬edge type info􏶫􏶪􏶩
+

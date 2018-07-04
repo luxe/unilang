@@ -1,0 +1,93 @@
+class
+❪"code/transcompilers/unilang/validators/file_name/filename_validation_settings"❫
+❪vector❫
+❪string❫
+⚯
+❪"code/transcompilers/unilang/validators/file_name/filename_exception"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+⚞⚟
+◀public: static▶ void ☀Validate_Input_File(Filename_Validation_Settings const& settings, std::string const& path_to_file, std::string const& expected_extension)❰
+
+    std::vector<std::string> problems;
+    problems += Make_Sure_File_Has_The_Proper_File_Extension(settings,path_to_file,expected_extension);
+    problems += Make_Sure_File_Exists(settings,path_to_file);
+    problems += Make_Sure_File_Contains_Valid_Chars(settings,path_to_file);
+    
+    //throw if we found any problems
+    if (!problems.empty()){
+        throw Filename_Exception(problems);
+    }
+❱
+◀private: static▶ std::vector<std::string> ☀Make_Sure_File_Has_The_Proper_File_Extension(Filename_Validation_Settings const& settings, std::string const& path_to_file, std::string const& expected_extension)❰
+    
+    std::vector<std::string> problems;
+    if (!File_Has_Extension(path_to_file,expected_extension)){
+        auto error_message = Get_Wrong_File_Extension_Error(settings,path_to_file,expected_extension);
+        problems.push_back(error_message);
+    }
+    return problems;
+❱
+◀private: static▶ std::vector<std::string> ☀Make_Sure_File_Exists(Filename_Validation_Settings const& settings, std::string const& path_to_file)❰
+    
+    std::vector<std::string> problems;
+    if (!File_Exists(path_to_file)){
+        auto error_message = Get_File_Not_Found_Error(settings,path_to_file);
+        problems.push_back(error_message);
+    }
+    return problems;
+❱
+◀private: static▶ std::vector<std::string> ☀Make_Sure_File_Contains_Valid_Chars(Filename_Validation_Settings const& settings, std::string const& path_to_file)❰
+    
+    std::vector<std::string> problems;
+    
+    std::string base_name = As_Removed_Suffix(path_to_file);
+    if (!Has_Only_Alphanumeric_And_Underscores(base_name)){
+        auto error_message = Get_Alphanumeric_Underscore_Failure_Error(settings,path_to_file);
+        problems.push_back(error_message);
+    }
+    
+    if (Starts_With_Digit(base_name)){
+        auto error_message = Get_Numeric_Start_Failure_Error(settings,path_to_file);
+        problems.push_back(error_message);
+    }
+    
+    return problems;
+❱
+
+
+
+//error messages (TODO: mustaches settings later)
+◀private: static▶ std::string ☀Get_Wrong_File_Extension_Error(Filename_Validation_Settings const& settings, std::string const& path_to_file, std::string const& expected_extension)❰
+    
+    //resolve mustache tags
+    auto replaced1 = string_replace_all(settings.wrong_file_extension_error,settings.path_to_file_tag,path_to_file);
+    auto replaced2 = string_replace_all(replaced1,settings.expected_extension_tag,expected_extension);
+    
+    return replaced2;
+❱
+◀private: static▶ std::string ☀Get_File_Not_Found_Error(Filename_Validation_Settings const& settings, std::string const& path_to_file)❰
+    
+    //resolve mustache tags
+    auto replaced1 = string_replace_all(settings.file_not_found_error,settings.path_to_file_tag,path_to_file);
+    
+    return replaced1;
+❱
+◀private: static▶ std::string ☀Get_Alphanumeric_Underscore_Failure_Error(Filename_Validation_Settings const& settings, std::string const& path_to_file)❰
+    
+    //resolve mustache tags
+    auto replaced1 = string_replace_all(settings.alphanumeric_underscore_error,settings.path_to_file_tag,path_to_file);
+    
+    return replaced1;
+❱
+◀private: static▶ std::string ☀Get_Numeric_Start_Failure_Error(Filename_Validation_Settings const& settings, std::string const& path_to_file)❰
+    
+    //resolve mustache tags
+    auto replaced1 = string_replace_all(settings.numeric_start_error,settings.path_to_file_tag,path_to_file);
+    
+    return replaced1;
+❱

@@ -1,0 +1,483 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+❪"code/transcompilers/unilang/constraint_exporter/interval_constraint/interval_constraint"❫
+❪"value_constraints_to_interval_constraints"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+
+⚞⚟
+
+◀public: static▶ void ☀Add_Constraint_Line_For_Non_Array(std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options, std::vector<Value_Constraints> constraints)❰
+    
+    //filter constraints, and derive intervals
+    auto intervals = Value_Constraints_To_Interval_Constraints::Derive(constraints);
+    
+    //print interval statements
+    for (auto const& it: intervals){
+        if (options.general.use_utility_macros_in_concise){
+            Print_Interval_Statement_Non_Array_Concise(it,body,structure,data_member,options);
+        }
+        else{
+            Print_Interval_Statement_Non_Array(it,body,structure,data_member,options);
+        }
+    }
+    
+    //print comparison statements
+    for (auto const& it: constraints){
+        if (options.general.use_utility_macros_in_concise){
+            Print_Comparison_Statement_Non_Array_Concise(it,body,structure,data_member,options);
+        }else{
+            Print_Comparison_Statement_Non_Array(it,body,structure,data_member,options);
+        }
+    }
+    
+❱
+◀public: static▶ void ☀Add_Constraint_Line_For_Array(std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options, std::vector<Value_Constraints> constraints)❰
+    
+    //filter constraints, and derive intervals
+    auto intervals = Value_Constraints_To_Interval_Constraints::Derive(constraints);
+    
+    //print interval statements
+    for (auto const& it: intervals){
+        if (options.general.use_utility_macros_in_concise){
+            Print_Interval_Statement_For_Array_Concise(it,body,structure,data_member,options);
+        }else{
+            Print_Interval_Statement_For_Array(it,body,structure,data_member,options);
+        }
+    }
+    
+    //print comparison statements
+    for (auto const& it: constraints){
+        if (options.general.use_utility_macros_in_concise){
+            Print_Comparison_Statement_For_Array_Concise(it,body,structure,data_member,options);
+        }
+        else{
+            Print_Comparison_Statement_For_Array(it,body,structure,data_member,options);
+        }
+    }
+❱
+
+//uses raw function
+◀private: static▶ void ☀Print_Interval_Statement_Non_Array(Interval_Constraint const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CheckIntervalConstraint(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ", ");
+    body.push_back(t);
+    
+    //begin interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.begin.value.value)) + ", ");
+    body.push_back(t);
+    
+    //end interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.end.value.value)) + ", ");
+    body.push_back(t);
+    
+    //c enum of interval constraint
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint) + ", ");
+    body.push_back(t);
+    
+    //string name
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    body.push_back(t);
+    
+    //fail flag
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("&bPassed");
+    body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(");\n\n");
+    body.push_back(t);
+❱
+◀private: static▶ void ☀Print_Interval_Statement_For_Array(Interval_Constraint const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CheckIntervalConstraintFromArrayIndex(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member and index
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "[uIndex], uIndex, ");
+    body.push_back(t);
+    
+    //begin interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.begin.value.value)) + ", ");
+    body.push_back(t);
+    
+    //end interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.end.value.value)) + ", ");
+    body.push_back(t);
+    
+    //c enum of interval constraint
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint) + ", ");
+    body.push_back(t);
+    
+    //string name
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    body.push_back(t);
+    
+    //fail flag
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("&bPassed");
+    body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(");\n\n");
+    body.push_back(t);
+❱
+◀private: static▶ void ☀Print_Comparison_Statement_Non_Array(Value_Constraints const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CheckValueConstraint(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ", ");
+    body.push_back(t);
+    
+    //c enum comparison operator
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint) + ", ");
+    body.push_back(t);
+    
+    //comparison value
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.value.value)) + ", ");
+    body.push_back(t);
+    
+    //string name
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    body.push_back(t);
+    
+    //fail flag
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("&bPassed");
+    body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(");\n\n");
+    body.push_back(t);
+❱
+◀private: static▶ void ☀Print_Comparison_Statement_For_Array(Value_Constraints const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CheckValueConstraintFromArrayIndex(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member and index
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "[uIndex], uIndex, ");
+    body.push_back(t);
+    
+    //c enum comparison operator
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint) + ", ");
+    body.push_back(t);
+    
+    //comparison value
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.value.value)) + ", ");
+    body.push_back(t);
+    
+    //string name
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    body.push_back(t);
+    
+    //fail flag
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("&bPassed");
+    body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(")\n\n;");
+    body.push_back(t);
+❱
+
+//uses macro
+◀private: static▶ void ☀Print_Interval_Statement_Non_Array_Concise(Interval_Constraint const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CHECK_INTERVAL(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ", ");
+    body.push_back(t);
+    
+    //begin interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.begin.value.value)) + ", ");
+    body.push_back(t);
+    
+    //end interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.end.value.value)) + ", ");
+    body.push_back(t);
+    
+    //c enum of interval constraint
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint));
+    body.push_back(t);
+    
+    //string name
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    //body.push_back(t);
+    
+    //fail flag
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("&bPassed");
+    //body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(");\n\n");
+    body.push_back(t);
+❱
+◀private: static▶ void ☀Print_Interval_Statement_For_Array_Concise(Interval_Constraint const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CHECK_INDEXED_INTERVAL(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member and index
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ", uIndex, ");
+    body.push_back(t);
+    
+    //begin interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.begin.value.value)) + ", ");
+    body.push_back(t);
+    
+    //end interval
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.end.value.value)) + ", ");
+    body.push_back(t);
+    
+    //c enum of interval constraint
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint));
+    body.push_back(t);
+    
+    //string name
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    //body.push_back(t);
+    
+    //fail flag
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("&bPassed");
+    //body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(");\n\n");
+    body.push_back(t);
+❱
+◀private: static▶ void ☀Print_Comparison_Statement_Non_Array_Concise(Value_Constraints const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CHECK_VALUE(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ", ");
+    body.push_back(t);
+    
+    //c enum comparison operator
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint) + ", ");
+    body.push_back(t);
+    
+    //comparison value
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.value.value)));
+    body.push_back(t);
+    
+    //string name
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    //body.push_back(t);
+    
+    //fail flag
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("&bPassed");
+    //body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(");\n\n");
+    body.push_back(t);
+❱
+◀private: static▶ void ☀Print_Comparison_Statement_For_Array_Concise(Value_Constraints const& constraint, std::vector<Body_Token_Value> & body, Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+    
+    Body_Token_Value t;
+    
+    //function
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("CheckValueConstraintFromArrayIndex(");
+    body.push_back(t);
+    
+    //data member
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    body.push_back(t);
+    
+    //sub data member and index
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ", uIndex, ");
+    body.push_back(t);
+    
+    //c enum comparison operator
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Constraint_To_C_Enum(constraint) + ", ");
+    body.push_back(t);
+    
+    //comparison value
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(Literal_Adjuster::Get_Adjusted(as_string(data_member.type.value),as_string(constraint.value.value)));
+    body.push_back(t);
+    
+    //string name
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\", ");
+    //body.push_back(t);
+    
+    //fail flag
+    //t.name = Body_Token_Name::REGULAR;
+    //t.value = as_wstring("&bPassed");
+    //body.push_back(t);
+    
+    //closing
+    t.name = Body_Token_Name::REGULAR;
+    t.value = as_wstring(")\n\n;");
+    body.push_back(t);
+❱
+
+◀private: static▶ std::string ☀Constraint_To_C_Enum(Interval_Constraint const& constraint)❰
+    std::string str;
+    
+    if (constraint.begin.type == Interval_Inclusion::OPEN && constraint.end.type == Interval_Inclusion::OPEN){
+        str = "INTERVAL_TYPE_OPEN";
+    }
+    else if (constraint.begin.type == Interval_Inclusion::CLOSED && constraint.end.type == Interval_Inclusion::CLOSED){
+        str = "INTERVAL_TYPE_CLOSED";
+    }
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Constraint_To_C_Enum(Value_Constraints const& constraint)❰
+    std::string str;
+    
+    if (as_string(constraint.operation.value) == "=="){
+        str = "COMPARISON_OPERATOR_EQUAL_TO";
+    }
+    else if (as_string(constraint.operation.value) == "!="){
+        str = "COMPARISON_OPERATOR_NOT_EQUAL_TO";
+    }
+    else if (as_string(constraint.operation.value) == ">"){
+        str = "COMPARISON_OPERATOR_GREATER";
+    }
+    else if (as_string(constraint.operation.value) == "<"){
+        str = "COMPARISON_OPERATOR_LESS";
+    }
+    else if (as_string(constraint.operation.value) == ">="){
+        str = "COMPARISON_OPERATOR_GREATER_EQUAL";
+    }
+    else if (as_string(constraint.operation.value) == "<="){
+        str = "COMPARISON_OPERATOR_LESS_EQUAL";
+    }
+    
+    return str;
+❱

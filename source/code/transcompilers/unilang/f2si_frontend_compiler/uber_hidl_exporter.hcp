@@ -1,0 +1,165 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+❪"code/transcompilers/unilang/options/language-specific/hidl_export_settings"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_settings"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_transfer_action"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/file_printer"❫
+❪"code/transcompilers/unilang/structure-adjuster/structure_adjuster"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_hidl_options_getter"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure-printer/stream_creator"❫
+❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
+❪"code/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/code_wrap_printer"❫
+❪"code/transcompilers/unilang/enum-printer/enum_section_printer"❫
+❪"code/transcompilers/unilang/structure-printer/namespace_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/header_printer"❫
+❪"code/transcompilers/unilang/structure-printer/struct_printer"❫
+❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_transferer"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/hidl_build_file_creator"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, std::string const& style, bool transfer)❰
+
+    //get specific settings
+    auto settings = Uber_Hidl_Options_Getter::Convert_Style_To_Options_Config("Normal",style);
+    
+    //create a directory for the global or object code, and export it in an f2si fashion
+    Create_Output_Folder_With_All_The_Generated_Data(structure,settings,transfer);
+❱
+
+◀private: static▶ void ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, Hidl_Export_Settings const& settings, bool transfer)❰
+    
+    //force structure changes
+    //TODO: we need to store adjustment phases.  Different tools might want the structure
+    //at different phases in its transition.  For now, and this is a hack, I'll make a copy
+    //for the test wrapper
+    Structure_Adjuster::Adjust(structure,settings.manipulations);
+    
+    Create_Source_Files(structure,settings,transfer);
+❱
+
+◀private: static▶ void ☀Create_Source_Files(Structure structure, Hidl_Export_Settings const& settings, bool transfer)❰
+
+    auto folder_name = Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.folder_casing,structure.name);
+    Create_Path_If_It_Doesnt_Already_Exist_And_Step_Into_It(folder_name);
+    Create_File(structure,settings,transfer);
+    Step_Out_Of_Folder();
+❱
+
+◀private: static▶ void ☀Create_File(Structure structure, Hidl_Export_Settings const& settings, bool perform_transfer)❰
+
+    //create file settings for hidl data file
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::HIDL;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::DATA;
+    
+    //create stream of hidl file
+    //ASSUMES THE UNILANG AND REGULAR REPO ARE MIRRORED IN DIRCTORY STRUCTURE ACROSS MACHINES
+    auto out = Create_Stream_And_Print_Everything(structure,settings,file_settings);
+	out.close();
+	if (perform_transfer){
+		Transfer_File(structure,settings,file_settings);
+	}
+
+	//create build file
+	auto build_contents = Hidl_Build_File_Creator::Create(structure,settings);
+    std::ofstream outfile(settings.build.name_of_build_file);
+	outfile << build_contents;
+	outfile.close();
+	if (perform_transfer){
+		Transfer_Build_File();
+	}
+❱
+
+◀private: static▶ std::wofstream ☀Create_Stream_And_Print_Everything(Structure const& structure, Hidl_Export_Settings const& options,Export_File_Settings const& file_settings)❰
+
+	auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    
+    //create the final file name that the stream is set to (possible used by boilerplate comments)
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,options.general.filesystem_naming);
+    
+    //print the giant meta block
+    Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,options.portion.meta,final_file_name);
+	Print_To_Stream_With_Newline(out,"");
+	Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());
+    Namespace_Printer::Print_Namespace(out,structure.namespaces,options.portion.namespace_options);
+    Enum_Section_Printer::Print_Interface_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options.general,options.portion);
+    Struct_Printer::Print_Structs(out,structure.data_members,structure.types,options.general,options.portion);
+    Code_Wrap_Printer::Print_Doxygen_Group_End_Markers(out,structure.meta,options.portion.meta);
+    return out;
+❱
+
+◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings()❰
+    Pulse_Settings pulse_settings;
+	pulse_settings.computer_user = "thickey";
+	//pulse_settings.computer_name = "tower";
+    pulse_settings.computer_name = "192.168.253.1"; //we could derive this on VMs and other machines on the same network
+    pulse_settings.lftp_password_location = "/home/flighty/Desktop/secret/computer_keys/LFTP_PASSWORD";
+    pulse_settings.expected_process_name = "pulseUi";
+	return pulse_settings;
+❱
+
+◀private: static▶ Pulse_Transfer_Action ☀Get_Pulse_Action(Pulse_Settings const& settings, std::string const& file_name)❰
+
+	std::string full_path = Full_Path();
+	full_path += "/" + file_name;
+
+    std::string password = Get_First_Line_Of_File(settings.lftp_password_location);
+	auto parts = Current_Path_In_Parts();
+	Remove_First_Element(parts);    
+	Remove_Last_Element(parts);
+	parts[1] = settings.computer_user;
+
+	std::string dest_path;
+	for (auto p: parts){
+		dest_path += "/" + p;
+	}
+
+
+	//Build pulse transfer action
+	Pulse_Transfer_Action action;
+    action.password = password;
+    action.from = full_path;
+    action.to = dest_path;
+	return action;
+❱
+
+
+◀private: static▶ void ☀Transfer_File(Structure const& structure, Hidl_Export_Settings const& options,Export_File_Settings const& file_settings)❰
+
+    //build pulse settings
+    auto pulse_settings = Get_Pulse_Settings();
+
+	//build action settings
+    auto file_name = File_Name_Getter::Get(file_settings,structure.name,options.general.filesystem_naming);
+	auto action = Get_Pulse_Action(pulse_settings,file_name);
+
+	//transfer
+	Pulse_Transferer::Transfer(pulse_settings,action);
+❱
+◀private: static▶ void ☀Transfer_Build_File()❰
+
+    //build pulse settings
+    auto pulse_settings = Get_Pulse_Settings();
+
+	//build action settings
+    auto file_name = "BUILD";
+	auto action = Get_Pulse_Action(pulse_settings,file_name);
+
+	//transfer
+	Pulse_Transferer::Transfer(pulse_settings,action);
+❱
+
+

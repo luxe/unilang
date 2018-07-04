@@ -1,0 +1,929 @@
+􏶞p􏶟
+􏷲An electrical graph that can construct custom circuit configurations􏷱
+􏷰Intended to be generic enough to be used for a variety of electrical system use cases.
+
+Birectional and Unidirectional behavior is handled internally by the graph data structure.
+The reason we allow both directional/birectional behavior, is that it makes the implementation of
+bidirectional and unidirectional electrical flow easy to express.
+
+This particularly shines when attaching a diode to another electrical component.
+We can specify a unidirectional path, and the graph will add a 
+flow-able junction point in, but a nonflowable junction point out.
+Semantically, the components will still be connected, 
+but we've handled flow direction without adding any logic to the nodes themselves.􏷯
+􏷮Electrical_System􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦Defs􏷥􏴓d􏴔􏴑BOOL􏴒
+􏷤􏷣􏷦NodeType􏷥􏴓d􏴔􏴑NodeTypeE􏴒
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t (stores id to common ground)􏴒
+􏷤􏷣􏷦Graph􏷥􏴓1􏴔􏴑GraphT􏴒
+􏷤􏷣􏷦Node􏷥􏴓d􏴔􏴑NodeT (specialization over VertexT)􏴒
+􏷤􏷣􏷦Wire􏷥􏴓d􏴔􏴑WireT (specialization over EdgeT)􏴒
+􏷤􏷣􏷦power_relay􏷥􏴓d􏴔􏴑PowerRelayT􏴒
+􏷤􏷣􏷦norm_open_relay􏷥􏴓d􏴔􏴑NormOpenRelayT􏴒
+􏶔􏶕􏶒electrical_graph_stats􏶓􏴏d􏴐􏴍ElectricalGraphStatsT􏴎
+􏶔􏶕􏶒electrical_algorithms􏶓􏴏d􏴐􏴍IncrementNodeTypeCount􏴎􏴏d􏴐􏴍IncrementWireCount􏴎
+􏶔􏶕􏶒unordered_graph_algorithms􏶓􏴏d􏴐􏴍ApplyActionToAllVertices()􏴎􏴏d􏴐􏴍ApplyActionToAllEdges􏴎􏴏d􏴐􏴍ApplyActionToAllVerticesAndImmediateNeighbors􏴎
+􏶔􏶕􏶒pair􏶓􏴏d􏴐􏴍PairT􏴎
+􏶔s􏶕􏶒stdlib.h􏶓􏴏d􏴐􏴍qsort()􏴎
+􏶔􏶕􏶒vector􏶓􏴏d􏴐􏴍VectorT􏴎
+
+􏳹norm open relay􏳺
+􏳹power relay􏳺
+
+
+MEMORY MANAGEMENT
+􏷘+􏷗􏷒􏶐􏷑
+􏴅memory management􏴆
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the name of the electrical graph􏶿
+􏶴
+  􏶲the graph starts with zero nodes􏶱
+  􏶲we specialize the graph based on our custom vertex and edge types􏶱
+  InitializeGraph(&􏵴graph􏵵,SPECIALIZE_MANAGED(NodeT),SPECIALIZE_UNMANAGED(WireT));
+  
+  􏶲store the name of the graph􏶱
+  InitializeAsciiString(&􏵴name􏵵,􏵶name􏵷);
+  
+  􏶲establish a common ground as part of the graph construction􏶱
+  􏶲we do not want the user to have to create ground􏶱
+  􏵲establish a common ground􏵳);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏴅memory management􏴆
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆ElectricalGraphT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲perform shallow copy􏶱
+    􏵴common ground􏵵 = 􏵶self􏵷->m_tLocals.m_uCommonGround;
+    
+    􏶲perform deep copy􏶱
+    CopyInitializeGraphT(&􏵴graph􏵵,&􏵶self􏵷->m_tLocals.m_tGraph);
+    CopyInitializeAsciiStringT(&􏵴name􏵵,&􏵶self􏵷->m_tLocals.m_tName);
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏴅memory management􏴆
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏴅memory management􏴆
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructGraphT(&􏵴graph􏵵);
+  DestructAsciiStringT(&􏵴name􏵵);
+􏶳
+
+􏷘-􏷗􏷒establish a common ground􏷑
+􏴅utility􏴆
+􏷐the electrical graph creates and maintains connections to a common ground􏷏
+􏶠we create ground internally for the user, and ensure it has the right properties􏶡
+􏶴
+  􏶲create ground􏶱
+  􏵴common ground􏵵 = 􏵲add node􏵳"common ground","",NODE_TYPE_POWER_GROUND,0.0f,0.0f,CAN_BE_POWERED_YES);
+  
+  􏶲give it the property of being grounded􏶱
+  NodeSetGrounded(􏵲get circuit component􏵳􏵴common ground􏵵),TRUE);
+􏶳
+
+􏷘+􏷗􏷒get circuit component􏷑
+􏴅observer􏴆
+􏷐Get a circuit component out of the electrical graph􏷏
+􏶠This is done to change or observe a particular electrical component􏶡
+􏶜􏶝􏷆size_t􏷅􏷄node id􏷃􏷀The id of the node to receive back􏶿
+􏶚m􏶛􏶾NodeT*􏶽􏶼node􏶻􏶺the node that corresponds to the id given􏶹
+􏶴
+  􏶲query and return the electrical node from out of the graph􏶱
+  return  (NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,􏵶node id􏵷));
+􏶳
+
+􏷘+􏷗􏷒add node􏷑
+􏴅adding nodes􏴆
+􏷐Adds a specified node to the graph.􏷏
+􏶠The user can construct a node into the graph, and receive back a unique ID to query for it later.􏶡
+􏶜􏶝􏷆char[􏷅􏷄name􏷃􏷀the name of the node being added􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆NodeTypeE􏷅􏷄type􏷃􏷀the type of the node that is being added􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏷀the resistance of the node being added􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether or not the node allows electricity to flow through it.􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the node just created.􏶹
+􏶴
+  
+  􏶲leverage existing method􏶱
+  return 􏵲add delayable node􏵳􏵶name􏵷,􏵶tag􏵷,􏵶type􏵷,􏵶resistance􏵷,􏵶active wattage􏵷,􏵶can be powered􏵷,0.0f,0.0f);
+􏶳
+
+􏷘+􏷗􏷒add delayable node􏷑
+􏴅adding nodes􏴆
+􏷐Adds a specified node to the graph.􏷏
+􏶠The user can construct a node into the graph, and receive back a unique ID to query for it later.􏶡
+􏶜􏶝􏷆char[􏷅􏷄name􏷃􏷀the name of the node being added􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆NodeTypeE􏷅􏷄type􏷃􏷀the type of the node that is being added􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏷀the resistance of the node being added􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether or not the node allows electricity to flow through it.􏶿
+􏶜􏶝􏷆f􏷅􏷄startup delay􏷃􏷀the amount of time to delay when the node is starting up (before being powered)􏶿
+􏶜􏶝􏷆f􏷅􏷄shutdown delay􏷃􏷀the amount of time to delay when the node is shutting down (before it does not have power)􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the node just created.􏶹
+􏶴
+  
+  􏶲create a temp node􏶱
+  NodeT tNode = ConstructNode(􏵶name􏵷,􏵶tag􏵷,GraphNumberOfVertices(&􏵴graph􏵵)+1,􏵶type􏵷,􏵶resistance􏵷,􏵶active wattage􏵷,􏵶can be powered􏵷,􏵶startup delay􏵷,􏵶shutdown delay􏵷);
+  
+  􏶲shallow copy it in􏶱
+  􏶲adding it to the graph gives back a unique id􏶱
+  size_t uId = GraphAddVertex(&􏵴graph􏵵,&tNode);
+  
+  􏶲destruct the temp􏶱
+  DestructNodeT(&tNode);
+  
+  return uId;
+􏶳
+
+
+􏳇name􏳈􏳅battery􏳆􏳅breaker􏳆􏳅bus􏳆􏳅device􏳆􏳅diode􏳆􏳅epu􏳆􏳅fuse􏳆􏳅generator􏳆􏳅coil􏳆􏳅junction􏳆􏳅switch􏳆􏳅relay􏳆􏳅resistor􏳆􏳅sensor􏳆􏳅light􏳆􏳅fan􏳆􏳅ignitor􏳆􏳅fire extinguisher􏳆􏳅pump􏳆􏳅valve􏳆􏳅camera􏳆􏳅antenna􏳆􏳅dial􏳆
+􏳇enum􏳈􏳅BATTERY􏳆􏳅BREAKER􏳆􏳅BUS􏳆􏳅DEVICE􏳆􏳅DIODE􏳆􏳅EPU􏳆􏳅FUSE􏳆􏳅GENERATOR􏳆􏳅COIL􏳆􏳅JUNCTION􏳆􏳅SWITCH􏳆􏳅RELAY􏳆􏳅RESISTOR􏳆􏳅SENSOR􏳆􏳅LIGHT􏳆􏳅FAN􏳆􏳅IGNITOR􏳆􏳅FIRE_EXTINGUISHER􏳆􏳅PUMP􏳆􏳅VALVE􏳆􏳅CAMERA􏳆􏳅ANTENNA􏳆􏳅DIAL􏳆
+􏷘+􏷗􏷒add {{name}}􏷑
+􏴅adding nodes􏴆
+􏷐Adds a {{name}} node to the graph.􏷏
+􏶠The user can construct a node into the graph, and receive back a unique ID to query for it later.􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the name of the node􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏵘ohms􏵙􏷀the resistance of the node􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether the node allows current to pass through it or not􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the node just created.􏶹
+􏶴
+  return 􏵲add node􏵳􏵶name􏵷,􏵶tag􏵷,NODE_TYPE_{{enum}},􏵶resistance􏵷,􏵶active wattage􏵷,􏵶can be powered􏵷);
+􏶳
+
+􏳇name􏳈􏳅battery􏳆􏳅breaker􏳆􏳅bus􏳆􏳅device􏳆􏳅diode􏳆􏳅epu􏳆􏳅fuse􏳆􏳅generator􏳆􏳅coil􏳆􏳅junction􏳆􏳅switch􏳆􏳅relay􏳆􏳅resistor􏳆􏳅sensor􏳆􏳅light􏳆􏳅fan􏳆􏳅ignitor􏳆􏳅fire extinguisher􏳆􏳅pump􏳆􏳅valve􏳆􏳅camera􏳆􏳅antenna􏳆􏳅dial􏳆
+􏳇enum􏳈􏳅BATTERY􏳆􏳅BREAKER􏳆􏳅BUS􏳆􏳅DEVICE􏳆􏳅DIODE􏳆􏳅EPU􏳆􏳅FUSE􏳆􏳅GENERATOR􏳆􏳅COIL􏳆􏳅JUNCTION􏳆􏳅SWITCH􏳆􏳅RELAY􏳆􏳅RESISTOR􏳆􏳅SENSOR􏳆􏳅LIGHT􏳆􏳅FAN􏳆􏳅IGNITOR􏳆􏳅FIRE_EXTINGUISHER􏳆􏳅PUMP􏳆􏳅VALVE􏳆􏳅CAMERA􏳆􏳅ANTENNA􏳆􏳅DIAL􏳆
+􏷘+􏷗􏷒add delayable {{name}}􏷑
+􏴅adding nodes􏴆
+􏷐Adds a {{name}} node to the graph.􏷏
+􏶠The user can construct a node into the graph, and receive back a unique ID to query for it later.􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the name of the node􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏵘ohms􏵙􏷀the resistance of the node􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether the node allows current to pass through it or not􏶿
+􏶜􏶝􏷆f􏷅􏷄startup delay􏷃􏷀the amount of time to delay when the node is starting up (before being powered)􏶿
+􏶜􏶝􏷆f􏷅􏷄shutdown delay􏷃􏷀the amount of time to delay when the node is shutting down (before it does not have power)􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the node just created.􏶹
+􏶴
+  return 􏵲add delayable node􏵳􏵶name􏵷,􏵶tag􏵷,NODE_TYPE_{{enum}},􏵶resistance􏵷,􏵶active wattage􏵷,􏵶can be powered􏵷,􏵶startup delay􏵷,􏵶shutdown delay􏵷);
+􏶳
+
+􏷘+􏷗􏷒add power relay􏷑
+􏴅adding nodes􏴆
+􏷐Adds a power relay to the graph􏷏
+􏶠Adds a higher level component to the graph, and returns the collection of node Ids back to the user􏶡
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆i􏷅􏷄number of poles􏷃􏷀the number of poles in the relay􏶿
+􏶚m􏶛􏶾PowerRelayT􏶽􏶼power relay􏶻􏶺a collection of node Ids representing the power relay􏶹
+􏶴
+  return ConstructPowerRelay(ptElectricalGraph,􏵶tag􏵷,􏵶number of poles􏵷);
+􏶳
+
+􏷘+􏷗􏷒add norm open relay􏷑
+􏴅adding nodes􏴆
+􏷐Adds a norm open relay to the graph􏷏
+􏶠Adds a higher level component to the graph, and returns the collection of node Ids back to the user􏶡
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶚m􏶛􏶾NormOpenRelayT􏶽􏶼norm open relay􏶻􏶺a collection of node Ids representing the norm open relay􏶹
+􏶴
+  return ConstructNormOpenRelay(ptElectricalGraph,􏵶tag􏵷);
+􏶳
+
+
+
+
+
+
+
+
+
+
+􏳇name􏳈􏳅battery􏳆􏳅breaker􏳆􏳅bus􏳆􏳅device􏳆􏳅diode􏳆􏳅epu􏳆􏳅fuse􏳆􏳅generator􏳆􏳅coil􏳆􏳅junction􏳆􏳅switch􏳆􏳅relay􏳆􏳅resistor􏳆􏳅sensor􏳆􏳅light􏳆􏳅fan􏳆􏳅ignitor􏳆􏳅fire extinguisher􏳆􏳅pump􏳆􏳅valve􏳆􏳅camera􏳆􏳅antenna􏳆􏳅dial􏳆
+􏷘+􏷗􏷒add grounded {{name}}􏷑
+􏴅adding nodes􏴆
+􏷐Adds a grounded {{name}} node to the graph.􏷏
+􏶠The user can construct a node into the graph, implicitly ground it, and receive back a unique ID to query for it later.􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the name of the node􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏵘ohms􏵙􏷀the resistance of the node􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether the node allows current to pass through it or not􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the node just created.􏶹
+􏶴
+  size_t uId = 􏵲add {{name}}􏵳􏵶name􏵷,􏵶tag􏵷,􏵶resistance􏵷,􏵶active wattage􏵷,􏵶can be powered􏵷);
+  􏵲connect node to common ground􏵳uId);
+  return uId;
+􏶳
+
+􏳇name􏳈􏳅battery􏳆􏳅breaker􏳆􏳅bus􏳆􏳅device􏳆􏳅diode􏳆􏳅epu􏳆􏳅fuse􏳆􏳅generator􏳆􏳅coil􏳆􏳅junction􏳆􏳅switch􏳆􏳅relay􏳆􏳅resistor􏳆􏳅sensor􏳆􏳅light􏳆􏳅fan􏳆􏳅ignitor􏳆􏳅fire extinguisher􏳆􏳅pump􏳆􏳅valve􏳆􏳅camera􏳆􏳅antenna􏳆􏳅dial􏳆
+􏷘+􏷗􏷒add grounded delayable {{name}}􏷑
+􏴅adding nodes􏴆
+􏷐Adds a grounded {{name}} node to the graph.􏷏
+􏶠The user can construct a node into the graph, implicitly ground it, and receive back a unique ID to query for it later.􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the name of the node􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag􏷃􏷀a tag for the node􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏵘ohms􏵙􏷀the resistance of the node􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀whether the node allows current to pass through it or not􏶿
+􏶜􏶝􏷆f􏷅􏷄startup delay􏷃􏷀the amount of time to delay when the node is starting up (before being powered)􏶿
+􏶜􏶝􏷆f􏷅􏷄shutdown delay􏷃􏷀the amount of time to delay when the node is shutting down (before it does not have power)􏶿
+􏶚m􏶛􏶾size_t􏶽􏶼id􏶻􏶺a unique id that represents the node just created.􏶹
+􏶴
+  size_t uId = 􏵲add delayable {{name}}􏵳􏵶name􏵷,􏵶tag􏵷,􏵶resistance􏵷,􏵶active wattage􏵷,􏵶can be powered􏵷,􏵶startup delay􏵷,􏵶shutdown delay􏵷);
+  􏵲connect node to common ground􏵳uId);
+  return uId;
+􏶳
+
+
+
+
+
+
+
+􏷘+􏷗􏷒add non directed wire􏷑
+􏴅connecting nodes􏴆
+􏷐Connect two nodes together and allow electricity to flow both ways.􏷏
+􏶠Connects two nodes together, adds a wire between them, and applies the appropriate junction points.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄node x􏷃􏷀One of the nodes to attach to the other node.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄node y􏷃􏷀One of the nodes to attach to the other node.􏶿
+􏶴
+  􏶲for now, we ignore the properties given to a wire􏶱
+  WireT tWire = ConstructWire();
+  GraphAddNonDirectedEdge(&􏵴graph􏵵,􏵶node x􏵷,􏵶node y􏵷,&tWire);
+􏶳
+
+􏷘+􏷗􏷒add directed wire􏷑
+􏴅connecting nodes􏴆
+􏷐Connect two nodes together and allow electricity to only flow one way between them.􏷏
+􏶠Connects two nodes together, adds a wire between them,
+and applies the appropriate junction points.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄node x􏷃􏷀One of the nodes to attach to the other. Electricity will flow from this node to the other.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄node y􏷃􏷀One of the nodes to attach to the other. Electricity will NOT flow from this node to the other.􏶿
+􏶴
+  􏶲for now, we ignore the properties given to a wire􏶱
+  WireT tWire = ConstructWire();
+  GraphAddDirectedEdge(&􏵴graph􏵵,􏵶node x􏵷,􏵶node y􏵷,&tWire);
+􏶳
+
+􏷘+􏷗􏷒add special non directed wire􏷑
+􏴅connecting nodes􏴆
+􏷐Connect two nodes together and allow electricity to flow both ways.􏷏
+􏶠Connects two nodes together, adds a wire between them, and applies the appropriate junction points.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄node x􏷃􏷀One of the nodes to attach to the other node.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄node y􏷃􏷀One of the nodes to attach to the other node.􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏷀The resistance of the wire.􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀Whether he wire has flow initially.􏶿
+􏶴
+  􏶲for now, we ignore the properties given to a wire􏶱
+  WireT tWire = ConstructWire();
+  GraphAddNonDirectedEdge(&􏵴graph􏵵,􏵶node x􏵷,􏵶node y􏵷,&tWire);
+􏶳
+
+􏷘+􏷗􏷒add special directed wire􏷑
+􏴅connecting nodes􏴆
+􏷐Connect two nodes together and allow electricity to only flow one way between them.􏷏
+􏶠Connects two nodes together, adds a wire between them,
+and applies the appropriate junction points.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄node x􏷃􏷀One of the nodes to attach to the other. Electricity will flow from this node to the other.􏶿
+􏶜􏶝􏷆size_t􏷅􏷄node y􏷃􏷀One of the nodes to attach to the other. Electricity will NOT flow from this node to the other.􏶿
+􏶜􏶝􏷆float􏷅􏷄resistance􏷃􏷀The resistance of the wire.􏶿
+􏶜􏶝􏷆float􏷅􏷄active wattage􏷃􏵘watts􏵙􏷀the active wattage of the node􏶿
+􏶜􏶝􏷆CanBePoweredE􏷅􏷄can be powered􏷃􏷀Whether he wire has flow initially.􏶿
+􏶴
+  􏶲for now, we ignore the properties given to a wire􏶱
+  WireT tWire = ConstructWire();
+  GraphAddDirectedEdge(&􏵴graph􏵵,􏵶node x􏵷,􏵶node y􏵷,&tWire);
+􏶳
+
+􏷘+􏷗􏷒connect node to common ground􏷑
+􏴅connecting nodes􏴆
+􏷐Specifies that the node passed in, has a direct connection to common ground.􏷏
+􏶠Creates a connection between the component node passed in, and the internally managed ground node. 
+Having nodes connect to common ground, is important for identifying valid paths through the circuit.􏶡
+􏶜􏶝􏷆size_t􏷅􏷄node􏷃􏷀The node that will be applied to ground.􏶿
+􏶴
+
+  􏶲create a wire and connect it between the node and common ground􏶱
+  WireT tWire = ConstructWire();
+  GraphAddDirectedEdge(&􏵴graph􏵵,􏵶node􏵷,􏵴common ground􏵵,&tWire);
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+ADDING TRIGGERS:
+􏷘+􏷗􏷒add flow disable trigger on available power􏷑
+􏴅adding triggers􏴆
+􏷐flow is disabled on the receiver when the caller has power􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄caller id􏷃􏷀the id of the node responsible for calling the trigger􏶿
+􏶜􏶝􏷆size_t􏷅􏷄receiver id􏷃􏷀the id of the node to disable flow on􏶿
+􏶴
+  􏶲lookup the caller node, and add the appropriate trigger􏶱
+  NodeAddFlowDisableTriggerOnAvailablePower(􏵲get circuit component􏵳􏵶caller id􏵷),􏵶receiver id􏵷);
+􏶳
+􏷘+􏷗􏷒add flow disable trigger on unavailable power􏷑
+􏴅adding triggers􏴆
+􏷐flow is disabled on the receiver when the caller has lost power􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄caller id􏷃􏷀the id of the node responsible for calling the trigger􏶿
+􏶜􏶝􏷆size_t􏷅􏷄receiver id􏷃􏷀the id of the node to disable flow on􏶿
+􏶴
+  􏶲lookup the caller node, and add the appropriate trigger􏶱
+  NodeAddFlowDisableTriggerOnUnavailablePower(􏵲get circuit component􏵳􏵶caller id􏵷),􏵶receiver id􏵷);
+􏶳
+
+􏷘+􏷗􏷒add flow enable trigger on available power􏷑
+􏴅adding triggers􏴆
+􏷐flow is enabled on the receiver when the caller has power􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄caller id􏷃􏷀the id of the node responsible for calling the trigger􏶿
+􏶜􏶝􏷆size_t􏷅􏷄receiver id􏷃􏷀the id of the node to enable flow on􏶿
+􏶴
+  􏶲lookup the caller node, and add the appropriate trigger􏶱
+  NodeAddFlowEnableTriggerOnAvailablePower(􏵲get circuit component􏵳􏵶caller id􏵷),􏵶receiver id􏵷);
+􏶳
+􏷘+􏷗􏷒add flow enable trigger on unavailable power􏷑
+􏴅adding triggers􏴆
+􏷐flow is enabled on the receiver when the caller has lost power􏷏􏶠􏶡
+􏶜􏶝􏷆size_t􏷅􏷄caller id􏷃􏷀the id of the node responsible for calling the trigger􏶿
+􏶜􏶝􏷆size_t􏷅􏷄receiver id􏷃􏷀the id of the node to enable flow on􏶿
+􏶴
+  􏶲lookup the caller node, and add the appropriate trigger􏶱
+  NodeAddFlowEnableTriggerOnUnavailablePower(􏵲get circuit component􏵳􏵶caller id􏵷),􏵶receiver id􏵷);
+􏶳
+
+FORCING CHANGES:
+
+􏷘+􏷗􏷒everything on􏷑
+􏴅inspect debugging􏴆
+􏷐forces everything to be on􏷏
+􏶠affects all nodes􏶡
+􏶴
+ApplyActionToAllVertices(&􏵴graph􏵵,NULL,&ForceAllOn);
+􏶳
+
+􏷘+􏷗􏷒everything off􏷑
+􏴅inspect debugging􏴆
+􏷐forces everything to be off􏷏
+􏶠affects all nodes􏶡
+􏶴
+ApplyActionToAllVertices(&􏵴graph􏵵,NULL,&ForceAllOff);
+􏶳
+
+􏷘+􏷗􏷒everything clear􏷑
+􏴅inspect debugging􏴆
+􏷐clears all nodes of user forces􏷏
+􏶠affects all nodes􏶡
+􏶴
+ApplyActionToAllVertices(&􏵴graph􏵵,NULL,&RestoreAll);
+􏶳
+
+􏷘+􏷗􏷒name on􏷑
+􏴅debug􏴆
+􏷐searches for nodes by name and locks them in a state of being self-powered􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴
+  􏶲construct search string􏶱
+  AsciiStringT tSearchString = ConstructAsciiString(􏵶name􏵷);
+  
+  􏶲find and force action on node􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&tSearchString,&ForceOnFoundNodeName);
+  
+  􏶲destruct local string􏶱
+  DestructAsciiStringT(&tSearchString);
+􏶳
+
+􏷘+􏷗􏷒name off􏷑
+􏴅debug􏴆
+􏷐searches for nodes by name and locks them in a state of being unable to power􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴
+  􏶲construct search string􏶱
+  AsciiStringT tSearchString = ConstructAsciiString(􏵶name􏵷);
+  
+  􏶲find and force action on node􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&tSearchString,&ForceOffFoundNodeName);
+  
+  􏶲destruct local string􏶱
+  DestructAsciiStringT(&tSearchString);
+􏶳
+
+􏷘+􏷗􏷒name clear􏷑
+􏴅debug􏴆
+􏷐searches for nodes by name and restores any forced power changes􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴
+  􏶲construct search string􏶱
+  AsciiStringT tSearchString = ConstructAsciiString(􏵶name􏵷);
+  
+  􏶲find and force action on node􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&tSearchString,&RestoreForcedChangesOnFoundNodeName);
+  
+  􏶲destruct local string􏶱
+  DestructAsciiStringT(&tSearchString);
+􏶳
+
+􏷘+􏷗􏷒id on􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be on􏷏
+􏶠ids are unique􏶡
+􏶜m􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴
+  􏶲find and force action on node􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&uId,&ForceOnFoundNodeId);
+􏶳
+
+􏷘+􏷗􏷒id off􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be off􏷏
+􏶠ids are unique􏶡
+􏶜m􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴
+  􏶲find and force action on node􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&uId,&ForceOffFoundNodeId);
+􏶳
+
+􏷘+􏷗􏷒id clear􏷑
+􏴅inspect debugging􏴆
+􏷐forces a node to be cleared of user forces􏷏
+􏶠ids are unique􏶡
+􏶜m􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴
+  􏶲find and force action on node􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&uId,&RestoreForcedChangesOnFoundNodeId);
+􏶳
+
+
+PRINTING CHANGES:
+􏷘+􏷗􏷒print by name􏷑
+􏴅debug􏴆
+􏷐prints stats about nodes found by name􏷏
+􏶠non-case sensitive; substrings accepted􏶡
+􏶜􏶝􏷆char[]􏷅􏷄name􏷃􏷀the full or partial name of the node(s)􏶿
+􏶴
+  􏶲construct search string􏶱
+  AsciiStringT tSearchString = ConstructAsciiString(􏵶name􏵷);
+  
+  􏶲find and print nodes􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&tSearchString,&PrintFoundNodeName);
+  
+  􏶲destruct local string􏶱
+  DestructAsciiStringT(&tSearchString);
+􏶳
+
+􏷘+􏷗􏷒print by id􏷑
+􏴅inspect debugging􏴆
+􏷐prints stats about nodes found by id􏷏
+􏶠ids are unique􏶡
+􏶜m􏶝􏷆size􏷅􏷄id􏷃􏷀the unique id of the node􏶿
+􏶴
+  􏶲find and print nodes􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&uId,&PrintFoundNodeId);
+􏶳
+
+􏷘+􏷗􏷒print stats􏷑
+􏴅debug􏴆
+􏷐prints stats about the electrical graph􏷏
+􏶠shows the amount of node types currently configured in the graph􏶡
+􏶴
+  􏶲counts for the various electrical components that make up the graph􏶱
+  ElectricalGraphStatsT tStats = ConstructElectricalGraphStats();
+  
+  􏶲run traversal algorithms to calculate the statistics􏶱
+  􏵲count node types􏵳tStats.m_puNodeTypeCounts);
+  􏵲count wires􏵳&tStats.m_uWireCount);
+  􏵲count duplicated wires􏵳&tStats.m_uDuplicatedWireCount);
+  􏵲count grounded types􏵳tStats.m_puGroundedCounts);
+  􏵲count traversal points􏵳&tStats.m_uStartTraversalCount);
+  􏵲count triggers􏵳&tStats.m_uTriggerCount);
+  􏵲find unreachable nodes􏵳&tStats.m_tUnreachableNodes,ElectricalGraphStatsTotalNodes(&tStats));
+  􏵲find ungrounded leaf nodes􏵳&tStats.m_tUngroundedLeafNodes);
+  􏵲find unused breakers􏵳&tStats.m_tUnusedBreakers);
+  􏵲accumulate wattage􏵳&tStats.m_fTotalWattage);
+  
+  􏶲print the current counts􏶱
+  􏵲printf stats􏵳&tStats);
+  
+  􏶲destructs stats now that they are done being used􏶱
+  DestructElectricalGraphStatsT(&tStats);
+􏶳
+
+􏷘+􏷗􏷒orphan scan􏷑
+􏴅inspect debugging􏴆
+􏷐scans for particular graph orphans that might be considered logic errors􏷏
+􏶠This is an aid, not a guarantee that something is wrong􏶡
+􏶴
+  􏶲counts for the various electrical components that make up the graph􏶱
+  ElectricalGraphStatsT tStats = ConstructElectricalGraphStats();
+  
+  􏶲run traversal algorithms to calculate the statistics􏶱
+  􏵲count node types􏵳tStats.m_puNodeTypeCounts);
+  􏵲count wires􏵳&tStats.m_uWireCount);
+  􏵲count duplicated wires􏵳&tStats.m_uDuplicatedWireCount);
+  􏵲count grounded types􏵳tStats.m_puGroundedCounts);
+  􏵲count traversal points􏵳&tStats.m_uStartTraversalCount);
+  􏵲count triggers􏵳&tStats.m_uTriggerCount);
+  􏵲find unreachable nodes􏵳&tStats.m_tUnreachableNodes,ElectricalGraphStatsTotalNodes(&tStats));
+  􏵲find ungrounded leaf nodes􏵳&tStats.m_tUngroundedLeafNodes);
+  􏵲find unused breakers􏵳&tStats.m_tUnusedBreakers);
+  􏵲accumulate wattage􏵳&tStats.m_fTotalWattage);
+  
+  􏶲print the current counts􏶱
+  􏵲printf orphans􏵳&tStats);
+  
+  􏶲destructs stats now that they are done being used􏶱
+  DestructElectricalGraphStatsT(&tStats);
+􏶳
+
+􏷘+􏷗􏷒print differences􏷑
+􏴅debug􏴆
+􏷐prints the differences between a transitioned graph􏷏
+􏶠compares the two graphs and prints the differences􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄before􏷃􏷀the graph before the transition􏶿
+􏶴
+ApplyTransitionActionToAllVertices(&􏵴graph􏵵,&􏵶before􏵷->􏳉graph􏳊,NULL,&PrintNodeDifference);
+􏶳
+
+􏷘-􏷗􏷒accumulate wattage􏷑
+􏴅debug􏴆
+􏷐accumulate the total wattage across all of the nodes􏷏
+􏶠traverses over the graph to accumulate the total wattage􏶡
+􏶜mr􏶝􏷆f􏷅􏷄total wattage􏷃􏷀the total wattage of all the nodes in the graph􏶿
+􏶴
+  ApplyActionToAllVertices(&􏵴graph􏵵,􏵶total wattage􏵷,&IncrementTotalWattage);
+􏶳
+
+􏷘-􏷗􏷒count node types􏷑
+􏴅debug􏴆
+􏷐get the current node type counts for the current graph configuration􏷏
+􏶠traverses over the graph to accumulate the node type counts􏶡
+􏶜mr􏶝􏷆size􏷅􏷄node type counts􏷃􏷀collection of node type counts that will be filled by iterating the graph􏶿
+􏶴
+  ApplyActionToAllVertices(&􏵴graph􏵵,􏵶node type counts􏵷,&IncrementNodeTypeCount);
+􏶳
+
+􏷘-􏷗􏷒find ungrounded leaf nodes􏷑
+􏴅debug􏴆
+􏷐get all the node ids of leaf nodes that are not grounded􏷏
+􏶠ungrounded leaf nodes are usually a mistake􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄ungrounded leaf nodes􏷃􏷀collection of node ids for ungrounded leaf nodes􏶿
+􏶴
+  ApplyActionToAllLeafVertices(&􏵴graph􏵵,􏵶ungrounded leaf nodes􏵷,&StoreUngroundedLeafNode);
+􏶳
+
+􏷘-􏷗􏷒find unused breakers􏷑
+􏴅debug􏴆
+􏷐get all the node ids of leaf nodes that are not grounded􏷏
+􏶠ungrounded leaf nodes are usually a mistake􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄unused breakers􏷃􏷀collection of node ids for unused breakers􏶿
+􏶴
+  ApplyActionToAllVerticesAndImmediateNonGroundNeighbors(&􏵴graph􏵵,􏵶unused breakers􏵷,&StoreUnusedBreaker);
+􏶳
+
+􏷘-􏷗􏷒count wires􏷑
+􏴅debug􏴆
+􏷐get the current wire count for the current graph configuration􏷏
+􏶠traverses over the graph to accumulate the total wire count􏶡
+􏶜mr􏶝􏷆size􏷅􏷄wire count􏷃􏷀the total wire count that will be set by iterating the graph􏶿
+􏶴
+  ApplyActionToAllEdges(&􏵴graph􏵵,􏵶wire count􏵷,&IncrementWireCount);
+􏶳
+
+􏷘-􏷗􏷒count duplicated wires􏷑
+􏴅debug􏴆
+􏷐get the current number of duplicated wires for the current graph configuration􏷏
+􏶠traverses over the graph to accumulate duplicate wires􏶡
+􏶜mr􏶝􏷆size􏷅􏷄duplicated wire count􏷃􏷀the total duplicated wire count that will be set analyzing each of the nodes􏶿
+􏶴
+  ApplyActionToAllVerticesAndImmediateNeighbors(&􏵴graph􏵵,􏵶duplicated wire count􏵷,&IncrementDuplicatedWireCount);
+􏶳
+
+􏷘-􏷗􏷒count grounded types􏷑
+􏴅debug􏴆
+􏷐get the current grounded node type counts for the current graph configuration􏷏
+􏶠traverses over the graph to accumulate the grounded node type counts􏶡
+􏶜mr􏶝􏷆size􏷅􏷄grounded counts􏷃􏷀collection of node type counts that will be filled by iterating the graph􏶿
+􏶴
+  ApplyActionToAllVerticesAndImmediateNeighbors(&􏵴graph􏵵,􏵶grounded counts􏵷,&IncrementHasGroundedNeighbor);
+􏶳
+
+􏷘-􏷗􏷒count traversal points􏷑
+􏴅debug􏴆
+􏷐get the number of starting traversal points in the graph􏷏
+􏶠traverses over the graph to accumulate the traversal starting points􏶡
+􏶜mr􏶝􏷆size􏷅􏷄traversal points􏷃􏷀the number of traversal points that will be set by iterating the graph􏶿
+􏶴
+  ApplyActionToAllVertices(&􏵴graph􏵵,􏵶traversal points􏵷,&IncrementPowerNodeCount);
+􏶳
+
+􏷘-􏷗􏷒count triggers􏷑
+􏴅debug􏴆
+􏷐get the number of triggers involved for the current graph configuration􏷏
+􏶠traverses over the graph to accumulate the total number of triggers􏶡
+􏶜mr􏶝􏷆size􏷅􏷄trigger counts􏷃􏷀the number of triggers that will be set by iterating the graph􏶿
+􏶴
+  ApplyActionToAllVertices(&􏵴graph􏵵,􏵶trigger counts􏵷,&IncrementTriggerCount);
+􏶳
+
+􏷘-􏷗􏷒find unreachable nodes􏷑
+􏴅debug􏴆
+􏷐get the number of unreachable nodes involved for the current graph configuration􏷏
+􏶠traverses over the graph to find the power sources.  then runs traversals from the power sources to see what nodes are never reached􏶡
+􏶜mr􏶝􏷆VectorT􏷅􏷄unreachable nodes􏷃􏷀the number of triggers that will be set by iterating the graph􏶿
+􏶜􏶝􏷆size􏷅􏷄node count􏷃􏷀the number of nodes in the graph􏶿
+􏶴
+  􏶲list of current power sources􏶱
+  VectorT tPowerSourceIds = ConstructVector(SPECIALIZE_UNMANAGED(size_t),0);
+  
+  􏶲const time hash bucket􏶱
+  􏶲based on the notion that node ids go from 0 to n􏶱
+  VectorT tMarkedNodes = ConstructVector(SPECIALIZE_UNMANAGED(BOOL),0);
+  
+  􏶲loop index􏶱
+  size_t uIndex = 0u;
+  size_t uCurrentNodeId = 0u;
+  
+  􏶲create hash􏶱
+  BOOL bDefaultMarking = FALSE;
+  for (; uIndex < 􏵶node count􏵷; ++uIndex){
+    VectorPushBack(&tMarkedNodes,&bDefaultMarking);
+  }
+  
+  􏶲first get all of the power node ids􏶱
+  ApplyActionToAllVertices(&􏵴graph􏵵,&tPowerSourceIds,&StorePowerNodeId);
+  
+  􏶲then apply traversals on each power node􏶱
+  uIndex = 0u;
+  for (; uIndex < VectorSize(&tPowerSourceIds); ++uIndex){
+    􏵲run marking dfs traversal􏵳(size_t*)VectorAt(&tPowerSourceIds,uIndex),&tMarkedNodes);
+  }
+
+  􏶲now that we have a collection of all the found and unfound nodes,􏶱
+  􏶲filter out the unfound nodes􏶱
+  uIndex = 0u;
+  for (; uIndex < VectorSize(&tMarkedNodes); ++uIndex){
+    
+    􏶲if the node was not found, store it􏶱
+    if (!*((BOOL*)VectorAt(&tMarkedNodes,uIndex))){
+      VectorPushBack(􏵶unreachable nodes􏵷,&uIndex);
+    }
+  }
+  
+  􏶲destruct local vectors􏶱
+  DestructVectorT(&tMarkedNodes);
+  DestructVectorT(&tPowerSourceIds);
+􏶳
+
+􏷘-􏷗􏷒run marking dfs traversal􏷑
+􏴅debug􏴆
+􏷐run the marking dfs traversal algorithm􏷏
+􏶠this will mark any nodes found by the particular power node􏶡
+􏶜r􏶝􏷆size􏷅􏷄power node􏷃􏷀the power node ID to traverse from􏶿
+􏶜mr􏶝􏷆VectorT􏷅􏷄marked nodes􏷃􏷀hash table of marked nodes􏶿
+􏶴
+  GraphDfsActionsT tActions = ConstructGraphDfsActions(&MarkTraversedNode,&MarkTraversedNode,&MarkTraversedNode);
+  ApplyVertexActionsDuringDfsTraversal(&􏵴graph􏵵,􏵶marked nodes􏵷,*􏵶power node􏵷,tActions);
+􏶳
+
+􏷘-􏷗􏷒printf stats􏷑
+􏴅debug􏴆
+􏷐prints the counts of electrical components currently in the graph􏷏
+􏶠traverses over the graph to accumulate the node type counts􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  
+  􏶲title􏶱
+  fprintf(stdout, "%s",AsciiStringCStr(&􏵴name􏵵));
+  fprintf(stdout, "%s"," Graph Stats:\n");
+  
+  􏶲print the number of traversal starting points􏶱
+  fprintf(stdout, "\nPower Sources: %d\n",􏵶stats􏵷->m_uStartTraversalCount);
+  
+  􏵲print nodes􏵳􏵶stats􏵷);
+  􏵲print how many nodes are grounded􏵳􏵶stats􏵷);
+  􏵲print total triggers􏵳􏵶stats􏵷);
+  􏵲print total wattage􏵳􏵶stats􏵷);
+  􏵲print wire totals􏵳􏵶stats􏵷);
+  􏵲print density􏵳􏵶stats􏵷);
+􏶳
+
+􏷘-􏷗􏷒printf orphans􏷑
+􏴅debug􏴆
+􏷐prints the counts of electrical components currently in the graph􏷏
+􏶠traverses over the graph to accumulate the node type counts􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  􏵲print unreachable nodes􏵳􏵶stats􏵷);
+  􏵲print ungrounded leaf nodes􏵳􏵶stats􏵷);
+  􏵲print unused breakers􏵳􏵶stats􏵷);
+􏶳
+
+􏷘-􏷗􏷒print nodes􏷑
+􏴅debug􏴆
+􏷐prints the total number of nodes and the total for each type􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  􏶲pair needed for sorting􏶱
+  PairT ptSortedTotals[NUM_NODE_TYPE];
+  
+  􏶲collect node totals􏶱
+  size_t uIndex = 0u;
+  for (; uIndex < NUM_NODE_TYPE; ++uIndex){
+    ptSortedTotals[uIndex] = ConstructPair(&􏵶stats􏵷->m_puNodeTypeCounts[uIndex],SPECIALIZE_UNMANAGED(int),&uIndex,SPECIALIZE_UNMANAGED(int));
+  }
+  
+  􏶲sort node totals􏶱
+  qsort((void*)ptSortedTotals,NUM_NODE_TYPE,sizeof(PairT), (int(*)(const void*,const void*))PairLessThanInt);
+
+  􏶲print node total􏶱
+  fprintf(stdout, "\nNumber of components: %d\n",ElectricalGraphStatsTotalNodes(􏵶stats􏵷));
+  
+  uIndex = 0u;
+  for (; uIndex < NUM_NODE_TYPE; ++uIndex){
+      
+      􏶲print node type name􏶱
+      fprintf(stdout, "\t%d %s",
+      *((int*)PairFirst(&ptSortedTotals[uIndex])),
+      NodeTypeToInflectedStr(
+        *((int*)PairSecond(&ptSortedTotals[uIndex])),
+        *((int*)PairFirst(&ptSortedTotals[uIndex])))
+      );
+      
+      􏶲show the polarity􏶱
+      􏶲this is a convenience for showing what are the positive and negative terminals􏶱
+      if(IsPowerSource(*((int*)PairSecond(&ptSortedTotals[uIndex])))){
+        fprintf(stdout, "(+)");
+      }
+      else if(IsGrounding(*((int*)PairSecond(&ptSortedTotals[uIndex])))){
+        fprintf(stdout, "(-)");
+      }
+      
+      fprintf(stdout, "\n");
+  }
+  
+  􏶲destruct locals􏶱
+  uIndex = 0u;
+  for (; uIndex < NUM_NODE_TYPE; ++uIndex){
+    DestructPairT(&ptSortedTotals[uIndex]);
+  }
+􏶳
+
+􏷘-c􏷗􏷒print how many nodes are grounded􏷑
+􏴅debug􏴆
+􏷐prints the total number of nodes that grounded and ungrounded􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  fprintf(stdout, "\nImmediately Grounded(Yes/No): %d/%d\n",ElectricalGraphStatsTotalGroundedNodes(􏵶stats􏵷),ElectricalGraphStatsTotalUngroundedNodes(􏵶stats􏵷));
+􏶳
+􏷘-c􏷗􏷒print total triggers􏷑
+􏴅debug􏴆
+􏷐prints the total number of triggers in the graph􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  fprintf(stdout, "Triggers: %d\n",􏵶stats􏵷->m_uTriggerCount);
+􏶳
+􏷘-c􏷗􏷒print total wattage􏷑
+􏴅debug􏴆
+􏷐prints the total wattage of all nodes􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  fprintf(stdout, "Total wattage: %f\n",􏵶stats􏵷->m_fTotalWattage);
+􏶳
+
+􏷘-􏷗􏷒print unreachable nodes􏷑
+􏴅debug􏴆
+􏷐prints all of the unreachable nodes (by traversing power sources)􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  size_t uIndex = 0u;
+  fprintf(stdout, "\nUnreachable nodes: %d\n",VectorSize(&􏵶stats􏵷->m_tUnreachableNodes));
+  
+  if (VectorSize(&􏵶stats􏵷->m_tUnreachableNodes) > 0){
+    fprintf(stdout, "They are:\n");
+    for (; uIndex < VectorSize(&􏵶stats􏵷->m_tUnreachableNodes); ++uIndex){
+      fprintf(stdout, "\t");
+      fprintf(stdout, "%s: ",NodeTypeToInflectedStr(NodeType((NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,*(size_t*)VectorAt(&􏵶stats􏵷->m_tUnreachableNodes,uIndex) + 1))),1));
+      􏶲+1 because we indexed into a 0-based array with the ids, but the ids start at 1􏶱
+      fprintf(stdout, "%s\n",NodeName((NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,*(size_t*)VectorAt(&􏵶stats􏵷->m_tUnreachableNodes,uIndex) + 1))));
+    }
+  }
+􏶳
+􏷘-􏷗􏷒print ungrounded leaf nodes􏷑
+􏴅debug􏴆
+􏷐prints all of the ungrounded leaf nodes􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  size_t uIndex = 0u;
+  fprintf(stdout, "\nUngrounded leaf nodes: %d\n",VectorSize(&􏵶stats􏵷->m_tUngroundedLeafNodes));
+  
+  if (VectorSize(&􏵶stats􏵷->m_tUngroundedLeafNodes) > 0){
+    fprintf(stdout, "They are:\n");
+    for (; uIndex < VectorSize(&􏵶stats􏵷->m_tUngroundedLeafNodes); ++uIndex){
+      fprintf(stdout, "\t");
+      fprintf(stdout, "%s: ",NodeTypeToInflectedStr(NodeType((NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,*(size_t*)VectorAt(&􏵶stats􏵷->m_tUngroundedLeafNodes,uIndex)))),1));
+      fprintf(stdout, "%s\n",NodeName((NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,*(size_t*)VectorAt(&􏵶stats􏵷->m_tUngroundedLeafNodes,uIndex)))));
+    }
+  }
+􏶳
+􏷘-􏷗􏷒print unused breakers􏷑
+􏴅debug􏴆
+􏷐prints all of the ungrounded leaf nodes􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  size_t uIndex = 0u;
+  fprintf(stdout, "\nUnused Breakers: %d\n",VectorSize(&􏵶stats􏵷->m_tUnusedBreakers));
+  
+  if (VectorSize(&􏵶stats􏵷->m_tUnusedBreakers) > 0){
+    fprintf(stdout, "They are:\n");
+    for (; uIndex < VectorSize(&􏵶stats􏵷->m_tUnusedBreakers); ++uIndex){
+      fprintf(stdout, "\t");
+      fprintf(stdout, "%s: ",NodeTypeToInflectedStr(NodeType((NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,*(size_t*)VectorAt(&􏵶stats􏵷->m_tUnusedBreakers,uIndex)))),1));
+      fprintf(stdout, "%s\n",NodeName((NodeT*)GraphVertexRawData(GraphGetVertex(&􏵴graph􏵵,*(size_t*)VectorAt(&􏵶stats􏵷->m_tUnusedBreakers,uIndex)))));
+    }
+  }
+􏶳
+􏷘-c􏷗􏷒print wire totals􏷑
+􏴅debug􏴆
+􏷐prints wire totals for debugging􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  􏶲wire totals􏶱
+  fprintf(stdout, "\nNumber of wires: %d\n",􏵶stats􏵷->m_uWireCount);
+  fprintf(stdout, "Number of duplicated wires: %d\n",􏵶stats􏵷->m_uDuplicatedWireCount);
+􏶳
+􏷘-c􏷗􏷒print density􏷑
+􏴅debug􏴆
+􏷐prints graph density􏷏
+􏶠stats must be pre-calculated first􏶡
+􏶜mr􏶝􏷆ElectricalGraphStatsT􏷅􏷄stats􏷃􏷀stats about the current graph􏶿
+􏶴
+  􏶲print density􏶱
+  fprintf(stdout, "\nDensity:\n");
+  fprintf(stdout, "\tUndirected: %f\n",ElectricalGraphStatsUndirectedDensity(􏵶stats􏵷));
+  fprintf(stdout, "\tDirected: %f\n",ElectricalGraphStatsDirectedDensity(􏵶stats􏵷));
+􏶳
+
+􏶨internal data structure used by the graph􏶧
+􏶦The graph data structure can hold any kind of vertex, and any kind of edge
+We will specialize it internally to use our electrical nodes, and the edges will be wires􏶥
+􏶘-􏶙􏶮GraphT􏶭􏶬graph􏶫
+
+􏶨The name of the electrical graph (intended for debugging)􏶧
+􏶦Given to the graph upon construction􏶥
+􏶘-􏶙􏶮AsciiStringT􏶭􏶬name􏶫􏶪0􏶩
+
+􏶨the electrical graph creates and stores its own electrical node to common ground􏶧
+􏶦this is a convenience to the user.  They can attach to common ground,
+by calling specific API methods􏶥
+􏶘-􏶙􏶮size_t􏶭􏶬common ground􏶫
+
+

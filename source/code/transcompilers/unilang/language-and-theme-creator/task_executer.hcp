@@ -1,0 +1,66 @@
+class
+
+❪"code/transcompilers/unilang/tokens/generic_token"❫
+❪"code/transcompilers/unilang/tokens/global_token_table"❫
+⚯
+❪"code/transcompilers/unilang/language-and-theme-creator/global"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/reference_file_creator"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/stylized_reference_file_creator"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/language_file_creator"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/theme_file_creator"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks() ❰
+
+    //quit if we accidentally have duplicate characters representing more than one thing
+    //we modified the font to show different characters with the same glyph, so it's hard to tell by sight
+    Ensure_All_Token_Values_Are_Unique();
+
+    //create the 3 needed files
+    Reference_File_Creator::Create_Reference_File();
+    Stylized_Reference_File_Creator::Create_Stylized_Reference_File();
+    Language_File_Creator::Create_Language_File();
+    Theme_File_Creator::Create_Theme_File();
+❱
+
+◀private: static▶ void ☀Ensure_All_Token_Values_Are_Unique() ❰
+
+    //make sure all markers are unique
+    //by building a vec of all the characters
+    auto all_chars = Get_All_UniLang_Token_Characters();
+    
+    //and then testing that they are indeed unique
+    if (!all_unique(all_chars.begin(),all_chars.end())){
+        Exit_With_Error("not using unique " + LANGUAGE_NAME + " markers");
+    }
+❱
+
+◀private: static▶ std::vector<wchar_t> ☀Get_All_UniLang_Token_Characters() ❰
+
+    //root unicode characters
+    auto all_unicode_chars_used_at_root
+    = Destructure_Out_Vec_Of_Data_Member(TOKENS.begin(),TOKENS.end(),&decltype(TOKENS)::value_type::start)
+    + Destructure_Out_Vec_Of_Data_Member(TOKENS.begin(),TOKENS.end(),&decltype(TOKENS)::value_type::end);
+
+    //body root unicode characters
+    auto all_unicode_chars_used_in_body_root
+    = Destructure_Out_Vec_Of_Data_Member(BODY_TOKENS.begin(),BODY_TOKENS.end(),&decltype(BODY_TOKENS)::value_type::start)
+    + Destructure_Out_Vec_Of_Data_Member(BODY_TOKENS.begin(),BODY_TOKENS.end(),&decltype(BODY_TOKENS)::value_type::end);
+
+    //all of the token groups
+    auto all_chars = all_unicode_chars_used_at_root + all_unicode_chars_used_in_body_root;
+    
+    //all of the macro characters
+    all_chars.push_back(CLASS_NAME_CODE_FORM_MACRO);
+    all_chars.push_back(CLASS_NAME_PRINT_FORM_MACRO);
+    all_chars.push_back(TEST_OBJECT_CLASS_NAME);
+    all_chars.push_back(ESCAPE_CHARACTER);
+    all_chars.push_back(TRUE_MACRO);
+    all_chars.push_back(FALSE_MACRO);
+    all_chars.push_back(NULL_MACRO);
+    
+    return all_chars;
+❱

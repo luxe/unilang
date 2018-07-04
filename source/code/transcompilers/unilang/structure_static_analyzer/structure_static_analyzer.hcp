@@ -1,0 +1,90 @@
+class
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/static_analysis/static_analysis_settings"❫
+⚯
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/converters/lib"❫
+❪iostream❫
+⚞⚟
+
+//need the file markers stored inside the structure
+◀public: static▶ void ☀Print_Warnings(Structure const& structure, Static_Analysis_Settings const& settings)❰
+
+    std::vector<std::pair<std::string,std::string>> error_messages;
+    Print_Warnings_About_Meta_Section(error_messages,structure,settings);
+    Print_Warnings_About_Import_Section(error_messages,structure,settings);
+    Print_Warnings_About_Method_Section(error_messages,structure,settings);
+    Print_Warnings_About_Data_Member_Section(error_messages,structure,settings);
+    
+    for (auto it: error_messages){
+        std::cerr << it.first << ": " << it.second << std::endl;
+    }
+❱
+
+◀public: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+    //Spell_Check_Brief_Description();
+    //Spell_Check_Detailed_Description();
+    //Spell_Check_Group_Names();
+    //Check_For_Valid_Author_Name();
+    //Spell_Check_Bugs();
+    //Spell_Check_Warnings();
+
+    Add_Error_Based_On_Expression_And_Desire(structure.meta.brief_description.value.empty(),settings.warn_about_empty_brief_description,error_messages,structure,"Missing brief description");
+    Add_Error_Based_On_Expression_And_Desire(structure.meta.detailed_description.value.empty(),settings.warn_about_empty_detailed_description,error_messages,structure,"Missing detailed description");
+    Add_Error_Based_On_Expression_And_Desire(structure.meta.group_names.empty(),settings.warn_about_no_group_names,error_messages,structure,"No group names provided");
+    
+    //I've been accidentally new lining comments after a comma
+    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.brief_description.value),settings.warn_about_empty_brief_description,error_messages,structure,"brief line ends with a comma");
+    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.detailed_description.value),settings.warn_about_empty_detailed_description,error_messages,structure,"detail line ends with a comma");
+    
+    
+❱
+◀public: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+    //Spell_Check_Brief_Import_Comment();
+    for (auto it: structure.imports.interface_dependencies){
+        Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_interface_import_comment,error_messages,structure,"Missing interface import comment");
+    }
+    for (auto it: structure.imports.implementation_dependencies){
+        Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_implementation_import_comment,error_messages,structure,"Missing implementation import comment");
+    }
+❱
+◀public: static▶ void ☀Print_Warnings_About_Method_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+    //Spell_Check_Function_Name();
+    //Spell_Check_Function_Brief_Description();
+    //Spell_Check_Function_Detailed_Brief_Description();
+    //Spell_Check_Function_Template_Argument_Comment();
+    //Spell_Check_Function_Argument_Comment();
+    //Spell_Check_Function_Result_Comment();
+    //Spell_Check_Function_Except_Comment();
+❱
+◀public: static▶ void ☀Print_Warnings_About_Data_Member_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+//Brief
+//Detailed
+❱
+
+
+◀public: static▶ bool ☀A_Line_Ends_With_A_Comma(std::wstring str)❰
+
+    auto parts = Split_Into_Parts_From_Delimiter(as_string(str),'\n');
+    for (auto & it: parts){
+        trim(it);
+        if (it.back() == ','){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀public: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error)❰
+    if (expression && desire){
+        Add_Error(error_messages,structure,error);
+    }
+❱
+
+◀public: static▶ void ☀Add_Error(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error_message)❰
+    std::pair<std::string,std::string> error;
+    error.first = structure.full_file_path;
+    error.second = error_message;
+    error_messages.push_back(error);
+❱

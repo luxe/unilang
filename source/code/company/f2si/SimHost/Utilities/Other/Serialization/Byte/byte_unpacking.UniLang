@@ -1,0 +1,151 @@
+􏶞g􏶟
+􏷲endian aware network unpacking between big and little endian􏷱
+􏷰Deals with endianness and address invariance. not padding/offsets􏷯
+􏷮Byte Unpacking􏷭 􏷮Network􏷭 􏷮Utilities􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦Defs.h􏷥􏷢USES: BYTE􏷡
+􏷤s􏷣􏷦stddef􏷥􏷢USES: size_t􏷡
+􏶔􏶕􏶒EndianSwapping􏶓􏶖USES: reverse calls􏶗
+􏶔s􏶕􏶒strLib􏶓􏶖USES: memcpy()􏶗
+
+􏷘+􏷗􏷒unpack big endian􏷑
+􏷐Unpacks a type stored as big endian from a data buffer􏷏
+􏶠the bytes of the type are converted to big endian􏶡
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be copied into buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be copied into buffer􏶿
+􏵪uDataSize > 0􏵫􏵨data size should be > 0􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    􏶲unpack data from byte array􏶱
+    memcpy(􏵶data􏵷,&􏵶buffer􏵷[*􏵶buffer iterator􏵷],􏵶data size􏵷);
+    
+    􏶲potentially reverse the unpacked data so that it is back to big endian􏶱
+    ReverseEndianWhenOnLittleEndianMachine(􏵶data􏵷,􏵶data size􏵷);
+    
+    􏶲increment our buffer iterator for the next unpack􏶱
+    *􏵶buffer iterator􏵷+= 􏵶data size􏵷;
+􏶳
+
+􏷘+􏷗􏷒unpack little endian􏷑
+􏷐Unpacks a type stored as little endian from a data buffer􏷏
+􏶠the bytes of the type are converted to little endian􏶡
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be copied into buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be copied into buffer􏶿
+􏵪uDataSize > 0􏵫􏵨data size should be > 0􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    􏶲unpack data from byte array􏶱
+    memcpy(􏵶data􏵷,&􏵶buffer􏵷[*􏵶buffer iterator􏵷],􏵶data size􏵷);
+    
+    􏶲potentially reverse the unpacked data so that it is back to little endian􏶱
+    ReverseEndianWhenOnBigEndianMachine(􏵶data􏵷,􏵶data size􏵷);
+    
+    􏶲increment our buffer iterator for the next unpack􏶱
+    *􏵶buffer iterator􏵷+= 􏵶data size􏵷;
+􏶳
+
+􏷘+􏷗􏷒unpack big endian 4 byte invariance􏷑
+􏷐Unpacks a type stored as big endian from a data buffer􏷏
+􏶠the bytes of the type are converted to big endian with a 4 byte invariance􏶡
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be copied into buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be copied into buffer􏶿
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    􏶲unpack data from byte array􏶱
+    memcpy(􏵶data􏵷,&􏵶buffer􏵷[*􏵶buffer iterator􏵷],􏵶data size􏵷);
+    
+    􏶲potentially reverse the unpacked data so that it is back to big endian􏶱
+    ReverseEndianBy4BytesWhenOnLittleEndianMachine(􏵶data􏵷,􏵶data size􏵷);
+    
+    􏶲increment our buffer iterator for the next unpack􏶱
+    *􏵶buffer iterator􏵷+= 􏵶data size􏵷;
+􏶳
+
+􏷘+􏷗􏷒unpack little endian 4 byte invariance􏷑
+􏷐Unpacks a type stored as little endian from a data buffer􏷏
+􏶠the bytes of the type are converted to little endian with a 4 byte invariance􏶡
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be copied into buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be copied into buffer􏶿
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    􏶲unpack data from byte array􏶱
+    memcpy(􏵶data􏵷,&􏵶buffer􏵷[*􏵶buffer iterator􏵷],􏵶data size􏵷);
+    
+    􏶲potentially reverse the unpacked data so that it is back to little endian􏶱
+    ReverseEndianBy4BytesWhenOnBigEndianMachine(􏵶data􏵷,􏵶data size􏵷);
+
+    􏶲increment our buffer iterator for the next unpack􏶱
+    *􏵶buffer iterator􏵷+= 􏵶data size􏵷;
+􏶳
+
+􏷘+􏷗􏷒unpack big endian 2 byte invariance􏷑
+􏷐Unpacks a type stored as big endian from a data buffer􏷏
+􏶠the bytes of the type are converted to big endian with a 2 byte invariance􏶡
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be copied into buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be copied into buffer􏶿
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    􏶲unpack data from byte array􏶱
+    memcpy(􏵶data􏵷,&􏵶buffer􏵷[*􏵶buffer iterator􏵷],􏵶data size􏵷);
+    
+    􏶲potentially reverse the unpacked data so that it is back to big endian􏶱
+    ReverseEndianBy2BytesWhenOnLittleEndianMachine(􏵶data􏵷,􏵶data size􏵷);
+    
+    􏶲increment our buffer iterator for the next unpack􏶱
+    *􏵶buffer iterator􏵷+= 􏵶data size􏵷;
+􏶳
+
+􏷘+􏷗􏷒unpack little endian 2 byte invariance􏷑
+􏷐Unpacks a type stored as little endian from a data buffer􏷏
+􏶠the bytes of the type are converted to little endian with a 2 byte invariance􏶡 
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜mr􏶝􏷆void􏷅􏷄data􏷃􏷀Data to be copied into buffer􏶿
+􏶜􏶝􏷆size_t􏷅􏷄data size􏷃􏷀size of the data to be copied into buffer􏶿
+􏵪uDataSize % 2 == 0􏵫􏵨data size should be divisible by 2􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    􏶲unpack data from byte array􏶱
+    memcpy(􏵶data􏵷,&􏵶buffer􏵷[*􏵶buffer iterator􏵷],􏵶data size􏵷);
+    
+    􏶲potentially reverse the unpacked data so that it is back to little endian􏶱
+    ReverseEndianBy2BytesWhenOnBigEndianMachine(􏵶data􏵷,􏵶data size􏵷);
+
+    􏶲increment our buffer iterator for the next unpack􏶱
+    *􏵶buffer iterator􏵷+= 􏵶data size􏵷;
+􏶳
+
+􏷘+􏷗􏷒unpack first n array elements􏷑
+􏷐Unpacks only the first number of array elements specified into a data buffer􏷏
+􏶠Useful for partial unpacking based on some other unpacked value􏶡 
+􏶜􏶝􏷆BYTE[]􏷅􏷄buffer􏷃􏷀Reference to data buffer􏶿
+􏶜mr􏶝􏷆size_t􏷅􏷄buffer iterator􏷃􏷀the index of the buffer to start packing the data at􏶿
+􏶜m􏶝􏷆void[]􏷅􏷄array􏷃􏷀the array to be packed􏶿
+􏶜􏶝􏷆size_t􏷅􏷄element size􏷃􏷀size of a data element in the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄number of elements􏷃􏷀the number of elements to unpack from the start of the array􏶿
+􏶜􏶝􏷆size_t􏷅􏷄array size􏷃􏷀the maximum size of the array􏶿
+􏵪uDataSize % 4 == 0􏵫􏵨data size should be divisible by 4􏵩
+􏵪uNumberOfElements <= uArraySize􏵫􏵨the number of elements must not exceed the array size􏵩
+􏵦uBufferIterator != 0􏵧􏵤the buffer iterator will increment so that it can be used to unpack the next set of data􏵥
+􏶴
+    size_t uIndex = 0;
+    for (; uIndex < 􏵶number of elements􏵷 && uIndex < 􏵶array size􏵷; ++uIndex){
+    
+        􏶲increment void pointer the number of appropriate bytes based on element size during each iteration􏶱
+        􏵲unpack big endian􏵳􏵶buffer􏵷,􏵶buffer iterator􏵷,(char*const)􏵶array􏵷 + (uIndex*􏵶element size􏵷),􏵶element size􏵷);
+    }
+􏶳

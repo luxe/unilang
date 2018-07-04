@@ -1,0 +1,106 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_data_member/data_member_utility_function_options"❫
+❪"code/transcompilers/unilang/options/language-specific/c_language_version"❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-comparison/settings/special_comparison_type"❫
+❪"code/transcompilers/unilang/relational-operator/relational_operator"❫
+❪"code/transcompilers/unilang/relational-operator/relational_operator_converter"❫
+⚯
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-comparison/special_type_comparison_getter"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/printf/printf_code_generator"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+//START BOOLEAN EXPRESSION CREATOR
+◀public: static▶ std::vector<Body_Token_Value> ☀Create(Data_Member_Item const& item, std::string const& self_identifier, Relational_Operator const& op, bool & found)❰
+	
+	std::vector<Body_Token_Value> body;
+	if (!Custom_Type_Data_Member(item)){
+		body += Create_Boolean_Expression_For_Fundamental(item,op);
+		found = true;
+	}
+	else{
+		body += Create_Boolean_Expression_For_NonFundamental(item,op,found);
+	}
+
+	Mustache_Like_Fill_In(body,item,self_identifier);
+
+	return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Create_Boolean_Expression_For_Fundamental(Data_Member_Item const& item, Relational_Operator const& op)❰
+	
+	std::vector<Body_Token_Value> boolean_expression;
+    Body_Token_Value t;
+    
+	//create normal boolean expression
+    t.name = Body_Token_Name::SELF_DATA_MEMBER;
+    //filled in automatically
+    boolean_expression.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring(Relational_Operator_Converter::As_String(op));
+    boolean_expression.push_back(t);
+
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    //filled in automatically
+    boolean_expression.push_back(t);
+
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  as_wstring("->");
+    boolean_expression.push_back(t);
+
+    t.name = Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ;
+    //filled in automatically
+    boolean_expression.push_back(t);
+
+	return boolean_expression;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Create_Boolean_Expression_For_NonFundamental(Data_Member_Item const& item, Relational_Operator const& op, bool & found)❰
+	
+
+  //attempt to get code for special type printing
+  Special_Comparison_Settings special_settings;
+  auto special_code = Special_Type_Comparison_Getter::Get(special_settings,as_string(item.type.value),found);
+
+	switch(op){
+		case Relational_Operator::EQUAL: return special_code.equal;
+        case Relational_Operator::NOT_EQUAL: return special_code.not_equal;
+        case Relational_Operator::LESS: return special_code.less;
+        case Relational_Operator::LESS_EQUAL: return special_code.less_equal;
+        case Relational_Operator::GREATER: return special_code.greater;
+        case Relational_Operator::GREATER_EQUAL: return special_code.greater_equal;
+	}
+
+	//should not happen
+	return special_code.equal;
+❱
+//END BOOLEAN EXPRESSION CREATOR
+
+
+//util
+◀private: static▶ void ☀Mustache_Like_Fill_In(std::vector<Body_Token_Value> & b, Data_Member_Item const& item,std::string const& self_identifier)❰
+	//{{MUSTACHE-LIKE FILL IN}} for the the data member name
+    for (auto & it: b){
+      if (it.name == Body_Token_Name::SELF_DATA_MEMBER){
+        it.value = item.name.value;
+      }
+      else if (it.name == Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ){
+        it.value = item.name.value;
+      }
+      else if (it.name == Body_Token_Name::BODY_PARAMETER){
+        it.value = as_wstring(self_identifier);
+      }
+    }
+❱
+◀private: static▶  bool ☀Custom_Type_Data_Member(Data_Member_Item const& item)❰
+  //TODO: not good to look for the T at the end because hungarian notation should be an implementation
+  //detail and it can change and we should be bale to reference the type from the unilang name
+  return Ends_With(as_string(item.type.value),"T");
+❱

@@ -1,0 +1,76 @@
+class
+
+
+❪"code/transcompilers/unilang/literal_suffix_getter/getter/floating_point_literal_settings"❫
+⚯
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/literal_suffix_getter/getter/literal_suffix_settings"❫
+❪"code/transcompilers/unilang/literal_suffix_getter/getter/literal_suffix_getter"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+
+◀public: static▶ std::string ☀Get_Adjusted(std::string type, std::string literal)❰
+    //settings related to literals
+    Literal_Suffix_Settings settings;
+    
+    //add a moronic ".0" to the end of decimals in order to please the mentally brainwashed.
+    //Doing this is meaningless and completely asinine, but I'm tired of hearing people comment about it.
+    //I was also asked to prefix decimals with "0.".
+    //Again, this is idiotic, but automating it will bridge the gap between stupidity, and normal programming.
+    Potentially_Prefix_The_Zero_Point_If_Missing(settings.floating_point,type,literal);
+    Potentially_Add_Decimal_If_Missing(settings.floating_point,type,literal);
+    
+    //add a stupid suffix literal if needed
+    literal += Literal_Suffix_Getter::Get_Literal_Suffix(settings,type);
+        
+    return literal;
+❱
+
+◀private: static▶ void ☀Potentially_Prefix_The_Zero_Point_If_Missing(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+  
+    //add an implicit "0". if the type is floating, and the user specified it with a starting decimal
+    if (Should_Print_Decimal_Prefix(settings,type,literal)){
+      literal = settings.before_decimal + literal;
+    }
+❱
+◀private: static▶ void ☀Potentially_Add_Decimal_If_Missing(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+  
+    //add an implicit ".0" if the type is floating, and a decimal does not already exist
+    if (Should_Print_Decimal_And_Decimal_Suffix(settings,type,literal)){
+      literal += settings.output_language_decimal + settings.after_decimal;
+    }
+❱
+
+◀private: static▶ bool ☀Should_Print_Decimal_Prefix(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+    if (settings.add_before_decimal_part){
+      if (Is_Type_Floating(settings,type)){
+        if (Begins_With(literal,settings.unilang_decimal)){
+          return true;
+        }
+      }
+    }
+    
+    return false;
+❱
+◀private: static▶ bool ☀Should_Print_Decimal_And_Decimal_Suffix(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
+    if (settings.add_decimal_after_part){
+      if (Is_Type_Floating(settings,type)){
+        if (!Contains_Character(literal,settings.unilang_decimal)){
+          return true;
+        }
+      }
+    }
+    
+    return false;
+❱
+
+//add a string type representation traits utility section
+◀private: static▶ bool ☀Is_Type_Floating(Floating_Point_Literal_Settings const& settings, std::string type)❰
+  
+  //strip out array
+  Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+  return String_In_Vector(settings.floating_types,type);
+❱

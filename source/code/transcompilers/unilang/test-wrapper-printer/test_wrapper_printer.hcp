@@ -1,0 +1,73 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"normal_design_test_wrapper_printer"❫
+❪"in_out_design_test_wrapper_printer"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Print(Structure structure, C_Export_Settings const& options)❰
+    
+    if(structure.meta.code_type == Code_Type::PRODUCT_TYPE){
+        
+        //we do this so that the test object can self reference itself
+        //things like overloaded operators, swaps, copies.  methods where a class
+        //takes itself as a parameter
+        //this will make testing easier.  without this,
+        //I would have to use the types raw, and that would require memory maintenance for some
+        //of the dynamically allocated objects.
+        Convert_Data_Members_On_Methods_To_Match_Test_Object_Type(structure,options);
+        
+        switch (options.general.object_export_method){
+            case Object_Export_Method::NORMAL:       Normal_Design_Test_Wrapper_Printer::Print(structure,options); break;
+            case Object_Export_Method::INPUT_OUTPUT: In_Out_Design_Test_Wrapper_Printer::Print(structure,options); break;
+            default:;
+        }
+    }
+❱
+
+
+◀private: static▶ void ☀Convert_Data_Members_On_Methods_To_Match_Test_Object_Type(Structure & structure, C_Export_Settings const& options)❰
+
+    //loop over all the methods
+    for (auto & method: structure.methods.methods){
+        
+            //if its not some special method that we already account for in some special way
+            if (Shared_Printer::Is_Not_A_Manager_Method(structure.name,method) && !Shared_Printer::Is_Copy_Constructor(structure.name,method)){
+                
+                //loop over all its parameters
+                for (auto & arg: method.function_arguments){
+                    Possibly_Rename_Argument(structure,arg,options);
+                }
+                
+                //loop over all its return results
+                for (auto & arg: method.return_results){
+                    Possibly_Rename_Return_Result(structure,arg,options);
+                }
+            }
+        }
+❱
+
+
+◀private: static▶ void ☀Possibly_Rename_Argument(Structure const& structure, Function_Argument & arg, C_Export_Settings const& options)❰
+    if (Case_Insensitive_Undercore_And_Space_Ignoring_String_Compare(as_string(arg.type.value) ,structure.name + "t")){
+        arg.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    }
+❱
+
+◀private: static▶ void ☀Possibly_Rename_Return_Result(Structure const& structure, Function_Result & arg, C_Export_Settings const& options)❰
+    if (Case_Insensitive_Undercore_And_Space_Ignoring_String_Compare(as_string(arg.type.value),structure.name + "t")){
+        arg.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    }
+❱
+
+

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#in case there are new branches since the last pull
+git pull;
+
+#get all the remote branch names except for the HEAD one
+branches=()
+eval "$(git for-each-ref --shell --format='branches+=(%(refname))' | grep remotes | grep -v refs/remotes/origin/HEAD)"
+
+
+#loop through all the remote branch names
+for branch in "${branches[@]}"; do
+    
+    #trim off the "refs/remotes/origin/" prefix
+    # this gives you the actual branch name
+    branch=`echo $branch | cut -d"/" -f4-`;
+    echo $branch
+done

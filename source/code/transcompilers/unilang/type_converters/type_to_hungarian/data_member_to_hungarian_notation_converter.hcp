@@ -1,0 +1,73 @@
+class
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/type_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_argument"❫
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_result"❫
+❪"code/transcompilers/unilang/options/hungarian/identifier_notation_settings"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/type_qualifier_stripper"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/type_name_deriver"❫
+❪"code/utilities/converters/lib"❫
+⚯
+⚞⚟
+
+//main
+◀public: 
+template <typename T>
+static std::string Get_Hungarian_Notation_Prefix(T item, C_Export_Settings const& settings, bool is_global, bool is_member){
+    return Get_Hungarian_Notation_Prefix_Of_NonData_Member(item,settings,is_global,is_member,false);
+}
+▶
+
+
+//specialization
+◀public: static▶ std::string ☀Get_Hungarian_Notation_Prefix(Data_Member_Item item, C_Export_Settings const& settings, bool is_global, bool is_member)❰
+    
+    bool is_static = false;
+    if (item.storage == Storage_Specifier::STATIC){
+        is_static = true;
+    }
+    return Get_Hungarian_Notation_Prefix_Of_Data_Member(item,settings,is_global,is_member,is_static);
+❱
+
+
+//sub calls
+◀
+private: 
+template <typename T>
+static std::string Get_Hungarian_Notation_Prefix_Of_Data_Member(T item, C_Export_Settings const& settings, bool is_global, bool is_member, bool is_static){
+    return Get_Hungarian_Notation_Prefix(item,settings,is_global,is_member,is_static,false);
+}
+▶
+
+◀
+private: 
+template <typename T>
+static std::string Get_Hungarian_Notation_Prefix_Of_NonData_Member(T item, C_Export_Settings const& settings, bool is_global, bool is_member, bool is_static){
+    return Get_Hungarian_Notation_Prefix(item,settings,is_global,is_member,is_static,item.is_reference);
+}
+▶
+
+◀
+private: 
+template <typename T>
+static std::string Get_Hungarian_Notation_Prefix(T item, C_Export_Settings const& settings, bool is_global, bool is_member, bool is_static, bool is_reference){
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(item.type.value),is_reference);
+        
+    //convert that base unilang type to the actual type
+    auto real_type = Type_Name_Deriver::Derive_Name(item,settings);
+    
+    //at this point, the 'type' should be the absolute base type.  
+    //we'll use this absolute base type to derive the right notation alongside all of our derived boolean values about the type
+
+    
+    //TODO: may not actually want to get from data_member.  Depends on what we are getting hungarian notation for.
+    auto identifier_settings = settings.portion.data_member_options.notation.identifier;
+
+	//actually get hungarian notation prefix
+    return Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix
+    (identifier_settings,real_type,stripped_type_detail.is_pointer,is_member,is_global,is_static,stripped_type_detail.is_array,stripped_type_detail.is_reference);
+}
+▶
+
+

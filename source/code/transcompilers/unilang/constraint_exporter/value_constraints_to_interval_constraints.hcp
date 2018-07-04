@@ -1,0 +1,151 @@
+class
+
+❪vector❫
+❪string❫
+❪"code/transcompilers/unilang/constraint_exporter/interval_constraint/interval_constraint"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/value_constraints"❫
+⚯
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
+❪algorithm❫
+❪"code/utilities/types/wstrings/transformers/other/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+
+//this is going to filter out value_constraints that can be better expressed as interval constraints
+//other value constraints will remain if they can't be used to make an interval constraint
+◀public: static▶ std::vector<Interval_Constraint> ☀Derive(std::vector<Value_Constraints> & value_constraints)❰
+//if we have more than one interval they are assumed to be something like:  [0,1] [3,4]
+// anything like: [0, 10] and [2, 8] should be flagged as dumb before calling this function.  
+    
+    
+    //values to determine and find constraints that make an interval
+    std::vector<Value_Constraints> potential_begins;
+    std::vector<Value_Constraints> potential_ends;
+    
+    //store all of the potential interval constraint points, and remove them from the list of value constraints
+    Remove_Elements_Where_Function_Is_True(value_constraints,[&](Value_Constraints constraint){
+        return Potentially_Store_Constraint(potential_begins,potential_ends,constraint);
+    });
+    
+    //sort potential interval constraint points
+    Sort_Points(potential_begins);
+    Sort_Points(potential_ends);
+    
+    
+    //derives interval constants, and gives back to value_constraints if
+    //there is no matching endpoint in order to create an interval
+    auto intervals = Create_Intervals(potential_begins,potential_ends,value_constraints);
+    
+    return intervals;
+❱
+
+◀private: static▶ std::vector<Interval_Constraint> ☀Create_Intervals(std::vector<Value_Constraints> const& potential_begins, std::vector<Value_Constraints> const& potential_ends, std::vector<Value_Constraints> & value_constraints)❰
+    auto begin_size = potential_begins.size();
+    auto end_size = potential_ends.size();
+    
+    auto min = std::min(begin_size,end_size);
+    std::vector<Interval_Constraint> intervals;
+    for (size_t i = 0; i < min; ++i){
+        
+        //zip the endpoints to create intervals
+        if ((i < begin_size) && (i < end_size)){
+            intervals.push_back(Build_Interval(potential_begins[i], potential_ends[i]));
+        }
+    }
+    
+    //give back the ones we did not use
+    if (begin_size < end_size){
+        for (int i = min; i < end_size; ++i){
+            value_constraints.push_back(potential_ends[i]);
+        }
+    }
+    else if (end_size < begin_size){
+        for (int i = min; i < begin_size; ++i){
+            value_constraints.push_back(potential_begins[i]);
+        }
+    }
+    
+    
+    return intervals;
+❱
+
+
+◀private: static▶ void ☀Sort_Points(std::vector<Value_Constraints> & points)❰
+    std::sort(points.begin(),points.end(),[&](Value_Constraints const& vc1, Value_Constraints const& vc2){
+        return Numerical_String_Is_Less_Than_Numerical_String(as_string(vc1.value.value),as_string(vc2.value.value));
+    });
+❱
+
+◀private: static▶ bool ☀Potentially_Store_Constraint(std::vector<Value_Constraints> & potential_begins, std::vector<Value_Constraints> & potential_ends, Value_Constraints constraint)❰
+    
+    bool found=false;
+    if (as_string(constraint.operation.value) == ">=" || as_string(constraint.operation.value) == ">"){
+        Store_Found_Endpoint(potential_begins,constraint,found);
+    }
+    else if (as_string(constraint.operation.value) == "<=" || as_string(constraint.operation.value) == "<"){
+        Store_Found_Endpoint(potential_ends,constraint,found);
+    }
+    
+    return found;
+❱
+
+◀private: static▶ void ☀Store_Found_Endpoint(std::vector<Value_Constraints> & found_constraints, Value_Constraints const& found_constraint, bool & found)❰
+    found = true;
+    found_constraints.push_back(found_constraint);
+❱
+
+
+◀private: static▶ Interval_Constraint ☀Build_Interval(Value_Constraints begin, Value_Constraints end)❰
+    Interval_Constraint interval;
+    
+    //possibly flip, so that range makes sense
+    
+    if (Numerical_String_Is_Less_Than_Numerical_String(as_string(end.value.value),as_string(begin.value.value))){
+        std::swap(begin,end);
+    }
+    
+    interval.begin = Set_Interval_Point(begin);
+    interval.end = Set_Interval_Point(end);
+    
+    
+    return interval;
+❱
+
+◀private: static▶ Interval_Point ☀Set_Interval_Point(Value_Constraints const& value_constraint)❰
+
+    Interval_Point point;
+    point.value = value_constraint.value;
+    if (as_string(value_constraint.operation.value) == "<=" || as_string(value_constraint.operation.value) == ">="){
+        point.type = Interval_Inclusion::CLOSED;
+    }
+    else if (as_string(value_constraint.operation.value) == "<" || as_string(value_constraint.operation.value) == ">"){
+        point.type = Interval_Inclusion::OPEN;
+    }
+    
+    return point;
+❱
+
+
+
+
+//utility
+◀private: static▶ bool ☀Numerical_String_Is_Less_Than_Numerical_String(std::string const& s1, std::string const& s2)❰
+    //decide if they are doubles
+    if (Contains_Character(s1,'.') || Contains_Character(s2,'.')){
+        double d1 = std::stod(s1);
+        double d2 = std::stod(s2);
+        return d1 < d2;
+    }
+    
+    //handle them as longs
+    try{
+        long l1 = std::stol(s1);
+        long l2 = std::stol(s2);
+        return l1 < l2;
+    }catch(...){
+        return false; //going to be bug later due to macro values
+    }
+❱

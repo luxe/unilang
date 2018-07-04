@@ -1,0 +1,301 @@
+􏶞g􏶟
+􏷲The indications decider is responsible for determining what values are available for display and use of other systems􏷱
+􏷰Handles decisions like screen data (relay indications, discharge indications, and electrical loads)􏷯
+􏷮Electrical_System􏷭 􏷮Electrical_Indications􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦ElectricalData􏷥􏴓d􏴔􏴑ElectricalSystemT􏴒􏴓d􏴔􏴑DCPowerSystemT􏴒
+
+􏷘+􏷗􏷒decide electrical screen indications􏷑
+􏷐Determine what values are used for display as output of the system into systems􏷏
+􏶠Determines what electrical loads to display, and what cautions to display to the pilot􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemT􏷅􏷄system􏷃􏷀The entire electrical system with all of its inputs and outputs.􏶿
+􏶴
+    􏶲Decide Electrical Loads􏶱
+    􏵲decide electrical loads􏵳􏵶dc system􏵷, &􏵶system􏵷->m_tInputs.m_tSettings, &􏵶system􏵷->m_tOutputs.m_tLoads);
+
+    􏶲Decide Cautions for screens􏶱
+    􏵲decide screen cautions􏵳􏵶dc system􏵷,&􏵶system􏵷->m_tInputs.m_tSettings,&􏵶system􏵷->m_tOutputs.m_tIndications);
+    
+    􏶲Decide Sounds􏶱
+    􏵲decide sounds􏵳􏵶dc system􏵷,􏵶system􏵷);
+􏶳
+
+Electrical Load calculations:
+􏷘-􏷗􏷒decide electrical loads􏷑
+􏷐sets the electrical loads based of the updated graph􏷏
+􏶠picks nodes on the graph that other systems will be interested in,
+and provides the necessary electrical loads as an output to the system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜mr􏶝􏷆ElectricalLoadsT􏷅􏷄loads􏷃􏷀The electrical loads for the output of the system􏶿
+􏶴
+  
+  􏶲decide values based on the state of the dc power system􏶱
+  􏵶loads􏵷->m_pfGeneratorLoads_amp[0] = 􏵲decide system 1 generator current􏵳􏵶dc system􏵷,&􏵶settings􏵷->m_tPower);
+  􏵶loads􏵷->m_pfGeneratorLoads_amp[1] = 􏵲decide system 2 generator current􏵳􏵶dc system􏵷,&􏵶settings􏵷->m_tPower);
+  􏵶loads􏵷->m_pfBatteryLoads_amp[0]   = 􏵲decide system 1 battery current􏵳􏵶dc system􏵷,&􏵶settings􏵷->m_tPower);
+  􏵶loads􏵷->m_pfBatteryLoads_amp[1]   = 􏵲decide system 2 battery current􏵳􏵶dc system􏵷,&􏵶settings􏵷->m_tPower);
+  􏵶loads􏵷->m_pfDcLoads_v[0]          = 􏵲decide system 1 dc voltage􏵳􏵶dc system􏵷,􏵶settings􏵷);
+  􏵶loads􏵷->m_pfDcLoads_v[1]          = 􏵲decide system 2 dc voltage􏵳􏵶dc system􏵷,􏵶settings􏵷);
+  
+  􏶲for now􏶱
+  􏵶loads􏵷->m_pfEssentialBusses_v[0]  = 􏵲decide essential bus 1 voltage􏵳􏵶dc system􏵷,􏵶settings􏵷);
+  􏵶loads􏵷->m_pfEssentialBusses_v[1]  = 􏵲decide essential bus 2 voltage􏵳􏵶dc system􏵷,􏵶settings􏵷);
+  􏵶loads􏵷->m_fBattery_v              = 􏵲decide battery voltage􏵳􏵶dc system􏵷,&􏵶settings􏵷->m_tPower);
+􏶳
+
+􏷘-􏷗􏷒decide system 1 generator current􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀electrical power settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+    return 􏵶settings􏵷->m_ptGenerator[0].m_fActiveCurrent_amp;
+􏶳
+
+􏷘-􏷗􏷒decide system 2 generator current􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀electrical power settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+    return 􏵶settings􏵷->m_ptGenerator[1].m_fActiveCurrent_amp;
+􏶳
+
+􏷘-􏷗􏷒decide system 1 battery current􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀electrical power settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+  if (DCPowerSystemBatteryIsRunning(􏵶dc system􏵷)){
+    return 􏵶settings􏵷->m_ptBattery[0].m_fActiveCurrent_amp;
+  }
+  return 􏵶settings􏵷->m_ptBattery[0].m_fUnpoweredCurrent_amp;
+􏶳
+
+􏷘-􏷗􏷒decide system 2 battery current􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀electrical power settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+  if (DCPowerSystemBatteryIsRunning(􏵶dc system􏵷)){
+    return 􏵶settings􏵷->m_ptBattery[1].m_fActiveCurrent_amp;
+  }
+  return 􏵶settings􏵷->m_ptBattery[1].m_fUnpoweredCurrent_amp;
+􏶳
+
+􏷘-􏷗􏷒decide system 1 dc voltage􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏵜volts􏵝􏶺the calculated value for the particular load􏶹
+􏶴
+  return DCPowerSystemVoltageSideCopilot(􏵶dc system􏵷);
+􏶳
+
+􏷘-􏷗􏷒decide system 2 dc voltage􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏵜volts􏵝􏶺the calculated value for the particular load􏶹
+􏶴
+  return DCPowerSystemVoltageSidePilot(􏵶dc system􏵷);
+􏶳
+
+􏷘-􏷗􏷒decide essential bus 1 voltage􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+  return DCPowerSystemVoltageSideCopilot(􏵶dc system􏵷);
+􏶳
+
+􏷘-􏷗􏷒decide essential bus 2 voltage􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+  return DCPowerSystemVoltageSidePilot(􏵶dc system􏵷);
+􏶳
+
+􏷘-􏷗􏷒decide battery voltage􏷑
+􏷐􏷏􏶠calculate the electrical load based on the state of the electrical graph􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalPowerSettingsT􏷅􏷄settings􏷃􏷀electrical power settings􏶿
+􏶚m􏶛􏶾float􏶽􏶼calculated value􏶻􏶺the calculated value for the particular load􏶹
+􏶴
+  if (DCPowerSystemBatteryIsRunning(􏵶dc system􏵷)){
+    return 􏵶settings􏵷->m_ptBattery[0].m_fActualVoltage_v;
+  }
+  return 􏵶settings􏵷->m_ptBattery[0].m_fUnpoweredVoltage_v;
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Screen Cautions:
+􏷘-􏷗􏷒decide screen cautions􏷑
+􏷐set the screen related data such as electrical loads and caution indications􏷏
+􏶠These values are used by the CAD and VEMD.  Other systems also may use this data.
+Based on the state of the dc power system􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶜mr􏶝􏷆ElectricalIndicationsT􏷅􏷄indications􏷃􏷀The indications for the output of the system􏶿
+􏶴
+
+  􏶲decide values based on the state of the dc power system􏶱
+  
+  􏶲system sides:􏶱
+  􏵶indications􏵷->m_pbGeneratorDisconnect[0]  = 􏵲decide system 1 generator disconnect􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_pbGeneratorDisconnect[1]  = 􏵲decide system 2 generator disconnect􏵳􏵶dc system􏵷);
+  
+  􏵶indications􏵷->m_bBatteryRelayOpen = 􏵲decide if battery relay is open􏵳􏵶dc system􏵷);
+
+  􏵶indications􏵷->m_pbBusTieOpen[0]  = 􏵲decide system 1 bus tie open􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_pbBusTieOpen[1]  = 􏵲decide system 2 bus tie open􏵳􏵶dc system􏵷);
+
+  􏵶indications􏵷->m_pbStarter[0]  = 􏵲decide system 1 starter􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_pbStarter[1]  = 􏵲decide system 2 starter􏵳􏵶dc system􏵷);
+  
+  􏵶indications􏵷->m_bBatteryDischarging = 􏵲decide if battery is discharging􏵳􏵶dc system􏵷,􏵶settings􏵷);
+  􏵶indications􏵷->m_bEmergencyBatteryDischarging = 􏵲decide if emergency battery is discharging􏵳􏵶dc system􏵷,􏵶settings􏵷);
+  
+  􏵶indications􏵷->m_bExternalPower  = 􏵲decide external power􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_bEpuDoor  = 􏵲decide epu door􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_bShedEmergency  = 􏵲decide shed emergency􏵳􏵶dc system􏵷);
+  
+  􏵶indications􏵷->m_pfGeneratorTemperature_degc[0] = 􏵲decide generator 1 temperature􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_pfGeneratorTemperature_degc[1] = 􏵲decide generator 1 temperature􏵳􏵶dc system􏵷);
+  
+  􏵶indications􏵷->m_pbGeneratorOverheat[0] = 􏵲decide generator 1 overheat􏵳􏵶dc system􏵷);
+  􏵶indications􏵷->m_pbGeneratorOverheat[1] = 􏵲decide generator 2 overheat􏵳􏵶dc system􏵷);
+􏶳
+
+􏷘-􏷗􏷒decide system 1 generator disconnect􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemGenerator1RelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide system 2 generator disconnect􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemGenerator2RelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide system 1 bus tie open􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemBusTie1RelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide system 2 bus tie open􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemBusTie2RelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide system 1 starter􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemStarter1RelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide system 2 starter􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemStarter2RelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide if battery is discharging􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemBatteryDischarging(􏵶dc system􏵷,􏵶settings􏵷);􏶳
+
+􏷘-􏷗􏷒decide if emergency battery is discharging􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜r􏶝􏷆ElectricalSettingsT􏷅􏷄settings􏷃􏷀electrical settings􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemEmergencyBatteryDischarging(􏵶dc system􏵷,􏵶settings􏵷);􏶳
+
+􏷘-􏷗􏷒decide if battery relay is open􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemBatteryRelayIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide external power􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemExternalPowerUnitIsRunning(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide epu door􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemEpuDoorIsOpen(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide shed emergency􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼indication visibility􏶻􏶺whether the indication will appear or not􏶹
+􏶴return DCPowerSystemUsingEmergencyShed(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide generator 1 temperature􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾float􏶽􏶼temperature􏶻􏵜celsius􏵝􏶺decide temperature of the generator􏶹
+􏶴return DCPowerSystemGenerator1Temperature(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide generator 2 temperature􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾float􏶽􏶼temperature􏶻􏵜celsius􏵝􏶺decide temperature of the generator􏶹
+􏶴return DCPowerSystemGenerator2Temperature(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide generator 1 overheat􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼overheat􏶻􏵜celsius􏵝􏶺decide overheat of the generator􏶹
+􏶴return DCPowerSystemGenerator1Overheat(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide generator 2 overheat􏷑
+􏷐􏷏􏶠􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶚m􏶛􏶾BOOL􏶽􏶼overheat􏶻􏵜celsius􏵝􏶺decide overheat of the generator􏶹
+􏶴return DCPowerSystemGenerator2Overheat(􏵶dc system􏵷);􏶳
+
+􏷘-􏷗􏷒decide sounds􏷑
+􏷐decide whether to play particular sounds􏷏
+􏶠looks at inputs to decide what sounds to send to another system as output􏶡
+􏶜mr􏶝􏷆DCPowerSystemT􏷅􏷄dc system􏷃􏷀The DC power system􏶿
+􏶜mr􏶝􏷆ElectricalSystemT􏷅􏷄system􏷃􏷀The entire electrical system with all of its inputs and outputs.􏶿
+􏶴
+  􏶲Decide whether to play the battery engage sound; trigger mimics relay closure state􏶱
+    ptSystem->m_tOutputs.m_tSoundTriggers.m_pbBatteryRelayClose[ELECTRICAL_SYSTEM_SIDE_LEFT]    = NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDcSystem->m_tCircuit.m_tGraph, ptDcSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_LEFT].m_tDistributionBox.m_tBusTie.m_uRelay));
+    ptSystem->m_tOutputs.m_tSoundTriggers.m_pbBatteryRelayClose[ELECTRICAL_SYSTEM_SIDE_RIGHT]   = NodeHasPower(ElectricalGraphGetCircuitComponent(&ptDcSystem->m_tCircuit.m_tGraph, ptDcSystem->m_tCircuit.m_ptSystemSide[ELECTRICAL_SYSTEM_SIDE_RIGHT].m_tDistributionBox.m_tBusTie.m_uRelay));
+􏶳

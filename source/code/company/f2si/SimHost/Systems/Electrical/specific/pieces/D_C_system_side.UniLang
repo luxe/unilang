@@ -1,0 +1,155 @@
+􏶞p􏶟
+􏷲A 􏶏 specific to the UH72A DC power system.􏷱
+􏷰Stores a collection of 􏶏 node IDs and builds them into the generic electrical graph.􏷯
+􏷮Electrical_System􏷭 􏷮DC_System_Side􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏷤􏷣􏷦DiodeBox􏷥􏴓1􏴔􏴑DiodeBoxT􏴒
+􏷤􏷣􏷦DistributionBox􏷥􏴓1􏴔􏴑DistributionBoxT􏴒
+􏷤􏷣􏷦AfterJunctionBox􏷥􏴓1􏴔􏴑AfterJunctionBoxT􏴒
+􏷤􏷣􏷦SystemBuses􏷥􏴓1􏴔􏴑SystemBusesT􏴒
+􏷤􏷣􏷦AsciiString􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+
+
+
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create nodes􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆void􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲implicit forwarding cast􏶱
+  􏵲copy􏵳􏵶self􏵷);
+􏶳
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏶜r􏶝􏷆DCSystemSideT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct􏶿
+􏶴
+  􏶲perform deep copy􏶱
+  CopyInitializeSystemBusesT(&􏵴buses􏵵,&􏵶self􏵷->m_tBuses);
+    
+  􏶲perform shallow copy􏶱
+  􏵴diode box􏵵 = 􏵶self􏵷->m_tDiodeBox;
+  􏵴distribution box􏵵 = 􏵶self􏵷->m_tDistributionBox;
+  􏵴after junction box􏵵 = 􏵶self􏵷->m_tAfterJunctionBox;
+􏶳
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲destruct􏶱
+  􏵲destruct􏵳);
+􏶳
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠􏶐 will leak memory unless destructed􏶡
+􏶴
+  􏶲C does not have destructors.􏶱
+  DestructSystemBusesT(&􏵴buses􏵵);
+􏶳
+
+􏷘-􏷗􏷒create nodes􏷑
+􏷐Constructs all of the electrical components into the generic electrical graph data structure.􏷏
+􏶠This will give all of the node a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all of the vertices that are part of the 􏶐􏶱
+  
+  􏶲add nodes to graph􏶱
+  
+    􏶲create diode box tag􏶱
+    AsciiStringT tNewTag = ConstructAsciiString(􏵶tag name􏵷);
+    AsciiStringAppendCString(&tNewTag,",Diode Box");
+    
+    􏶲add the diode box portion to the electrical graph data structure.
+    Initializing will establish all of the component IDs in the diode box􏶱
+    InitializeDiodeBox(&􏵴diode box􏵵,􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+    
+    􏶲create distribution tag􏶱
+    AsciiStringAssignCString(&tNewTag,􏵶tag name􏵷);
+    AsciiStringAppendCString(&tNewTag,",Dist Box");
+    
+    􏶲add the distribution box portion to the electrical graph data structure.
+    Initializing will establish all of the component IDs in the distribution box􏶱
+    InitializeDistributionBox(&􏵴distribution box􏵵,􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+    
+    􏶲create after junction tag􏶱
+    AsciiStringAssignCString(&tNewTag,􏵶tag name􏵷);
+    AsciiStringAppendCString(&tNewTag,",After Junction Box");
+    
+    􏶲add the after junction box portion to the electrical graph data structure.
+    Initializing will establish all of the component IDs in the after junction box􏶱
+    InitializeAfterJunctionBox(&􏵴after junction box􏵵,􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+    
+    􏶲create system buses tag􏶱
+    AsciiStringAssignCString(&tNewTag,􏵶tag name􏵷);
+    AsciiStringAppendCString(&tNewTag,",System Buses");
+    
+    􏶲add the system buses for the particular system side to the electrical graph data structure.
+    Initializing will establish all of the component IDs in the system buses of the particular side􏶱
+    InitializeSystemBuses(&􏵴buses􏵵,􏵶graph􏵷,AsciiStringCStr(&tNewTag));
+    
+    􏶲destruct local tag􏶱
+    DestructAsciiStringT(&tNewTag);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+    
+    􏶲connects the buses essential bus to the diode box􏶱
+    ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴diode box􏵵.m_uDiode1,􏵴buses􏵵.m_uEssentialBus);
+    ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴diode box􏵵.m_uDiode2,􏵴buses􏵵.m_uEssentialBus);
+    ElectricalGraphAddDirectedWire(􏵶graph􏵷,􏵴diode box􏵵.m_uDiode3,􏵴buses􏵵.m_uEssentialBus);
+    
+    􏶲connect the buses' shed bus to the to the distribution box􏶱
+    ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴distribution box􏵵.m_uShedBusRelay,􏵴buses􏵵.m_uShedBus);
+    
+    􏶲connect the buses nonessential bus to the to the distribution box􏶱
+    ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴distribution box􏵵.m_uNonessentialBusRelay,􏵴buses􏵵.m_uNonessentialBus);
+    
+    􏶲connects distribution boxes with after junction boxes􏶱
+    ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴distribution box􏵵.m_uMainBus,􏵴after junction box􏵵.m_uGeneratorBus);
+    
+    􏶲connects diode boxes with distribution boxes􏶱
+    ElectricalGraphAddNonDirectedWire(􏵶graph􏵷,􏵴diode box􏵵.m_uDiode1,􏵴distribution box􏵵.m_uFuse3);
+􏶳
+
+
+􏶨An electrical box of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.􏶥
+􏶘-g􏶙􏶰􏶯􏶮DiodeBoxT􏶭􏶬diode box􏶫􏶪0􏶩
+
+􏶨An electrical box of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.􏶥
+􏶘-g􏶙􏶰􏶯􏶮DistributionBoxT􏶭􏶬distribution box􏶫􏶪0􏶩
+
+􏶨An electrical box of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.􏶥
+􏶘-g􏶙􏶰􏶯􏶮AfterJunctionBoxT􏶭􏶬after junction box􏶫􏶪0􏶩
+
+􏶨The system buses off of the main bus of the UH72A 􏶏􏶧
+􏶦Contains node IDs that correlate to the actual nodes in the graph.􏶥
+􏶘-g􏶙􏶰􏶯􏶮SystemBusesT􏶭􏶬buses􏶫􏶪0􏶩

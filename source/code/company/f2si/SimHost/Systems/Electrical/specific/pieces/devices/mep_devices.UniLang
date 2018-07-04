@@ -1,0 +1,89 @@
+􏶞p􏶟
+􏷲The 􏶏 specific to the UH72A DC power system.􏷱
+􏷰Stores a collection of 􏶏 and builds them into the generic electrical graph.􏷯
+􏷮Electrical_System􏷭 􏷮MEP_Devices􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤􏷣􏷦ElectricalGraph􏷥􏴓d􏴔􏴑ElectricalGraphT􏴒
+􏶔􏶕􏶒string􏶓􏴏d􏴐􏴍strcpy()􏴎
+􏶔􏶕􏶒MissionBusPanelData􏶓􏴏d􏴐􏴍MissionBusSwitchTypeE􏴎
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be in an invalid state until initialized.
+Initializing a 􏶐 will construct all of its nodes into the generic electrical graph.
+It will store the IDs given back by the graph so that they may be queried later by the user.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its nodes into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲create all the internal nodes inside the graph data structure􏶱
+  􏵲create mep devices􏵳􏵶graph􏵷,􏵶tag name􏵷);
+  
+  􏶲connect these newly created nodes􏶱
+  􏵲create wires􏵳􏵶graph􏵷);
+􏶳
+
+􏷘-􏷗􏷒create mep devices􏷑
+􏷐Constructs all of the electrical components that make up the MEP system,
+and put them into the generic electrical graph data structure.􏷏
+􏶠This will give all of the created devices a valid id for querying the graph later.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its left panel devices into.􏶿
+􏶜􏶝􏷆char[]􏷅􏷄tag name􏷃􏷀a unique tag name for the following stored nodes􏶿
+􏶴
+  􏶲creates MEP related equipment􏶱
+  
+  􏶲map and VDU related􏶱
+  􏵴map control unit􏵵 = ElectricalGraphAddGroundedDevice(􏵶graph􏵷,"MCU",􏵶tag name􏵷,0.0f,80.32f,CAN_BE_POWERED_YES);
+  􏵴vdu􏵵[0] = ElectricalGraphAddGroundedDevice(􏵶graph􏵷,"copilot VDU",􏵶tag name􏵷,0.0f,80.32f,CAN_BE_POWERED_YES);
+  􏵴vdu􏵵[1] = ElectricalGraphAddGroundedDevice(􏵶graph􏵷,"pilot VDU",􏵶tag name􏵷,0.0f,80.32f,CAN_BE_POWERED_YES);
+  􏵴vms􏵵 = ElectricalGraphAddGroundedDevice(􏵶graph􏵷,"vms", szTagName, 0.0f, 1.0f, CAN_BE_POWERED_YES);
+  
+  􏶲Dwnlink related􏶱
+  􏵴dwnlink panel􏵵 = ElectricalGraphAddGroundedDevice(􏵶graph􏵷,"dwnlink panel", szTagName, 0.0f, 1.0f, CAN_BE_POWERED_YES);
+  􏵴antenna deploy unit primary􏵵 = ElectricalGraphAddGroundedAntenna(􏵶graph􏵷,"antenna deploy unit primary",􏵶tag name􏵷,0.0f,180.5f,CAN_BE_POWERED_YES);
+  􏵴antenna deploy unit secondary􏵵 = ElectricalGraphAddGroundedAntenna(􏵶graph􏵷,"antenna deploy unit secondary",􏵶tag name􏵷,0.0f,11.735f,CAN_BE_POWERED_YES);
+  􏵴adu annunciator􏵵 = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"antenna deploy unit annunciator", szTagName, 0.0f, 1.0f, CAN_BE_POWERED_YES);
+  
+  􏶲mission bus panel related􏶱
+  􏵴mission button lights􏵵[MISSION_BUS_DVR_AUD_REC] = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"MISSION_BUS_DVR_AUD_REC", szTagName,0.0f,11.735f, CAN_BE_POWERED_YES);
+  􏵴mission button lights􏵵[MISSION_BUS_SEARCHLIGHT_POWER] = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"MISSION_BUS_SEARCHLIGHT_POWER", szTagName,0.0f,11.735f, CAN_BE_POWERED_YES);
+  􏵴mission button lights􏵵[MISSION_BUS_MSN_BUS_POWER] = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"MISSION_BUS_MSN_BUS_POWER", szTagName,0.0f,11.735f, CAN_BE_POWERED_YES);
+  􏵴mission button lights􏵵[MISSION_BUS_AAUD_LINK] = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"MISSION_BUS_AAUD_LINK", szTagName,0.0f,11.735f, CAN_BE_POWERED_YES);
+  􏵴mission button lights􏵵[MISSION_BUS_DOWNLINK_POWER] = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"MISSION_BUS_DOWNLINK_POWER", szTagName,0.0f,11.735f, CAN_BE_POWERED_YES);
+  􏵴mission button lights􏵵[MISSION_BUS_DAUD_LINK] = ElectricalGraphAddGroundedLight(􏵶graph􏵷,"MISSION_BUS_DAUD_LINK", szTagName,0.0f,11.735f, CAN_BE_POWERED_YES);
+  􏵴mission button􏵵 = ElectricalGraphAddGroundedSwitch(􏵶graph􏵷, "mission button", szTagName,0.0f,180.5f, CAN_BE_POWERED_YES);
+  
+  􏶲DVR related􏶱
+  􏵴dvr panel􏵵 = ElectricalGraphAddGroundedDevice(􏵶graph􏵷,"DVR Panel",􏵶tag name􏵷,0.0f,180.5f,CAN_BE_POWERED_YES);
+􏶳
+
+􏷘-􏷗􏷒create wires􏷑
+􏷐Connects all of the necessary 􏶐 nodes together.􏷏
+􏶠The nodes being connected will need to be created first.􏶡
+􏶜mr􏶝􏷆ElectricalGraphT􏷅􏷄graph􏷃􏷀A generic electrical graph that the 􏶏 will construct its wires into.􏶿
+􏶴
+  􏶲connect nodes together􏶱
+  􏶲feel free to add any internal system connections here􏶱
+􏶳
+
+􏶨MEP devices􏶧
+􏶦A collection of devices from off of the mission bus􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬map control unit􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t[2]􏶭􏶬vdu􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬dvr panel􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬antenna deploy unit primary􏶫􏶪0􏶩
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬antenna deploy unit secondary􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬dwnlink panel􏶫􏶪0􏶩􏶨􏶧􏶦􏶥
+
+􏶨􏶧􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t[6]􏶭􏶬mission button lights􏶫􏶪0􏶩
+
+􏶨whether the mission button is functional􏶧􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬mission button􏶫􏶪0􏶩
+
+􏶨whether the Vms is functional􏶧􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬vms􏶫􏶪0􏶩
+
+􏶨ADU annunciator lights􏶧􏶦􏶥
+􏶘-g􏶙􏶰􏶯􏶮size_t􏶭􏶬adu annunciator􏶫􏶪0􏶩

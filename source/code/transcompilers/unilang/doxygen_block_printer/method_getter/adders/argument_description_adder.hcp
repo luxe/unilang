@@ -1,0 +1,82 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+⚯
+❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/value_constraint_comment_deriver"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data_shared"❫
+❪"code/transcompilers/unilang/units_to_variable_suffix_converter/unit_suffix_lookuper"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/method_getter/adders/units_description_adder"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Add(Doxygen_Data & data, Method_Item const& method, C_Export_Settings const& options)❰
+  Add_Template_Arguments(data,method.template_arguments,options);
+  Add_Function_Arguments(data,method.function_arguments,options);
+❱
+◀private: static▶ void ☀Add_Template_Arguments(Doxygen_Data & data, std::vector<Template_Argument> const& template_arguments, C_Export_Settings const& options)❰
+
+    for (auto it: template_arguments){
+        auto description = as_string(it.comment.value);
+        Units_Description_Adder::Add(it,description,options.portion.method_options.parameters.template_parameter_units);
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"tparam",description,options.portion.method_options.comment.grammar);
+    }
+❱
+◀private: static▶ void ☀Add_Function_Arguments(Doxygen_Data & data, std::vector<Function_Argument> const& function_arguments, C_Export_Settings const& options)❰
+    
+    for (auto it: function_arguments){
+        auto new_identifier = Identifier_Name_Deriver::Derive_Name(it,options);
+        auto grammar_fixed_comment = Grammar_Adjuster::Get_Adjusted(as_string(it.comment.value),options.portion.method_options.comment.grammar);
+        
+        auto new_description = new_identifier + " " + grammar_fixed_comment;
+        Units_Description_Adder::Add(it,new_description,options.portion.method_options.parameters.regular_parameter_units);
+        auto dir = Decide_In_Out_Pass_String(it,options);
+        
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"param"+dir,new_description);
+    }
+❱
+◀private: static▶ std::string ☀Decide_In_Out_Pass_String(Function_Argument const& argument, C_Export_Settings const& options)❰
+
+  auto type       = as_string(argument.type.value);
+  auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+  bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*") || !array_part.empty() || argument.is_reference;
+  return Create_Doxygen_INOUT_Tag_Based_On_Parameter_Properties(is_pointer,argument.is_mutable,options);
+❱
+
+◀private: static▶ std::string ☀Create_Doxygen_INOUT_Tag_Based_On_Parameter_Properties(bool is_pointer, bool is_mutable, C_Export_Settings const& options)❰
+  
+  //if it's not a pointer, it can't be an out parameter; it HAS to be an "in" parameter"
+  if (!is_pointer){
+    return options.general.comment.doxygen.in_parameters;
+  }
+  
+  //if its also mutable, we'll assume its an IN/OUT
+  //this might not be the case once we get better detection for plain "out" params
+  if (is_mutable){
+    return options.general.comment.doxygen.in_and_out_parameters;
+  }
+  
+  //for now, we'll just assume anything else is an IN parameter
+  return options.general.comment.doxygen.in_parameters;
+  
+  //note on [out]
+  //there is no easy way to determine if a parameter is solely an out parameter.  
+  //The parameter would have to be fully examined in the body the function to determine if its initial value was ever read,
+  //or if it was only ever written to.  Even if it were passed as a parameter, you would have to recursively go down the call tree,
+  //and see if the value was ever read from.  For the time being, we will have to work with never actually deriving an "[Out]".  
+  //Lets just pray to god no one calls me out on it.  There is a small chance we might decide to make a language token
+  //along with the existing copy/reference tokens but I would like to avoid it as it seems like future implementations would be able
+  //to derive it.  Although,  I'm thinking about the D language here.  If you make something an "out" param, I think it automatically re-initializes it.  
+  //but I still picture that as a short hand.  I wouldn't want to specifiy every single parameter.  If a user re-initalizes it at the begining of a function,
+  //we can use the "out" shorthand in D, and document that correctly in doxygen.
+❱

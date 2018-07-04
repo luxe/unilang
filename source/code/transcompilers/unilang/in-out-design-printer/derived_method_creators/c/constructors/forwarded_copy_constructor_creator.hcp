@@ -1,0 +1,78 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure-printer/implicit_contract_adder"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ Method_Item ☀Create(Structure const& structure, bool dumb_way)❰
+
+    //build up fake params
+    Method_Item m;
+    
+    m.class_access = Class_Access::PRIVATE;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    m.storage = Storage_Specifier::STATIC;
+    m.overload_specifiers.is_const = false;
+    m.names.function_name.value = L"copy " + as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name) + " T");
+    m.brief_description.value = L"copy constructor for the " + as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    m.detailed_description.value = L"performs the necessary deep copy";
+    m.subgroup.value = L"memory management";
+    
+    //set expected params
+    Function_Argument one;
+    one.is_mutable = true;
+    one.is_reference = true;
+    one.type.value = L"void";
+    if (dumb_way){
+        one.identifier.value = L"outputs";
+    }
+    else{
+        one.identifier.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    }
+    
+    one.comment.value = L"Represents the object that will be copied from";
+    
+    m.function_arguments.push_back(one);
+    
+    Add_Constructor_Params(structure.name,m.function_arguments,structure.methods.methods,dumb_way);
+    Add_Body(structure.name,m,structure.methods.methods);
+    
+    //m.contracts += Implicit_Contract_Adder::Get_Implicit_Contracts_For_Initializer_Method(as_string(one.identifier.value));
+    
+    return m;
+❱
+
+◀private: static▶ void ☀Add_Constructor_Params(std::string file_name, std::vector<Function_Argument> & args, std::vector<Method_Item> const& methods, bool dumb_way)❰
+    
+    //since this a copy constructor, the parameters can be assumed
+    auto constructor = Get_Constructor(file_name,methods);
+    args += constructor.function_arguments;
+    
+❱
+◀private: static▶ void ☀Add_Body(std::string file_name, Method_Item & m, std::vector<Method_Item> const& methods)❰
+
+    //since this a copy constructor, the body can be assumed
+    auto constructor = Get_Constructor(file_name,methods);
+    m.body = constructor.body;
+    
+❱
+
+◀private: static▶ Method_Item ☀Get_Constructor(std::string file_name, std::vector<Method_Item> const& methods)❰
+
+    for (auto it: methods){
+        if (Shared_Printer::Is_Copy_Constructor(file_name,it)){
+          return it;
+        }
+    }
+    
+    return Method_Item{};
+❱

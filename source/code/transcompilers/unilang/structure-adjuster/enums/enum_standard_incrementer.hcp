@@ -1,0 +1,68 @@
+class
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+⚯
+❪algorithm❫
+❪"code/utilities/colors/lib"❫
+⚞⚟
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀public: static▶ void ☀Make_Explicit(Enum_Item & item)❰
+
+	//all enumerations implicitly start at 0
+	int current_value = 0;
+	for (auto & it : item.args){
+		Make_Implicit_Value_Explicit(it,current_value);
+	}
+❱
+
+◀private: static▶ void ☀Make_Implicit_Value_Explicit(Enum_Arg & arg, int & current_value)❰
+	
+	//make value explicit if it is currently implicit
+	if (arg.value.value.empty()){
+		arg.value.value = as_wstring_tmpl(current_value);
+	}
+
+	Deduce_The_New_Current_Value(as_string(arg.value.value),current_value);
+❱
+
+◀private: static▶ void ☀Deduce_The_New_Current_Value(std::string const& previous_value, int & current_value)❰
+	
+	//if the current value was 0, we know the next value should be 1
+	//we do this 0 check, because later atoi() can return 0 on a failed parse
+	//assuming the string is not 0, but we parse back a 0, we can assume the parse was bad
+	if (previous_value == "0"){
+		current_value = 1;
+	}
+	
+	//parse out the new value instead
+	else{
+		int new_value = std::atoi(previous_value.c_str());
+		if (new_value == 0){
+			Red_Message("bad parse of enum value: " + previous_value + "\n");
+			//TODO: analyze the code struct to determine what the value should be.
+			//for now, just increment it.
+			current_value = Normal_Increment(current_value);
+		}
+		else{
+			current_value = Normal_Increment(new_value);
+		}
+	}
+❱
+
+◀private: static▶ int ☀Normal_Increment(int const& i)❰
+	return i + 1;
+❱

@@ -1,0 +1,91 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_argument"❫
+❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_result"❫
+❪"code/transcompilers/unilang/structure/sections/typedef/typedef_argument"❫
+❪"code/transcompilers/unilang/structure/sections/typedef/typedef_result"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/language_type/language_type"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/unilang_type_to_language_type_converter"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/type_qualifier_stripper"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/stripped_unilang_type_with_qualifiers"❫
+⚯
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+
+//TODO: get rid of all all C_Export_Settings arguments (should be language agnostic)
+◀public: static▶ std::string ☀Derive_Name(Data_Member_Item const& data_member, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(data_member.type.value),false);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+◀public: static▶ std::string ☀Derive_Name(Function_Argument const& arg, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+◀public: static▶ std::string ☀Derive_Name(Function_Result const& arg, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+
+//typedef related
+◀public: static▶ std::string ☀Derive_Name(Typedef_Argument const& arg, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+◀public: static▶ std::string ☀Derive_Name_Keep_Qualifiers(Typedef_Argument const& arg, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+
+
+◀public: static▶ std::string ☀Derive_Name(Typedef_Result const& arg, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+◀public: static▶ std::string ☀Derive_Name_Keep_Qualifiers(Typedef_Result const& arg, C_Export_Settings const& settings)❰
+    
+    auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
+    auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, Source_Language::C);
+    return Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+❱
+
+
+
+//I've got like a strip / unstrip thing going on.  Not too happy about it.  
+//We could put these attributes into the structure, but that can sometimes lead to confusion since they are generated later after the parse. ..
+//although we are already doing this for header qualities (was_generated for example)
+◀public: static▶ std::string ☀Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(Language_Type language_type, Stripped_Unilang_Type_With_Qualifiers stripped_data)❰
+    std::string printable_type = language_type.name;
+    
+    return printable_type;
+❱
+◀public: static▶ std::string ☀Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(Language_Type language_type, Stripped_Unilang_Type_With_Qualifiers stripped_data)❰
+    std::string printable_type = language_type.name;
+    
+    if (stripped_data.is_pointer){
+        printable_type += " *";
+        if (stripped_data.is_const_on_pointer){
+            printable_type += "const";
+        } 
+    }
+    
+    //TODO array part...
+    //this stuff needs re-factored anyway
+    
+    return printable_type;
+❱

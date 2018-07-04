@@ -1,0 +1,391 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/in-out-design-printer/input_struct_getter"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_utilities"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_special_method_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_method_shared"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/type_name_deriver"❫
+❪"code/transcompilers/unilang/structure-printer/return_type_str_getter"❫
+❪"code/transcompilers/unilang/structure-printer/function_declaration_location"❫
+❪"va_list_part_getter"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ void ☀Print_Wrapper_Decleration_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods, C_Export_Settings const& options)❰
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            Print_Wrapper_Interface(file_name,out,it,options);
+        }
+    }
+❱
+◀public: static▶ void ☀Print_Wrapper_Definition_Methods(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods, unsigned int method_count, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+
+    auto number_of_members_in_input_struct = Input_Struct_Getter::Get_All_Of_The_Component_Inputs(file_name,methods).size();
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            Print_Bad_Wrapper_Implementation(file_name,out,it,method_count,number_of_members_in_input_struct,options,data_members);
+        }
+    }
+❱
+◀public: static▶ void ☀Print_Wrapper_Definition_Methods_For_Good_Design(std::string file_name, std::wofstream & out, std::vector<Method_Item> const& methods, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+
+    auto number_of_members_in_input_struct = Input_Struct_Getter::Get_All_Of_The_Component_Inputs(file_name,methods).size();
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            Print_Good_Wrapper_Implementation(file_name,out,it,number_of_members_in_input_struct,options,data_members);
+        }
+    }
+❱
+
+
+
+
+//sub functions
+◀private: static▶ void ☀Print_Wrapper_Interface(std::string file_name, std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,options,4);
+    Print_Wrapper_Method_Deceleration(file_name,out,method,options);
+❱
+◀private: static▶ void ☀Print_Bad_Wrapper_Implementation(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count, unsigned int number_of_members_in_input_struct, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,options);
+    Print_Bad_Wrapper_Method_Definition(file_name,out,method,method_count,number_of_members_in_input_struct,options,data_members);
+❱
+◀private: static▶ void ☀Print_Good_Wrapper_Implementation(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int number_of_members_in_input_struct, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,options);
+    Print_Good_Wrapper_Method_Definition(file_name,out,method,number_of_members_in_input_struct,options,data_members);
+❱
+
+
+
+◀private: static▶ void ☀Print_Wrapper_Method_Deceleration(std::string file_name, std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+    
+    //copy constructor decl
+    if (Shared_Printer::Is_Copy_Constructor(file_name,method)){
+        Test_Wrapper_Special_Method_Printer::Print_Copy_Constrct_Decl(file_name,out,method,options);
+    }
+    
+    //destructor decl
+    else if (Shared_Printer::Is_Destructor(file_name,method)){
+        Test_Wrapper_Special_Method_Printer::Print_Destructor_Decl(file_name,out,method,options);
+    }
+    
+    //regular method decl
+    else{
+      Print_Wrapper_Method_Signature(file_name,out,method,options);
+    }
+      Print_To_Stream_With_Newline(out,";");
+      Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ void ☀Print_Bad_Wrapper_Method_Definition(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count, unsigned int number_of_members_in_input_struct, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+
+    Print_Start_Of_Method_Definition(file_name,out,method,options);
+    Print_Method_Definition_Body(file_name,out,method,number_of_members_in_input_struct,options,data_members,true);
+    Print_End_Of_Method_Definition(out);
+❱
+
+◀private: static▶ void ☀Print_Good_Wrapper_Method_Definition(std::string file_name, std::wofstream & out, Method_Item const& method,unsigned int number_of_members_in_input_struct, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+
+
+    Print_Start_Of_Method_Definition(file_name,out,method,options);
+    Print_Method_Definition_Body(file_name,out,method,number_of_members_in_input_struct,options,data_members,false);
+    Print_End_Of_Method_Definition(out);
+❱
+
+◀private: static▶ void ☀Print_Start_Of_Method_Definition(std::string file_name, std::wofstream & out, Method_Item const& method,C_Export_Settings const& options)❰
+    
+    //copy def
+    if (Shared_Printer::Is_Copy_Constructor(file_name,method)){Test_Wrapper_Special_Method_Printer::Print_Copy_Constrct_Def(file_name,out,method,options);}
+    
+    //destructor def
+    else if (Shared_Printer::Is_Destructor(file_name,method)){Test_Wrapper_Special_Method_Printer::Print_Destructor_Def(file_name,out,method,options);  }
+    
+    else{
+      Print_Wrapper_Method_Signature_Source_Side(file_name,out,method,options);
+    }
+    Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out,"{");
+❱
+
+◀private: static▶ void ☀Print_Method_Definition_Body(std::string file_name, std::wofstream & out, Method_Item const& method,unsigned int number_of_members_in_input_struct, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members, bool dumb_way)❰
+    
+    if (Shared_Printer::Is_Constructor_But_Not_Copy_Constructor(file_name,method)){Test_Wrapper_Special_Method_Printer::Print_Wrapper_Constructor(file_name,out,method,options,data_members);}
+    else if (Shared_Printer::Is_Destructor(file_name,method)){Test_Wrapper_Special_Method_Printer::Print_Wrapper_Destructor(file_name,out,method,options,data_members);}
+    else if (Shared_Printer::Is_Copy_Constructor(file_name,method)){Test_Wrapper_Special_Method_Printer::Print_Wrapper_Copy_Constructor(file_name,out,method,options,data_members);}
+    else{
+        if (dumb_way){
+            Print_Good_Wrapper_Body(file_name,out,method,number_of_members_in_input_struct,options,data_members);
+        }else{
+            Print_Good_Wrapper_Body(file_name,out,method,number_of_members_in_input_struct,options,data_members);
+        }
+    }
+❱
+
+
+◀private: static▶ void ☀Print_End_Of_Method_Definition(std::wofstream & out)❰
+    Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out,"}\n");
+❱
+
+◀private: static▶ void ☀Print_Wrapper_Method_Signature(std::string file_name, std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+     
+    Print_Return_Type(file_name,out,method,options);
+    Print_To_Stream(out,Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,method,options));
+    Methods_Printer::Print_Function_Argument_List(out,method.function_arguments,options,Function_Declaration_Location::DECLARATION);
+❱
+
+◀private: static▶ void ☀Print_Wrapper_Method_Signature_Source_Side(std::string file_name, std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+     
+    Print_Return_Type(file_name,out,method,options);
+    Print_To_Stream(out,As_Capital_And_Pushed_Together(file_name) + "::");
+    Print_To_Stream(out,Shared_Printer::Derive_Function_Name(file_name,Code_Type::GLOBAL,method,options));
+    Methods_Printer::Print_Function_Argument_List(out,method.function_arguments,options,Function_Declaration_Location::DEFINITION);
+❱
+
+
+◀private: static▶ void ☀Print_Return_Type(std::string file_name, std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+    //print the return type
+    Print_To_Stream(out,Return_Type_Str_Getter::Get_Cpp(file_name,method,options));
+❱
+
+
+◀private: static▶ void ☀Print_Bad_Wrapper_Body(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count, unsigned int number_of_members_in_input_struct, std::vector<Data_Member_Item> const& data_members,C_Export_Settings const& options)❰
+    
+    //try to do decisions like this sooner or later
+    switch (options.general.in_out_export_api_style){
+        case In_Out_Export_Api_Style::BOOLEANS: Print_Bad_Wrapper_Body_With_Bools(file_name,out,method,method_count,number_of_members_in_input_struct,data_members,options); break;
+        case In_Out_Export_Api_Style::ENUM: Print_Bad_Wrapper_Body_With_Enums(file_name,out,method,method_count,number_of_members_in_input_struct,data_members,options); break;
+    }
+❱
+
+
+◀private: static▶ void ☀Print_Bad_Wrapper_Body_With_Bools(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count, unsigned int number_of_members_in_input_struct, std::vector<Data_Member_Item> const& data_members,C_Export_Settings const& options)❰
+    //only print the input struct if there are any member variables in the input struct
+    if (number_of_members_in_input_struct > 0){
+        Print_To_Stream_With_Newline(out,"//initialized to zero to ensure all the API triggers are set to false");
+        Print_To_Stream_With_Newline(out,As_Capital_And_Pushed_Together(file_name) + "InputsT i = {};"); //consider doing memset instead
+        Print_To_Stream_With_Newline(out,"");
+    }
+    
+    
+    Set_Backend_API_Trigger_For_Bools(file_name,out,method,method_count);
+    Set_Trigger_Method_Parameters(options,file_name,out,method);
+    Call_Backend_API_Method(file_name,out,method,method_count);
+    Test_Wrapper_Method_Shared::Possibly_Destructure_The_Observables(out,data_members);
+    Return_The_Value_If_Needed(options,file_name,out,method);
+❱
+◀private: static▶ void ☀Print_Bad_Wrapper_Body_With_Enums(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count, unsigned int number_of_members_in_input_struct, std::vector<Data_Member_Item> const& data_members,C_Export_Settings const& options)❰
+    //only print the input struct if there are any member variables in the input struct
+    if (number_of_members_in_input_struct > 0){
+        Print_To_Stream_With_Newline(out,"//create input where API trigger and/or API parameters get set.");
+        Print_To_Stream_With_Newline(out,As_Capital_And_Pushed_Together(file_name) + "InputsT i= {};"); //consider doing memset instead
+        Print_To_Stream_With_Newline(out,"");
+    }
+    
+    
+    Set_Backend_API_Trigger_For_Enums(file_name,out,method,method_count);
+    Set_Trigger_Method_Parameters(options,file_name,out,method);
+    Call_Backend_API_Method(file_name,out,method,method_count);
+    Test_Wrapper_Method_Shared::Possibly_Destructure_The_Observables(out,data_members);
+    Return_The_Value_If_Needed(options,file_name,out,method);
+❱
+
+
+
+
+
+◀private: static▶ void ☀Print_Good_Wrapper_Body(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int number_of_members_in_input_struct,C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+    
+    
+    Print_To_Stream_With_Newline(out,"//call the C API method with the implicit struct as a first param");
+    Print_To_Stream_With_Newline(out,"//forward all other arguments to the call");
+    
+    //decide how to handle the call/return + destructing"
+    if (!method.return_results.empty()){
+        Handle_Good_Body_With_Return_Value(out,file_name,method,options,data_members);
+    }
+    else{
+        Handle_Good_Body_Without_Return_Value(out,file_name,method,options,data_members);
+    }
+❱
+
+
+◀private: static▶ void ☀Handle_Good_Body_With_Return_Value(std::wofstream & out, std::string file_name, Method_Item const& method, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+    
+    //va stuff that might be needed
+	auto maybe_va_list_start = Va_List_Part_Getter::Possibly_Get_Start(method,options);
+    auto maybe_va_list_end   = Va_List_Part_Getter::Possibly_Get_End(method);
+    bool va_list_exists = !maybe_va_list_start.empty();
+
+    //if we don't need to destructure, we might as well return the func call right away
+    if (!Test_Wrapper_Utilities::Contains_Data_Members_That_Can_Be_Destructured(data_members) && !va_list_exists){
+        Print_To_Stream(out, "return ");
+        Print_The_Function_Call(out,file_name,method,options,data_members);
+    }
+    
+    //otherwise, we'll have to hang on to the result
+    else{
+        Print_To_Stream(out, "auto returnResult = ");
+        Print_To_Stream_With_Newline_Only_If_There_Is_Content(out,maybe_va_list_start);
+        Print_The_Function_Call(out,file_name,method,options,data_members);
+        Print_To_Stream_With_Newline_Only_If_There_Is_Content(out,maybe_va_list_end);
+        Print_To_Stream(out, "return returnResult;");
+    }
+❱
+◀private: static▶ void ☀Handle_Good_Body_Without_Return_Value(std::wofstream & out, std::string file_name, Method_Item const& method, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+
+    //va stuff that might be needed
+	auto maybe_va_list_start = Va_List_Part_Getter::Possibly_Get_Start(method,options);
+    auto maybe_va_list_end   = Va_List_Part_Getter::Possibly_Get_End(method);
+
+    Print_To_Stream_With_Newline_Only_If_There_Is_Content(out,maybe_va_list_start);
+
+    //call the function
+    Print_The_Function_Call(out,file_name,method,options,data_members);
+
+    Print_To_Stream_With_Newline_Only_If_There_Is_Content(out,maybe_va_list_end);
+❱
+
+◀private: static▶ void ☀Print_The_Function_Call(std::wofstream & out, std::string file_name, Method_Item const& method, C_Export_Settings const& options, std::vector<Data_Member_Item> const& data_members)❰
+
+    //call the function
+    Print_To_Stream(out,"::");
+    Print_To_Stream(out,Shared_Printer::Derive_Function_Name(file_name,Code_Type::PRODUCT_TYPE,method,options));
+    Print_To_Stream(out,"(");
+                    
+    //list the arguments
+    Print_To_Stream(out,"&o");
+    for ( auto it: method.function_arguments){
+        Print_To_Stream(out,",");
+        
+        //forward the expected name if its infinite
+        if (it.infinitely_more){Print_To_Stream(out,"va_list_args");}
+
+        //if the member is the test object itself
+        else if (it.type.value == as_wstring(As_Capital_And_Pushed_Together(file_name))){
+            Forward_The_Test_Object_Parameter_Back_Into_The_C_Struct(out,file_name,it,options);
+            
+        }
+
+        
+        //how all other arguments are printed
+        else{
+            Print_To_Stream(out,Identifier_Name_Deriver::Derive_Name(it,options));
+        }
+    }
+    
+    Print_To_Stream_With_Newline(out,");");
+    Print_To_Stream_With_Newline(out,"");
+    
+    Test_Wrapper_Method_Shared::Possibly_Destructure_The_Observables(out,data_members);
+❱
+
+◀private: static▶ void ☀Forward_The_Test_Object_Parameter_Back_Into_The_C_Struct(std::wofstream & out, std::string file_name, Function_Argument const& arg, C_Export_Settings const& options)❰
+    
+    if (arg.is_reference){
+        Print_To_Stream(out,"&");
+    }
+    Print_To_Stream(out,Identifier_Name_Deriver::Derive_Name(arg,options));
+    
+    if (arg.is_reference){
+        Print_To_Stream(out,"->");
+    }
+    else{
+        Print_To_Stream(out,".");
+    }
+    Print_To_Stream(out,"o");
+❱
+    
+    
+
+◀private: static▶ void ☀Set_Backend_API_Trigger_For_Bools(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
+    
+    
+    
+    Print_To_Stream_With_Newline(out,"//set the trigger for the backend API method");
+    
+    
+    
+    if (method_count > 1){
+        Print_To_Stream(out,"i.m_b");
+        Print_To_Stream(out,As_Capital_And_Pushed_Together(as_string(method.names.function_name.value)));
+        Print_To_Stream_With_Newline(out,"=true;");
+    }
+    else{
+        Print_To_Stream_With_Newline(out,"//No trigger needs to be set. Only one backend API method");
+    }
+    
+    Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ void ☀Set_Backend_API_Trigger_For_Enums(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
+    
+    
+    
+    Print_To_Stream_With_Newline(out,"//set the trigger for the backend API method");
+    
+    
+    
+    if (method_count > 1){
+        Print_To_Stream(out,"i.m_eApiCall = ");
+        Print_To_Stream(out,As_All_Capital_Letters_With_Spaces_As_Underscores(file_name));
+        Print_To_Stream(out,"_API_");
+        Print_To_Stream(out,As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(method.names.function_name.value)));
+        Print_To_Stream_With_Newline(out,";");
+    }
+    else{
+        Print_To_Stream_With_Newline(out,"//No trigger needs to be set. Only one backend API method");
+    }
+    
+    Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ void ☀Set_Trigger_Method_Parameters(C_Export_Settings const& options, std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    Print_To_Stream_With_Newline(out,"//set the triggered method parameters");
+    for ( auto it: method.function_arguments){
+        auto name = Shared_Printer::Derive_Data_Member_Name(as_string(it.identifier.value));
+        auto prefix_left = Data_Member_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(it,options,false,true);
+        auto prefix_right = Data_Member_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(it,options,false,false);
+        Print_To_Stream_With_Newline(out,"util::Assign(i." + prefix_left + name + "," + prefix_right + name + ");");
+    }
+    Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ void ☀Call_Backend_API_Method(std::string file_name, std::wofstream & out, Method_Item const& method, unsigned int method_count)❰
+
+    if (method_count > 0){
+        Print_To_Stream_With_Newline(out,"//call the method");
+        Print_To_Stream(out,"Update");
+        Print_To_Stream(out,As_Capital_And_Pushed_Together(file_name));
+        Print_To_Stream_With_Newline(out,"(&o,&i);");
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+◀private: static▶ void ☀Return_The_Value_If_Needed(C_Export_Settings const& options, std::string file_name, std::wofstream & out, Method_Item const& method)❰
+    Print_To_Stream_With_Newline(out,"//return the API result if applicable");
+    
+    if (method.return_results.empty()){
+        Print_To_Stream_With_Newline(out,"return; //backend API method is void");
+    }
+    else{
+        auto return_result = As_Capital_And_Pushed_Together(as_string(method.return_results[0].identifier.value));
+        auto prefix = Data_Member_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(method.return_results[0],options,false,true);
+        
+        Print_To_Stream_With_Newline(out,"return o." + prefix + return_result + ";");
+    }
+    
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+

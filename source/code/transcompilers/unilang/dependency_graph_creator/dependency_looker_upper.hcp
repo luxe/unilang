@@ -1,0 +1,42 @@
+class
+
+
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/parser/structure_creator"❫
+❪"code/transcompilers/unilang/dependency_graph_creator/seen_structure_dependencies"❫
+⚯
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+
+◀public: static▶ std::string ☀ Lookup_Full_Path_To_Unilang_Import_Item(std::set<std::string> const& dependency_paths, Import_Item & import_item, Parser_Settings const& settings)❰
+    return Lookup_Full_Path_To_Extension_Import_Item(dependency_paths,import_item,settings.input_files.expected_file_extension);
+❱
+◀public: static▶ std::string ☀ Lookup_Full_Path_To_NonUnilang_Import_Item(std::set<std::string> const& dependency_paths, Import_Item & import_item, Parser_Settings const& settings)❰
+    return Lookup_Full_Path_To_Extension_Import_Item(dependency_paths,import_item,".h");
+❱
+
+◀private: static▶ std::string ☀ Lookup_Full_Path_To_Extension_Import_Item(std::set<std::string> const& dependency_paths, Import_Item & import_item, std::string const& file_extension)❰
+    
+    //the path we must derive
+    std::string found_path;
+    
+    //loop through all the possible dependency directories looking for the dependency
+    for (auto const& dep: dependency_paths){
+    
+        //build possible path for the unilang depednency and test to see if it exists
+        std::string possible_path_to_file = dep + "/" + as_string(import_item.name.value) + "." + file_extension;
+        if (File_Exists(possible_path_to_file)){
+        
+            //set the "found" flag and marker the import.
+            //we can stop searching now that we've found the unilang dependency
+            import_item.found_as_unilang_file = true;
+            found_path = possible_path_to_file;
+            break;
+        }
+    }
+    
+    return found_path;
+❱

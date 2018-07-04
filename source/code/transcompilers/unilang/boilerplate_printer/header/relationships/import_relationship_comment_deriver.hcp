@@ -1,0 +1,79 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/sections/import/import_options"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/relationships/import_relation_and_label_getter"❫
+⚯
+❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ std::string ☀Derive(Import_Item const& item, Import_Options const& settings)❰
+    
+    //get the relations and their labels based on settings
+    auto relations = Import_Relation_And_Label_Getter::Get(item,settings);
+    
+    //get all the unique labels out of the derived relations map
+    auto unique_relation_labels = Get_All_The_Unique_Label_Names(relations);
+    
+    //use the unique labels to generate a set of lines
+    //where each line is the label followed by the list of types/functions that apply to that label
+    auto lines = Express_Relations_By_Label_Lines(relations,unique_relation_labels);
+    
+    //convert that vector of lines to a single string
+    auto relation_comment = Get_As_String_With_Element_On_Each_Line(lines);
+    
+    //return that string
+    return relation_comment;
+❱
+
+◀private: static▶ std::set<std::string> ☀Get_All_The_Unique_Label_Names(Related_Things_And_Their_Labels const& relations)❰
+    std::set<std::string> uniques;
+    
+    for (auto const& it: relations.map){
+        for (auto const& it2: it.second){
+            Add_To_Set(uniques,it2);
+        }
+    }
+    
+    return uniques;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Express_Relations_By_Label_Lines(Related_Things_And_Their_Labels const& relations, std::set<std::string> const& labels)❰
+    std::vector<std::string> lines;
+    for (auto const& it: labels){
+        auto line = Get_Text_Line_For_Label(relations,it);
+        lines.push_back(line);
+    }
+    return lines;
+❱
+
+
+◀private: static▶ std::string ☀Get_Text_Line_For_Label(Related_Things_And_Their_Labels const& relations, std::string const& label)❰
+    std::string line = label + ": ";
+    
+    auto types = Filter_Out_Types_By_Relation(relations,label);
+    auto comma_seperated_list = Get_As_String_With_CommaSpace_In_Between_Each_Element(types);
+    
+    return line + comma_seperated_list;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Filter_Out_Types_By_Relation(Related_Things_And_Their_Labels const& relations, std::string const& label)❰
+    std::vector<std::string> found;
+    
+    for (auto const& it: relations.map){
+        for (auto const& it2: it.second){
+            if (it2 == label){
+                found.push_back(it.first);
+                break;
+            }
+        }
+    }
+    
+    Sort_And_Remove_Duplicates(found);
+    return found;
+❱

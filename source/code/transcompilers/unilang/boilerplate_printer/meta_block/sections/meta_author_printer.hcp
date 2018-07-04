@@ -1,0 +1,98 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
+❪"code/transcompilers/unilang/options/sections/meta/author/meta_author_tag_options"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+
+    std::string str;
+    
+    if (options.existence.print){
+        
+        //re-order the authors based an order configuration
+        Order_Authors(authors,options.order_method);
+        
+        //if there are authors
+        if (!authors.empty()){
+            str+= Get_Author_Part_When_There_Are_Authors(authors,options);
+        }
+        
+        //if there are NOT authors
+        else if (options.existence.print_when_empty){
+            str+= Get_Author_Part_When_There_Is_Not_Authors(options);
+        }
+    }
+    
+    return str;
+❱
+
+
+◀private: static▶ void ☀Order_Authors(std::vector<Token_Value> & authors,  Author_Order_Method const& order_method)❰
+❱
+
+◀private: static▶ std::string ☀Get_Author_Part_When_There_Are_Authors(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+    std::string str;
+    
+    if (options.print_method == Meta_Author_Print_Method::SEPERATE_LINES){
+        str += Get_Authors_On_Each_Line(authors,options);
+    }
+    else if (options.print_method == Meta_Author_Print_Method::SHARED_LINE){
+        str += Get_Authors_On_Shared_Line(authors,options);
+    }
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Authors_On_Each_Line(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+    std::string str;
+    
+    for (auto const& it: authors){
+        Append_With_Newline(str,Get_Author_Tag(options) + " " + as_string(it.value));
+    }
+    Append_With_Newline(str,"");
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Get_Authors_On_Shared_Line(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+    std::string str;
+    
+    Append(str,Get_Authors_Tag(options) + " ");
+    
+    Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(authors
+        ,[&](Token_Value author){Append(str,std::string(as_string(author.value) + ", ")); return;}
+        ,[&](Token_Value author){Append(str,as_string(author.value));        return;}
+    );
+    
+    Append_With_Newline(str,"");
+    
+    
+    return str;
+❱
+◀private: static▶ std::string ☀Get_Author_Part_When_There_Is_Not_Authors(Meta_Author_Tag_Options const& options)❰
+    std::string str;
+    
+    Append(str,Get_Author_Tag(options));
+    if (options.print_missing_name){
+        Append(str," " + options.missing_name);
+    }
+    Append_With_Newline(str,"");
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Author_Tag(Meta_Author_Tag_Options const& options)❰
+    return options.tag_prefix + options.single_author_tag;
+❱
+◀private: static▶ std::string ☀Get_Authors_Tag(Meta_Author_Tag_Options const& options)❰
+    return options.tag_prefix + options.multi_author_tag;
+❱
+
+
+
+

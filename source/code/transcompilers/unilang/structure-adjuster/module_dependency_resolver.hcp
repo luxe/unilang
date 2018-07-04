@@ -1,0 +1,29 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/manipulation/struct_manipulation_settings"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Resolve(Structure & structure,Struct_Manipulation_Settings const& settings)❰
+
+	//append all public data member module deps to interface imports
+	//append all non-public data member module deps to implementation imports 
+	for (auto const& it: structure.data_members.data_members){
+		if (it.class_access == Class_Access::PUBLIC){
+			Apply_Module_Deps(it.module_dependencies,structure.imports.interface_dependencies);
+		}
+		else{
+			Apply_Module_Deps(it.module_dependencies,structure.imports.implementation_dependencies);
+		}
+	}
+❱
+
+◀private: static▶ void ☀Apply_Module_Deps(std::vector<Module_Dependency> const& deps, std::vector<Import_Item> & imports)❰
+	for (auto const& dep: deps){
+		Import_Item item;
+		item.name = dep.name;
+		imports.emplace_back(item);
+	}
+❱

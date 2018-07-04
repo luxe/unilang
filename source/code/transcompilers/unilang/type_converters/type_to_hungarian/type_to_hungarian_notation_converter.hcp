@@ -1,0 +1,22 @@
+class
+❪"code/transcompilers/unilang/options/hungarian/identifier_notation_settings"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/prefix_creators/hungarian_left_prefix_decider"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/prefix_creators/hungarian_type_prefix_decider"❫
+⚯
+
+⚞⚟
+
+//assumes that any kind of namespace or scoping has been stripped away from the base_type name
+//and by base type name, we refer to the typename minus any qualifiers.
+//References, consts, pointers, array indexes, must all be stripped away and represented them through the the bool params.
+//Note that this algorithm can't be applied to all type decelerations.  typedef'd structs and enums follow a different pattern.
+//Also, global constants, and enum constants are all caps without hungarian notation applied.
+◀public: static▶ std::string ☀Get_Hungarian_Notation_Prefix(Identifier_Notation_Settings const& settings, std::string base_type, bool is_pointer, bool is_member, bool is_global, bool is_static, bool is_array, bool is_reference) ❰
+
+    //create the characteristic prefixes
+    auto characteristic_prefix = Hungarian_Left_Prefix_Decider::Create_Prefix(is_global,is_static,is_member,settings.characteristic);
+    auto type_prefix           = Hungarian_Type_Prefix_Decider::Create_Prefix(settings.type,base_type,is_pointer,is_array,is_reference);
+
+    //combine them to create the needed hungarian notation
+    return characteristic_prefix + type_prefix;
+❱

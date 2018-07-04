@@ -1,0 +1,107 @@
+class
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/tokens/global_token_table"❫
+❪"code/transcompilers/unilang/options/parser/macro_resolving_settings"❫
+⚯
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Resolve_Macros(std::vector<Parser_Token> & tokens, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
+    for (auto & it: tokens){
+        it.content = As_Resolved_Macro_String(it.content,path_to_file,settings);
+    }
+❱
+
+◀private: static▶ std::wstring ☀As_Resolved_Macro_String(std::wstring str, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
+    std::wstring new_str;
+    
+    bool saw_escape = false;
+    for (auto it: str){
+        
+        
+        //handle escape character encounter
+        if (it == ESCAPE_CHARACTER){
+            
+            if (!saw_escape){
+                saw_escape = true;
+            }else{
+                new_str += ESCAPE_CHARACTER;
+                saw_escape = false;
+            }
+        }
+        
+        //handle code from macro encounter
+        else if (it == CLASS_NAME_CODE_FORM_MACRO){
+            Handle_Code_Form_Macro(new_str,saw_escape,path_to_file);
+        }
+        
+        //handle print from macro encounter
+        else if (it == CLASS_NAME_PRINT_FORM_MACRO){
+            Handle_Print_Form_Macro(new_str,saw_escape,path_to_file);
+        }
+        //true macro
+        else if (it == TRUE_MACRO){
+            Handle_True_Macro(new_str,saw_escape,path_to_file,settings);
+        }
+        //false macro
+        else if (it == FALSE_MACRO){
+            Handle_False_Macro(new_str,saw_escape,path_to_file,settings);
+        }
+        //false macro
+        else if (it == NULL_MACRO){
+            Handle_Null_Macro(new_str,saw_escape,path_to_file,settings);
+        }
+        
+        
+        
+        
+        else {
+            if (saw_escape){
+                //check to see if it was any of the other characters, from the table
+                //if not throw an exception about escaping an unneeded character
+                throw "escaped a character that did not need to be escaped";
+            }
+            new_str += it;
+            saw_escape = false;
+        }
+    }
+    
+    return new_str;
+❱
+◀private: static▶ void ☀Handle_Print_Form_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file)❰
+    if (saw_escape){new_str += CLASS_NAME_PRINT_FORM_MACRO;}
+    else{new_str+= as_wstring(Turn_Path_To_File_To_Printable_Name_Form(path_to_file));}
+    saw_escape = false;
+❱
+◀private: static▶ void ☀Handle_Code_Form_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file)❰
+    if (saw_escape){new_str += CLASS_NAME_CODE_FORM_MACRO;}
+    else{new_str+= as_wstring(Turn_Path_To_File_To_Code_Name_Form(path_to_file));}
+    saw_escape = false;
+❱
+
+◀private: static▶ void ☀Handle_True_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
+    if (saw_escape){new_str += TRUE_MACRO;}
+    else{new_str+= as_wstring(settings.true_macro);}
+    saw_escape = false;
+❱
+◀private: static▶ void ☀Handle_False_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
+    if (saw_escape){new_str += FALSE_MACRO;}
+    else{new_str+= as_wstring(settings.false_macro);}
+    saw_escape = false;
+❱
+◀private: static▶ void ☀Handle_Null_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
+    if (saw_escape){new_str += NULL_MACRO;}
+    else{new_str+= as_wstring(settings.null_macro);}
+    saw_escape = false;
+❱
+
+
+◀private: static▶ std::string ☀Turn_Path_To_File_To_Printable_Name_Form(std::string const& path_to_file)❰
+    return As_Capital_And_Pushed_Together(As_Removed_Suffix(Get_File_Name_From_File_Path(path_to_file)));
+❱
+◀private: static▶ std::string ☀Turn_Path_To_File_To_Code_Name_Form(std::string const& path_to_file)❰
+    return Capitalize_Each_With_Space_In_Between(As_Removed_Suffix(Get_File_Name_From_File_Path(path_to_file)));
+❱

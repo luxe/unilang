@@ -1,0 +1,190 @@
+class
+
+
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+❪"code/transcompilers/unilang/options/comment/doxygen/doxygen_block_options"❫
+⚯
+❪"code/utilities/types/strings/creators/lib"❫
+❪"code/utilities/types/strings/observers/front_back/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+
+⚞⚟
+
+
+◀public: static▶ std::string ☀Create_Doxygen_Block(Doxygen_Data const& data, Doxygen_Block_Options const& options) ❰
+	std::string result;
+	
+	switch (options.style){
+		case Block_Style::JAVADOC: return Build_Comment(data,options
+														,options.standard.javadoc.start
+														,JavaDoc_Content_Prefix(options)
+														,options.standard.javadoc.end);
+		
+		case Block_Style::QT: return Build_Comment(data,options
+												   ,options.standard.qt.start
+												   ,QT_Content_Prefix(options)
+												   ,options.standard.qt.end);
+		
+		case Block_Style::TRIPLE_SLASH: return Build_Comment(data,options
+															 ,options.standard.triple_slash.start
+															 ,options.standard.triple_slash.middle
+															 ,options.standard.triple_slash.end);
+		
+		case Block_Style::SLASH_BANG: return Build_Comment(data,options
+														   ,options.standard.slash_bang.start
+														   ,options.standard.slash_bang.middle
+														   ,options.standard.slash_bang.end);
+	}
+	
+	return result;
+❱
+
+
+
+◀private: static▶ std::string ☀Build_Comment(Doxygen_Data const& data, Doxygen_Block_Options const& options
+											 ,std::string const& start
+											 ,std::string const& middle
+											 ,std::string const& end)❰
+	std::string result=start + '\n';
+	result+= Build_Comment_Body(data,options,middle);
+	result+=end;
+	return result;
+❱
+
+
+◀private: static▶ std::string ☀Build_Comment_Body(Doxygen_Data const& data, Doxygen_Block_Options const& options,std::string const& middle)❰
+	std::string body;
+	
+	
+	//get the max lengths of stuff so we can column align
+	//these two ints are only relevant for column aligning (which may not due based on the settings)
+	int first_max = 0;
+	int param_name_max = 0;
+	if (options.column_align){
+		for(auto it: data.lines){
+			
+			//get the max length of a doxygen tag
+			if (it.first.size() > first_max){
+				first_max = it.first.size();
+			}
+			
+			//get the max length of a parm name
+			if (Begins_With(it.first,"param")){
+				if (Length_Of_First_Token(it.second) > param_name_max){
+					param_name_max = Length_Of_First_Token(it.second);
+				}
+			}
+		}
+	}
+
+
+    //TODO: move to settings
+    int extra_indent_before_comment = 0;
+
+	
+	
+	//print each full row of the doxygen block
+	for(auto it: data.lines){
+		
+		//indent the entire comment block forward
+        int spacing = it.first.size()+options.text_between_tag_and_tag_value.size()+1 + extra_indent_before_comment;
+        std::string middle_space = Create_String_Of_N_Spaces(options.spaces_between_doxygen_border_and_tag);
+		std::string carry_over_left_buffer = middle + middle_space + Create_String_Of_N_Chars(spacing,options.character_on_aligning_tag_text_on_newlines);
+		body+=middle + middle_space;
+		body+=options.tag_symbol;
+		//add the unique row information (this is where we may or may not column align)
+		body+=Get_Row_Data(it,options,first_max,param_name_max,carry_over_left_buffer) + "\n";
+	}
+	
+	return body;
+❱
+
+◀private: static▶ std::string ☀Get_Row_Data(std::pair<std::string,std::string> pair, Doxygen_Block_Options const& options, int first_max, int param_max,std::string carry_over_left_buffer)❰
+	std::string raw;
+	
+	//align the columns for stupid alignment fetishes
+	if (options.column_align){
+		raw = Get_Row_As_Column_Aligned(pair,options,first_max,param_max,carry_over_left_buffer);
+	}
+	
+	//just print out the lines without regard to column alignment
+	else{
+		raw = Get_Row_As_NonColumn_Aligned(pair,options,carry_over_left_buffer);
+	}
+	
+	return raw;
+❱
+
+
+
+◀private: static▶ std::string ☀Get_Row_As_Column_Aligned(std::pair<std::string,std::string> pair, Doxygen_Block_Options const& options, int first_max, int param_max,std::string carry_over_left_buffer)❰
+
+	std::string raw;
+	if (Begins_With(pair.first,"param")){
+		raw = Get_Aligned_Param_Data(pair,options,first_max,param_max,carry_over_left_buffer);
+	}
+	else{
+		raw = Get_Aligned_NonParam_Data(pair,options,first_max,carry_over_left_buffer);
+	}
+	return raw;
+❱
+◀private: static▶ std::string ☀Get_Row_As_NonColumn_Aligned(std::pair<std::string,std::string> pair, Doxygen_Block_Options const& options, std::string carry_over_left_buffer)❰
+	std::string raw;
+	raw = pair.first + options.text_between_tag_and_tag_value + Add_Prefix_To_All_Lines_Except_First(pair.second,carry_over_left_buffer);
+	return raw;
+❱
+
+
+
+◀private: static▶ std::string ☀Get_Aligned_Param_Data(std::pair<std::string,std::string> pair, Doxygen_Block_Options const& options, int first_max, int param_max,std::string carry_over_left_buffer)❰
+	std::string raw;
+    int derived_distance = first_max - pair.first.size();
+    derived_distance += options.spaces_between_tag_and_comment;
+	raw+=pair.first + options.text_between_tag_and_tag_value + Create_String_Of_N_Spaces(derived_distance);
+	auto buffered = Buffered_Param_Name(pair.second,param_max);
+	carry_over_left_buffer += Create_String_Of_N_Spaces(derived_distance);
+	raw+= Add_Prefix_To_All_Lines_Except_First(buffered, carry_over_left_buffer);
+	return raw;
+❱
+
+◀private: static▶ std::string ☀Buffered_Param_Name(std::string second_part, int param_max)❰
+
+	auto param_name = Pop_Off_First_Token(second_part);
+	return param_name + Create_String_Of_N_Spaces(param_max - param_name.size()) + " " + second_part;
+❱
+
+◀private: static▶ std::string ☀Get_Aligned_NonParam_Data(std::pair<std::string,std::string> pair, Doxygen_Block_Options const& options, int first_max,std::string carry_over_left_buffer)❰
+	std::string raw;
+    int derived_distance = first_max - pair.first.size();
+    derived_distance += options.spaces_between_tag_and_comment;
+	raw+=pair.first + options.text_between_tag_and_tag_value + Create_String_Of_N_Spaces(derived_distance);
+	carry_over_left_buffer += Create_String_Of_N_Spaces(derived_distance);
+	raw+= Add_Prefix_To_All_Lines_Except_First(pair.second,carry_over_left_buffer);
+	return raw;
+❱
+
+
+
+
+◀private: static▶ int ☀Length_Of_First_Token(std::string const& str)❰
+	int length = 0;
+	
+	for (auto it: str){
+		if (it == ' '){
+			break;
+		}
+		++length;
+	}
+	
+	return length;
+❱
+
+◀private: static▶ std::string ☀JavaDoc_Content_Prefix(Doxygen_Block_Options const& options)❰
+	if (options.intermediate_stars){return options.standard.javadoc.middle_with_stars;}
+	return options.standard.javadoc.middle_without_stars;
+❱
+◀private: static▶ std::string ☀QT_Content_Prefix(Doxygen_Block_Options const& options)❰
+	if (options.intermediate_stars){return options.standard.qt.middle_with_stars;}
+	return options.standard.qt.middle_without_stars;
+❱

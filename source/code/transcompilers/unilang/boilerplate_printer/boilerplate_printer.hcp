@@ -1,0 +1,155 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/boilerplate_printer/meta_block/meta_block_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/code_wrap_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/header/header_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/include_guard_wrap_printer"❫
+❪"code/transcompilers/unilang/boilerplate_printer/extern_c/extern_wrap_printer"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Print_Begin(std::wofstream & out, Structure const& structure, Export_File_Settings const& file_settings, C_Export_Settings const& options, std::string const& final_file_name)❰
+    
+    //top comment
+    Print_Top_Comment(out,structure,file_settings,options.portion.meta,final_file_name);
+    
+    //include guards
+    Print_Include_Guard_Begin_If_Type_Allows(out,file_settings,structure,options);
+    
+    //headers
+    Print_Headers_Based_On_Type(out,structure,options,file_settings);
+    
+    //start extern guard
+    Print_Extern_Guard_Begin_If_Type_Allows(out,file_settings,options);
+❱
+
+◀public: static▶ void ☀Print_Top_Comment(std::wofstream & out, Structure const& structure, Export_File_Settings const& file_settings, Meta_Options const& meta, std::string const& final_file_name)❰
+    
+//top comment
+    auto contains_data = !structure.data_members.data_members.empty();
+    auto contains_methods = !structure.methods.methods.empty();
+    Meta_Block_Printer::Print(structure.name,out,file_settings,structure.meta,meta,contains_data,contains_methods,final_file_name);
+❱
+
+◀public: static▶ void ☀Print_End(std::wofstream & out, Structure const& structure, Export_File_Settings const& file_settings, C_Export_Settings const& options)❰
+
+    //extern c guard
+    Print_Extern_Guard_End_If_Type_Allows(out,file_settings,options);
+    
+    //include guard
+    Print_Include_Guard_End_If_Type_Allows(out,file_settings,structure,options);
+    
+    //doxygen group end comment marker
+    Code_Wrap_Printer::Print_Doxygen_Group_End_Markers(out,structure.meta,options.portion.meta);
+    
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+
+◀private: static▶ void ☀Print_Include_Guard_Begin_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+    if (Can_Print_Include_Guard_Based_On_Type(file_settings)){
+        auto file_append = Get_File_Append_From_Type(file_settings);
+        Include_Guard_Wrap_Printer::Print_Beginning_Of_Header_Include_Guard(structure.name+file_append,out,options.portion.guard_options);
+    }
+❱
+
+◀private: static▶ void ☀Print_Include_Guard_End_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+    if (Can_Print_Include_Guard_Based_On_Type(file_settings)){
+        auto file_append = Get_File_Append_From_Type(file_settings);
+        Include_Guard_Wrap_Printer::Print_End_Of_Header_Include_Guard(structure.name+file_append,out,options.portion.guard_options);
+    }
+❱
+
+◀private: static▶ void ☀Print_Extern_Guard_Begin_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, C_Export_Settings const& options)❰
+    if (Can_Print_Extern_Guard_Based_On_Type(file_settings)){
+        Print_To_Stream_With_Newline(out,"");
+        Extern_Wrap_Printer::Optionally_Print_Extern_C_Start(out,options.portion.extern_c_guard_options);
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+◀private: static▶ void ☀Print_Extern_Guard_End_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, C_Export_Settings const& options)❰
+    if (Can_Print_Extern_Guard_Based_On_Type(file_settings)){
+        Print_To_Stream_With_Newline(out,"");
+        Extern_Wrap_Printer::Optionally_Print_Extern_C_End(out,options.portion.extern_c_guard_options);
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+
+◀private: static▶ bool ☀Can_Print_Include_Guard_Based_On_Type(Export_File_Settings const& file_settings)❰
+    switch(file_settings.file){
+        case File_Type::INTERFACE:
+        case File_Type::DATA:
+        case File_Type::DATA_AND_INTERFACE:
+        case File_Type::INTERFACE_AND_IMPLEMENTATION:
+        case File_Type::ALL:
+        return true;
+    }
+    
+    return false;
+❱
+◀private: static▶ bool ☀Can_Print_Extern_Guard_Based_On_Type(Export_File_Settings const& file_settings)❰
+    switch(file_settings.file){
+        case File_Type::INTERFACE:
+        case File_Type::DATA:
+        case File_Type::DATA_AND_INTERFACE:
+        case File_Type::INTERFACE_AND_IMPLEMENTATION:
+        case File_Type::ALL:
+        return true;
+    }
+    
+    return false;
+❱
+
+
+◀private: static▶ void ☀Print_Headers_Based_On_Type(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, Export_File_Settings const& file_settings)❰
+    
+    
+    //print headers for global
+    if (file_settings.code == Code_Type::GLOBAL){
+        switch (file_settings.file){
+            case File_Type::INTERFACE:      Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());             break;
+            case File_Type::IMPLEMENTATION: Header_Printer::Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies,options,structure.inlined_structures.get(),structure.methods.methods);   break;
+        }
+    }
+    
+    
+    //print headers for object
+    else if (file_settings.code == Code_Type::PRODUCT_TYPE){
+        switch (file_settings.file){
+            case File_Type::INTERFACE:      Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());             break;
+            case File_Type::IMPLEMENTATION: Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies,options,structure.inlined_structures.get());   break;
+            case File_Type::DATA:           Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());                  break;
+            case File_Type::DATA_AND_INTERFACE: Header_Printer::Print_Object_Data_And_Interface(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());        break;
+            case File_Type::ALL: Header_Printer::Print_Object_Data_Interface_And_Implementation(structure.name,out,structure.imports,options,structure.inlined_structures.get()); break;
+        }
+    }
+    
+❱
+
+
+
+
+//TODO: not sure what I was thinking about here.  
+//I guess I wanted the opportunity to put whatever you want at the bottom of the file similar to the big comment at the top
+//it might as well be the exact same functionality as the top block imo
+◀private: static▶ void ☀Print_BoilerPlate_Ending(std::wofstream & out, Export_File_Settings const& file_settings, C_Export_Settings const& options)❰
+    auto file_append = Get_File_Append_From_Type(file_settings);
+❱
+
+
+//TODO: needs replaced with filename creator (data is a suffix setting for filesytem, and it should be derived there)
+◀private: static▶ std::string ☀Get_File_Append_From_Type(Export_File_Settings const& file_settings)❰
+    
+    if (file_settings.code == Code_Type::PRODUCT_TYPE){
+        if (file_settings.file == File_Type::DATA){
+            return "_data";
+        }
+    }
+    
+    return "";
+❱

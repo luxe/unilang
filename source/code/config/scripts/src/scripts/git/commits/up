@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#the full commit message begins with a tag
+full_commit_message=`print-tag` ;
+
+#the commit message is every argument that is sent into the function
+#this allows us to write a commit message without needing to use quotes
+commit_message="$@";
+
+#if no commit message is given, use a generic commit message
+if [ -z "$commit_message" ]; then
+    
+  #maybe find a smart way to guess at what was done (kind of like what github does)
+  #ex.  renamed __ to __
+  #ex.  modified __
+  commit_message+="updates";
+fi
+
+#get the full commit message with the tag in front
+full_commit_message+=" $commit_message";
+
+#add everything
+git add -A :/;
+
+#pull before we commit, and pull again before we push
+git commit -am "$full_commit_message" && true;
+git pull;

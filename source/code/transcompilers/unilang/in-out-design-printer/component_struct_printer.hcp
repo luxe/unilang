@@ -1,0 +1,442 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/type_to_hungarian_notation_converter"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
+❪"component_input"❫
+❪"component_output"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/in-out-design-printer/input_struct_getter"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/enum-printer/enum_section_printer"❫
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/structure-printer/data_member_printer"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/structure_typename_deriver"❫
+❪"code/transcompilers/unilang/structure-printer/struct_printer"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+⚞⚟
+
+
+//printing f2si objects
+◀public: static▶ void ☀Print_Data_Structs(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, bool dumb_way)❰
+    
+    if (dumb_way){
+        Print_Input_Output_Way(out,structure,options);
+    }
+    else{
+        Print_Normal_Way(out,structure,options);
+    }
+❱
+◀private: static▶ void ☀Print_Normal_Way(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+        //normal printing, will print different structs depending on whether the data has methods or not.
+        if (structure.methods.methods.empty()){
+            Print_The_Component_Structs_In_Context_Of_Not_Having_Methods(out,structure,options);
+        }
+        else{
+            Print_The_Component_Structs_In_Context_Of_Having_Methods(out,structure,options);
+        }
+❱
+
+◀private: static▶ void ☀Print_The_Component_Structs_In_Context_Of_Not_Having_Methods(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    
+    auto locals = Get_Qualified_Local_Data_Members(structure);
+    auto dumb_name = Structure_Typename_Deriver::Derive_Structure_Type(structure.name,Structure_Name_Kind::DUMB);
+    auto used_name = Structure_Typename_Deriver::Derive_Structure_Type(structure.name,Structure_Name_Kind::USED);
+    auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+    
+    if (!locals.empty()){
+        Print_A_Struct_Of_Data(out,dumb_name,used_name,print_name,"The internal state of the component",locals,options);
+    }
+    
+    
+    
+❱
+◀private: static▶ void ☀Print_The_Component_Structs_In_Context_Of_Having_Methods(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Print_Local_Struct(out,structure,options);
+    auto dumb_name = Structure_Typename_Deriver::Derive_Structure_Type(structure.name,Structure_Name_Kind::DUMB);
+    auto used_name = Structure_Typename_Deriver::Derive_Structure_Type(structure.name,Structure_Name_Kind::USED);
+    auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+    Doxygen_Block_Printer::Print_Block(out,0,print_name, "The internal state of the component",options);
+    Print_To_Stream(out,"typedef struct ");
+    Print_To_Stream_With_Newline(out,dumb_name);
+    Print_To_Stream_With_Newline(out,"{");
+    
+    //decide how to print the data (print one way, if it's plain data, another way, if it has methods)
+    Print_Output_Data_Variables(out,structure,options);
+    Possibly_Print_Local_Struct_In_Outputs(out,structure,options);
+    Print_To_Stream(out,"} ");
+    Print_To_Stream(out,used_name);
+    Print_To_Stream_With_Newline(out,";");
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+
+◀private: static▶ void ☀Print_Input_Output_Way(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    switch (options.general.in_out_export_api_style){
+        case In_Out_Export_Api_Style::BOOLEANS: Create_Data_Structs_With_Bool_Triggers(out,structure,options); break;
+        case In_Out_Export_Api_Style::ENUM: Create_Data_Structs_With_Enum_Triggers(out,structure,options); break;
+    }
+❱
+◀private: static▶ void ☀Create_Data_Structs_With_Bool_Triggers(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Print_Local_Struct(out,structure,options);
+    Print_Input_Struct_With_Bools(out,structure,options);
+    Print_Output_Struct(out,structure,options);
+❱
+◀private: static▶ void ☀Create_Data_Structs_With_Enum_Triggers(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+    Print_Enum_Trigger_Decleration(out,structure,options);
+    Print_Local_Struct(out,structure,options);
+    Print_Input_Struct_With_Enums(out,structure,options);
+    Print_Output_Struct(out,structure,options);
+❱
+
+
+
+
+
+◀private: static▶ void ☀Print_Local_Struct(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+
+    //get all the variables that qualify for locals
+    auto locals = Get_Qualified_Local_Data_Members(structure);
+    
+    if (!locals.empty()){
+        
+        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Locals_t";
+        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "LocalsT";
+        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+        Print_A_Struct_Of_Data(out,dumb_name,used_name,print_name + " Locals","Contains internal state that should not be referenced by the client.",locals,options);
+    }
+❱
+
+
+◀private: static▶ void ☀Print_A_Struct_Of_Data(std::wofstream & out, std::string const& dumb_name, std::string const& used_name, std::string const& brief, std::string const& details, std::vector<Data_Member_Item> const& data_members, C_Export_Settings const& options)❰
+    
+	//not that great, but this got abstracted to something different when HIDL exporting got built
+	Type_Item t;
+	t.name.value = as_wstring(used_name);
+	t.brief.value = as_wstring(brief);
+	t.detail.value = as_wstring(details);
+	Struct_Printer::Print_Struct(out,t,data_members,options.general,options.portion);
+❱
+
+
+◀private: static▶ std::vector<Data_Member_Item> ☀Get_Qualified_Local_Data_Members(Structure const& structure)❰
+    //get all the variables that qualify for locals
+    std::vector<Data_Member_Item> locals;
+    for (auto it: structure.data_members.data_members){
+        if (Shared_Printer::Data_Member_Qualifies_As_Local(it)){
+            locals.push_back(it);
+        }
+    }
+    return locals;
+❱
+
+◀private: static▶ void ☀Print_Enum_Trigger_Decleration(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    Enum_Item i;
+    i.name.value = as_wstring(structure.name) + L" api";
+    i.brief.value = L"The various actions that can be taken when calling update";
+    i.is_iterable = false;
+    i.access = Class_Access::PUBLIC;
+    
+    auto public_methods = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(structure.name,structure.methods.methods);
+    for (auto it: public_methods){
+        Enum_Arg arg;
+        arg.name.value = it.names.function_name.value;
+        arg.comment.value = L"";
+        i.args.push_back(arg);
+    }
+    
+    
+    std::vector<Enum_Item> made_to_print;
+    made_to_print.push_back(i);
+    Enum_Section_Printer::Print_Interface_Enums(out,made_to_print,options.portion.enum_options,options);
+    
+❱
+
+
+
+◀private: static▶ void ☀Print_Input_Struct_With_Enums(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    //get all the data members of the input struct
+    auto inputs = Input_Struct_Getter::Get_All_Of_The_Component_Inputs(structure.name,structure.methods.methods);
+    
+    //only print the input struct if we have a variable to put in it.
+    if (!inputs.empty()){
+        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Inputs_t";
+        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "InputsT";
+        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+        Doxygen_Block_Printer::Print_Block(out,0,print_name + " Inputs", "All of the conceivable inputs,\nthat may influence the state of the component, \nand potentially change any of the outputs",options);
+        Print_To_Stream(out,"typedef struct ");
+        Print_To_Stream_With_Newline(out,dumb_name);
+        Print_To_Stream_With_Newline(out,"{");
+        Print_Input_Struct_Variables_For_Enums(out,structure,inputs,options);
+        Print_To_Stream(out,"} ");
+        Print_To_Stream(out,used_name);
+        Print_To_Stream_With_Newline(out,";");
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+
+◀private: static▶ void ☀Print_Input_Struct_With_Bools(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    //get all the data members of the input struct
+    auto inputs = Input_Struct_Getter::Get_All_Of_The_Component_Inputs(structure.name,structure.methods.methods);
+    
+    //only print the input struct if we have a variable to put in it.
+    if (!inputs.empty()){
+        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Inputs_t";
+        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "InputsT";
+        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+        Doxygen_Block_Printer::Print_Block(out,0,print_name + " Inputs", "All of the conceivable inputs,\nthat may influence the state of the component, \nand potentially change any of the outputs",options);
+        Print_To_Stream(out,"typedef struct ");
+        Print_To_Stream_With_Newline(out,dumb_name);
+        Print_To_Stream_With_Newline(out,"{");
+        Print_Input_Struct_Variables_For_Bools(out,structure,inputs,options);
+        Print_To_Stream(out,"} ");
+        Print_To_Stream(out,used_name);
+        Print_To_Stream_With_Newline(out,";");
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+
+◀private: static▶ void ☀Print_Input_Struct_Variables_For_Bools(std::wofstream & out, Structure const& structure, std::vector<Component_Input> const& inputs, C_Export_Settings const& options)❰
+    
+    //print bools for all of the public methods
+    Print_Component_Methods(out,structure.name,structure.methods.methods,options);
+    
+    //print all the input parameters needed for all of the public methods
+    Print_Component_Inputs(out,inputs,options);
+❱
+◀private: static▶ void ☀Print_Input_Struct_Variables_For_Enums(std::wofstream & out, Structure const& structure, std::vector<Component_Input> const& inputs, C_Export_Settings const& options)❰
+    
+    //print an enum for all the public methods
+    Print_Enum_As_Data_Member(out,structure.name,structure.methods.methods,options);
+    
+    //print all the input parameters needed for all of the public methods
+    Print_Component_Inputs(out,inputs,options);
+❱
+
+
+◀private: static▶ void ☀Print_Enum_As_Data_Member(std::wofstream & out, std::string file_name, std::vector<Method_Item> const& inputs, C_Export_Settings const& options)❰
+
+    //get only methods that are not constructors and that are public
+    std::vector<Method_Item> new_inputs = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,inputs);
+
+
+    if (new_inputs.size() > 1){
+            
+        //builds the brief statement for the enum trigger
+        std::string full_brief = "A trigger for calling one of the backend API functions.\n";
+        std::string full_detail = "Setting the trigger will apply the specified transformation during an update.\n";
+        Doxygen_Block_Printer::Print_Block(out,4,full_brief,full_detail,options);
+        
+        
+        std::string enum_type = As_Capital_And_Pushed_Together(file_name) + "ApiE";
+        Identifier_Notation_Settings settings;
+        auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(settings,enum_type,false,true,false,false,false,false);
+        Print_To_Stream_With_Newline(out,"    " + enum_type + " " + prefix + "ApiCall;");
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+
+
+◀private: static▶ bool ☀Exists(std::vector<Component_Output> const& inputs, std::string name)❰
+    for (auto it: inputs){
+        if (it.name == name){
+            return true;
+        }
+    }
+    return false;
+❱
+◀private: static▶ Component_Output& ☀Find(std::vector<Component_Output> & inputs, std::string name)❰
+    for (auto & it: inputs){
+        if (it.name == name){
+            return it;
+        }
+    }
+    return inputs[0];
+❱
+◀private: static▶ void ☀Print_Output_Struct(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+        auto dumb_name = As_Capital_And_Pushed_Together(structure.name) + "Outputs_t";
+        auto used_name = As_Capital_And_Pushed_Together(structure.name) + "OutputsT";
+        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+        Doxygen_Block_Printer::Print_Block(out,0,print_name + " Outputs", "All of the conceivable outputs\nthat may be influenced by any of inputs during an update.",options);
+        Print_To_Stream(out,"typedef struct ");
+        Print_To_Stream_With_Newline(out,dumb_name);
+        Print_To_Stream_With_Newline(out,"{");
+        Print_Output_Data_Variables(out,structure,options);
+        Print_Output_Return_Variables(out,structure,options);
+        Possibly_Print_Local_Struct_In_Outputs(out,structure,options);
+        Print_To_Stream(out,"} ");
+        Print_To_Stream(out,used_name);
+        Print_To_Stream_With_Newline(out,";");
+        Print_To_Stream_With_Newline(out,"");
+❱
+
+◀private: static▶ void ☀Possibly_Print_Local_Struct_In_Outputs(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    //get all the variables that qualify for locals
+    auto locals = Get_Qualified_Local_Data_Members(structure);
+    
+    //only print the local struct as an output data member if there are any local variables at all
+    if (!locals.empty()){
+        auto print_name = Capitalize_Each_With_Space_In_Between(structure.name);
+        Doxygen_Block_Printer::Print_Block(out,4,"The local state of the " + print_name, "Contains internal state that should not be referenced by the client.",options);
+        Print_To_Stream(out,As_Capital_And_Pushed_Together(structure.name));
+        Print_To_Stream_With_Newline(out,"LocalsT m_tLocals;");
+        Print_To_Stream_With_Newline(out,"");
+    }
+❱
+
+◀private: static▶ void ☀Print_Output_Data_Variables(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+    //get all the necessary members based on state specifiers
+    auto members = structure.data_members.data_members;
+    Remove_Elements_Where_Function_Is_True(members,[](Data_Member_Item const& x){ return !x.is_observable && !x.is_injectable;});
+    Data_Member_Printer::Print_Global_Decelerations(out,members,options,Code_Type::PRODUCT_TYPE);
+❱
+◀private: static▶ void ☀Print_Output_Return_Variables(std::wofstream & out, Structure const& structure, C_Export_Settings const& options)❰
+
+
+
+    std::vector<Component_Output> outputs;
+    
+    for (auto it: structure.methods.methods){
+        //~* so we don't add constructor params to the input strut *~
+        if (!Shared_Printer::Is_Constructor_Or_Destructor(structure.name,it)){
+            Potentially_Add_Component_Outputs(it,outputs);
+        }
+    }
+    
+    //print all the input parameters needed for all of the public methods
+    Print_Component_Outputs(out,outputs,options);
+    
+    
+❱
+
+◀private: static▶ void ☀Potentially_Add_Component_Outputs(Method_Item const& it, std::vector<Component_Output> & outputs)❰
+
+        //if method has a return type and is a public function..
+        if (!it.return_results.empty() && it.class_access == Class_Access::PUBLIC){
+            if (!Exists(outputs,as_string(it.return_results[0].identifier.value))){
+                Component_Output d;
+                d.name = as_string(it.return_results[0].identifier.value);
+                d.from.push_back(as_string(it.names.function_name.value));
+                d.arg = it.return_results[0];
+                outputs.push_back(d);
+            }else{
+                Find(outputs,as_string(it.return_results[0].identifier.value)).from.push_back(as_string(it.names.function_name.value));
+            }
+        }
+❱
+
+
+◀private: static▶ void ☀Print_Component_Methods(std::wofstream & out, std::string file_name, std::vector<Method_Item> const& inputs, C_Export_Settings const& options)❰
+
+    //get only methods that are not constructors and that are public
+    std::vector<Method_Item> new_inputs = Shared_Printer::Filter_By_Non_Constructor_Non_Destructor_Public_Methods(file_name,inputs);
+
+
+    if (new_inputs.size() > 1){
+        for (auto it: new_inputs){
+            
+            //builds the brief statement for the BOOL trigger
+            std::string full_brief = "A trigger for calling the backend API function: " + Shared_Printer::Derive_Data_Member_Name(as_string(it.names.function_name.value)) + ".\n";
+            full_brief += as_string(it.brief_description.value);
+            
+            std::string full_detail = "Setting the trigger will apply the transformation specified during an update.\n";
+            full_detail += as_string(it.detailed_description.value);
+            
+            
+            Doxygen_Block_Printer::Print_Block(out,4,full_brief,full_detail,options);
+            Identifier_Notation_Settings settings;
+            auto prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(settings,"BOOL",false,true,false,false,false,false);
+            Print_To_Stream_With_Newline(out,"    BOOL " + prefix + Shared_Printer::Derive_Data_Member_Name(as_string(it.names.function_name.value)) + ";");
+            Print_To_Stream_With_Newline(out,"");
+        }
+    }
+❱
+
+
+◀private: static▶ void ☀Print_Component_Outputs(std::wofstream & out, std::vector<Component_Output> const& outputs, C_Export_Settings const& options)❰
+
+    //dump all of the parameters
+    std::vector<Data_Member_Item> fakes;
+    for (auto it: outputs){
+        //build string that shows what functions it applies to:
+        std::string detail;
+        detail += "This result gets set from the following functions:\n";
+        for (auto x: it.from){
+            detail += As_Capital_And_Pushed_Together(x) + "\n";
+        }
+        
+        
+        //build a fake data member and store it
+        Data_Member_Item item;
+        item.brief.value = it.arg.comment.value;
+        item.detail.value = as_wstring(detail);
+        item.is_const= !it.arg.is_mutable;
+        item.type.value=it.arg.type.value;
+        item.name.value=it.arg.identifier.value;
+        fakes.push_back(item);
+    }
+    Data_Member_Printer::Print_Global_Decelerations(out,fakes,options,Code_Type::PRODUCT_TYPE);
+❱
+◀private: static▶ void ☀Print_Component_Inputs(std::wofstream & out, std::vector<Component_Input> const& inputs, C_Export_Settings const& options)❰
+        
+        
+    //dump all of the parameters
+    std::vector<Data_Member_Item> fakes;
+    for (auto it: inputs){
+        //build string that shows what functions it applies to:
+        std::string detail;
+        detail += "This parameter is applied to the following functions:\n";
+        for (size_t i = 0; i < it.from.size(); ++i){
+            
+            //newline after all but last
+            if (i < it.from.size()-1){
+                detail += Shared_Printer::Derive_Data_Member_Name(it.from[i]) + "\n";
+            }else{
+                detail += Shared_Printer::Derive_Data_Member_Name(it.from[i]);
+            }
+        }
+        
+        //build a fake data member and store it
+        Data_Member_Item item;
+        item.brief.value = it.arg.comment.value;
+        item.detail.value = as_wstring(detail);
+        item.is_const=false;
+        item.type.value=it.arg.type.value;
+        item.name.value=it.arg.identifier.value;
+        item.default_value.value=it.arg.default_value.value;
+        fakes.push_back(item);
+    }
+    Data_Member_Printer::Print_Global_Decelerations(out,fakes,options,Code_Type::PRODUCT_TYPE);
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

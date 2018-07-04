@@ -1,0 +1,131 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure-printer/implicit_contract_adder"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/in-out-design-printer/object_name_resolver"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+
+
+◀public: static▶ Method_Item ☀Create(Structure const& structure, bool dumb_way)❰
+
+    //build up fake params
+    Method_Item m;
+    
+    m.class_access = Class_Access::PUBLIC;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    m.storage = Storage_Specifier::NONE;
+    m.overload_specifiers.is_const = false;
+    m.names.function_name.value = L"copy construct " + as_wstring(As_All_Lowercase_Letters_With_Underscores_As_Spaces(structure.name));
+    m.brief_description.value = L"Creates and initializes " + as_wstring(As_Capital_And_Pushed_Together(structure.name) + ".\nreturns a copy so that instantiating the type can be done in a one line deceleration");
+    m.subgroup.value = L"memory management";
+    
+    //create detailed description
+    if (dumb_way){
+        m.detailed_description.value = L"Before the output can be used and updated, it must first be initialized to a valid state.";
+    }
+    else{
+        m.detailed_description.value = L"Copy constructs the component to a valid initial state";
+    }
+    
+    //create return value
+    Function_Result result;
+    result.is_mutable = true;
+    result.is_reference = false;
+    result.type.value = Object_Name_Resolver::Resolve_Type_Name(structure,dumb_way);
+    result.identifier.value = Object_Name_Resolver::Resolve_Identifier_Name(structure,dumb_way);
+    result.comment.value = L"a newly copy constructed " + Object_Name_Resolver::Resolve_Identifier_Name(structure,false);
+    m.return_results.push_back(result);
+    
+    m.function_arguments.push_back(Self_Argument(structure,dumb_way));
+    Add_Body(structure.name,m,structure.methods.methods,structure,dumb_way);
+    
+    return m;
+❱
+
+
+
+
+◀private: static▶ Function_Argument ☀Self_Argument(Structure const& structure, bool dumb_way)❰
+    Function_Argument one;
+    one.is_mutable = false;
+    one.is_reference = true;
+    one.type.value = L"void";
+    //one.type.value = as_wstring(As_Capital_And_Pushed_Together(structure.name)) + L"T";
+    one.identifier.value = L"self";
+    one.comment.value = L"the " + as_wstring(Capitalize_Each_With_Space_In_Between(structure.name)) + L" to copy construct from";
+    
+    return one;
+❱
+
+◀private: static▶ void ☀Add_Body(std::string file_name, Method_Item & m, std::vector<Method_Item> const& methods,Structure const& structure, bool dumb_way)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    //creates type
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("create the type in its initial invalid state\n"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n" + Object_Name_Resolver::Resolve_Type_Name(structure,dumb_way) + L" t" + Object_Name_Resolver::Resolve_Identifier_Name(structure,dumb_way) + L";\n\n";
+    body.push_back(t);
+    
+    //initializes it
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("copy initialize the type so that it is now valid"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\n" + as_wstring("CopyInitialize") + Object_Name_Resolver::Resolve_Identifier_Name(structure,false) + L"T(&t" + Object_Name_Resolver::Resolve_Identifier_Name(structure,dumb_way);
+    t.value += L"";
+    body.push_back(t);
+    
+    //forward arguments
+    Forward_Arguments(m,body);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value = L");\n\n";
+    body.push_back(t);
+    
+    //returns it
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("return a copy back to the user"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nreturn t" + Object_Name_Resolver::Resolve_Identifier_Name(structure,dumb_way) + L";\n";
+    body.push_back(t);
+
+    m.body = body;
+❱
+
+◀private: static▶ void ☀Forward_Arguments(Method_Item const& m, std::vector<Body_Token_Value> & body)❰
+    
+    Body_Token_Value t;
+    
+  Call_Function_On_All_Elements(m.function_arguments,
+  [&](Function_Argument arg){
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L",";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value =  arg.identifier.value;
+    body.push_back(t);
+      
+  });
+  
+  
+❱

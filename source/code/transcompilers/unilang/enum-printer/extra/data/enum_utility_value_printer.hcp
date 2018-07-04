@@ -1,0 +1,96 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/structure-printer/data_member_printer"❫
+❪"code/transcompilers/unilang/structure/sections/meta/code_type"❫
+⚯
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/streams/filestreams/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print_Constants_Outside_Of_Enum(std::wofstream & out, Enum_Item const& it, Enum_Options const& options, C_Export_Settings const& options2)❰
+
+    //figure out the casing
+    auto base_name = As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(it.name.value));
+    auto pretty_name = Capitalize_Each_With_Space_In_Between(as_string(it.name.value));
+    auto type_name = As_Capital_And_Pushed_Together(as_string(it.name.value)) + "E";
+    auto first_element_name = As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(First_Element(it.args).name.value));
+    auto last_element_name = As_All_Capital_Letters_With_Spaces_As_Underscores(as_string(Last_Element(it.args).name.value));
+
+    if (options.utility_values.add_utility_values){
+         
+        if (options.utility_values.first.add){
+        
+            //first element
+            Create_And_Print_First_Enum_Data_Member(out,type_name,base_name,pretty_name,first_element_name,options2);
+        }
+        
+        if (options.utility_values.last.add){
+        
+            //last element
+            Create_And_Print_Last_Enum_Data_Member(out,type_name,base_name,pretty_name,last_element_name,options2);
+        }
+        
+        if (options.utility_values.num.add){
+        
+            //total number of elements
+            Create_And_Print_Total_Enum_Data_Member(out,type_name,base_name,pretty_name,std::to_string(it.args.size()),options2);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Create_And_Print_Total_Enum_Data_Member(std::wofstream & out, std::string type_name, std::string base_name, std::string pretty_name, std::string element_name, C_Export_Settings const& options)❰
+
+    auto data_member = Create_Enum_Data_Member(type_name,std::string("TOTAL_") + base_name,
+    "The total number of elements of the " + pretty_name + " enumerated set of data","Useful for iterating over enum values.",
+    element_name);
+    
+    //print it
+    std::vector<Data_Member_Item> x {data_member};
+    Data_Member_Printer::Print_Global_Decelerations(out,x,options,Code_Type::GLOBAL);
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+◀private: static▶ void ☀Create_And_Print_Last_Enum_Data_Member(std::wofstream & out, std::string type_name, std::string base_name, std::string pretty_name, std::string element_name, C_Export_Settings const& options)❰
+
+    auto data_member = Create_Enum_Data_Member(type_name,std::string("LAST_") + base_name,
+    "The last element of the " + pretty_name + " enumerated set of data","Useful for iterating over enum values.",
+    base_name + "_" + element_name);
+    
+    //print it
+    std::vector<Data_Member_Item> x {data_member};
+    Data_Member_Printer::Print_Global_Decelerations(out,x,options,Code_Type::GLOBAL);
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+◀private: static▶ void ☀Create_And_Print_First_Enum_Data_Member(std::wofstream & out, std::string type_name, std::string base_name, std::string pretty_name, std::string element_name, C_Export_Settings const& options)❰
+
+    auto data_member = Create_Enum_Data_Member(type_name,std::string("FIRST_") + base_name,
+    "The first element of the " + pretty_name + " enumerated set of data","Useful for iterating over enum values.",
+    base_name + "_" + element_name);
+    
+    //print it
+    std::vector<Data_Member_Item> x {data_member};
+    Data_Member_Printer::Print_Global_Decelerations(out,x,options,Code_Type::GLOBAL);
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+◀private: static▶ Data_Member_Item ☀Create_Enum_Data_Member(std::string type, std::string identifier, std::string brief, std::string details, std::string default_value)❰
+  Data_Member_Item data_member;
+  
+  data_member.type.value = as_wstring(type);
+  data_member.name.value = as_wstring(identifier);
+  data_member.is_const = true;
+  data_member.storage = Storage_Specifier::STATIC;
+  data_member.brief.value = as_wstring(brief);
+  data_member.detail.value = as_wstring(details);
+  data_member.default_value.value = as_wstring(default_value);
+  
+  return data_member;
+❱

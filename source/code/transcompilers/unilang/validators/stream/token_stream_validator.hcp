@@ -1,0 +1,441 @@
+class
+❪"code/transcompilers/unilang/parser/parser_token"❫
+❪"code/transcompilers/unilang/validators/stream/token_validation_info"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
+⚯
+❪"code/transcompilers/unilang/validators/stream/token_stream_validation_exception"❫
+❪algorithm❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+//responsibilities
+// - validate token values to ensure that normalized data is used to create CodeLang structure
+// - validate that mandatory tokens are present
+
+
+◀public: static▶ void ☀Run_Validations_Over_Token_Stream(std::vector<Parser_Token> const& tokens, Parser_Settings const& settings)❰
+
+    /*
+    //handles:  - what characters are allowed
+    //          - what characters together are NOT allowed
+    Token_Validation_Info meta(Token_Name::META_DATA_CODE_TYPE
+                               ,{language_symbols::meta::GLOBAL
+                                ,language_symbols::meta::OBJECT
+                                ,language_symbols::meta::PACKED}
+                            ,{{language_symbols::meta::GLOBAL,language_symbols::meta::OBJECT}});
+    
+    Token_Validation_Info import_interface(Token_Name::IMPORT_INTERFACE_SPECIFIERS
+                                 ,{language_symbols::imports::INLINE
+                                 ,language_symbols::imports::SYSTEM}
+                            ,{{}});
+    
+    Token_Validation_Info import_implementation(Token_Name::IMPORT_IMPLEMENTATION_SPECIFIERS
+                                 ,{language_symbols::imports::INLINE
+                                 ,language_symbols::imports::SYSTEM}
+                            ,{{}});
+    
+    Token_Validation_Info macro(Token_Name::MACRO_SPECIFIERS
+                                 ,{language_symbols::macro::access::PUBLIC
+                                 ,language_symbols::macro::access::PROTECTED
+                                 ,language_symbols::macro::access::PRIVATE}
+                            ,{{language_symbols::macro::access::PUBLIC,language_symbols::macro::access::PROTECTED,language_symbols::macro::access::PRIVATE}});
+    
+    Token_Validation_Info namespaces(Token_Name::NAMESPACE_SPECIFIERS
+                                 ,{language_symbols::imports::INLINE}
+                            ,{{}});
+    
+    Token_Validation_Info inheritence(Token_Name::INHERITANCE_SPECIFIERS
+                                 ,{language_symbols::inheritance::PUBLIC
+                                 ,language_symbols::inheritance::PROTECTED
+                                 ,language_symbols::inheritance::PRIVATE
+                                 ,language_symbols::inheritance::VIRTUAL}
+                            ,{{language_symbols::inheritance::PUBLIC,language_symbols::inheritance::PROTECTED,language_symbols::inheritance::PRIVATE}});
+    
+    Token_Validation_Info enums(Token_Name::ENUM_SPECIFIERS
+                                 ,{language_symbols::enumerated::ITERABLE}
+                            ,{{}});
+    
+    Token_Validation_Info methods(Token_Name::FUNCTION_CLASS_SPECIFIERS
+                                 ,{language_symbols::method::access::PUBLIC
+                                 ,language_symbols::method::access::PROTECTED
+                                 ,language_symbols::method::access::PRIVATE
+                                 ,language_symbols::method::FRIEND
+                                 ,language_symbols::method::EXPLICIT
+                                 ,language_symbols::method::LVALUE_OVERLOAD
+                                 ,language_symbols::method::RVALUE_OVERLOAD
+                                 ,language_symbols::method::CONST_OVERLOAD
+                                 ,language_symbols::method::STATIC_STORAGE
+                                 ,language_symbols::method::EXTERN_STORAGE
+                                 ,language_symbols::method::SLOT
+                                 ,language_symbols::method::SIGNAL
+                                 ,language_symbols::method::inheritance::VIRTUAL
+                                 ,language_symbols::method::inheritance::PURE_VIRTUAL
+                                 ,language_symbols::method::inheritance::OVERRIDE
+                                 ,language_symbols::method::inheritance::FINAL
+                                 ,language_symbols::method::DEFAULT
+                                 ,language_symbols::method::DELETED
+                                 ,language_symbols::method::INLINE
+                                 ,language_symbols::method::CACHE
+                                 ,language_symbols::method::UNUSED
+                             }
+                             
+                            ,
+                             {{language_symbols::method::access::PUBLIC,language_symbols::method::access::PROTECTED,language_symbols::method::access::PRIVATE}
+                             ,{language_symbols::method::LVALUE_OVERLOAD,language_symbols::method::RVALUE_OVERLOAD,language_symbols::method::CONST_OVERLOAD}
+                             ,{language_symbols::method::STATIC_STORAGE,language_symbols::method::EXTERN_STORAGE}
+                             ,{language_symbols::method::SLOT,language_symbols::method::SIGNAL}
+                             ,{language_symbols::method::inheritance::VIRTUAL,language_symbols::method::inheritance::PURE_VIRTUAL}
+                             ,{language_symbols::method::DEFAULT,language_symbols::method::DELETED}
+                             });
+
+    Token_Validation_Info method_arguments(Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS
+                                 ,{language_symbols::method::argument::MUTABLE
+                                 ,language_symbols::method::argument::REFERENCE
+                                 }
+                            ,{{language_symbols::method::argument::MUTABLE,language_symbols::method::argument::REFERENCE}});
+    
+    Token_Validation_Info method_returns(Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS
+                                 ,{language_symbols::method::returns::MUTABLE
+                                 ,language_symbols::method::returns::REFERENCE
+                                 }
+                            ,{{language_symbols::method::returns::MUTABLE,language_symbols::method::returns::REFERENCE}});
+
+    
+    Token_Validation_Info data_members(Token_Name::DATA_MEMBER_CLASS_SPECIFIERS
+                                 ,{language_symbols::data_member::access::PUBLIC
+                                 ,language_symbols::data_member::access::PROTECTED
+                                 ,language_symbols::data_member::access::PRIVATE
+                                 ,language_symbols::data_member::state::OBSERVABLE
+                                 ,language_symbols::data_member::state::INJECTABLE
+                                 ,language_symbols::data_member::state::OBTAINABLE
+                                 ,language_symbols::data_member::FRIEND
+                                 ,language_symbols::data_member::SERIALIZABLE
+                                 ,language_symbols::data_member::STATIC_STORAGE
+                                 ,language_symbols::data_member::EXTERN_STORAGE
+                                 ,language_symbols::data_member::MUTABLE
+                                 ,language_symbols::data_member::CONST_QUALIFIER
+                             }
+                             
+                             
+                            ,
+                             {{language_symbols::data_member::access::PUBLIC,language_symbols::data_member::access::PROTECTED,language_symbols::data_member::access::PRIVATE}
+                             ,{language_symbols::data_member::STATIC_STORAGE,language_symbols::data_member::EXTERN_STORAGE}
+                             });
+    
+    Ensure_Token_Has_Valid_Values(tokens,meta);
+    Ensure_Token_Has_Valid_Values(tokens,import_interface);
+    Ensure_Token_Has_Valid_Values(tokens,import_implementation);
+    Ensure_Token_Has_Valid_Values(tokens,macro);
+    Ensure_Token_Has_Valid_Values(tokens,namespaces);
+    Ensure_Token_Has_Valid_Values(tokens,inheritence);
+    Ensure_Token_Has_Valid_Values(tokens,enums);
+    Ensure_Token_Has_Valid_Values(tokens,methods);
+    Ensure_Token_Has_Valid_Values(tokens,method_arguments);
+    Ensure_Token_Has_Valid_Values(tokens,method_returns);
+    Ensure_Token_Has_Valid_Values(tokens,data_members);
+    */
+❱
+
+◀private: static▶ void ☀Ensure_Token_Has_Valid_Values(std::vector<Parser_Token> tokens, Token_Validation_Info const& info)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,info.name);
+    
+    for (auto it: tokens){
+        Check_Token_String(as_string(it.content),info);
+    }
+❱
+
+◀private: static▶ void ☀Check_Token_String(std::string tokens, Token_Validation_Info const& info)❰
+    
+    //report any invalid characters that appear in a token
+    for (auto a_char: tokens){
+        //if (
+        
+        
+        bool found=false;
+        for (auto valid_char: info.valid_chars){
+            if (a_char == valid_char){
+                found = true;
+                break;
+            }
+        }
+        
+        //detect if a char is invalid
+        if (!found){
+            throw std::string("invalid character ") + a_char;
+        }
+    }
+❱
+
+
+
+
+
+
+◀private: static▶ void ☀Ensure_Inheritance_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::INHERITANCE_SPECIFIERS);
+    
+    //[inheritance-specifiers] =
+    //public / protected / private
+    //virtual
+
+    //looks like:
+    //+#-v
+
+    for (auto it: tokens){
+        
+        auto str = as_string(it.content);
+        auto publics = Count_Instances_Of_Character(str,'+');
+        auto protecteds = Count_Instances_Of_Character(str,'#');
+        auto privates = Count_Instances_Of_Character(str,'-');
+        auto virtuals = Count_Instances_Of_Character(str,'v');
+        
+        //throw if there is more than one of any of these
+        if (publics > 1){throw Token_Stream_Validation_Exception("More than one public access specifier",it);}
+        if (protecteds > 1){throw Token_Stream_Validation_Exception("More than one protected access specifier",it);}
+        if (privates > 1){throw Token_Stream_Validation_Exception("More than one private access specifier",it);}
+        if (virtuals > 1){throw Token_Stream_Validation_Exception("More than one virtual class specifier",it);}
+        
+        //throw if no access specifier is given
+        if (publics + protecteds + privates == 0){
+            throw Token_Stream_Validation_Exception("No access specifier given",it);
+        }
+        
+        //ensure no invalid characters were given
+        auto number_of_valid_chars = publics + protecteds + privates + virtuals;
+        if (number_of_valid_chars < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
+❱
+◀private: static▶ void ☀Ensure_Function_Class_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_CLASS_SPECIFIERS);
+
+    // [function class specifiers] =
+    // public / protected / private
+    // static
+    // const (observer)
+    // & / && overload
+    // virtual
+    // extern
+    // inline
+    // explicit (x)
+    // LEAVE OUT FRIEND FOR NOW (bad design)
+
+    // looks like:
+    // +#-scveix&&&
+    
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto publics = Count_Instances_Of_Character(str,'+');
+        auto protecteds = Count_Instances_Of_Character(str,'#');
+        auto privates = Count_Instances_Of_Character(str,'-');
+        auto virtuals = Count_Instances_Of_Character(str,'s');
+        auto consts = Count_Instances_Of_Character(str,'c');
+        auto refs = Count_Instances_Of_Character(str,'&');
+        auto externs = Count_Instances_Of_Character(str,'e');
+        auto inlines = Count_Instances_Of_Character(str,'i');
+        auto explicits = Count_Instances_Of_Character(str,'e');
+        
+        //throw if there is is too much of something
+        if (publics > 1){throw Token_Stream_Validation_Exception("More than one public access specifier",it);}
+        if (protecteds > 1){throw Token_Stream_Validation_Exception("More than one protected access specifier",it);}
+        if (privates > 1){throw Token_Stream_Validation_Exception("More than one private access specifier",it);}
+        if (virtuals > 1){throw Token_Stream_Validation_Exception("More than one virtual method specifier",it);}
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const method specifier",it);}
+        if (refs > 2){throw Token_Stream_Validation_Exception("More than two ref method specifiers",it);}
+        if (externs > 1){throw Token_Stream_Validation_Exception("More than one extern method specifier",it);}
+        if (inlines > 1){throw Token_Stream_Validation_Exception("More than one inline method specifier",it);}
+        if (explicits > 1){throw Token_Stream_Validation_Exception("More than one explicit method specifier",it);}
+        
+        //ensure only 1 access specifier is given
+        auto total_access_specifiers = publics + protecteds + privates;
+        if (total_access_specifiers > 1){
+            throw Token_Stream_Validation_Exception("More than one class access specifier given",it);
+        }
+        
+        //throw if no access specifier is given
+        //if (publics + protecteds + privates == 0){
+        //    throw Token_Stream_Validation_Exception("No access specifier given",it);
+        //}
+        
+        //ensure no invalid characters were given
+        auto number_of_valid_chars = publics + protecteds + privates + virtuals + consts + refs + externs + inlines + explicits;
+        if (number_of_valid_chars < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+        
+    }
+    
+    
+❱
+◀private: static▶ void ☀Ensure_Function_Argument_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS);
+    
+    //just const is allowed I think
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto consts = Count_Instances_Of_Character(str,'c');
+        
+        //throw if there is is too much of something
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const argument qualifier",it);}
+        
+        //ensure no invalid characters were given
+        if (consts < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
+    
+❱
+◀private: static▶ void ☀Ensure_Function_Result_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS);
+    
+    //just const is allowed I think
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto consts = Count_Instances_Of_Character(str,'c');
+        
+        //throw if there is is too much of something
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const argument qualifier",it);}
+        
+        //ensure no invalid characters were given
+        if (consts < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
+❱
+◀private: static▶ void ☀Ensure_Data_Member_Class_Specifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::DATA_MEMBER_CLASS_SPECIFIERS);
+    //[type-qualifiers] = 
+    //static extern
+    //public private protected
+
+    //looks like:
+    //se+#-
+    
+    /*
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto statics = Count_Instances_Of_Character(str,'s');
+        auto externs = Count_Instances_Of_Character(str,'e');
+        auto publics = Count_Instances_Of_Character(str,'+');
+        auto protecteds = Count_Instances_Of_Character(str,'#');
+        auto privates = Count_Instances_Of_Character(str,'-');
+        auto observables = Count_Instances_Of_Character(str,language_symbols::data_member::state::OBSERVABLE);
+        auto injectable = Count_Instances_Of_Character(str,language_symbols::data_member::state::INJECTABLE);
+        auto obtainables = Count_Instances_Of_Character(str,language_symbols::data_member::state::OBTAINABLE);
+        
+        //throw if there is is too much of something
+        if (statics > 1){throw Token_Stream_Validation_Exception("More than one static data member specifier",it);}
+        if (externs > 1){throw Token_Stream_Validation_Exception("More than one extern data member specifier",it);}
+        if (publics > 1){throw Token_Stream_Validation_Exception("More than one public data member specifier",it);}
+        if (protecteds > 1){throw Token_Stream_Validation_Exception("More than one protected data member specifier",it);}
+        if (privates > 1){throw Token_Stream_Validation_Exception("More than one private data member specifier",it);}
+        //throw if there is is too much of something
+        if (observables > 1){throw Token_Stream_Validation_Exception("More than one observable data member qualifier",it);}
+        if (injectable > 1){throw Token_Stream_Validation_Exception("More than one injectable data member qualifier",it);}
+        if (obtainables > 1){throw Token_Stream_Validation_Exception("More than one obtainable data member qualifier",it);}
+        
+        //ensure only 1 access specifier is given
+        auto total_access_specifiers = publics + protecteds + privates + observables + injectable + obtainables;
+        if (total_access_specifiers > 1){
+            throw Token_Stream_Validation_Exception("More than one class access specifier given",it);
+        }
+        
+        //ensure no invalid characters were given
+        auto number_of_valid_chars = statics + externs + publics + protecteds + privates;
+        if (number_of_valid_chars < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+    }
+    */
+    
+    
+❱
+◀private: static▶ void ☀Ensure_Data_Member_Type_Qualifiers_Are_Valid(std::vector<Parser_Token> tokens)❰
+    Reduce_To_Just_Tokens_Of_Name(tokens,Token_Name::DATA_MEMBER_TYPE_QUALIFIERS);
+    
+    //just const and storage specifier
+    for (auto it: tokens){
+        auto str = as_string(it.content);
+        auto consts = Count_Instances_Of_Character(str,'c');
+        auto statics = Count_Instances_Of_Character(str,'s');
+        auto externs = Count_Instances_Of_Character(str,'e');
+        
+        //throw if there is is too much of something
+        if (consts > 1){throw Token_Stream_Validation_Exception("More than one const data member qualifier",it);}
+        if (statics > 1){throw Token_Stream_Validation_Exception("More than one static data member qualifier",it);}
+        if (externs > 1){throw Token_Stream_Validation_Exception("More than one extern data member qualifier",it);}
+        
+        //ensure no invalid characters were given
+        auto number_of_valid_chars = consts + statics + externs;
+        if (number_of_valid_chars < it.content.size()){
+            throw Token_Stream_Validation_Exception("Invalid characters given",it);
+        }
+        
+        if (statics > 1 && externs > 1){
+            throw Token_Stream_Validation_Exception("can't be both static and extern",it);
+        }
+    }
+❱
+
+
+
+
+
+
+
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order_For_Global_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order_For_Object_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used(std::vector<Parser_Token> const& tokens)❰
+    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,Token_Name::META_DATA_CODE_TYPE);
+    if (code_type_token.content == L"global"){
+        Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Global_Code(tokens);
+    }
+    else if(code_type_token.content == L"object"){
+        Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Object_Code(tokens);
+    }
+❱
+◀private: static▶ void ☀Ensure_Tokens_Are_In_The_Correct_Order(std::vector<Parser_Token> const& tokens)❰
+    auto code_type_token = Get_First_Of_Parser_Token_Name(tokens,Token_Name::META_DATA_CODE_TYPE);
+    if (code_type_token.content == L"global"){
+        Ensure_Tokens_Are_In_The_Correct_Order_For_Global_Code(tokens);
+    }
+    else if(code_type_token.content == L"object"){
+        Ensure_Tokens_Are_In_The_Correct_Order_For_Object_Code(tokens);
+    }
+❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Global_Code(std::vector<Parser_Token> tokens)❰
+❱
+◀private: static▶ void ☀Ensure_Appropiate_Tokens_And_Token_Values_Are_Being_Used_For_Object_Code(std::vector<Parser_Token> tokens)❰
+❱
+
+
+
+//utility
+◀public: static▶ void ☀Reduce_To_Just_Tokens_Of_Name(std::vector<Parser_Token> & tokens, Token_Name name)❰
+tokens.erase( std::remove_if( tokens.begin(), tokens.end(),
+             [&](Parser_Token x){return x.token.name != name;}), tokens.end() ); 
+
+❱
+
+◀public: static▶ Parser_Token ☀Get_First_Of_Parser_Token_Name(std::vector<Parser_Token> const& tokens, Token_Name name)❰
+    for (auto it : tokens){
+        if (it.token.name == name){
+            return it;
+        }
+    }
+    return tokens[0];
+❱
+
+
+
+
+
+
+
+
+
+

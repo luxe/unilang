@@ -1,0 +1,86 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+⚯
+//printers
+❪"code/transcompilers/unilang/structure-printer/file_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_printer"❫
+❪"code/transcompilers/unilang/structure-adjuster/structure_adjuster"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_c_options_getter"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_alias_helper_printer"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/extra_methods_creator"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Export(Structure structure, std::vector<Contributor> const& contributors, std::string const& style, bool transfer)❰
+
+    //get specific settings
+    auto settings = F2si_C_Options_Getter::Convert_Style_To_Options_Config("F2SI C",style,structure);
+    
+    //print some kind of utility code based on an existing code structure.
+    if (style == "constraints"){
+      //Constraint_Exporter::Export(structure,settings,contributors,true);
+    }
+    
+    //print actual code according to some export settings
+    else{
+    
+      //create a directory for the global or object code, and export it in an f2si fashion
+      Create_Output_Folder_With_All_The_Generated_Data(structure,settings);
+    }
+❱
+
+
+◀private: static▶ void ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, C_Export_Settings const& settings)❰
+    
+    //force structure changes
+    //TODO: we need to store adjustment phases.  Different tools might want the structure
+    //at different phases in its transition.  For now, and this is a hack, I'll make a copy
+    //for the test wrapper
+	Structure copy = structure;
+    Structure_Adjuster::Adjust(structure,settings.manipulations);
+    
+    Create_Source_Files(structure,settings);
+
+
+	//I think what was messing up the test wrapper,
+    //was that the lifetime + explicit self data member was getting added to the methods
+    //this confused the wrapper.  Instead, we won't perform all of the structure adjustments.  
+    //we'll just add the new methods and send it to the test wrapper
+    //TODO: eventually, we need to just adjust the entire wrapper and hand it off to a c++ exporter. One day...
+    Extra_Methods_Creator::Add_New_Methods(copy,settings);
+    Possibly_Create_Test_Wrapper_Files(copy,settings);
+    
+❱
+
+◀private: static▶ void ☀Create_Source_Files(Structure structure, C_Export_Settings const& settings)❰
+
+    auto folder_name = Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.folder_casing,structure.name);
+    Create_Path_If_It_Doesnt_Already_Exist_And_Step_Into_It(folder_name);
+    File_Printer::Create(structure,settings);
+    Step_Out_Of_Folder();
+❱
+
+◀private: static▶ void ☀Possibly_Create_Test_Wrapper_Files(Structure structure, C_Export_Settings const& settings)❰
+
+    //additionally, export a c++ wrapper for the object to make the testing easier
+    if(structure.meta.code_type == Code_Type::PRODUCT_TYPE){
+        
+        //don't test an object unless it has methods
+        if (!structure.methods.methods.empty()){
+            auto folder_name = Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.folder_casing,structure.name + " wrapper");
+            Create_Path_If_It_Doesnt_Already_Exist_And_Step_Into_It(folder_name);
+            Test_Wrapper_Printer::Print(structure,settings);
+            
+            auto class_name = Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.folder_casing,structure.name);
+            Test_Wrapper_Alias_Helper_Printer::Print(folder_name + ".hpp",class_name);
+            Step_Out_Of_Folder();
+        }
+    }
+❱
+

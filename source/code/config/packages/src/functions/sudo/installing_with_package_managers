@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+function Install_Apt_Get_Programs(){
+	local PROGRAMS_LIST="$DIR_OF_THIS_SCRIPT/data/apt-get-programs.list"
+	for program in $(cat $PROGRAMS_LIST); do
+		Run_Command_And_Warn_If_Command_Failed "\t\tgetting program via apt-get: $program" " apt-get install -y --force-yes --fix-missing $program";
+	done;
+}
+function Install_NPM_Programs(){
+	
+	#https://github.com/nodejs/node-v0.x-archive/issues/3911
+	#this seems to be needed in otder to run node/npm
+	sudo ln -s /usr/bin/nodejs /usr/bin/node
+	
+	local PROGRAMS_LIST="$DIR_OF_THIS_SCRIPT/data/npm-programs.list"
+	for program in $(cat $PROGRAMS_LIST); do
+		Run_Command_And_Warn_If_Command_Failed "\t\tgetting program via npm: $program" " npm install -g $program";
+	done;
+}
+function Install_PIP_Programs(){
+	local PROGRAMS_LIST="$DIR_OF_THIS_SCRIPT/data/pip-programs.list"
+	for program in $(cat $PROGRAMS_LIST); do
+		Run_Command_And_Warn_If_Command_Failed "\t\tgetting program via pip: $program" " pip install $program";
+	done;
+}
+function Make_Sure_Programs_Exist(){
+  local PROGRAMS_LIST="$DIR_OF_THIS_SCRIPT/data/programs-that-should-be-installed.list"
+	for program in $(cat $PROGRAMS_LIST); do
+		Run_Command_And_Warn_If_Command_Failed "\t\tchecking existence: $program" " command -v $program";
+	done;
+}

@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#goes online and downloads a copy of the railo server and puts it on your Desktop
+#It makes sure not to overwrite an existing railo
+
+#we expect railo to be on the Desktop
+last_path_download_railo_server=`pwd`
+cd ~/Desktop;
+
+#only continue if railo is not there
+if [[ -d "railo" ]]; then
+   echo "rail already exists";
+   return;
+fi;
+
+#download
+echo "downloading railo.zip";
+rm -rf "railo.zip"
+wget -O railo.zip http://www.getrailo.org/down.cfm\?item\=/railo/remote/download42/4.2.1.008/railix/macosx/railo-express-4.2.1.008-macosx.zip >/dev/null 2>&1;
+
+#unzip
+echo "unzipping";
+rm -rf "railo";
+unzip railo.zip -d "railo" >/dev/null 2>&1;
+rm -rf "railo.zip";
+
+#even though we unzipped it, we have to move all the files up a directory
+cd railo;
+delete_this_folder=`ls -d */`;
+mv $delete_this_folder/* .;
+rm -rf $delete_this_folder;
+cd ..;
+
+
+#final test to make sure we have it
+if [[ -d "railo" ]]; then
+    echo "railo server exists on Desktop now!";
+else
+    echo "railo was not created for some reason";
+    echo "check that the download link is up-to-date";
+fi;
+
+#go back to where we were
+cd $last_path_download_railo_server;

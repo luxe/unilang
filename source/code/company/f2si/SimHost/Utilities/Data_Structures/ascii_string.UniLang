@@ -1,0 +1,1919 @@
+􏶞p􏶟
+􏷲A basic string type for manipulating dynamic lists of characters􏷱
+􏷰The implementation of this string is modeled off of the interface of STL string.  
+http://en.cppreference.com/w/cpp/string/basic_string􏷯
+􏷮String􏷭􏷮Data Structure􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤s􏷣􏷦stddef􏷥􏴓1􏴔􏴑size_t􏴒
+􏷤s􏷣􏷦stdioLib􏷥􏴓d􏴔􏴑BOOL􏴒􏴓d􏴔􏴑printf􏴒
+􏶔s􏶕􏶒string.h􏶓􏴏d􏴐􏴍strlen()􏴎􏴏d􏴐􏴍strcpy()􏴎􏴏d􏴐􏴍strcmp()􏴎􏴍strstr()􏴎
+􏶔􏶕􏶒allocator􏶓􏴏d􏴐􏴍Allocate()􏴎􏴏d􏴐􏴍Deallocate()􏴎􏴏d􏴐􏴍Reallocate())􏴎
+􏶔s􏶕􏶒ctype.h􏶓􏴏d􏴐􏴍tolower()􏴎􏴏d􏴐􏴍toupper()􏴎􏴏d􏴐􏴍isspace()􏴎
+􏶔􏶕􏶒ansi_colors􏶓􏴏d􏴐􏴍color codes􏴎
+􏶔􏶕􏶒stdarg􏶓􏴏d􏴐􏴍va_list􏴎􏴏d􏴐􏴍va_start􏴎􏴏d􏴐􏴍va_end􏴎
+􏶔􏶕􏶒swap􏶓􏴏d􏴐􏴍SwapChar()􏴎
+
+OTHER
+􏵺the character that the internal implementation should use as a null terminator􏵻􏵸customization􏵹􏵐-􏵑􏵾null terminator􏵿􏵼'\0'􏵽
+􏵺the size of the internal character element used by the string􏵻􏵸customization􏵹􏵐-􏵑􏵾element size􏵿􏵼sizeof(char)􏵽
+
+GETTING AT SETTINGS
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api at􏵿􏵼TRUE􏵽
+􏵺what address to return on at assuming at is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on irretrievable at􏵿􏵼NULL􏵽
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api char at􏵿􏵼TRUE􏵽
+􏵺what address to return on char at assuming char at is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on irretrievable char at􏵿􏵼NULL􏵽
+
+GETTING FRONT SETTINGS
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api front􏵿􏵼TRUE􏵽
+􏵺what address to return on front assuming front is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on empty front􏵿􏵼NULL􏵽
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api first􏵿􏵼TRUE􏵽
+􏵺what value to return on first assuming first is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval value on irretrievable first􏵿􏵼NULL􏵽
+
+GETTING BACK SETTINGS
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api back􏵿􏵼TRUE􏵽
+􏵺what address to return on back assuming back is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval address on empty back􏵿􏵼NULL􏵽
+􏵺whether or not the internal implementation should provide bounds checking􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾provide bounds checking on user api last􏵿􏵼TRUE􏵽
+􏵺what value to return on last assuming last is safe􏵻􏵸customization􏵹􏵐-􏵑􏵾retrieval value on irretrievable last􏵿􏵼NULL􏵽
+
+CLEAR SETTINGS
+􏵺whether or not the internal implementation should wipe characters when clearing􏵻􏵸safety vs cost decision􏵹􏵐-􏵑􏵾wipe characters on user api clear􏵿􏵼FALSE􏵽
+􏵺the character that the internal implementation should use if performing a wipe􏵻􏵸customization􏵹􏵐-􏵑􏵾wipe character􏵿􏵼NULL_TERMINATOR􏵽
+
+SPECIFIER SETTINGS
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾BOOL_SPECIFIER􏵿􏵼"%d"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾SHORT_SPECIFIER􏵿􏵼"%hd"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾INT_SPECIFIER􏵿􏵼"%d"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾LONG_SPECIFIER􏵿􏵼"%ld"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾SIZE_T_SPECIFIER􏵿􏵼"%lu"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾FLOAT_SPECIFIER􏵿􏵼"%f"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾DOUBLE_SPECIFIER􏵿􏵼"%lf"􏵽
+􏵺the specifier to use when getting a string representation􏵻􏵸customization􏵹􏵐-􏵑􏵾LONG_DOUBLE_SPECIFIER􏵿􏵼"%Lf"􏵽
+
+
+
+
+
+HOPING TO BUILD/DERIVE THE MEMORY MANAGEMENT FUNCTIONS BETTER
+AS WELL AS PROVIDE A BETTER WAY FOR MAKING NEW CONSTRUCTORS
+ConstructEmpty
+ConstructWIthPreallocation
+ConstructFromInt
+etc.
+
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be set to the c string passed in􏶡
+􏴅memory management􏴆
+􏶜􏶝􏷆char[]􏷅􏷄c string􏷃􏷀the size c string to initialize the string with.􏶿
+􏶴
+    􏶲start as an empty vector􏶱
+    􏵴size􏵵 = strlen(􏵶c string􏵷);
+
+    􏶲start with the chosen allocation amount􏶱
+    􏵴capacity􏵵 = 􏵴size􏵵+1;􏶲for the null terminator􏶱
+
+    􏶲initialize the internal dynamic array with the passed in c string􏶱
+    􏶲strcpy adds the needed null terminator􏶱
+    􏵴elements􏵵 = Allocate(ELEMENT_SIZE,􏵴capacity􏵵);
+    strcpy(􏵴elements􏵵,􏵶c string􏵷);
+􏶳
+
+􏷘+􏷗􏷒^􏶐􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏴅memory management􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲copy􏵳􏵶self􏵷);
+􏶳
+
+􏷘-􏷗􏷒copy􏷑
+􏷐Copy constructor for 􏶐􏷏
+􏶠Performs the necessary deep copy􏶡
+􏴅memory management􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄self􏷃􏷀the 􏶐 to copy construct from􏶿
+􏶴
+    􏶲copy construct the string by using the c string version of the string passed in􏶱
+    InitializeAsciiString(ptAsciiString,AsciiStringCStr(􏵶self􏵷));
+􏶳
+
+􏷘+􏷗􏷒~􏶐􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏴅memory management􏴆
+􏶴
+    􏶲implicit forwarding cast􏶱
+    􏵲destruct􏵳);
+􏶳
+
+􏷘-􏷗􏷒destruct􏷑
+􏷐Destruct the 􏶐􏷏
+􏶠This function must be called to free the internal allocated memory before 􏶐 goes out of scope.􏶡
+􏴅memory management􏴆
+􏶴
+    􏶲then delete the internal char array􏶱
+    Deallocate(􏵴elements􏵵);
+􏶳
+
+Member functions:
+basic_string::operator=
+basic_string::get_allocator
+
+
+ASSIGNMENTS
+􏷘+􏷗􏷒assign􏷑
+􏷐assign a new value to the string􏷏
+􏶠the previous value of the string will be lost􏶡
+􏴅assignment􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄new value􏷃􏷀the new value of the string􏶿
+􏶴
+    􏶲we can perform an assignment by using existing methods􏶱
+    􏵲clear􏵳);
+    􏵲append􏵳􏵶new value􏵷);
+􏶳
+
+
+􏳇name􏳈        􏳅c string􏳆􏳅char􏳆􏳅bool􏳆􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇uni type􏳈    􏳅char[]􏳆  􏳅char􏳆􏳅bool􏳆􏳅s􏳆    􏳅i􏳆  􏳅l􏳆   􏳅size􏳆  􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏷘+􏷗􏷒assign {{name}}􏷑
+􏷐assign a new value to the string􏷏
+􏶠the previous value of the string will be lost􏶡
+􏴅assignment􏴆
+􏶜􏶝􏷆{{uni type}}􏷅􏷄new value􏷃􏷀the new value of the string􏶿
+􏶴
+    􏶲we can perform an assignment by clearing and appending􏶱
+    􏵲clear􏵳);
+    􏵲append {{name}}􏵳􏵶new value􏵷);
+􏶳
+
+
+
+ELEMENT ACCESS VIA INDEX
+􏷘+c􏷗􏷒at􏷑
+􏷐Get an element at a particular index􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏴅element access􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_AT
+    return 􏵲safe at􏵳􏵶index􏵷);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_AT
+    return 􏵲unsafe at􏵳􏵶index􏵷);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning At method missing functionality
+    #endif
+􏶳
+
+􏷘-cu􏷗􏷒safe at􏷑
+􏷐Get an element at a particular index (with bounds checking)􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏴅element access􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲if the index is valid, return it.􏶱
+    if (􏵲valid index􏵳􏵶index􏵷)){
+        return 􏵲unsafe at􏵳􏵶index􏵷);
+    }
+
+    􏶲if the index is NOT valid, return NULL.􏶱
+    return RETRIEVAL_ADDRESS_ON_IRRETRIEVABLE_AT;
+􏶳
+
+􏷘-cu􏷗􏷒unsafe at􏷑
+􏷐Get an element at a particular index (without bounds checking)􏷏
+􏶠If an invalid index is given, the result in undefined􏶡
+􏴅element access􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲no need to bounds check.  we trust the caller􏶱
+    return &􏵴elements􏵵[􏵶index􏵷];
+􏶳
+
+􏷘+c􏷗􏷒char at􏷑
+􏷐Get a copy of an element at a particular index􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏴅element access􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_CHAR_AT
+    return 􏵲safe char at􏵳􏵶index􏵷);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_CHAR_AT
+    return 􏵲unsafe char at􏵳􏵶index􏵷);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning Char At method missing functionality
+    #endif
+􏶳
+
+􏷘-cu􏷗􏷒safe char at􏷑
+􏷐Get a copy of an element at a particular index (with bounds checking)􏷏
+􏶠If an invalid index is given, NULL is returned􏶡
+􏴅element access􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲if the index is valid, return it.􏶱
+    if (􏵲valid index􏵳􏵶index􏵷)){
+        return 􏵲unsafe char at􏵳􏵶index􏵷);
+    }
+
+    􏶲if the index is NOT valid, return NULL.􏶱
+    return RETRIEVAL_ADDRESS_ON_IRRETRIEVABLE_CHAR_AT;
+􏶳
+
+􏷘-cu􏷗􏷒unsafe char at􏷑
+􏷐Get a copy of an element at a particular index (without bounds checking)􏷏
+􏶠If an invalid index is given, the result in undefined􏶡
+􏴅element access􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the item to get􏶿
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the selected element of the 􏶐 from the given index􏶹
+􏶴
+    􏶲no need to bounds check.  we trust the caller􏶱
+    return 􏵴elements􏵵[􏵶index􏵷];
+􏶳
+-------------
+
+
+
+
+
+basic_string::operator[]
+􏷘+c􏷗􏷒front􏷑
+􏷐Returns reference to the first character in the string.􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the first character of the string􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_FRONT
+    return 􏵲safe front􏵳);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_FRONT
+    return 􏵲unsafe front􏵳);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning Front method missing functionality
+    #endif
+􏶳
+􏷘-cu􏷗􏷒safe front􏷑
+􏷐Returns reference to the first character in the string (with bounds checking)􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the first character of the string􏶹
+􏶴
+    􏶲return null if the string is empty􏶱
+    if (􏵲is empty􏵳)){return RETRIEVAL_ADDRESS_ON_EMPTY_FRONT;}
+    
+    􏶲else return the first element􏶱
+    return 􏵲unsafe front􏵳);
+􏶳
+
+􏷘-cu􏷗􏷒unsafe front􏷑
+􏷐Returns reference to the first character in the string (without bounds checking)􏷏
+􏶠If the string is empty, the result in undefined􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the first character of the string􏶹
+􏶴
+    􏶲no need to bounds check.  we trust the caller􏶱
+    return 􏵲unsafe at􏵳0);
+􏶳
+
+􏷘+c􏷗􏷒first char􏷑
+􏷐Returns a copy of the first character in the string.􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char􏶽􏶼first character􏶻􏶺the first character of the string􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_FIRST
+    return 􏵲safe first􏵳);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_FIRST
+    return 􏵲unsafe first􏵳);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning First method missing functionality
+    #endif
+􏶳
+
+􏷘-cu􏷗􏷒safe first􏷑
+􏷐Returns a copy to the first character in the string (with bounds checking)􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the first character of the string􏶹
+􏶴
+    􏶲return null if the string is empty􏶱
+    if (􏵲is empty􏵳)){return RETRIEVAL_VALUE_ON_IRRETRIEVABLE_FIRST;}
+    
+    􏶲else return the first element􏶱
+    return 􏵲unsafe first􏵳);
+􏶳
+
+􏷘-cu􏷗􏷒unsafe first􏷑
+􏷐Returns a copy to the first character in the string (without bounds checking)􏷏
+􏶠If the string is empty, the result in undefined􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the first character of the string􏶹
+􏶴
+    􏶲no need to bounds check.  we trust the caller􏶱
+    return *􏵲unsafe front􏵳);
+􏶳
+
+
+
+􏷘+c􏷗􏷒back􏷑
+􏷐Returns reference to the last character in the string.􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the last character of the string􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_BACK
+    return 􏵲safe back􏵳);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_BACK
+    return 􏵲unsafe back􏵳);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning Back method missing functionality
+    #endif
+􏶳
+􏷘-cu􏷗􏷒safe back􏷑
+􏷐Returns reference to the last character in the string (with bounds checking)􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the last character of the string􏶹
+􏶴
+    􏶲return null if the string is empty􏶱
+    if (􏵲is empty􏵳)){return RETRIEVAL_ADDRESS_ON_EMPTY_BACK;}
+    
+    􏶲else return the last element􏶱
+    return 􏵲unsafe back􏵳);
+􏶳
+
+􏷘-cu􏷗􏷒unsafe back􏷑
+􏷐Returns reference to the last character in the string (without bounds checking)􏷏
+􏶠If the string is empty, the result in undefined􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺the last character of the string􏶹
+􏶴
+    􏶲no need to bounds check.  we trust the caller􏶱
+    return 􏵲unsafe at􏵳􏵴size􏵵-1);
+􏶳
+
+􏷘+c􏷗􏷒last char􏷑
+􏷐Returns a copy of the last character in the string.􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char􏶽􏶼last character􏶻􏶺the last character of the string􏶹
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if PROVIDE_BOUNDS_CHECKING_ON_USER_API_LAST
+    return 􏵲safe last􏵳);
+    #elif !PROVIDE_BOUNDS_CHECKING_ON_USER_API_LAST
+    return 􏵲unsafe last􏵳);
+    #else
+    􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+    #warning Last method missing functionality
+    #endif
+􏶳
+
+􏷘-cu􏷗􏷒safe last􏷑
+􏷐Returns a copy to the last character in the string (with bounds checking)􏷏
+􏶠NULL is returned for empty strings􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the last character of the string􏶹
+􏶴
+    􏶲return null if the string is empty􏶱
+    if (􏵲is empty􏵳)){return RETRIEVAL_VALUE_ON_IRRETRIEVABLE_LAST;}
+    
+    􏶲else return the last element􏶱
+    return 􏵲unsafe last􏵳);
+􏶳
+
+􏷘-cu􏷗􏷒unsafe last􏷑
+􏷐Returns a copy to the last character in the string (without bounds checking)􏷏
+􏶠If the string is empty, the result in undefined􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char􏶽􏶼selected element􏶻􏶺the last character of the string􏶹
+􏶴
+    􏶲no need to bounds check.  we trust the caller􏶱
+    return *􏵲unsafe back􏵳);
+􏶳
+
+basic_string::data
+􏷘+c􏷗􏷒c str􏷑
+􏷐Returns a pointer to a null-terminated character array with data equivalent to those stored in the string􏷏
+􏶠It is NOT the user's responsibility to delete this􏶡
+􏴅element access􏴆
+􏶚m􏶛􏶾char*􏶽􏶼selected element􏶻􏶺Pointer to the underlying character storage.􏶹
+􏶴
+    􏶲returns the underlying c string􏶱
+    return 􏵴elements􏵵;
+􏶳
+
+Iterators:
+basic_string::begin
+basic_string::end
+
+basic_string::cbegin (C++11)
+basic_string::cend (C++11)
+basic_string::rbegin
+basic_string::crbegin (C++11)
+basic_string::rend
+basic_string::crend (C++11)
+
+􏷘+c􏷗􏷒is empty􏷑
+􏷐checks whether the 􏶐 is empty or not􏷏
+􏶠􏵱 if the 􏶐 is empty(size == 0), 􏵰 if it is not(size > 0)􏶡
+􏴅capacity􏴆
+􏶚m􏶛􏶾bool􏶽􏶼is empty􏶻􏶺whether or not the 􏶐 is empty􏶹
+􏶴
+    􏶲returns 􏵱 if 􏶐 is empty􏶱
+    if(􏵴size􏵵 == 0){return 􏵱;}
+    
+    􏶲returns 􏵰 if 􏶐 is NOT empty􏶱
+    return 􏵰;
+􏶳
+􏷘+c􏷗􏷒size􏷑
+􏷐the current number of characters in the 􏶐􏷏
+􏶠an empty 􏶐 would return 0.  This is the same as Length()􏶡
+􏴅capacity􏴆
+􏶚m􏶛􏶾size_t􏶽􏶼size􏶻􏶺the size of the 􏶐 (i.e. the number of characters)􏶹
+􏶴
+    􏶲we store this internally􏶱
+    􏶲provide it to the user via an observer􏶱
+    return 􏵴size􏵵;
+􏶳
+􏷘+c􏷗􏷒length􏷑
+􏷐the current number of characters in the 􏶐􏷏
+􏶠an empty 􏶐 would return 0.  This is the same as Size()􏶡
+􏴅capacity􏴆
+􏶚m􏶛􏶾size_t􏶽􏶼length􏶻􏶺the size of the 􏶐 (i.e. the number of characters)􏶹
+􏶴
+    􏶲we store this internally􏶱
+    􏶲provide it to the user via an observer􏶱
+    return 􏵴size􏵵;
+􏶳
+basic_string::max_size
+basic_string::reserve
+􏷘+c􏷗􏷒capacity􏷑
+􏷐the current capacity of the 􏶐􏷏
+􏶠returns the number of elements that the container has currently allocated space for.
+(NOT how many elements the 􏶐 actually has)􏶡
+􏴅capacity􏴆
+􏶚m􏶛􏶾size_t􏶽􏶼capacity􏶻􏶺the number of elements the container has currently allocated space for􏶹
+􏶴
+    􏶲we store this internally􏶱
+    􏶲provide it to the user via an observer􏶱
+    return 􏵴capacity􏵵;
+􏶳
+basic_string::shrink_to_fit (C++11)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘+􏷗􏷒clear􏷑
+􏷐clears the 􏶐􏷏
+􏶠makes the string empty􏶡
+􏴅removing􏴆
+􏶴
+    􏶲If the internal implementation settings change,􏶱
+    􏶲be sure to update the docs on user API assumptions.􏶱
+    #if WIPE_CHARACTERS_ON_USER_API_CLEAR
+        􏶲ensures data is wiped from memory when clearing􏶱
+        􏵲wipe and forget about currently occupied buffer cells􏵳);
+    #elif !WIPE_CHARACTERS_ON_USER_API_CLEAR
+        􏶲a quick way to clear the string conceptually􏶱
+        􏵲forget about currently occupied buffer cells􏵳);
+    #else
+        􏶲print a warning on the off chance that we fail to choose an implementation􏶱
+        #warning Clear method missing functionality
+
+    #endif
+􏶳
+
+􏷘-u􏷗􏷒forget about currently occupied buffer cells􏷑
+􏷐performs a conceptual clearing of the string quickly and efficiently􏷏
+􏶠retains allocated buffer size and content of forgotten buffer cells􏶡
+􏴅removing􏴆
+􏶴
+    􏶲reset the string size􏶱
+    􏵴size􏵵 = 0;
+    
+    􏶲and null out the first char.􏶱
+    􏵴elements􏵵[0] = NULL_TERMINATOR;
+    
+    􏶲this is the minimum amount of work required to make a string empty􏶱
+􏶳
+
+􏷘-u􏷗􏷒wipe and forget about currently occupied buffer cells􏷑
+􏷐performs an actual wiping of all of the string characters before forgetting about them􏷏
+􏶠this is a slower way to clear a string,
+but it may be desired if the user doesn't want sensitive information left in memory􏶡
+􏴅removing􏴆
+􏶴
+    􏶲wipe over all of the existing characters􏶱
+    􏵲wipe􏵳);
+    
+    􏶲now that the string has been cleansed perform the conceptual clear􏶱
+    􏵲forget about currently occupied buffer cells􏵳);
+􏶳
+
+􏷘-u􏷗􏷒wipe􏷑
+􏷐wipes over all of the characters in the string􏷏
+􏶠often done as precaution when clearing the string􏶡
+􏴅removing􏴆
+􏶴
+    􏶲fill all the existing elements with a specific wipe character􏶱
+    􏵲fill􏵳WIPE_CHARACTER);
+􏶳
+
+􏷘+􏷗􏷒fill􏷑
+􏷐replace all existing characters with a different character􏷏
+􏶠does not change the size of the string􏶡
+􏴅replacing􏴆
+􏶜􏶝􏷆char􏷅􏷄fill character􏷃􏷀the character to replace all other existing characters with􏶿
+􏶴
+    􏶲iterate over the characters overwriting each with a new character􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 􏵴size􏵵; ++uIndex){
+        􏵴elements􏵵[uIndex] = 􏵶fill character􏵷;
+    }
+􏶳
+
+
+
+
+basic_string::insert
+basic_string::erase
+basic_string::push_back
+basic_string::pop_back (C++11)
+
+􏷘+􏷗􏷒remove first char􏷑
+􏷐removes the first character from the string􏷏
+􏶠string is expected to have at least one character before call􏶡
+􏴅removing􏴆
+􏶴
+    􏶲forward to more generic routine􏶱
+    􏵲remove first n chars􏵳1);
+􏶳
+
+􏷘+􏷗􏷒remove first n chars􏷑
+􏷐removes the first n characters from the string􏷏
+􏶠string is expected to have at least n characters before the call􏶡
+􏴅removing􏴆
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the amount of characters to erase􏶿
+􏶴
+    􏶲shift all elements overlapping the first n characters􏶱
+    􏵲shift erase n amount􏵳􏵶amount􏵷);
+􏶳
+
+􏷘+􏷗􏷒remove last char􏷑
+􏷐removes the last character from the string􏷏
+􏶠string is expected to have at least one character before call􏶡
+􏴅removing􏴆
+􏶴
+    􏶲forward to more generic routine􏶱
+    􏵲remove last n chars􏵳1);
+􏶳
+
+􏷘+􏷗􏷒remove last n chars􏷑
+􏷐removes the last n characters from the string􏷏
+􏶠string is expected to have at least n characters before call􏶡
+􏴅removing􏴆
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the amount of characters to erase􏶿
+􏶴
+    􏶲we remove characters by retracting our length􏶱
+    􏵲retract length􏵳􏵶amount􏵷);
+􏶳
+
+􏷘-􏷗􏷒retract length􏷑
+􏷐retracts the length by an n amount of characters􏷏
+􏶠the amount passed in is assumed to be a retraction amount within bounds􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the amount of spaces to retract the length from its current position􏶿
+􏶴
+    􏶲retract the length n spaces􏶱
+    􏶲elements[size+1] = out of bounds􏶱
+    􏶲elements[size] = current null terminator􏶱
+    􏶲elements[size-1] = last char􏶱
+    􏶲elements[size-amount] = the first of the last character to forget about􏶱
+    􏵲set null terminator at index􏵳􏵴size􏵵-􏵶amount􏵷);
+
+    􏶲adjust the size􏶱
+    􏵴size􏵵 -= 􏵶amount􏵷;
+􏶳
+
+􏷘-􏷗􏷒extend length􏷑
+􏷐extends the length by an n amount of characters􏷏
+􏶠the amount passed in is assumed to be an extension amount within bounds􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the amount of spaces to extend the length from its current position􏶿
+􏶴
+    􏶲retract the length n spaces􏶱
+    􏶲elements[size+1] = out of bounds􏶱
+    􏶲elements[size] = current null terminator􏶱
+    􏶲elements[size-1] = last char􏶱
+    􏶲elements[size-amount] = the first of the last character to forget about􏶱
+    􏵲set null terminator at index􏵳􏵴size􏵵+􏵶amount􏵷);
+
+    􏶲adjust the size􏶱
+    􏵴size􏵵 += 􏵶amount􏵷;
+􏶳
+
+
+􏷘-􏷗􏷒set null terminator at index􏷑
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index of the string to set the null terminator at􏶿
+􏷐sets the null terminator at the specified index􏷏
+􏶠assumes the index is available in the  allocated buffer􏶡
+􏶴
+    􏵴elements􏵵[􏵶index􏵷] = NULL_TERMINATOR;
+􏶳
+
+
+􏷘+􏷗􏷒remove whitespace􏷑
+􏷐removes all whitespace from the string􏷏
+􏶠length will be reduced assuming string contained whitespace􏶡
+􏴅removing􏴆
+􏶴
+    􏶲temporary string used to rebuild the string without whitespace􏶱
+    AsciiStringT tTemp = ConstructAsciiString("");
+    
+    􏶲iterate over the string and rebuild it without whitespace􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 􏵴size􏵵; ++uIndex){
+    
+        􏶲if its not a whitespace character, we will append it to our temp string􏶱
+        if (!isspace(􏵴elements􏵵[uIndex])){
+            AsciiStringAppendChar(&tTemp,􏵴elements􏵵[uIndex]);
+        }
+    }
+    
+    􏶲now that we have a temporary string without whitespace, assign it back to our main string􏶱
+    􏶲I would have liked to use the erase-remove idiom instead􏶱
+    AsciiStringAssign(ptAsciiString,&tTemp);
+    
+    􏶲destruct the temporary string􏶱
+    DestructAsciiStringT(&tTemp);
+􏶳
+
+
+
+
+
+􏷘+􏷗􏷒trim􏷑
+􏴅trim􏴆
+􏷐trims whitespace from the left and right side of the string􏷏
+􏶠removes any whitespace padding found at the beginning or end of the string. Uses std isspace􏶡
+􏶴
+    􏶲a trim consists of a left and right trim􏶱
+    􏵲right trim􏵳);
+    􏵲left trim􏵳);
+􏶳
+
+􏷘+􏷗􏷒left trim􏷑
+􏴅trim􏴆
+􏷐trims whitespace from the left side of the string􏷏
+􏶠removes any whitespace padding found at the beginning of the string. Uses std isspace􏶡
+􏶴
+    􏶲keep removing whitespace from the front of the string until we encounter a visible character or the string is empty􏶱
+    while (􏵲begins with whitespace􏵳)){
+        􏵲remove first char􏵳);
+    }
+􏶳
+
+􏷘+􏷗􏷒right trim􏷑
+􏴅trim􏴆
+􏷐trims whitespace from the right side of the string􏷏
+􏶠removes any whitespace padding found at the end of the string. Uses std isspace􏶡
+􏶴
+    􏶲keep removing whitespace from the end of the string until we encounter a visible character or the string is empty􏶱
+    while (􏵲ends with whitespace􏵳)){
+        􏵲remove last char􏵳);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒trim char􏷑
+􏴅trim􏴆
+􏷐trims off the character from the left and right side of the string􏷏
+􏶠removes the character padding found at the beginning or end of the string.􏶡
+􏶜􏶝􏷆char􏷅􏷄char􏷃􏷀the character to trim off􏶿
+􏶴
+    􏶲a trim consists of a left and right trim􏶱
+    􏵲right trim char􏵳􏵶char􏵷);
+    􏵲left trim char􏵳􏵶char􏵷);
+􏶳
+
+􏷘+􏷗􏷒left trim char􏷑
+􏴅trim􏴆
+􏷐trims the character from the left side of the string􏷏
+􏶠removes the character padding found at the beginning of the string.􏶡
+􏶜􏶝􏷆char􏷅􏷄char􏷃􏷀the character to trim off􏶿
+􏶴
+    􏶲keep removing character from the front of the string until we encounter a different character or the string is empty􏶱
+    while (􏵲begins with char􏵳􏵶char􏵷)){
+        􏵲remove first char􏵳);
+    }
+􏶳
+
+􏷘+􏷗􏷒right trim char􏷑
+􏴅trim􏴆
+􏷐trims the character from the right side of the string􏷏
+􏶠removes the character padding found at the end of the string.􏶡
+􏶜􏶝􏷆char􏷅􏷄char􏷃􏷀the character to trim off􏶿
+􏶴
+    􏶲keep removing character from the end of the string until we encounter a different character or the string is empty􏶱
+    while (􏵲ends with char􏵳􏵶char􏵷)){
+        􏵲remove last char􏵳);
+    }
+􏶳
+
+􏷘+􏷗􏷒trim until char􏷑
+􏴅trim􏴆
+􏷐trims characters from the left and right side until string is found􏷏
+􏶠removes the characters from both side until specified character is found􏶡
+􏶜􏶝􏷆char􏷅􏷄char􏷃􏷀the character to stop trimming at􏶿
+􏶴
+    􏶲a trim consists of a left and right trim􏶱
+    􏵲right trim until char􏵳􏵶char􏵷);
+    􏵲left trim until char􏵳􏵶char􏵷);
+􏶳
+
+􏷘+􏷗􏷒left trim until char􏷑
+􏴅trim􏴆
+􏷐trims characters from the left side of the string until the specified character is found􏷏
+􏶠removes the characters from the beginning until the specified character is found􏶡
+􏶜􏶝􏷆char􏷅􏷄char􏷃􏷀the character to stop trimming at􏶿
+􏶴
+    􏶲keep removing character from the front of the string until we encounter the search char or the string is empty􏶱
+    while (!􏵲begins with char􏵳􏵶char􏵷) && !􏵲is empty􏵳)){
+        􏵲remove first char􏵳);
+    }
+􏶳
+
+􏷘+􏷗􏷒right trim until char􏷑
+􏴅trim􏴆
+􏷐trims characters from the right side of the string until the specified character is found􏷏
+􏶠removes the characters from the end until the specified character is found􏶡
+􏶜􏶝􏷆char􏷅􏷄char􏷃􏷀the character to stop trimming at􏶿
+􏶴
+    􏶲keep removing character from the end of the string until we encounter the search character or the string is empty􏶱
+    while (!􏵲ends with char􏵳􏵶char􏵷) && !􏵲is empty􏵳)){
+        􏵲remove last char􏵳);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒append􏷑
+􏷐appends a c string to the end of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the c string to append to the string􏶿
+􏶴
+    􏶲forward call to the c string append using string's internal array􏶱
+    􏵲append c string􏵳􏵶string􏵷->m_tLocals.m_szElements);
+􏶳
+􏷘+􏷗􏷒append c string􏷑
+􏷐appends a c string to the end of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆char[]􏷅􏷄c string􏷃􏷀the c string to append to the string􏶿
+􏶴
+    
+    􏶲grows the internal string if needed based on the string we are appending􏶱
+    if (􏵲ensure there is enough space for string􏵳􏵶c string􏵷)){
+    
+        􏶲appends the string onto the end of the current string􏶱
+        􏶲strcpy adds the needed null terminator􏶱
+        􏶲we use size because it is guaranteed to index into to the null terminator􏶱
+        strcpy(&􏵴elements􏵵[􏵴size􏵵],􏵶c string􏵷);
+        􏵴size􏵵+=strlen(􏵶c string􏵷);
+    }
+􏶳
+
+
+􏳇name􏳈        􏳅bool􏳆􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇specifier􏳈   􏳅BOOL􏳆􏳅SHORT􏳆􏳅INT􏳆􏳅LONG􏳆􏳅SIZE_T􏳆􏳅FLOAT􏳆􏳅DOUBLE􏳆􏳅LONG_DOUBLE􏳆
+􏳇uni type􏳈    􏳅bool􏳆􏳅s􏳆    􏳅i􏳆  􏳅l􏳆   􏳅size􏳆  􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏷘+􏷗􏷒append {{name}}􏷑
+􏷐appends an {{name}} to the end of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆{{uni type}}􏷅􏷄{{name}}􏷃􏷀the {{name}} to append to the string􏶿
+􏶴
+    
+    􏶲grows the internal string if needed based on the {{name}} we are appending􏶱
+    size_t uIncreasedSize = 􏵲display size of {{name}}􏵳􏵶{{name}}􏵷);
+    if (􏵲ensure there is enough space for {{name}}􏵳􏵶{{name}}􏵷)){
+        sprintf(&􏵴elements􏵵[􏵴size􏵵], {{specifier}}_SPECIFIER, 􏵶{{name}}􏵷);
+        􏵲extend length􏵳uIncreasedSize);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒append char􏷑
+􏷐appends a char to the end of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆char􏷅􏷄character􏷃􏷀the character to append to the string􏶿
+􏶴
+    􏶲grows the internal string if needed based on the char we are appending􏶱
+    if (􏵲ensure there is enough space for char􏵳)){
+
+        􏶲appends the char onto the end of the current string􏶱
+        􏶲we use size because it is guaranteed to index into to the null terminator􏶱
+        􏵴elements􏵵[􏵴size􏵵] = 􏵶character􏵷;
+        􏵲extend length􏵳1);
+    }
+ 􏶳
+
+􏷘+􏷗􏷒append n times􏷑
+􏷐appends a char to the end of the string n times􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the c string to append to the string􏶿
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of times to append􏶿
+􏶴
+    size_t uIndex = 0u;
+    for (; uIndex < 􏵶amount􏵷; ++uIndex){􏵲append􏵳􏵶string􏵷);}
+􏶳
+
+􏷘+􏷗􏷒append c string n times􏷑
+􏷐appends a c string to the end of the string n times􏷏
+􏶠reallocates if needed􏶡
+􏶜􏶝􏷆char[]􏷅􏷄c string􏷃􏷀the c string to append to the string􏶿
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of times to append􏶿
+􏴅adding􏴆
+􏶴
+    size_t uIndex = 0u;
+    for (; uIndex < 􏵶amount􏵷; ++uIndex){􏵲append c string􏵳􏵶c string􏵷);}
+􏶳
+
+􏷘+􏷗􏷒append char n times􏷑
+􏷐appends a char to the end of the string n times􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆char􏷅􏷄character􏷃􏷀the character to append to the string􏶿
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of times to append􏶿
+􏶴
+    size_t uIndex = 0u;
+    for (; uIndex < 􏵶amount􏵷; ++uIndex){􏵲append char􏵳􏵶character􏵷);}
+􏶳
+
+􏷘+􏷗􏷒prepend􏷑
+􏷐prepends a c string to the front of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the c string to prepend to the string􏶿
+􏶴
+    􏶲create new string with prepended data􏶱
+    AsciiStringT tTemp = CopyConstructAsciiString(􏵶string􏵷);
+    
+    􏶲append original string􏶱
+    AsciiStringAppend(&tTemp,ptAsciiString);
+    
+    􏶲assign temporary back to original􏶱
+    􏵲assign􏵳&tTemp);
+    
+    􏶲destroy temporary􏶱
+    DestructAsciiStringT(&tTemp);
+􏶳
+􏷘+􏷗􏷒prepend c string􏷑
+􏷐prepends a c string to the front of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆char[]􏷅􏷄c string􏷃􏷀the c string to prepend to the string􏶿
+􏶴
+    􏶲create new string with prepended data􏶱
+    AsciiStringT tTemp = ConstructAsciiString(􏵶c string􏵷);
+    
+    􏶲append original string􏶱
+    AsciiStringAppend(&tTemp,ptAsciiString);
+    
+    􏶲assign temporary back to original􏶱
+    􏵲assign􏵳&tTemp);
+    
+    􏶲destroy temporary􏶱
+    DestructAsciiStringT(&tTemp);
+􏶳
+􏷘+􏷗􏷒prepend char􏷑
+􏷐prepends a character to the front of the string􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆char􏷅􏷄character􏷃􏷀the character to prepend to the string􏶿
+􏶴
+    􏶲create new string with prepended data􏶱
+    AsciiStringT tTemp = ConstructAsciiString("");
+    
+    􏶲append original string􏶱
+    AsciiStringAppendChar(&tTemp,􏵶character􏵷);
+    AsciiStringAppend(&tTemp,ptAsciiString);
+    
+    􏶲assign temporary back to original􏶱
+    􏵲assign􏵳&tTemp);
+    
+    􏶲destroy temporary􏶱
+    DestructAsciiStringT(&tTemp);
+􏶳
+
+􏷘+􏷗􏷒prepend n times􏷑
+􏷐prepends a char to the end of the string n times􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the c string to prepend to the string􏶿
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of times to prepend􏶿
+􏶴
+    size_t uIndex = 0u;
+    for (; uIndex < 􏵶amount􏵷; ++uIndex){􏵲prepend􏵳􏵶string􏵷);}
+􏶳
+
+􏷘+􏷗􏷒prepend c string n times􏷑
+􏷐prepends a c string to the end of the string n times􏷏
+􏶠reallocates if needed􏶡
+􏶜􏶝􏷆char[]􏷅􏷄c string􏷃􏷀the c string to prepend to the string􏶿
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of times to prepend􏶿
+􏴅adding􏴆
+􏶴
+    size_t uIndex = 0u;
+    for (; uIndex < 􏵶amount􏵷; ++uIndex){􏵲prepend c string􏵳􏵶c string􏵷);}
+􏶳
+
+􏷘+􏷗􏷒prepend char n times􏷑
+􏷐prepends a char to the end of the string n times􏷏
+􏶠reallocates if needed􏶡
+􏴅adding􏴆
+􏶜􏶝􏷆char􏷅􏷄character􏷃􏷀the character to prepend to the string􏶿
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the number of times to prepend􏶿
+􏶴
+    size_t uIndex = 0u;
+    for (; uIndex < 􏵶amount􏵷; ++uIndex){􏵲prepend char􏵳􏵶character􏵷);}
+􏶳
+
+
+
+
+
+􏳇name􏳈        􏳅bool􏳆􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇real type􏳈   􏳅BOOL􏳆􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size_t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇specifier􏳈   􏳅BOOL􏳆􏳅SHORT􏳆􏳅INT􏳆􏳅LONG􏳆􏳅SIZE_T􏳆􏳅FLOAT􏳆􏳅DOUBLE􏳆􏳅LONG_DOUBLE􏳆
+􏳇uni type􏳈    􏳅bool􏳆􏳅s􏳆    􏳅i􏳆  􏳅l􏳆   􏳅size􏳆  􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏳇hungarian􏳈   􏳅b􏳆   􏳅s􏳆    􏳅n􏳆  􏳅l􏳆   􏳅u􏳆     􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏷘+􏷗􏷒to {{name}}􏷑
+􏷐converts the string to a {{name}}􏷏
+􏶠assumes the string value was created through corresponding append method􏶡
+􏴅converting􏴆
+􏶚m􏶛􏶾{{uni type}}􏶽􏶼{{name}}􏶻􏶺the converted string􏶹
+􏶴
+    􏶲assuming the string has the correct representation,􏶱
+    􏶲extract out the type value and return it to the user􏶱
+    {{real type}} {{hungarian}}Return;
+    sscanf(􏵴elements􏵵, {{specifier}}_SPECIFIER,&{{hungarian}}Return);
+    return {{hungarian}}Return;
+􏶳
+
+basic_string::operator+=
+basic_string::compare
+basic_string::replace
+basic_string::substr
+basic_string::copy
+basic_string::resize
+basic_string::swap
+
+Search:
+basic_string::find
+basic_string::rfind
+basic_string::find_first_of
+basic_string::find_first_not_of
+basic_string::find_last_of
+basic_string::find_last_not_of
+
+case sensitive:
+􏷘+􏷗􏷒contains substr􏷑
+􏷐determines whether a substring exists in the string􏷏
+􏶠􏵱 if substring exists, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the substring to search for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼found􏶻􏶺whether the substring is found or not􏶹
+􏶴
+    char* szFound = strstr(􏵴elements􏵵,􏵶string􏵷->m_tLocals.m_szElements);
+    return szFound ? 􏵱 : 􏵰;
+􏶳
+􏷘+􏷗􏷒contains c string substr􏷑
+􏷐determines whether a substring exists in the string􏷏
+􏶠􏵱 if substring exists, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char[]􏷅􏷄string􏷃􏷀the substring to search for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼found􏶻􏶺whether the substring is found or not􏶹
+􏶴
+    char* szFound = strstr(􏵴elements􏵵,􏵶string􏵷);
+    return szFound ? 􏵱 : 􏵰;
+􏶳
+
+case insensitive:
+􏷘+􏷗􏷒contains substr case insensitive􏷑
+􏷐determines whether a substring exists in the string􏷏
+􏶠􏵱 if substring exists, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the substring to search for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼found􏶻􏶺whether the substring is found or not􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = CopyConstructAsciiString(􏵶string􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsSubstr = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    AsciiStringLowercase(&tLhs);
+    AsciiStringLowercase(&tRhs);
+    
+    􏶲perform the search on the case adjusted strings􏶱
+    bIsSubstr = AsciiStringContainsSubstr(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsSubstr;
+􏶳
+􏷘+􏷗􏷒contains c string substr case insensitive􏷑
+􏷐determines whether a substring exists in the string􏷏
+􏶠􏵱 if substring exists, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char[]􏷅􏷄string􏷃􏷀the substring to search for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼found􏶻􏶺whether the substring is found or not􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = ConstructAsciiString(􏵶string􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsSubstr = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    AsciiStringLowercase(&tLhs);
+    AsciiStringLowercase(&tRhs);
+    
+    􏶲perform the search on the case adjusted strings􏶱
+    bIsSubstr = AsciiStringContainsSubstr(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsSubstr;
+􏶳
+
+case insensitive AND whitespace insensitive:
+􏷘+􏷗􏷒contains substr case and whitespace insensitive􏷑
+􏷐determines whether a substring exists in the string􏷏
+􏶠􏵱 if substring exists, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the substring to search for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼found􏶻􏶺whether the substring is found or not􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = CopyConstructAsciiString(􏵶string􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsSubstr = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    RemoveWhitespaceAndLowercase(&tLhs);
+    RemoveWhitespaceAndLowercase(&tRhs);
+    
+    􏶲perform the search on the case adjusted strings􏶱
+    bIsSubstr = AsciiStringContainsSubstr(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsSubstr;
+􏶳
+􏷘+􏷗􏷒contains c string substr case and whitespace insensitive􏷑
+􏷐determines whether a substring exists in the string􏷏
+􏶠􏵱 if substring exists, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char[]􏷅􏷄string􏷃􏷀the substring to search for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼found􏶻􏶺whether the substring is found or not􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = ConstructAsciiString(􏵶string􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsSubstr = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    RemoveWhitespaceAndLowercase(&tLhs);
+    RemoveWhitespaceAndLowercase(&tRhs);
+    
+    􏶲perform the search on the case adjusted strings􏶱
+    bIsSubstr = AsciiStringContainsSubstr(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsSubstr;
+􏶳
+
+􏷘-􏷗􏷒remove whitespace and lowercase􏷑
+􏷐removes whitespace and lowercases the string􏷏
+􏴅operations􏴆
+􏶴
+    􏶲remove the whitespace and then lowercase each of the characters􏶱
+    􏵲remove whitespace􏵳);
+    􏵲lowercase􏵳);
+􏶳
+
+􏷘+c􏷗􏷒begins with􏷑
+􏷐determines whether the string starts with the specified string􏷏
+􏶠􏵱 if it starts with the string, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the substring to search for at the beginning􏶿
+􏶚m􏶛􏶾bool􏶽􏶼does begin with􏶻􏶺whether the string begins with the other string􏶹
+􏶴
+    size_t uIndex = 0u;
+    if (AsciiStringSize(􏵶string􏵷) <= 􏵴size􏵵){
+        for (; uIndex < AsciiStringSize(􏵶string􏵷); ++uIndex){
+            if (􏵴elements􏵵[uIndex] != *AsciiStringAt(􏵶string􏵷,uIndex)){
+                return 􏵰;
+            }
+        }
+        return 􏵱;
+    }
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒begins with c string􏷑
+􏷐determines whether the string starts with the specified string􏷏
+􏶠􏵱 if it starts with the string, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char[]􏷅􏷄string􏷃􏷀the substring to search for at the beginning􏶿
+􏶚m􏶛􏶾bool􏶽􏶼does begin with􏶻􏶺whether the string begins with the other string􏶹
+􏶴
+    size_t uIndex = 0u;
+    if (strlen(􏵶string􏵷) <= 􏵴size􏵵){
+        for (; uIndex < strlen(􏵶string􏵷); ++uIndex){
+            if (􏵴elements􏵵[uIndex] != 􏵶string􏵷[uIndex]){
+                return 􏵰;
+            }
+        }
+        return 􏵱;
+    }
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒ends with􏷑
+􏷐determines whether the string ends with the specified string􏷏
+􏶠􏵱 if it ends with the string, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄string􏷃􏷀the substring to search for at the end􏶿
+􏶚m􏶛􏶾bool􏶽􏶼does end with􏶻􏶺whether the string ends with the other string􏶹
+􏶴
+    size_t uIndex = 0;
+    if (AsciiStringSize(􏵶string􏵷) <= 􏵴size􏵵){
+        for (; uIndex < AsciiStringSize(􏵶string􏵷); ++uIndex){
+            if (􏵴elements􏵵[􏵴size􏵵-1-uIndex] != *AsciiStringAt(􏵶string􏵷,AsciiStringSize(􏵶string􏵷)-1-uIndex)){
+                return 􏵰;
+            }
+        }
+        
+        return 􏵱;
+    }
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒ends with c string􏷑
+􏷐determines whether the string ends with the specified string􏷏
+􏶠􏵱 if it ends with the string, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char[]􏷅􏷄string􏷃􏷀the substring to search for at the end􏶿
+􏶚m􏶛􏶾bool􏶽􏶼does end with􏶻􏶺whether the string ends with the other string􏶹
+􏶴
+    size_t uIndex = 0;
+    if (strlen(􏵶string􏵷) <= 􏵴size􏵵){
+        for (; uIndex < strlen(􏵶string􏵷); ++uIndex){
+            if (􏵴elements􏵵[􏵴size􏵵-1-uIndex] != 􏵶string􏵷[strlen(􏵶string􏵷)-1-uIndex]){
+                return 􏵰;
+            }
+        }
+        
+        return 􏵱;
+    }
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒begins with whitespace􏷑
+􏷐determines whether the string begins with whitespace􏷏
+􏶠􏵱 if it begins with a whitespace character, 􏵰 if it does not.  
+Empty strings do not begin with whitespace.􏶡
+􏴅search􏴆
+􏶚m􏶛􏶾bool􏶽􏶼begins with a whitespace character􏶻􏶺whether the string begins with a whitespace character􏶹
+􏶴
+
+    􏶲if a front character exists, check if it is a space􏶱
+    if(􏵲front􏵳)){
+        return isspace(*􏵲front􏵳));
+    }
+    
+    􏶲if the string is empty, it does not begin with whitespace􏶱
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒ends with whitespace􏷑
+􏷐determines whether the string ends with whitespace􏷏
+􏶠􏵱 if it ends with a whitespace character, 􏵰 if it does not.  
+Empty strings do not end with whitespace.􏶡
+􏴅search􏴆
+􏶚m􏶛􏶾bool􏶽􏶼ends with a whitespace character􏶻􏶺whether the string ends with a whitespace character􏶹
+􏶴
+
+    􏶲if a back character exists, check if it is a space􏶱
+    if(􏵲back􏵳)){
+        return isspace(*􏵲back􏵳));
+    }
+    
+    􏶲if the string is empty, it does not end with whitespace􏶱
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒begins with char􏷑
+􏷐determines whether the string begins with a specific character􏷏
+􏶠􏵱 if the string begins with the character, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char􏷅􏷄c􏷃􏷀the character to check for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼begins with character􏶻􏶺whether the string begins with the specified character􏶹
+􏶴
+    􏶲if a front character exists, check if it is the character􏶱
+    if(􏵲front􏵳)){
+        return *􏵲front􏵳) == 􏵶c􏵷;
+    }
+    
+    􏶲if the string is empty, it does not begin with the character􏶱
+    return 􏵰;
+􏶳
+
+􏷘+c􏷗􏷒ends with char􏷑
+􏷐determines whether the string ends with a specific character􏷏
+􏶠􏵱 if the string ends with the character, 􏵰 if it does not􏶡
+􏴅search􏴆
+􏶜􏶝􏷆char􏷅􏷄c􏷃􏷀the character to check for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼ends with character􏶻􏶺whether the string ends with the specified character􏶹
+􏶴
+    􏶲if a back character exists, check if it is the character􏶱
+    if(􏵲back􏵳)){
+        return *􏵲back􏵳) == 􏵶c􏵷;
+    }
+    
+    􏶲if the string is empty, it does not end with the character􏶱
+    return 􏵰;
+􏶳
+
+Constants:
+basic_string::npos
+
+Non-member functions:
+operator+
+
+case sensitive
+􏷘+􏷗􏷒equals􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are equal, 􏵰 if they are not􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is equal􏶻􏶺whether the two string are equal􏶹
+􏶴
+    􏶲forward to c string version􏶱
+    return 􏵲equals c string􏵳􏵶rhs􏵷->m_tLocals.m_szElements);
+􏶳
+􏷘+􏷗􏷒not equals􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are NOT equal, 􏵰 if they are􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is not equal􏶻􏶺whether the two string are not equal􏶹
+􏶴
+    􏶲forward to c string version􏶱
+    return 􏵲not equals c string􏵳􏵶rhs􏵷->m_tLocals.m_szElements);
+􏶳
+
+􏷘+􏷗􏷒less􏷑
+􏷐checks to see if the lhs is less than the rhs􏷏
+􏶠􏵱 if the string is less than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is less than􏶻􏶺whether the string less than the other􏶹
+􏶴
+    􏶲forward to c string version􏶱
+    return 􏵲less c string􏵳􏵶rhs􏵷->m_tLocals.m_szElements);
+􏶳
+
+􏷘+􏷗􏷒less equal􏷑
+􏷐checks to see if the lhs is less than or equal than the rhs􏷏
+􏶠􏵱 if the string is less than or equal than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is less than or equal than􏶻􏶺whether the string less than or equal than the other􏶹
+􏶴
+    􏶲forward to c string version􏶱
+    return 􏵲less equal c string􏵳􏵶rhs􏵷->m_tLocals.m_szElements);
+􏶳
+
+􏷘+􏷗􏷒greater􏷑
+􏷐checks to see if the lhs is greater than the rhs􏷏
+􏶠􏵱 if the string is greater than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is greater than􏶻􏶺whether the string greater than the other􏶹
+􏶴
+    􏶲forward to c string version􏶱
+    return 􏵲greater c string􏵳􏵶rhs􏵷->m_tLocals.m_szElements);
+􏶳
+
+􏷘+􏷗􏷒greater equal􏷑
+􏷐checks to see if the lhs is greater than or equal than the rhs􏷏
+􏶠􏵱 if the string is greater than or equal than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is greater than or equal than􏶻􏶺whether the string greater than or equal than the other􏶹
+􏶴
+    􏶲forward to c string version􏶱
+    return 􏵲greater equal c string􏵳􏵶rhs􏵷->m_tLocals.m_szElements);
+􏶳
+
+
+􏷘+􏷗􏷒equals c string􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are equal, 􏵰 if they are not􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the c string to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is equal􏶻􏶺whether the two string are equal􏶹
+􏶴
+    􏶲use strcmp to decide if the string are equal or not􏶱
+    􏶲strcmp returns 0 if there is not difference􏶱
+    return !strcmp(􏵴elements􏵵, 􏵶rhs􏵷);
+􏶳
+􏷘+􏷗􏷒not equals c string􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are NOT equal, 􏵰 if they are􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the c string to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is not equal􏶻􏶺whether the two string are not equal􏶹
+􏶴
+    􏶲use strcmp to decide if the string are equal or not􏶱
+    􏶲strcmp returns 0 if there is not difference􏶱
+    return strcmp(􏵴elements􏵵, 􏵶rhs􏵷);
+􏶳
+
+􏷘+􏷗􏷒less c string􏷑
+􏷐checks to see if the lhs is less than the rhs􏷏
+􏶠􏵱 if the string is less than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is less than􏶻􏶺whether the string less than the other􏶹
+􏶴
+    􏶲use strcmp to decide if the string are less or not􏶱
+    return (strcmp(􏵴elements􏵵, 􏵶rhs􏵷) < 0);
+􏶳
+
+􏷘+􏷗􏷒less equal c string􏷑
+􏷐checks to see if the lhs is less than or equal than the rhs􏷏
+􏶠􏵱 if the string is less than or equal than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is less than or equal than􏶻􏶺whether the string less than or equal than the other􏶹
+􏶴
+    􏶲use strcmp to decide if the string are less than or equal or not􏶱
+    return (strcmp(􏵴elements􏵵, 􏵶rhs􏵷) <= 0);
+􏶳
+
+􏷘+􏷗􏷒greater c string􏷑
+􏷐checks to see if the lhs is greater than the rhs􏷏
+􏶠􏵱 if the string is greater than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is greater than􏶻􏶺whether the string greater than the other􏶹
+􏶴
+    􏶲use strcmp to decide if the string are greater or not􏶱
+    return (strcmp(􏵴elements􏵵, 􏵶rhs􏵷) > 0);
+􏶳
+
+􏷘+􏷗􏷒greater equal c string􏷑
+􏷐checks to see if the lhs is greater than or equal than the rhs􏷏
+􏶠􏵱 if the string is greater than or equal than, 􏵰 if it is not􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is greater than or equal than􏶻􏶺whether the string greater than or equal than the other􏶹
+􏶴
+    􏶲use strcmp to decide if the string are greater than or equal or not􏶱
+    return (strcmp(􏵴elements􏵵, 􏵶rhs􏵷) >= 0);
+􏶳
+
+case insensitive
+􏷘+􏷗􏷒case insensitive equals􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are equal, 􏵰 if they are not􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is equal􏶻􏶺whether the two string are equal􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = CopyConstructAsciiString(􏵶rhs􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsEqual = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    AsciiStringLowercase(&tLhs);
+    AsciiStringLowercase(&tRhs);
+    
+    􏶲perform the compare on the case adjusted strings􏶱
+    bIsEqual = AsciiStringEquals(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsEqual;
+􏶳
+􏷘+􏷗􏷒case insensitive not equals􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are NOT equal, 􏵰 if they are􏶡
+􏴅operators􏴆
+􏶜r􏶝􏷆AsciiStringT􏷅􏷄rhs􏷃􏷀the string type to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is not equal􏶻􏶺whether the two string are not equal􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = CopyConstructAsciiString(􏵶rhs􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsNotEqual = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    AsciiStringLowercase(&tLhs);
+    AsciiStringLowercase(&tRhs);
+    
+    􏶲perform the compare on the case adjusted strings􏶱
+    bIsNotEqual = AsciiStringNotEquals(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsNotEqual;
+􏶳
+􏷘+􏷗􏷒case insensitive equals c string􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are equal, 􏵰 if they are not􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the c string to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is equal􏶻􏶺whether the two string are equal􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = ConstructAsciiString(􏵶rhs􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsEqual = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    AsciiStringLowercase(&tLhs);
+    AsciiStringLowercase(&tRhs);
+    
+    􏶲perform the compare on the case adjusted strings􏶱
+    bIsEqual = AsciiStringEquals(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsEqual;
+􏶳
+􏷘+􏷗􏷒case insensitive not equals c string􏷑
+􏷐checks to see if two strings are equal􏷏
+􏶠􏵱 if strings are NOT equal, 􏵰 if they are􏶡
+􏴅operators􏴆
+􏶜􏶝􏷆char[]􏷅􏷄rhs􏷃􏷀the c string to compare against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is not equal􏶻􏶺whether the two string are not equal􏶹
+􏶴
+    􏶲create temp strings to compare against􏶱
+    AsciiStringT tLhs = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringT tRhs = ConstructAsciiString(􏵶rhs􏵷);
+    
+    􏶲temp bool for comparison􏶱
+    BOOL bIsNotEqual = 􏵰;
+    
+    􏶲adjust their casing􏶱
+    AsciiStringLowercase(&tLhs);
+    AsciiStringLowercase(&tRhs);
+    
+    􏶲perform the compare on the case adjusted strings􏶱
+    bIsNotEqual = AsciiStringNotEquals(&tLhs,&tRhs);
+    
+    􏶲destroy temporaries􏶱
+    DestructAsciiStringT(&tLhs);
+    DestructAsciiStringT(&tRhs);
+    
+    􏶲return the case insensitive compare result􏶱
+    return bIsNotEqual;
+􏶳
+
+
+swap(std::basic_string)
+operator<<
+operator>>
+getline
+to_string (C++11)
+to_wstring (C++11)
+
+Helper classes
+hash<std::string> (C++11)
+hash<std::wstring> (C++11)
+hash<std::u32string> (C++11)
+hash<std::u16string> (C++11)
+
+
+
+
+
+
+CHARACTER MANIPULATION:
+􏷘+􏷗􏷒lowercase􏷑
+􏷐lowercases all of the characters􏷏
+􏶠O(n)􏶡
+􏴅operations􏴆
+􏶴
+    􏶲iterate over the characters lowercasing each􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 􏵴size􏵵; ++uIndex){
+        􏵴elements􏵵[uIndex] = tolower(􏵴elements􏵵[uIndex]);
+    }
+􏶳
+
+􏷘+􏷗􏷒uppercase􏷑
+􏷐uppercases all of the characters􏷏
+􏶠O(n)􏶡
+􏴅operations􏴆
+􏶴
+    􏶲iterate over the characters uppercasing each􏶱
+    size_t uIndex = 0u;
+    for(; uIndex < 􏵴size􏵵; ++uIndex){
+        􏵴elements􏵵[uIndex] = toupper(􏵴elements􏵵[uIndex]);
+    }
+􏶳
+
+􏷘+􏷗􏷒reverse􏷑
+􏷐reverse the string􏷏
+􏶠O(n)􏶡
+􏴅operations􏴆
+􏶴
+    􏶲both iterators traverse half the string􏶱
+    size_t uForward = 0u;
+    size_t uBackward = 􏵴size􏵵-1;
+    
+    􏶲temp used for character swapping􏶱
+    char cTemp;
+    
+    if (!􏵲is empty􏵳)){
+        􏶲iterators meet in the middle􏶱
+        while(uForward < uBackward){
+        
+            􏶲perform swap􏶱
+            SwapChar(&􏵴elements􏵵[uForward],&􏵴elements􏵵[uBackward]);
+            
+            􏶲advance iterators closer to the middle􏶱
+            ++uForward;
+            --uBackward;
+        }
+    }
+􏶳
+
+COLOR MANIPULATION
+
+􏳇color􏳈        􏳅red􏳆􏳅green􏳆􏳅yellow􏳆􏳅blue􏳆􏳅magenta􏳆􏳅cyan􏳆􏳅white􏳆
+􏳇color caps􏳈   􏳅RED􏳆􏳅GREEN􏳆􏳅YELLOW􏳆􏳅BLUE􏳆􏳅MAGENTA􏳆􏳅CYAN􏳆􏳅WHITE􏳆
+􏷘+􏷗􏷒fully color {{color}}􏷑
+􏷐color the string text {{color}}􏷏
+􏶠uses ANSI color codes.  Remove existing color when applying new color􏶡
+􏴅color􏴆
+􏶴
+    􏶲prepends and appends color escapes while turning on color􏶱
+    􏵲fully apply new color􏵳TURN_ON_{{color caps}});
+􏶳
+
+
+􏷘-􏷗􏷒fully apply new color􏷑
+􏷐apply a new color to the string􏷏
+􏶠uses ANSI color codes.  Remove existing color when applying new color􏶡
+􏴅color􏴆
+􏶜􏶝􏷆char[]􏷅􏷄start color command􏷃􏷀color command to start with􏶿
+􏶴
+    􏵲remove any current color􏵳);
+    􏵲prepend c string􏵳􏵶start color command􏵷);
+    􏵲append c string􏵳COLOR_STOP_CODE);
+􏶳
+
+􏷘+􏷗􏷒is fully colored􏷑
+􏷐whether the string is currently colored or not􏷏
+􏶠checks for beginning color code􏶡
+􏴅color􏴆
+􏶚m􏶛􏶾bool􏶽􏶼is colored􏶻􏶺whether the string is currently colored􏶹
+􏶴
+    􏶲if the string starts with the color start code, we'll assume the string is fully colored􏶱
+    􏶲we are also assuming then, that the string ends with the color stop code􏶱
+    return 􏵲begins with c string􏵳COLOR_START_CODE);
+􏶳
+
+􏷘+􏷗􏷒remove any current color􏷑
+􏷐removes any existing color that is currently applied to the string􏷏
+􏶠if the string is not colored, this will have no effect􏶡
+􏴅color􏴆
+􏶴
+    if (􏵲is fully colored􏵳)){
+        􏵲remove last n chars􏵳END_COLOR_AMOUNT);
+        􏵲remove first n chars􏵳BEGIN_COLOR_AMOUNT);
+    }
+􏶳
+
+􏷘+􏷗􏷒print􏷑
+􏷐prints the string􏷏
+􏶠prints the string using printf􏶡
+􏴅print􏴆
+􏶴
+    􏶲print by forwarding internal elements􏶱
+    printf("%s",􏵴elements􏵵);
+􏶳
+
+
+􏳇color􏳈        􏳅red􏳆􏳅green􏳆􏳅yellow􏳆􏳅blue􏳆􏳅magenta􏳆􏳅cyan􏳆􏳅white􏳆
+􏳇color caps􏳈   􏳅Red􏳆􏳅Green􏳆􏳅Yellow􏳆􏳅Blue􏳆􏳅Magenta􏳆􏳅Cyan􏳆􏳅White􏳆
+􏷘+􏷗􏷒print {{color}}􏷑
+􏷐print the string in {{color}}􏷏
+􏶠this does not change the string itself􏶡
+􏴅print􏴆
+􏶴
+    􏶲create copy, color it, and print it.  destroy copy afterwards􏶱
+    AsciiStringT tTemp = CopyConstructAsciiString(ptAsciiString);
+    AsciiStringFullyColor{{color caps}}(&tTemp);
+    AsciiStringPrint(&tTemp);
+    DestructAsciiStringT(&tTemp);
+􏶳
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+􏷘-􏷗􏷒shift erase􏷑
+􏷐erase the first character by shifting over it􏷏
+􏶠the string size would need decremented correctly after the call􏶡
+􏴅implementation details􏴆
+􏶴
+    􏶲forward to more generic routine􏶱
+    􏵲shift erase n amount􏵳1u);
+􏶳
+
+􏷘-􏷗􏷒shift erase n amount􏷑
+􏷐erase the first n characters by shifting over them􏷏
+􏶠the string size would need decremented correctly after the call􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄amount􏷃􏷀the amount of characters to shift over􏶿
+􏶴
+    􏶲start at n, as we do not want to shift the first n elements􏶱
+    size_t uIndex = 􏵶amount􏵷;
+    
+    􏶲we go to size+1 because that will be the null terminator which we also want to shift􏶱
+    for (; uIndex < 􏵴size􏵵+1; ++uIndex){
+    
+        􏶲perform shift􏶱
+        􏵴elements􏵵[uIndex-􏵶amount􏵷] = 􏵴elements􏵵[uIndex];
+    }
+
+    􏶲adjust the size􏶱
+    􏵴size􏵵 -= 􏵶amount􏵷;
+􏶳
+
+􏷘-c􏷗􏷒valid index􏷑
+􏷐Check if an integer is a valid index􏷏
+􏶠􏵱 is returned if the index is an addressable element in the 􏶐.
+􏵰 is returned if it is an out of range index􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index to test for validity of􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is valid index􏶻􏶺whether the index is valid for the current state of the 􏶐􏶹
+􏶴
+    􏶲Ensure the index is in range􏶱
+    􏶲We need not worry about negative numbers􏶱
+    􏶲the properties of our index type will constrain to positive values􏶱
+    return 􏵶index􏵷 < 􏵴size􏵵;
+􏶳
+
+􏷘-􏷗􏷒resize􏷑
+􏷐Resize the internal array.􏷏
+􏶠This is done when new space is needed for a newly inserted element.􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄new capacity􏷃􏷀the new capacity to resize the internal array to.􏶿
+􏶚m􏶛􏶾bool􏶽􏶼successful reallocation􏶻􏶺whether memory was successfully reallocated􏶹
+􏶴
+
+    􏶲whether memory was successfully reallocated􏶱
+    BOOL bSuccessfulRealloc = 􏵱;
+    
+    􏶲Change the size of the internal array (most likely increasing it).􏶱
+    Reallocate(&􏵴elements􏵵,ELEMENT_SIZE,􏵶new capacity􏵷);
+
+    􏶲ensure the allocation was successful before applying it.􏶱
+    if (􏵴elements􏵵)
+    {
+        􏵴capacity􏵵 = 􏵶new capacity􏵷;
+        bSuccessfulRealloc = 􏵱;
+    }else{
+        bSuccessfulRealloc = 􏵰;
+    }
+    
+    return bSuccessfulRealloc;
+􏶳
+
+􏷘-􏷗􏷒ensure there is enough space for string􏷑
+􏷐ensure there is enough space for string, by possibly resizing the internal array.􏷏
+􏶠if resizing the array is needed, but it cannot be preformed, 􏵰 is returned.􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆char[]􏷅􏷄appended value􏷃􏷀the c string to consider as additional space􏶿
+􏶚m􏶛􏶾bool􏶽􏶼available space􏶻􏶺whether there is enough space to add an item􏶹
+􏶴
+    􏶲ensure there is enough space for the additional string􏶱
+    return 􏵲ensure there is enough space for n additional characters􏵳strlen(􏵶appended value􏵷));
+􏶳
+
+􏷘-􏷗􏷒ensure there is enough space for char􏷑
+􏷐ensure there is enough space for an additional char, by possibly resizing the internal array.􏷏
+􏶠if resizing the array is needed, but it cannot be preformed, 􏵰 is returned.􏶡
+􏴅implementation details􏴆
+􏶚m􏶛􏶾bool􏶽􏶼available space􏶻􏶺whether there is enough space to add an item􏶹
+􏶴
+    􏶲ensure there is enough space for an additional char􏶱
+    return 􏵲ensure there is enough space for n additional characters􏵳1u);
+􏶳
+
+
+
+􏳇name􏳈        􏳅bool􏳆􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇uni type􏳈    􏳅bool􏳆􏳅s􏳆    􏳅i􏳆  􏳅l􏳆   􏳅size􏳆  􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏷘-􏷗􏷒ensure there is enough space for {{name}}􏷑
+􏷐ensure there is enough space for an additional {{name}}, by possibly resizing the internal array.􏷏
+􏶠if resizing the array is needed, but it cannot be preformed, 􏵰 is returned.􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆{{uni type}}􏷅􏷄{{name}}􏷃􏷀the {{name}} to consider as additional space􏶿
+􏶚m􏶛􏶾bool􏶽􏶼available space􏶻􏶺whether there is enough space to add an item􏶹
+􏶴
+    􏶲ensure there is enough space for an additional {{name}}􏶱
+    const int nSize = 􏵲display size of {{name}}􏵳􏵶{{name}}􏵷);
+    return 􏵲ensure there is enough space for n additional characters􏵳nSize);
+􏶳
+
+􏷘-􏷗􏷒ensure there is enough space for n additional characters􏷑
+􏷐ensure there is enough space for n additional chars, by possibly resizing the internal array.􏷏
+􏶠if resizing the array is needed, but it cannot be preformed, 􏵰 is returned.􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄additional amount􏷃􏷀the additional amount of characters you are ensuring there is allocated space for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼available space􏶻􏶺whether there is enough space to add an item􏶹
+􏶴
+    􏶲whether there is enough space to add an item􏶱
+    BOOL bAvailableSpace = 􏵱;
+    
+    􏶲increase the size of the internal array if we are already full􏶱
+    if (􏵲there is enough space for n additional characters􏵳􏵶additional amount􏵷)){
+        
+        􏶲increase capacity to be able to hold additional characters􏶱
+        bAvailableSpace = 􏵲resize􏵳􏵴size􏵵 + 􏵶additional amount􏵷 + 1);
+    }
+    
+    return bAvailableSpace;
+􏶳
+
+􏷘-􏷗􏷒there is enough space for n additional characters􏷑
+􏷐determines whether there is enough space for an additional amount of characters􏷏
+􏶠returns 􏵱 if there is enough space for the new amount; 􏵰 if there is not.􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆size􏷅􏷄additional amount􏷃􏷀the additional amount of characters you are checking to if there is sufficient capacity for􏶿
+􏶚m􏶛􏶾bool􏶽􏶼enough space􏶻􏶺whether there is enough space for the additional characters􏶹
+􏶴
+    􏶲whether there is enough space to add an item􏶱
+    BOOL bAvailableSpace = 􏵰;
+    
+    􏶲increase the size of the internal array if we are already full􏶱
+    if (􏵴size􏵵 < 􏵴capacity􏵵-1 + 􏵶additional amount􏵷){
+        bAvailableSpace = 􏵱;
+    }
+    
+    return bAvailableSpace;
+􏶳
+
+
+DERIVING STRING SIZES OF OTHER TYPES:
+
+􏳇name􏳈        􏳅bool􏳆􏳅short􏳆􏳅int􏳆􏳅long􏳆􏳅size t􏳆􏳅float􏳆􏳅double􏳆􏳅long double􏳆
+􏳇specifier􏳈   􏳅BOOL􏳆􏳅SHORT􏳆􏳅INT􏳆􏳅LONG􏳆􏳅SIZE_T􏳆􏳅FLOAT􏳆􏳅DOUBLE􏳆􏳅LONG_DOUBLE􏳆
+􏳇uni type􏳈    􏳅bool􏳆􏳅s􏳆    􏳅i􏳆  􏳅l􏳆   􏳅size􏳆  􏳅f􏳆    􏳅d􏳆     􏳅ld􏳆
+􏷘-c􏷗􏷒display size of {{name}}􏷑
+􏷐derive the string size of a particular {{name}}􏷏
+􏶠answers the question: "if the value of this instantiated {{name}} were expressed as a string, how long would that string be?"􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆{{uni type}}􏷅􏷄{{name}}􏷃􏷀the {{name}} to consider as additional space􏶿
+􏶚m􏶛􏶾i􏶽􏶼string size􏶻􏶺the size that the {{name}} would be when expressed as a string􏶹
+􏶴
+    􏶲forward to generic length deriver􏶱
+    return 􏵲display size of value􏵳{{specifier}}_SPECIFIER,􏵶{{name}}􏵷);
+􏶳
+
+􏷘-c􏷗􏷒display size of value􏷑
+􏷐derive the string size of a particular type's value􏷏
+􏶠answers the question: "if the value of this instantiated type were expressed as a string, how long would that string be?"􏶡
+􏴅implementation details􏴆
+􏶜􏶝􏷆char*􏷅􏷄specifier􏷃􏷀the specifier used to describe the type􏶿
+􏶜>􏶝􏷆char*􏷅􏷄types􏷃􏷀a forwarded va_list􏶿
+􏶚m􏶛􏶾i􏶽􏶼string size􏶻􏶺the size that the integer would be when expressed as a string􏶹
+􏶴
+    􏶲we ask vsnprintf to fill a zero character buffer located nowhere.􏶱
+    􏶲in return, it shares how many characters it would have liked to print despite the buffer constraints􏶱
+    􏶲this gives us the length for the type's display representation􏶱
+    int nSize;
+    va_list tArgs;
+    va_start(tArgs,􏵶specifier􏵷);
+    nSize = vsnprintf(NULL,0,􏵶specifier􏵷,tArgs);
+    va_end(tArgs);
+    return nSize;
+􏶳
+
+􏶨the number of elements currently in the 􏶐􏶧
+􏶦This can be used for iteration of the elements.
+There is no hard limit on the size.  The internal array will grow to accommodate for new inserted elements.􏶥
+􏶘-g􏶙􏶮size􏶭􏶬size􏶫􏶪0􏶩
+
+􏶨the amount of space allocated for the internal array􏶧
+􏶦different implementations do different initial capacity, and have the capacity grow at different rates.
+We will increase the capacity just enough to add the new element to a full array.􏶥
+􏶘-g􏶙􏶮size􏶭􏶬capacity􏶫􏶪1􏶩
+
+􏶨the internal array for all of our generic elements􏶧
+􏶦this is our dynamic string encapsulated into a struct to manage memory and internal implementation􏶥
+􏶘-􏶙􏶮char*􏶭􏶬elements􏶫􏶪0􏶩
+

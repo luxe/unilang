@@ -1,0 +1,585 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+⚯
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_c_exporter"❫
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_exporter"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+
+⚞⚟
+
+
+◀public: static▶ void ☀Export(Structure structure, C_Export_Settings const& options, std::vector<Contributor> const& contributors, bool transfer)❰
+
+    Structure constraint_structure;
+    constraint_structure.name = options.general.constraint_checking_filename;
+    
+    Import_Item import_item;
+    import_item.type = Import_Type::LOCAL;
+    import_item.inlined = false;
+    import_item.name.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    import_item.comment.value = as_wstring("all structs");
+    constraint_structure.imports.interface_dependencies.push_back(import_item);
+    
+    import_item.type = Import_Type::SYSTEM;
+    import_item.inlined = false;
+    import_item.name.value = as_wstring("stdioLib");
+    import_item.comment.value = as_wstring("USES: fprintf");
+    constraint_structure.imports.implementation_dependencies.push_back(import_item);
+    
+    
+    
+    constraint_structure.meta.code_type = Code_Type::GLOBAL;
+    constraint_structure.meta.brief_description.value = as_wstring("A set of debug functions used to determine that the value constraints of a set of data are being met.");
+    constraint_structure.meta.detailed_description.value = as_wstring("Data constraints may be specified by an ICD, or constrained based on what we deem acceptable.");
+    
+    Token_Value v;
+    
+    v.value = as_wstring("J2_Communication");
+    constraint_structure.meta.group_names.push_back(v);
+    
+    v.value = as_wstring("Trevor Hickey");
+    constraint_structure.meta.authors.push_back(v);
+    
+    
+    constraint_structure.methods.methods = Build_Methods(structure,options);
+    
+    //print the actual file now
+    F2si_C_Exporter::Export(constraint_structure,contributors,"good",transfer);
+❱
+
+◀private: static▶ std::vector<Method_Item> ☀Build_Methods(Structure structure, C_Export_Settings const& options)❰
+
+    std::vector<Method_Item> methods;
+    
+    //possibly output a constraint checking function for the main structure
+    if (!structure.data_members.data_members.empty()){
+        methods.push_back(Build_Constraint_Check_Function_For_Structure(structure,options));
+    }
+    
+    for (auto const& it: structure.inlined_structures.get().inlined_interfaces){
+        
+        //possibly output a constraint checking function for the interface inlined structure
+        if (!it.data_members.data_members.empty()){
+            methods.push_back(Build_Constraint_Check_Function_For_Structure(it,options));
+        }
+    }
+    
+    for (auto const& it: structure.inlined_structures.get().inlined_implementations){
+        
+        //possibly output a constraint checking function for the definition inlined structure
+        if (!it.data_members.data_members.empty()){
+            methods.push_back(Build_Constraint_Check_Function_For_Structure(it,options));
+        }
+    }
+    
+    return methods;
+❱
+
+◀private: static▶ Method_Item ☀Build_Constraint_Check_Function_For_Structure(Structure structure, C_Export_Settings const& options)❰
+    
+    //overall function information
+    Method_Item method;
+    method.class_access = Class_Access::PUBLIC;
+    
+    Token_Value v;
+    v.value = as_wstring("check constraints on " + structure.name);
+    method.names.function_name = v;
+    
+    v.value = as_wstring("checks and reports broken value constraints for " + structure.name);
+    method.brief_description = v;
+    
+    v.value = as_wstring("if a broken value constraint is triggered, the data is most likely in a state that does not make sense according to the ICD.\n The value should either be adjusted, or the constraint should be modified");
+    method.brief_description = v;
+    
+    //function arguments
+    Function_Argument arg;
+    arg.is_mutable = false;
+    arg.is_reference = true;
+    
+    v.value = as_wstring(As_Capital_And_Pushed_Together(structure.name) + "T");
+    arg.type = v;
+    
+    v.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+    arg.identifier = v;
+    
+    v.value = as_wstring("the data type whose member variables will be checked against value constraints");
+    arg.comment = v;
+    method.function_arguments.push_back(arg);
+    
+    
+    method.body = Build_Constraint_Body(structure,options);
+    
+    
+    return method;
+❱
+
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Build_Constraint_Body(Structure structure, C_Export_Settings const& options)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    //possibly print indexer
+    if (Structure_Has_Array_Data_Member(structure)){
+        t.name = Body_Token_Name::COMMENT;
+        t.value = as_wstring("used for indexing over array data members"); 
+        body.push_back(t);
+        
+        t.name = Body_Token_Name::REGULAR;
+        t.value = as_wstring("\nsize_t uIndex = 0u;\n\n");
+        body.push_back(t);
+    }
+    
+    //apply constraints for each data member
+    for (auto const& data_member: structure.data_members.data_members){
+        
+            t.name = Body_Token_Name::COMMENT;
+            t.value = as_wstring("check value constraints for " + as_string(data_member.name.value));
+            body.push_back(t);
+            
+            t.name = Body_Token_Name::REGULAR;
+            t.value = as_wstring("\n\n");
+            body.push_back(t);
+            
+            if (Is_Array_Type(data_member)){
+                body += Print_Constraints_For_Array_Types(structure,data_member,options);
+            }
+            else{
+                body += Print_Constraints_For_Non_Array_Types(structure,data_member,options);
+            }
+    }
+    
+    return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Print_Constraints_For_Non_Array_Types(Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+
+        //the body of the function
+        std::vector<Body_Token_Value> body;
+        Body_Token_Value t;
+        
+            //structs
+            if (Ends_With(Get_Base_Type(data_member),"T")){
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("CheckConstraintsOn" + As_Last_Char_Removed(Get_Base_Type(data_member)) + "(&");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::BODY_PARAMETER;
+                t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ");\n");
+                body.push_back(t);
+                
+            //fundamental types
+            }else{
+
+            //apply each constraint for the current data member
+            for (auto const& constraint: data_member.value_constraints){
+
+                t.name = Body_Token_Name::COMMENT;
+                t.value = as_wstring("if the value constraint is not met"); 
+                body.push_back(t);
+                
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("\nif (!(");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::BODY_PARAMETER;
+                t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + " " + Constraint_Expression_To_String(constraint,as_string(data_member.type.value)) + ")){\n");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::COMMENT;
+                t.value = as_wstring("report the failed constraint");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("\nfprintf(stderr, \"%s fails constraint (%s) with value %" + Derive_Printf_Symbol(data_member) + "\",");
+                t.value += as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\",");
+                t.value += as_wstring("\"" + Constraint_Expression_To_String(constraint,as_string(data_member.type.value)) + "\",");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::BODY_PARAMETER;
+                t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + ");\n");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("}\n\n");
+                body.push_back(t);
+            }
+        }
+        
+        return body;
+❱
+
+◀private: static▶ std::vector<Body_Token_Value> ☀Print_Constraints_For_Array_Types(Structure structure, Data_Member_Item data_member, C_Export_Settings const& options)❰
+        //the body of the function
+        std::vector<Body_Token_Value> body;
+        Body_Token_Value t;
+        
+            t.name = Body_Token_Name::REGULAR;
+            t.value = as_wstring("uIndex = 0;\n");
+            body.push_back(t);
+            
+            t.name = Body_Token_Name::REGULAR;
+            t.value = as_wstring("for(; uIndex < " + Get_Array_Size(data_member) + "; ++uIndex){\n");
+            body.push_back(t);
+            
+            //structs
+            if (Ends_With(Get_Base_Type(data_member),"T")){
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("CheckConstraintsOn" + As_Last_Char_Removed(Get_Base_Type(data_member)) + "(&");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::BODY_PARAMETER;
+                t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "[uIndex]);\n");
+                body.push_back(t);
+                
+            //fundamental types
+            }else{
+        
+        //apply each constraint for the current array data member
+        for (auto const& constraint: data_member.value_constraints){
+            
+                t.name = Body_Token_Name::COMMENT;
+                t.value = as_wstring("if the value constraint is not met"); 
+                body.push_back(t);
+                
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("\nif (!(");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::BODY_PARAMETER;
+                t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "[uIndex] " + Constraint_Expression_To_String(constraint,as_string(data_member.type.value)) + ")){\n");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::COMMENT;
+                t.value = as_wstring("report the failed constraint");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("\nfprintf(stderr, \"%s[%d] fails constraint (%s) with value %" + Derive_Printf_Symbol(data_member) + "\",");
+                t.value += as_wstring("\"" + As_Capital_And_Pushed_Together(structure.name) + "->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "\",uIndex,");
+                t.value += as_wstring("\"" + Constraint_Expression_To_String(constraint,as_string(data_member.type.value)) + "\",");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::BODY_PARAMETER;
+                t.value = as_wstring(As_Capital_And_Pushed_Together(structure.name));
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("->" + Identifier_Name_Deriver::Derive_Name(data_member,options,false,true) + "[uIndex]);\n");
+                body.push_back(t);
+                
+                t.name = Body_Token_Name::REGULAR;
+                t.value = as_wstring("}\n\n");
+                body.push_back(t);
+            }
+        }
+        
+        t.name = Body_Token_Name::REGULAR;
+        t.value = as_wstring("}\n");
+        body.push_back(t);
+        
+        return body;
+❱
+
+◀private: static▶ std::string ☀Constraint_Expression_To_String(Value_Constraints const& constraint_expression, std::string const& type)❰
+    
+    std::string expression;
+    expression += as_string(constraint_expression.operation.value) + " ";
+    expression += Literal_Adjuster::Get_Adjusted(type,as_string(constraint_expression.value.value));
+    
+    return expression;
+❱
+
+◀private: static▶ std::string ☀Derive_Printf_Symbol(Data_Member_Item const& item)❰
+
+    //move this out into settings obviously
+    std::unordered_multimap<std::string,std::string> printf_lookup_table
+    //{{"void","t"}
+    //,{"void*","t"}
+    //,{"nullptr_t","p"}
+    {{"WORD","d"}   //unsigned short
+    ,{"DWORD","d"} //unsigned int
+
+    //boolean
+    ,{"bool","d"}
+    ,{"BOOL","d"}
+
+    //char
+    ,{"char","c"}
+    ,{"signed char","c"}
+    ,{"unsigned char","c"}
+    ,{"BYTE","c"}
+    ,{"wchar_t","c"}
+    ,{"signed wchar_t","c"}
+    ,{"unsigned wchar_t","c"}
+    ,{"char16_t","c"}
+    ,{"char32_t","c"}
+
+    //shorts
+    ,{"short","d"}
+    ,{"short int","d"}
+    ,{"signed short","d"}
+    ,{"signed short int","d"}
+    ,{"unsigned short","d"}
+    ,{"unsigned short int","d"}
+
+    //ints
+    ,{"int","d"}
+    ,{"signed","d"}
+    ,{"signed int","d"}
+    ,{"unsigned","d"}
+    ,{"unsigned int","d"}
+    ,{"size_t","d"}
+    ,{"ptrdiff_t","d"}
+
+    //longs
+    ,{"long","ld"}
+    ,{"long int","ld"}
+    ,{"signed long","ld"}
+    ,{"signed long int","ld"}
+    ,{"unsigned long","ld"}
+    ,{"unsigned long int","ld"}
+
+    //long longs
+    ,{"long long","lld"}
+    ,{"long long int","lld"}
+    ,{"signed long long","lld"}
+    ,{"signed long long int","lld"}
+    ,{"unsigned long long","lld"}
+    ,{"unsigned long long int","lld"}
+
+    //rational
+    ,{"float","f"}
+    ,{"double","f"}
+    ,{"long double","f"}
+
+    //fixed width types <cstdint>
+    //,{"int8_t","n"}
+    //,{"int16_t","n"}
+    //,{"int32_t","n"}
+    //,{"int64_t","n"}
+    //,{"int_fast8_t","n"}
+    //,{"int_fast16_t","n"}
+    //,{"int_fast32_t","n"}
+    //,{"int_fast64_t","n"}
+    //,{"int_least8_t","n"}
+    //,{"int_least16_t","n"}
+    //,{"int_least32_t","n"}
+    //,{"int_least64_t","n"}
+    //,{"intmax_t","n"}
+    //,{"intptr_t","n"}
+    //,{"uint8_t","u"}
+    //,{"uint16_t","u"}
+    //,{"uint32_t","u"}
+    //,{"uint64_t","u"}
+    //,{"uint_fast8_t","u"}
+    //,{"uint_fast16_t","u"}
+    //,{"uint_fast32_t","u"}
+    //,{"uint_fast64_t","u"}
+    //,{"uint_least8_t","u"}
+    //,{"uint_least16_t","u"}
+    //,{"uint_least32_t","u"}
+    //,{"uint_least64_t","u"}
+    //,{"uintmax_t","u"}
+    //,{"uintptr_t","u"}
+    };
+    
+    
+    //-------stuff stolen from hungarian notation nonsense ------
+    //firstly, there might be some const/&/* junk on a certain side of the type name, so let's check that, and remove it if it's there.
+    
+    auto type       = as_string(item.type.value);
+    
+    
+    trim(type); //handle any whitespace on either side
+    
+    
+    //decide if the type is a pointer or not.
+    //if it is, also strip out the information that told us that.
+    //we don't need it anymore, because we're trying to derive the actual base type
+    bool is_pointer = true;
+    if (Begins_Or_Ends_With(type,"&")){ Remove_Match_Found_At_Beginning_Or_End(type,"&"); }
+    else if(Ends_With(type,"*const")){ Remove_Match_Found_At_End(type,"*const"); }
+    else if(Ends_With(type,"*")){ Remove_Match_Found_At_End(type,"*"); }
+    else{ is_pointer = false;}
+    
+    
+    //decide if the type is an array or not
+    //if it is, also strip out the information that told us that.
+    //we want that base type!
+    auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+    bool is_array = true;
+    if (array_part.empty()){
+        is_array = false;
+    }
+    
+    //at this point, the 'type' should be the absolute base type.  
+    //we'll use this absolute base type to derive the right notation alongside all of our derived boolean values about the type
+    
+    
+    
+    return Pull_Out_Printf_Symbol_Based_On_Table(printf_lookup_table,type);
+❱
+
+
+
+
+//utility
+◀private: static▶ std::string ☀Get_Array_Size(Data_Member_Item item)❰
+
+    //-------stuff stolen from hungarian notation nonsense ------
+    //firstly, there might be some const/&/* junk on a certain side of the type name, so let's check that, and remove it if it's there.
+    
+    auto type       = as_string(item.type.value);
+    
+    
+    trim(type); //handle any whitespace on either side
+    
+    
+    //decide if the type is a pointer or not.
+    //if it is, also strip out the information that told us that.
+    //we don't need it anymore, because we're trying to derive the actual base type
+    bool is_pointer = true;
+    if (Begins_Or_Ends_With(type,"&")){ Remove_Match_Found_At_Beginning_Or_End(type,"&"); }
+    else if(Ends_With(type,"*const")){ Remove_Match_Found_At_End(type,"*const"); }
+    else if(Ends_With(type,"*")){ Remove_Match_Found_At_End(type,"*"); }
+    else{ is_pointer = false;}
+    
+    
+    //decide if the type is an array or not
+    //if it is, also strip out the information that told us that.
+    //we want that base type!
+    auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+    
+    if (Begins_With(array_part,"[")){
+        Remove_First_Char(array_part);
+    }
+    if (Ends_With(array_part,"]")){
+        Remove_Last_Char(array_part);
+    }
+    
+    return array_part;
+❱
+◀private: static▶ bool ☀Structure_Has_Array_Data_Member(Structure structure)❰
+    for (auto const& data_member: structure.data_members.data_members){
+            if (Is_Array_Type(data_member)){
+                return true;
+            }
+        }
+    return false;
+❱
+
+◀private: static▶ bool ☀Is_Array_Type(Data_Member_Item item)❰
+
+    //-------stuff stolen from hungarian notation nonsense ------
+    //firstly, there might be some const/&/* junk on a certain side of the type name, so let's check that, and remove it if it's there.
+    
+    auto type       = as_string(item.type.value);
+    
+    
+    trim(type); //handle any whitespace on either side
+    
+    
+    //decide if the type is a pointer or not.
+    //if it is, also strip out the information that told us that.
+    //we don't need it anymore, because we're trying to derive the actual base type
+    bool is_pointer = true;
+    if (Begins_Or_Ends_With(type,"&")){ Remove_Match_Found_At_Beginning_Or_End(type,"&"); }
+    else if(Ends_With(type,"*const")){ Remove_Match_Found_At_End(type,"*const"); }
+    else if(Ends_With(type,"*")){ Remove_Match_Found_At_End(type,"*"); }
+    else{ is_pointer = false;}
+    
+    
+    //decide if the type is an array or not
+    //if it is, also strip out the information that told us that.
+    //we want that base type!
+    auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+    bool is_array = true;
+    if (array_part.empty()){
+        is_array = false;
+    }
+    
+    return is_array;
+❱
+
+◀private: static▶ std::string ☀Get_Base_Type(Data_Member_Item item)❰
+
+    //-------stuff stolen from hungarian notation nonsense ------
+    //firstly, there might be some const/&/* junk on a certain side of the type name, so let's check that, and remove it if it's there.
+    
+    auto type       = as_string(item.type.value);
+    
+    
+    trim(type); //handle any whitespace on either side
+    
+    
+    //decide if the type is a pointer or not.
+    //if it is, also strip out the information that told us that.
+    //we don't need it anymore, because we're trying to derive the actual base type
+    bool is_pointer = true;
+    if (Begins_Or_Ends_With(type,"&")){ Remove_Match_Found_At_Beginning_Or_End(type,"&"); }
+    else if(Ends_With(type,"*const")){ Remove_Match_Found_At_End(type,"*const"); }
+    else if(Ends_With(type,"*")){ Remove_Match_Found_At_End(type,"*"); }
+    else{ is_pointer = false;}
+    
+    
+    //decide if the type is an array or not
+    //if it is, also strip out the information that told us that.
+    //we want that base type!
+    auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+    bool is_array = true;
+    if (array_part.empty()){
+        is_array = false;
+    }
+    
+    return type;
+❱
+
+◀private: static▶ std::string ☀Pull_Out_Printf_Symbol_Based_On_Table(std::unordered_multimap<std::string,std::string> const& lookup_table, std::string const& base_type)❰
+
+    std::string symbol;
+    auto found = lookup_table.find(base_type);
+    if (found != lookup_table.end()){
+        symbol = found->second;
+    }
+    return symbol;
+❱

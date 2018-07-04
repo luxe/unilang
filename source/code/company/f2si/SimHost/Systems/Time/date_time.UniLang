@@ -1,0 +1,112 @@
+􏶞p􏶟
+􏷲An adjustable date and a time with millisecond precision􏷱
+􏷰A replacement over time_t and struct tm from the standard C library.
+Due to the size and precision limitations of time_t and struct tm,
+DateTime provides a similar interface to struct tm, but can be updated with millisecond precision.  
+It contains both the date month/day/year, and the time of day in milliseconds.
+The reason this type was added was to account for the size limitations on 32-bit machine of tm.  
+We would not be able to exceed the year 2038 without rolling out our own DateTime object.  
+The datetime changes through a millisecond delta, and it handles the overflow of days and months.  
+It accounts for leap years, but does not account for daylight savings time or leap seconds.
+The year limit of datetime is now the max size of an unsigned int.􏷯
+􏷮Time􏷭 􏷮Date􏷭 􏷮Component􏷭
+􏷬Trevor Hickey􏷫
+􏷤􏷣􏷦Month􏷥􏷢USES: MonthE􏷡
+􏶔􏶕􏶒DateUtilities􏶓􏶖USES: IsLeapYear()􏶗
+􏶔􏶕􏶒math􏶓􏶖USES: fabs(), fmod()􏶗
+
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Set Time􏷏
+􏶠Set the 􏶐 to a particular date and time.
+Once a 􏶐 is initialized, it can only progress forward.  
+Reseting the time to a different value will require a re-initialize.􏶡
+􏶜􏶝􏷆MonthE􏷅􏷄month􏷃􏷀The month to start the date at􏶿
+􏶜􏶝􏷆unsigned int􏷅􏷄day􏷃􏷀the number of days in a month to start the current date time at􏶿
+􏶜􏶝􏷆unsigned int􏷅􏷄year􏷃􏷀the year to set the date at􏶿
+􏶜􏶝􏷆double􏷅􏷄milliseconds􏷃􏷀the number of milliseconds in a day to start the current date time at􏶿
+􏶴
+    􏶲we assume the input parameters are valid􏶱
+    􏵴day􏵵 = 􏵶day􏵷;
+    􏵴month􏵵 = 􏵶month􏵷;
+    􏵴year􏵵 = 􏵶year􏵷;
+    􏵴milliseconds􏵵 = 􏵶milliseconds􏵷;
+􏶳
+
+
+􏷘+􏷗􏷒increase by number of milliseconds􏷑
+􏷐Increment the 􏶐 by a number of milliseconds.􏷏
+􏶠Moving forward a number of milliseconds will properly adjust all of the other values.􏶡
+􏶜􏶝􏷆double􏷅􏷄number of milliseconds􏷃􏷀the number of milliseconds to increase the current date time by􏶿
+􏶴
+    􏶲increase the number of milliseconds.􏶱
+    􏵴milliseconds􏵵 += 􏵶number of milliseconds􏵷;
+
+    􏶲the order of these functions is important, as one roll over, might cause another roll over.􏶱
+    􏵲adjust days during millisecond overflow􏵳);
+    􏵲adjust months during day overflow􏵳);
+    􏵲adjust years to during month overflow􏵳);
+
+    􏶲max value of year is max the value of an unsigned int
+    large enough for our use cases.􏶱
+􏶳
+
+􏷘-􏷗􏷒adjust days during millisecond overflow􏷑
+􏷐If the millisecond counter is greater than the amount of milliseconds in a day, handle the roll over.􏷏
+􏶠This will potentially change milliseconds and day.􏶡
+􏶴
+    􏶲handles milliseconds overflow
+    wraps value for milliseconds and increments day during millisecond overflow􏶱
+    if (fabs(􏵴milliseconds􏵵 - (double)NUMBER_OF_MILLISECONDS_IN_A_DAY) < 0.00001f || 􏵴milliseconds􏵵 > (double)NUMBER_OF_MILLISECONDS_IN_A_DAY)
+    {
+        􏵴day􏵵 += (unsigned int)(􏵴milliseconds􏵵 / (double)NUMBER_OF_MILLISECONDS_IN_A_DAY);
+        􏵴milliseconds􏵵 = fmod(􏵴milliseconds􏵵,NUMBER_OF_MILLISECONDS_IN_A_DAY);
+    }
+􏶳
+
+􏷘-􏷗􏷒adjust months during day overflow􏷑
+􏷐If the day counter is greater than the amount of days in a month, handle the roll over.
+This handles leap years.􏷏
+􏶠This will potentially change day and month.􏶡
+􏶴
+    unsigned int uNumberOfDaysInTheMonth = NumberOfDaysInTheMonth(􏵴month􏵵, 􏵴year􏵵);
+    
+    􏶲handles day overflow
+    resets value for day and increases the month by 1 during day overflow􏶱
+    if(􏵴day􏵵 > uNumberOfDaysInTheMonth)
+    {
+        􏵴month􏵵 += (􏵴day􏵵 / uNumberOfDaysInTheMonth);
+        􏵴day􏵵 %= uNumberOfDaysInTheMonth;
+    }
+􏶳
+
+
+􏷘-􏷗􏷒adjust years to during month overflow􏷑
+􏷐If the month counter is greater than the amount of months in a year, handle the roll over.􏷏
+􏶠This will potentially change month and year.􏶡
+􏶴
+    􏶲handles month overflow
+    resets value for month and increases the year by 1 during month overflow􏶱
+    if(􏵴month􏵵 > NUMBER_OF_MONTHS_IN_A_YEAR)
+    {
+        􏵴year􏵵 += (􏵴month􏵵 / NUMBER_OF_MONTHS_IN_A_YEAR);
+        􏵴month􏵵 %= NUMBER_OF_MONTHS_IN_A_YEAR;
+    }
+􏶳
+
+
+􏶨the number of milliseconds of the current day􏶧
+􏶦expect the value to be in a valid range of (0 - 86,399,999)􏶥
+􏶘-g􏶙􏶮double􏶭􏶬milliseconds􏶫􏶪0􏶩
+
+􏶨the current calendar day of the month􏶧
+􏶦expect the value to be in a valid range of (1 - 31)􏶥
+􏶘-g􏶙􏶮unsigned int􏶭􏶬day􏶫􏶪0􏶩
+
+􏶨the current month of the year􏶧
+􏶦expect the value to be in a valid range of (1 - 12)􏶥
+􏶘-g􏶙􏶮MonthE􏶭􏶬month􏶫􏶪0􏶩
+
+􏶨the current year􏶧
+􏶦expect the value to be any positive number that fits the size of an unsigned int􏶥
+􏶘-g􏶙􏶮unsigned int􏶭􏶬year􏶫􏶪0􏶩

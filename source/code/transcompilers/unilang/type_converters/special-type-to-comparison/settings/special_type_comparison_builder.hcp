@@ -1,0 +1,111 @@
+class
+
+❪vector❫
+❪"code/transcompilers/unilang/type_converters/special-type-to-comparison/settings/special_comparison_type"❫
+❪"special_comparison_functions"❫
+⚯
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ Special_Comparison_Type ☀AsciiString()❰
+
+	Special_Comparison_Functions functions;
+	functions.equals = "AsciiStringEquals";
+	functions.not_equals = "AsciiStringNotEquals";
+	functions.less = "AsciiStringLess";
+	functions.less_equals = "AsciiStringLessEqual";
+	functions.greater = "AsciiStringGreater";
+	functions.greater_equals = "AsciiStringGreaterEqual";
+
+	return Build_Based_On_Functions(functions);
+❱
+
+◀public: static▶ Special_Comparison_Type ☀Vector()❰
+
+	Special_Comparison_Functions functions;
+	functions.equals = "VectorSameSize";
+	functions.not_equals = "VectorNotSameSize";
+	functions.less = "VectorHasLessElements";
+	functions.less_equals = "VectorHasLessOrEqualElements";
+	functions.greater = "VectorHasMoreElements";
+	functions.greater_equals = "VectorHasMoreOrEqualElements";
+
+	return Build_Based_On_Functions(functions);
+❱
+
+◀public: static▶ Special_Comparison_Type ☀Build_Based_On_Functions(Special_Comparison_Functions const& functions)❰
+	Special_Comparison_Type code;
+   Body_Token_Value t;
+
+  t.name = Body_Token_Name::REGULAR;
+  t.value =  as_wstring(functions.equals);
+  code.equal.push_back(t);
+
+  t.name = Body_Token_Name::REGULAR;
+  t.value =  as_wstring(functions.not_equals);
+  code.not_equal.push_back(t);
+
+  t.name = Body_Token_Name::REGULAR;
+  t.value =  as_wstring(functions.less);
+  code.less.push_back(t);
+
+  t.name = Body_Token_Name::REGULAR;
+  t.value =  as_wstring(functions.greater);
+  code.greater.push_back(t);
+
+  t.name = Body_Token_Name::REGULAR;
+  t.value =  as_wstring(functions.less_equals);
+  code.less_equal.push_back(t);
+
+  t.name = Body_Token_Name::REGULAR;
+  t.value =  as_wstring(functions.greater_equals);
+  code.greater_equal.push_back(t);
+  
+  //add the shared portion
+  code.equal += Shared_Portion();
+  code.not_equal += Shared_Portion();
+  code.less += Shared_Portion();
+  code.less_equal += Shared_Portion();
+  code.greater += Shared_Portion();
+  code.greater_equal += Shared_Portion();
+
+	return code;
+❱
+
+◀public: static▶ std::vector<Body_Token_Value> ☀Shared_Portion()❰
+
+	std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+
+	t.name = Body_Token_Name::REGULAR;
+	t.value =  L"(&";
+	body.push_back(t);
+
+	//self data member value will be filled automatically
+	t.name = Body_Token_Name::SELF_DATA_MEMBER;
+	//t.value = filled in automatically
+	body.push_back(t);
+
+	t.name = Body_Token_Name::REGULAR;
+	t.value =  L",&";
+	body.push_back(t);
+
+	t.name = Body_Token_Name::BODY_PARAMETER;
+	t.value =  as_wstring("before");
+	body.push_back(t);
+
+	t.name = Body_Token_Name::REGULAR;
+	t.value =  as_wstring("->");
+	body.push_back(t);
+
+	t.name = Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ;
+	//t.value = filled in automatically
+	body.push_back(t);
+
+	t.name = Body_Token_Name::REGULAR;
+	t.value =  L")";
+	body.push_back(t);
+
+	return body;
+❱

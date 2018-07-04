@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+. $HOME/.bin/scripts/project/src/utility_functions/bootstrap; #
+#-----------------------------------------#
+
+#only attempt to derive the tag name when 
+#the branch is detected as a tag branch
+if is-tag-branch; then
+    
+    #this gives you a trimmed version of the branch name
+    #it does this by giving you everything right to the '/'
+    #for example, "feature/UHMEP-100-issue" becomes "UHMEP-100-issue"
+    BRANCH_NAME=`print-branch-name`;
+    TRIMMED_BRANCH_NAME="`echo $BRANCH_NAME | sed 's/.*\///'`"
+    
+    #this gives you everything left of the first dash
+    #for example, "UHMEP-100-issue" becomes "UHMEP"
+    ID_NAME=`echo $TRIMMED_BRANCH_NAME | cut -d"-" -f1`;
+    
+    #this gives you the first word between two dashes
+    #for example, "UHMEP-100-issue" becomes "100"
+    ID_NUMBER=`echo $TRIMMED_BRANCH_NAME | cut -d"-" -f2`;
+    
+    #put the id name and id number in brackets the way Jira likes it
+    echo "["$ID_NAME"-"$ID_NUMBER"]";
+fi

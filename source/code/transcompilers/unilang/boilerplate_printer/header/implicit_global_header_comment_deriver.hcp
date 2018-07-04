@@ -1,0 +1,40 @@
+class
+
+❪string❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+⚞⚟
+
+◀public: static▶ std::string ☀Derive(std::vector<Method_Item> const& methods, Import_Options const& settings)❰
+    
+    auto number_of_public_methods = Number_Of_Public_Methods(methods);
+    return Decide_Comment_Based_On_Number_Of_Public_Methods(number_of_public_methods,settings);
+❱
+
+◀private: static▶ int ☀Number_Of_Public_Methods(std::vector<Method_Item> const& methods)❰
+    int number_of_public_methods = 0;
+    for (auto it: methods){
+      if (it.class_access == Class_Access::PUBLIC){
+        ++number_of_public_methods;
+      }
+    }
+    
+    return number_of_public_methods;
+❱
+
+◀private: static▶ std::string ☀Decide_Comment_Based_On_Number_Of_Public_Methods(int const& number_of_public_methods, Import_Options const& settings)❰
+  if (number_of_public_methods == 0){
+    return settings.implicit_header_comment.no_interface_call;
+  }
+  
+  if (number_of_public_methods == 1){
+    return settings.implicit_header_comment.single_interface_call;
+  }
+  
+  if (number_of_public_methods > 1){
+    return settings.implicit_header_comment.multiple_interface_calls;
+  }
+  
+  return settings.implicit_header_comment.negative_interfaces;
+❱

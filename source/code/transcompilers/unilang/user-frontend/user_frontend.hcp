@@ -1,0 +1,129 @@
+class
+
+❪"code/transcompilers/unilang/main/program_options/program_options"❫
+❪"code/transcompilers/unilang/user-frontend/command_line_arguments/dependency_paths"❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/root_settings/root_settings"❫
+❪"code/transcompilers/unilang/main/composed_program_options/composed_program_options"❫
+❪"code/transcompilers/unilang/user-frontend/graph_adjuster/code_graph_adjuster"❫
+❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+⚯
+❪"code/transcompilers/unilang/validators/file_name/filename_validator"❫
+❪"code/transcompilers/unilang/parser/parser"❫
+❪"code/transcompilers/unilang/user-frontend/compiler/compiler"❫
+❪"code/transcompilers/unilang/user-frontend/exception_handler"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+❪"code/transcompilers/unilang/structure_static_analyzer/structure_static_analyzer"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Root_Settings const& settings, Composed_Program_Options const& program_options, std::vector<std::string> input_files)❰
+    
+	//if no files were passed, get all of the files in the directory
+	if (input_files.empty()){
+		auto files = Get_Everything_At_Path_With_The_File_Extension("UniLang",Current_Path());
+		input_files = files;
+	}
+
+	//process each file at a time
+	//get back all of the structures so we can build other artifacts that
+	//require knowledge of multiple structures
+	std::vector<Code_Graph> code_graphs;
+	for (auto const& it: input_files){
+		auto graph = Process_File(it,settings,program_options);
+		code_graphs.emplace_back(graph);
+	}
+
+❱
+
+◀private: static▶ void ☀Process_All_Graphs_Transcompiled(std::vector<Code_Graph> const& code_graphs)❰
+	//todo...
+❱
+
+◀private: static▶ Code_Graph ☀Process_File(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+
+	auto file_name = Get_File_Name_From_File_Path(path_to_file);
+	auto path = Get_File_Path_Without_The_Filename(path_to_file);
+
+	auto current_path = Current_Path();
+	Set_Path_If_Not_Empty(path);
+    
+		//compile the file
+		//stop immediately if there are problems (this is done by throwing exceptions and catching them.)
+		//We don't exit the program on a thrown exception; we continue onto the next file.
+		Code_Graph graph;
+		try { graph = Run_Transcompilation(file_name,settings,program_options); }
+		   
+		//where just about all of the exceptions in the entire program get handled
+		//we want to fail hard and fast on data we did not expect while trans-compiling
+		//but also, if we are transcompiling more than one file, we would want to continue processing after a failed file.
+		//that's why we catch the failed file, but continue to process other files
+		catch(...){Exception_Handler::Handle_Exceptions();}
+
+		Set_Path(current_path);
+
+	return graph;
+❱
+
+◀private: static▶ void ☀Set_Path_If_Not_Empty(std::string const& path)❰
+    if (!path.empty()){
+        Set_Path(path);
+    }
+❱
+
+◀private: static▶ Code_Graph ☀Run_Transcompilation(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+
+    //check if something is initially wrong with the path and filename sent to the compiler
+    //might throw..
+    Filename_Validator::Validate_Input_File(settings.file_validation,path_to_file,settings.parser.input_files.expected_file_extension);
+    
+    //read in the entire file first so that we have it in memory.
+    //This is useful for testing too, where we can pass test strings into the frontend
+    //without having to actually create files in unit tests.
+    Fully_Read_File file(path_to_file);
+    
+    //I would like the backend compiler to return something like 
+    //full strings for the files one day.  We would want to write to
+    //disk at the very very end.
+    auto code_graph = Front_End(file,settings,program_options);
+    /* TODO: auto generated = */ Back_End(code_graph,program_options);
+
+	return code_graph;
+
+❱
+
+
+
+◀private: static▶ Code_Graph ☀Front_End(Fully_Read_File const& file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+
+    //Apart from just parsing the file that needs compiled, 
+    //we will also need to compile all of the file's dependencies and store them in a graph data structure
+    //create a graph of these classes to handle the dependencies.
+    //might throw...
+    auto code_graph = Parser::Parse(file,program_options.dependency_paths,settings.parser);
+    
+    //Decide where to place exports of the file
+    Decide_Output_Directory(code_graph.structure);
+    
+    //before compiling the source file,
+    //make the necessary code graph transformations automatically
+    //this will include actions like:  
+    // - specific transformations from settings
+    // - inlining structures
+    // - deriving import relations
+    Code_Graph_Adjuster::Adjust(code_graph,settings,program_options);
+    
+    Structure_Static_Analyzer::Print_Warnings(code_graph.structure,settings.static_analysis);
+    
+    return code_graph;
+❱
+
+◀private: static▶ void ☀Decide_Output_Directory(Structure & structure)❰
+❱
+
+◀private: static▶ void ☀Back_End(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
+
+    //compile the code structure into the appropriate source code files
+    Compiler::Compile(code_graph,program_options);
+❱

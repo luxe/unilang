@@ -1,0 +1,141 @@
+􏶞p􏶟
+􏷲A battery that can drain and charge􏷱
+􏷰The battery will update its distributing voltage based on changes in time and load
+implementation note:  I used long doubles because I needed incremental changes as low as a millisecond to have an effect.  
+If it didn't the battery would appear to not drain/charge at all. 
+We could base the change rate off a longer time period (seconds), and use a less precise floating point if needed.
+I've left a millisecond change rate, because that is the time delta.
+􏷯
+􏷮Component􏷭 􏷮Battery􏷭
+􏷬Trevor Hickey􏷫
+
+􏷤􏷣􏷦electrical_battery_settings􏷥􏴓1􏴔􏴑ElectricalBatterySettingsT􏴒
+􏷤􏷣􏷦ascii_string􏷥􏴓d􏴔􏴑AsciiStringT􏴒
+􏷤􏷣􏷦json􏷥􏴓d􏴔􏴑JSON_Object􏴒
+
+PUBLIC:
+
+􏷘+􏷗􏷒􏶐􏷑
+􏷐Initialize the 􏶐􏷏
+􏶠􏶐 will be set to fully charged upon construction􏶡
+􏶜􏶝􏷆ElectricalBatterySettingsT􏷅􏷄settings􏷃􏵘􏵙􏷀battery settings􏶿
+􏶴
+    􏶲store settings􏶱
+    􏵴settings􏵵 = 􏵶settings􏵷;
+    
+    􏶲start the battery's life at a specified percentage􏶱
+    􏵴life􏵵 = 􏵴settings􏵵.m_tLife.m_fInitialBatteryLife_pct;
+􏶳
+
+􏷐charge the battery based on the change in time, and current wattage pull􏷏
+􏶠updates the battery's percentage which affects distribution voltage􏶡
+􏷘+􏷗􏷒charge􏷑
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the change in time since the last battery update􏶿
+􏶜􏶝􏷆f􏷅􏷄power􏷃􏵘watts􏵙􏷀the current operating power of the battery􏶿
+􏶴
+    􏶲increase percentage by a particular amount􏶱
+    􏵲increase percentage􏵳􏵶time delta􏵷,􏵶power􏵷);
+􏶳
+
+􏷐drain the battery based on the change in time, and current wattage pull􏷏
+􏶠updates the battery's percentage which affects distribution voltage􏶡
+􏷘+􏷗􏷒drain􏷑
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the change in time since the last battery update􏶿
+􏶜􏶝􏷆f􏷅􏷄power􏷃􏵘watts􏵙􏷀the current operating power of the battery􏶿
+􏶴
+    􏶲decrease percentage by a particular amount􏶱
+    􏵲decrease percentage􏵳􏵶time delta􏵷,􏵶power􏵷);
+􏶳
+
+􏷐fully charge the battery􏷏
+􏶠this is implemented as a convenience to the instructor􏶡
+􏷘+􏷗􏷒fully charge􏷑
+􏶴
+    􏶲fully charges the battery􏶱
+    􏵴life􏵵 = 􏵴settings􏵵.m_tLife.m_fFullyChargedBattery_pct;
+􏶳
+
+GETTERS:
+􏷐The distributing voltage of the battery􏷏
+􏶠returns the amount of voltage that the battery is distributing􏶡
+􏷘+􏷗􏷒distribution voltage􏷑
+􏶚m􏶛􏶾f􏶽􏶼voltage􏶻􏵜volts􏵝􏶺the distribution voltage of the battery􏶹
+􏶴
+    
+    􏶲avoid the lookup formula if we are fully charged􏶱
+    if (􏵴life􏵵 == 􏵴settings􏵵.m_tLife.m_fFullyChargedBattery_pct){
+        return 􏵴settings􏵵.m_fNormalVoltage_v;
+    }
+    
+    􏶲avoid the lookup formula if we are fully drained􏶱
+    if (􏵴life􏵵 == 􏵴settings􏵵.m_tLife.m_fFullyDrainedBattery_pct){
+        return 􏵴settings􏵵.m_fUnpoweredVoltage_v;
+    }
+    
+    􏶲otherwise, use the formula􏶱
+    􏶲convert the current battery percentage to a voltage value􏶱
+    return (*􏵴settings􏵵.m_tLife.m_tPercentageToVoltageFormula)(􏵴life􏵵);
+􏶳
+
+
+PRIVATE:
+􏷐increase the percentage by a particular amount􏷏
+􏶠the amount of increase is determined by change in time and current operating power􏶡
+􏷘-􏷗􏷒increase percentage􏷑
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the change in time since the last battery update􏶿
+􏶜􏶝􏷆f􏷅􏷄power􏷃􏵘watts􏵙􏷀the current operating power of the battery􏶿
+􏶴
+    􏶲increase battery life􏶱
+    􏵴life􏵵 += 􏵲increase amount􏵳􏵶time delta􏵷,􏵶power􏵷);
+    
+    􏶲account for overflow of battery percentage􏶱
+    if (􏵴life􏵵 > 􏵴settings􏵵.m_tLife.m_fFullyChargedBattery_pct){
+        􏵴life􏵵 = 􏵴settings􏵵.m_tLife.m_fFullyChargedBattery_pct;
+    }
+􏶳
+
+􏷐decrease the percentage by a particular amount􏷏
+􏶠the amount of decrease is determined by change in time and current operating power􏶡
+􏷘-􏷗􏷒decrease percentage􏷑
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the change in time since the last battery update􏶿
+􏶜􏶝􏷆f􏷅􏷄power􏷃􏵘watts􏵙􏷀the current operating power of the battery􏶿
+􏶴
+    􏶲decrease battery life􏶱
+    􏵴life􏵵 -= 􏵲decrease amount􏵳􏵶time delta􏵷,􏵶power􏵷);
+    
+    􏶲account for underflow of battery percentage􏶱
+    if (􏵴life􏵵 < 􏵴settings􏵵.m_tLife.m_fFullyDrainedBattery_pct){
+        􏵴life􏵵 = 􏵴settings􏵵.m_tLife.m_fFullyDrainedBattery_pct;
+    }
+􏶳
+
+
+􏷐gets the amount to increase the percentage by􏷏
+􏶠called when increasing the battery percentage􏶡
+􏷘-􏷗􏷒increase amount􏷑
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the change in time since the last battery update􏶿
+􏶜􏶝􏷆f􏷅􏷄power􏷃􏵘watts􏵙􏷀the current operating power of the battery􏶿
+􏶚m􏶛􏶾f􏶽􏶼rate􏶻􏵜percentage􏵝􏶺the change in percentage􏶹
+􏶴
+    long double ldPowerAdjustment = 􏵴settings􏵵.m_tLife.m_ldPowerAdjustment * 􏵶power􏵷;
+    return (􏵴settings􏵵.m_tLife.m_ldIncreasePctPerMs - ldPowerAdjustment) * 􏵶time delta􏵷;
+􏶳
+􏷐gets the amount to decrease the percentage by􏷏
+􏶠called when decreasing the battery percentage􏶡
+􏷘-􏷗􏷒decrease amount􏷑
+􏶜􏶝􏷆f􏷅􏷄time delta􏷃􏵘milliseconds􏵙􏷀the change in time since the last battery update􏶿
+􏶜􏶝􏷆f􏷅􏷄power􏷃􏵘watts􏵙􏷀the current operating power of the battery􏶿
+􏶚m􏶛􏶾f􏶽􏶼rate􏶻􏵜percentage􏵝􏶺the change in percentage􏶹
+􏶴
+    long double ldPowerAdjustment = 􏵴settings􏵵.m_tLife.m_ldPowerAdjustment * 􏵶power􏵷;
+    return (􏵴settings􏵵.m_tLife.m_ldDecreasePctPerMs + ldPowerAdjustment) * 􏵶time delta􏵷;
+􏶳
+
+
+􏶨current percentage of the battery􏶧
+􏶦the battery's current percentage which will change based on time, load, and charge potential􏶥
+􏶘-gip~=􏶙􏶮ld􏶭􏶬life􏶫􏵚percentage􏵛􏶪􏶩
+
+􏶨settings related to the change in the battery's percentage􏶧
+􏶦contains information for customizing the charge and drain rate􏶥
+􏶘+ip~=􏶙􏶰􏶯􏶮ElectricalBatterySettingsT􏶭􏶬settings􏶫􏵚􏵛􏶪􏶩

@@ -1,0 +1,185 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/transcompilers/unilang/compiler-frontends/xml/xml_options"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/transcompilers/unilang/structure-printer/struct_derivers"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/transcompilers/unilang/options/manipulation/case_adjustment_settings"❫
+❪"code/transcompilers/unilang/structure-adjuster/casing_adjuster"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Structure structure, Xml_Options const& settings)❰
+
+
+  //adjust casing
+ Case_Adjustment_Settings case_settings;
+ case_settings.perform_case_adjustments = true;
+ Casing_Adjuster::Adjust(structure,case_settings);
+
+  //get root composition parents
+  auto parents = Struct_Derivers::Find_Root_Composition_Parents(structure.data_members,structure.enums);
+  
+  //get xml as a string
+  return Get_Xml_As_String(structure,parents,settings);
+❱
+
+◀private: static▶ std::string ☀Get_Xml_As_String(Structure const& structure, std::vector<std::string> const& parents, Xml_Options const& settings)❰
+  std::string str;
+  str += Grid_Row_Cell_Start("",settings);
+  
+  for (auto it: parents){
+    str += Structure_As_String(it,it,structure,settings);
+  }
+  str += Grid_Row_Cell_End(settings);
+  return str;
+❱
+
+◀private: static▶ std::string ☀Structure_As_String(std::string const& type, std::string print_representation, Structure const& structure, Xml_Options const& settings)❰
+  std::string str;
+
+  bool will_recurse = Will_We_Recurse(type,structure,settings);
+
+    str += Start_Part_1(print_representation,settings);
+  if (will_recurse){
+    str += Start_Part_2(settings);
+
+    //recurse on data members
+    for (auto it: structure.data_members.data_members){
+      if (Data_Member_Is_Inside_Because_Of_Base_Type(type,it)){
+        print_representation = Data_Member_Representation(it);
+        str += Structure_As_String(as_string(it.type.value),print_representation,structure,settings);
+        
+          for (auto j: it.type_specializations){
+            str += Structure_As_String(as_string(j.type.value),as_string(j.type.value),structure,settings);
+          }
+        }
+      }
+    
+    //recurse on enumerations
+    //maybe... might be annoying to show all the values
+    //for (auto it: structure.enums.enumerated_types){
+    //  if (type == as_string(it.name.value)){
+    //    str += Structure_As_String(as_string(it.name.value),structure,settings);
+    //  }
+    //}
+    str += End_Part_2(settings);
+  }
+  str += End_Part_1(settings);
+  return str;
+❱
+
+◀private: static▶ std::string ☀Data_Member_Representation(Data_Member_Item const& item)❰
+  
+  bool show_base_type = true;
+  bool show_special_types = false;
+  bool show_identifier = false;
+  
+  
+  
+  std::string identifier = as_string(item.name.value);
+  std::string base_type = as_string(item.type.value);
+  std::vector<std::string> specials;
+  for (auto it: item.type_specializations){
+    specials.emplace_back(as_string(it.type.value));
+  }
+  
+  std::string result;
+  
+  if (show_base_type){
+    result += base_type;
+  }
+  
+  if (show_special_types){
+    if (!specials.empty()){
+      result += "(";
+      result += Get_As_Comma_Seperated_String(specials);
+      result += ")";
+    }
+  }
+  
+  if (show_identifier){
+    result += " ";
+    result += identifier;
+  }
+  return result;
+  
+❱
+
+◀private: static▶ bool ☀Will_We_Recurse(std::string const& type, Structure const& structure, Xml_Options const& settings)❰
+  for (auto it: structure.data_members.data_members){
+    if (Data_Member_Is_Inside(type,it)){
+      return true;
+    }
+  }
+  return false;
+❱
+
+◀private: static▶ bool ☀Data_Member_Is_Inside(std::string const& outer, Data_Member_Item const& item)❰
+  
+  return Data_Member_Is_Inside_Because_Of_Base_Type(outer,item);
+❱
+
+◀private: static▶ bool ☀Data_Member_Is_Inside_Because_Of_Base_Type(std::string const& outer, Data_Member_Item const& item)❰
+  
+  for (auto it: item.parent_types){
+    if (outer == as_string(it.type.value)){
+      return true;
+    }
+  }
+  
+  return false;
+❱
+◀private: static▶ bool ☀Data_Member_Is_Inside_Because_Of_Specialization(std::string const& outer, Data_Member_Item const& item)❰
+  
+    for (auto it: item.parent_types){
+      for (auto j: item.type_specializations){
+        if (outer == as_string(j.type.value)){
+          return true;
+        }
+      }
+    }
+  
+  return false;
+❱
+
+
+◀private: static▶ std::string ☀Start_Part_1(std::string const& type, Xml_Options const& settings)❰
+std::string str = settings.cell_tag_start + type;
+return str;
+❱
+◀private: static▶ std::string ☀Start_Part_2(Xml_Options const& settings)❰
+std::string str = settings.grid_tag_start + settings.row_tag_start + '\n';
+return str;
+❱
+
+◀private: static▶ std::string ☀End_Part_1(Xml_Options const& settings)❰
+std::string str = settings.cell_tag_end + '\n';
+return str;
+❱
+◀private: static▶ std::string ☀End_Part_2(Xml_Options const& settings)❰
+std::string str = settings.row_tag_end + settings.grid_tag_end;
+return str;
+❱
+
+
+
+//probably dont need
+◀private: static▶ std::string ☀Grid_Row_Cell_Start(std::string const& type, Xml_Options const& settings)❰
+  std::string str = settings.cell_tag_start + type + settings.grid_tag_start + settings.row_tag_start + '\n';
+  return str;
+❱
+◀private: static▶ std::string ☀Grid_Row_Cell_End(Xml_Options const& settings)❰
+  std::string str = settings.row_tag_end + settings.grid_tag_end + settings.cell_tag_end + '\n';
+  return str;
+❱
