@@ -1,0 +1,51 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_input"❫
+❪"paths"❫
+⚯
+❪"twitter_login_info_getter"❫
+⚞⚟
+
+◀public: static▶ void ☀Tweet(Program_Input const& input, Paths const& paths, std::string tweet) ❰
+
+  //escape characters for the command line
+	tweet = string_replace_all(tweet,"'","'\\''");
+	tweet = "'" + tweet + "'";
+	
+	//send the tweet
+	Decide_Where_To_Send_Tweet(input,paths,tweet);
+	 	
+❱
+
+◀private: static▶ void ☀Decide_Where_To_Send_Tweet(Program_Input const& input, Paths const& paths, std::string tweet) ❰
+
+	if (input.settings.tweet.tweet_to_twitter){
+	  Send_Tweet_To_Twitter(input,paths,tweet);
+	}
+	
+	if (input.settings.tweet.tweet_to_terminal){
+	  Send_Tweet_To_Terminal(tweet);
+	}
+	
+❱
+
+
+◀private: static▶ void ☀Send_Tweet_To_Twitter(Program_Input const& input, Paths const& paths, std::string tweet) ❰
+
+	//get account info
+	auto info = Twitter_Login_Info_Getter::Get(paths.login_info);
+	
+	//send to python tweeter
+		execute(("./" + paths.tweet_post_script + " " + tweet + " " +
+	 	info.customer_key + " " +
+	 	info.customer_secret + " " +
+	 	info.access_key  + " " +
+	 	info.access_secret).c_str());
+❱
+
+◀private: static▶ void ☀Send_Tweet_To_Terminal(std::string tweet) ❰
+  std::cout << "terminal: " << tweet << std::endl;
+❱
+
+
