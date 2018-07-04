@@ -1,5 +1,5 @@
 # everything
-mono repo experiment
+mono repo
 
 
 BAZEL NOTES:
