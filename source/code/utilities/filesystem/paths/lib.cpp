@@ -4,6 +4,9 @@
 #include <sys/types.h>
 #include <dirent.h>
 #include <string>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 #include <boost/range/adaptor/reversed.hpp>
 
 //+---------------------------------------+
@@ -110,6 +113,31 @@ std::string Get_Path_Of_Directory_Starting_From_One_Directory_Deeper_Than_Root_D
 	
 	return path;
  }
+
+std::string Get_Path_Of_Directory_After_Found_Folder(std::string found_folder){
+	std::string path;
+	bool found = false;
+	auto parts = Current_Path_In_Parts();
+	for (auto const& it: parts){
+		if (found){
+			path += it + '/';
+		}
+		if (it == found_folder){
+			found = true;
+		}
+	}
+	
+	return path;
+}
+std::string Full_Path_To_Home(){
+	std::string dir = getenv("HOME");
+	return dir;
+}
+std::string Full_Path_To_Desktop(){
+	auto dir = Full_Path_To_Home();
+	dir += "/Desktop/";
+	return dir;
+}
 
 //+--------------------+
 //| Checking Existence |

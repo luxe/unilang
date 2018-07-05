@@ -44,10 +44,10 @@ class
 ◀private: static▶ Code_Graph ☀Process_File(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
 
 	auto file_name = Get_File_Name_From_File_Path(path_to_file);
-	auto path = Get_File_Path_Without_The_Filename(path_to_file);
+	//auto path = Get_File_Path_Without_The_Filename(path_to_file);
 
-	auto current_path = Current_Path();
-	Set_Path_If_Not_Empty(path);
+	//auto current_path = Current_Path();
+	//Set_Path_If_Not_Empty(path);
     
 		//compile the file
 		//stop immediately if there are problems (this is done by throwing exceptions and catching them.)
@@ -61,7 +61,7 @@ class
 		//that's why we catch the failed file, but continue to process other files
 		catch(...){Exception_Handler::Handle_Exceptions();}
 
-		Set_Path(current_path);
+		//Set_Path(current_path);
 
 	return graph;
 ❱
@@ -120,6 +120,12 @@ class
 ❱
 
 ◀private: static▶ void ☀Decide_Output_Directory(Structure & structure)❰
+
+    //we want to store UniLang files in the repo, but we don't want to export their generation into the same repo
+    //(that will just make the repo dirty and I don't want to accidentally push up generated files)
+    //instead, we want to export them to a mirroring directory on the desktop before also transferring them to where they need to go
+    auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder("company");
+    structure.output_directory = path;
 ❱
 
 ◀private: static▶ void ☀Back_End(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
