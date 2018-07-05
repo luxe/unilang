@@ -12,4 +12,10 @@ hcp(name = "bazel_rule_exporter", deps = [
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/bazel_printer/rule_getter:rule_getter",
 "//code/transcompilers/unilang/bazel_printer:build_info_extractor",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transferer",
+"//code/utilities/types/vectors/transformers:lib",
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/streams/filestreams:lib",
 ])

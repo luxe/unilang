@@ -13,12 +13,12 @@ class
 ❪"code/transcompilers/unilang/bazel_printer/path_to_bazel_path"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(Structure const& structure, Build_Rule_Settings const& settings)❰
+◀public: static▶ std::string ☀Get(Structure const& structure, Build_Rule_Settings const& settings, std::string const& deps_tag)❰
     auto deps = Get_Deps(structure);
     std::string result;
     
     if (Should_Print_Deps(deps,settings)){
-        result += Print_Deps(deps);
+        result += Print_Deps(deps, deps_tag);
     }
     return result;
 ❱
@@ -69,9 +69,11 @@ class
     results.emplace_back(p);
 ❱
 
-◀private: static▶ std::string ☀Print_Deps(std::vector<std::string> const& deps)❰
+◀private: static▶ std::string ☀Print_Deps(std::vector<std::string> const& deps, std::string const& deps_tag)❰
     std::string result;
-    Append_With_Newline(result,"    hidl_deps = [");
+    Append(result,"    ");
+    Append(result,deps_tag);
+    Append_With_Newline(result," = [");
     for (auto it: deps){
         Append(result,"        ");
         result += Get_Double_Quote();
