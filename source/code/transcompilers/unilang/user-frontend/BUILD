@@ -36,4 +36,5 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/structure_static_analyzer:structure_static_analyzer",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/transcompilers/unilang/main:program_input",
+"//code/utilities/exits:lib",
 ])

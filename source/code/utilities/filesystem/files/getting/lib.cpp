@@ -1,3 +1,4 @@
+#include <iostream>
 #include "code/utilities/filesystem/files/getting/lib.hpp"
 #include "code/utilities/filesystem/files/observers/lstat_wrap/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
@@ -230,11 +231,14 @@ std::vector<std::string> Get_Everything_At_Path_With_The_File_Extension(std::str
     
     //open folder
     dp = opendir(path.c_str());
-    if (dp == NULL){ return elements;}
+    if (dp == NULL){ 
+	std::cerr << "couldn't open dir" << std::endl;
+	return elements;
+   }
     
     //skip over the "." and ".."
-    readdir(dp);
-    readdir(dp);
+    //readdir(dp);
+    //readdir(dp);
     
     //loop and store
     while ((entry = readdir(dp))){

@@ -16,6 +16,7 @@ class
 ❪"code/utilities/types/strings/transformers/stripping/lib"❫
 ❪"code/transcompilers/unilang/structure_static_analyzer/structure_static_analyzer"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/exits/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
@@ -24,6 +25,10 @@ class
     //decide all of the files we intend to transcompile
     //update/adjust existing files provided by the user
 	input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files);
+    
+    if (input.options.input_files.empty()){
+        Exit_With_Error("no files to process");
+    }
     
     //set default exporter if not chosen
     std::string default_exporter = "uber";
@@ -55,7 +60,7 @@ class
     //if no files were passed, get all of the files in the directory
     //TODO: file extension is a setting
     if (input_files.empty()){
-        auto files = Get_Everything_At_Path_With_The_File_Extension("UniLang",Current_Path());
+        auto files = Get_Everything_At_Path_With_The_File_Extension("UniLang");
         input_files = files;
     }
     return input_files;
@@ -138,15 +143,16 @@ class
 ❱
 ◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
     for (auto const& it: graphs){
-        
-        if (input.options.user_chosen_export_settings.language.empty()){
-            if (it.structure.data_members.data_members.empty()){
-                input.options.user_chosen_export_settings.language = "hidl";
+        Program_Input artifact_input = input;
+        if (artifact_input.options.user_chosen_export_settings.language.empty()){
+            if (it.structure.methods.methods.empty()){
+                artifact_input.options.user_chosen_export_settings.language = "hidl";
             }
             else{
-                input.options.user_chosen_export_settings.language = "cpp";
+                artifact_input.options.user_chosen_export_settings.language = "cpp";
             }
         }
-        Compiler::Compile(it,input);
+
+        Compiler::Compile(it,artifact_input);
     }
 ❱
