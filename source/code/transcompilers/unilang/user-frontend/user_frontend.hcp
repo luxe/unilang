@@ -6,6 +6,7 @@ class
 ❪"code/transcompilers/unilang/main/composed_program_options/composed_program_options"❫
 ❪"code/transcompilers/unilang/user-frontend/graph_adjuster/code_graph_adjuster"❫
 ❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+❪"code/transcompilers/unilang/main/program_input"❫
 ⚯
 ❪"code/transcompilers/unilang/validators/file_name/filename_validator"❫
 ❪"code/transcompilers/unilang/parser/parser"❫
@@ -17,27 +18,28 @@ class
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ⚞⚟
 
-◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Root_Settings const& settings, Composed_Program_Options const& program_options, std::vector<std::string> input_files)❰
+◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
     
     //decide all of the files we intend to transcompile
-	input_files = Decide_What_Files_To_Transcompile(input_files);
+    //update/adjust existing files provided by the user
+	input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files);
     
     //parse all of the files into data structures
-    auto graphs = Turn_Files_Into_Code_Graphs(input_files,settings,program_options);
-    Create_All_The_Files(graphs,settings,program_options);
+    auto graphs = Turn_Files_Into_Code_Graphs(input);
+    Create_All_The_Files(graphs,input);
 ❱
 
-◀private: static▶ void ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+◀private: static▶ void ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 
     //Decide where to place exports of the file
     auto output_directory = Decide_Output_Directory();
     Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
     
         //create new files from all the data structures
-        Transcompile_Each_Code_Graph(graphs,program_options);
+        Transcompile_Each_Code_Graph(graphs,input);
         
         //create additional files with all of the data structures (usually build files / other meta)
-        Transcompile_Extra_Files(graphs,settings,program_options);
+        Transcompile_Extra_Files(graphs,input);
     });
 ❱
 
@@ -52,10 +54,10 @@ class
     return input_files;
 ❱
 
-◀private: static▶ std::vector<Code_Graph> ☀Turn_Files_Into_Code_Graphs(std::vector<std::string> const& input_files, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+◀private: static▶ std::vector<Code_Graph> ☀Turn_Files_Into_Code_Graphs(Program_Input const& input)❰
     std::vector<Code_Graph> graphs;
-    for (auto const& it: input_files){
-        auto g = Parse_File(it,settings,program_options);
+    for (auto const& it: input.options.input_files){
+        auto g = Parse_File(it,input.settings,input.options);
         graphs.emplace_back(g);
     }
     return graphs;
@@ -82,9 +84,9 @@ class
     return code_graph;
 ❱
 
-◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Composed_Program_Options const& program_options)❰
+◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
     for (auto const& it: graphs){
-        Back_End(it,program_options);
+        Back_End(it,input);
     }
 ❱
 
@@ -109,9 +111,9 @@ class
     return code_graph;
 ❱
 
-◀private: static▶ void ☀Back_End(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
+◀private: static▶ void ☀Back_End(Code_Graph code_graph, Program_Input const& input)❰
 
-    Compiler::Compile(code_graph,program_options);
+    Compiler::Compile(code_graph,input);
 ❱
 
 ◀private: static▶ std::string ☀Decide_Output_Directory()❰
@@ -123,6 +125,6 @@ class
     return path;
 ❱
 
-◀private: static▶ void ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+◀private: static▶ void ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
     //todo...
 ❱

@@ -34,5 +34,6 @@ hcp(name = "user_frontend", deps = [
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/transcompilers/unilang/structure_static_analyzer:structure_static_analyzer",
-"//code/utilities/filesystem/files/getting:lib"
+"//code/utilities/filesystem/files/getting:lib",
+"//code/transcompilers/unilang/main:program_input",
 ])
