@@ -12,6 +12,7 @@
 //+---------------------------------------+
 //THESE FUNCTIONS WILL CHANGE THE STATE OF THE CURRENT WORKING DIRECTORY
 void Set_Path(std::string const& path);
+void Set_Path_If_Not_Empty(std::string const& path);
 void Step_Into_Folder(std::string const folder_name);
 void Step_Out_Of_Folder();
 void Move_Back_Directories_Until_Directory_Exists(std::string root_directory_name);

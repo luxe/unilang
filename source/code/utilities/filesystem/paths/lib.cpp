@@ -16,6 +16,11 @@
 void Set_Path(std::string const& path) {
 	boost::filesystem::current_path(path);
  }
+void Set_Path_If_Not_Empty(std::string const& path) {
+    if (!path.empty()){
+        Set_Path(path);
+    }
+ }
 void Step_Into_Folder(std::string const folder_name){
 
 	//not sure if that "./" really needs to be there

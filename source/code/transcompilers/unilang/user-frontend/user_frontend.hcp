@@ -20,82 +20,65 @@ class
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Root_Settings const& settings, Composed_Program_Options const& program_options, std::vector<std::string> input_files)❰
     
-	//if no files were passed, get all of the files in the directory
-	if (input_files.empty()){
-		auto files = Get_Everything_At_Path_With_The_File_Extension("UniLang",Current_Path());
-		input_files = files;
-	}
-
-	//process each file at a time
-	//get back all of the structures so we can build other artifacts that
-	//require knowledge of multiple structures
-	std::vector<Code_Graph> code_graphs;
-	for (auto const& it: input_files){
-		auto graph = Process_File(it,settings,program_options);
-		code_graphs.emplace_back(graph);
-	}
+    //decide all of the files we intend to transcompile
+	input_files = Decide_What_Files_To_Transcompile(input_files);
     
-    Process_All_Graphs_Transcompiled(code_graphs);
-
-❱
-
-◀private: static▶ void ☀Process_All_Graphs_Transcompiled(std::vector<Code_Graph> const& code_graphs)❰
-	//todo...
-❱
-
-◀private: static▶ Code_Graph ☀Process_File(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
-
-	auto file_name = Get_File_Name_From_File_Path(path_to_file);
-	//auto path = Get_File_Path_Without_The_Filename(path_to_file);
-
-	//auto current_path = Current_Path();
-	//Set_Path_If_Not_Empty(path);
+    //parse all of the files into data structures
+    auto graphs = Turn_Files_Into_Code_Graphs(input_files,settings,program_options);
     
-		//compile the file
-		//stop immediately if there are problems (this is done by throwing exceptions and catching them.)
-		//We don't exit the program on a thrown exception; we continue onto the next file.
-		Code_Graph graph;
-		try { graph = Run_Transcompilation(file_name,settings,program_options); }
-		   
-		//where just about all of the exceptions in the entire program get handled
-		//we want to fail hard and fast on data we did not expect while trans-compiling
-		//but also, if we are transcompiling more than one file, we would want to continue processing after a failed file.
-		//that's why we catch the failed file, but continue to process other files
-		catch(...){Exception_Handler::Handle_Exceptions();}
-
-		//Set_Path(current_path);
-
-	return graph;
+    //create new files from all the data structures
+    Transcompile_Code_Graphs(graphs,program_options);
+    
+    //create additional files with all of the data structures (usually build files / other meta)
+    Process_All_Graphs_Transcompiled(graphs,settings,program_options);
 ❱
 
-◀private: static▶ void ☀Set_Path_If_Not_Empty(std::string const& path)❰
-    if (!path.empty()){
-        Set_Path(path);
+◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files)❰
+    
+    //if no files were passed, get all of the files in the directory
+    //TODO: file extension is a setting
+    if (input_files.empty()){
+        auto files = Get_Everything_At_Path_With_The_File_Extension("UniLang",Current_Path());
+        input_files = files;
     }
+    return input_files;
 ❱
 
-◀private: static▶ Code_Graph ☀Run_Transcompilation(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+◀private: static▶ std::vector<Code_Graph> ☀Turn_Files_Into_Code_Graphs(std::vector<std::string> const& input_files, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+    std::vector<Code_Graph> graphs;
+    for (auto const& it: input_files){
+        auto g = Parse_File(it,settings,program_options);
+        graphs.emplace_back(g);
+    }
+    return graphs;
+❱
 
+◀private: static▶ Code_Graph ☀Parse_File(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+
+    //derive filename from the path
+    auto file_name = Get_File_Name_From_File_Path(path_to_file);
+    
     //check if something is initially wrong with the path and filename sent to the compiler
     //might throw..
-    Filename_Validator::Validate_Input_File(settings.file_validation,path_to_file,settings.parser.input_files.expected_file_extension);
+    Filename_Validator::Validate_Input_File(settings.file_validation,file_name,settings.parser.input_files.expected_file_extension);
     
     //read in the entire file first so that we have it in memory.
     //This is useful for testing too, where we can pass test strings into the frontend
     //without having to actually create files in unit tests.
-    Fully_Read_File file(path_to_file);
+    Fully_Read_File file(file_name);
     
     //I would like the backend compiler to return something like 
     //full strings for the files one day.  We would want to write to
     //disk at the very very end.
     auto code_graph = Front_End(file,settings,program_options);
-    /* TODO: auto generated = */ Back_End(code_graph,program_options);
-
-	return code_graph;
-
+    return code_graph;
 ❱
 
-
+◀private: static▶ void ☀Transcompile_Code_Graphs(std::vector<Code_Graph> const& graphs, Composed_Program_Options const& program_options)❰
+    for (auto const& it: graphs){
+        Back_End(it,program_options);
+    }
+❱
 
 ◀private: static▶ Code_Graph ☀Front_End(Fully_Read_File const& file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
 
@@ -121,6 +104,15 @@ class
     return code_graph;
 ❱
 
+◀private: static▶ void ☀Back_End(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
+
+    
+    //compile the code structure into the appropriate source code files
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(code_graph.structure.output_directory,[&](){
+        Compiler::Compile(code_graph,program_options);
+    });
+❱
+
 ◀private: static▶ void ☀Decide_Output_Directory(Structure & structure)❰
 
     //we want to store UniLang files in the repo, but we don't want to export their generation into the same repo
@@ -130,11 +122,6 @@ class
     structure.output_directory = path;
 ❱
 
-◀private: static▶ void ☀Back_End(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
-
-    
-    //compile the code structure into the appropriate source code files
-    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(code_graph.structure.output_directory,[&](){
-        Compiler::Compile(code_graph,program_options);
-    });
+◀private: static▶ void ☀Process_All_Graphs_Transcompiled(std::vector<Code_Graph> const& code_graphs, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+    //todo...
 ❱
