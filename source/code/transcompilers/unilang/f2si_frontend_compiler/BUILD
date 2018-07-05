@@ -69,6 +69,13 @@ hcp(name = "hidl_options_getter", deps = [
 "//code/utilities/exits:lib",
 ])
 
+hcp(name = "cpp_options_getter", deps = [
+"//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
+"//code/transcompilers/unilang/options/sections/meta/organizations:organization",
+"//code/transcompilers/unilang/structure:structure",
+"//code/utilities/exits:lib",
+])
+
 hcp(name = "bazel_options_getter", deps = [
     "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 ])
