@@ -20,9 +20,16 @@ class
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
     
+    
     //decide all of the files we intend to transcompile
     //update/adjust existing files provided by the user
 	input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files);
+    
+    //set default exporter if not chosen
+    std::string default_exporter = "uber";
+    if (input.options.user_chosen_export_settings.exporter.empty()){
+        input.options.user_chosen_export_settings.exporter = default_exporter;
+    }
     
     //parse all of the files into data structures
     auto graphs = Turn_Files_Into_Code_Graphs(input);
@@ -84,12 +91,6 @@ class
     return code_graph;
 ❱
 
-◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
-    for (auto const& it: graphs){
-        Back_End(it,input);
-    }
-❱
-
 ◀private: static▶ Code_Graph ☀Front_End(Fully_Read_File const& file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
 
     //Apart from just parsing the file that needs compiled, 
@@ -111,20 +112,32 @@ class
     return code_graph;
 ❱
 
-◀private: static▶ void ☀Back_End(Code_Graph code_graph, Program_Input const& input)❰
-
-    Compiler::Compile(code_graph,input);
-❱
-
 ◀private: static▶ std::string ☀Decide_Output_Directory()❰
 
+    //root_where_unilang_files_are_for_mirrored_repos_on_other_machines
+    std::string root_unilang = "company";
+    
     //we want to store UniLang files in the repo, but we don't want to export their generation into the same repo
     //(that will just make the repo dirty and I don't want to accidentally push up generated files)
     //instead, we want to export them to a mirroring directory on the desktop before also transferring them to where they need to go
-    auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder("company");
+    auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder(root_unilang);
     return path;
 ❱
 
-◀private: static▶ void ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
-    //todo...
+◀private: static▶ void ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input input)❰
+
+    //set default language if not chosen
+    if (input.options.user_chosen_export_settings.language.empty()){
+        
+        //todo: derive from structure
+        //hard-coded in the structure from the user or from a prior stage
+        input.options.user_chosen_export_settings.language = "";
+    }
+    
+    Compiler::Compile(code_graphs,input);
+❱
+◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
+    for (auto const& it: graphs){
+        Compiler::Compile(it,input);
+    }
 ❱
