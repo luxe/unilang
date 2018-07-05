@@ -131,13 +131,22 @@ class
         
         //todo: derive from structure
         //hard-coded in the structure from the user or from a prior stage
-        input.options.user_chosen_export_settings.language = "";
+        input.options.user_chosen_export_settings.language = "bazel";
     }
     
     Compiler::Compile(code_graphs,input);
 ❱
 ◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
     for (auto const& it: graphs){
+        
+        if (input.options.user_chosen_export_settings.language.empty()){
+            if (it.structure.data_members.data_members.empty()){
+                input.options.user_chosen_export_settings.language = "hidl";
+            }
+            else{
+                input.options.user_chosen_export_settings.language = "cpp";
+            }
+        }
         Compiler::Compile(it,input);
     }
 ❱
