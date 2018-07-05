@@ -18,10 +18,18 @@ class
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/exits/lib"❫
 ❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
+
+❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_hidl_options_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/bazel_options_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_contributors_getter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
     
+    
+    //MASS SET ALL OF THE SETTINGS
+    Set_All_Settings(input);
     
     //decide all of the files we intend to transcompile
     //update/adjust existing files provided by the user
@@ -41,6 +49,22 @@ class
     auto graphs = Turn_Files_Into_Code_Graphs(input);
     Create_All_The_Files(graphs,input);
 ❱
+
+◀public: static▶ void ☀Set_All_Settings(Program_Input & input)❰
+
+    input.settings.compiler_settings.uber.contributors = Uber_Contributors_Getter::Get();
+    input.settings.compiler_settings.f2si.contributors = F2si_Contributors_Getter::Get();
+    //input.settings.compiler_settings.trevor.contributors = Trevor_Contributors_Getter::Get();
+    
+    input.settings.compiler_settings.uber.settings.foreign_language.hidl = Uber_Hidl_Options_Getter::Get();
+    input.settings.compiler_settings.f2si.settings.foreign_language.hidl = Uber_Hidl_Options_Getter::Get();
+    //input.settings.compiler_settings.trevor.settings.foreign_language.hidl = Uber_Hidl_Options_Getter::Get();
+
+    input.settings.compiler_settings.uber.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    input.settings.compiler_settings.f2si.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    //input.settings.compiler_settings.trevor.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+❱
+
 
 ◀private: static▶ void ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 

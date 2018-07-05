@@ -9,7 +9,7 @@ class
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_exporter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_contributors_getter"❫
-❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_hidl_exporter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/hidl_exporter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_hidl_options_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/bazel_options_getter"❫
 ❪"code/transcompilers/unilang/options/bazel/language_to_build_object"❫
@@ -63,16 +63,15 @@ class
 //code into our "data structure design".  (Data structure design is bad name for it, but it is normal OO C design).  
 //So these are both styles that I can apply on the same UniLang code.
 //Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
-◀public: static▶ void ☀Compile(Code_Graph const& code_graph, Program_Input const& input)❰
-	
+◀public: static▶ void ☀Compile(Code_Graph const& code_graph, Program_Input input)❰
+
+    
 	auto unit = Decide_Exporter_Settings(input);
     
     if (input.options.user_chosen_export_settings.language == "c"){
     }
     else if(input.options.user_chosen_export_settings.language == "cpp"){
         std::cout << "compiling cpp: " << code_graph.structure << std::endl;
-        //unit.settings.foreign_language.cpp = Uber_Hidl_Options_Getter::Convert_Style_To_Options_Config("Normal","normal");
-        unit.contributors = {};
     }
     else if(input.options.user_chosen_export_settings.language == "csharp"){
     }
@@ -84,9 +83,7 @@ class
         
         //get settings and call
         std::cout << "compiling hidl: " << code_graph.structure << std::endl;
-        unit.settings.foreign_language.hidl = Uber_Hidl_Options_Getter::Convert_Style_To_Options_Config("Normal","normal");
-        unit.contributors = {};
-        Uber_Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl,true);
+        Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl,true);
     }
     else if(input.options.user_chosen_export_settings.language == "protobuf"){
     }
@@ -105,8 +102,6 @@ class
     auto unit = Decide_Exporter_Settings(input);
     
     std::cout << "compiling BUILD" << std::endl;
-    unit.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
-    unit.contributors = {};
     Bazel_Rule_Exporter::Export(code_graphs,unit.contributors,unit.settings.foreign_language.bazel_build);
 ❱
 

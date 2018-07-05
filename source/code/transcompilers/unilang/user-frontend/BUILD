@@ -38,6 +38,10 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/main:program_input",
 "//code/utilities/exits:lib",
 "//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/f2si_frontend_compiler:uber_hidl_options_getter",
+"//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
+"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_contributors_getter",
+"//code/transcompilers/unilang/f2si_frontend_compiler:uber_contributors_getter",
 ])
 
 hcp(name = "language_guesser", deps = [
