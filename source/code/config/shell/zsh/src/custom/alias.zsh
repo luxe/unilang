@@ -74,4 +74,4 @@ alias small="printf '\e[8;22;100t'"
 
 # because I can't figure out how to actually extract binaries out of bazel in a reasonable way
 alias unilang="~/Desktop/everything/source/bazel-bin/code/transcompilers/unilang/main/unilang-transcompiler"
-alias unilang-theme-creator="~/Desktop/everything/source/bazel-bin/code/transcompilers/unilang/language-and-theme-creator"
+alias unilang-theme-creator="~/Desktop/everything/source/bazel-bin/code/transcompilers/unilang/language-and-theme-creator/language-and-theme-creator"
