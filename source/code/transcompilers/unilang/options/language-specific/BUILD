@@ -32,3 +32,13 @@ hcp("d_export_settings",deps = [
 hcp("rust_export_settings",deps = [
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings"
 ])
+
+hcp(name = "call_graph_options")
+
+hcp(name = "html_table_options", deps = [
+"//code/utilities/types/strings/transformers/casing:case_format_style"
+])
+
+hcp(name = "treesheets_options", deps = [
+"//code/utilities/types/strings/transformers/casing:case_format_style"
+])

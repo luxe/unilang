@@ -4,7 +4,7 @@ load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
 hcp(name = "treesheets_exporter", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/structure:inlined_structures",
-"//code/transcompilers/unilang/compiler-frontends/treesheets:treesheets_options",
+"//code/transcompilers/unilang/options/language-specific:treesheets_options",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
@@ -17,8 +17,4 @@ hcp(name = "treesheets_exporter", deps = [
 "//code/transcompilers/unilang/structure-adjuster:casing_adjuster",
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/compiler-frontends/xml:xml_exporter",
-])
-
-hcp(name = "treesheets_options", deps = [
-"//code/utilities/types/strings/transformers/casing:case_format_style"
 ])
