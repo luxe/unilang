@@ -10,4 +10,5 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler:f2si_contributors_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:uber_exporter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:uber_contributors_getter",
+"//code/transcompilers/unilang/f2si_frontend_compiler:uber_hidl_options_getter",
 ])
