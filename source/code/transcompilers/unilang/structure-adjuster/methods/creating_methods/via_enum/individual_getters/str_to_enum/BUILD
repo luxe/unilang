@@ -29,5 +29,5 @@ hcp(name = "str_to_enum_getter", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/general:lib",
-"//code/transcompilers/unilang/enum-printer/core:enum_value_creator",
+"//code/transcompilers/unilang/enum_printer/core:enum_value_creator",
 ])

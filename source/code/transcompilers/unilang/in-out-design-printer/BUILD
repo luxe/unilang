@@ -32,7 +32,7 @@ hcp(name = "component_struct_printer", deps = [
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/in-out-design-printer:input_struct_getter",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
-"//code/transcompilers/unilang/enum-printer:enum_section_printer",
+"//code/transcompilers/unilang/enum_printer:enum_section_printer",
 "//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/structure-printer:data_member_printer",
 "//code/transcompilers/unilang/structure-printer/derivers:structure_typename_deriver",

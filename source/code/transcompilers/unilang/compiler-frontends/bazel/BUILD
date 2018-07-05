@@ -18,4 +18,5 @@ hcp(name = "bazel_rule_exporter", deps = [
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/streams/filestreams:lib",
+"//code/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
 ])

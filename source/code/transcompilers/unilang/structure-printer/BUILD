@@ -206,7 +206,7 @@ hcp(name = "global_printer", deps = [
 "//code/transcompilers/unilang/boilerplate_printer:code_wrap_printer",
 "//code/transcompilers/unilang/boilerplate_printer/header:header_printer",
 "//code/transcompilers/unilang/structure-printer/macro:macro_printer",
-"//code/transcompilers/unilang/enum-printer:enum_section_printer",
+"//code/transcompilers/unilang/enum_printer:enum_section_printer",
 "//code/transcompilers/unilang/structure-printer:data_member_printer",
 "//code/transcompilers/unilang/structure-printer/typedef:typedef_printer",
 "//code/transcompilers/unilang/structure-printer:methods_printer",

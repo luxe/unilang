@@ -99,13 +99,14 @@ hcp(name = "uber_hidl_exporter", deps = [
 "//code/transcompilers/unilang/structure-printer/filename:file_name_getter",
 "//code/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
 "//code/transcompilers/unilang/boilerplate_printer:code_wrap_printer",
-"//code/transcompilers/unilang/enum-printer:enum_section_printer",
+"//code/transcompilers/unilang/enum_printer:enum_section_printer",
 "//code/transcompilers/unilang/structure-printer:namespace_printer",
 "//code/transcompilers/unilang/boilerplate_printer/header:header_printer",
 "//code/transcompilers/unilang/structure-printer:struct_printer",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transferer",
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/types/vectors/transformers:lib",
+"//code/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
 ])
 
 hcp(name = "uber_hidl_options_getter", deps = [
@@ -117,5 +118,15 @@ hcp(name = "uber_hidl_options_getter", deps = [
 
 hcp(name = "bazel_options_getter", deps = [
     "//code/transcompilers/unilang/options/bazel:build_rule_settings",
+])
+
+hcp(name = "file_transferer", deps = [
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transferer",
+"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/types/vectors/transformers:lib",
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/streams/filestreams:lib",
 ])
 
