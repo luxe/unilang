@@ -4,16 +4,6 @@ load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
 cpp_object(name = "code_partition_method")
 cpp_object(name = "constraint_export_style")
 
-hcp(name = "unilang_section_settings")
-
-hcp(name = "unilang_general_settings")
-
-hcp(name = "unilang_export_settings",deps = [
-"//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
-"unilang_section_settings",
-"unilang_general_settings"
-])
-
 hcp(name = "test_wrapper_options")
 
 hcp(name = "build_rule_settings", deps = [
@@ -49,7 +39,7 @@ hcp(name = "foreign_language_export_settings", deps = [
 
 hcp(name = "export_settings", deps = [
 "foreign_language_export_settings",
-"unilang_export_settings",
+"//code/transcompilers/unilang/options/unilang:unilang_export_settings",
 "documentation_export_settings"
 ])
 
