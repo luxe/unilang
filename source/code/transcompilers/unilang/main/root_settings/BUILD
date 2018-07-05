@@ -5,6 +5,7 @@ hcp(name = "root_settings", deps = [
 "//code/transcompilers/unilang/options/parser:parser_settings",
 "//code/transcompilers/unilang/validators/file_name:filename_validation_settings",
 "//code/transcompilers/unilang/options/static_analysis:static_analysis_settings",
+"//code/transcompilers/unilang/options/compiler:compile_units",
 ])
 
 hcp(name = "root_settings_getter", deps = [

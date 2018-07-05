@@ -4,7 +4,7 @@ class
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ❪"code/transcompilers/unilang/main/program_input"❫
 ⚯
-
+❪iostream❫
 ❪"code/transcompilers/unilang/trevor_frontend_compiler/trevor_exporter"❫
 ❪"code/transcompilers/unilang/trevor_frontend_compiler/trevor_contributors_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_exporter"❫
@@ -61,12 +61,22 @@ class
 //Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
 ◀public: static▶ void ☀Compile(Code_Graph code_graph, Program_Input const& input)❰
 	
-	if (input.options.user_chosen_export_settings.exporter == "uber"){
-	}
-	else if (input.options.user_chosen_export_settings.exporter == "f2si"){
-	}
-	else if (input.options.user_chosen_export_settings.exporter == "trevor"){
-	}
-	
+	auto unit = Decide_Exporter_Settings(input);
+❱
+
+◀public: static▶ Compile_Unit ☀Decide_Exporter_Settings(Program_Input const& input)❰
+
+    //TODO: lookup by data member (need reflection)
+    if (input.options.user_chosen_export_settings.exporter == "uber"){
+        return input.settings.compiler_settings.uber;
+    }
+    else if (input.options.user_chosen_export_settings.exporter == "f2si"){
+        return input.settings.compiler_settings.f2si;
+    }
+    else if (input.options.user_chosen_export_settings.exporter == "trevor"){
+        return input.settings.compiler_settings.trevor;
+    }
     
+    std::cerr << "invalid exporter" << std::endl;
+    return input.settings.compiler_settings.trevor;
 ❱
