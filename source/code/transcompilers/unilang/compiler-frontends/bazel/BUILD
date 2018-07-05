@@ -9,4 +9,7 @@ hcp(name = "bazel_rule_exporter", deps = [
 "//code/transcompilers/unilang/bazel_printer:top_comment_getter",
 "//code/transcompilers/unilang/bazel_printer:load_getter",
 "//code/utilities/types/strings/transformers/appending:lib",
+"//code/transcompilers/unilang/contributor:contributor",
+"//code/transcompilers/unilang/bazel_printer/rule_getter:rule_getter",
+"//code/transcompilers/unilang/bazel_printer:build_info_extractor",
 ])

@@ -14,4 +14,5 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/options/bazel:language_to_build_object",
 "//code/transcompilers/unilang/user-frontend:language_guesser",
 "//code/transcompilers/unilang/compiler-frontends/bazel:bazel_rule_exporter",
+"//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
 ])

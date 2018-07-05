@@ -6,32 +6,26 @@ class
 ❪"code/transcompilers/unilang/options/bazel/language_to_build_object"❫
 ❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
 ❪"code/transcompilers/unilang/options/bazel/build_rule_settings"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
 ⚯
 ❪"code/transcompilers/unilang/bazel_printer/top_comment_getter"❫
 ❪"code/transcompilers/unilang/bazel_printer/load_getter"❫
+❪"code/transcompilers/unilang/bazel_printer/rule_getter/rule_getter"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/transcompilers/unilang/bazel_printer/build_info_extractor"❫
 ⚞⚟
 
-◀public: static▶ void ☀Export(std::vector<Code_Graph> const& code_graphs)❰
-  Build_Rule_Settings settings;
-  auto build_objects = Get_All_Build_Objects(code_graphs);
+◀public: static▶ void ☀Export(std::vector<Code_Graph> const& code_graphs, std::vector<Contributor> const& contributors, Build_Rule_Settings const& settings)❰
+    
+    auto build_objects = Build_Info_Extractor::Get_All_Build_Objects(code_graphs);
   
     std::string result;
     Append_With_Newline(result,Top_Comment_Getter::Get(settings));
-    //Append_With_Newline(result,Load_Getter::Get(build_objects,settings.loads));
-    //Append_With_Newline(result,"");
+    Append_With_Newline(result,Load_Getter::Get(build_objects,settings.loads));
+    
+    for (auto it: code_graphs){
+        Append_With_Newline(result,Rule_Getter::Get(it.structure,settings));
+    }
     
     std::cout << result;
-  
-❱
-
-◀private: static▶ std::vector<Bazel_Build_Object> ☀Get_All_Build_Objects(std::vector<Code_Graph> const& code_graphs)❰
-    std::vector<Bazel_Build_Object> result;
-    
-    for (auto const& it: code_graphs){
-        auto language = Language_Guesser::Guess(it.structure);
-        auto build_object = Language_To_Build_Object::Convert(language);
-        result.emplace_back(build_object);
-    }
-    return result;
 ❱

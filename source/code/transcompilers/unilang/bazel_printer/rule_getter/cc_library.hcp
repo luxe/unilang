@@ -2,109 +2,52 @@ class
 
 
 ❪"code/transcompilers/unilang/structure/structure"❫
-❪"code/transcompilers/unilang/options/language-specific/hidl_export_settings"❫
+❪"code/transcompilers/unilang/options/bazel/build_rule_settings"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/types/strings/transformers/other/lib"❫
-❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/transcompilers/unilang/bazel_printer/path_to_bazel_path"❫
+❪"code/transcompilers/unilang/bazel_printer/target_name_deriver"❫
+❪"code/transcompilers/unilang/bazel_printer/deps_printer"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Create(Structure const& structure, Hidl_Export_Settings const& settings)❰
+◀public: static▶ std::string ☀Create(Structure const& structure, Build_Rule_Settings const& settings)❰
     
     std::string result;
     Append_With_Newline(result,"av_cc_library(");
     Append(result,"    name = ");
-    result += Get_Double_Quote();
-    Append(result,Get_Target_Name());
-    result += Get_Double_Quote();
+    Append(result,Get_Double_Quote());
+    Append(result,Target_Name_Deriver::Derive(structure));
+    Append(result,Get_Double_Quote());
     Append_With_Newline(result,",");
-    result += Build_Deps_Section(structure,settings);
+    Append_With_Newline(result,Source_And_Headers(structure,settings));
+    Append_With_Newline(result,",");
+    result += Deps_Printer::Get(structure,settings);
     Append_With_Newline(result,")");
     return result;
 ❱
 
-◀private: static▶ std::string ☀Build_Deps_Section(Structure const& structure, Hidl_Export_Settings const& settings)❰
-    auto deps = Get_Deps(structure);
+◀private: static▶ std::string ☀Source_And_Headers(Structure const& structure, Build_Rule_Settings const& settings)❰
     std::string result;
     
-    if (Should_Print_Deps(deps,settings)){
-        result += Print_Deps(deps);
-    }
-    return result;
-❱
-
-◀private: static▶ bool ☀Should_Print_Deps(std::vector<std::string> const& deps, Hidl_Export_Settings const& settings)❰
-    if (deps.empty()){
-        if (!settings.build.print_deps_when_empty){
-            return false;
-        }
-    }
-    return true;
-❱
-
-
-◀private: static▶ std::vector<std::string> ☀Get_Deps(Structure const& structure)❰
-    std::vector<std::string> results;
-    for (auto data_mem: structure.data_members.data_members){
-        for (auto lib: data_mem.library_dependencies){
-                auto lib_name = as_string(lib.name.value);
-                auto p = Path_To_Bazel_Path::Convert(lib_name);
-                results.emplace_back(p);
-        }
-    }
-    Sort_And_Remove_Duplicates(results);
-    return results;
-❱
-
-◀private: static▶ std::string ☀Print_Deps(std::vector<std::string> const& deps)❰
-    std::string result;
-    Append_With_Newline(result,"    hidl_deps = [");
-    for (auto it: deps){
-        Append(result,"        ");
-        result += Get_Double_Quote();
-        Append(result,it);
-        result += Get_Double_Quote();
-        Append(result,",");
-        Append_With_Newline(result,"");
-    }
-    Append_With_Newline(result,"    ],");
-    return result;
-❱
-
-◀private: static▶ std::string ☀Get_Target_Name()❰
-    auto parts = Current_Path_In_Parts();
-    parts.pop_back();
-
-    //TODO: derive root somehow
-    std::string root_we_care_about = "source";
-    std::string seperator = "_";
+    std::string src_name = structure.name + ".cc";
+    std::string hdr_name = structure.name + ".hh";
     
-    //keep everything after source
-    //TODO: stl algo
-    std::vector<std::string> new_parts;
-    bool found_root = false;
-    for (auto it: parts){
-
-        if (found_root){
-            new_parts.emplace_back(it);
-        }
-        if (it == root_we_care_about){
-            found_root = true;
-        }
-    }
-
-    //turn into a name
-    //TODO: jstd function: Get_As_Underscore_Seperated_String
-    //TODO: another generic function that takes seperator
-    std::string result;
-      Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(new_parts,
-    [&](std::string str){result += str + seperator;},[&](std::string str){result += str;});
-
+    Append_With_Newline(result,"    srcs = [");
+    Append(result,"        ");
+    Append(result,Get_Double_Quote());
+    Append_With_Newline(result,src_name);
+    Append(result,Get_Double_Quote());
+    Append_With_Newline(result,    "],");
+    Append_With_Newline(result,    "hdrs = [");
+    Append(result,"        ");
+    Append(result,Get_Double_Quote());
+    Append_With_Newline(result,hdr_name);
+    Append(result,Get_Double_Quote());
+    Append_With_Newline(result,    "],");
     return result;
 ❱
-
-

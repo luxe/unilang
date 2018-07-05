@@ -115,3 +115,7 @@ hcp(name = "uber_hidl_options_getter", deps = [
 "//code/utilities/exits:lib",
 ])
 
+hcp(name = "bazel_options_getter", deps = [
+    "//code/transcompilers/unilang/options/bazel:build_rule_settings",
+])
+

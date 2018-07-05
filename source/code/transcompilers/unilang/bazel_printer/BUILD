@@ -25,3 +25,33 @@ hcp(name = "top_comment_getter", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/strings/creators:lib",
 ])
+
+hcp(name = "build_info_extractor",deps = [
+"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/transcompilers/unilang/options/bazel:language_to_build_object",
+"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/options/bazel:build_rule_settings",
+])
+
+hcp(name = "target_name_deriver",deps = [
+"//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure:structure",
+"//code/utilities/types/general:lib",
+"//code/utilities/types/strings/transformers/other:lib",
+"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/types/char:lib",
+"//code/utilities/types/vectors/transformers:lib",
+"//code/utilities/filesystem/paths:lib",
+])
+
+hcp(name = "deps_printer", deps = [
+"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/options/bazel:build_rule_settings",
+"//code/utilities/types/general:lib",
+"//code/utilities/types/strings/transformers/other:lib",
+"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/types/char:lib",
+"//code/utilities/types/vectors/transformers:lib",
+"//code/utilities/filesystem/paths:lib",
+"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
+])

@@ -1,0 +1,51 @@
+class
+
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/transcompilers/unilang/structure/structure"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Derive(Structure const& structure)❰
+    auto parts = Current_Path_In_Parts();
+
+    //TODO: derive root somehow
+    std::string root_we_care_about = "source";
+    std::string seperator = "_";
+    std::vector<std::string> subpaths_we_dont_care_about = {"lib","libs","library"};
+    
+    //keep everything after source
+    //TODO: stl algo
+    std::vector<std::string> new_parts;
+    bool found_root = false;
+    for (auto it: parts){
+
+        if (found_root){
+            new_parts.emplace_back(it);
+        }
+        if (it == root_we_care_about){
+            found_root = true;
+        }
+    }
+    
+    //filter out subpaths we dont care about
+    for (auto it: subpaths_we_dont_care_about){
+        Remove_Element(new_parts,it);
+    }
+
+    //turn into a name
+    //TODO: jstd function: Get_As_Underscore_Seperated_String
+    //TODO: another generic function that takes seperator
+    std::string result;
+      Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(new_parts,
+    [&](std::string str){result += str + seperator;},[&](std::string str){result += str;});
+      
+      result+= "_" + structure.name;
+
+    return result;
+❱

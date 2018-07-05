@@ -1,0 +1,85 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/bazel/build_rule_settings"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/transcompilers/unilang/bazel_printer/path_to_bazel_path"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Structure const& structure, Build_Rule_Settings const& settings)❰
+    auto deps = Get_Deps(structure);
+    std::string result;
+    
+    if (Should_Print_Deps(deps,settings)){
+        result += Print_Deps(deps);
+    }
+    return result;
+❱
+
+◀private: static▶ bool ☀Should_Print_Deps(std::vector<std::string> const& deps, Build_Rule_Settings const& settings)❰
+    if (deps.empty()){
+        if (!settings.print_deps_when_empty){
+            return false;
+        }
+    }
+    return true;
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Get_Deps(Structure const& structure)❰
+    std::vector<std::string> results;
+    for (auto data_mem: structure.data_members.data_members){
+        for (auto lib: data_mem.library_dependencies){
+                Store_Dep(results,lib);
+        }
+    }
+    
+    for (auto m: structure.methods.methods){
+        for (auto x: m.template_arguments){
+            for (auto lib: x.library_dependencies){
+                Store_Dep(results,lib);
+            }
+        }
+        for (auto x: m.function_arguments){
+            for (auto lib: x.library_dependencies){
+                Store_Dep(results,lib);
+            }
+        }
+        for (auto x: m.return_results){
+            for (auto lib: x.library_dependencies){
+                Store_Dep(results,lib);
+            }
+        }
+    }
+
+    Sort_And_Remove_Duplicates(results);
+    return results;
+❱
+
+◀private: static▶ void ☀Store_Dep(std::vector<std::string> & results, Library_Dependency const& t)❰
+    auto lib_name = as_string(t.name.value);
+    auto p = Path_To_Bazel_Path::Convert(lib_name);
+    results.emplace_back(p);
+❱
+
+◀private: static▶ std::string ☀Print_Deps(std::vector<std::string> const& deps)❰
+    std::string result;
+    Append_With_Newline(result,"    hidl_deps = [");
+    for (auto it: deps){
+        Append(result,"        ");
+        result += Get_Double_Quote();
+        Append(result,it);
+        result += Get_Double_Quote();
+        Append(result,",");
+        Append_With_Newline(result,"");
+    }
+    Append_With_Newline(result,"    ],");
+    return result;
+❱
