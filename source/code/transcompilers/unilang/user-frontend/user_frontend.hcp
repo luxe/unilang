@@ -25,12 +25,21 @@ class
     
     //parse all of the files into data structures
     auto graphs = Turn_Files_Into_Code_Graphs(input_files,settings,program_options);
+    Create_All_The_Files(graphs,settings,program_options);
+❱
+
+◀private: static▶ void ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+
+    //Decide where to place exports of the file
+    auto output_directory = Decide_Output_Directory();
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
     
-    //create new files from all the data structures
-    Transcompile_Code_Graphs(graphs,program_options);
-    
-    //create additional files with all of the data structures (usually build files / other meta)
-    Process_All_Graphs_Transcompiled(graphs,settings,program_options);
+        //create new files from all the data structures
+        Transcompile_Each_Code_Graph(graphs,program_options);
+        
+        //create additional files with all of the data structures (usually build files / other meta)
+        Transcompile_Extra_Files(graphs,settings,program_options);
+    });
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files)❰
@@ -74,7 +83,7 @@ class
     return code_graph;
 ❱
 
-◀private: static▶ void ☀Transcompile_Code_Graphs(std::vector<Code_Graph> const& graphs, Composed_Program_Options const& program_options)❰
+◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Composed_Program_Options const& program_options)❰
     for (auto const& it: graphs){
         Back_End(it,program_options);
     }
@@ -87,9 +96,6 @@ class
     //create a graph of these classes to handle the dependencies.
     //might throw...
     auto code_graph = Parser::Parse(file,program_options.dependency_paths,settings.parser);
-    
-    //Decide where to place exports of the file
-    Decide_Output_Directory(code_graph.structure);
     
     //before compiling the source file,
     //make the necessary code graph transformations automatically
@@ -106,22 +112,18 @@ class
 
 ◀private: static▶ void ☀Back_End(Code_Graph code_graph, Composed_Program_Options const& program_options)❰
 
-    
-    //compile the code structure into the appropriate source code files
-    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(code_graph.structure.output_directory,[&](){
-        Compiler::Compile(code_graph,program_options);
-    });
+    Compiler::Compile(code_graph,program_options);
 ❱
 
-◀private: static▶ void ☀Decide_Output_Directory(Structure & structure)❰
+◀private: static▶ std::string ☀Decide_Output_Directory()❰
 
     //we want to store UniLang files in the repo, but we don't want to export their generation into the same repo
     //(that will just make the repo dirty and I don't want to accidentally push up generated files)
     //instead, we want to export them to a mirroring directory on the desktop before also transferring them to where they need to go
     auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder("company");
-    structure.output_directory = path;
+    return path;
 ❱
 
-◀private: static▶ void ☀Process_All_Graphs_Transcompiled(std::vector<Code_Graph> const& code_graphs, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
+◀private: static▶ void ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
     //todo...
 ❱
