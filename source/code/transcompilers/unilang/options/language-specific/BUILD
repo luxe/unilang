@@ -32,7 +32,3 @@ hcp("d_export_settings",deps = [
 hcp("rust_export_settings",deps = [
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings"
 ])
-
-hcp("plant_uml_settings",deps = [
-"//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings"
-])

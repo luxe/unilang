@@ -5,7 +5,7 @@ class
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/contributor/contributor"❫
 ❪"code/transcompilers/unilang/structure/inlined_structures"❫
-❪"code/transcompilers/unilang/compiler-frontends/plant_uml_exporter/plant_uml_options"❫
+❪"code/transcompilers/unilang/options/language-specific/plant_uml_settings/plant_uml_settings"❫
 ❪"code/transcompilers/unilang/compiler-frontends/plant_uml_exporter/composition_relationship"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
@@ -21,7 +21,7 @@ class
 
 ◀public: static▶ void ☀Export(Structure structure, std::vector<Contributor> const& contributors, std::string const& style, bool transfer)❰
 
-  Plant_Uml_Options settings;
+  Plant_Uml_Settings settings;
   std::string file_name = Current_Path() + "/" + structure.name + "." + settings.file_extension;
   std::ofstream outfile(file_name);
   outfile << settings.start_plant_uml_language_tag << "\n\n";
@@ -37,7 +37,7 @@ class
   
 ❱
 
-◀private: static▶ std::string ☀Structure_As_String(Structure const& structure, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Structure_As_String(Structure const& structure, Plant_Uml_Settings const& settings)❰
   std::string s;
   
   //print all the enums
@@ -55,7 +55,7 @@ class
   return s;
 ❱
 
-◀private: static▶ std::string ☀Get_Class_Relationships(Structure structure, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Class_Relationships(Structure structure, Plant_Uml_Settings const& settings)❰
   std::string s;
   
   Adjust_Names_For_Easier_Comparison(structure,settings);
@@ -78,7 +78,7 @@ class
 ❱
 
 
-◀private: static▶ std::vector<Composition_Relationship> ☀Find_Composition_Relationships(Structure & structure, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::vector<Composition_Relationship> ☀Find_Composition_Relationships(Structure & structure, Plant_Uml_Settings const& settings)❰
 
   std::vector<Composition_Relationship> rels;
   
@@ -130,13 +130,13 @@ class
   return rels;
 ❱
 
-◀private: static▶ void ☀Adjust_Names_For_Easier_Comparison(Structure & structure, Plant_Uml_Options const& settings)❰
+◀private: static▶ void ☀Adjust_Names_For_Easier_Comparison(Structure & structure, Plant_Uml_Settings const& settings)❰
  Case_Adjustment_Settings case_settings;
  case_settings.perform_case_adjustments = true;
  Casing_Adjuster::Adjust(structure,case_settings);
 ❱
 
-◀private: static▶ std::string ☀Get_Enums(std::vector<Enum_Item> const& enums, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Enums(std::vector<Enum_Item> const& enums, Plant_Uml_Settings const& settings)❰
   std::string s;
   
   for (auto const& e: enums){
@@ -151,7 +151,7 @@ class
   return s;
 ❱
 
-◀private: static▶ std::string ☀Get_Plant_Uml_Class(Type_Item const& t, std::vector<Data_Member_Item> const& mems, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Plant_Uml_Class(Type_Item const& t, std::vector<Data_Member_Item> const& mems, Plant_Uml_Settings const& settings)❰
   std::string s;
   s += Get_Class_Starter(t,settings);
   
@@ -170,25 +170,25 @@ class
   return s;
 ❱
 
-◀private: static▶ std::string ☀Get_Enum_Starter(Enum_Item const& e, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Enum_Starter(Enum_Item const& e, Plant_Uml_Settings const& settings)❰
   std::string s;
   s+= settings.enum_keyword + " " + Case_Modifier::As_Modified_Casing(settings.enum_identifier_casing,as_string(e.name.value)) + " " + settings.start_enum_body_symbol + "\n";
   return s;
 ❱
-◀private: static▶ std::string ☀Get_Class_Starter(Type_Item const& t, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Class_Starter(Type_Item const& t, Plant_Uml_Settings const& settings)❰
   std::string s;
   s+= settings.class_keyword + " " + Case_Modifier::As_Modified_Casing(settings.data_member_type_casing,as_string(t.name.value)) + " " + settings.start_class_body_symbol + "\n";
   return s;
 ❱
-◀private: static▶ std::string ☀Get_Enum_Ender(Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Enum_Ender(Plant_Uml_Settings const& settings)❰
   return settings.end_enum_body_symbol + '\n';
 ❱
-◀private: static▶ std::string ☀Get_Class_Ender(Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Class_Ender(Plant_Uml_Settings const& settings)❰
   return settings.end_class_body_symbol + '\n';
 ❱
 
 
-◀private: static▶ std::string ☀Get_Method_String(Method_Item const& method_item, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Method_String(Method_Item const& method_item, Plant_Uml_Settings const& settings)❰
   std::string s;
   s+= Class_Access_As_String(method_item.class_access,settings);
   s+= as_string(method_item.names.function_name.value);
@@ -197,7 +197,7 @@ class
   return s;
 ❱
 
-◀private: static▶ std::string ☀Get_Data_Member_String(Data_Member_Item const& data_member_item, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Data_Member_String(Data_Member_Item const& data_member_item, Plant_Uml_Settings const& settings)❰
   std::string s;
   s+= Class_Access_As_String(data_member_item.class_access,settings);
   s+= Case_Modifier::As_Modified_Casing(settings.data_member_identifier_casing,as_string(data_member_item.name.value));
@@ -206,14 +206,14 @@ class
   
   return s;
 ❱
-◀private: static▶ std::string ☀Get_Enum_Value_String(Enum_Arg const& arg, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Get_Enum_Value_String(Enum_Arg const& arg, Plant_Uml_Settings const& settings)❰
   std::string s;
   s += Case_Modifier::As_Modified_Casing(settings.enum_identifier_arg_casing,as_string(arg.name.value));
   return s;
 ❱
 
 
-◀private: static▶ std::string ☀Class_Access_As_String(Class_Access const& class_access, Plant_Uml_Options const& settings)❰
+◀private: static▶ std::string ☀Class_Access_As_String(Class_Access const& class_access, Plant_Uml_Settings const& settings)❰
   switch (class_access){
     case Class_Access::PUBLIC: return settings.public_symbol;
     case Class_Access::PROTECTED: return settings.protected_symbol;
