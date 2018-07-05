@@ -30,6 +30,8 @@ hcp(name = "f2si_c_options_getter", deps = [
 hcp(name = "cpp_exporter", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/contributor:contributor",
+"//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
+"//code/transcompilers/unilang/structure:inlined_structures",
 ])
 
 hcp(name = "uber_contributors_getter", deps = [
@@ -74,6 +76,7 @@ hcp(name = "cpp_options_getter", deps = [
 "//code/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/transcompilers/unilang/structure:structure",
 "//code/utilities/exits:lib",
+"//code/transcompilers/unilang/structure:inlined_structures",
 ])
 
 hcp(name = "bazel_options_getter", deps = [
