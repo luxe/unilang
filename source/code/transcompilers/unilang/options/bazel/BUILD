@@ -10,3 +10,7 @@ hcp(name = "bazel_load_data", deps = [
 hcp(name = "bazel_load_db_settings", deps = [
 "//code/transcompilers/unilang/options/bazel:bazel_load_data"
 ])
+
+hcp(name = "build_rule_settings", deps = [
+"//code/transcompilers/unilang/options/bazel:bazel_load_db_settings"
+])

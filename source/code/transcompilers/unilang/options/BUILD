@@ -6,15 +6,6 @@ cpp_object(name = "constraint_export_style")
 
 hcp(name = "test_wrapper_options")
 
-hcp(name = "build_rule_settings", deps = [
-"//code/transcompilers/unilang/options/bazel:bazel_load_db_settings"
-])
-
-
-hcp(name = "documentation_export_settings", deps = [
-"//code/transcompilers/unilang/options/language-specific:plant_uml_settings"
-])
-
 hcp(name = "general_options", deps = [
 "//code/transcompilers/unilang/options/comment:comment_settings",
 "//code/transcompilers/unilang/options:code_partition_method",
@@ -40,9 +31,4 @@ hcp(name = "foreign_language_export_settings", deps = [
 hcp(name = "export_settings", deps = [
 "foreign_language_export_settings",
 "//code/transcompilers/unilang/options/unilang:unilang_export_settings",
-"documentation_export_settings"
-])
-
-hcp(name = "settings", deps = [
-"export_settings"
 ])
