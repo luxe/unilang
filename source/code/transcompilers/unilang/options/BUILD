@@ -42,6 +42,9 @@ hcp(name = "foreign_language_export_settings", deps = [
 "//code/transcompilers/unilang/options/language-specific:rust_export_settings",
 "//code/transcompilers/unilang/options/language-specific:csharp_export_settings",
 "//code/transcompilers/unilang/options/language-agnostic:language_agnostic_export_settings",
+"//code/transcompilers/unilang/options/language-specific:hidl_export_settings",
+"//code/transcompilers/unilang/options/language-specific:plant_uml_settings",
+"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_settings",
 ])
 
 hcp(name = "export_settings", deps = [

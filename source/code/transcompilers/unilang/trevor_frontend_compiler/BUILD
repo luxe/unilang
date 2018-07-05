@@ -30,7 +30,6 @@ hcp(name = "trevor_exporter", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/user-frontend/command_line_arguments:user_chosen_export_settings",
-"//code/transcompilers/unilang/compiler-frontends:language_export_spawner",
 "trevor_c_exporter",
 "trevor_cpp_exporter",
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_exporter",
