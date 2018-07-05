@@ -37,4 +37,9 @@ hcp(name = "user_frontend", deps = [
 "//code/utilities/filesystem/files/getting:lib",
 "//code/transcompilers/unilang/main:program_input",
 "//code/utilities/exits:lib",
+"//code/transcompilers/unilang/user-frontend:language_guesser",
+])
+
+hcp(name = "language_guesser", deps = [
+"//code/transcompilers/unilang/structure:structure",
 ])

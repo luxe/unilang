@@ -17,6 +17,7 @@ class
 ❪"code/transcompilers/unilang/structure_static_analyzer/structure_static_analyzer"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/exits/lib"❫
+❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
@@ -137,20 +138,14 @@ class
         //todo: derive from structure
         //hard-coded in the structure from the user or from a prior stage
         input.options.user_chosen_export_settings.language = "bazel";
+        Compiler::Compile(code_graphs,input);
     }
-    
-    Compiler::Compile(code_graphs,input);
 ❱
 ◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
     for (auto const& it: graphs){
         Program_Input artifact_input = input;
         if (artifact_input.options.user_chosen_export_settings.language.empty()){
-            if (it.structure.methods.methods.empty()){
-                artifact_input.options.user_chosen_export_settings.language = "hidl";
-            }
-            else{
-                artifact_input.options.user_chosen_export_settings.language = "cpp";
-            }
+            artifact_input.options.user_chosen_export_settings.language = Language_Guesser::Guess(it.structure);
         }
 
         Compiler::Compile(it,artifact_input);

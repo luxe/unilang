@@ -1,10 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
 
-hcp(name = "build_rule_builder", deps = [
-
-])
-
 hcp(name = "f2si_c_exporter", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
@@ -66,22 +62,6 @@ hcp(name = "f2si_rust_exporter", deps = [
 "//code/transcompilers/unilang/contributor:contributor",
 ])
 
-hcp(name = "hidl_build_file_creator", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/options/language-specific:hidl_export_settings",
-"//code/transcompilers/unilang/boilerplate_printer/meta_block/sections:meta_copyright_getter",
-"//code/utilities/types/general:lib",
-"//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/types/strings/transformers/appending:lib",
-"//code/utilities/types/char:lib",
-"//code/utilities/types/vectors/transformers:lib",
-"//code/utilities/filesystem/paths:lib",
-"//code/utilities/types/strings/creators:lib",
-"//code/transcompilers/unilang/bazel_printer:load_getter",
-"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
-"//code/transcompilers/unilang/bazel_printer:top_comment_getter",
-])
-
 hcp(name = "uber_contributors_getter", deps = [
 "//code/transcompilers/unilang/contributor:contributor"
 ])
@@ -124,7 +104,6 @@ hcp(name = "uber_hidl_exporter", deps = [
 "//code/transcompilers/unilang/boilerplate_printer/header:header_printer",
 "//code/transcompilers/unilang/structure-printer:struct_printer",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transferer",
-"//code/transcompilers/unilang/f2si_frontend_compiler:hidl_build_file_creator",
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/types/vectors/transformers:lib",
 ])

@@ -20,7 +20,7 @@ hcp(name = "path_to_bazel_path", deps = [
 ])
 
 hcp(name = "top_comment_getter", deps = [
-"//code/transcompilers/unilang/options/language-specific:hidl_export_settings",
+"//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/transcompilers/unilang/boilerplate_printer/meta_block/sections:meta_copyright_getter",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/strings/creators:lib",

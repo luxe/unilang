@@ -1,0 +1,37 @@
+class
+
+❪iostream❫
+❪fstream❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/options/bazel/language_to_build_object"❫
+❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
+❪"code/transcompilers/unilang/options/bazel/build_rule_settings"❫
+⚯
+❪"code/transcompilers/unilang/bazel_printer/top_comment_getter"❫
+❪"code/transcompilers/unilang/bazel_printer/load_getter"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Export(std::vector<Code_Graph> const& code_graphs)❰
+  Build_Rule_Settings settings;
+  auto build_objects = Get_All_Build_Objects(code_graphs);
+  
+    std::string result;
+    Append_With_Newline(result,Top_Comment_Getter::Get(settings));
+    //Append_With_Newline(result,Load_Getter::Get(build_objects,settings.loads));
+    //Append_With_Newline(result,"");
+    
+    std::cout << result;
+  
+❱
+
+◀private: static▶ std::vector<Bazel_Build_Object> ☀Get_All_Build_Objects(std::vector<Code_Graph> const& code_graphs)❰
+    std::vector<Bazel_Build_Object> result;
+    
+    for (auto const& it: code_graphs){
+        auto language = Language_Guesser::Guess(it.structure);
+        auto build_object = Language_To_Build_Object::Convert(language);
+        result.emplace_back(build_object);
+    }
+    return result;
+❱
