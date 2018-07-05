@@ -31,8 +31,6 @@ hcp(name = "concise_constraint_exporter", deps = [
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_exporter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_c_exporter",
 ])
 
 hcp(name = "concise_constraint_line_exporter", deps = [
@@ -60,16 +58,15 @@ hcp(name = "if_chain_constraint_exporter", deps = [
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_c_exporter",
 "//code/transcompilers/unilang/structure-printer:methods_printer",
 "//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
 "//code/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_exporter",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
+"//code/transcompilers/unilang/structure:inlined_structures",
 ])
 
 hcp(name = "constraint_exporter", deps = [

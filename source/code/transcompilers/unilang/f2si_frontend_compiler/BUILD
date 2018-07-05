@@ -27,60 +27,13 @@ hcp(name = "f2si_c_options_getter", deps = [
 "//code/utilities/exits:lib",
 ])
 
-hcp(name = "f2si_cpp_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_c_options_getter",
-])
-
-hcp(name = "f2si_c_sharp_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-])
-
-hcp(name = "f2si_d_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-])
-
-hcp(name = "f2si_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/user-frontend/command_line_arguments:user_chosen_export_settings",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_c_exporter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_cpp_exporter",
-"//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_exporter",
-"//code/transcompilers/unilang/compiler-frontends/call_graph_exporter:call_graph_exporter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_d_exporter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_rust_exporter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:f2si_c_sharp_exporter",
-"//code/transcompilers/unilang/compiler-frontends/text_exporter:text_exporter",
-])
-
-hcp(name = "f2si_rust_exporter", deps = [
+hcp(name = "cpp_exporter", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/contributor:contributor",
 ])
 
 hcp(name = "uber_contributors_getter", deps = [
 "//code/transcompilers/unilang/contributor:contributor"
-])
-
-hcp(name = "uber_cpp_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-])
-
-hcp(name = "uber_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/user-frontend/command_line_arguments:user_chosen_export_settings",
-"//code/transcompilers/unilang/f2si_frontend_compiler:hidl_exporter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:uber_cpp_exporter",
-"//code/transcompilers/unilang/structure:inlined_structures",
-"//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_exporter",
-"//code/transcompilers/unilang/compiler-frontends/treesheets:treesheets_exporter",
-"//code/transcompilers/unilang/compiler-frontends/html_table:html_table_exporter",
 ])
 
 hcp(name = "hidl_exporter", deps = [
