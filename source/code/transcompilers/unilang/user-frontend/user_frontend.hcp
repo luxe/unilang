@@ -34,6 +34,10 @@ class
     
     
     //MASS SET ALL OF THE SETTINGS
+    //IN THE FUTURE, ALL OF THIS DATA NEEDS BUBBLED UP TO THE TOP HERE
+    //IT NEEDS TO BE SERIALIZABLE, AND THEN WE CAN THINK ABOUT A DATABASE OR SOMETHING
+    //maybe look into ORM... by that time, hopefully we can rewrite things in unilang and
+    //get that kind of functionality though transcompilation
     Set_All_Settings(input);
     
     //decide all of the files we intend to transcompile
@@ -52,11 +56,21 @@ class
     
     //parse all of the files into data structures
     auto graphs = Turn_Files_Into_Code_Graphs(input);
-    auto created_files = Create_All_The_Files(graphs,input);
     
-    if (input.options.user_chosen_export_settings.transfer){
-        File_Transferer::Transfer(created_files);
-    }
+    
+    
+    auto output_directory = Decide_Output_Directory();
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
+        auto created_files = Create_All_The_Files(graphs,input);
+        
+        Warn_About_Any_Conflicting_Artifacts(created_files);
+        if (input.options.user_chosen_export_settings.transfer){
+            File_Transferer::Transfer(created_files);
+        }
+    });
+❱
+
+◀public: static▶ void ☀Warn_About_Any_Conflicting_Artifacts(std::vector<std::string> const& files)❰
 ❱
 
 ◀public: static▶ void ☀Set_All_Settings(Program_Input & input)❰
@@ -81,17 +95,13 @@ class
 
 ◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 
-    //Decide where to place exports of the file
-    auto output_directory = Decide_Output_Directory();
     std::vector<std::string> created_files;
-    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
     
-        //create new files from all the data structures
-        created_files += Transcompile_Each_Code_Graph(graphs,input);
-        
-        //create additional files with all of the data structures (usually build files / other meta)
-        created_files += Transcompile_Extra_Files(graphs,input);
-    });
+    //create new files from all the data structures
+    created_files += Transcompile_Each_Code_Graph(graphs,input);
+    
+    //create additional files with all of the data structures (usually build files / other meta)
+    created_files += Transcompile_Extra_Files(graphs,input);
     
     return created_files;
 ❱

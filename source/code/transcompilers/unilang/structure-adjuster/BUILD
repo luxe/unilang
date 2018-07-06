@@ -23,6 +23,7 @@ hcp(name = "words_deriver", deps = [
 hcp(name = "module_dependency_resolver", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/transcompilers/unilang/structure-printer/export_file_settings:file_type",
 ])
 
 hcp(name = "structure_adjuster", deps = [

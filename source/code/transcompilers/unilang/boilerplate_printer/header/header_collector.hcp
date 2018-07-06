@@ -16,6 +16,8 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/lib"❫
 ❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/casing/case_format_style"❫
 ⚞⚟
 
 //actual string builder functions
@@ -140,6 +142,10 @@ class
 ◀public: static▶ std::string ☀Get_Global_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& settings, std::vector<Method_Item> const& methods)❰
     std::string str;
     
+    auto implicit_header_casing = Case_Format_Style::LOWER_CASE_WITH_UNDERSCORES;
+    bool add_implicit_header_comment = false;
+    std::string file_extension = "hh";
+    
     //recursively pull in the inlined flags (implementation)
     Remove_Duplicates(imports);
     
@@ -147,16 +153,18 @@ class
     auto max_length = Max_Header_File_Length(imports);
     
     //adjust for the obligatory header needed
-    auto needed_header = As_Capital_And_Pushed_Together(file_name) + ".h";
+    auto needed_header = Case_Modifier::As_Modified_Casing(implicit_header_casing,file_name) + "." + file_extension;
     if (needed_header.length() > max_length){ max_length = needed_header.length();}
     
     Append(str,"#include \"" + needed_header + "\"");
     Append_N_Times(str," ",max_length+1-needed_header.length());
     
     //get the implicit comment for the global header's self include
-    auto implicit_comment = Implicit_Global_Header_Comment_Deriver::Derive(methods,settings);
     
-    Append_With_Newline(str,Get_Header_Comment_Start(settings)  + implicit_comment);
+    if (add_implicit_header_comment){
+        auto implicit_comment = Implicit_Global_Header_Comment_Deriver::Derive(methods,settings);
+        Append_With_Newline(str,Get_Header_Comment_Start(settings)  + implicit_comment);
+    }
     str += Get_Each_Include_Line(imports,max_length,settings);
     Append_With_Newline(str,"");
     

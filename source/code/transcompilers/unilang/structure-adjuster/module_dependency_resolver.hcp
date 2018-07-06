@@ -3,10 +3,17 @@ class
 
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/options/manipulation/struct_manipulation_settings"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/file_type"❫
 ⚯
 ⚞⚟
 
 ◀public: static▶ void ☀Resolve(Structure & structure,Struct_Manipulation_Settings const& settings)❰
+
+	Resolve_On_Data_Members(structure,settings);
+	Resolve_On_Methods(structure,settings);
+❱
+
+◀public: static▶ void ☀Resolve_On_Data_Members(Structure & structure,Struct_Manipulation_Settings const& settings)❰
 
 	//append all public data member module deps to interface imports
 	//append all non-public data member module deps to implementation imports 
@@ -17,6 +24,67 @@ class
 		else{
 			Apply_Module_Deps(it.module_dependencies,structure.imports.implementation_dependencies);
 		}
+	}
+❱
+
+◀public: static▶ void ☀Resolve_On_Methods(Structure & structure,Struct_Manipulation_Settings const& settings)❰
+	for (auto const& it: structure.methods.methods){
+		auto corresponds_to = Decide_If_Method_Corresponds_To_Interface_Or_Implementation(structure,it);
+		
+		if (corresponds_to == File_Type::INTERFACE){
+			Apply_Method_Deps(it,structure.imports.interface_dependencies);
+		}
+		else if (corresponds_to == File_Type::IMPLEMENTATION){
+			Apply_Method_Deps(it,structure.imports.implementation_dependencies);
+		}
+	}
+❱
+
+◀public: static▶ File_Type ☀Decide_If_Method_Corresponds_To_Interface_Or_Implementation(Structure & structure, Method_Item const& m)❰
+
+	//this might be difficult to figure out right here.  
+	//there's a lot of factors that can come into play that may shift the dependencies of the function
+	//to be either public interfacing or private interfacing.  
+	//for example, if the structure if going to be a class, then the private methods still need to be in the interface.
+	//as apposed to being a set of global functions in which case the private functions are in the implementation
+	//(again, maybe on both of those things as we could probably customize either way).  
+	//templates are an example that end up shifting code into the interface.
+	//another thing to consider is using forward delegations instead of specifying the types.  
+	//all of these things will probably become other structure adjustments further up the adjustment pipeline
+	//that way by the time gets to module dependency resolving, we won't have to worry about all of that.
+	//time will tell.  in any case, we'll do a naive implementation for now, and adjust more as issues arise.
+
+	//objects
+	//we assume every method needs to be in the interface with the class (even if they are private)
+	if (structure.meta.code_type == Code_Type::PRODUCT_TYPE || structure.meta.code_type == Code_Type::SUM_TYPE){
+		return File_Type::INTERFACE;
+	}
+	
+	//global types (depends on what the access of the function (for now)
+	if (structure.meta.code_type == Code_Type::GLOBAL){
+		if (m.class_access == Class_Access::PRIVATE){
+			return File_Type::IMPLEMENTATION;
+		}
+		else if (m.class_access == Class_Access::PUBLIC){
+			return File_Type::INTERFACE;
+		}
+		else if (m.class_access == Class_Access::PROTECTED){
+			return File_Type::INTERFACE; //shouldn't really happen on global
+		}
+	}
+	
+	return File_Type::INTERFACE;
+❱
+
+◀private: static▶ void ☀Apply_Method_Deps(Method_Item const& m, std::vector<Import_Item> & imports)❰
+	for (auto const& it: m.template_arguments){
+		Apply_Module_Deps(it.import_dependencies,imports);
+	}
+	for (auto const& it: m.function_arguments){
+		Apply_Module_Deps(it.import_dependencies,imports);
+	}
+	for (auto const& it: m.return_results){
+		Apply_Module_Deps(it.import_dependencies,imports);
 	}
 ❱
 
