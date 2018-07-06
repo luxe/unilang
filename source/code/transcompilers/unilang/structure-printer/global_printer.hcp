@@ -1,9 +1,11 @@
 class
 
-
+❪vector❫
+❪string❫
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/options/language-specific/cpp_export_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/structure-printer/stream_creator"❫
 ❪"code/transcompilers/unilang/boilerplate_printer/meta_block/meta_block_printer"❫
@@ -22,31 +24,65 @@ class
 ❪"code/utilities/streams/filestreams/lib"❫
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
-◀public: static▶ void ☀Print_Global_Files(Structure const& structure, C_Export_Settings const& options)❰
+◀public: static▶ std::vector<std::string> ☀Print_Global_Files(Structure const& structure, C_Export_Settings const& options)❰
 
-    //decide how many files we are going to make
+    std::vector<std::string> files_created;
     if (options.general.global_partition == Global_Code_Partition_Method::ONE){
-        Print_Interface_And_Implementation_In_The_Same_File(structure,options);
+        files_created += Print_Interface_And_Implementation_In_The_Same_File(structure,options);
     }
     else if (options.general.global_partition == Global_Code_Partition_Method::TWO){
-        Print_Interface_And_Implementation_Across_Two_Files(structure,options);
+        files_created += Print_Interface_And_Implementation_Across_Two_Files(structure,options);
     }
+    return files_created;
 ❱
 
-◀public: static▶ void ☀Print_Interface_And_Implementation_In_The_Same_File(Structure const& structure, C_Export_Settings const& options)❰
-    //needs implemented..
+◀public: static▶ std::vector<std::string> ☀Print_Global_Files(Structure const& structure, Cpp_Export_Settings const& options)❰
+
+    std::vector<std::string> files_created;
+    if (options.general.global_partition == Global_Code_Partition_Method::ONE){
+        files_created += Print_Interface_And_Implementation_In_The_Same_File(structure,options);
+    }
+    else if (options.general.global_partition == Global_Code_Partition_Method::TWO){
+        files_created += Print_Interface_And_Implementation_Across_Two_Files(structure,options);
+    }
+    return files_created;
 ❱
 
-◀public: static▶ void ☀Print_Interface_And_Implementation_Across_Two_Files(Structure const& structure, C_Export_Settings const& options)❰
-    Print_Global_Interface_File(structure,options);
+
+◀public: static▶ std::vector<std::string> ☀Print_Interface_And_Implementation_In_The_Same_File(Structure const& structure, C_Export_Settings const& options)❰
+    std::vector<std::string> files_created;
+    return files_created;
+❱
+◀public: static▶ std::vector<std::string> ☀Print_Interface_And_Implementation_In_The_Same_File(Structure const& structure, Cpp_Export_Settings const& options)❰
+    std::vector<std::string> files_created;
+    return files_created;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Print_Interface_And_Implementation_Across_Two_Files(Structure const& structure, C_Export_Settings const& options)❰
+    std::vector<std::string> files_created;
+    //TODO
+    // files_created += Print_Global_Interface_File(structure,options);
+    
+    // //has an implementation
+    // if (Structure_Has_Implementation(structure) ||
+    //     !options.general.single_global_file_if_there_is_nothing_to_put_in_the_source){
+    //     files_created += Print_Global_Implementation_File(structure,options);
+    // }
+    return files_created;
+❱
+◀public: static▶ std::vector<std::string> ☀Print_Interface_And_Implementation_Across_Two_Files(Structure const& structure, Cpp_Export_Settings const& options)❰
+    std::vector<std::string> files_created;
+    files_created += Print_Global_Interface_File(structure,options);
     
     //has an implementation
     if (Structure_Has_Implementation(structure) ||
         !options.general.single_global_file_if_there_is_nothing_to_put_in_the_source){
-        Print_Global_Implementation_File(structure,options);
+        files_created += Print_Global_Implementation_File(structure,options);
     }
+    return files_created;
 ❱
 
 
@@ -106,6 +142,68 @@ class
     
     Boilerplate_Printer::Print_End(out,structure,file_settings,options);
 ❱
+
+
+◀private: static▶ std::vector<std::string> ☀Print_Global_Interface_File(Structure const& structure, Cpp_Export_Settings const& options)❰
+    std::vector<std::string> files_created;
+    
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::CPP;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::INTERFACE;
+    
+    auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,options.general.filesystem_naming);
+    files_created.emplace_back(final_file_name);
+    
+    //TODO: FIX THIS
+    C_Export_Settings BAD_DONT_DO_THIS;
+    BAD_DONT_DO_THIS.general = options.general;
+    BAD_DONT_DO_THIS.portion = options.portion;
+    BAD_DONT_DO_THIS.manipulations = options.manipulations;
+    Boilerplate_Printer::Print_Begin(out,structure,file_settings,BAD_DONT_DO_THIS,final_file_name);
+    
+    return files_created;
+❱
+◀private: static▶ std::vector<std::string> ☀Print_Global_Implementation_File(Structure const& structure, Cpp_Export_Settings const& options)❰
+    std::vector<std::string> files_created;
+    
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::CPP;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::IMPLEMENTATION;
+    
+    auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,options.general.filesystem_naming);
+    files_created.emplace_back(final_file_name);
+    
+    //TODO: FIX THIS
+    C_Export_Settings BAD_DONT_DO_THIS;
+    BAD_DONT_DO_THIS.general = options.general;
+    BAD_DONT_DO_THIS.portion = options.portion;
+    BAD_DONT_DO_THIS.manipulations = options.manipulations;
+    Boilerplate_Printer::Print_Begin(out,structure,file_settings,BAD_DONT_DO_THIS,final_file_name);
+    
+    return files_created;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ◀private: static▶ std::wofstream ☀Create_Stream_And_Print_Boilerplate_Beginning(Structure const& structure, C_Export_Settings const& options,Export_File_Settings const& file_settings)❰
     auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);

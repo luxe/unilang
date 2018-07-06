@@ -218,6 +218,8 @@ hcp(name = "global_printer", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",
+"//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
+"//code/utilities/types/vectors/operators:lib",
 ])
 
 hcp(name = "file_printer", deps = [
@@ -228,6 +230,8 @@ hcp(name = "file_printer", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",
+"//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
+"//code/utilities/types/vectors/operators:lib",
 ])
 
 hcp(name = "struct_derivers", deps = [

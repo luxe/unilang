@@ -6,6 +6,9 @@ class
 ❪"code/transcompilers/unilang/contributor/contributor"❫
 ❪"code/transcompilers/unilang/options/language-specific/cpp_export_settings"❫
 ❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/transcompilers/unilang/structure-adjuster/structure_adjuster"❫
+❪"code/transcompilers/unilang/structure-printer/file_printer"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 
 ⚯
 
@@ -15,5 +18,15 @@ class
 
 
     std::vector<std::string> files_created;
+    
+    //force structure changes
+    //TODO: we need to store adjustment phases.  Different tools might want the structure
+    //at different phases in its transition.  For now, and this is a hack, I'll make a copy
+    //for the test wrapper
+    Structure copy = structure;
+    Structure_Adjuster::Adjust(structure,settings.manipulations);
+    
+    files_created += File_Printer::Create(copy,settings);
+    
     return files_created;
 ❱

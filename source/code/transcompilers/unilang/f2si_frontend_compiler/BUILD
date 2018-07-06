@@ -32,6 +32,8 @@ hcp(name = "cpp_exporter", deps = [
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
+"//code/transcompilers/unilang/structure-printer:file_printer",
 ])
 
 hcp(name = "uber_contributors_getter", deps = [
