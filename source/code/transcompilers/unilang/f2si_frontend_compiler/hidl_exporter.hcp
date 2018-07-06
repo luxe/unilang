@@ -2,6 +2,8 @@ class
 
 
 ❪iostream❫
+❪vector❫
+❪string❫
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/contributor/contributor"❫
 ❪"code/transcompilers/unilang/options/language-specific/hidl_export_settings"❫
@@ -29,13 +31,13 @@ class
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
 ⚞⚟
 
-◀public: static▶ void ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Hidl_Export_Settings const& settings, bool transfer)❰
+◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Hidl_Export_Settings const& settings)❰
     
     //create a directory for the global or object code, and export it in an f2si fashion
-    Create_Output_Folder_With_All_The_Generated_Data(structure,settings,transfer);
+    return Create_Output_Folder_With_All_The_Generated_Data(structure,settings);
 ❱
 
-◀private: static▶ void ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, Hidl_Export_Settings const& settings, bool transfer)❰
+◀private: static▶ std::vector<std::string> ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, Hidl_Export_Settings const& settings)❰
     
     //force structure changes
     //TODO: we need to store adjustment phases.  Different tools might want the structure
@@ -43,15 +45,17 @@ class
     //for the test wrapper
     Structure_Adjuster::Adjust(structure,settings.manipulations);
     
-    Create_Source_Files(structure,settings,transfer);
+    return Create_Source_Files(structure,settings);
 ❱
 
-◀private: static▶ void ☀Create_Source_Files(Structure structure, Hidl_Export_Settings const& settings, bool transfer)❰
+◀private: static▶ std::vector<std::string> ☀Create_Source_Files(Structure structure, Hidl_Export_Settings const& settings)❰
 
-    Create_File(structure,settings,transfer);
+    std::vector<std::string> created_files;
+    created_files.emplace_back(Create_File(structure,settings));
+    return created_files;
 ❱
 
-◀private: static▶ void ☀Create_File(Structure structure, Hidl_Export_Settings const& settings, bool perform_transfer)❰
+◀private: static▶ std::string ☀Create_File(Structure structure, Hidl_Export_Settings const& settings)❰
 
     //create file settings for hidl data file
     Export_File_Settings file_settings;
@@ -64,10 +68,12 @@ class
     //ASSUMES THE UNILANG AND REGULAR REPO ARE MIRRORED IN DIRCTORY STRUCTURE ACROSS MACHINES
     auto out = Create_Stream_And_Print_Everything(structure,settings,file_settings);
 	out.close();
-	if (perform_transfer){
-		auto file_name = File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
-        File_Transferer::Transfer(file_name);
-	}
+    
+    return File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
+	//if (perform_transfer){
+	//	auto file_name = File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
+    //    File_Transferer::Transfer(file_name);
+	//}
 ❱
 
 ◀private: static▶ std::wofstream ☀Create_Stream_And_Print_Everything(Structure const& structure, Hidl_Export_Settings const& options,Export_File_Settings const& file_settings)❰

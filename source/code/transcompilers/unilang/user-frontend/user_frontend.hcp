@@ -1,4 +1,6 @@
 class
+❪vector❫
+❪string❫
 ❪"code/transcompilers/unilang/main/program_options/program_options"❫
 ❪"code/transcompilers/unilang/user-frontend/command_line_arguments/dependency_paths"❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
@@ -24,6 +26,8 @@ class
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/cpp_options_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_contributors_getter"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
@@ -48,7 +52,11 @@ class
     
     //parse all of the files into data structures
     auto graphs = Turn_Files_Into_Code_Graphs(input);
-    Create_All_The_Files(graphs,input);
+    auto created_files = Create_All_The_Files(graphs,input);
+    
+    if (input.options.user_chosen_export_settings.transfer){
+        File_Transferer::Transfer(created_files);
+    }
 ❱
 
 ◀public: static▶ void ☀Set_All_Settings(Program_Input & input)❰
@@ -71,18 +79,21 @@ class
 ❱
 
 
-◀private: static▶ void ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
+◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 
     //Decide where to place exports of the file
     auto output_directory = Decide_Output_Directory();
+    std::vector<std::string> created_files;
     Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
     
         //create new files from all the data structures
-        Transcompile_Each_Code_Graph(graphs,input);
+        created_files += Transcompile_Each_Code_Graph(graphs,input);
         
         //create additional files with all of the data structures (usually build files / other meta)
-        Transcompile_Extra_Files(graphs,input);
+        created_files += Transcompile_Extra_Files(graphs,input);
     });
+    
+    return created_files;
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files)❰
@@ -159,24 +170,31 @@ class
     return path;
 ❱
 
-◀private: static▶ void ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input input)❰
+◀private: static▶ std::vector<std::string> ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input input)❰
 
+    std::vector<std::string> created_files;
+    
     //set default language if not chosen
     if (input.options.user_chosen_export_settings.language.empty()){
         
         //todo: derive from structure
         //hard-coded in the structure from the user or from a prior stage
         input.options.user_chosen_export_settings.language = "bazel";
-        Compiler::Compile(code_graphs,input);
+        created_files += Compiler::Compile(code_graphs,input);
     }
+    
+    return created_files;
 ❱
-◀private: static▶ void ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
+◀private: static▶ std::vector<std::string> ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
+
+    std::vector<std::string> created_files;
     for (auto const& it: graphs){
         Program_Input artifact_input = input;
         if (artifact_input.options.user_chosen_export_settings.language.empty()){
             artifact_input.options.user_chosen_export_settings.language = Language_Guesser::Guess(it.structure);
         }
 
-        Compiler::Compile(it,artifact_input);
+        created_files += Compiler::Compile(it,artifact_input);
     }
+    return created_files;
 ❱

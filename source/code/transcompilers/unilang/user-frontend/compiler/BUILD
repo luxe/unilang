@@ -13,4 +13,5 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/compiler-frontends/bazel:bazel_rule_exporter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:cpp_exporter",
+"//code/utilities/types/vectors/operators:lib",
 ])

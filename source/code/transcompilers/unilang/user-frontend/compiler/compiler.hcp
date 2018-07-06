@@ -1,6 +1,8 @@
 class
 
 
+❪vector❫
+❪string❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ❪"code/transcompilers/unilang/main/program_input"❫
 ⚯
@@ -14,6 +16,7 @@ class
 ❪"code/transcompilers/unilang/options/bazel/language_to_build_object"❫
 ❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
 ❪"code/transcompilers/unilang/compiler-frontends/bazel/bazel_rule_exporter"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 
@@ -62,16 +65,16 @@ class
 //code into our "data structure design".  (Data structure design is bad name for it, but it is normal OO C design).  
 //So these are both styles that I can apply on the same UniLang code.
 //Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
-◀public: static▶ void ☀Compile(Code_Graph const& code_graph, Program_Input input)❰
+◀public: static▶ std::vector<std::string> ☀Compile(Code_Graph const& code_graph, Program_Input input)❰
 
     
 	auto unit = Decide_Exporter_Settings(input);
     
+    std::vector<std::string> created_files;
     if (input.options.user_chosen_export_settings.language == "c"){
     }
     else if(input.options.user_chosen_export_settings.language == "cpp"){
-        std::cout << "compiling cpp: " << code_graph.structure << std::endl;
-        Cpp_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp,true);
+        created_files += Cpp_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp);
     }
     else if(input.options.user_chosen_export_settings.language == "csharp"){
     }
@@ -80,10 +83,7 @@ class
     else if(input.options.user_chosen_export_settings.language == "rust"){
     }
     else if(input.options.user_chosen_export_settings.language == "hidl"){
-        
-        //get settings and call
-        std::cout << "compiling hidl: " << code_graph.structure << std::endl;
-        Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl,true);
+        created_files += Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl);
     }
     else if(input.options.user_chosen_export_settings.language == "protobuf"){
     }
@@ -95,14 +95,16 @@ class
     }
     else if(input.options.user_chosen_export_settings.language == "treesheets"){
     }
+    return created_files;
 ❱
 
-◀public: static▶ void ☀Compile(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
+◀public: static▶ std::vector<std::string> ☀Compile(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
     
     auto unit = Decide_Exporter_Settings(input);
     
-    std::cout << "compiling BUILD" << std::endl;
-    Bazel_Rule_Exporter::Export(code_graphs,unit.contributors,unit.settings.foreign_language.bazel_build);
+    std::vector<std::string> created_files;
+    created_files += Bazel_Rule_Exporter::Export(code_graphs,unit.contributors,unit.settings.foreign_language.bazel_build);
+    return created_files;
 ❱
 
 ◀public: static▶ Compile_Unit ☀Decide_Exporter_Settings(Program_Input const& input)❰
