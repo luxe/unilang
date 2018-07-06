@@ -28,12 +28,6 @@ class
 ⚞⚟
 
 //non-wrapped methods
-◀public: static▶ void ☀Print_Global_Interface_Methods(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, std::vector<Method_Item> const& methods, C_Export_Settings const& options)❰
-
-    for (auto it: methods){
-        Print_Method_Interface(out,file_name,code_type,it,options);
-    }
-❱
 ◀public: static▶ void ☀Print_Global_Implementation_Methods(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, Object_Export_Method const& export_method)❰
     for (auto it: methods){
         Print_Method_Implementation(out,file_name,code_type,it,members,methods,false,options,"",export_method);
@@ -96,6 +90,21 @@ class
     
 ❱
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ◀private: static▶ void ☀Print_Method_Deceleration(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options)❰
     
     Print_Method_Signature(out,file_name,code_type,method,options,Function_Declaration_Location::DECLARATION);
@@ -122,6 +131,10 @@ class
 ❱
 ◀private: static▶ void ☀Print_Method_Signature(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
 
+  //TODO: MOVE OUT
+  std::string static_keyword = "static";
+  
+  
 	//[attributes]
     auto attributes1 = Method_Attributes_Getter::Get_Method_Section_1(method,options,location);
     Print_To_Stream(out,attributes1);
@@ -135,7 +148,8 @@ class
 
      //static qualifier
      if (method.storage == Storage_Specifier::STATIC){
-        Print_To_Stream(out,"static ");
+        Print_To_Stream(out,static_keyword);
+        Print_To_Stream(out," ");
      }
 
 	//[attributes]

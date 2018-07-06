@@ -17,6 +17,9 @@ class
     Print_Warnings_About_Method_Section(error_messages,structure,settings);
     Print_Warnings_About_Data_Member_Section(error_messages,structure,settings);
     
+    //warn if the identifier indicates there should probably be a length but no length is provided
+    //certain words can tip this off: length, distance, weight, etc
+    
     for (auto it: error_messages){
         std::cerr << it.first << ": " << it.second << std::endl;
     }
@@ -30,11 +33,14 @@ class
     //Spell_Check_Bugs();
     //Spell_Check_Warnings();
 
+    //make certain token values be mandatory
     Add_Error_Based_On_Expression_And_Desire(structure.meta.brief_description.value.empty(),settings.warn_about_empty_brief_description,error_messages,structure,"Missing brief description");
     Add_Error_Based_On_Expression_And_Desire(structure.meta.detailed_description.value.empty(),settings.warn_about_empty_detailed_description,error_messages,structure,"Missing detailed description");
     Add_Error_Based_On_Expression_And_Desire(structure.meta.group_names.empty(),settings.warn_about_no_group_names,error_messages,structure,"No group names provided");
     
     //I've been accidentally new lining comments after a comma
+    //unilang expects each sentence to be a line.
+    //i might change that later, but here is a warning I might want regardless
     Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.brief_description.value),settings.warn_about_empty_brief_description,error_messages,structure,"brief line ends with a comma");
     Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.detailed_description.value),settings.warn_about_empty_detailed_description,error_messages,structure,"detail line ends with a comma");
     
