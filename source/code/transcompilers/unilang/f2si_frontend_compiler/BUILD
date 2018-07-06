@@ -14,6 +14,7 @@ hcp(name = "f2si_c_exporter", deps = [
 "//code/transcompilers/unilang/structure-adjuster/methods/creating_methods:extra_methods_creator",
 "//code/transcompilers/unilang/structure:inlined_structures",
 "//code/utilities/filesystem/paths:lib",
+"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
 
 hcp(name = "f2si_contributors_getter", deps = [
@@ -34,6 +35,7 @@ hcp(name = "cpp_exporter", deps = [
 "//code/transcompilers/unilang/structure:inlined_structures",
 "//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
 "//code/transcompilers/unilang/structure-printer:file_printer",
+"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
 
 hcp(name = "uber_contributors_getter", deps = [
@@ -64,6 +66,7 @@ hcp(name = "hidl_exporter", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
+"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
 
 hcp(name = "hidl_options_getter", deps = [

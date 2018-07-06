@@ -38,6 +38,7 @@ hcp(name = "structure_adjuster", deps = [
 "structure_normalizer",
 "module_dependency_resolver",
 "//code/utilities/types/strings/observers/converting:lib",
+"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
 
 hcp(name = "structure_normalizer", deps = [
