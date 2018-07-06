@@ -220,6 +220,7 @@ hcp(name = "global_printer", deps = [
 "//code/utilities/types/general:lib",
 "//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/utilities/types/vectors/operators:lib",
+"//code/transcompilers/unilang/structure-printer:namespace_printer",
 ])
 
 hcp(name = "file_printer", deps = [
