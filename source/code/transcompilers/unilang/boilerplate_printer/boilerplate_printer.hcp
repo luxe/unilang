@@ -4,6 +4,7 @@ class
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
 ⚯
 ❪"code/transcompilers/unilang/boilerplate_printer/meta_block/meta_block_printer"❫
 ❪"code/transcompilers/unilang/boilerplate_printer/code_wrap_printer"❫
@@ -108,11 +109,13 @@ class
 
 ◀private: static▶ void ☀Print_Headers_Based_On_Type(std::wofstream & out, Structure const& structure, C_Export_Settings const& options, Export_File_Settings const& file_settings)❰
     
+    auto language = Source_Language::CPP;
+    
     //print headers for global
     if (file_settings.code == Code_Type::GLOBAL){
         switch (file_settings.file){
-            case File_Type::INTERFACE:      Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());             break;
-            case File_Type::IMPLEMENTATION: Header_Printer::Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies,options,structure.inlined_structures.get(),structure.methods.methods);   break;
+            case File_Type::INTERFACE:      Header_Printer::Print_Global_Interface_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get(),language);             break;
+            case File_Type::IMPLEMENTATION: Header_Printer::Print_Global_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies,options,structure.inlined_structures.get(),structure.methods.methods,language);   break;
             default: std::cerr << "unknown global" << std::endl; break;
         }
     }
@@ -121,11 +124,11 @@ class
     //print headers for object
     else if (file_settings.code == Code_Type::PRODUCT_TYPE || file_settings.code == Code_Type::SUM_TYPE){
         switch (file_settings.file){
-            case File_Type::INTERFACE:      Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());             break;
-            case File_Type::IMPLEMENTATION: Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies,options,structure.inlined_structures.get());   break;
-            case File_Type::DATA:           Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());                  break;
-            case File_Type::DATA_AND_INTERFACE: Header_Printer::Print_Object_Data_And_Interface(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get());        break;
-            case File_Type::ALL: Header_Printer::Print_Object_Data_Interface_And_Implementation(structure.name,out,structure.imports,options,structure.inlined_structures.get()); break;
+            case File_Type::INTERFACE:      Header_Printer::Print_Object_Interface_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get(),language);             break;
+            case File_Type::IMPLEMENTATION: Header_Printer::Print_Object_Implementation_Headers(structure.name,out,structure.imports.implementation_dependencies,options,structure.inlined_structures.get(),language);   break;
+            case File_Type::DATA:           Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get(),language);                  break;
+            case File_Type::DATA_AND_INTERFACE: Header_Printer::Print_Object_Data_And_Interface(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get(),language);        break;
+            case File_Type::ALL: Header_Printer::Print_Object_Data_Interface_And_Implementation(structure.name,out,structure.imports,options,structure.inlined_structures.get(),language); break;
             default: std::cerr << "unknown object" << std::endl; break;
         }
     }

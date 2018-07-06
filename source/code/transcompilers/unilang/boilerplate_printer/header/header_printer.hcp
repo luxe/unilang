@@ -7,6 +7,7 @@ class
 ❪"code/transcompilers/unilang/structure/inlined_structures"❫
 ❪"code/transcompilers/unilang/boilerplate_printer/header/unilang-convert/header_adjuster"❫
 ❪"code/utilities/streams/filestreams/lib"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
@@ -18,69 +19,69 @@ class
 
 
 //HIDL HEADERS
-◀public: static▶ void ☀Print_Object_Data_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, Hidl_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Object_Data_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, Hidl_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     
     //print chunk of header includes
-    Adjust_Headers_Collect_Format_And_Print_For_Hidl(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Data_Headers);
+    Adjust_Headers_Collect_Format_And_Print_For_Hidl(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Data_Headers,language);
 ❱
 
 //C HEADERS
-◀public: static▶ void ☀Print_Object_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Object_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
-    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Interface_Headers);
+    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Interface_Headers,language);
 ❱
-◀public: static▶ void ☀Print_Object_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Object_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
-    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Implementation_Headers);
+    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Implementation_Headers,language);
 ❱
-◀public: static▶ void ☀Print_Object_Data_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Object_Data_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
-    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Data_Headers_For_C);
+    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Data_Headers_For_C,language);
 ❱
-◀public: static▶ void ☀Print_Global_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Global_Interface_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
-    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Global_Interface_Headers);
+    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Global_Interface_Headers,language);
 ❱
-◀public: static▶ void ☀Print_Global_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, std::vector<Method_Item> const& methods)❰
+◀public: static▶ void ☀Print_Global_Implementation_Headers(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, std::vector<Method_Item> const& methods, Source_Language const& language)❰
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
     Header_Adjuster::Adjust_UniLang_Header_Names_To_Match_Actual_Exported_File_Casing(imports,options.general.filesystem_naming);
-    auto str = Header_Collector::Get_Global_Implementation_Headers(file_name,imports,inlines,options.portion.import_options,methods);
+    auto str = Header_Collector::Get_Global_Implementation_Headers(file_name,imports,inlines,options.portion.import_options,methods,language);
     Print_To_Stream(out,str);
 ❱
-◀public: static▶ void ☀Print_Object_Data_And_Interface(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Object_Data_And_Interface(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
-    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Data_And_Interface);
+    Adjust_Headers_Collect_Format_And_Print(file_name,out,imports,options,inlines,Header_Collector::Get_Object_Data_And_Interface,language);
 ❱
-◀public: static▶ void ☀Print_Object_Data_Interface_And_Implementation(std::string file_name,std::wofstream & out, Import_Section imports, C_Export_Settings const& options, Inlined_Structures const& inlines)❰
+◀public: static▶ void ☀Print_Object_Data_Interface_And_Implementation(std::string file_name,std::wofstream & out, Import_Section imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Source_Language const& language)❰
     //print obnoxious comment above include chunk
     Possibly_Print_Obnoxious_Comment_Block(out,options);
     
     //print chunk of header includes
     Header_Adjuster::Adjust_UniLang_Header_Names_To_Match_Actual_Exported_File_Casing(imports.interface_dependencies,options.general.filesystem_naming);
     Header_Adjuster::Adjust_UniLang_Header_Names_To_Match_Actual_Exported_File_Casing(imports.implementation_dependencies,options.general.filesystem_naming);
-    auto str = Header_Collector::Get_Object_Data_Interface_And_Implementation(file_name,imports,inlines,options);
+    auto str = Header_Collector::Get_Object_Data_Interface_And_Implementation(file_name,imports,inlines,options,language);
     Print_To_Stream(out,str);
     Print_To_Stream_With_Newline(out,"");
 ❱
@@ -94,17 +95,17 @@ class
 ❱
 
 ◀private: template <typename Fun>
-static void Adjust_Headers_Collect_Format_And_Print(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Fun const& fun){
+static void Adjust_Headers_Collect_Format_And_Print(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, C_Export_Settings const& options, Inlined_Structures const& inlines, Fun const& fun, Source_Language const& language){
     Header_Adjuster::Adjust_UniLang_Header_Names_To_Match_Actual_Exported_File_Casing(imports,options.general.filesystem_naming);
-    auto str = fun(file_name,imports,inlines,options);
+    auto str = fun(file_name,imports,inlines,options,language);
     Print_To_Stream(out,str);
     Print_To_Stream_With_Newline(out,"");
 }
 ▶
 ◀private: template <typename Fun>
-static void Adjust_Headers_Collect_Format_And_Print_For_Hidl(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, Hidl_Export_Settings const& options, Inlined_Structures const& inlines, Fun const& fun){
+static void Adjust_Headers_Collect_Format_And_Print_For_Hidl(std::string file_name,std::wofstream & out, std::vector<Import_Item> imports, Hidl_Export_Settings const& options, Inlined_Structures const& inlines, Fun const& fun, Source_Language const& language){
     Header_Adjuster::Adjust_UniLang_Header_Names_To_Match_Actual_Exported_File_Casing(imports,options.general.filesystem_naming);
-    auto str = fun(file_name,imports,inlines,options.portion.import_options);
+    auto str = fun(file_name,imports,inlines,options.portion.import_options,language);
     Print_To_Stream(out,str);
     Print_To_Stream_With_Newline(out,"");
 }

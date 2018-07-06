@@ -3,21 +3,23 @@ class
 
 ❪"code/transcompilers/unilang/structure/sections/import/import_section"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/file_extension_getter/file_extension_getter"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
 ⚯
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ⚞⚟
 
-◀public: static▶ void ☀Add_Header_Extensions_If_Needed(std::vector<Import_Item> & imports)❰
+◀public: static▶ void ☀Add_Header_Extensions_If_Needed(std::vector<Import_Item> & imports, Source_Language const& language)❰
     for (auto & it: imports){
-        Add_Header_Extensions_If_Needed(it);
+        Add_Header_Extensions_If_Needed(it,language);
     }
 ❱
 
-◀private: static▶ void ☀Add_Header_Extensions_If_Needed(Import_Item & import)❰
+◀private: static▶ void ☀Add_Header_Extensions_If_Needed(Import_Item & import, Source_Language const& language)❰
     auto str = as_string(import.name.value);
 
 	//settings
-    std::string assumed_extension = "hidl";
+    std::string assumed_extension = File_Extension_Getter::Get_For_Interface(language);
     
     //if it's a local header, and the header doesn't have an extension, assume the extension
     if (import.type != Import_Type::SYSTEM){

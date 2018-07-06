@@ -4,6 +4,7 @@ class
 ❪"code/transcompilers/unilang/structure/sections/import/import_section"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
 ❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
@@ -21,7 +22,7 @@ class
 ⚞⚟
 
 //actual string builder functions
-◀public: static▶ std::string ☀Get_Object_Interface_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options)❰
+◀public: static▶ std::string ☀Get_Object_Interface_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options, Source_Language const& language)❰
     std::string str;
     
     
@@ -50,13 +51,13 @@ class
 ❱
 
 
-◀public: static▶ std::string ☀Get_Object_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options)❰
+◀public: static▶ std::string ☀Get_Object_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options, Source_Language const& language)❰
     std::string str;
     
     //recursively pull in the inlined flags (implementation)
     Remove_Duplicates(imports);
     
-    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports,language);
     auto max_length = Max_Header_File_Length(imports);
     
     //create settings for file stream creation
@@ -79,7 +80,7 @@ class
 ❱
 
 //DEPREICATE THIS ONE (C_EXPORT_SETTINGS TOO SPECIFIC)
-◀public: static▶ std::string ☀Get_Object_Data_Headers_For_C(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options)❰
+◀public: static▶ std::string ☀Get_Object_Data_Headers_For_C(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, C_Export_Settings const& options, Source_Language const& language)❰
     std::string str;
 
 	//TODO: settings
@@ -92,7 +93,7 @@ class
 	}
     
     if (add_header_extensions_if_needed){
-    	Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+    	Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports,language);
 	}
     auto max_length = Max_Header_File_Length(imports);
     str += Get_Each_Include_Line(imports,max_length,options.portion.import_options);
@@ -103,7 +104,7 @@ class
 
 
 
-◀public: static▶ std::string ☀Get_Object_Data_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& options)❰
+◀public: static▶ std::string ☀Get_Object_Data_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& options, Source_Language const& language)❰
     std::string str;
 
 	//TODO: settings
@@ -116,7 +117,7 @@ class
 	}
     
     if (add_header_extensions_if_needed){
-    	Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+    	Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports,language);
 	}
     auto max_length = Max_Header_File_Length(imports);
     str += Get_Each_Include_Line(imports,max_length,options);
@@ -124,7 +125,7 @@ class
     return str;
 ❱
 
-◀public: static▶ std::string ☀Get_Global_Interface_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines,C_Export_Settings const& options)❰
+◀public: static▶ std::string ☀Get_Global_Interface_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines,C_Export_Settings const& options, Source_Language const& language)❰
     std::string str;
     
     //recursively pull in the inlined flags (interface)
@@ -132,7 +133,7 @@ class
     
     //std::cout << imports.size() << std::endl;
     if (!imports.empty()){
-        Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+        Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports,language);
         auto max_length = Max_Header_File_Length(imports);
         str += Get_Each_Include_Line(imports,max_length,options.portion.import_options);
         Append_With_Newline(str,"");
@@ -140,7 +141,7 @@ class
     
     return str;
 ❱
-◀public: static▶ std::string ☀Get_Global_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& settings, std::vector<Method_Item> const& methods)❰
+◀public: static▶ std::string ☀Get_Global_Implementation_Headers(std::string file_name, std::vector<Import_Item> & imports, Inlined_Structures const& inlines, Import_Options const& settings, std::vector<Method_Item> const& methods, Source_Language const& language)❰
     std::string str;
     
     auto implicit_header_casing = Case_Format_Style::LOWER_CASE_WITH_UNDERSCORES;
@@ -150,7 +151,7 @@ class
     //recursively pull in the inlined flags (implementation)
     Remove_Duplicates(imports);
     
-    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports);
+    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(imports,language);
     auto max_length = Max_Header_File_Length(imports);
     
     //adjust for the obligatory header needed
@@ -171,24 +172,24 @@ class
     
     return str;
 ❱
-◀public: static▶ std::string ☀Get_Object_Data_And_Interface(std::string file_name,std::vector<Import_Item> imports, Inlined_Structures const& inlines,C_Export_Settings const& options)❰
+◀public: static▶ std::string ☀Get_Object_Data_And_Interface(std::string file_name,std::vector<Import_Item> imports, Inlined_Structures const& inlines,C_Export_Settings const& options, Source_Language const& language)❰
 
     std::string str;
     
     //recursively pull in the inlined flags (interface)
     Remove_Duplicates(imports);
     
-    str += Get_Object_Data_Headers_For_C(file_name,imports,inlines,options);
+    str += Get_Object_Data_Headers_For_C(file_name,imports,inlines,options,language);
     return str;
 ❱
-◀public: static▶ std::string ☀Get_Object_Data_Interface_And_Implementation(std::string file_name, Import_Section imports, Inlined_Structures const& inlines,C_Export_Settings const& options)❰
+◀public: static▶ std::string ☀Get_Object_Data_Interface_And_Implementation(std::string file_name, Import_Section imports, Inlined_Structures const& inlines,C_Export_Settings const& options, Source_Language const& language)❰
     std::string str;
     
     //recursively pull in the inlined flags (both)
     auto combined = imports.interface_dependencies + imports.implementation_dependencies;
     Remove_Duplicates(combined);
     
-    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(combined);
+    Header_Extension_Deriver::Add_Header_Extensions_If_Needed(combined,language);
     auto max_length = Max_Header_File_Length(combined);
     str += Get_Each_Include_Line(combined,max_length,options.portion.import_options);
     Append_With_Newline(str,"");

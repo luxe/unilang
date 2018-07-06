@@ -12,4 +12,6 @@ hcp(name = "header_extension_deriver", deps = [
 "//code/transcompilers/unilang/structure/sections/import:import_section",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/types/strings/observers/path:lib",
+"//code/transcompilers/unilang/file_extension_getter:file_extension_getter",
+"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
