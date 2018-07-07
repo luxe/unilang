@@ -6,6 +6,7 @@ class
 ❪"code/utilities/types/strings/transformers/trimming/lib"❫
 ❪"code/utilities/converters/lib"❫
 ❪iostream❫
+❪"code/utilities/types/sets/lib"❫
 ⚞⚟
 
 //need the file markers stored inside the structure
@@ -17,6 +18,8 @@ class
     Print_Warnings_About_Method_Section(error_messages,structure,settings);
     Print_Warnings_About_Data_Member_Section(error_messages,structure,settings);
     
+    Get_Warnings_About_Measurements(error_messages,structure,settings);
+    
     //warn if the identifier indicates there should probably be a length but no length is provided
     //certain words can tip this off: length, distance, weight, etc
     
@@ -25,7 +28,50 @@ class
     }
 ❱
 
-◀public: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Get_Warnings_About_Measurements(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+    
+    Warn_About_Missing_Measurements(error_messages,structure,settings);
+❱
+
+◀private: static▶ void ☀Warn_About_Missing_Measurements(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+    
+    for (auto const& it: structure.data_members.data_members){
+        auto identifier = as_string(it.name.value);
+        auto units = as_string(it.units.value);
+        Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+    }
+    
+    for (auto const& it: structure.methods.methods){
+        for (auto const& j: it.template_arguments){
+            auto identifier = as_string(j.identifier.value);
+            auto units = as_string(j.units.value);
+            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+        }
+        for (auto const& j: it.function_arguments){
+            auto identifier = as_string(j.identifier.value);
+            auto units = as_string(j.units.value);
+            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+        }
+        for (auto const& j: it.return_results){
+            auto identifier = as_string(j.identifier.value);
+            auto units = as_string(j.units.value);
+            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+        }
+    }
+    
+❱
+
+◀private: static▶ void ☀Add_Warning_If_Relevant_Identifier_Is_Missing_Units(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings, std::string const& identifier, std::string const& units)❰
+        if (Exists_In_Set(settings.measurements.measurements_that_should_have_units,identifier)){
+            if (units.empty()){
+                std::string error_message = identifier;
+                error_message += " has no units, and it probably should";
+                Add_Error(error_messages,structure,error_message);
+            }
+        }
+❱
+
+◀private: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Brief_Description();
     //Spell_Check_Detailed_Description();
     //Spell_Check_Group_Names();
@@ -46,7 +92,7 @@ class
     
     
 ❱
-◀public: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Brief_Import_Comment();
     for (auto it: structure.imports.interface_dependencies){
         Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_interface_import_comment,error_messages,structure,"Missing interface import comment");
@@ -55,7 +101,7 @@ class
         Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_implementation_import_comment,error_messages,structure,"Missing implementation import comment");
     }
 ❱
-◀public: static▶ void ☀Print_Warnings_About_Method_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Method_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Function_Name();
     //Spell_Check_Function_Brief_Description();
     //Spell_Check_Function_Detailed_Brief_Description();
@@ -64,13 +110,13 @@ class
     //Spell_Check_Function_Result_Comment();
     //Spell_Check_Function_Except_Comment();
 ❱
-◀public: static▶ void ☀Print_Warnings_About_Data_Member_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Data_Member_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
 //Brief
 //Detailed
 ❱
 
 
-◀public: static▶ bool ☀A_Line_Ends_With_A_Comma(std::wstring str)❰
+◀private: static▶ bool ☀A_Line_Ends_With_A_Comma(std::wstring str)❰
 
     auto parts = Split_Into_Parts_From_Delimiter(as_string(str),'\n');
     for (auto & it: parts){
@@ -82,13 +128,13 @@ class
     return false;
 ❱
 
-◀public: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error)❰
+◀private: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error)❰
     if (expression && desire){
         Add_Error(error_messages,structure,error);
     }
 ❱
 
-◀public: static▶ void ☀Add_Error(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error_message)❰
+◀private: static▶ void ☀Add_Error(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error_message)❰
     std::pair<std::string,std::string> error;
     error.first = structure.full_file_path;
     error.second = error_message;

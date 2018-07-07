@@ -7,4 +7,5 @@ hcp(name = "structure_static_analyzer", deps = [
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/converters:lib",
+"//code/utilities/types/sets:lib",
 ])
