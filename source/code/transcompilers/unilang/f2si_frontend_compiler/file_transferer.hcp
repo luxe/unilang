@@ -13,62 +13,23 @@ class
 ❪"code/utilities/system/lib"❫
 ⚞⚟
 
-◀public: static▶ void ☀Transfer(std::vector<std::string> const& file_names)❰
+◀public: static▶ void ☀Transfer(Pulse_Settings const& settings, std::vector<std::string> const& file_names)❰
     for (auto const& it: file_names){
-        Transfer(it);
+        Transfer(settings,it);
     }
 ❱
-◀public: static▶ void ☀Transfer(std::string const& file_name)❰
-
-    //build pulse settings
-    auto pulse_settings = Get_Pulse_Settings();
+◀public: static▶ void ☀Transfer(Pulse_Settings const& settings, std::string const& file_name)❰
     
     //build action settings
-    auto action = Get_Pulse_Action(pulse_settings,file_name);
+    auto action = Get_Pulse_Action(settings,file_name);
     
     //transfer
-    Pulse_Transferer::Transfer(pulse_settings,action);
-❱
-
-◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings()❰
-
-    std::string user = whoami();
-    if (user == "flighty"){
-        return Get_Pulse_Settings_For_Machine_Off_The_Network();
-    }
-    
-    return Get_Pulse_Settings_For_Machine_On_The_Network();
-❱
-
-◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_Machine_Off_The_Network()❰
-    Pulse_Settings pulse_settings;
-    pulse_settings.computer_user = "thickey";
-    pulse_settings.computer_name = "tower";
-    pulse_settings.lftp_password_location = Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
-    pulse_settings.expected_process_name = "pulseUi";
-    pulse_settings.lftp_tool_to_use = "lftp";
-    pulse_settings.pulse_required = true;
-    pulse_settings.show_file_progress = true;
-    return pulse_settings;
-❱
-◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_Machine_On_The_Network()❰
-    Pulse_Settings pulse_settings;
-    pulse_settings.computer_user = "thickey";
-    
-    //we could derive this on VMs and other machines on the same network
-    //I found it with ifconfig on the machine where files are being transfered to
-    //not sure how to do it from actual VM
-    pulse_settings.computer_name = "192.168.253.1";
-    pulse_settings.lftp_password_location = Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
-    pulse_settings.expected_process_name = "pulseUi";
-    pulse_settings.lftp_tool_to_use = "lftp";
-    pulse_settings.pulse_required = false;
-    pulse_settings.show_file_progress = true;
-    return pulse_settings;
+    Pulse_Transferer::Transfer(settings,action);
 ❱
 
 ◀private: static▶ Pulse_Transfer_Action ☀Get_Pulse_Action(Pulse_Settings const& settings, std::string const& file_name)❰
 
+    //create mirrored directory location
     std::string full_path = Full_Path();
     full_path += "/" + file_name;
 

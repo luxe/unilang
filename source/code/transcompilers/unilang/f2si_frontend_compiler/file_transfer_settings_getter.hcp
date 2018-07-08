@@ -1,0 +1,53 @@
+class
+
+❪iostream❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_settings"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/transfer_account_settings"❫
+⚯
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/system/lib"❫
+⚞⚟
+
+◀public: static▶ Pulse_Settings ☀Get_Pulse_Settings(Transfer_Account_Settings const& settings)❰
+    
+    std::string user = whoami();
+    if (user == settings.home_name){
+        return settings.home;
+    }
+    
+    return settings.work;
+❱
+
+◀public: static▶ Transfer_Account_Settings ☀Get()❰
+    Transfer_Account_Settings settings;
+    settings.home = Get_Pulse_Settings_For_Machine_Off_The_Network();
+    settings.work = Get_Pulse_Settings_For_Machine_On_The_Network();
+    return settings;
+❱
+
+◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_Machine_Off_The_Network()❰
+    Pulse_Settings pulse_settings;
+    pulse_settings.computer_user = "thickey";
+    pulse_settings.computer_name = "tower";
+    pulse_settings.lftp_password_location = Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
+    pulse_settings.expected_process_name = "pulseUi";
+    pulse_settings.lftp_tool_to_use = "lftp";
+    pulse_settings.pulse_required = true;
+    pulse_settings.show_file_progress = true;
+    return pulse_settings;
+❱
+◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_Machine_On_The_Network()❰
+    Pulse_Settings pulse_settings;
+    pulse_settings.computer_user = "thickey";
+    
+    //we could derive this on VMs and other machines on the same network
+    //I found it with ifconfig on the machine where files are being transfered to
+    //not sure how to do it from actual VM
+    pulse_settings.computer_name = "192.168.253.1";
+    pulse_settings.lftp_password_location = Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
+    pulse_settings.expected_process_name = "pulseUi";
+    pulse_settings.lftp_tool_to_use = "lftp";
+    pulse_settings.pulse_required = false;
+    pulse_settings.show_file_progress = true;
+    return pulse_settings;
+❱

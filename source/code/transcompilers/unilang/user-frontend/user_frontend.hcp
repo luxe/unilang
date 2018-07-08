@@ -27,6 +27,8 @@ class
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_contributors_getter"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/shell/lib"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
 ⚞⚟
 
@@ -42,16 +44,15 @@ class
     
     //decide all of the files we intend to transcompile
     //update/adjust existing files provided by the user
-	input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files);
+	input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files,input.settings.parser.input_files.expected_file_extension);
     
     if (input.options.input_files.empty()){
-        Exit_With_Error("no files to process");
+        Exit_With_Error(input.settings.error_message_on_no_files);
     }
     
     //set default exporter if not chosen
-    std::string default_exporter = "uber";
     if (input.options.user_chosen_export_settings.exporter.empty()){
-        input.options.user_chosen_export_settings.exporter = default_exporter;
+        input.options.user_chosen_export_settings.exporter = input.settings.default_exporter;
     }
     
     //parse all of the files into data structures
@@ -59,15 +60,20 @@ class
     
     
     
-    auto output_directory = Decide_Output_Directory();
+    auto output_directory = Decide_Output_Directory(input.settings.root_of_unilang_projects);
     Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
         auto created_files = Create_All_The_Files(graphs,input);
         Warn_About_Any_Conflicting_Artifacts(created_files);
         
+        
+        
         Run_Local_Programs_Over_Files(created_files);
         if (input.options.user_chosen_export_settings.transfer){
-            File_Transferer::Transfer(created_files);
+            
+            auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+            File_Transferer::Transfer(specific_user_settings,created_files);
         }
+        
         Run_Remote_Programs_Over_Files(created_files);
     });
 ❱
@@ -79,8 +85,17 @@ class
 ❱
 
 ◀private: static▶ void ☀Run_Local_Programs_Over_Files(std::vector<std::string> const& files)❰
+
+    for (auto const& file: files){
+        std::string command = "clang-format-3.9 -i " + file;
+        execute(command);
+    }
 ❱
 ◀private: static▶ void ☀Run_Remote_Programs_Over_Files(std::vector<std::string> const& files)❰
+    for (auto const& file: files){
+        std::string command = "clang-format-3.9 -i " + file;
+        execute(command);
+    }
 ❱
 
 ◀private: static▶ void ☀Set_All_Settings(Program_Input & input)❰
@@ -100,6 +115,8 @@ class
     input.settings.compiler_settings.uber.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
     input.settings.compiler_settings.f2si.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
     //input.settings.compiler_settings.trevor.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    
+    input.settings.transfer = File_Transfer_Settings_Getter::Get();
 ❱
 
 
@@ -116,12 +133,12 @@ class
     return created_files;
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files)❰
+◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files, std::string const& expected_file_extension)❰
     
     //if no files were passed, get all of the files in the directory
     //TODO: file extension is a setting
     if (input_files.empty()){
-        auto files = Get_Everything_At_Path_With_The_File_Extension("UniLang");
+        auto files = Get_Everything_At_Path_With_The_File_Extension(expected_file_extension);
         input_files = files;
     }
     return input_files;
@@ -178,15 +195,12 @@ class
     return code_graph;
 ❱
 
-◀private: static▶ std::string ☀Decide_Output_Directory()❰
-
-    //root_where_unilang_files_are_for_mirrored_repos_on_other_machines
-    std::string root_unilang = "company";
+◀private: static▶ std::string ☀Decide_Output_Directory(std::string const& root_of_unilang_projects)❰
     
     //we want to store UniLang files in the repo, but we don't want to export their generation into the same repo
     //(that will just make the repo dirty and I don't want to accidentally push up generated files)
     //instead, we want to export them to a mirroring directory on the desktop before also transferring them to where they need to go
-    auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder(root_unilang);
+    auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder(root_of_unilang_projects);
     return path;
 ❱
 

@@ -99,3 +99,10 @@ hcp(name = "file_transferer", deps = [
 "//code/utilities/system:lib",
 ])
 
+hcp(name = "file_transfer_settings_getter", deps = [
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:transfer_account_settings",
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/system:lib",
+])
+

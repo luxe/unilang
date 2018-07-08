@@ -6,3 +6,7 @@ hcp(name = "pulse_transfer_action")
 hcp(name = "pulse_transferer", deps = [
 "pulse_settings","pulse_transfer_action","//code/utilities/shell:lib","//code/utilities/processes:lib"
 ])
+
+hcp(name = "transfer_account_settings", deps = [
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings"
+])

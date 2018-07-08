@@ -10,4 +10,6 @@ hcp(name = "methods_adjuster", deps = [
 "//code/transcompilers/unilang/structure-adjuster/methods/forcers:method_overload_adjuster",
 "//code/transcompilers/unilang/structure-printer/derivers:structure_typename_deriver",
 "//code/transcompilers/unilang/structure-adjuster/methods/api_and_lifetime:api_and_lifetime_creator",
+"//code/transcompilers/unilang/structure-adjuster/methods/forcers:immutable_value_to_immutable_ref_adjuster",
+"//code/transcompilers/unilang/structure-adjuster/methods/forcers:instantiate_and_return_injector_for_return_type",
 ])
