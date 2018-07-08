@@ -19,10 +19,11 @@ class
 ❪"code/transcompilers/unilang/structure-adjuster/casing_adjuster"❫
 ⚞⚟
 
-◀public: static▶ void ☀Export(Structure structure, std::vector<Contributor> const& contributors, std::string const& style, bool transfer)❰
+◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Plant_Uml_Settings const& settings)❰
 
-  Plant_Uml_Settings settings;
-  std::string file_name = Current_Path() + "/" + structure.name + "." + settings.file_extension;
+  std::vector<std::string> created_files;
+  std::string file_name = structure.name + "." + settings.file_extension;
+  created_files.emplace_back(file_name);
   std::ofstream outfile(file_name);
   outfile << settings.start_plant_uml_language_tag << "\n\n";
   outfile << Structure_As_String(structure,settings);
@@ -31,10 +32,12 @@ class
   
   //turn the plant uml file into an image
   std::string command = settings.program_name + " " + file_name;
+  std::cout << command << std::endl;
   if (Unsuccessful_Run_Of_Command(command)){
     std::cerr << "Failed to produce image" << std::endl;
   }
   
+  return created_files;
 ❱
 
 ◀private: static▶ std::string ☀Structure_As_String(Structure const& structure, Plant_Uml_Settings const& settings)❰

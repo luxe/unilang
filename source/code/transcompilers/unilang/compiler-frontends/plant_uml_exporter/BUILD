@@ -20,3 +20,9 @@ hcp(name = "plant_uml_exporter", deps = [
 
 
 hcp(name = "composition_relationship")
+
+hcp(name = "plant_uml_options_getter", deps = [
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/system:lib",
+"//code/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
+])

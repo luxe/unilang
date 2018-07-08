@@ -49,6 +49,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/colors:lib",
+"//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_options_getter",
 ])
 
 hcp(name = "language_guesser", deps = [
