@@ -13,4 +13,5 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler:cpp_exporter",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_exporter",
+"//code/transcompilers/unilang/compiler-frontends/html_table:html_table_exporter",
 ])

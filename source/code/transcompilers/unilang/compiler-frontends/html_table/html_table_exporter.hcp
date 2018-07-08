@@ -20,14 +20,13 @@ class
 ❪"code/transcompilers/unilang/compiler-frontends/xml/xml_exporter"❫
 ⚞⚟
 
-◀public: static▶ void ☀Export(Structure structure, std::vector<Contributor> const& contributors, std::string const& style, bool transfer)❰
-
-
-   Html_Table_Options settings;
+◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Html_Table_Options const& settings)❰
    
    
   //create file
-  std::string file_name = Current_Path() + "/" + structure.name + "." + settings.file_extension;
+  std::vector<std::string> created;
+  std::string file_name = structure.name + "." + settings.file_extension;
+  created.emplace_back(file_name);
   std::ofstream outfile(file_name);
   
   //create header
@@ -43,12 +42,18 @@ class
   xml_settings.row_tag_end = settings.row_tag_end;
   
   outfile << settings.before_table<< "\n";
-  outfile << Xml_Exporter::Get(structure,xml_settings);
+  auto code_as_xml = Xml_Exporter::Get(structure,xml_settings);
+  outfile << code_as_xml;
   outfile << settings.after_table<< "\n";
   outfile.close();
   
+  
   Export_Html_File_As_Image(file_name);
-  Trim_Whitespace_From_Image("screenshot.png");
+  std::string what_the_name_should_be = structure.name + "-html_table.png";
+  execute("mv screenshot.png " +  what_the_name_should_be);
+  Trim_Whitespace_From_Image(what_the_name_should_be);
+  created.emplace_back(what_the_name_should_be);
+  return created;
 ❱
 
 ◀private: static▶ void ☀Export_Html_File_As_Image(std::string file_name)❰

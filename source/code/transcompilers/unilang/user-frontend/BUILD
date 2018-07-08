@@ -50,6 +50,7 @@ hcp(name = "user_frontend", deps = [
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/colors:lib",
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_options_getter",
+"//code/transcompilers/unilang/compiler-frontends/html_table:html_table_options_getter",
 ])
 
 hcp(name = "language_guesser", deps = [

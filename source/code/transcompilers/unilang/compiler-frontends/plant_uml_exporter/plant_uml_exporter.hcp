@@ -26,15 +26,19 @@ class
   created_files.emplace_back(file_name);
   std::ofstream outfile(file_name);
   outfile << settings.start_plant_uml_language_tag << "\n\n";
-  outfile << Structure_As_String(structure,settings);
+  auto code_as_plant_uml = Structure_As_String(structure,settings);
+  outfile << code_as_plant_uml;
   outfile << settings.end_plant_uml_language_tag << "\n";
   outfile.close();
   
   //turn the plant uml file into an image
-  std::string command = settings.program_name + " " + file_name;
-  std::cout << command << std::endl;
-  if (Unsuccessful_Run_Of_Command(command)){
-    std::cerr << "Failed to produce image" << std::endl;
+  if (!code_as_plant_uml.empty()){
+    std::string command = settings.program_name + " " + file_name;
+    if (Unsuccessful_Run_Of_Command(command)){
+      std::cerr << "Failed to produce image" << std::endl;
+    }else{
+      created_files.emplace_back(file_name + ".png");
+    }
   }
   
   return created_files;

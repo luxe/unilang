@@ -18,3 +18,7 @@ hcp(name = "html_table_exporter", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/compiler-frontends/xml:xml_exporter",
 ])
+
+hcp(name = "html_table_options_getter", deps = [
+"//code/transcompilers/unilang/options/language-specific:html_table_options",
+])
