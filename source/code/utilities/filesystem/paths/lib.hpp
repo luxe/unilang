@@ -32,6 +32,7 @@ std::vector<std::string> Recursively_Get_All_Directories_From_Path(std::string c
 	std::string Full_Path(void);
 	std::string Get_Path_Of_Directory_Starting_From_Root_Directory_Name(std::string root_directory_name);
 	std::string Get_Path_Of_Directory_After_Found_Folder(std::string found_folder);
+        std::string Get_Path_Of_Directory_After_Desktop();
 	std::string Full_Path_To_Home();
 	std::string Full_Path_To_Desktop();
 

@@ -55,6 +55,15 @@ void White_Error_Message_And_Flush(std::string const& str);
 void Black_Error_Message_And_Flush(std::string const& str);
 void Purple_Error_Message_And_Flush(std::string const& str);
 
+void Green_Then_Regular_Message(std::string const& green, std::string const& regular);
+void Red_Then_Regular_Message(std::string const& green, std::string const& regular);
+void Gold_Then_Regular_Message(std::string const& green, std::string const& regular);
+void Blue_Then_Regular_Message(std::string const& green, std::string const& regular);
+void Teal_Then_Regular_Message(std::string const& green, std::string const& regular);
+void White_Then_Regular_Message(std::string const& green, std::string const& regular);
+void Black_Then_Regular_Message(std::string const& green, std::string const& regular);
+void Purple_Then_Regular_Message(std::string const& green, std::string const& regular);
+
 ////////////////////////////////////////// SAME, BUT FOR WSTRING //////////////////////////////////////////////////////////////
 
 //base colorizing wstring functions

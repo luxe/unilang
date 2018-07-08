@@ -206,6 +206,47 @@ void Purple_Error_Message_And_Flush(std::string const& str){
 	return;
 }
 
+void Green_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Green_String(green);
+	std::cout << regular << std::endl;
+}
+void Red_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Red_String(green);
+	std::cout << regular << std::endl;
+}
+void Gold_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Gold_String(green);
+	std::cout << regular << std::endl;
+}
+void Blue_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Blue_String(green);
+	std::cout << regular << std::endl;
+}
+void Teal_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Teal_String(green);
+	std::cout << regular << std::endl;
+}
+void White_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << White_String(green);
+	std::cout << regular << std::endl;
+}
+void Black_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Black_String(green);
+	std::cout << regular << std::endl;
+}
+void Purple_Then_Regular_Message(std::string const& green, std::string const& regular)
+{
+	std::cout << Purple_String(green);
+	std::cout << regular << std::endl;
+}
+
 ////////////////////////////////////////// SAME, BUT FOR WSTRING //////////////////////////////////////////////////////////////
 
 //wstring support

@@ -47,6 +47,8 @@ hcp(name = "user_frontend", deps = [
 "//code/utilities/shell:lib",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transfer_settings_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
+"//code/utilities/types/strings/observers/splitting:lib",
+"//code/utilities/colors:lib",
 ])
 
 hcp(name = "language_guesser", deps = [

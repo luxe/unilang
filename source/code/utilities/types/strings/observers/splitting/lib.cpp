@@ -23,9 +23,30 @@ std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str){
 }
  std::vector<std::string> Get_Path_In_Parts(std::string const& str){
  	return Split_Into_Parts_From_Delimiter(str,'/');
- }
- 
- std::pair<std::string,std::string> Split_On_First_Instance_Of_Char(std::string const& str, char const& c){
+}
+std::string Get_Path_After_Desktop(std::string const& str)
+{
+	auto parts = Get_Path_In_Parts(str);
+	
+	//rebuild after Desktop
+	std::string path;
+	bool found = false;
+	for (auto it: parts){
+		if (found){
+			path += it + '/';
+		}
+		else{
+			if (it == "Desktop"){
+				found = true;
+			}
+		}
+		
+	}
+	path.pop_back();
+	return path;
+}
+
+std::pair<std::string,std::string> Split_On_First_Instance_Of_Char(std::string const& str, char const& c){
  	 std::pair<std::string,std::string> results;
  	 std::string first;
  	 std::string second;
@@ -49,7 +70,7 @@ std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str){
  	 
  	 return results;
  }
- std::pair<std::string,std::string> Split_On_Second_Instance_Of_Char(std::string const& str, char const& c){
+std::pair<std::string,std::string> Split_On_Second_Instance_Of_Char(std::string const& str, char const& c){
  	 std::pair<std::string,std::string> results;
  	 std::string first;
  	 std::string second;

@@ -30,6 +30,8 @@ class
 ❪"code/utilities/shell/lib"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/colors/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
@@ -51,26 +53,24 @@ class
     //parse all of the files into data structures
     auto graphs = Turn_Files_Into_Code_Graphs(input);
     
-    
-    
-    //TODO: perform action in workspace
-    auto output_directory = Decide_Output_Directory(input.settings.root_of_unilang_projects);
-    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
+    While_Inside_Scratch_Space(input,[&](){
+        
+        //transcompile all of the files
         auto created_files = Create_All_The_Files(graphs,input);
         Warn_About_Any_Conflicting_Artifacts(created_files);
         
-        
-        
+        //run programs on local machine
         Run_Local_Programs_Over_Files(created_files);
-        if (input.options.user_chosen_export_settings.transfer){
-            
-            auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
-            File_Transferer::Transfer(specific_user_settings,created_files);
-        }
         
-        Run_Remote_Programs_Over_Files(created_files);
+        //transfer files
+        Possibly_Transfer_Files(input,created_files);
+        
+        //run programs on remote machine
+        Run_Remote_Programs_Over_Files(input,created_files);
     });
 ❱
+
+
 
 ◀private: static▶ void ☀Set_All_Settings(Program_Input & input)❰
 
@@ -110,17 +110,37 @@ class
     //TODO warn about duplicates
 ❱
 
+◀private: static▶ void ☀Possibly_Transfer_Files(Program_Input const& input, std::vector<std::string> const& created_files)❰
+    if (input.options.user_chosen_export_settings.transfer){
+        auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+        File_Transferer::Transfer(specific_user_settings,created_files);
+    }
+❱
+
 ◀private: static▶ void ☀Run_Local_Programs_Over_Files(std::vector<std::string> const& files)❰
 
     for (auto const& file: files){
-        std::string command = "clang-format-3.9 -i " + file;
-        execute(command);
+        //std::string command = "clang-format -i " + file;
+        //execute(command);
     }
 ❱
-◀private: static▶ void ☀Run_Remote_Programs_Over_Files(std::vector<std::string> const& files)❰
+◀private: static▶ void ☀Run_Remote_Programs_Over_Files(Program_Input const& input, std::vector<std::string> const& files)❰
+    
+    auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+    std::string ssh_command = "ssh " + specific_user_settings.computer_user + "@" + specific_user_settings.computer_name + " ";
+    auto parts = Current_Path_In_Parts();
+    std::string remote_git_root = "/home/" + specific_user_settings.computer_user + "/Desktop/" + parts[4];
     for (auto const& file: files){
-        std::string command = "clang-format-3.9 -i " + file;
-        execute(command);
+        
+        auto remote = File_Transferer::Get_Remote_Workspace(specific_user_settings);
+        std::string from_git_repo_root_program = "/bin/autofix";
+        std::string full_path_to_remove_program = remote_git_root + from_git_repo_root_program;
+        std::string full_path_to_remote_file = remote + "/" + file;
+        
+        std::string full_command = ssh_command + full_path_to_remove_program + " " + full_path_to_remote_file;
+        
+        Blue_Then_Regular_Message("remote ",Get_Path_After_Desktop(full_path_to_remove_program) + " " + Get_Path_After_Desktop(full_path_to_remote_file));
+        execute(full_command);
     }
 ❱
 
@@ -236,3 +256,13 @@ class
     }
     return created_files;
 ❱
+
+
+
+◀
+private: template <typename Fun>
+static auto While_Inside_Scratch_Space(Program_Input const& input, Fun fun){
+    auto output_directory = Decide_Output_Directory(input.settings.root_of_unilang_projects);
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,fun);
+}
+▶
