@@ -45,21 +45,15 @@ class
     //decide all of the files we intend to transcompile
     //update/adjust existing files provided by the user
 	input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files,input.settings.parser.input_files.expected_file_extension);
-    
-    if (input.options.input_files.empty()){
-        Exit_With_Error(input.settings.error_message_on_no_files);
-    }
-    
-    //set default exporter if not chosen
-    if (input.options.user_chosen_export_settings.exporter.empty()){
-        input.options.user_chosen_export_settings.exporter = input.settings.default_exporter;
-    }
+    Ensure_We_Have_Files_To_Process(input);
+    Set_Default_Exporter_If_Not_Chosen(input);
     
     //parse all of the files into data structures
     auto graphs = Turn_Files_Into_Code_Graphs(input);
     
     
     
+    //TODO: perform action in workspace
     auto output_directory = Decide_Output_Directory(input.settings.root_of_unilang_projects);
     Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,[&](){
         auto created_files = Create_All_The_Files(graphs,input);
@@ -76,26 +70,6 @@ class
         
         Run_Remote_Programs_Over_Files(created_files);
     });
-❱
-
-◀private: static▶ void ☀Warn_About_Any_Conflicting_Artifacts(std::vector<std::string> const& files)❰
-    //TODO has_duplicats
-    //TODO find_duplicates
-    //TODO warn about duplicates
-❱
-
-◀private: static▶ void ☀Run_Local_Programs_Over_Files(std::vector<std::string> const& files)❰
-
-    for (auto const& file: files){
-        std::string command = "clang-format-3.9 -i " + file;
-        execute(command);
-    }
-❱
-◀private: static▶ void ☀Run_Remote_Programs_Over_Files(std::vector<std::string> const& files)❰
-    for (auto const& file: files){
-        std::string command = "clang-format-3.9 -i " + file;
-        execute(command);
-    }
 ❱
 
 ◀private: static▶ void ☀Set_All_Settings(Program_Input & input)❰
@@ -119,6 +93,36 @@ class
     input.settings.transfer = File_Transfer_Settings_Getter::Get();
 ❱
 
+◀private: static▶ void ☀Ensure_We_Have_Files_To_Process(Program_Input const& input)❰
+    if (input.options.input_files.empty()){
+        Exit_With_Error(input.settings.error_message_on_no_files);
+    }
+❱
+◀private: static▶ void ☀Set_Default_Exporter_If_Not_Chosen(Program_Input & input)❰
+    if (input.options.user_chosen_export_settings.exporter.empty()){
+        input.options.user_chosen_export_settings.exporter = input.settings.default_exporter;
+    }
+❱
+
+◀private: static▶ void ☀Warn_About_Any_Conflicting_Artifacts(std::vector<std::string> const& files)❰
+    //TODO has_duplicats
+    //TODO find_duplicates
+    //TODO warn about duplicates
+❱
+
+◀private: static▶ void ☀Run_Local_Programs_Over_Files(std::vector<std::string> const& files)❰
+
+    for (auto const& file: files){
+        std::string command = "clang-format-3.9 -i " + file;
+        execute(command);
+    }
+❱
+◀private: static▶ void ☀Run_Remote_Programs_Over_Files(std::vector<std::string> const& files)❰
+    for (auto const& file: files){
+        std::string command = "clang-format-3.9 -i " + file;
+        execute(command);
+    }
+❱
 
 ◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 
