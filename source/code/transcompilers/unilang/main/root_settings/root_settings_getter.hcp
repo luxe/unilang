@@ -2,9 +2,60 @@ class
 ❪"code/transcompilers/unilang/main/program_options/program_options"❫
 ❪"code/transcompilers/unilang/main/root_settings/root_settings"❫
 ⚯
+❪"code/transcompilers/unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/uber_contributors_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/hidl_options_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/bazel_options_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/cpp_options_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/plant_uml_exporter/plant_uml_options_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/html_table/html_table_options_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
 ⚞⚟
 ◀public: static▶ Root_Settings ☀Get() ❰
+
+    //MASS SET ALL OF THE SETTINGS
+    //IN THE FUTURE, ALL OF THIS DATA NEEDS BUBBLED UP TO THE TOP HERE
+    //IT NEEDS TO BE SERIALIZABLE, AND THEN WE CAN THINK ABOUT A DATABASE OR SOMETHING
+    //maybe look into ORM... by that time, hopefully we can rewrite things in unilang and
+    //get that kind of functionality though transcompilation
     Root_Settings settings;
+    
+    settings.no_files_to_process.print = true;
+    settings.no_files_to_process.flush = true;
+    settings.no_files_to_process.exit = false;
+    settings.no_files_to_process.message = "no files to process";
+    settings.no_files_to_process.color = Diagnostic_Color::REGULAR;
+    settings.no_files_to_process.stream = Diagnostic_Stream::STDOUT;
+    
+
+    settings.default_exporter = "uber";
+    settings.root_of_unilang_projects = "company";
+    
+    settings.compiler_settings.uber.contributors = Uber_Contributors_Getter::Get();
+    settings.compiler_settings.f2si.contributors = F2si_Contributors_Getter::Get();
+    //settings.compiler_settings.trevor.contributors = Trevor_Contributors_Getter::Get();
+    
+    settings.compiler_settings.uber.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+    settings.compiler_settings.f2si.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+    //settings.compiler_settings.trevor.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+
+    settings.compiler_settings.uber.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    settings.compiler_settings.f2si.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    //settings.compiler_settings.trevor.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    
+    settings.compiler_settings.uber.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    settings.compiler_settings.f2si.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    //settings.compiler_settings.trevor.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    
+    settings.compiler_settings.uber.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    settings.compiler_settings.f2si.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    //settings.compiler_settings.trevor.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    
+    settings.compiler_settings.uber.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
+    settings.compiler_settings.f2si.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
+    //settings.compiler_settings.trevor.settings.foreign_language.html_table = Html_Table_Getter::Get();
+    
+    settings.transfer = File_Transfer_Settings_Getter::Get();
     
     return settings;
 ❱
