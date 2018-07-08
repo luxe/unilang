@@ -71,7 +71,7 @@ class
         Run_Remote_Programs_Over_Files(input,created_files);
         
         //possibly test the remote build
-        //Possibly_Test_Remote_Build(input);
+        Possibly_Test_Remote_Build(input);
     });
 ❱
 
@@ -104,6 +104,16 @@ class
     //input.settings.compiler_settings.trevor.settings.foreign_language.html_table = Html_Table_Getter::Get();
     
     input.settings.transfer = File_Transfer_Settings_Getter::Get();
+❱
+
+◀private: static▶ void ☀Possibly_Test_Remote_Build(Program_Input const& input)❰
+
+    if (true){
+        std::string ssh_command = Remote_SSh_Execution_Command_Start(input);
+        std::string program = Program_From_Remote_Git_Repo_Root(input,"rops");
+        std::string full_command = ssh_command + program + " build //...:all;";
+        execute(full_command);
+    }
 ❱
 
 ◀private: static▶ void ☀Ensure_We_Have_Files_To_Process(Program_Input const& input)❰
@@ -139,15 +149,11 @@ class
 ❱
 ◀private: static▶ void ☀Run_Remote_Programs_Over_Files(Program_Input const& input, std::vector<std::string> const& files)❰
     
+    std::string ssh_command = Remote_SSh_Execution_Command_Start(input);
     auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
-    std::string ssh_command = "ssh " + specific_user_settings.computer_user + "@" + specific_user_settings.computer_name + " ";
-    auto parts = Current_Path_In_Parts();
-    std::string remote_git_root = "/home/" + specific_user_settings.computer_user + "/Desktop/" + parts[4];
     for (auto const& file: files){
-        
         auto remote = File_Transferer::Get_Remote_Workspace(specific_user_settings);
-        std::string from_git_repo_root_program = "/bin/autofix";
-        std::string full_path_to_remove_program = remote_git_root + from_git_repo_root_program;
+        std::string full_path_to_remove_program = Program_From_Remote_Git_Repo_Root(input,"bin/autofix");
         std::string full_path_to_remote_file = remote + "/" + file;
         
         std::string full_command = ssh_command + full_path_to_remove_program + " " + full_path_to_remote_file;
@@ -156,6 +162,25 @@ class
         execute(full_command);
     }
 ❱
+
+◀private: static▶ std::string ☀Remote_SSh_Execution_Command_Start(Program_Input const& input)❰
+    auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+    std::string ssh_command = "ssh " + specific_user_settings.computer_user + "@" + specific_user_settings.computer_name + " ";
+    return ssh_command;
+❱
+
+◀private: static▶ std::string ☀Remote_Git_Repo_Root(Program_Input const& input)❰
+    auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+    auto parts = Current_Path_In_Parts();
+    std::string remote_git_root = "/home/" + specific_user_settings.computer_user + "/Desktop/" + parts[4];
+    return remote_git_root;
+❱
+
+◀private: static▶ std::string ☀Program_From_Remote_Git_Repo_Root(Program_Input const& input, std::string const& relative_path)❰
+    return Remote_Git_Repo_Root(input) + "/" + relative_path;
+❱
+
+
 
 ◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 
