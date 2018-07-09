@@ -36,33 +36,6 @@ knowing when to regenerate is one such use case􏷯
     }
 􏶳
 
-􏷘-􏷗􏷒insert previous􏷑
-􏷐store the previous index􏷏
-􏶠Assumes the previous index is valid􏶡
-􏵪index != 0􏵫
-􏵨the previous index exists􏵩
-􏶜m􏶝􏷆unordered_indexes􏷅􏷄indexes􏷃􏷀indexes􏶿
-􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the next we should store the previous of􏶿
-􏶴
-    􏶲isolated because we may or may not apply precondition check􏶱
-    􏵶indexes􏵷.insert(􏵶index􏵷-1);
-􏶳
-
-􏷘-􏷗􏷒no partition longer than distance􏷑
-􏷐checks to see if any individual partition is longer then the distance provided􏷏
-􏶠True if any partition is longer; false otherwise.􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze partition lengths􏶿
-􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to check against􏶿
-􏶚m􏶛􏶾bool􏶽􏶼no partition longer􏶻􏶺whether any partition is longer than the distance􏶹
-􏶴
-    
-    􏶲simplify predicate􏶱
-    no_partition_longer = std::none_of(route.annotation_sequence.begin(),route.annotation_sequence.end(),[&](const route_planning::lane_neighbor_annotation & annotation){
-        return annotation.distance > distance_m;
-    });
-    
-􏶳
-
 􏷘+􏷗􏷒cut for loops􏷑
 􏴅cutting􏴆
 􏷐Cuts the route based on discovered loops􏷏
@@ -99,4 +72,67 @@ knowing when to regenerate is one such use case􏷯
     cut_indexes.insert(loop_cuts.begin(),loop_cuts.end());
     
     􏶲we may want to do additional filtering􏶱
+􏶳
+
+􏷘+􏷗􏷒interpret route life time􏷑
+􏷐interpret the state of the route by observing the range of partitions that need evaluated􏷏
+􏶠Based on the state of partitions that need evaluated, we can derive some contextual information about the route􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the lifetime of􏶿
+􏶚m􏶛􏶾route_lifetime􏶽􏶼route interpretation􏶻􏶺an interpretation about the state of the route􏶹
+􏶴
+
+    􏶲(n,n) = existing route􏶱
+    if (􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
+        route_interpretation = route_lifetime_existing_route;
+    }
+    
+    􏶲(?,n) = new route􏶱
+    else if(!􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
+        route_interpretation = route_lifetime_new_route;
+    }
+    
+    􏶲(n,?) = expired route􏶱
+    else if(􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
+        route_interpretation = route_lifetime_expired;
+    }
+    
+    􏶲(?,?) = invalid route􏶱
+    else if(!􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
+        route_interpretation = route_lifetime_invalid;
+    }
+􏶳
+
+􏷘+􏷗􏷒interpret route life time􏷑
+􏷐x􏷏
+􏶠y􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the processing range from􏶿
+􏶚m􏶛􏶾interval􏶽􏲫hub􏲬􏲫base􏲬􏶼processing range􏶻􏶺the range of intervals to perform event processing on􏶹
+􏶴
+􏶳
+
+􏷘-􏷗􏷒insert previous􏷑
+􏷐store the previous index􏷏
+􏶠Assumes the previous index is valid􏶡
+􏵪index != 0􏵫
+􏵨the previous index exists􏵩
+􏶜m􏶝􏷆unordered_indexes􏷅􏷄indexes􏷃􏷀indexes􏶿
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the next we should store the previous of􏶿
+􏶴
+    􏶲isolated because we may or may not apply precondition check􏶱
+    􏵶indexes􏵷.insert(􏵶index􏵷-1);
+􏶳
+
+􏷘-􏷗􏷒no partition longer than distance􏷑
+􏷐checks to see if any individual partition is longer then the distance provided􏷏
+􏶠True if any partition is longer; false otherwise.􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze partition lengths􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to check against􏶿
+􏶚m􏶛􏶾bool􏶽􏶼no partition longer􏶻􏶺whether any partition is longer than the distance􏶹
+􏶴
+    
+    􏶲simplify predicate􏶱
+    no_partition_longer = std::none_of(route.annotation_sequence.begin(),route.annotation_sequence.end(),[&](const route_planning::lane_neighbor_annotation & annotation){
+        return annotation.distance > distance_m;
+    });
+    
 􏶳

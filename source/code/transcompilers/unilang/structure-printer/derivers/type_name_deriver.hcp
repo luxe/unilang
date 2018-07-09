@@ -1,6 +1,6 @@
 class
 
-
+❪iostream❫
 ❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
 ❪"code/transcompilers/unilang/structure/sections/method/arguments/argument/function_argument"❫
@@ -21,47 +21,87 @@ class
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(data_member.type.value),false);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    Add_Scope(data_member,final);
+    return final;
 ❱
 ◀public: static▶ std::string ☀Derive_Name(Function_Argument const& arg, Source_Language const& language)❰
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    Add_Scope(arg,final);
+    return final;
 ❱
 ◀public: static▶ std::string ☀Derive_Name(Function_Result const& arg, Source_Language const& language)❰
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    Add_Scope(arg,final);
+    return final;
 ❱
+
+◀public: static▶ void ☀Add_Scope(Data_Member_Item const& arg, std::string & str)❰
+    std::string scope;
+    for (auto const& it: arg.scope_specifiers){
+            scope += as_string(it.name.value) + "::";
+        }
+    str = scope + str;
+❱
+◀public: static▶ void ☀Add_Scope(Function_Result const& arg, std::string & str)❰
+    std::string scope;
+    for (auto const& it: arg.scope_specifiers){
+        std::cout << "a" << std::endl;
+            scope += as_string(it.name.value) + "::";
+        }
+    std::cout <<"--" << std::endl;
+    str = scope + str;
+    std::cout << str << std::endl;
+❱
+◀public: static▶ void ☀Add_Scope(Function_Argument const& arg, std::string & str)❰
+    std::string scope;
+    for (auto const& it: arg.scope_specifiers){
+            scope += as_string(it.name.value) + "::";
+        }
+    str = scope + str;
+❱
+
+
+
+
+
+
 
 //typedef related
 ◀public: static▶ std::string ☀Derive_Name(Typedef_Argument const& arg, Source_Language const& language)❰
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    return final;
 ❱
 ◀public: static▶ std::string ☀Derive_Name_Keep_Qualifiers(Typedef_Argument const& arg, Source_Language const& language)❰
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    return final;
 ❱
-
 
 ◀public: static▶ std::string ☀Derive_Name(Typedef_Result const& arg, Source_Language const& language)❰
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    return final;
 ❱
 ◀public: static▶ std::string ☀Derive_Name_Keep_Qualifiers(Typedef_Result const& arg, Source_Language const& language)❰
     
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.name.value),false);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
-    return Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    auto final = Get_The_Printable_Language_Type_With_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    return final;
 ❱
 
 

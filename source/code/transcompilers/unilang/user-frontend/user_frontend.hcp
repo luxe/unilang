@@ -110,6 +110,8 @@ class
     for (auto const& file: files){
         //std::string command = "clang-format -i " + file;
         //execute(command);
+        std::string command = "cat -s " + file + " | sponge " + file;
+        execute(command);
     }
 ❱
 ◀private: static▶ void ☀Run_Remote_Programs_Over_Files(Program_Input const& input, std::vector<std::string> const& files)❰
@@ -140,14 +142,24 @@ class
     std::string path_to_program_with_flags = path_to_program + " " + settings.flags;
     
     
-    std::string full_command = ssh_command + path_to_program_with_flags + " " + file;
+    std::string full_command = ssh_command + '"' + path_to_program_with_flags + " " + file;
     if (settings.pipe_sponge){
         full_command += " | sponge > " + file;
     }
     
-    std::cout << full_command << std::endl;
+    if (settings.temp_file){
+        full_command += " > " + file + "_temp";
+    }
+    full_command += '"';
+    
     Blue_Then_Regular_Message("remote ",Get_Path_After_Desktop(path_to_program) + " " + Get_Path_After_Desktop(file));
     execute(full_command);
+    
+    if (settings.temp_file){
+        full_command = ssh_command + '"' + "mv " + file + "_temp " + file + '"';
+        execute(full_command);
+        
+    }
 ❱
 
 ◀private: static▶ std::string ☀Remote_SSh_Execution_Command_Start(Program_Input const& input)❰

@@ -26,10 +26,21 @@ hcp(
 	deps = ["all_ast_markers_getter","enum_printer"]
 )
 
+hcp(
+    name = "as_vertex_graph",
+    deps = ["//code/utilities/data_structures/unique_vertex_graph:lib"]
+)
+
 cc_binary(
     name = "unilang_token_file_generator",
     srcs = ["main.cpp"],
     deps = ["task_executer","//code/utilities/types/strings/transformers/removing:lib"]
+)
+
+cc_binary(
+    name = "print_token_tree",
+    srcs = ["print_token_tree.cpp"],
+    deps = ["as_vertex_graph"]
 )
 
 cpp_object(name="generic_token",deps=["//code/transcompilers/unilang/tokens:token_name","//code/transcompilers/unilang/tokens:token_group"])
