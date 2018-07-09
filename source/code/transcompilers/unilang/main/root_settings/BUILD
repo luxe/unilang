@@ -9,6 +9,7 @@ hcp(name = "root_settings", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:transfer_account_settings",
 "//code/utilities/diagnostic:diagnostic_settings",
 "//code/transcompilers/unilang/options:remote_build_settings",
+"//code/transcompilers/unilang/options:remote_program_settings",
 ])
 
 hcp(name = "root_settings_getter", deps = [

@@ -118,14 +118,36 @@ class
     auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
     for (auto const& file: files){
         auto remote = File_Transferer::Get_Remote_Workspace(specific_user_settings);
-        std::string full_path_to_remove_program = Program_From_Remote_Git_Repo_Root(input,"bin/autofix");
         std::string full_path_to_remote_file = remote + "/" + file;
         
-        std::string full_command = ssh_command + full_path_to_remove_program + " " + full_path_to_remote_file;
-        
-        Blue_Then_Regular_Message("remote ",Get_Path_After_Desktop(full_path_to_remove_program) + " " + Get_Path_After_Desktop(full_path_to_remote_file));
-        execute(full_command);
+        for (auto const& it: input.settings.remote_programs){
+            if (it.run){
+                Execute_Remote_Program(input,it,ssh_command,full_path_to_remote_file);
+            }
+        }
     }
+❱
+
+◀private: static▶ void ☀Execute_Remote_Program(Program_Input const& input, Remote_Program_Settings const& settings, std::string const& ssh_command, std::string const& file)❰
+    
+    std::string path_to_program;
+    if (settings.run_from_remote_git_root){
+        path_to_program = Program_From_Remote_Git_Repo_Root(input,settings.program);
+    }
+    else{
+        path_to_program = settings.program;
+    }
+    std::string path_to_program_with_flags = path_to_program + " " + settings.flags;
+    
+    
+    std::string full_command = ssh_command + path_to_program_with_flags + " " + file;
+    if (settings.pipe_sponge){
+        full_command += " | sponge > " + file;
+    }
+    
+    std::cout << full_command << std::endl;
+    Blue_Then_Regular_Message("remote ",Get_Path_After_Desktop(path_to_program) + " " + Get_Path_After_Desktop(file));
+    execute(full_command);
 ❱
 
 ◀private: static▶ std::string ☀Remote_SSh_Execution_Command_Start(Program_Input const& input)❰
