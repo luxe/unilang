@@ -66,10 +66,17 @@ class
 
 ◀private: static▶ void ☀Possibly_Test_Remote_Build(Program_Input const& input)❰
 
-    if (true){
+    if (input.settings.remote_build.run){
         std::string ssh_command = Remote_SSh_Execution_Command_Start(input);
-        std::string program = Program_From_Remote_Git_Repo_Root(input,"rops");
-        std::string full_command = ssh_command + program + " build //...:all;";
+        
+        std::string program;
+        if (input.settings.remote_build.run_from_remote_git_root){
+            program = Program_From_Remote_Git_Repo_Root(input,input.settings.remote_build.program);
+        }
+        else{
+            program = input.settings.remote_build.program;
+        }
+        std::string full_command = ssh_command + program + " " + input.settings.remote_build.flags;
         execute(full_command);
     }
 ❱

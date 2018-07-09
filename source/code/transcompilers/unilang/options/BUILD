@@ -36,3 +36,5 @@ hcp(name = "export_settings", deps = [
 "foreign_language_export_settings",
 "//code/transcompilers/unilang/options/unilang:unilang_export_settings",
 ])
+
+hcp(name = "remote_build_settings")
