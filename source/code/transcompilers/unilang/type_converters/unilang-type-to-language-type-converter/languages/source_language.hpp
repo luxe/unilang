@@ -34,4 +34,8 @@ Ada
 ,HIDL
 ,Thrift
 
+//Documentation
+,PlantUml
+,HtmlTable
+
 };
