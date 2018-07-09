@@ -6,27 +6,28 @@
 #include <map>
 
 //class
-template <typename T>
-class Unique_Vertex_Graph{
+class Unique_Str_Vertex_Graph{
 
   public:
-  bool Add(T const& t);
-  bool Connect(T const& x, T const& y);
+  bool Add(std::string const& t);
+  bool Connect(std::string const& x, std::string const& y);
   void Print(); //<- useful for debug
-  boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,T> Get_Underlining_Graph();
+  boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,std::string> Get_Underlining_Graph();
 
   private:
-  boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,T> graph;
+  boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,std::string> graph;
 
   //holds the id descriptors and lets us enforce unique-ness
-  std::map<T,int> vertexes;
+  std::map<std::string,int> vertexes;
+
+  //the names of all the vertices sent to graphviz for printing
+  std::vector<std::string> names;
 
 };
 
 
 //methods
-template <typename T>
-bool Unique_Vertex_Graph<T>::Add(T const& t){
+bool Unique_Str_Vertex_Graph::Add(std::string const& t){
   
   //only add if it doesn't already exist
   auto found = vertexes.find(t);
@@ -36,12 +37,12 @@ bool Unique_Vertex_Graph<T>::Add(T const& t){
   
   //add and store it so we can check for its existence later
   auto id = boost::add_vertex(t, graph);
+  names.emplace_back(t);
   vertexes.emplace(t,id);
   return true;
 }
 
-template <typename T>
-bool Unique_Vertex_Graph<T>::Connect(T const& x, T const& y){
+bool Unique_Str_Vertex_Graph::Connect(std::string const& x, std::string const& y){
   
   Add(x);
   Add(y);
@@ -57,12 +58,10 @@ bool Unique_Vertex_Graph<T>::Connect(T const& x, T const& y){
   return false;
 }
 
-template <typename T>
-void Unique_Vertex_Graph<T>::Print(){
-  boost::write_graphviz(std::cout, graph);
+void Unique_Str_Vertex_Graph::Print(){
+  boost::write_graphviz(std::cout, graph,boost::make_label_writer(&names[0]));
 }
 
-template <typename T>
-boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,T> Unique_Vertex_Graph<T>::Get_Underlining_Graph(){
+boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,std::string> Unique_Str_Vertex_Graph::Get_Underlining_Graph(){
   return graph;
 }
