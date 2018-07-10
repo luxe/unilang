@@ -17,8 +17,14 @@ hcp(name = "method_options", deps = [
 "method_contract_settings",
 "method_subgroup_settings",
 "outside_body_comment_settings",
+"method_divider_settings",
 ])
 
 hcp(name = "outside_body_comment_settings", deps = [
 "//code/transcompilers/unilang/options/comment:comment_settings"
+])
+
+hcp(name = "divider_settings")
+hcp(name = "method_divider_settings", deps = [
+"//code/transcompilers/unilang/options/sections/method:divider_settings",
 ])

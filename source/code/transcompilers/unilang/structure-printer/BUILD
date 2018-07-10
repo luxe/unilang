@@ -221,6 +221,7 @@ hcp(name = "global_printer", deps = [
 "//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/structure-printer:namespace_printer",
+"//code/transcompilers/unilang/normal-design-printer:method_sorting_and_grouping_order_printer",
 ])
 
 hcp(name = "file_printer", deps = [

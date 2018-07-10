@@ -32,6 +32,7 @@ class
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
     auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
     Add_Scope(arg,final);
+    Add_Specialization(arg,final);
     return final;
 ❱
 ◀public: static▶ std::string ☀Derive_Name(Function_Result const& arg, Source_Language const& language)❰
@@ -39,7 +40,9 @@ class
     auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
     auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
+    
     Add_Scope(arg,final);
+    Add_Specialization(arg,final);
     return final;
 ❱
 
@@ -65,6 +68,12 @@ class
 ◀public: static▶ void ☀Add_Specialization(Data_Member_Item const& arg, std::string & str)❰
     str += Render(arg.type_specializations);
 ❱
+◀public: static▶ void ☀Add_Specialization(Function_Result const& arg, std::string & str)❰
+    str += Render(arg.type_specializations);
+❱
+◀public: static▶ void ☀Add_Specialization(Function_Argument const& arg, std::string & str)❰
+    str += Render(arg.type_specializations);
+❱
 
 ◀private: static▶ std::string ☀Render(std::vector<Type_Specialization> const& type_specializations)❰
     std::string special;
@@ -74,7 +83,7 @@ class
     }
     
     for (auto const& it: type_specializations){
-            special += as_string(it.type.value) + "::";
+            special += as_string(it.type.value);
         }
         
     if (!type_specializations.empty()){
