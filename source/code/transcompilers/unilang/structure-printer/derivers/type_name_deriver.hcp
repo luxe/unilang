@@ -23,6 +23,7 @@ class
     auto language_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(stripped_type_detail.base_type, language);
     auto final = Get_The_Printable_Language_Type_Without_Any_Of_The_Qualifers_Back_On(language_type,stripped_type_detail);
     Add_Scope(data_member,final);
+    Add_Specialization(data_member,final);
     return final;
 ❱
 ◀public: static▶ std::string ☀Derive_Name(Function_Argument const& arg, Source_Language const& language)❰
@@ -43,31 +44,44 @@ class
 ❱
 
 ◀public: static▶ void ☀Add_Scope(Data_Member_Item const& arg, std::string & str)❰
-    std::string scope;
-    for (auto const& it: arg.scope_specifiers){
-            scope += as_string(it.name.value) + "::";
-        }
-    str = scope + str;
+    str = Render(arg.scope_specifiers) + str;
 ❱
 ◀public: static▶ void ☀Add_Scope(Function_Result const& arg, std::string & str)❰
-    std::string scope;
-    for (auto const& it: arg.scope_specifiers){
-        std::cout << "a" << std::endl;
-            scope += as_string(it.name.value) + "::";
-        }
-    std::cout <<"--" << std::endl;
-    str = scope + str;
-    std::cout << str << std::endl;
+    str = Render(arg.scope_specifiers) + str;
 ❱
 ◀public: static▶ void ☀Add_Scope(Function_Argument const& arg, std::string & str)❰
+    str = Render(arg.scope_specifiers) + str;
+❱
+
+◀private: static▶ std::string ☀Render(std::vector<Scope_Specifier> const& scope_specifiers)❰
     std::string scope;
-    for (auto const& it: arg.scope_specifiers){
+    for (auto const& it: scope_specifiers){
             scope += as_string(it.name.value) + "::";
-        }
-    str = scope + str;
+    }
+    return scope;
 ❱
 
 
+◀public: static▶ void ☀Add_Specialization(Data_Member_Item const& arg, std::string & str)❰
+    str += Render(arg.type_specializations);
+❱
+
+◀private: static▶ std::string ☀Render(std::vector<Type_Specialization> const& type_specializations)❰
+    std::string special;
+    
+    if (!type_specializations.empty()){
+        special += "<";
+    }
+    
+    for (auto const& it: type_specializations){
+            special += as_string(it.type.value) + "::";
+        }
+        
+    if (!type_specializations.empty()){
+        special += ">";
+    }
+    return special;
+❱
 
 
 
