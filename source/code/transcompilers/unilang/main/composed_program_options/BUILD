@@ -3,7 +3,6 @@ load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
 
 hcp(name = "composed_program_options", deps = [
 "//code/transcompilers/unilang/user-frontend/command_line_arguments:dependency_paths",
-"//code/transcompilers/unilang/user-frontend/command_line_arguments:meta_external_provided_links",
 "//code/transcompilers/unilang/user-frontend/command_line_arguments:user_chosen_export_settings",
 ])
 

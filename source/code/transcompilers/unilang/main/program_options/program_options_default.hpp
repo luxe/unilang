@@ -39,7 +39,7 @@ class Program_Options_Default{
 	//the version number of the software
 	// (applied by the flag value --version_number)
 	const std::string VERSION_NUMBER =
-	"1.0.0"
+	"2.0.0"
 	;
 	
 	//the license that the software is under

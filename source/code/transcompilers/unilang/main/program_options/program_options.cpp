@@ -41,11 +41,8 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	("style",value<std::string>(),"the style you'd like the exporter to employ. Each exporter has their own set of styles for each of the languages they support")
 	("recursive_dependency_paths",value<std::vector<std::string>>()->multitoken(),"paths to recursively search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files")
 	("dependency_paths",value<std::vector<std::string>>()->multitoken(),"paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files")
-	("unit-test-link",value<std::string>(),"A link or file path to where the unit test for the object/set of global functions are")
-	("unit_test_path",value<std::vector<std::string>>()->multitoken(),"the path to where the unit test code is")
-	("documentation-link",value<std::string>(),"Link to further documentation for the object/set of global functions")
-	("build-and-test","sets up a temp work area to build the transcompiled code with its dependencies, and run any unit tests that may exist")
-	("skip-transfer","Decide whether to skip transfering the exported file (this usually entails sending over files over a network possibly)")
+	("no-transfer","Decide whether to skip transferring the exported file (this usually entails sending over files over a network possibly)")
+	("no-build","Decide whether we should try to build the repo where could would be transfered to")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -101,21 +98,6 @@ void Program_Options::Check_For_Mandatory_Flags_Not_Passed(){
 		exit(EXIT_FAILURE);
 	}
 	return;
-}
-bool Program_Options::No_Flags_Were_Passed() const{
-	if (vm.count("input_files")){return false;}
-	if (vm.count("exporter")){return false;}
-	if (vm.count("language")){return false;}
-	if (vm.count("style")){return false;}
-	if (vm.count("recursive_dependency_paths")){return false;}
-	if (vm.count("dependency_paths")){return false;}
-	if (vm.count("unit-test-link")){return false;}
-	if (vm.count("unit_test_path")){return false;}
-	if (vm.count("documentation-link")){return false;}
-	if (vm.count("build-and-test")){return false;}
-	if (vm.count("skip-transfer")){return false;}
-	if (vm.count("dir")){return false;}
-   return true;
 }
 std::vector<std::string> Program_Options::Input_Files() const{
 	std::vector<std::string> data;
@@ -173,31 +155,8 @@ std::vector<std::string> Program_Options::Dependency_Paths() const{
 
 	return data;
 }
-std::string Program_Options::Unit_Test_Link() const{
-	std::string data;
-	if (vm.count("unit-test-link")){
-		data = vm["unit-test-link"].as<std::string>();
-	}
-
-	return data;
-}
-std::vector<std::string> Program_Options::Unit_Test_Path() const{
-	std::vector<std::string> data;
-	if (vm.count("unit_test_path")){
-		data = vm["unit_test_path"].as<std::vector<std::string>>();
-	}
-
-	return data;
-}
-std::string Program_Options::Documentation_Link() const{
-	std::string data;
-	if (vm.count("documentation-link")){
-		data = vm["documentation-link"].as<std::string>();
-	}
-
-	return data;
-}
-bool Program_Options::Build_And_Test() const{
-return vm.count("build-and-test");}
 bool Program_Options::Skip_Transfer() const{
-return vm.count("skip-transfer");}
+return vm.count("no-transfer");}
+
+bool Program_Options::Skip_Build() const{
+return vm.count("no-build");}

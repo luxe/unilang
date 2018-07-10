@@ -26,11 +26,8 @@ class Program_Options: public Program_Options_Default{
 	/*  */ std::string Style()const; //the style you'd like the exporter to employ. Each exporter has their own set of styles for each of the languages they support;
 	/*  */ std::vector<std::string> Recursive_Dependency_Paths()const; //paths to recursively search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;
 	/*  */ std::vector<std::string> Dependency_Paths()const; //paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;
-	/*  */ std::string Unit_Test_Link()const; //A link or file path to where the unit test for the object/set of global functions are;
-	/*  */ std::vector<std::string> Unit_Test_Path()const; //the path to where the unit test code is;
-	/*  */ std::string Documentation_Link()const; //Link to further documentation for the object/set of global functions;
-	/* false */ bool Build_And_Test()const; //sets up a temp work area to build the transcompiled code with its dependencies, and run any unit tests that may exist;
-	/* false */ bool Skip_Transfer()const; //Decide whether to skip transfering the exported file (this usually entails sending over files over a network possibly);
+	bool Skip_Transfer()const;
+	bool Skip_Build()const;
 bool No_Flags_Were_Passed() const;
 
 
