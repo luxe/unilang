@@ -1,6 +1,7 @@
 class
 
 ❪vector❫
+❪iostream❫
 ❪"code/transcompilers/unilang/parser/parser_token"❫
 ❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
 ⚯
@@ -8,6 +9,7 @@ class
 ❪"code/transcompilers/unilang/tokens/token_group"❫
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/transcompilers/unilang/tokens/global_token_table"❫
 ⚞⚟
 
 //TODO: it sucks that I have to specify the tokens that "do not need to be specified for uniqueness
@@ -15,7 +17,9 @@ class
 //Plus, I added a new token and forgot to update it here, and caused me problems.
 //WARNING: this caused me problems again.  we need to specify the tokens as a tree, and have a much
 //more reliable parsing / adjusting the language story.
-//now that I'm in bazel, I'm not really happy about all the code gen we do as build rules
+//now that I'm in bazel, I'm not really happy about all the code gen we do as build rules.
+//update: cleaned up a bit, but now that we are deriving children, it might be even more expensive to parse
+//need a better data structure and constant time access to querying for all children (if we intend to keep this filter implementation)
 
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Dont_Split(std::vector<Parser_Token> const& tokens)❰
@@ -40,74 +44,86 @@ class
     return all;
 ❱
 
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Group(std::vector<Parser_Token> const& tokens, Token_Group const& group)❰
+    auto children = Find_Children_Token_Groups(group);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
+    return all;
+❱
+
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Object_Template_Chunks(std::vector<Parser_Token> const& tokens)❰
     
-    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-	{Token_Group::OBJECT_TEMPLATE_ARGUMENT_CONCEPTS});
+    auto children = Find_Children_Token_Groups(Token_Group::OBJECT_TEMPLATE_ARGUMENT);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Stamp_Chunks(std::vector<Parser_Token> const& tokens)❰
     
-    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-	{Token_Group::FUNCTION_STAMP_VALUE});
+    auto children = Find_Children_Token_Groups(Token_Group::FUNCTION_STAMP);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Data_Member_Chunks(std::vector<Parser_Token> const& tokens)❰
     
-    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-	{Token_Group::DATA_MEMBER_KEY_VALUES
-    ,Token_Group::DATA_MEMBER_VALUE_CONSTRAINTS
-    ,Token_Group::DATA_MEMBER_VALUE_MEANING
-	,Token_Group::DATA_MEMBER_VALUE_TRANSITION_MEANING
-    ,Token_Group::DATA_MEMBER_SCOPE
-    ,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS
-    ,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE
-    ,Token_Group::DATA_MEMBER_TYPE_MODULE_DEPENDENCIES
-    ,Token_Group::DATA_MEMBER_TYPE_LIBRARY_DEPENDENCIES
-    ,Token_Group::PARENT_TYPES
-	});
+    auto children = Find_Children_Token_Groups(Token_Group::DATA_MEMBER);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Specialization_Scopes(std::vector<Parser_Token> const& tokens)❰
-    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-    {Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE
-	});
+    
+    auto children = Find_Children_Token_Groups(Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Typedef_Chunks(std::vector<Parser_Token> const& tokens)❰
     
-    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-	{Token_Group::TYPEDEF_RESULT, Token_Group::TYPEDEF_ARGUMENT}
-	);
+    auto children = Find_Children_Token_Groups(Token_Group::TYPEDEF);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Interface_Import_Chunks(std::vector<Parser_Token> const& tokens)❰
 
-	auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-	{Token_Group::IMPORT_INTERFACE_RELATIONSHIP}
-	);
+    auto children = Find_Children_Token_Groups(Token_Group::IMPORT_INTERFACE);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
 	return all;
 ❱
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Implementation_Import_Chunks(std::vector<Parser_Token> const& tokens)❰
-  auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-  {Token_Group::IMPORT_IMPLEMENTATION_RELATIONSHIP}
-  );
+  
+  auto children = Find_Children_Token_Groups(Token_Group::IMPORT_IMPLEMENTATION);
+  auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
   return all;
 ❱
 
 ◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Enum_Chunks(std::vector<Parser_Token> const& tokens)❰
    
-
-    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,
-	{Token_Group::ENUM_SUBGROUP
-    ,Token_Group::ENUM_ARG
-    ,Token_Group::ENUM_GROUP_AFFILIATION
-	});
-
+    auto children = Find_Children_Token_Groups(Token_Group::ENUM);
+    auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
+
+
+//THIS MIGHT BE EXPENSIVE AND WE CALL IT ALOT
+//THIS NEEDS REPLACED WITH A O(1) LOOKUP IMPL
+◀public: static▶ std::vector<Token_Group> ☀Find_Children_Token_Groups(Token_Group const& group)❰
+    std::set<Token_Group> children;
+    
+    for (auto const& a: TOKENS){
+        bool found = false;
+        for (auto const& b: a.groups){
+            if (found){
+                children.insert(b);
+            }
+            if (b == group){
+                found = true;
+            }
+        }
+    }
+    
+    std::vector<Token_Group> children2(children.begin(),children.end());
+    return children2;
+❱
+
