@@ -27,8 +27,8 @@ class Program_Options: public Program_Options_Default{
 	/*  */ std::vector<std::string> Recursive_Dependency_Paths()const; //paths to recursively search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;
 	/*  */ std::vector<std::string> Dependency_Paths()const; //paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;
 	bool Skip_Transfer()const;
+	bool Skip_Remote_Programs()const;
 	bool Skip_Build()const;
-bool No_Flags_Were_Passed() const;
 
 
 	private:
