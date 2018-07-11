@@ -23,4 +23,5 @@ hcp(name = "root_settings_getter", deps = [
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/html_table:html_table_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transfer_settings_getter",
+"//code/transcompilers/unilang/compiler-frontends/processing:processing_options_getter",
 ])

@@ -28,6 +28,7 @@ Ada
 ,Scheme
 ,Swift
 ,HolyC
+,Processing
 
 //IDLs
 ,ProtocolBuffers

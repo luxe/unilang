@@ -71,7 +71,7 @@ knowing when to regenerate is one such use case􏷯
 􏴅Lane Marking􏴆
 􏷐mark lanes along that route that exceed an accumulated distance greater than the provided distance􏷏
 􏶠Ensures the distance is minimally met along each division made on the route􏶡
-􏵪distance must be positive􏵫
+􏵪distance_must_be_positive()􏵫
 􏵨the distance must be positive􏵩
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance to minimally reach􏶿
@@ -94,7 +94,7 @@ knowing when to regenerate is one such use case􏷯
 􏴅Lane Marking􏴆
 􏷐mark lanes along that route that each division does not exceed the distance given􏷏
 􏶠Ensures no division is greater than the distance provided􏶡
-􏵪distance must be positive􏵫
+􏵪distance_must_be_positive()􏵫
 􏵨the distance must be positive􏵩
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance that must not be exceeded􏶿
@@ -254,6 +254,59 @@ knowing when to regenerate is one such use case􏷯
     􏶲we may want to do additional filtering􏶱
 􏶳
 
+􏷘+􏷗􏷒create event route􏷑
+􏴅Annotated Route􏴆
+􏷐Take a translated route, and convert it into an event annotated route􏷏
+􏶠The event annotated route will not have any regeneration events marked by default􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to create an event route from􏶿
+􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏶺a route with regeneration information attached􏶹
+􏶴
+    event_route.route_plan_id = 􏵶route􏵷.route_plan_id;
+    event_route.evaluation_range.current = 􏵶route􏵷.route_progress_index;
+    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+        lane_event event;
+        event.lane.map_ref = 􏵶route􏵷.lane_sequence[i];
+        event.lane.annotation = 􏵶route􏵷.annotation_sequence[i];
+        event_route.event_lane_sequence.emplace_back(event);
+    }
+􏶳
+
+􏷘+􏷗􏷒set regeneration events􏷑
+􏴅Annotated Route􏴆
+􏷐Decide where along the event annotated route where to place regeneration events􏷏
+􏶠Applies event actions to take on the lane based on the lane indexes given􏶡
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to set events on􏶿
+􏶜􏶝􏷆unordered_indexes􏷅􏷄lane indexes􏷃􏷀the lane indexes to apply regeneration events to􏶿
+􏶜􏶝􏷆regeneration_reason􏷅􏷄reason􏷃􏷀the reason you are regenerating on these lanes􏶿
+􏶴
+    for (const auto & lane_index: 􏵶lane indexes􏵷){
+        􏵶route􏵷.event_lane_sequence[lane_index].entrance_event = event_action_regenerate;
+        􏵶route􏵷.event_lane_sequence[lane_index].reason = 􏵶reason􏵷;
+    }
+􏶳
+
+􏷘+􏷗􏷒advance forward on route􏷑
+􏴅Annotated Route􏴆
+􏷐extends the processing view forward to the current lane provided􏷏
+􏶠The previous current lane becomes the start of the event view
+This way we won't skip any lanes when evaluating for regeneration events􏶡
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to update progress on􏶿
+􏶜􏶝􏷆size􏷅􏷄current lane index􏷃􏷀the index of the current lane we are on􏶿
+􏶴
+    􏵶route􏵷.evaluation_range.previous = 􏵶route􏵷.evaluation_range.current;
+    􏵶route􏵷.evaluation_range.current = 􏵶current lane index􏵷;
+􏶳
+
+􏷘+􏷗􏷒expire route􏷑
+􏴅Annotated Route􏴆
+􏷐extends the processing view forward to the end of the route􏷏
+􏶠If we have finished the route or have transitioned to a new route, we may still want to process events along the remainder of the previous route
+Expiring the route sets a processing view that will allow process to the end despite specifying a lane index􏶡
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to update progress on􏶿
+􏶴
+    􏵶route􏵷.evaluation_range.previous = 􏵶route􏵷.evaluation_range.current;
+    􏵶route􏵷.evaluation_range.current = stdx::nullopt;
+􏶳
 
 􏷘+􏷗􏷒interpret route status􏷑
 􏴅Annotated Route􏴆
@@ -286,6 +339,76 @@ knowing when to regenerate is one such use case􏷯
     }
 􏶳
 
+􏷘+􏷗􏷒should regenerate􏷑
+􏴅Annotated Route􏴆
+􏷐determines whether we should regenerate􏷏
+􏶠Uses the internal event view to process over lanes􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for regeneration􏶿
+􏶚m􏶛􏶾bool􏶽􏶼should regenerate􏶻􏶺whether we should regenerate based on our current progress􏶹
+􏶴
+    //if we already processed the last lane index in the route,
+    //then there is nothing to regenerate
+    if (􏵶route􏵷.evaluation_range.previous){
+        if (*􏵶route􏵷.evaluation_range.previous == 􏵲last lane index􏵳􏵶route􏵷)){
+            return false;
+        }
+    }
+    
+
+    //get index interval to check for events on
+    size_t start_index = 􏵲first index to process􏵳􏵶route􏵷);
+    size_t end_index = 􏵲last index to process􏵳􏵶route􏵷);
+    
+    for (size_t i = start_index; i <= end_index; ++i){
+        if (􏵶route􏵷.event_lane_sequence[i].entrance_event == event_action_regenerate){
+            return true;
+        }
+    }
+    
+    should_regenerate = false;
+􏶳
+
+􏷘-􏷗􏷒first index to process􏷑
+􏷐gets the first index to process over the route􏷏
+􏶠determined through the event view of the route􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the lane index􏶹
+􏶴
+    //if we don't have a previous index we start processing at the beginning
+    //if we do have a previous index we leave off processing the remaining lanes
+    lane_index = 0;
+    if (􏵶route􏵷.evaluation_range.previous){
+        lane_index = *􏵶route􏵷.evaluation_range.previous + 1;
+    }
+􏶳
+􏷘-􏷗􏷒last index to process􏷑
+􏷐gets the last index to process over the route􏷏
+􏶠determined through the event view of the route􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the lane index􏶹
+􏶴
+    //if we don't have a current index, we process to the end of the route
+    //if we do have have a current index, we use that
+    lane_index = 􏵲last lane index􏵳􏵶route􏵷);
+    if (􏵶route􏵷.evaluation_range.current){
+        lane_index = *􏵶route􏵷.evaluation_range.current;
+    }
+􏶳
+
+􏷘-􏷗􏷒last lane index􏷑
+􏷐the index of the last lane􏷏
+􏶠Assumes the route is not empty􏶡
+􏴅Detail􏴆
+􏵪!route_is_empty()􏵫
+􏵨the route is not empty􏵩
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the last lane index from􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the index of the last lane􏶹
+􏶴
+    􏶲isolated because we may or may not apply precondition check􏶱
+    return 􏵶route􏵷.event_lane_sequence.size()-1;
+􏶳
 
 􏷘-􏷗􏷒insert previous􏷑
 􏷐store the previous index􏷏

@@ -45,3 +45,8 @@ hcp(name = "html_table_options", deps = [
 hcp(name = "treesheets_options", deps = [
 "//code/utilities/types/strings/transformers/casing:case_format_style"
 ])
+
+hcp(name = "processing_options", deps = [
+"//code/utilities/types/strings/transformers/casing:case_format_style",
+"//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+])
