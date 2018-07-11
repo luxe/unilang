@@ -1,72 +1,80 @@
 􏶞g􏶟
 􏷲Local Map Regeneration Trigger Framework data and configuration􏷱
-􏷰Contains data types created by and used within the framework.  
-We use the term partition instead of submap.  
-A submap is a type of partition.  
-If you are using the event annotated route with submaps in mind, you can think of partitions as submaps.􏷯
+􏷰Contains data types created by and used within the framework.􏷯
 􏷮Regeneration􏷭
 􏷬Trevor Hickey􏷫
 
 􏷞local_map􏷝􏷞statik􏷝
 
-􏳃A partition within a particular route􏳄
-􏳁A single partition element from a translated route􏳂
-􏲿partition_info􏳀
+􏳃Lane information within a particular route􏳄
+􏳁Lane information for a single element from a translated route􏳂
+􏲿lane_info􏳀
 
-􏶨the identity of the partition􏶧
+􏶨the identity of the lane􏶧
 􏶦derived from the lane sequence of the translated route􏶥
-􏶘+􏶙􏶰􏶯􏷔partition_info􏷓􏶮map_ref_id􏶭􏲷mlp􏲸􏲷lane_graph􏲸􏶬map ref􏶫
+􏶘+􏶙􏶰􏶯􏷔lane_info􏷓􏶮map_ref_id􏶭􏲷mlp􏲸􏲷lane_graph􏲸􏶬map ref􏶫
 􏲹mlp/messages/map_ref_id􏲺
 􏲱mlp/messages/map_ref_id􏲲
 
-􏶨the annotation information of the partition􏶧
-􏶦derived from the annotation sequence of the translated route􏶥
-􏶘+􏶙􏶰􏶯􏷔partition_info􏷓􏶮lane_neighbor_annotation􏶭􏲷route_planning􏲸􏶬annotation􏶫
+􏶨Lane information within a particular route􏶧
+􏶦Lane information for a single element from a translated route􏶥
+􏶘+􏶙􏶰􏶯􏷔lane_info􏷓􏶮lane_neighbor_annotation􏶭􏲷route_planning􏲸􏶬annotation􏶫
 􏲹route_planner/messages/route_plan􏲺
 􏲱route_planner/messages/route_planner_messages􏲲
 
-􏶊The various event states that can occur on partitions􏶉
-􏶈The regeneration framework will tag events to particular partition􏶇
+􏶊The various event states that can occur on lanes􏶉
+􏶈The regeneration framework will tag events to particular lane􏶇
 􏵮􏵯􏶀event action􏶋
-􏶆regenerate􏶅􏶂causes the regenerate trigger to be called on the corresponding partition􏶁
-􏶆none􏶅􏶂causes nothing to trigger for the corresponding partition􏶁
+􏶆regenerate􏶅􏶂causes the regenerate trigger to be called on the corresponding lane􏶁
+􏶆none􏶅􏶂causes nothing to trigger for the corresponding lane􏶁
+
+􏶊The reason we are regenerating on a particular lane􏶉
+􏶈Primarily used to aid in debugging􏶇
+􏵮􏵯􏶀regeneration reason􏶋
+􏶆distance􏶅􏶂regenerating because of distance􏶁
+􏶆submap loop􏶅􏶂regenerating because of submap loops􏶁
+􏶆none􏶅􏶂no reason to regenerate􏶁
 
 􏶊An interpretation on how to process the route based on the state of the event view􏶉
 􏶈We keep an interval over the route in order to determine what events need to be processed
-however, a new route can't have a starting position in the interval (because no previous partition was visited)
+however, a new route can't have a starting position in the interval (because no previous lane was visited)
 and an expired route has no ending position in the interval (because the progress index may no longer correlate to the route)
 we observe the optionality of the event view to determine the contextual state of the route􏶇
 􏵮􏵯􏶀route status􏶋
-􏶆new route􏶅􏶂no previous partition was visited.  we can assume all partitions up to the current􏶁
-􏶆existing route􏶅􏶂we have a previous and current partition giving us a valid interval over the route􏶁
-􏶆expired􏶅􏶂no current partition is given.  we an assume all partitions from the previous to the end of the route􏶁
+􏶆new route􏶅􏶂no previous lane was visited.  we can assume all lanes up to the current􏶁
+􏶆existing route􏶅􏶂we have a previous and current lane giving us a valid interval over the route􏶁
+􏶆expired􏶅􏶂no current lane is given.  we an assume all lanes from the previous to the end of the route􏶁
 􏶆invalid􏶅􏶂we do not have a valid interval over the route at all􏶁
 
-􏳃A partition with annotated event information􏳄
-􏳁contains event information about the particular partition􏳂
-􏲿partition_event􏳀
+􏳃A lane with annotated event information􏳄
+􏳁contains event information about the particular lane􏳂
+􏲿lane_event􏳀
 
-􏶨the partition that the event may occur on􏶧
+􏶨the lane that the event may occur on􏶧
 􏶦derived from the annotation and lane sequence of the translated route􏶥
-􏶘+􏶙􏶰􏶯􏷔partition_event􏷓􏶮partition_info􏶭􏶬partition􏶫
+􏶘+􏶙􏶰􏶯􏷔lane_event􏷓􏶮lane_info􏶭􏶬lane􏶫
 
-􏶨a regeneration event that will trigger when the partition is reached􏶧
-􏶦a user callback will be made for the event of the given partition􏶥
-􏶘+􏶙􏶰􏶯􏷔partition_event􏷓􏶮event_action􏶭􏶬entrance event􏶫􏶪event_action_none􏶩
+􏶨a regeneration event that will trigger when the lane is reached􏶧
+􏶦a user callback will be made for the event of the given lane􏶥
+􏶘+􏶙􏶰􏶯􏷔lane_event􏷓􏶮event_action􏶭􏶬entrance event􏶫􏶪event_action_none􏶩
 
-􏳃the previously determined partition, and the new currently determined partition􏳄
-􏳁creates an interval of partitions to evaluate for events.
+􏶨Why we may be regenerating on a lane􏶧
+􏶦provides explanation on why a regeneration event is present􏶥
+􏶘+􏶙􏶰􏶯􏷔lane_event􏷓􏶮regeneration_reason􏶭􏶬reason􏶫􏶪regeneration_reason_none􏶩
+
+􏳃the previously determined lane, and the new currently determined lane􏳄
+􏳁creates an interval of lanes to evaluate for events.
 This is a partially open interval (prev,curr]
 Why are they optionals?
 A new route has no previous index
 If the car drives past the end of the route, there is no current index􏳂
 􏲿event_view􏳀
 
-􏶨The previous partition observed􏶧
+􏶨The previous lane observed􏶧
 􏶦interval end is open􏶥
 􏶘+?􏶙􏶰􏶯􏷔event_view􏷓􏶮i32􏶭􏶬previous􏶫
 
-􏶨The current partition observed􏶧
+􏶨The current lane observed􏶧
 􏶦interval end is closed􏶥
 􏶘+?􏶙􏶰􏶯􏷔event_view􏷓􏶮i32􏶭􏶬current􏶫
 
@@ -80,14 +88,14 @@ If the car drives past the end of the route, there is no current index􏳂
 􏲹local_map/libs/route/serializable/route_plan_identifier􏲺
 􏲱local_map/libs/route/serializable/serializable_route_overlay􏲲
 
-􏶨The regeneration events that should occur on the change of particular partitions􏶧
-􏶦The change in partitions is expected to be in the same order that they appear in the original route.
-The sequence may contain duplicate partitions.
+􏶨The regeneration events that should occur on the change of particular lanes􏶧
+􏶦The change in lanes is expected to be in the same order that they appear in the original route.
+The sequence may contain duplicate lanes.
 We are simply taking an existing route, and tagging it with events􏶥
-􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮seq􏶭􏳟partition_event􏳠􏶬event_partitions􏶫
+􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮seq􏶭􏳟lane_event􏳠􏶬event_lanes􏶫
 
-􏶨The interval of partitions that need to be evaluated for events􏶧
-􏶦Uses the previous and current partitions observed to create an interval for evaluation.
-The reason we do this, is because we may not evaluate every partition as we pass over them.
-We need to make sure we don't forget to evaluate partitions that we have already passed over􏶥
+􏶨The interval of lanes that need to be evaluated for events􏶧
+􏶦Uses the previous and current lanes observed to create an interval for evaluation.
+The reason we do this, is because we may not evaluate every lane as we pass over them.
+We need to make sure we don't forget to evaluate lanes that we have already passed over􏶥
 􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮event_view􏶭􏶬evaluation range􏶫

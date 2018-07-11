@@ -116,7 +116,7 @@ knowing when to regenerate is one such use case􏷯
 􏷘+􏷗􏷒mark lanes prior to forming a submap loop􏷑
 􏴅Lane Marking􏴆
 􏷐Mark the lanes prior to the lanes that would create a submap loop􏷏
-􏶠Ensures that each marked lane comes before a submap loop along the route􏶡
+􏶠Ensures that each marked lane comes before a submap loop is formed along the route􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨
 􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
@@ -134,6 +134,52 @@ knowing when to regenerate is one such use case􏷯
         }
         previous = id;
         seen.insert(id);
+    }
+􏶳
+
+􏷘+􏷗􏷒mark first lanes involved in submap loop􏷑
+􏴅Lane Marking􏴆
+􏷐when we detect submap loops, mark the first lane that is part of the submap loop􏷏
+􏶠Ensures that each marked lane is the first lane in a submap that is part of a submap loop􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    std::map<hub::base::guid,size_t> seen;
+    hub::base::guid previous;
+    
+    
+    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+        auto id = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+        
+        if (previous != id){
+            auto found = seen.find(id);
+            if (found != seen.end()){
+                lane_indexes.insert(found->second);
+                seen.clear();
+            }
+        }
+        previous = id;
+        seen[id] = i;
+    }
+􏶳
+
+􏷘+􏷗􏷒mark first lanes after loop causing submap􏷑
+􏴅Lane Marking􏴆
+􏷐when we detect submap loops, mark the first lane along the route that is past the conflicting submap􏷏
+􏶠The lanes that are marked are still a part of the overall loop, but we are now outside the submap that we will later revisit􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    auto conflicting_submap_indexes = 􏵲mark first lanes involved in submap loop􏵳􏵶route􏵷);
+    for (auto const& it: conflicting_submap_indexes){
+        auto conflicting_submap = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[it]);
+        for (size_t i = it; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+            auto next_submap = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+            if (next_submap != conflicting_submap){
+                lane_indexes.insert(i);
+                break;
+            }
+        }
     }
 􏶳
 
