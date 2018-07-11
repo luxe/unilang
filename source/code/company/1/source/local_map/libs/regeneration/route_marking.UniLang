@@ -1,13 +1,15 @@
 􏶞g􏶟
-􏷲various algorithms for analyzing and Cutting Routes a route
-algorithms decide to make cuts based on annotated route information, and provided user data􏷱
-􏷰there may be various reasons to cut a route
+􏷲various algorithms for analyzing and lane marking a route
+algorithms decide to make markings based on annotated route information, and provided user data􏷱
+􏷰there may be various reasons to mark lanes along a route
 knowing when to regenerate is one such use case􏷯
 􏷮Regeneration􏷭
 􏴃Precondition Checks􏴄
 􏴁functions for checking the preconditions of various APIs􏴂
-􏴃Cutting Routes􏴄
-􏴁functions that decide where to cut the route􏴂
+􏴃Lane Marking􏴄
+􏴁functions that decide where to mark lanes along a route􏴂
+􏴃Annotated Route􏴄
+􏴁functions related to the annotated route􏴂
 􏷬Trevor Hickey􏷫
 
 􏶔s􏶕􏶒algorithm􏶓
@@ -16,17 +18,14 @@ knowing when to regenerate is one such use case􏷯
 􏷞local_map􏷝􏷞statik􏷝
 
 
-􏷘+􏷗􏷒precondition cut for distance􏷑
+􏷘+􏷗􏷒precondition mark lanes that exceed accumulated distance􏷑
 􏴅Precondition Checks􏴆
-􏷐Checks whether the arguments are valid for the cut by distance call􏷏
-􏶠This function is a predicate for checking all the preconditions of the call􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to cut with􏶿
+􏷐Checks whether the arguments are valid as a precondition to the call􏷏
+􏶠This function is a predicate for checking all the necessary preconditions􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
 􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
 􏶴
-    if (!􏵲no lane longer than distance􏵳􏵶route􏵷,􏵶distance􏵷)){
-        return false;
-    }
     if (!􏵲is positive􏵳􏵶distance􏵷)){
         return false;
     }
@@ -34,23 +33,78 @@ knowing when to regenerate is one such use case􏷯
     meets_preconditions = true;
 􏶳
 
-􏷘+􏷗􏷒cut for distance􏷑
-􏴅Cutting Routes􏴆
-􏷐Cuts the route based on distance􏷏
-􏶠Ensures that no cute route is greater than the distance provided􏶡
-􏵪no lane longer than distance􏵫
-􏵨we cannot cut for distance if there is a lane longer than the distance provided􏵩
+􏷘+􏷗􏷒precondition mark lanes prior to exceeding distance􏷑
+􏴅Precondition Checks􏴆
+􏷐Checks whether the arguments are valid as a precondition to the call􏷏
+􏶠This function is a predicate for checking all the necessary preconditions􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance that must not be exceeded􏶿
+􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
+􏶴
+    if (!􏵲is positive􏵳􏵶distance􏵷)){
+        return false;
+    }
+    
+    if (!􏵲no lane longer than distance􏵳􏵶route􏵷,􏵶distance􏵷)){
+        return false;
+    }
+    
+    meets_preconditions = true;
+􏶳
+
+􏷘+􏷗􏷒precondition mark lanes for local map sla requirement􏷑
+􏴅Precondition Checks􏴆
+􏷐Checks whether the arguments are valid as a precondition to the call􏷏
+􏶠This function is a predicate for checking all the necessary preconditions􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
+􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
+􏶴
+    if (!􏵲precondition mark lanes that exceed accumulated distance􏵳􏵶route􏵷,􏵶distance􏵷)){
+        return false;
+    }
+    
+    meets_preconditions = true;
+􏶳
+
+􏷘+􏷗􏷒mark lanes that exceed accumulated distance􏷑
+􏴅Lane Marking􏴆
+􏷐mark lanes along that route that exceed an accumulated distance greater than the provided distance􏷏
+􏶠Ensures the distance is minimally met along each division made on the route􏶡
 􏵪distance must be positive􏵫
 􏵨the distance must be positive􏵩
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance to cut with􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance to minimally reach􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
     for (size_t i = 0; i < 􏵶route􏵷.annotation_sequence.size(); ++i){
         double lane_distance_m = 􏵶route􏵷.annotation_sequence[i].distance;
         if (total_distance+lane_distance_m > 􏵶distance􏵷){
-            􏵲insert previous􏵳cut_indexes,i);
+            lane_indexes.insert(i);
+            total_distance = 0;
+        }
+        else{
+            total_distance += lane_distance_m;
+        }
+    }
+􏶳
+
+􏷘+􏷗􏷒mark lanes prior to exceeding accumulated distance􏷑
+􏴅Lane Marking􏴆
+􏷐mark lanes along that route that each division does not exceed the distance given􏷏
+􏶠Ensures no division is greater than the distance provided􏶡
+􏵪distance must be positive􏵫
+􏵨the distance must be positive􏵩
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance that must not be exceeded􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    double total_distance = 0.0;
+    for (size_t i = 0; i < 􏵶route􏵷.annotation_sequence.size(); ++i){
+        double lane_distance_m = 􏵶route􏵷.annotation_sequence[i].distance;
+        if (total_distance+lane_distance_m > 􏵶distance􏵷){
+            􏵲insert previous􏵳lane_indexes,i);
             total_distance = lane_distance_m;
         }
         else{
@@ -59,13 +113,13 @@ knowing when to regenerate is one such use case􏷯
     }
 􏶳
 
-􏷘+􏷗􏷒cut for loops􏷑
-􏴅Cutting Routes􏴆
-􏷐Cuts the route based on discovered loops􏷏
-􏶠Ensures that no cute route has any loops (i.e. no duplicate partitions)􏶡
+􏷘+􏷗􏷒mark lanes prior to forming a submap loop􏷑
+􏴅Lane Marking􏴆
+􏷐Mark the lanes prior to the lanes that would create a submap loop􏷏
+􏶠Ensures that each marked lane comes before a submap loop along the route􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨
-􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
+􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     std::set<hub::base::guid> seen;
     hub::base::guid previous;
@@ -74,7 +128,7 @@ knowing when to regenerate is one such use case􏷯
         
         if (previous != id){
             if (seen.find(id) != seen.end()){
-                􏵲insert previous􏵳cut_indexes,i);
+                􏵲insert previous􏵳lane_indexes,i);
                 seen.clear();
             }
         }
@@ -83,101 +137,106 @@ knowing when to regenerate is one such use case􏷯
     }
 􏶳
 
-􏷘+􏷗􏷒precondition cut for local map sla requirements􏷑
-􏴅Precondition Checks􏴆
-􏷐Checks whether the arguments are valid for the cut for local map sla requirements call􏷏
-􏶠This function is a predicate for checking all the preconditions of the call􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to cut with􏶿
-􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
+􏷘+􏷗􏷒mark lanes that transition to new submaps􏷑
+􏴅Lane Marking􏴆
+􏷐mark every lane that transitions to a different submap􏷏
+􏶠Ensures that each marked lane exists in a different submap that the previous marked lane􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    if (!􏵲precondition cut for distance􏵳􏵶route􏵷,􏵶distance􏵷)){
-        return false;
+    hub::base::guid previous;
+    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+        auto id = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+        
+        if (previous != id){
+            lane_indexes.insert(i);
+        }
+        previous = id;
     }
-    
-    meets_preconditions = true;
 􏶳
 
-􏷘+􏷗􏷒cut for local map sla requirements􏷑
-􏴅Cutting Routes􏴆
-􏷐Cuts the route based on the local map's regeneration SLA requirements􏷏
-􏶠Ensures that no cute route violates any regeneration restrictions guaranteed by the local map's SLA􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to cut with􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
+􏷘+􏷗􏷒mark first lane􏷑
+􏴅Lane Marking􏴆
+􏷐Marks the first lane of the route􏷏
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    􏶲perform cut policy􏶱
-    cut_indexes = 􏵲cut for distance􏵳􏵶route􏵷,􏵶distance􏵷);
+    if (􏵲has lanes􏵳􏵶route􏵷)){
+        lane_indexes.insert(0);
+    }
+􏶳
+
+􏷘+􏷗􏷒mark last lane􏷑
+􏴅Lane Marking􏴆
+􏷐Marks the last lane of the route􏷏
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    if (􏵲has lanes􏵳􏵶route􏵷)){
+        lane_indexes.insert(􏵶route􏵷.lane_sequence.size() -1);
+    }
+􏶳
+
+􏷘+􏷗􏷒mark all lanes􏷑
+􏴅Lane Marking􏴆
+􏷐Marks all of the lanes in the route􏷏
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+        lane_indexes.insert(i);
+    }
+􏶳
+
+􏷘+􏷗􏷒mark lanes for local map sla requirement􏷑
+􏴅Lane Marking􏴆
+􏷐marks lanes based on the local map's regeneration SLA requirements􏷏
+􏶠Ensures that the proper lanes are marked to guarantee by the local map's SLA requirements during regeneration􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    􏶲perform marking policy􏶱
+    lane_indexes = 􏵲mark lanes that exceed accumulated distance􏵳􏵶route􏵷,􏵶distance􏵷);
     
-    􏶲perform cut policy􏶱
-    auto loop_cuts = 􏵲cut for loops􏵳􏵶route􏵷);
+    􏶲perform marking policy􏶱
+    auto loop_marks = 􏵲mark lanes prior to forming a submap loop􏵳􏵶route􏵷);
     
     􏶲combine policy results􏶱
-    cut_indexes.insert(loop_cuts.begin(),loop_cuts.end());
+    lane_indexes.insert(loop_marks.begin(),loop_marks.end());
     
     􏶲we may want to do additional filtering􏶱
 􏶳
 
-􏷘+􏷗􏷒cut each new submap􏷑
-􏴅Cutting Routes􏴆
-􏷐X􏷏
-􏶠Y􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
-􏶴
-    //TODO
-􏶳
 
-􏷘+􏷗􏷒cut first􏷑
-􏴅Cutting Routes􏴆
-􏷐Cuts the first partition of the route􏷏
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
-􏶴
-    if (􏵲has lanes􏵳􏵶route􏵷)){
-        cut_indexes.insert(0);
-    }
-􏶳
-
-􏷘+􏷗􏷒cut last􏷑
-􏴅Cutting Routes􏴆
-􏷐Cuts the last partition of the route􏷏
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
-􏶴
-    if (􏵲has lanes􏵳􏵶route􏵷)){
-        cut_indexes.insert(􏵶route􏵷.lane_sequence.size() -1);
-    }
-􏶳
-
-
-􏷘+􏷗􏷒interpret route state􏷑
-􏷐interpret the state of the route by observing the range of lanes that need evaluated􏷏
-􏶠Based on the state of lanes that need evaluated, we can derive some contextual information about the route􏶡
-􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the state of􏶿
-􏶚m􏶛􏶾route_state􏶽􏶼route interpretation􏶻􏶺an interpretation about the state of the route􏶹
+􏷘+􏷗􏷒interpret route status􏷑
+􏴅Annotated Route􏴆
+􏷐interpret the status of the route by observing the range of lanes that need evaluated􏷏
+􏶠Based on the status of lanes that need evaluated, we can derive some contextual information about the route􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
+􏶚m􏶛􏶾route_status􏶽􏶼route interpretation􏶻􏶺an interpretation about the status of the route􏶹
 􏶴
 
-    route_interpretation = route_state_invalid;
+    route_interpretation = route_status_invalid;
     
     􏶲(n,n) = existing route􏶱
     if (􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
-        return route_state_existing_route;
+        return route_status_existing_route;
     }
     
     􏶲(?,n) = new route􏶱
     else if(!􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
-        return route_state_new_route;
+        return route_status_new_route;
     }
     
     􏶲(n,?) = expired route􏶱
     else if(􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
-        return route_state_expired;
+        return route_status_expired;
     }
     
     􏶲(?,?) = invalid route􏶱
     else if(!􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
-        return route_state_invalid;
+        return route_status_invalid;
     }
 􏶳
 
