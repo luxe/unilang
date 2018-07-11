@@ -34,11 +34,13 @@ class
   auto private_methods = Shared_Printer::Filter_By_Private_Methods(structure.name,section.methods);
   
   //private decls
-  Sort_And_Print_Interfaces(out,structure,private_methods,options);
+  //Sort_And_Print_Interfaces(out,structure,private_methods,options);
 
   //defs
-  Sort_And_Print_Implementations(out,structure,public_methods,options);
-  Sort_And_Print_Implementations(out,structure,private_methods,options);
+  Sort_And_Print_Implementations_just_decl(out,structure,public_methods,options);
+  Sort_And_Print_Implementations_just_decl(out,structure,private_methods,options);
+  Sort_And_Print_Implementations_just_impl(out,structure,public_methods,options);
+  Sort_And_Print_Implementations_just_impl(out,structure,private_methods,options);
     
 ❱
 
@@ -51,12 +53,41 @@ class
   }
   
 ❱
-◀private: static▶ void ☀Sort_And_Print_Implementations(std::wofstream & out, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
+
+◀private: static▶ void ☀Sort_And_Print_Implementations_just_decl(std::wofstream & out, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
   
   //sort and print
   auto sorted_methods = Method_Sorter::Get_As_Sorted(methods,options.portion.method_options.sorting.implementation);
+  //for (auto group: sorted_methods.subgroups){
+  //  Print_Implementations(out,group,structure,methods,options);
+  //}
+  
+  
   for (auto group: sorted_methods.subgroups){
-    Print_Implementations(out,group,structure,methods,options);
+     if (Methods_Printer::Print_Global_Implementation_DECL_ONLY_Methods2_is_any(out,structure.full_file_path,group.methods,structure.data_members.data_members,options,Object_Export_Method::NORMAL)){
+       Subgroup_Tag_Printer::Possibly_Print_Start(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
+       Methods_Printer::Print_Global_Implementation_DECL_ONLY_Methods2(out,structure.full_file_path,group.methods,structure.data_members.data_members,options,Object_Export_Method::NORMAL);
+       Subgroup_Tag_Printer::Possibly_Print_End(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
+     }
+  }
+  
+❱
+
+◀private: static▶ void ☀Sort_And_Print_Implementations_just_impl(std::wofstream & out, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
+  
+  //sort and print
+  auto sorted_methods = Method_Sorter::Get_As_Sorted(methods,options.portion.method_options.sorting.implementation);
+  //for (auto group: sorted_methods.subgroups){
+  //  Print_Implementations(out,group,structure,methods,options);
+  //}
+  
+  
+  for (auto group: sorted_methods.subgroups){
+     if (Methods_Printer::Print_Global_Implementation_IMPL_ONLY_Methods2_is_any(out,structure.full_file_path,group.methods,structure.data_members.data_members,options,Object_Export_Method::NORMAL)){
+       Subgroup_Tag_Printer::Possibly_Print_Start(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
+       Methods_Printer::Print_Global_Implementation_IMPL_ONLY_Methods2(out,structure.full_file_path,group.methods,structure.data_members.data_members,options,Object_Export_Method::NORMAL);
+       Subgroup_Tag_Printer::Possibly_Print_End(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
+     }
   }
   
 ❱
@@ -67,32 +98,9 @@ class
     Subgroup_Tag_Printer::Possibly_Print_Start(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
     
     //print each of the methods
-    for (auto const& it: group.methods){
-      Methods_Printer::Print_Method_Interface(out,structure.name,Code_Type::GLOBAL,it,options);
-    }
+    Methods_Printer::Print_Global_Interface_Methods2(out,structure.full_file_path,group.methods,options);
     
     //possible end tag
     Subgroup_Tag_Printer::Possibly_Print_End(out,group.subgroup,options.portion.method_options.sorting.interface.tag);
 ❱
-
-◀private: static▶ void ☀Print_Implementations(std::wofstream & out, Subgroup_Methods const& group, Structure const& structure, std::vector<Method_Item> methods, C_Export_Settings const& options)❰
-    
-    //implicit name
-    auto implicit_name = as_string(Object_Name_Resolver::Resolve_Identifier_Name(structure,false));
-    
-    //possible start tag
-    Subgroup_Tag_Printer::Possibly_Print_Start(out,group.subgroup,options.portion.method_options.sorting.implementation.tag);
-    
-    //print each of the methods
-    for (auto const& it: group.methods){
-      Methods_Printer::Print_Method_Implementation
-      (out,structure.name,Code_Type::GLOBAL,it,structure.data_members.data_members,structure.methods.methods,true,options,implicit_name,Object_Export_Method::NORMAL);
-    }
-    
-    //possible end tag
-    Subgroup_Tag_Printer::Possibly_Print_End(out,group.subgroup,options.portion.method_options.sorting.implementation.tag);
-❱
-
-
-
 

@@ -66,17 +66,24 @@ class
 ❱
 ◀public: static▶ void ☀Print_Global_Implementation_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, Object_Export_Method const& export_method)❰
     //print the statics at the top of the source
+
+
+
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_decl));
             Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,options);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
         }
     }
     
     //print the public implementations
     for (auto it: methods){
         if (it.class_access == Class_Access::PUBLIC){
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
             Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
         }
     }
     
@@ -84,14 +91,99 @@ class
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
             Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
         }
     }
-    
 ❱
 
 
 
+
+
+
+//THESE TWO FRONTENDS EXIST BECAUSE OF OF THE GROUP PRINTER.  
+//WE ARE ITERATING OVER GROUPS OF METHODS AND NOT JUST METHODS
+//SO WE NEED TO MAKE SURE WE PRINT ALL OF THE DECLS IN THE IMPLEMENTATION FIRST
+◀public: static▶ void ☀Print_Global_Implementation_DECL_ONLY_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                                      C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+
+
+
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_decl));
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,options);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
+        }
+    }
+❱
+◀public: static▶ bool ☀Print_Global_Implementation_DECL_ONLY_Methods2_is_any(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                                      C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+      for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+          return true;
+        }
+      }
+      return false;
+❱
+◀public: static▶ void ☀Print_Global_Implementation_IMPL_ONLY_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                            C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+
+
+    
+    //print the public implementations
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
+            Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
+        }
+    }
+    
+    //print the private/static implementations
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
+            Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
+        }
+    }
+❱
+◀public: static▶ bool ☀Print_Global_Implementation_IMPL_ONLY_Methods2_is_any(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                            C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+    //print the public implementations
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            return true;
+        }
+    }
+    
+    //print the private/static implementations
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            return true;
+        }
+    }
+    return false;
+  
+❱
+//---------------------
+
+
+◀private: static▶ std::string ☀Maybe_Divider(const Divider_Settings & settings)❰
+  std::string str;
+  if (settings.print){
+    str += "\n\n";
+    str += settings.divider;
+    str += "\n\n";
+  }
+  
+  return str;
+❱
 
 
 

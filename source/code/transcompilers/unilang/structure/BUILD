@@ -13,6 +13,7 @@ hcp(name = "structure", deps = [
 "//code/transcompilers/unilang/structure/sections/meta:meta_section",
 "//code/transcompilers/unilang/structure/sections/types:type_section",
 "//code/transcompilers/unilang/structure/sections/import:import_section",
+"//code/transcompilers/unilang/structure/sections/library:library_section",
 "//code/transcompilers/unilang/structure/sections/macro:macro_section",
 "//code/transcompilers/unilang/structure/sections/namespace:namespace_section",
 "//code/transcompilers/unilang/structure/sections/templates:template_section",

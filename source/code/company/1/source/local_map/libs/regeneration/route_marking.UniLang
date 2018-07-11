@@ -1,10 +1,12 @@
 􏶞g􏶟
-􏷲various algorithms for analyzing and cutting a route
+􏷲various algorithms for analyzing and Cutting Routes a route
 algorithms decide to make cuts based on annotated route information, and provided user data􏷱
 􏷰there may be various reasons to cut a route
 knowing when to regenerate is one such use case􏷯
 􏷮Regeneration􏷭
-􏴃cutting􏴄
+􏴃Precondition Checks􏴄
+􏴁functions for checking the preconditions of various APIs􏴂
+􏴃Cutting Routes􏴄
 􏴁functions that decide where to cut the route􏴂
 􏷬Trevor Hickey􏷫
 
@@ -13,49 +15,91 @@ knowing when to regenerate is one such use case􏷯
 
 􏷞local_map􏷝􏷞statik􏷝
 
-􏷘+􏷗􏷒cut for distance􏷑
-􏴅cutting􏴆
-􏷐Cuts the route based on distance􏷏
-􏶠Ensures that no cute route is greater than the distance provided􏶡
-􏵪no partition longer than distance􏵫
-􏵨we cannot cut for distance if there is a partition longer than the distance provided􏵩
+
+􏷘+􏷗􏷒precondition cut for distance􏷑
+􏴅Precondition Checks􏴆
+􏷐Checks whether the arguments are valid for the cut by distance call􏷏
+􏶠This function is a predicate for checking all the preconditions of the call􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to cut with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
+􏶴
+    if (!􏵲no lane longer than distance􏵳􏵶route􏵷,􏵶distance􏵷)){
+        return false;
+    }
+    if (!􏵲is positive􏵳􏵶distance􏵷)){
+        return false;
+    }
+    
+    meets_preconditions = true;
+􏶳
+
+􏷘+􏷗􏷒cut for distance􏷑
+􏴅Cutting Routes􏴆
+􏷐Cuts the route based on distance􏷏
+􏶠Ensures that no cute route is greater than the distance provided􏶡
+􏵪no lane longer than distance􏵫
+􏵨we cannot cut for distance if there is a lane longer than the distance provided􏵩
+􏵪distance must be positive􏵫
+􏵨the distance must be positive􏵩
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance to cut with􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
 􏶴
     double total_distance = 0.0;
     for (size_t i = 0; i < 􏵶route􏵷.annotation_sequence.size(); ++i){
-        double partition_distance_m = 􏵶route􏵷.annotation_sequence[i].distance;
-        if (total_distance+partition_distance_m > 􏵶distance􏵷){
+        double lane_distance_m = 􏵶route􏵷.annotation_sequence[i].distance;
+        if (total_distance+lane_distance_m > 􏵶distance􏵷){
             􏵲insert previous􏵳cut_indexes,i);
-            total_distance = partition_distance_m;
+            total_distance = lane_distance_m;
         }
         else{
-            total_distance += partition_distance_m;
+            total_distance += lane_distance_m;
         }
     }
 􏶳
 
 􏷘+􏷗􏷒cut for loops􏷑
-􏴅cutting􏴆
+􏴅Cutting Routes􏴆
 􏷐Cuts the route based on discovered loops􏷏
 􏶠Ensures that no cute route has any loops (i.e. no duplicate partitions)􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨
+􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
 􏶴
-    std::set<mlp::lane_graph::map_ref_id> seen;
+    std::set<hub::base::guid> seen;
+    hub::base::guid previous;
     for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
-        auto id = 􏵶route􏵷.lane_sequence[i];
-        if (seen.find(id) != seen.end()){
-            􏵲insert previous􏵳cut_indexes,i);
-            seen.clear();
+        auto id = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+        
+        if (previous != id){
+            if (seen.find(id) != seen.end()){
+                􏵲insert previous􏵳cut_indexes,i);
+                seen.clear();
+            }
         }
+        previous = id;
         seen.insert(id);
     }
 􏶳
 
+􏷘+􏷗􏷒precondition cut for local map sla requirements􏷑
+􏴅Precondition Checks􏴆
+􏷐Checks whether the arguments are valid for the cut for local map sla requirements call􏷏
+􏶠This function is a predicate for checking all the preconditions of the call􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to cut with􏶿
+􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
+􏶴
+    if (!􏵲precondition cut for distance􏵳􏵶route􏵷,􏵶distance􏵷)){
+        return false;
+    }
+    
+    meets_preconditions = true;
+􏶳
+
 􏷘+􏷗􏷒cut for local map sla requirements􏷑
-􏴅cutting􏴆
+􏴅Cutting Routes􏴆
 􏷐Cuts the route based on the local map's regeneration SLA requirements􏷏
 􏶠Ensures that no cute route violates any regeneration restrictions guaranteed by the local map's SLA􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
@@ -74,45 +118,64 @@ knowing when to regenerate is one such use case􏷯
     􏶲we may want to do additional filtering􏶱
 􏶳
 
-􏷘+􏷗􏷒interpret route life time􏷑
-􏷐interpret the state of the route by observing the range of partitions that need evaluated􏷏
-􏶠Based on the state of partitions that need evaluated, we can derive some contextual information about the route􏶡
-􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the lifetime of􏶿
-􏶚m􏶛􏶾route_lifetime􏶽􏶼route interpretation􏶻􏶺an interpretation about the state of the route􏶹
+􏷘+􏷗􏷒cut first􏷑
+􏴅Cutting Routes􏴆
+􏷐Cuts the first partition of the route􏷏
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
+􏶴
+    if (􏵲has lanes􏵳􏵶route􏵷)){
+        cut_indexes.insert(0);
+    }
+􏶳
+
+􏷘+􏷗􏷒cut last􏷑
+􏴅Cutting Routes􏴆
+􏷐Cuts the last partition of the route􏷏
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to apply cuts to􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼cut indexes􏶻􏶺indexes along the route to cut􏶹
+􏶴
+    if (􏵲has lanes􏵳􏵶route􏵷)){
+        cut_indexes.insert(􏵶route􏵷.lane_sequence.size() -1);
+    }
+􏶳
+
+
+􏷘+􏷗􏷒interpret route state􏷑
+􏷐interpret the state of the route by observing the range of lanes that need evaluated􏷏
+􏶠Based on the state of lanes that need evaluated, we can derive some contextual information about the route􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the state of􏶿
+􏶚m􏶛􏶾route_state􏶽􏶼route interpretation􏶻􏶺an interpretation about the state of the route􏶹
 􏶴
 
+    route_interpretation = route_state_invalid;
+    
     􏶲(n,n) = existing route􏶱
     if (􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
-        route_interpretation = route_lifetime_existing_route;
+        return route_state_existing_route;
     }
     
     􏶲(?,n) = new route􏶱
     else if(!􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
-        route_interpretation = route_lifetime_new_route;
+        return route_state_new_route;
     }
     
     􏶲(n,?) = expired route􏶱
     else if(􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
-        route_interpretation = route_lifetime_expired;
+        return route_state_expired;
     }
     
     􏶲(?,?) = invalid route􏶱
     else if(!􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
-        route_interpretation = route_lifetime_invalid;
+        return route_state_invalid;
     }
 􏶳
 
-􏷘+􏷗􏷒interpret route life time􏷑
-􏷐x􏷏
-􏶠y􏶡
-􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the processing range from􏶿
-􏶚m􏶛􏶾interval􏶽􏲫hub􏲬􏲫base􏲬􏶼processing range􏶻􏶺the range of intervals to perform event processing on􏶹
-􏶴
-􏶳
 
 􏷘-􏷗􏷒insert previous􏷑
 􏷐store the previous index􏷏
 􏶠Assumes the previous index is valid􏶡
+􏴅Detail􏴆
 􏵪index != 0􏵫
 􏵨the previous index exists􏵩
 􏶜m􏶝􏷆unordered_indexes􏷅􏷄indexes􏷃􏷀indexes􏶿
@@ -122,17 +185,36 @@ knowing when to regenerate is one such use case􏷯
     􏵶indexes􏵷.insert(􏵶index􏵷-1);
 􏶳
 
-􏷘-􏷗􏷒no partition longer than distance􏷑
-􏷐checks to see if any individual partition is longer then the distance provided􏷏
-􏶠True if any partition is longer; false otherwise.􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze partition lengths􏶿
+􏷘-􏷗􏷒no lane longer than distance􏷑
+􏷐checks to see if any individual lane is longer then the distance provided􏷏
+􏶠True if any lane is longer; false otherwise.􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to check against􏶿
-􏶚m􏶛􏶾bool􏶽􏶼no partition longer􏶻􏶺whether any partition is longer than the distance􏶹
+􏶚m􏶛􏶾bool􏶽􏶼no lane longer􏶻􏶺whether any lane is longer than the distance􏶹
 􏶴
     
     􏶲simplify predicate􏶱
-    no_partition_longer = std::none_of(route.annotation_sequence.begin(),route.annotation_sequence.end(),[&](const route_planning::lane_neighbor_annotation & annotation){
+    no_lane_longer = std::none_of(route.annotation_sequence.begin(),route.annotation_sequence.end(),[&](const route_planning::lane_neighbor_annotation & annotation){
         return annotation.distance > distance_m;
     });
-    
+􏶳
+
+􏷘-􏷗􏷒is positive􏷑
+􏷐checks whether the number is positive􏷏
+􏶠0 is not positive􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆d􏷅􏷄num􏷃􏷀the number to check􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is positive􏶻􏶺whether the number is positive􏶹
+􏶴
+    is_positive = 􏵶num􏵷 > 0;
+􏶳
+
+􏷘-􏷗􏷒has lanes􏷑
+􏷐checks whether the route has lanes􏷏
+􏴅Detail􏴆
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
+􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏶺whether the route has lanes􏶹
+􏶴
+    has_lanes = !􏵶route􏵷.lane_sequence.empty();
 􏶳
