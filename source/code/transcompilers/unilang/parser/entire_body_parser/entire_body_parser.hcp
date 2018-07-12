@@ -29,30 +29,74 @@ class
     
     //basically a tokenizer
     auto nested_tokens = Turn_Body_Into_Nested_Tokens(body);
-    
-    //for (auto const& c: body){
-    //    auto unresolved_extraction = 
-    //}
-    
-    /*
-    std::wstring buffer;
-    bool in_token = false;
-    for (auto c: body){
-        Handle_Char(result,buffer,in_token,c);
-    }
-    
-    if (!buffer.empty()){
-        Body_Token_Value t;
-        t.value = buffer;
-        t.name = Body_Token_Name::REGULAR;
-        result.push_back(t);
-    }
-    */
+    //TODO
     
     return results;
 ❱
 
 ◀private: static▶ Nested_Body_Tokens ☀Turn_Body_Into_Nested_Tokens(std::wstring const& body)❰
-    Nested_Body_Tokens tokens;
-    return tokens;
+    Nested_Body_Tokens all;
+    int depth = 0;
+    std::wstring buffer;
+    bool in_token = false;
+    Body_Token_Name currently_in = Body_Token_Name::REGULAR;
+    for (auto const& c: body){
+        Handle_Char(all,buffer,in_token,depth,currently_in,c);
+    }
+    return all;
+❱
+
+◀private: static▶ void ☀Handle_Char(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+    
+    //when not in a token
+    if (!in_token){
+        Handle_Char_When_Out_Of_Token(all,buffer,in_token,depth,currently_in,c);
+    }
+    else{
+        Handle_Char_When_In_Token(all,buffer,in_token,depth,currently_in,c);
+    }
+❱
+
+◀private: static▶ void ☀Handle_Char_When_Out_Of_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
+        
+        //store the left over stuff when we were outside other tokens
+        Add_To_Token_Set(all,buffer,Body_Token_Name::REGULAR);
+        
+        //update state and clear buffer for analysis inside the token
+        in_token = true;
+        buffer.clear();
+        currently_in = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(c).name;
+        ++depth;
+        
+        
+    }else{
+        buffer += c;
+    }
+❱
+◀private: static▶ void ☀Handle_Char_When_In_Token(Nested_Body_Tokens & tokens, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name const& currently_in, wchar_t const& c)❰
+    
+    
+    // if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c)){
+    //     Body_Token_Value t;
+    //     t.value = buffer;
+    //     t.name = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(c).name;
+    //     result.push_back(t);
+    //     in_token = false;
+    //     buffer.clear();
+    // }else{
+    //     buffer += c;
+    // }
+❱
+
+◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
+    Body_Token_Value t;
+    t.value = buffer;
+    t.name = name;
+    
+    Nested_Body_Tokens wrapped;
+    wrapped.single = t;
+    
+    all.tokens.get().emplace_back(wrapped);
 ❱
