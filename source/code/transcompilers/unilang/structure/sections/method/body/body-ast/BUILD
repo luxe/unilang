@@ -7,4 +7,5 @@ hcp(name = "root_body_element", deps = [
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/comment_types:warning_body_comment",
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:regular_statement",
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:return_statement",
+"//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:uncaught_statement",
 ])

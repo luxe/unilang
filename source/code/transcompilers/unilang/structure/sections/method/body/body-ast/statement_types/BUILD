@@ -8,3 +8,7 @@ hcp(name = "regular_statement", deps = [
 hcp(name = "return_statement", deps = [
 "//code/transcompilers/unilang/parser:token_value"
 ])
+
+hcp(name = "uncaught_statement", deps = [
+"//code/transcompilers/unilang/parser:token_value"
+])
