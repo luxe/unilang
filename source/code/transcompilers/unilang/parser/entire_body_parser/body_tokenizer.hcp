@@ -1,0 +1,100 @@
+class
+❪"code/transcompilers/unilang/structure/sections/method/body/function_body"❫
+❪"code/transcompilers/unilang/parser/entire_body_parser/nested_body_tokens"❫
+⚯
+❪"code/transcompilers/unilang/parser/global_tokens_table_utilities"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/converters/lib"❫
+⚞⚟
+
+◀public: static▶ Nested_Body_Tokens ☀Turn_Body_Into_Nested_Tokens(std::wstring const& body)❰
+    Nested_Body_Tokens all;
+    int depth = 0;
+    std::wstring buffer;
+    bool in_token = false;
+    Body_Token_Name currently_in = Body_Token_Name::REGULAR;
+    for (auto const& c: body){
+        Handle_Char(all,buffer,in_token,depth,currently_in,c);
+    }
+    return all;
+❱
+
+◀private: static▶ void ☀Handle_Char(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+    
+    //when not in a token
+    if (!in_token){
+        Handle_Char_When_Out_Of_Token(all,buffer,in_token,depth,currently_in,c);
+    }
+    else{
+        Handle_Char_When_In_Token(all,buffer,in_token,depth,currently_in,c);
+    }
+❱
+
+◀private: static▶ void ☀Handle_Char_When_Out_Of_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
+        
+        //store the left over stuff when we were outside other tokens
+        Add_To_Token_Set(all,buffer,Body_Token_Name::REGULAR);
+        
+        //update state and clear buffer for analysis inside the token
+        in_token = true;
+        buffer.clear();
+        currently_in = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(c).name;
+        ++depth;
+        
+        
+    }else{
+        buffer += c;
+    }
+❱
+◀private: static▶ void ☀Handle_Char_When_In_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+    
+    
+    Attempt_To_Adjust_Our_Depth(currently_in,c,depth);
+    
+    
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c) && depth == 0){
+        
+        //store the stuff we found inside the tokens
+        Add_To_Token_Set(all,buffer,currently_in);
+        
+        //update the state now that we are outside the found token
+        in_token = false;
+        buffer.clear();
+        currently_in = Body_Token_Name::REGULAR;
+    }else{
+        buffer += c;
+    }
+        
+
+❱
+
+◀private: static▶ void ☀Attempt_To_Adjust_Our_Depth(Body_Token_Name const& currently_in, wchar_t const& c, int & depth)❰
+
+    //if we found a duplicate starter tag, increment the depth
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
+        if (Global_Tokens_Table_Utilities::Get_Body_Char_Start_Representation(currently_in) == c){
+            ++depth;
+        }
+    }
+    
+    //if we the ending tag decrement the depth
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c)){
+        if (Global_Tokens_Table_Utilities::Get_Body_Char_End_Representation(currently_in) == c){
+            --depth;
+        }
+    }
+❱
+
+◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
+    Body_Token_Value t;
+    t.value = buffer;
+    t.name = name;
+    
+    Nested_Body_Tokens wrapped;
+    wrapped.single = t;
+    wrapped.tokens.get().emplace_back(Turn_Body_Into_Nested_Tokens(buffer)); //RECURSION
+    
+    all.tokens.get().emplace_back(wrapped);
+❱
