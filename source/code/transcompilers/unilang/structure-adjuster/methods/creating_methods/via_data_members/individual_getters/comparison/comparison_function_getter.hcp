@@ -5,8 +5,8 @@ class
 ❪"code/transcompilers/unilang/options/sections/data_member/data_member_options"❫
 ❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
 ❪"code/transcompilers/unilang/options/manipulation/methods/via_data_member/data_member_utility_function_options"❫
-❪"code/transcompilers/unilang/relational-operator/relational_operator"❫
-❪"code/transcompilers/unilang/relational-operator/relational_operator_converter"❫
+❪"code/utilities/relational-operator/relational_operator"❫
+❪"code/utilities/relational-operator/relational_operator_converter"❫
 ❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/comparison/all_comparison_impl_schemes"❫
 ❪"code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/boolean_expression_creator"❫
 ⚯
@@ -30,6 +30,7 @@ class
 
 ◀private: static▶ Method_Item ☀Create_Method(std::string const& self_type, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Function_Build_Settings const& sub_settings, Relational_Operator const& op)❰
     Method_Item m;
+	Relational_Operator_Print_Settings op_settings;
     
     //property related
     m.class_access  = sub_settings.access;
@@ -44,7 +45,7 @@ class
     m.names.function_name.value = as_wstring(generated_function_name);
     m.brief_description.value = L"performs relational operation on structure";
     m.detailed_description.value = L"equivalent to the overloaded ";
-	m.detailed_description.value += as_wstring(Relational_Operator_Converter::As_String(op));
+	m.detailed_description.value += as_wstring(Relational_Operator_Converter::As_String(op,op_settings));
 	m.detailed_description.value += L" operator";
     
 	//self argument
@@ -85,13 +86,15 @@ class
 
 ◀private: static▶ void ☀Add_Body(Method_Item & m, std::vector<Data_Member_Item> const& items,  Data_Member_Options const& options, Function_Build_Settings const& sub_settings, Relational_Operator const& op)❰
 
+	Relational_Operator_Print_Settings op_settings;
+
     //the body of the function
     std::vector<Body_Token_Value> body;
     Body_Token_Value t;
     
     t.name = Body_Token_Name::COMMENT;
     t.value = L"perform ";
-    t.value += as_wstring(Relational_Operator_Converter::As_String(op));
+    t.value += as_wstring(Relational_Operator_Converter::As_String(op,op_settings));
     t.value += L" operation";
     body.push_back(t);
 
