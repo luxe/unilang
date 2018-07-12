@@ -75,19 +75,43 @@ class
         buffer += c;
     }
 ❱
-◀private: static▶ void ☀Handle_Char_When_In_Token(Nested_Body_Tokens & tokens, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name const& currently_in, wchar_t const& c)❰
+◀private: static▶ void ☀Handle_Char_When_In_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
     
     
-    // if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c)){
-    //     Body_Token_Value t;
-    //     t.value = buffer;
-    //     t.name = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(c).name;
-    //     result.push_back(t);
-    //     in_token = false;
-    //     buffer.clear();
-    // }else{
-    //     buffer += c;
-    // }
+    Attempt_To_Adjust_Our_Depth(currently_in,c,depth);
+    
+    
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c) && depth == 0){
+        
+        //store the stuff we found inside the tokens
+        Add_To_Token_Set(all,buffer,currently_in);
+        
+        //update the state now that we are outside the found token
+        in_token = false;
+        buffer.clear();
+        currently_in = Body_Token_Name::REGULAR;
+    }else{
+        buffer += c;
+    }
+        
+
+❱
+
+◀private: static▶ void ☀Attempt_To_Adjust_Our_Depth(Body_Token_Name const& currently_in, wchar_t const& c, int & depth)❰
+
+    //if we found a duplicate starter tag, increment the depth
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
+        if (Global_Tokens_Table_Utilities::Get_Body_Char_Start_Representation(currently_in) == c){
+            ++depth;
+        }
+    }
+    
+    //if we the ending tag decrement the depth
+    if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c)){
+        if (Global_Tokens_Table_Utilities::Get_Body_Char_End_Representation(currently_in) == c){
+            --depth;
+        }
+    }
 ❱
 
 ◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
