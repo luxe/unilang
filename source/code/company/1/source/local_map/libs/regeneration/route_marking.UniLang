@@ -103,6 +103,126 @@ knowing when to regenerate is one such use case􏷯
     //ASSERT
     ASSERT_TRUE(indexes.empty());
 􏴮
+􏴯mark every lane􏴰
+􏲝If every lane exceeds the distance given, all of the lanes should be marked􏲞
+􏲛Implementation is no longer handling the exceeded distance check properly􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    
+    //ACT
+    auto distance_m = 50;
+    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+    
+    //ASSERT
+    ASSERT_EQ(indexes.size(),3);
+    ASSERT_TRUE(indexes.find(0) != indexes.end());
+    ASSERT_TRUE(indexes.find(1) != indexes.end());
+    ASSERT_TRUE(indexes.find(2) != indexes.end());
+􏴮
+􏴯mark every other lane􏴰
+􏲝If the distance is exceeded every other lane, we should have every other lane marked􏲞
+􏲛Implementation is no longer handling the exceeded distance check properly􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    
+    //ACT
+    auto distance_m = 101;
+    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+    
+    //ASSERT
+    ASSERT_EQ(indexes.size(),3);
+    ASSERT_TRUE(indexes.find(0) == indexes.end());
+    ASSERT_TRUE(indexes.find(1) != indexes.end());
+    ASSERT_TRUE(indexes.find(2) == indexes.end());
+    ASSERT_TRUE(indexes.find(3) != indexes.end());
+    ASSERT_TRUE(indexes.find(4) == indexes.end());
+    ASSERT_TRUE(indexes.find(5) != indexes.end());
+􏴮
+􏴯distance not reached􏴰
+􏲝If the distance is never reached along the route, no lanes should be marked􏲞
+􏲛Implementation is accidentally marking lanes before the distance is exceeded along the route􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 25;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 25;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 25;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 25;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    
+    //ACT
+    auto distance_m = 100;
+    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+    
+    //ASSERT
+    ASSERT_TRUE(indexes.empty());
+    ASSERT_TRUE(indexes.find(0) == indexes.end());
+    ASSERT_TRUE(indexes.find(1) == indexes.end());
+    ASSERT_TRUE(indexes.find(2) == indexes.end());
+    ASSERT_TRUE(indexes.find(3) == indexes.end());
+􏴮
 
 􏷘+􏷗􏷒mark lanes prior to exceeding accumulated distance􏷑
 􏴅Lane Marking􏴆
