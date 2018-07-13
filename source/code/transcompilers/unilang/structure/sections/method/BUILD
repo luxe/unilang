@@ -12,7 +12,7 @@ hcp(name = "method_item", deps = [
 "//code/transcompilers/unilang/structure/sections/method/properties:method_overload_specifiers",
 "//code/transcompilers/unilang/structure/sections/method/properties:method_inheritence_specifiers",
 "//code/transcompilers/unilang/structure/sections/method/properties:method_event_characteristic",
-"//code/transcompilers/unilang/structure/sections/method/tests:function_test_case",
+"//code/transcompilers/unilang/structure/unit_tests:unit_tests",
 "//code/transcompilers/unilang/structure/sections/method/stamps:method_stamp",
 "//code/transcompilers/unilang/structure/sections/method/names:method_names_section",
 "//code/transcompilers/unilang/structure/sections/method/body:function_body",

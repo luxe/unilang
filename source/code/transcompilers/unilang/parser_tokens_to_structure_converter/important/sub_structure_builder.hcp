@@ -335,8 +335,11 @@ class
     part.return_results                     = Parser_Token_Stripper::Strip_Out_Type_V2<Function_Result>(settings,tokens,Token_Group::FUNCTION_RESULT,Build_Function_Result);
     part.contracts.preconditions            = Parser_Token_Stripper::Strip_Out_Type<Contract_Precondition>(settings,tokens,Token_Group::FUNCTION_PRECONDITION,Build_Precondition);
     part.contracts.postconditions           = Parser_Token_Stripper::Strip_Out_Type<Contract_Postcondition>(settings,tokens,Token_Group::FUNCTION_POSTCONDITION,Build_Postcondition);
+    part.contracts.postconditions           = Parser_Token_Stripper::Strip_Out_Type_V2<Contract_Postcondition>(settings,tokens,Token_Group::FUNCTION_POSTCONDITION,Build_Postcondition);
+    part.unit_tests.test_cases              = Parser_Token_Stripper::Strip_Out_Type_V2<Test_Case>(settings,tokens,Token_Group::FUNCTION_TEST_CASE,Build_Function_Test_Case);
     
     //store the original_function_name as the function_name may change later
+    //TODO: we probably want to remove this and instead give Token Values a history
     part.names.original_function_name = part.names.function_name;
     
     
@@ -346,6 +349,19 @@ class
     /* TODO: depreciate this: */ for (auto it: function_body){part.body = Body_Token_Parser::Parse_Method_Body_Into_Stream_Of_Tokens(it.content);}
     /* in place of this: */      //for (auto it: function_body){part.entire_body = Entire_Body_Parser::Parse(it.content);}
     
+    return part;
+❱
+
+◀public: static▶ Test_Case ☀Build_Function_Test_Case(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Test_Case part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Function_Test_Main<decltype(part)>);
+    part.reasons_for_failing = Parser_Token_Stripper::Strip_Out_Type_V2<Test_Failure_Reason>(settings,tokens,Token_Group::FUNCTION_TEST_CASE_REASON_FOR_FAILING,Build_Function_Test_Case_Failure_Reason);
+    return part;
+❱
+
+◀public: static▶ Test_Failure_Reason ☀Build_Function_Test_Case_Failure_Reason(std::vector<Parser_Token> const& tokens,Token_Attribute_Settings const& settings)❰
+    Test_Failure_Reason part;
+    Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Function_Test_Failure_Reason<decltype(part)>);
     return part;
 ❱
 
