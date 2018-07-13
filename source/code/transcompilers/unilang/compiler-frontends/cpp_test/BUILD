@@ -9,6 +9,7 @@ hcp(name = "cpp_test_exporter", deps = [
 "//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
 "//code/transcompilers/unilang/structure-printer:file_printer",
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/converters:lib",
 ])
 
 hcp(name = "cpp_test_options_getter", deps = [
@@ -17,4 +18,5 @@ hcp(name = "cpp_test_options_getter", deps = [
 "//code/transcompilers/unilang/structure:structure",
 "//code/utilities/exits:lib",
 "//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure-printer/filename:file_name_getter",
 ])

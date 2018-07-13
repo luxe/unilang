@@ -3,6 +3,7 @@ class
 ❪vector❫
 ❪string❫
 ❪iostream❫
+❪fstream❫
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/contributor/contributor"❫
 ❪"code/transcompilers/unilang/options/language-specific/cpp_test_export_settings"❫
@@ -11,9 +12,10 @@ class
 ❪"code/transcompilers/unilang/structure-printer/file_printer"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
+❪"code/utilities/converters/lib"❫
 
 ⚯
-
+❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Test_Export_Settings const& settings)❰
@@ -33,7 +35,61 @@ class
     return files_created;
 ❱
 
-◀public: static▶ std::vector<std::string> ☀Create_Test(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+◀private: static▶ std::vector<std::string> ☀Create_Test(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::vector<std::string> files_created;
+    
+    std::string file_test_suffix = "_test";
+    std::string file_test_directory = "test";
+    
+    if (Has_Unit_Tests(structure)){
+        Export_File_Settings file_settings;
+        file_settings.language = Source_Language::CPP;
+        file_settings.code = Code_Type::GLOBAL;
+        file_settings.special = Special_File_Type::NORMAL;
+        file_settings.file = File_Type::IMPLEMENTATION;
+        auto file_name = File_Name_Getter::Get(file_settings,structure.name + file_test_suffix,settings.general.filesystem_naming);
+        
+        std::string
+        Create_Path_If_It_Doesnt_Already_Exist(file_test_directory);
+        std::string full_path = file_test_directory + "/" + file_name;
+        files_created.emplace_back(full_path);
+        std::ofstream outfile(full_path);
+        outfile << Structure_As_Unit_Test(structure,settings);
+        outfile.close();
+    }
     return files_created;
+❱
+
+◀private: static▶ bool ☀Has_Unit_Tests(Structure const& structure)❰
+    for (auto const& it: structure.methods.methods){
+        if (!it.unit_tests.test_cases.empty()){
+            return true;
+        }
+    }
+    
+    return false;
+❱
+
+◀private: static▶ std::string ☀Structure_As_Unit_Test(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+    std::string result;
+    result += Get_Each_Unit_Test_Section(structure,settings);
+    result += "//TODO";
+    return result;
+❱
+
+◀private: static▶ std::string ☀Get_Each_Unit_Test_Section(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+    std::string result;
+    
+    for (auto const& it: structure.methods.methods){
+        for (auto const& j: it.unit_tests.test_cases){
+            result += "TEST(";
+            result += as_string(j.name.value);
+            result += ", ";
+            result += as_string(j.tag.value);
+            result += ")\n{\n\n";
+            result += as_string(j.body.value);
+            result += "\n\n}\n\n";
+        }
+    }
+    return result;
 ❱

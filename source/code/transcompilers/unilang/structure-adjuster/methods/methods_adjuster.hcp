@@ -12,6 +12,7 @@ class
 ❪"code/transcompilers/unilang/structure-adjuster/methods/forcers/method_overload_adjuster"❫
 ❪"code/transcompilers/unilang/structure-printer/derivers/structure_typename_deriver"❫
 ❪"code/transcompilers/unilang/structure-adjuster/methods/api_and_lifetime/api_and_lifetime_creator"❫
+❪"code/transcompilers/unilang/structure-adjuster/methods/forcers/function_unit_test_name_defaulter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Adjust(Structure & structure, Struct_Manipulation_Settings const& settings)❰
@@ -23,6 +24,7 @@ class
     bool make_heavy_immutable_values_passed_by_ref = true;
     bool adjust_functions_to_avoid_overloads = false; //basically languages that dont have function overloading
     bool force_default_create_and_return_for_non_void_functions = true;
+    bool add_default_test_name = true;
     
     
     //add new methods based on settings and existing structure properties
@@ -62,6 +64,10 @@ class
     //this is going to be tricky for types that aren't default constructible
     if (force_default_create_and_return_for_non_void_functions){
         Instantiate_And_Return_Injector_For_Return_Type::Inject_Into_Body(structure.methods.methods,settings);
+    }
+    
+    if (add_default_test_name){
+        Function_Unit_Test_Name_Defaulter::Default_Missing_Test_Names(structure,settings);
     }
 ❱
 ◀public: static▶ void ☀Transform_And_Add_Lifetime_Methods(Structure & structure, Struct_Manipulation_Settings const& settings)❰

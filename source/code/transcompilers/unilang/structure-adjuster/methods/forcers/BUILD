@@ -36,3 +36,8 @@ hcp(name = "instantiate_and_return_injector_for_return_type", deps = [
 "//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",
 ])
 
+hcp(name = "function_unit_test_name_defaulter", deps = [
+"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/utilities/converters:lib",
+])
