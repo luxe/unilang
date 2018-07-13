@@ -18,6 +18,7 @@ hcp(name = "method_options", deps = [
 "method_subgroup_settings",
 "outside_body_comment_settings",
 "method_divider_settings",
+"//code/transcompilers/unilang/options/sections/method:method_test_case_settings",
 ])
 
 hcp(name = "outside_body_comment_settings", deps = [
@@ -27,4 +28,9 @@ hcp(name = "outside_body_comment_settings", deps = [
 hcp(name = "divider_settings")
 hcp(name = "method_divider_settings", deps = [
 "//code/transcompilers/unilang/options/sections/method:divider_settings",
+])
+
+hcp(name = "method_test_case_settings", deps = [
+"//code/transcompilers/unilang/options/sections/method:divider_settings",
+"//code/utilities/types/strings/transformers/casing:case_format_style",
 ])

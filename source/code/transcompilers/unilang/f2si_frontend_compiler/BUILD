@@ -97,6 +97,7 @@ hcp(name = "file_transferer", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/system:lib",
+"//code/utilities/types/strings/transformers/removing:lib",
 ])
 
 hcp(name = "file_transfer_settings_getter", deps = [

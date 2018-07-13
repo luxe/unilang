@@ -13,9 +13,15 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/source_language"❫
 ❪"code/utilities/converters/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
 
 ⚯
 ❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
+❪"code/transcompilers/unilang/structure-printer/namespace_printer"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Test_Export_Settings const& settings)❰
@@ -30,32 +36,57 @@ class
     Structure copy = structure;
     Structure_Adjuster::Adjust(copy,settings.manipulations,Source_Language::CPP);
     
-    files_created += Create_Test(copy,settings);
-    
-    return files_created;
-❱
-
-◀private: static▶ std::vector<std::string> ☀Create_Test(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
-    std::vector<std::string> files_created;
-    
-    std::string file_test_suffix = "_test";
-    std::string file_test_directory = "test";
-    
-    if (Has_Unit_Tests(structure)){
         Export_File_Settings file_settings;
         file_settings.language = Source_Language::CPP;
         file_settings.code = Code_Type::GLOBAL;
         file_settings.special = Special_File_Type::NORMAL;
         file_settings.file = File_Type::IMPLEMENTATION;
+    
+    files_created += Create_Test(copy,file_settings,settings);
+    
+    return files_created;
+❱
+
+◀private: static▶ std::string ☀Create_Path_To_Test_File(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Test_Export_Settings const& settings)❰
+
+        std::string file_test_suffix = "_test";
+        std::string file_test_directory = "test";
+    
+        //create base file name with file extension
         auto file_name = File_Name_Getter::Get(file_settings,structure.name + file_test_suffix,settings.general.filesystem_naming);
         
-        std::string
-        Create_Path_If_It_Doesnt_Already_Exist(file_test_directory);
+        //create the test directory we will create a file in
+        Create_Path_If_It_Doesnt_Already_Exist(Current_Path() + "/" + file_test_directory);
+        
         std::string full_path = file_test_directory + "/" + file_name;
+        return full_path;
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Create_Test(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Test_Export_Settings const& settings)❰
+    std::vector<std::string> files_created;
+    
+    if (Has_Unit_Tests(structure)){
+        
+        //create file name
+        auto full_path = Create_Path_To_Test_File(structure,file_settings,settings);
         files_created.emplace_back(full_path);
-        std::ofstream outfile(full_path);
-        outfile << Structure_As_Unit_Test(structure,settings);
-        outfile.close();
+        
+        std::wofstream out(full_path);
+        
+        Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,settings.portion.meta,full_path);
+        
+        
+    //TODO: FIX THIS
+    C_Export_Settings BAD_DONT_DO_THIS;
+    BAD_DONT_DO_THIS.general = settings.general;
+    BAD_DONT_DO_THIS.portion = settings.portion;
+    BAD_DONT_DO_THIS.manipulations = settings.manipulations;
+    Namespace_Printer::Print_Namespace(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
+        out << as_wstring(Structure_As_Unit_Test(structure,settings));
+    Namespace_Printer::Print_Namespace_End(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
+    Boilerplate_Printer::Print_End(out,structure,file_settings,BAD_DONT_DO_THIS);
+        out.close();
     }
     return files_created;
 ❱
@@ -73,7 +104,6 @@ class
 ◀private: static▶ std::string ☀Structure_As_Unit_Test(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::string result;
     result += Get_Each_Unit_Test_Section(structure,settings);
-    result += "//TODO";
     return result;
 ❱
 
@@ -82,10 +112,29 @@ class
     
     for (auto const& it: structure.methods.methods){
         for (auto const& j: it.unit_tests.test_cases){
+            
+            //extract all the data into strings
+            std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_name_casing,as_string(j.name.value));
+            std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_tag_casing,as_string(j.tag.value));
+            std::string reason_for_testing = as_string(j.reason_for_testing.value);
+            
+            std::vector<std::string> fail_reasons;
+            for (auto const& x: j.reasons_for_failing){
+                fail_reasons.emplace_back(as_string(x.reason.value));
+            }
+            
+            result += "// Reason for testing: ";
+            result += reason_for_testing;
+            result += "\n";
+            result += "// Failure explanation: ";
+            for (auto const& x: fail_reasons){
+                result += x;
+                result += "\n";
+            }
             result += "TEST(";
-            result += as_string(j.name.value);
+            result += test_name;
             result += ", ";
-            result += as_string(j.tag.value);
+            result += test_tag;
             result += ")\n{\n\n";
             result += as_string(j.body.value);
             result += "\n\n}\n\n";

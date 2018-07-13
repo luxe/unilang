@@ -23,6 +23,7 @@ void Move_Back_Directories_Until_Directory_Exists(std::string root_directory_nam
 
 std::string Current_Folder_Name(void);
 std::vector<std::string> Recursively_Get_All_Directories_From_Path(std::string const& path);
+//std::string Trim_Off_Last_Directory_On_Path(std::string const& path);
 
 	//+---------------+
 	//| Getting Paths |
