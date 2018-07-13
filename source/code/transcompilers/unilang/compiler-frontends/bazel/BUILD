@@ -6,6 +6,7 @@ hcp(name = "bazel_rule_exporter", deps = [
 "//code/transcompilers/unilang/options/bazel:language_to_build_object",
 "//code/transcompilers/unilang/user-frontend:language_guesser",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
+"//code/transcompilers/unilang/bazel_printer:package_getter",
 "//code/transcompilers/unilang/bazel_printer:top_comment_getter",
 "//code/transcompilers/unilang/bazel_printer:load_getter",
 "//code/utilities/types/strings/transformers/appending:lib",

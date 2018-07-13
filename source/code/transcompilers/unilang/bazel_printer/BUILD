@@ -55,3 +55,7 @@ hcp(name = "deps_printer", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
 ])
+
+hcp(name = "package_getter", deps = [
+"//code/transcompilers/unilang/options/bazel:build_rule_settings",
+])
