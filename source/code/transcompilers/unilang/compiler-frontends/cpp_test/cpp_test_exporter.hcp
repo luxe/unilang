@@ -22,6 +22,8 @@ class
 ❪"code/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
 ❪"code/transcompilers/unilang/structure-printer/namespace_printer"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Test_Export_Settings const& settings)❰
@@ -75,6 +77,7 @@ class
         std::wofstream out(full_path);
         
         Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,settings.portion.meta,full_path);
+        out << as_wstring(Get_Include_Section(structure));
         
         
     //TODO: FIX THIS
@@ -90,6 +93,28 @@ class
     }
     return files_created;
 ❱
+
+◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
+    std::string result;
+    
+    Append(result,"#include ");
+    result += Get_Double_Quote();
+    auto path = Get_Path_Of_Directory_After_Found_Folder("source");
+    Append(result,path);
+    Append(result,structure.name);
+    Append(result,".hh");
+    result += Get_Double_Quote();
+    result += "\n";
+    
+    
+    Append(result,"#include ");
+    result += Get_Double_Quote();
+    Append(result,"gtest/gtest.h");
+    result += Get_Double_Quote();
+    result += "\n";
+    return result;
+❱
+
 
 ◀private: static▶ bool ☀Has_Unit_Tests(Structure const& structure)❰
     for (auto const& it: structure.methods.methods){

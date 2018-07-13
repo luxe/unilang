@@ -16,6 +16,8 @@ hcp(name = "cpp_test_exporter", deps = [
 "//code/transcompilers/unilang/structure-printer:namespace_printer",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
+"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/types/char:lib",
 ])
 
 hcp(name = "cpp_test_options_getter", deps = [
