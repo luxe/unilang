@@ -29,6 +29,7 @@ class Program_Options: public Program_Options_Default{
 	bool Skip_Transfer()const;
 	bool Skip_Remote_Programs()const;
 	bool Skip_Build()const;
+	bool Build_Only()const;
 
 
 	private:
