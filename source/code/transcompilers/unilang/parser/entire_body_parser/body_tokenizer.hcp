@@ -1,4 +1,5 @@
 class
+❪iostream❫
 ❪"code/transcompilers/unilang/structure/sections/method/body/function_body"❫
 ❪"code/transcompilers/unilang/parser/entire_body_parser/nested_body_tokens"❫
 ⚯
@@ -16,6 +17,12 @@ class
     for (auto const& c: body){
         Handle_Char(all,buffer,in_token,depth,currently_in,c);
     }
+    
+    if (in_token){
+        std::cerr << "you ended a body while still inside a token" << std::endl;
+    }
+    Add_To_Token_Set_No_Recursion(all,buffer,Body_Token_Name::UNCAUGHT_STATEMENT);
+    
     return all;
 ❱
 
@@ -88,13 +95,30 @@ class
 ❱
 
 ◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
-    Body_Token_Value t;
-    t.value = buffer;
-    t.name = name;
     
-    Nested_Body_Tokens wrapped;
-    wrapped.single = t;
-    wrapped.tokens.get().emplace_back(Turn_Body_Into_Nested_Tokens(buffer)); //RECURSION
+    if (!buffer.empty()){
+        Body_Token_Value t;
+        t.value = buffer;
+        t.name = name;
+        
+        Nested_Body_Tokens wrapped;
+        wrapped.single = t;
+        
+        wrapped.tokens.get().emplace_back(Turn_Body_Into_Nested_Tokens(buffer)); //RECURSION
+        
+        all.tokens.get().emplace_back(wrapped);
+    }
+❱
+◀private: static▶ void ☀Add_To_Token_Set_No_Recursion(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
     
-    all.tokens.get().emplace_back(wrapped);
+    if (!buffer.empty()){
+        Body_Token_Value t;
+        t.value = buffer;
+        t.name = name;
+        
+        Nested_Body_Tokens wrapped;
+        wrapped.single = t;
+        
+        all.tokens.get().emplace_back(wrapped);
+    }
 ❱

@@ -1,9 +1,10 @@
 class
 
-
+❪variant❫
 ❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
 ❪"code/transcompilers/unilang/structure/sections/data_member/data_member_item"❫
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/utilities/types/variant/lib"❫
 ⚯
 ❪"code/transcompilers/unilang/in-method-printers/body_param_in_method_printer"❫
 ❪"code/transcompilers/unilang/in-method-printers/data_member_in_method_printer"❫
@@ -22,6 +23,8 @@ class
 ◀public: static▶ void ☀Print(std::wofstream & out, std::string const& file_name, Method_Item const& method, std::vector<Data_Member_Item> const& members, std::vector<Method_Item> const& methods, bool const& object_method, C_Export_Settings const& options,std::string const& implicit_name,Object_Export_Method const& export_method)❰
 
     //printing each token of the body
+    //DEPREICATE THIS
+/*
     for (auto it: method.body){
 
         
@@ -36,6 +39,30 @@ class
 
             default: Print_To_Stream(out,it.value);
         }
+    }
+    */
+    
+    for (auto it: method.entire_body.elements){
+        std::visit(overloaded {
+        [&](Regular_Body_Comment const& a) {
+            Print_Comment(out,method,a.value.value);
+        },
+        [&](Todo_Body_Comment const& a) {
+            Print_Comment(out,method,a.value.value);
+        },
+        [&](Warning_Body_Comment const& a) {
+            Print_Comment(out,method,a.value.value);
+        },
+        [&](Regular_Statement const& a) {
+            //TODO
+        },
+        [&](Return_Statement const& a) {
+            //TODO
+        },
+        [&](Uncaught_Statement const& a) {
+            Print_Regular(out,method,a.value.value);
+        },
+        }, it.types);
     }
 ❱
 

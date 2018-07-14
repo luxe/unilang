@@ -64,6 +64,7 @@ hcp(name = "method_body_token_printer", deps = [
 "//code/transcompilers/unilang/in-method-printers:method_call_in_method_printer",
 "//code/transcompilers/unilang/in-method-printers:foreign_method_call_in_method_printer",
 "//code/transcompilers/unilang/comment_creator:comment_creator",
+"//code/utilities/types/variant:lib",
 ])
 
 hcp(name = "namespace_printer", deps = [

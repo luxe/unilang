@@ -26,7 +26,7 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
 􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
 􏶴
-    if (!􏵲is positive􏵳􏵶distance􏵷)){
+    if (!is_positive(distance_m)){
         return false;
     }
     
@@ -41,11 +41,11 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance that must not be exceeded􏶿
 􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
 􏶴
-    if (!􏵲is positive􏵳􏵶distance􏵷)){
+    if (!is_positive(distance_m)){
         return false;
     }
     
-    if (!􏵲no lane longer than distance􏵳􏵶route􏵷,􏵶distance􏵷)){
+    if (!no_lane_longer_than_distance(route,distance_m)){
         return false;
     }
     
@@ -60,7 +60,7 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
 􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏶺whether the arguments meet the implementation's preconditions􏶹
 􏶴
-    if (!􏵲precondition mark lanes that exceed accumulated distance􏵳􏵶route􏵷,􏵶distance􏵷)){
+    if (!precondition_mark_lanes_that_exceed_accumulated_distance(route,distance_m)){
         return false;
     }
     
@@ -78,9 +78,9 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
-    for (size_t i = 0; i < 􏵶route􏵷.annotation_sequence.size(); ++i){
-        double lane_distance_m = 􏵶route􏵷.annotation_sequence[i].distance;
-        if (total_distance+lane_distance_m > 􏵶distance􏵷){
+    for (size_t i = 0; i < route.annotation_sequence.size(); ++i){
+        double lane_distance_m = route.annotation_sequence[i].distance;
+        if (total_distance+lane_distance_m > distance_m){
             lane_indexes.insert(i);
             total_distance = 0;
         }
@@ -235,10 +235,10 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
-    for (size_t i = 0; i < 􏵶route􏵷.annotation_sequence.size(); ++i){
-        double lane_distance_m = 􏵶route􏵷.annotation_sequence[i].distance;
-        if (total_distance+lane_distance_m > 􏵶distance􏵷){
-            􏵲insert previous􏵳lane_indexes,i);
+    for (size_t i = 0; i < route.annotation_sequence.size(); ++i){
+        double lane_distance_m = route.annotation_sequence[i].distance;
+        if (total_distance+lane_distance_m > distance_m){
+            insert_previous(lane_indexes,i);
             total_distance = lane_distance_m;
         }
         else{
@@ -271,12 +271,12 @@ knowing when to regenerate is one such use case􏷯
 􏶴
     std::set<hub::base::guid> seen;
     hub::base::guid previous;
-    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
-        auto id = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+        auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
             if (seen.find(id) != seen.end()){
-                􏵲insert previous􏵳lane_indexes,i);
+                insert_previous(lane_indexes,i);
                 seen.clear();
             }
         }
@@ -309,8 +309,8 @@ knowing when to regenerate is one such use case􏷯
     hub::base::guid previous;
     
     
-    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
-        auto id = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+        auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
             auto found = seen.find(id);
@@ -344,11 +344,11 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    auto conflicting_submap_indexes = 􏵲mark first lanes involved in submap loop􏵳􏵶route􏵷);
+    auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route);
     for (auto const& it: conflicting_submap_indexes){
-        auto conflicting_submap = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[it]);
-        for (size_t i = it; i < 􏵶route􏵷.lane_sequence.size(); ++i){
-            auto next_submap = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+        auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
+        for (size_t i = it; i < route.lane_sequence.size(); ++i){
+            auto next_submap = local_map::internal::submap_identifier(route.lane_sequence[i]);
             if (next_submap != conflicting_submap){
                 lane_indexes.insert(i);
                 break;
@@ -378,8 +378,8 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     hub::base::guid previous;
-    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
-        auto id = local_map::internal::submap_identifier(􏵶route􏵷.lane_sequence[i]);
+    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+        auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
             lane_indexes.insert(i);
@@ -407,7 +407,7 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    if (􏵲has lanes􏵳􏵶route􏵷)){
+    if (has_lanes(route)){
         lane_indexes.insert(0);
     }
 􏶳
@@ -431,8 +431,8 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    if (􏵲has lanes􏵳􏵶route􏵷)){
-        lane_indexes.insert(􏵶route􏵷.lane_sequence.size() -1);
+    if (has_lanes(route)){
+        lane_indexes.insert(route.lane_sequence.size() -1);
     }
 􏶳
 􏴯empty􏴰
@@ -455,7 +455,7 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
         lane_indexes.insert(i);
     }
 􏶳
@@ -482,10 +482,10 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     􏶲perform marking policy􏶱
-    lane_indexes = 􏵲mark lanes that exceed accumulated distance􏵳􏵶route􏵷,􏵶distance􏵷);
+    lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m);
     
     􏶲perform marking policy􏶱
-    auto loop_marks = 􏵲mark lanes prior to forming a submap loop􏵳􏵶route􏵷);
+    auto loop_marks = mark_lanes_prior_to_forming_a_submap_loop(route);
     
     􏶲combine policy results􏶱
     lane_indexes.insert(loop_marks.begin(),loop_marks.end());
@@ -514,12 +514,12 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to create an event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏶺a route with regeneration information attached􏶹
 􏶴
-    event_route.route_plan_id = 􏵶route􏵷.route_plan_id;
-    event_route.evaluation_range.current = 􏵶route􏵷.route_progress_index;
-    for (size_t i = 0; i < 􏵶route􏵷.lane_sequence.size(); ++i){
+    event_route.route_plan_id = route.route_plan_id;
+    event_route.evaluation_range.current = route.route_progress_index;
+    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
         lane_event event;
-        event.lane.map_ref = 􏵶route􏵷.lane_sequence[i];
-        event.lane.annotation = 􏵶route􏵷.annotation_sequence[i];
+        event.lane.map_ref = route.lane_sequence[i];
+        event.lane.annotation = route.annotation_sequence[i];
         event_route.event_lane_sequence.emplace_back(event);
     }
 􏶳
@@ -532,9 +532,9 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆unordered_indexes􏷅􏷄lane indexes􏷃􏷀the lane indexes to apply regeneration events to􏶿
 􏶜􏶝􏷆regeneration_reason􏷅􏷄reason􏷃􏷀the reason you are regenerating on these lanes􏶿
 􏶴
-    for (const auto & lane_index: 􏵶lane indexes􏵷){
-        􏵶route􏵷.event_lane_sequence[lane_index].entrance_event = event_action_regenerate;
-        􏵶route􏵷.event_lane_sequence[lane_index].reason = 􏵶reason􏵷;
+    for (const auto & lane_index: lane_indexes){
+        route.event_lane_sequence[lane_index].entrance_event = event_action_regenerate;
+        route.event_lane_sequence[lane_index].reason = reason;
     }
 􏶳
 
@@ -546,8 +546,8 @@ This way we won't skip any lanes when evaluating for regeneration events􏶡
 􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to update progress on􏶿
 􏶜􏶝􏷆size􏷅􏷄current lane index􏷃􏷀the index of the current lane we are on􏶿
 􏶴
-    􏵶route􏵷.evaluation_range.previous = 􏵶route􏵷.evaluation_range.current;
-    􏵶route􏵷.evaluation_range.current = 􏵶current lane index􏵷;
+    route.evaluation_range.previous = route.evaluation_range.current;
+    route.evaluation_range.current = current_lane_index;
 􏶳
 
 􏷘+􏷗􏷒expire route􏷑
@@ -557,8 +557,8 @@ This way we won't skip any lanes when evaluating for regeneration events􏶡
 Expiring the route sets a processing view that will allow process to the end despite specifying a lane index􏶡
 􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to update progress on􏶿
 􏶴
-    􏵶route􏵷.evaluation_range.previous = 􏵶route􏵷.evaluation_range.current;
-    􏵶route􏵷.evaluation_range.current = stdx::nullopt;
+    route.evaluation_range.previous = route.evaluation_range.current;
+    route.evaluation_range.current = stdx::nullopt;
 􏶳
 
 􏷘+􏷗􏷒interpret route status􏷑
@@ -572,22 +572,22 @@ Expiring the route sets a processing view that will allow process to the end des
     route_interpretation = route_status_invalid;
     
     􏶲(n,n) = existing route􏶱
-    if (􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
+    if (route.evaluation_range.previous && route.evaluation_range.current){
         return route_status_existing_route;
     }
     
     􏶲(?,n) = new route􏶱
-    else if(!􏵶route􏵷.evaluation_range.previous && 􏵶route􏵷.evaluation_range.current){
+    else if(!route.evaluation_range.previous && route.evaluation_range.current){
         return route_status_new_route;
     }
     
     􏶲(n,?) = expired route􏶱
-    else if(􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
+    else if(route.evaluation_range.previous && !route.evaluation_range.current){
         return route_status_expired;
     }
     
     􏶲(?,?) = invalid route􏶱
-    else if(!􏵶route􏵷.evaluation_range.previous && !􏵶route􏵷.evaluation_range.current){
+    else if(!route.evaluation_range.previous && !route.evaluation_range.current){
         return route_status_invalid;
     }
 􏶳
@@ -601,19 +601,19 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶴
     􏶲if we already processed the last lane index in the route,􏶱
     􏶲then there is nothing to regenerate􏶱
-    if (􏵶route􏵷.evaluation_range.previous){
-        if (*􏵶route􏵷.evaluation_range.previous == 􏵲last lane index􏵳􏵶route􏵷)){
+    if (route.evaluation_range.previous){
+        if (*route.evaluation_range.previous == last_lane_index(route)){
             return false;
         }
     }
     
 
     􏶲get index interval to check for events on􏶱
-    size_t start_index = 􏵲first index to process􏵳􏵶route􏵷);
-    size_t end_index = 􏵲last index to process􏵳􏵶route􏵷);
+    size_t start_index = first_index_to_process(route);
+    size_t end_index = last_index_to_process(route);
     
     for (size_t i = start_index; i <= end_index; ++i){
-        if (􏵶route􏵷.event_lane_sequence[i].entrance_event == event_action_regenerate){
+        if (route.event_lane_sequence[i].entrance_event == event_action_regenerate){
             return true;
         }
     }
@@ -631,8 +631,8 @@ Expiring the route sets a processing view that will allow process to the end des
     􏶲if we don't have a previous index we start processing at the beginning􏶱
     􏶲if we do have a previous index we leave off processing the remaining lanes􏶱
     lane_index = 0;
-    if (􏵶route􏵷.evaluation_range.previous){
-        lane_index = *􏵶route􏵷.evaluation_range.previous + 1;
+    if (route.evaluation_range.previous){
+        lane_index = *route.evaluation_range.previous + 1;
     }
 􏶳
 􏷘-􏷗􏷒last index to process􏷑
@@ -644,9 +644,9 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶴
     􏶲if we don't have a current index, we process to the end of the route􏶱
     􏶲if we do have have a current index, we use that􏶱
-    lane_index = 􏵲last lane index􏵳􏵶route􏵷);
-    if (􏵶route􏵷.evaluation_range.current){
-        lane_index = *􏵶route􏵷.evaluation_range.current;
+    lane_index = last_lane_index(route);
+    if (route.evaluation_range.current){
+        lane_index = *route.evaluation_range.current;
     }
 􏶳
 
@@ -660,7 +660,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the index of the last lane􏶹
 􏶴
     􏶲isolated because we may or may not apply precondition check􏶱
-    return 􏵶route􏵷.event_lane_sequence.size()-1;
+    return route.event_lane_sequence.size()-1;
 􏶳
 
 􏷘-􏷗􏷒insert previous􏷑
@@ -673,7 +673,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the next we should store the previous of􏶿
 􏶴
     􏶲isolated because we may or may not apply precondition check􏶱
-    􏵶indexes􏵷.insert(􏵶index􏵷-1);
+    indexes.insert(index-1);
 􏶳
 
 􏷘-􏷗􏷒no lane longer than distance􏷑
@@ -698,7 +698,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶜􏶝􏷆d􏷅􏷄num􏷃􏷀the number to check􏶿
 􏶚m􏶛􏶾bool􏶽􏶼is positive􏶻􏶺whether the number is positive􏶹
 􏶴
-    is_positive = 􏵶num􏵷 > 0;
+    is_positive = num > 0;
 􏶳
 
 􏷘-􏷗􏷒has lanes􏷑
@@ -707,5 +707,5 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
 􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏶺whether the route has lanes􏶹
 􏶴
-    has_lanes = !􏵶route􏵷.lane_sequence.empty();
+    has_lanes = !route.lane_sequence.empty();
 􏶳
