@@ -83,6 +83,7 @@ class
     if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
         if (Global_Tokens_Table_Utilities::Get_Body_Char_Start_Representation(currently_in) == c){
             ++depth;
+            //std::cout << " up=" << depth;
         }
     }
     
@@ -90,13 +91,13 @@ class
     if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Ender_Char(c)){
         if (Global_Tokens_Table_Utilities::Get_Body_Char_End_Representation(currently_in) == c){
             --depth;
+            //std::cout << " dn=" << depth;
         }
     }
 ❱
 
 ◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
     
-    if (!buffer.empty()){
         Body_Token_Value t;
         t.value = buffer;
         t.name = name;
@@ -104,14 +105,13 @@ class
         Nested_Body_Tokens wrapped;
         wrapped.single = t;
         
-        wrapped.tokens.get().emplace_back(Turn_Body_Into_Nested_Tokens(buffer)); //RECURSION
-        
+        //RECURSION
+        auto sub = Turn_Body_Into_Nested_Tokens(buffer);
+        wrapped.tokens.get().emplace_back(sub);
         all.tokens.get().emplace_back(wrapped);
-    }
 ❱
 ◀private: static▶ void ☀Add_To_Token_Set_No_Recursion(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
     
-    if (!buffer.empty()){
         Body_Token_Value t;
         t.value = buffer;
         t.name = name;
@@ -120,5 +120,13 @@ class
         wrapped.single = t;
         
         all.tokens.get().emplace_back(wrapped);
+❱
+
+◀private: static▶ bool ☀any_char_contains_token_start(std::wstring const& buffer)❰
+    for (auto const& c: buffer){
+        if (Global_Tokens_Table_Utilities::Char_Is_A_CodeLang_Unicode_Body_Starter_Char(c)){
+            return true;
+        }
     }
+    return false;
 ❱
