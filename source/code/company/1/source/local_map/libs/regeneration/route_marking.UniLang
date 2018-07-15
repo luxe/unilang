@@ -793,6 +793,119 @@ knowing when to regenerate is one such use case􏷯
         }
     }
 􏶳
+􏴯mark lanes after loops􏴰
+􏲝We should be able to mark the lanes immediately after submap loops􏲞
+􏲛Implementation is no longer marking the lane after the submap loop􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_first_lanes_after_loop_causing_submap(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),2);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) == indexes.end());
+    EXPECT_TRUE(indexes.find(6) != indexes.end());
+    EXPECT_TRUE(indexes.find(7) == indexes.end());
+    EXPECT_TRUE(indexes.find(8) == indexes.end());
+    EXPECT_TRUE(indexes.find(9) == indexes.end());
+􏴮
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
@@ -837,6 +950,80 @@ knowing when to regenerate is one such use case􏷯
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
+􏴯mark lanes into new submaps􏴰
+􏲝We should be able to mark each lane in a submap transition􏲞
+􏲛Implementation is no longer marking each new lane in a submap transition􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_lanes_that_transition_to_new_submaps(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),3);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) != indexes.end());
+􏴮
+
 
 􏷘+􏷗􏷒mark first lane􏷑
 􏴅Lane Marking􏴆
@@ -1099,6 +1286,59 @@ knowing when to regenerate is one such use case􏷯
         event_route.event_lane_sequence.emplace_back(event);
     }
 􏶳
+􏴯empty conversion􏴰
+􏲝We turn an empty route into an event route􏲞
+􏲛Implementation is can't convert empty routes to event routes􏲜
+􏴭
+    //ARRANGE
+    route r;
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_TRUE(event_route.event_lane_sequence.empty());
+􏴮
+􏴯preserve lane count􏴰
+􏲝Converting a route to an event route preserves lane count􏲞
+􏲛Conversion is not preserving lane count􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_EQ(event_route.event_lane_sequence.size(),3);
+􏴮
 
 􏷘+􏷗􏷒set regeneration events􏷑
 􏴅Annotated Route􏴆
@@ -1167,6 +1407,104 @@ Expiring the route sets a processing view that will allow process to the end des
         return route_status_invalid;
     }
 􏶳
+􏴯converting a route makes it new􏴰
+􏲝Converting a route makes its status new (since we don't have any previous indexes)􏲞
+􏲛Converting a route did not make it new􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_EQ(interpret_route_status(event_route),route_status_new_route);
+􏴮
+􏴯walk though route status􏴰
+􏲝We should be able to transition the status from new, to current, to expired􏲞
+􏲛Status is not correct when transitioning the status of a route􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_EQ(interpret_route_status(event_route),route_status_new_route);
+    
+    //ACT
+    advance_forward_on_route(event_route,1);
+    
+    //ASSERT
+    EXPECT_EQ(interpret_route_status(event_route),route_status_existing_route);
+    
+    //ACT
+    advance_forward_on_route(event_route,2);
+    
+    //ASSERT
+    EXPECT_EQ(interpret_route_status(event_route),route_status_existing_route);
+    
+    //ACT
+    expire_route(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(interpret_route_status(event_route),route_status_expired);
+􏴮
 
 􏷘+􏷗􏷒should regenerate􏷑
 􏴅Annotated Route􏴆
@@ -1235,7 +1573,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the last lane index from􏶿
 􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the index of the last lane􏶹
 􏶴
-    􏶲isolated because we may or may not apply precondition check􏶱
+    lane_index = 0;
     if (!route.event_lane_sequence.empty()){
         lane_index = route.event_lane_sequence.size()-1;
     }
