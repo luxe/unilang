@@ -14,6 +14,7 @@ knowing when to regenerate is one such use case􏷯
 
 􏶔s􏶕􏶒algorithm􏶓
 􏶔s􏶕􏶒set􏶓
+􏶔s􏶕􏶒iostream􏶓
 
 􏷞local_map􏷝􏷞statik􏷝
 
@@ -101,7 +102,7 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_that_exceed_accumulated_distance(r,any_valid_distance_m);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯mark every lane􏴰
 􏲝If every lane exceeds the distance given, all of the lanes should be marked􏲞
@@ -130,10 +131,10 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
     
     //ASSERT
-    ASSERT_EQ(indexes.size(),3);
-    ASSERT_TRUE(indexes.find(0) != indexes.end());
-    ASSERT_TRUE(indexes.find(1) != indexes.end());
-    ASSERT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_EQ(indexes.size(),3);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
 􏴮
 􏴯mark every other lane􏴰
 􏲝If the distance is exceeded every other lane, we should have every other lane marked􏲞
@@ -177,13 +178,13 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
     
     //ASSERT
-    ASSERT_EQ(indexes.size(),3);
-    ASSERT_TRUE(indexes.find(0) == indexes.end());
-    ASSERT_TRUE(indexes.find(1) != indexes.end());
-    ASSERT_TRUE(indexes.find(2) == indexes.end());
-    ASSERT_TRUE(indexes.find(3) != indexes.end());
-    ASSERT_TRUE(indexes.find(4) == indexes.end());
-    ASSERT_TRUE(indexes.find(5) != indexes.end());
+    EXPECT_EQ(indexes.size(),3);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+    EXPECT_TRUE(indexes.find(3) != indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 􏴯distance not reached􏴰
 􏲝If the distance is never reached along the route, no lanes should be marked􏲞
@@ -217,11 +218,11 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
-    ASSERT_TRUE(indexes.find(0) == indexes.end());
-    ASSERT_TRUE(indexes.find(1) == indexes.end());
-    ASSERT_TRUE(indexes.find(2) == indexes.end());
-    ASSERT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
 􏴮
 
 􏷘+􏷗􏷒mark lanes prior to exceeding accumulated distance􏷑
@@ -258,8 +259,91 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,any_valid_distance_m);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
+􏴯mark every lane except last􏴰
+􏲝We should be able to mark every lane except the last one􏲞
+􏲛Implementation is no longer marking the lanes before the lanes that exceed an accumulated distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 100;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    
+    //ACT
+    auto distance_m = 50;
+    auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),2);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+􏴮
+􏴯mark lanes before distance is exceeded􏴰
+􏲝We should be able to mark only the lanes prior to exceeding an accumulated distance􏲞
+􏲛Implementation is no longer marking the lanes before the lanes that exceed an accumulated distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+    }
+    
+    //ACT
+    auto distance_m = 21;
+    auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+    EXPECT_TRUE(indexes.find(3) != indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) == indexes.end());
+􏴮
+
 
 􏷘+􏷗􏷒mark lanes prior to forming a submap loop􏷑
 􏴅Lane Marking􏴆
@@ -295,8 +379,183 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
+􏴯mark before submap loop􏴰
+􏲝We should be able to mark the lane before the submap loop occurs􏲞
+􏲛Implementation is no longer marking the lane before the submap loop􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(3) != indexes.end());
+􏴮
+􏴯mark before submap loop twice􏴰
+􏲝We should be able to mark the lane before the submap loops occur􏲞
+􏲛Implementation is no longer marking the lane before each submap loop􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),2);
+    EXPECT_TRUE(indexes.find(3) != indexes.end());
+    EXPECT_TRUE(indexes.find(7) != indexes.end());
+􏴮
+
+
 
 􏷘+􏷗􏷒mark first lanes involved in submap loop􏷑
 􏴅Lane Marking􏴆
@@ -318,9 +577,9 @@ knowing when to regenerate is one such use case􏷯
                 lane_indexes.insert(found->second);
                 seen.clear();
             }
+            seen[id] = i;
         }
         previous = id;
-        seen[id] = i;
     }
 􏶳
 􏴯empty􏴰
@@ -334,7 +593,185 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_first_lanes_involved_in_submap_loop(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯mark first lane of submap loop􏴰
+􏲝We should be able to mark the first laneof a submap loop􏲞
+􏲛Implementation is no longer marking the first lane of a submap loop􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_first_lanes_involved_in_submap_loop(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) == indexes.end());
+􏴮
+􏴯mark first lane of each submap loop􏴰
+􏲝We should be able to mark the lane before the submap loops occur􏲞
+􏲛Implementation is no longer marking the lane before each submap loop􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_first_lanes_involved_in_submap_loop(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),2);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(4) != indexes.end());
 􏴮
 
 􏷘+􏷗􏷒mark first lanes after loop causing submap􏷑
@@ -367,7 +804,7 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_first_lanes_after_loop_causing_submap(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
 
 􏷘+􏷗􏷒mark lanes that transition to new submaps􏷑
@@ -398,7 +835,7 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_that_transition_to_new_submaps(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
 
 􏷘+􏷗􏷒mark first lane􏷑
@@ -422,7 +859,40 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_first_lane(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯last􏴰
+􏲝Marks the first lane􏲞
+􏲛Implementation is no longer marking the first lane􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_first_lane(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
 􏴮
 
 􏷘+􏷗􏷒mark last lane􏷑
@@ -446,9 +916,41 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_last_lane(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
+􏴯last􏴰
+􏲝Marks the last lane􏲞
+􏲛Implementation is no longer marking the last lane􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
 
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_last_lane(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) != indexes.end());
+􏴮
 􏷘+􏷗􏷒mark all lanes􏷑
 􏴅Lane Marking􏴆
 􏷐Marks all of the lanes in the route􏷏
@@ -470,7 +972,80 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_all_lanes(r);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯all􏴰
+􏲝All of the lanes should be marked􏲞
+􏲛Implementation is no longer marking all of the lanes􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    
+    //ACT
+    auto indexes = mark_all_lanes(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),6);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_TRUE(indexes.find(3) != indexes.end());
+    EXPECT_TRUE(indexes.find(4) != indexes.end());
+    EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 
 􏷘+􏷗􏷒mark lanes for local map sla requirement􏷑
@@ -505,7 +1080,7 @@ knowing when to regenerate is one such use case􏷯
     auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
-    ASSERT_TRUE(indexes.empty());
+    EXPECT_TRUE(indexes.empty());
 􏴮
 
 􏷘+􏷗􏷒create event route􏷑
@@ -661,7 +1236,9 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the index of the last lane􏶹
 􏶴
     􏶲isolated because we may or may not apply precondition check􏶱
-    return route.event_lane_sequence.size()-1;
+    if (!route.event_lane_sequence.empty()){
+        lane_index = route.event_lane_sequence.size()-1;
+    }
 􏶳
 
 􏷘-􏷗􏷒insert previous􏷑
@@ -670,11 +1247,12 @@ Expiring the route sets a processing view that will allow process to the end des
 􏴅Detail􏴆
 􏵪index != 0􏵫
 􏵨the previous index exists􏵩
-􏶜m􏶝􏷆unordered_indexes􏷅􏷄indexes􏷃􏷀indexes􏶿
+􏶜mr􏶝􏷆unordered_indexes􏷅􏷄indexes􏷃􏷀indexes􏶿
 􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the next we should store the previous of􏶿
 􏶴
-    􏶲isolated because we may or may not apply precondition check􏶱
-    indexes.insert(index-1);
+    if (index != 0){
+        indexes.insert(index-1);
+    }
 􏶳
 
 􏷘-􏷗􏷒no lane longer than distance􏷑
