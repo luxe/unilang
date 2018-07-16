@@ -55,4 +55,6 @@ hcp(name = "treesheets_options", deps = [
 hcp(name = "processing_options", deps = [
 "//code/utilities/types/strings/transformers/casing:case_format_style",
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/transcompilers/unilang/options/sections:portion_options",
+"//code/transcompilers/unilang/options:general_options",
 ])

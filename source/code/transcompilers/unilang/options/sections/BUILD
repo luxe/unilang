@@ -20,4 +20,5 @@ hcp(name = "portion_options", deps = [
 "//code/transcompilers/unilang/options/sections/inheritance:inheritance_options",
 "//code/transcompilers/unilang/options/sections/method:method_options",
 "//code/transcompilers/unilang/options/sections/data_member:data_member_options",
+"//code/transcompilers/unilang/options/sections/type:type_options",
 ])

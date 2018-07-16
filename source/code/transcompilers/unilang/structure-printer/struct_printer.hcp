@@ -17,9 +17,21 @@ class
 ◀public: static▶ void ☀Print_Structs(std::wofstream & out, Data_Member_Section const& data_members, Type_Section const& types, General_Options const& general, Portion_Options const& portion)❰
     
 	for (auto const& t: types.types){
-		auto mems = Struct_Derivers::Find_Data_Members_Of_Type(data_members,t);
-		Print_Struct_For_Hidl(out,t,mems,general,portion);
+        
+        if (Should_Print_Type(t,general,portion)){
+    		auto mems = Struct_Derivers::Find_Data_Members_Of_Type(data_members,t);
+    		Print_Struct_For_Hidl(out,t,mems,general,portion);
+        }
 	}	
+❱
+
+◀private: static▶ bool ☀Should_Print_Type(Type_Item const& type, General_Options const& general, Portion_Options const& portion)❰
+    if (type.mocked){
+        if (!portion.type_options.print_mocks){
+            return false;
+        }
+    }
+    return true;
 ❱
 
 //made public for normal structure printer for C
