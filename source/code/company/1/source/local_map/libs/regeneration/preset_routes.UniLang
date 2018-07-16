@@ -1,0 +1,68 @@
+􏶞g􏶟
+􏷲Generates inout route data for tests and experimentation􏷱
+􏷰These are utility functions used by unit tests and experimentation toolse􏷯
+􏷮Regeneration􏷭
+􏷬Trevor Hickey􏷫
+
+􏶔s􏶕􏶒utility􏶓
+
+􏷞local_map􏷝􏷞statik􏷝
+
+
+􏷘+􏷗􏷒create route from lane distances􏷑
+􏷐Creates an input route based on the provided lane distances􏷏
+􏶠The only reliable information defined will be the route's annotated lane distances􏶡
+􏶜􏶝􏷆seq􏷅􏳣double􏳤􏷄lane distances􏷃􏵘meters􏵙􏷀the lane distances to create a route from􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    constexpr int ARBITRARY_SUBMAP_ID = 1;
+    for (auto const& distance_m: lane_distances_m){
+    
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(ARBITRARY_SUBMAP_ID);
+        route.lane_sequence.emplace_back(ref);
+        
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = distance_m;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+􏷘+􏷗􏷒create route from submap ids􏷑
+􏷐Creates an input route based on the provided submap identifier􏷏
+􏶠The only reliable information defined will be the route's submap identifier.
+We use ints for testing convenience
+They are converted to guids􏶡
+􏶜􏶝􏷆seq􏷅􏳣int􏳤􏷄submap ids􏷃􏷀the submap ids to create a route from􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    constexpr double ARBITRARY_DISTANCE_M = 5.0;
+    for (auto const& submap_id: submap_ids){
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(submap_id);
+        route.lane_sequence.emplace_back(ref);
+        
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = ARBITRARY_DISTANCE_M;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+􏷘+􏷗􏷒create route from test input􏷑
+􏷐Creates an input route based on the provided route creation input􏷏
+􏶠Creates a version of a translated route based on the creation input provided􏶡
+􏶜􏶝􏷆route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    for (auto const& lane: creation_input.lane_input_sequence){
+    
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(lane.submap_id);
+        route.lane_sequence.emplace_back(ref);
+        
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = lane.distanceM;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
