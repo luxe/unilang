@@ -10,7 +10,7 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/user-frontend:language_guesser",
 "//code/transcompilers/unilang/compiler-frontends/bazel:bazel_rule_exporter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:cpp_exporter",
+"//code/transcompilers/unilang/compiler-frontends/cpp:cpp_exporter",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_exporter",
 "//code/transcompilers/unilang/compiler-frontends/html_table:html_table_exporter",

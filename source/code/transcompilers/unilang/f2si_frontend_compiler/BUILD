@@ -28,26 +28,8 @@ hcp(name = "f2si_c_options_getter", deps = [
 "//code/utilities/exits:lib",
 ])
 
-hcp(name = "cpp_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
-"//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
-"//code/transcompilers/unilang/structure:inlined_structures",
-"//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
-"//code/transcompilers/unilang/structure-printer:file_printer",
-"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
-])
-
 hcp(name = "uber_contributors_getter", deps = [
 "//code/transcompilers/unilang/contributor:contributor"
-])
-
-hcp(name = "cpp_options_getter", deps = [
-"//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
-"//code/transcompilers/unilang/options/sections/meta/organizations:organization",
-"//code/transcompilers/unilang/structure:structure",
-"//code/utilities/exits:lib",
-"//code/transcompilers/unilang/structure:inlined_structures",
 ])
 
 hcp(name = "bazel_options_getter", deps = [

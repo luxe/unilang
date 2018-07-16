@@ -19,7 +19,7 @@ hcp(name = "root_settings_getter", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler:uber_contributors_getter",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:cpp_options_getter",
+"//code/transcompilers/unilang/compiler-frontends/cpp:cpp_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/html_table:html_table_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transfer_settings_getter",

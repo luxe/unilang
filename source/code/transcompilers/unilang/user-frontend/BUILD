@@ -42,7 +42,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:f2si_contributors_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:uber_contributors_getter",
-"//code/transcompilers/unilang/f2si_frontend_compiler:cpp_options_getter",
+"//code/transcompilers/unilang/compiler-frontends/cpp:cpp_options_getter",
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/shell:lib",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transfer_settings_getter",
