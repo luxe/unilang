@@ -11,7 +11,7 @@ cc_library(
  
 cc_library(
  name = "imgui_sdl_opengl3",
- copts = ["-I/usr/include/SDL2"],
+ copts = ["-I/usr/include/SDL2", "-D_REENTRANT", "-I../", "-I../../", "-I../libs/gl3w"],
  includes = ["."],
  hdrs = [
      "examples/imgui_impl_opengl3.h",
