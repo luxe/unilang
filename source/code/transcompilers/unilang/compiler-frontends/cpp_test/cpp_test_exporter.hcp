@@ -106,6 +106,15 @@ class
     result += Get_Double_Quote();
     result += "\n";
     
+    for (auto const& it: structure.imports.test_dependencies){
+        Append(result,"#include ");
+        result += Get_Double_Quote();
+        Append(result,as_string(it.name.value));
+        Append(result,".hh");
+        result += Get_Double_Quote();
+        result += "\n";
+    }
+    
     
     Append(result,"#include ");
     result += Get_Double_Quote();
@@ -136,7 +145,12 @@ class
     std::string result;
     
     for (auto const& it: structure.methods.methods){
+        
+        result += Maybe_Get_Divider(settings.portion.method_options.test_case.before_test_group);
+        
         for (auto const& j: it.unit_tests.test_cases){
+            
+            result += Maybe_Get_Divider(settings.portion.method_options.test_case.before_test_case);
             
             //extract all the data into strings
             std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_name_casing,as_string(j.name.value));
@@ -163,7 +177,18 @@ class
             result += ")\n{\n\n";
             result += as_string(j.body.value);
             result += "\n\n}\n\n";
+            
+            result += Maybe_Get_Divider(settings.portion.method_options.test_case.after_test_case);
         }
+        
+        result += Maybe_Get_Divider(settings.portion.method_options.test_case.after_test_group);
     }
     return result;
+❱
+
+◀private: static▶ std::string ☀Maybe_Get_Divider(Divider_Settings const& divider)❰
+    if (divider.print){
+        return divider.divider +"\n\n";
+    }
+    return "";
 ❱
