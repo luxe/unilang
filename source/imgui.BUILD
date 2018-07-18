@@ -11,13 +11,17 @@ cc_library(
  
 cc_library(
  name = "imgui_sdl_opengl3",
- copts = ["-I/usr/include/SDL2", "-D_REENTRANT", "-I../", "-I../../", "-I../libs/gl3w"],
- includes = ["."],
+ linkopts = ["-ldl", "-lGL", "-L/usr/lib/x86_64-linux-gnu", "-lSDL2"],
+ copts = ["-I/usr/include/SDL2", "-Iexamples/", "-D_REENTRANT"],
+ includes = [".","examples/libs/gl3w"],
  hdrs = [
      "examples/imgui_impl_opengl3.h",
+     "examples/libs/gl3w/GL/gl3w.h",
+     "examples/libs/gl3w/GL/glcorearb.h",
  ],
  srcs = [
      "examples/imgui_impl_opengl3.cpp",
+     "examples/libs/gl3w/GL/gl3w.c",
  ],
  deps = [
      ":main",
