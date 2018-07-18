@@ -7,7 +7,7 @@ cc_library(
   hdrs = glob(['*.h']),
 )
 
- 
+
 cc_library(
  name = "imgui_sdl_opengl3",
  linkopts = ["-ldl", "-lGL", "-L/usr/lib/x86_64-linux-gnu", "-lSDL2", "-lSDL"],
@@ -21,6 +21,7 @@ cc_library(
  ],
  srcs = [
      "examples/imgui_impl_opengl3.cpp",
+     "examples/imgui_impl_sdl.cpp",
      "examples/libs/gl3w/GL/gl3w.c",
  ],
  deps = [
