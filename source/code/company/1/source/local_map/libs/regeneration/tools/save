@@ -1,0 +1,690 @@
+#include "local_map/libs/regeneration/route_marking.hh"
+#include "local_map/libs/regeneration/event_annotations.hh"
+#include "local_map/libs/regeneration/preset_routes.hh"
+
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_opengl3.h"
+#include <GL/gl3w.h>
+#include "SDL.h"
+
+#include <iostream>
+#include <cstdlib>
+#include <stdio.h>
+
+
+// all settings
+struct window_position
+{
+    bool       force     = true;
+    int        x         = 0;
+    int        y         = 0;
+    ImGuiCond_ condition = ImGuiCond_Always;
+};
+struct window_size
+{
+    bool       force     = true;
+    int        width     = 400;
+    int        height    = 200;
+    ImGuiCond_ condition = ImGuiCond_Always;
+};
+
+struct window_properties
+{
+    std::string     title;
+    window_position position;
+    window_size     size;
+    bool            titlebar  = true;
+    bool            scrollbar = true;
+    bool            menu      = false;
+    bool            move      = true;
+    bool            resize    = true;
+    bool            collapse  = true;
+    bool            nav       = true;
+    bool            close     = false;
+    bool            is_open   = false;
+    bool            focus     = true;
+    float           bg_alpha  = 1;
+};
+
+struct settings
+{
+    window_properties annotated_route_window;
+    window_properties create_route_window;
+};
+
+struct color
+{
+    int r     = 0;
+    int g     = 0;
+    int b     = 0;
+    int alpha = 255;
+};
+
+
+struct rectangle_settings
+{
+    int   x         = 0;
+    int   y         = 0;
+    int   width     = 50;
+    int   height    = 50;
+    int   thickness = 1;
+    color color_border;
+    color color_fill;
+};
+
+static void ShowHelpMarker(const char *desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::IsItemHovered())
+    {
+        ImGui::BeginTooltip();
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
+void create_window(window_properties &properties)
+{
+
+    ImGuiWindowFlags window_flags = 0;
+    bool *           p_open       = NULL;
+    if (!properties.titlebar)
+    {
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+    }
+    if (!properties.scrollbar)
+    {
+        window_flags |= ImGuiWindowFlags_NoScrollbar;
+    }
+    if (properties.menu)
+    {
+        window_flags |= ImGuiWindowFlags_MenuBar;
+    }
+    if (!properties.move)
+    {
+        window_flags |= ImGuiWindowFlags_NoMove;
+    }
+    if (!properties.resize)
+    {
+        window_flags |= ImGuiWindowFlags_NoResize;
+    }
+    if (!properties.collapse)
+    {
+        window_flags |= ImGuiWindowFlags_NoCollapse;
+    }
+    if (!properties.nav)
+    {
+        window_flags |= ImGuiWindowFlags_NoNav;
+    }
+    if (!properties.close)
+    {
+        p_open = NULL;
+    }
+
+    if (properties.position.force)
+    {
+        ImGui::SetNextWindowPos(ImVec2(properties.position.x, properties.position.y), properties.position.condition);
+        properties.position.force = false;
+    }
+
+    if (properties.size.force)
+    {
+        ImGui::SetNextWindowSize(ImVec2(properties.size.width, properties.size.height), properties.size.condition);
+        properties.size.force = false;
+    }
+
+    ImGui::SetNextWindowBgAlpha(properties.bg_alpha);
+    if (properties.focus)
+    {
+        ImGui::SetNextWindowFocus();
+        properties.focus = false;
+    }
+    ImGui::Begin(properties.title.c_str(), &properties.is_open, window_flags);
+}
+
+
+void colorize_red_button()
+{
+    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(0, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(0, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(0, 0.8f, 0.8f));
+}
+void colorize_green_button()
+{
+    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
+}
+
+std::set<size_t> render(local_map::statik::lane_creation_input &lane,
+                        size_t &                                index,
+                        std::set<size_t> &                      remove_indexes,
+                        std::set<size_t> &                      insert_indexes)
+{
+
+    ImGui::PushItemWidth(50);
+    std::string name = "##submap" + std::to_string(index);
+    ImGui::InputInt(name.c_str(), &lane.submap_id, 0, 0);
+    ImGui::PopItemWidth();
+
+
+    ImGui::SameLine();
+    ImGui::PushItemWidth(50);
+    name = "##distance" + std::to_string(index);
+    ImGui::InputDouble(name.c_str(), &lane.distance_m, 0.0, 0.0, "%.0f");
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+    ImGui::PushItemWidth(50);
+    name       = "##test" + std::to_string(index);
+    float test = lane.distance_m;
+    ImGui::DragFloat(name.c_str(), &test);
+    lane.distance_m = test;
+    ImGui::PopItemWidth();
+
+
+    // insert button
+    ImGui::SameLine();
+    ImGui::PushItemWidth(100);
+
+    ImGui::PushID(index);
+    colorize_green_button();
+
+    name = "+##insert" + std::to_string(index);
+    if (ImGui::Button(name.c_str()))
+    {
+        insert_indexes.insert(index);
+    }
+    ImGui::PopStyleColor(3);
+    ImGui::PopID();
+    ImGui::PopItemWidth();
+
+    // remove button
+    ImGui::SameLine();
+    ImGui::PushItemWidth(100);
+
+    ImGui::PushID(index);
+    colorize_red_button();
+
+    name = "-##remove" + std::to_string(index);
+    if (ImGui::Button(name.c_str()))
+    {
+        remove_indexes.insert(index);
+    }
+    ImGui::PopStyleColor(3);
+    ImGui::PopID();
+    ImGui::PopItemWidth();
+
+
+    return remove_indexes;
+}
+
+void render(std::vector<local_map::statik::route_creation_input> &inputs,
+            local_map::statik::route_creation_input &             route)
+{
+    ImGui::Text("Create a new route");
+    ImGui::SameLine();
+    ShowHelpMarker(
+        "You are creating the \"translated route\"\n(this is before it becomes an \"event annotated route\")");
+
+    std::string name;
+    static char buf[64];
+
+    ImGui::PushItemWidth(50);
+    ImGui::Text("Name: ");
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+    ImGui::PushItemWidth(150);
+    ImGui::InputText("##name", buf, IM_ARRAYSIZE(buf));
+    ImGui::PopItemWidth();
+    name = std::string(buf);
+
+
+    ImGui::Text("Lanes: ");
+    ImGui::SameLine();
+    ShowHelpMarker("Create the sequence of lanes that make up the route");
+
+    ImGui::SameLine();
+    colorize_green_button();
+    if (ImGui::Button("+"))
+    {
+        local_map::statik::lane_creation_input i;
+        route.lane_input_sequence.emplace_back(i);
+    }
+    ImGui::PopStyleColor(3);
+
+    // clear all the lanes on the individual route
+    if (!route.lane_input_sequence.empty())
+    {
+        ImGui::SameLine();
+        colorize_red_button();
+        if (ImGui::Button("x"))
+        {
+            route.lane_input_sequence.clear();
+        }
+        ImGui::PopStyleColor(3);
+
+
+        ImGui::PushItemWidth(50);
+        ImGui::Text("submap");
+        ImGui::PopItemWidth();
+
+        ImGui::SameLine();
+        ImGui::PushItemWidth(50);
+        ImGui::Text("distance (m)");
+        ImGui::PopItemWidth();
+    }
+
+    // add a new lane to the individual route
+
+    std::set<size_t> remove_indexes;
+    std::set<size_t> insert_indexes;
+    for (size_t i = 0; i < route.lane_input_sequence.size(); ++i)
+    {
+        render(route.lane_input_sequence[i], i, remove_indexes, insert_indexes);
+    }
+
+    // apply inserts and deletes
+    for (auto it : remove_indexes)
+    {
+        route.lane_input_sequence.erase(route.lane_input_sequence.begin() + it);
+    }
+    for (auto it : insert_indexes)
+    {
+        local_map::statik::lane_creation_input i;
+        route.lane_input_sequence.insert(route.lane_input_sequence.begin() + it, i);
+    }
+
+
+    // Add the route to the global set of routes
+    if (ImGui::Button("Save"))
+    {
+        inputs.emplace_back(route);
+    }
+
+    ImGui::End();
+}
+
+void setup_sdl()
+{
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
+    {
+        std::cerr << "We weren't able to initialize SDL.\n";
+        std::cerr << "Something is incompatible with your display.\n";
+        std::cerr << "Here is the SDL error:\n";
+        std::cerr << SDL_GetError() << '\n';
+        exit(EXIT_FAILURE);
+    }
+}
+
+std::string decide_sdl_glsl_version()
+{
+    std::string version;
+
+#if __APPLE__
+    // GL 3.2 Core + GLSL 150
+    version = "#version 150";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
+    // GL 3.0 + GLSL 130
+    version = "#version 130";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
+
+    return version;
+}
+
+bool user_asked_to_quit(SDL_Window *window, SDL_Event event)
+{
+    if (event.type == SDL_QUIT)
+    {
+        return true;
+    }
+    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE
+        && event.window.windowID == SDL_GetWindowID(window))
+    {
+        return true;
+    }
+    return false;
+}
+
+SDL_Window *create_main_window()
+{
+    // Setup window
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+    SDL_DisplayMode current;
+    SDL_GetCurrentDisplayMode(0, &current);
+    SDL_Window *window = SDL_CreateWindow("Annotating Routes",
+                                          SDL_WINDOWPOS_CENTERED,
+                                          SDL_WINDOWPOS_CENTERED,
+                                          1280,
+                                          720,
+                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    return window;
+}
+
+void clean_up_resources(SDL_GLContext &gl_context, SDL_Window *window)
+{
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
+    SDL_GL_DeleteContext(gl_context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+}
+
+bool poll_for_events(SDL_Window *window)
+{
+    // Poll and handle events (inputs, window resize, etc.)
+    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your
+    // inputs.
+    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those
+    // two flags.
+    SDL_Event event;
+    bool      done = false;
+    while (SDL_PollEvent(&event))
+    {
+        ImGui_ImplSDL2_ProcessEvent(&event);
+        done = user_asked_to_quit(window, event);
+    }
+    return done;
+}
+
+void draw_range(ImDrawList *draw_list)
+{
+}
+
+void draw_rectangle(ImDrawList *draw_list, rectangle_settings const &settings)
+{
+    draw_list->AddRectFilled(
+        ImVec2(settings.x, settings.y),
+        ImVec2(settings.x + settings.width, settings.y + settings.height),
+        IM_COL32(settings.color_fill.r, settings.color_fill.g, settings.color_fill.b, settings.color_fill.alpha),
+        0,
+        ImDrawCornerFlags_All);
+
+    draw_list->AddRect(
+        ImVec2(settings.x, settings.y),
+        ImVec2(settings.x + settings.width, settings.y + settings.height),
+        IM_COL32(
+            settings.color_border.r, settings.color_border.g, settings.color_border.b, settings.color_border.alpha),
+        0,
+        ImDrawCornerFlags_All,
+        settings.thickness);
+
+    if (ImGui::IsMouseHoveringRect(
+            ImVec2(settings.x, settings.y), ImVec2(settings.x + settings.width, settings.y + settings.height), false))
+    {
+        std::cout << settings.x << std::endl;
+    }
+}
+
+void render(std::vector<local_map::statik::event_annotated_route> &event_routes)
+{
+    ImDrawList * draw_list = ImGui::GetWindowDrawList();
+    const ImVec2 p         = ImGui::GetCursorScreenPos();
+
+
+    int                normal_size = 30;
+    rectangle_settings rec;
+    rec.x                  = 20 + p.x;
+    rec.y                  = 20 + p.y;
+    rec.width              = normal_size;
+    rec.height             = normal_size;
+    rec.thickness          = 1;
+    rec.color_border.r     = 0;
+    rec.color_border.g     = 0;
+    rec.color_border.b     = 0;
+    rec.color_border.alpha = 255;
+    rec.color_fill.r       = 116;
+    rec.color_fill.g       = 183;
+    rec.color_fill.b       = 224;
+    rec.color_fill.alpha   = 255;
+
+    for (auto route : event_routes)
+    {
+
+        for (auto lane : route.event_lane_sequence)
+        {
+            draw_rectangle(draw_list, rec);
+            rec.x += normal_size - 1;
+        }
+        rec.x = 20 + p.x;
+
+
+        // draw the event window
+        int start_x = 0;
+        if (route.evaluation_range.previous)
+        {
+            start_x = rec.x + ((normal_size - 1) * (*route.evaluation_range.previous)) + (rec.width / 2);
+        }
+        else
+        {
+            start_x = rec.x - (rec.width / 2);
+        }
+
+        int end_x = 0;
+        if (route.evaluation_range.current)
+        {
+            end_x = rec.x + ((normal_size - 1) * (*route.evaluation_range.current)) + (rec.width / 2);
+        }
+        else
+        {
+            end_x = rec.x + ((normal_size - 1) * route.event_lane_sequence.size()) + (rec.width / 2);
+        }
+
+
+        auto start_vec1 = ImVec2(start_x, rec.y + rec.height);
+        auto start_vec2 = ImVec2(start_x, rec.y + rec.height + 10);
+        auto end_vec1   = ImVec2(end_x, rec.y + rec.height);
+        auto end_vec2   = ImVec2(end_x, rec.y + rec.height + 10);
+
+        auto connect_vec1 = ImVec2(start_x, rec.y + rec.height + 10);
+        auto connect_vec2 = ImVec2(end_x, rec.y + rec.height + 10);
+
+        auto test     = rec.x + (end_x - start_x) - rec.width;
+        auto bar_vec1 = ImVec2(test, rec.y + rec.height + 10);
+        auto bar_vec2 = ImVec2(test, rec.y + rec.height + 20);
+
+        draw_list->AddLine(start_vec1, start_vec2, IM_COL32(0, 0, 0, 255), 1);
+        draw_list->AddLine(end_vec1, end_vec2, IM_COL32(0, 0, 0, 255), 1);
+        draw_list->AddLine(connect_vec1, connect_vec2, IM_COL32(0, 0, 0, 255), 1);
+        draw_list->AddLine(bar_vec1, bar_vec2, IM_COL32(0, 0, 0, 255), 1);
+
+
+        rec.y += normal_size + 30;
+
+
+        // render(route.evaluation_range)
+    }
+
+
+    // if (ImGui::IsItemActive())
+    // {
+    //     std::cout << "2" << std::endl;
+    // }
+
+
+    ImGui::End();
+}
+
+void create_route_window(settings &                                            s,
+                         std::vector<local_map::statik::route_creation_input> &inputs,
+                         local_map::statik::route_creation_input &             route_input)
+{
+
+    // get input routes
+    create_window(s.create_route_window);
+    render(inputs, route_input);
+}
+
+void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
+{
+    // Rendering
+    ImGui::Render();
+    SDL_GL_MakeCurrent(window, gl_context);
+    glViewport(0, 0, (int) io.DisplaySize.x, (int) io.DisplaySize.y);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    SDL_GL_SwapWindow(window);
+}
+
+int main()
+{
+
+    // settings for the translation route tool
+    settings s;
+    s.create_route_window.title              = "Create a translated route";
+    s.create_route_window.position.x         = 20;
+    s.create_route_window.position.y         = 38;
+    s.create_route_window.position.condition = ImGuiCond_Once;
+    s.create_route_window.size.width         = 800;
+    s.create_route_window.size.height        = 410;
+    s.create_route_window.size.condition     = ImGuiCond_Once;
+    s.create_route_window.titlebar           = true;
+    s.create_route_window.scrollbar          = true;
+    s.create_route_window.menu               = false;
+    s.create_route_window.move               = true;
+    s.create_route_window.resize             = true;
+    s.create_route_window.collapse           = true;
+    s.create_route_window.nav                = false;
+    s.create_route_window.close              = true;
+    s.create_route_window.is_open            = false;
+    s.create_route_window.focus              = false;
+    s.create_route_window.bg_alpha           = 1;
+
+    // settings for the event annotation simulation tool
+    s.annotated_route_window.title              = "Event Annotated Routes";
+    s.annotated_route_window.position.x         = 830;
+    s.annotated_route_window.position.y         = 20;
+    s.annotated_route_window.position.condition = ImGuiCond_Once;
+    s.annotated_route_window.size.width         = 400;
+    s.annotated_route_window.size.height        = 600;
+    s.annotated_route_window.size.condition     = ImGuiCond_Once;
+    s.annotated_route_window.titlebar           = true;
+    s.annotated_route_window.scrollbar          = true;
+    s.annotated_route_window.menu               = false;
+    s.annotated_route_window.move               = true;
+    s.annotated_route_window.resize             = true;
+    s.annotated_route_window.collapse           = true;
+    s.annotated_route_window.nav                = true;
+    s.annotated_route_window.close              = true;
+    s.annotated_route_window.is_open            = false;
+    s.annotated_route_window.focus              = false;
+    s.annotated_route_window.bg_alpha           = 1;
+
+    // settings for the main menu
+
+
+    setup_sdl();
+    auto glsl_version = decide_sdl_glsl_version();
+    auto window       = create_main_window();
+
+    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+    SDL_GL_SetSwapInterval(1); // Enable vsync
+    gl3wInit();
+
+    // Setup Dear ImGui binding
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    (void) io;
+    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
+
+    ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    ImGui_ImplOpenGL3_Init(glsl_version.c_str());
+
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    // customize overall look
+    ImGui::StyleColorsLight();
+    ImGuiStyle &style      = ImGui::GetStyle();
+    style.FrameBorderSize  = 1;
+    style.PopupBorderSize  = 1;
+    style.WindowBorderSize = 1;
+
+
+    // input
+    std::vector<local_map::statik::route_creation_input> inputs;
+
+    // start the route input with a single lane
+    local_map::statik::route_creation_input route_input;
+
+    bool done = false;
+    while (!done)
+    {
+        done = poll_for_events(window);
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(window);
+        ImGui::NewFrame();
+
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::MenuItem("Create Routes", "CTRL+N"))
+            {
+                s.create_route_window.is_open = true;
+            }
+            if (ImGui::MenuItem("Simulate Events", "CTRL+S"))
+            {
+                s.annotated_route_window.is_open = true;
+            }
+            ImGui::EndMainMenuBar();
+        }
+
+
+        // for testing
+        bool show_demo_window = true;
+        ImGui::ShowDemoWindow(&show_demo_window);
+
+        if (s.create_route_window.is_open)
+        {
+            create_route_window(s, inputs, route_input);
+        }
+
+        // turn inputs into actual routes
+        std::vector<local_map::statik::route> translated_routes;
+        for (auto const &it : inputs)
+        {
+            translated_routes.emplace_back(local_map::statik::create_route_from_test_input(it));
+        }
+
+        // turn translated routes into event annotated routes
+        std::vector<local_map::statik::event_annotated_route> event_routes;
+        for (auto const &it : translated_routes)
+        {
+            event_routes.emplace_back(local_map::statik::create_event_route(it));
+        }
+
+
+        if (s.annotated_route_window.is_open)
+        {
+            create_window(s.annotated_route_window);
+            render(event_routes);
+        }
+
+
+        render_frame(window, gl_context, io, clear_color);
+    }
+
+    clean_up_resources(gl_context, window);
+    return EXIT_SUCCESS;
+}
