@@ -82,8 +82,8 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
-    for (size_t i = 0; i < route.annotation_sequence.size(); ++i){
-        double lane_distance_m = route.annotation_sequence[i].distance;
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        double lane_distance_m = lane_length(route,i);
         if (total_distance+lane_distance_m > distance_m){
             lane_indexes.insert(i);
             total_distance = 0;
@@ -174,8 +174,8 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
-    for (size_t i = 0; i < route.annotation_sequence.size(); ++i){
-        double lane_distance_m = route.annotation_sequence[i].distance;
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        double lane_distance_m = lane_length(route,i);
         if (total_distance+lane_distance_m > distance_m){
             insert_previous(lane_indexes,i);
             total_distance = lane_distance_m;
@@ -248,7 +248,7 @@ knowing when to regenerate is one such use case􏷯
 􏶴
     std::set<hub::base::guid> seen;
     hub::base::guid previous;
-    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
         auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
@@ -317,7 +317,7 @@ knowing when to regenerate is one such use case􏷯
     hub::base::guid previous;
     
     
-    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
         auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
@@ -389,7 +389,7 @@ knowing when to regenerate is one such use case􏷯
     auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route);
     for (auto const& it: conflicting_submap_indexes){
         auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
-        for (size_t i = it; i < route.lane_sequence.size(); ++i){
+        for (size_t i = it; i < number_of_lanes(route); ++i){
             auto next_submap = local_map::internal::submap_identifier(route.lane_sequence[i]);
             if (next_submap != conflicting_submap){
                 lane_indexes.insert(i);
@@ -443,7 +443,7 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     hub::base::guid previous;
-    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
         auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
@@ -531,7 +531,7 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     if (has_lanes(route)){
-        lane_indexes.insert(route.lane_sequence.size() -1);
+        lane_indexes.insert(number_of_lanes(route) -1);
     }
 􏶳
 􏴯empty􏴰
@@ -567,7 +567,7 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
         lane_indexes.insert(i);
     }
 􏶳
@@ -648,7 +648,7 @@ knowing when to regenerate is one such use case􏷯
 􏶴
     event_route.route_plan_id = route.route_plan_id;
     event_route.evaluation_range.current = route.route_progress_index;
-    for (size_t i = 0; i < route.lane_sequence.size(); ++i){
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
         lane_event event;
         event.lane.map_ref = route.lane_sequence[i];
         event.lane.annotation = route.annotation_sequence[i];
@@ -989,9 +989,29 @@ Expiring the route sets a processing view that will allow process to the end des
 
 􏷘-􏷗􏷒has lanes􏷑
 􏷐checks whether the route has lanes􏷏
-􏴅Detail􏴆
+􏶠True if there are any lanes, False if there is not􏶡
+􏴅Shared Interface􏴆
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
 􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏶺whether the route has lanes􏶹
 􏶴
     has_lanes = !route.lane_sequence.empty();
+􏶳
+
+􏷘-􏷗􏷒lane length􏷑
+􏷐get the length of a particular indexed lane􏷏
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the lane index􏶿
+􏶚m􏶛􏶾d􏶽􏶼length􏶻􏵜meters􏵝􏶺the length of the lane􏶹
+􏶴
+    length_m = route.annotation_sequence[index].distance;
+􏶳
+
+􏷘-􏷗􏷒number of lanes􏷑
+􏷐the number of lanes in the route􏷏
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to count lanes on􏶿
+􏶚m􏶛􏶾size􏶽􏶼number of lanes􏶻􏶺the number of lanes in the route􏶹
+􏶴
+    number_of_lanes = route.lane_sequence.size();
 􏶳

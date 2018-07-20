@@ -34,7 +34,13 @@ hcp(name = "instantiate_and_return_injector_for_return_type", deps = [
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",
+"//code/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
 ])
+
+
+
+
 
 hcp(name = "function_unit_test_name_defaulter", deps = [
 "//code/transcompilers/unilang/structure:structure",
