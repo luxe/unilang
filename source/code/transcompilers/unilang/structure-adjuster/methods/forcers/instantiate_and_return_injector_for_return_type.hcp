@@ -24,9 +24,9 @@ class
             auto identifier = as_string(method.return_results[0].identifier.value);
             identifier = Case_Modifier::As_Modified_Casing(identifier_casing,identifier);
             auto lang_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(uni_type,Source_Language::CPP);
+            auto default_value = as_string(method.return_results[0].default_value.value);
             
-            
-            Add_Instantiate_Statement(method,lang_type.name,identifier);
+            Add_Instantiate_Statement(method,lang_type.name,identifier,default_value);
             Add_Return_Statement(method,identifier);
         }
     }
@@ -41,10 +41,17 @@ class
     return false;
 ❱
 
-◀private: static▶ void ☀Add_Instantiate_Statement(Method_Item & method, std::string const& type, std::string const& identifier)❰
+◀private: static▶ void ☀Add_Instantiate_Statement(Method_Item & method, std::string const& type, std::string const& identifier, std::string const& default_value)❰
 
     Add_To_Front(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,"\n\n"));
-    std::string statement = type + " " + identifier + ";";
+    std::string statement = type + " " + identifier;
+    
+    if (!default_value.empty()){
+        statement += " = " + default_value;
+    }
+    
+    
+    statement += ";";
     Add_To_Front(method.entire_body.elements,Create_Body_Token(Body_Token_Name::UNCAUGHT_STATEMENT,statement));
 ❱
 
