@@ -68,7 +68,7 @@ class
     //print the statics at the top of the source
 
 
-
+    Print_Anon_Namespace_Start(out,options);
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
@@ -77,6 +77,7 @@ class
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
         }
     }
+    Print_Anon_Namespace_End(out,options);
     
     //print the public implementations
     for (auto it: methods){
@@ -88,6 +89,7 @@ class
     }
     
     //print the private/static implementations
+    Print_Anon_Namespace_Start(out,options);
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
@@ -96,8 +98,19 @@ class
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
         }
     }
+    Print_Anon_Namespace_End(out,options);
 ❱
 
+◀public: static▶ void ☀Print_Anon_Namespace_Start(std::wofstream & out, C_Export_Settings const& options)❰
+  if (options.portion.namespace_options.use_anonymous){
+    Print_To_Stream_With_Newline(out,"namespace {\n");
+  }
+❱
+◀public: static▶ void ☀Print_Anon_Namespace_End(std::wofstream & out, C_Export_Settings const& options)❰
+  if (options.portion.namespace_options.use_anonymous){
+    Print_To_Stream_With_Newline(out,"}\n");
+  }
+❱
 
 
 
@@ -110,7 +123,7 @@ class
                                                                       C_Export_Settings const& options, Object_Export_Method const& export_method)❰
 
 
-
+    Print_Anon_Namespace_Start(out,options);
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
@@ -119,6 +132,7 @@ class
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
         }
     }
+    Print_Anon_Namespace_End(out,options);
 ❱
 ◀public: static▶ bool ☀Print_Global_Implementation_DECL_ONLY_Methods2_is_any(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
                                                                       C_Export_Settings const& options, Object_Export_Method const& export_method)❰
@@ -144,6 +158,7 @@ class
     }
     
     //print the private/static implementations
+    Print_Anon_Namespace_Start(out,options);
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
@@ -152,6 +167,7 @@ class
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
         }
     }
+    Print_Anon_Namespace_End(out,options);
 ❱
 ◀public: static▶ bool ☀Print_Global_Implementation_IMPL_ONLY_Methods2_is_any(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
                                                             C_Export_Settings const& options, Object_Export_Method const& export_method)❰
@@ -240,8 +256,10 @@ class
 
      //static qualifier
      if (method.storage == Storage_Specifier::STATIC){
-        Print_To_Stream(out,static_keyword);
-        Print_To_Stream(out," ");
+        if (!options.portion.namespace_options.use_anonymous){
+            Print_To_Stream(out,static_keyword);
+            Print_To_Stream(out," ");
+        }
      }
 
 	//[attributes]
