@@ -12,6 +12,7 @@ knowing when to regenerate is one such use case􏷯
 􏴁functions related to the annotated route􏴂
 􏷬Trevor Hickey􏷫
 
+􏶔􏶕􏶒local_map/libs/regeneration/preset_routes􏶓
 􏶔s􏶕􏶒algorithm􏶓
 􏶔s􏶕􏶒set􏶓
 􏶔s􏶕􏶒iostream􏶓􏲐
@@ -709,6 +710,18 @@ knowing when to regenerate is one such use case􏷯
     EXPECT_EQ(event_route.event_lane_sequence.size(),3);
 􏴮
 
+􏷘+􏷗􏷒create event route􏷑
+􏴅Annotated Route􏴆
+􏷐Take the route creation input, and convert it into an event annotated route􏷏
+􏶠The event annotated route may have regeneration events marked based on the route creation's annotation strategy􏶡
+􏶜􏶝􏷆route_creation_input􏷅􏲥local_map/libs/regeneration/local_map_regeneration_preset_routes􏲦􏷄input􏷃􏷀the input to create an event route from􏶿
+􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_route_from_test_input(input))􏲆􏶺a route with regeneration information attached􏶹
+􏶴
+􏶳
+
+
+
+
 􏷘+􏷗􏷒set regeneration events􏷑
 􏴅Annotated Route􏴆
 􏷐Decide where along the event annotated route where to place regeneration events􏷏
@@ -751,11 +764,8 @@ Expiring the route sets a processing view that will allow process to the end des
 􏷐interpret the status of the route by observing the range of lanes that need evaluated􏷏
 􏶠Based on the status of lanes that need evaluated, we can derive some contextual information about the route􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
-􏶚m􏶛􏶾route_status􏶽􏶼route interpretation􏶻􏶺an interpretation about the status of the route􏶹
+􏶚m􏶛􏶾route_status􏶽􏶼route interpretation􏶻􏲅route_status_invalid􏲆􏶺an interpretation about the status of the route􏶹
 􏶴
-
-    route_interpretation = route_status_invalid;
-    
     􏶲(n,n) = existing route􏶱
     if (route.evaluation_range.previous && route.evaluation_range.current){
         return route_status_existing_route;
@@ -880,7 +890,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏷐determines whether we should regenerate􏷏
 􏶠Uses the internal event view to process over lanes􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for regeneration􏶿
-􏶚m􏶛􏶾bool􏶽􏶼should regenerate􏶻􏶺whether we should regenerate based on our current progress􏶹
+􏶚m􏶛􏶾bool􏶽􏶼should regenerate􏶻􏲅false􏲆􏶺whether we should regenerate based on our current progress􏶹
 􏶴
     􏶲if we already processed the last lane index in the route,􏶱
     􏶲then there is nothing to regenerate􏶱
@@ -900,8 +910,6 @@ Expiring the route sets a processing view that will allow process to the end des
             return true;
         }
     }
-    
-    should_regenerate = false;
 􏶳
 
 􏷘-􏷗􏷒first index to process􏷑
@@ -909,11 +917,10 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶠determined through the event view of the route􏶡
 􏴅Detail􏴆
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
-􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the lane index􏶹
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅0􏲆􏶺the lane index􏶹
 􏶴
     􏶲if we don't have a previous index we start processing at the beginning􏶱
     􏶲if we do have a previous index we leave off processing the remaining lanes􏶱
-    lane_index = 0;
     if (route.evaluation_range.previous){
         lane_index = *route.evaluation_range.previous + 1;
     }
@@ -940,9 +947,8 @@ Expiring the route sets a processing view that will allow process to the end des
 􏵪!route_is_empty()􏵫
 􏵨the route is not empty􏵩
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the last lane index from􏶿
-􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏶺the index of the last lane􏶹
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅0􏲆􏶺the index of the last lane􏶹
 􏶴
-    lane_index = 0;
     if (!route.event_lane_sequence.empty()){
         lane_index = route.event_lane_sequence.size()-1;
     }
@@ -982,36 +988,28 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶠0 is not positive􏶡
 􏴅Detail􏴆
 􏶜􏶝􏷆d􏷅􏷄num􏷃􏷀the number to check􏶿
-􏶚m􏶛􏶾bool􏶽􏶼is positive􏶻􏶺whether the number is positive􏶹
-􏶴
-    is_positive = num > 0;
-􏶳
+􏶚m􏶛􏶾bool􏶽􏶼is positive􏶻􏲅num > 0􏲆􏶺whether the number is positive􏶹
+􏶴􏶳
 
 􏷘-􏷗􏷒has lanes􏷑
 􏷐checks whether the route has lanes􏷏
 􏶠True if there are any lanes, False if there is not􏶡
 􏴅Shared Interface􏴆
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
-􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏶺whether the route has lanes􏶹
-􏶴
-    has_lanes = !route.lane_sequence.empty();
-􏶳
+􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏲅!route.lane_sequence.empty()􏲆􏶺whether the route has lanes􏶹
+􏶴􏶳
 
 􏷘-􏷗􏷒lane length􏷑
 􏷐get the length of a particular indexed lane􏷏
 􏴅Shared Interface􏴆
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
 􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the lane index􏶿
-􏶚m􏶛􏶾d􏶽􏶼length􏶻􏵜meters􏵝􏶺the length of the lane􏶹
-􏶴
-    length_m = route.annotation_sequence[index].distance;
-􏶳
+􏶚m􏶛􏶾d􏶽􏶼length􏶻􏵜meters􏵝􏲅route.annotation_sequence[index].distance􏲆􏶺the length of the lane􏶹
+􏶴􏶳
 
 􏷘-􏷗􏷒number of lanes􏷑
 􏷐the number of lanes in the route􏷏
 􏴅Shared Interface􏴆
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to count lanes on􏶿
-􏶚m􏶛􏶾size􏶽􏶼number of lanes􏶻􏶺the number of lanes in the route􏶹
-􏶴
-    number_of_lanes = route.lane_sequence.size();
-􏶳
+􏶚m􏶛􏶾size􏶽􏶼number of lanes􏶻􏲅route.lane_sequence.size()􏲆􏶺the number of lanes in the route􏶹
+􏶴􏶳
