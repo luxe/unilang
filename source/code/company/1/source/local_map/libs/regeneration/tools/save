@@ -21,6 +21,12 @@ struct window_position
     int        y         = 0;
     ImGuiCond_ condition = ImGuiCond_Always;
 };
+struct position
+{
+    int x = 0;
+    int y = 0;
+};
+
 struct window_size
 {
     bool       force     = true;
@@ -29,14 +35,21 @@ struct window_size
     ImGuiCond_ condition = ImGuiCond_Always;
 };
 
+struct menu_properties
+{
+    std::string title;
+    std::string shortcut;
+};
+
 struct window_properties
 {
     std::string     title;
     window_position position;
     window_size     size;
+    menu_properties menu;
     bool            titlebar  = true;
     bool            scrollbar = true;
-    bool            menu      = false;
+    bool            has_menu  = false;
     bool            move      = true;
     bool            resize    = true;
     bool            collapse  = true;
@@ -47,30 +60,52 @@ struct window_properties
     float           bg_alpha  = 1;
 };
 
-struct settings
-{
-    window_properties annotated_route_window;
-    window_properties create_route_window;
-};
-
 struct color
 {
     int r     = 0;
     int g     = 0;
     int b     = 0;
     int alpha = 255;
+    color()   = default;
+    color(int r, int g, int b, int alpha) : r(r), g(g), b(b), alpha(alpha) {}
 };
 
 
 struct rectangle_settings
 {
-    int   x         = 0;
-    int   y         = 0;
     int   width     = 50;
     int   height    = 50;
     int   thickness = 1;
     color color_border;
     color color_fill;
+};
+
+struct rectangle_events
+{
+    bool hovered = false;
+};
+
+struct event_route_render_settings
+{
+    bool               draw_lanes            = true;
+    bool               draw_submaps          = true;
+    bool               draw_evaluation_range = true;
+    rectangle_settings lane_annotated;
+    rectangle_settings lane_unannotated;
+    rectangle_settings submap;
+
+    // generated colors
+    std::vector<color> distinct_colors;
+};
+
+struct settings
+{
+    // windows
+    window_properties annotated_route_window;
+    window_properties create_route_window;
+
+    // rendering
+    event_route_render_settings event_route;
 };
 
 static void ShowHelpMarker(const char *desc)
@@ -86,6 +121,19 @@ static void ShowHelpMarker(const char *desc)
     }
 }
 
+std::vector<color> distinct_colors()
+{
+    std::vector<color> colors;
+    colors.emplace_back(0, 130, 200, 255);
+    colors.emplace_back(245, 130, 48, 255);
+    colors.emplace_back(0, 128, 128, 255);
+    colors.emplace_back(230, 25, 75, 255);
+    colors.emplace_back(60, 180, 75, 255);
+    colors.emplace_back(250, 190, 190, 255);
+    colors.emplace_back(255, 255, 25, 255);
+    return colors;
+}
+
 void create_window(window_properties &properties)
 {
 
@@ -99,7 +147,7 @@ void create_window(window_properties &properties)
     {
         window_flags |= ImGuiWindowFlags_NoScrollbar;
     }
-    if (properties.menu)
+    if (properties.has_menu)
     {
         window_flags |= ImGuiWindowFlags_MenuBar;
     }
@@ -145,6 +193,15 @@ void create_window(window_properties &properties)
     ImGui::Begin(properties.title.c_str(), &properties.is_open, window_flags);
 }
 
+position window_adjusted_position(int x, int y)
+{
+    const ImVec2 screen_position = ImGui::GetCursorScreenPos();
+    position     p;
+    p.x = x + screen_position.x;
+    p.y = y + screen_position.y;
+    return p;
+}
+
 
 void colorize_red_button()
 {
@@ -152,11 +209,201 @@ void colorize_red_button()
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(0, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(0, 0.8f, 0.8f));
 }
+void colorize_yellow_button()
+{
+    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(1 / 7.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(1 / 7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(1 / 7.0f, 0.8f, 0.8f));
+}
 void colorize_green_button()
 {
     ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(2 / 7.0f, 0.6f, 0.6f));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(2 / 7.0f, 0.7f, 0.7f));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(2 / 7.0f, 0.8f, 0.8f));
+}
+void colorize_turquoise_button()
+{
+    ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4) ImColor::HSV(3 / 7.0f, 0.6f, 0.6f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4) ImColor::HSV(3 / 7.0f, 0.7f, 0.7f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(3 / 7.0f, 0.8f, 0.8f));
+}
+
+void draw_range(ImDrawList *draw_list)
+{
+}
+
+rectangle_events draw_rectangle(ImDrawList *draw_list, position pos, rectangle_settings const &settings)
+{
+    draw_list->AddRectFilled(
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + settings.width, pos.y + settings.height),
+        IM_COL32(settings.color_fill.r, settings.color_fill.g, settings.color_fill.b, settings.color_fill.alpha),
+        0,
+        ImDrawCornerFlags_All);
+
+    draw_list->AddRect(
+        ImVec2(pos.x, pos.y),
+        ImVec2(pos.x + settings.width, pos.y + settings.height),
+        IM_COL32(
+            settings.color_border.r, settings.color_border.g, settings.color_border.b, settings.color_border.alpha),
+        0,
+        ImDrawCornerFlags_All,
+        settings.thickness);
+
+    rectangle_events events;
+    if (ImGui::IsMouseHoveringRect(
+            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.width, pos.y + settings.height), false))
+    {
+        events.hovered = true;
+    }
+
+    return events;
+}
+
+void render(ImDrawList *                         draw_list,
+            const local_map::statik::event_view &view,
+            const position &                     pos,
+            const int                            spanning_length,
+            const size_t &                       lane_count)
+{
+    int start_x = 0;
+    if (view.previous)
+    {
+        start_x = pos.x + ((spanning_length - 1) * (*view.previous)) + (spanning_length / 2);
+    }
+    else
+    {
+        start_x = pos.x - (spanning_length / 2);
+    }
+
+    int end_x = 0;
+    if (view.current)
+    {
+        end_x = pos.x + ((spanning_length - 1) * (*view.current)) + (spanning_length / 2);
+    }
+    else
+    {
+        end_x = pos.x + ((spanning_length - 1) * lane_count) + (spanning_length / 2);
+    }
+
+
+    auto start_vec1 = ImVec2(start_x, pos.y + spanning_length);
+    auto start_vec2 = ImVec2(start_x, pos.y + spanning_length + 10);
+    auto end_vec1   = ImVec2(end_x, pos.y + spanning_length);
+    auto end_vec2   = ImVec2(end_x, pos.y + spanning_length + 10);
+
+    auto connect_vec1 = ImVec2(start_x, pos.y + spanning_length + 10);
+    auto connect_vec2 = ImVec2(end_x, pos.y + spanning_length + 10);
+
+    auto test     = pos.x + (end_x - start_x) - spanning_length;
+    auto bar_vec1 = ImVec2(test, pos.y + spanning_length + 10);
+    auto bar_vec2 = ImVec2(test, pos.y + spanning_length + 20);
+
+    draw_list->AddLine(start_vec1, start_vec2, IM_COL32(0, 0, 0, 255), 1);
+    draw_list->AddLine(end_vec1, end_vec2, IM_COL32(0, 0, 0, 255), 1);
+    draw_list->AddLine(connect_vec1, connect_vec2, IM_COL32(0, 0, 0, 255), 1);
+    draw_list->AddLine(bar_vec1, bar_vec2, IM_COL32(0, 0, 0, 255), 1);
+}
+
+void render(local_map::statik::event_annotated_route const &route, event_route_render_settings const &settings)
+{
+
+    ImDrawList *draw_list = ImGui::GetWindowDrawList();
+
+    auto pos = window_adjusted_position(180, 85);
+
+    // decide submap colors
+    std::map<hub::base::guid, color> submap_colors;
+    for (auto lane : route.event_lane_sequence)
+    {
+        if (submap_colors.find(lane.lane.map_ref.map_index) == submap_colors.end())
+        {
+            if (settings.distinct_colors.size() >= submap_colors.size())
+            {
+                submap_colors[lane.lane.map_ref.map_index] = settings.distinct_colors[submap_colors.size()];
+            }
+            else
+            {
+                submap_colors[lane.lane.map_ref.map_index] = settings.distinct_colors[0];
+            }
+        }
+    }
+
+    // build submap settings
+    std::vector<rectangle_settings> submap_settings;
+    rectangle_settings              temp = settings.submap;
+    stdx::optional<hub::base::guid> previous_guid;
+    for (auto lane : route.event_lane_sequence)
+    {
+        if (previous_guid)
+        {
+            if (*previous_guid == lane.lane.map_ref.map_index)
+            {
+                temp.width += settings.submap.width;
+            }
+            else
+            {
+                temp.color_fill = submap_colors[previous_guid];
+                submap_settings.emplace_back(temp);
+                temp = settings.submap;
+            }
+        }
+
+        previous_guid = lane.lane.map_ref.map_index;
+    }
+    temp.color_fill = submap_colors[previous_guid];
+    submap_settings.emplace_back(temp);
+
+
+    // draw submap settings
+    if (settings.draw_submaps)
+    {
+        for (auto s : submap_settings)
+        {
+            pos.x -= (s.width / settings.submap.width) - 1;
+            draw_rectangle(draw_list, pos, s);
+            pos.x += s.width;
+        }
+    }
+
+
+    // draw lanes
+    pos = window_adjusted_position(180, 100);
+    if (settings.draw_lanes)
+    {
+        for (auto lane : route.event_lane_sequence)
+        {
+            draw_rectangle(draw_list, pos, settings.lane_annotated);
+            pos.x += settings.lane_annotated.width - 1;
+        }
+    }
+    pos = window_adjusted_position(180, 100);
+
+
+    // rectangle_settings lane_annotated;
+    // rectangle_settings lane_unannotated;
+    // rectangle_settings submap;
+
+
+    // draw the event window
+    if (settings.draw_evaluation_range)
+    {
+        render(draw_list, route.evaluation_range, pos, settings.lane_annotated.width, route.event_lane_sequence.size());
+    }
+
+
+    pos.y += settings.lane_annotated.width + 30;
+}
+
+void render(std::vector<local_map::statik::event_annotated_route> const &event_routes,
+            event_route_render_settings const &                          settings)
+{
+    for (auto route : event_routes)
+    {
+        render(route, settings);
+    }
+
+    ImGui::End();
 }
 
 std::set<size_t> render(local_map::statik::lane_creation_input &lane,
@@ -170,20 +417,21 @@ std::set<size_t> render(local_map::statik::lane_creation_input &lane,
     ImGui::InputInt(name.c_str(), &lane.submap_id, 0, 0);
     ImGui::PopItemWidth();
 
+    ImGui::NextColumn();
 
-    ImGui::SameLine();
+    // ImGui::SameLine();
     ImGui::PushItemWidth(50);
-    name = "##distance" + std::to_string(index);
-    ImGui::InputDouble(name.c_str(), &lane.distance_m, 0.0, 0.0, "%.0f");
-    ImGui::PopItemWidth();
-
-    ImGui::SameLine();
-    ImGui::PushItemWidth(50);
-    name       = "##test" + std::to_string(index);
+    name       = "##distance" + std::to_string(index);
     float test = lane.distance_m;
-    ImGui::DragFloat(name.c_str(), &test);
+    ImGui::DragFloat(name.c_str(), &test, 1.0f, 0.0f);
     lane.distance_m = test;
+    if (lane.distance_m < 0)
+    {
+        lane.distance_m = 0;
+    }
     ImGui::PopItemWidth();
+
+    ImGui::NextColumn();
 
 
     // insert button
@@ -218,17 +466,22 @@ std::set<size_t> render(local_map::statik::lane_creation_input &lane,
     ImGui::PopID();
     ImGui::PopItemWidth();
 
+    ImGui::NextColumn();
 
     return remove_indexes;
 }
 
 void render(std::vector<local_map::statik::route_creation_input> &inputs,
-            local_map::statik::route_creation_input &             route)
+            local_map::statik::route_creation_input &             route,
+            event_route_render_settings const &                   settings)
 {
+
+    render(local_map::statik::create_event_route(route), settings);
+
     ImGui::Text("Create a new route");
     ImGui::SameLine();
-    ShowHelpMarker(
-        "You are creating the \"translated route\"\n(this is before it becomes an \"event annotated route\")");
+    ShowHelpMarker("You create the data that comes from a \"translated route\"\nThen you configure your \"annotation "
+                   "strategy\" to get an \"event annotated route\".");
 
     std::string name;
     static char buf[64];
@@ -245,8 +498,6 @@ void render(std::vector<local_map::statik::route_creation_input> &inputs,
 
 
     ImGui::Text("Lanes: ");
-    ImGui::SameLine();
-    ShowHelpMarker("Create the sequence of lanes that make up the route");
 
     ImGui::SameLine();
     colorize_green_button();
@@ -268,25 +519,38 @@ void render(std::vector<local_map::statik::route_creation_input> &inputs,
         }
         ImGui::PopStyleColor(3);
 
+        ImGui::Columns(2, NULL, false);
+        ImGui::SetColumnWidth(0, 60);
+        ImGui::SetColumnWidth(1, 120);
 
-        ImGui::PushItemWidth(50);
+
+        // ImGui::PushItemWidth(50);
         ImGui::Text("submap");
-        ImGui::PopItemWidth();
+        // ImGui::PopItemWidth();
 
-        ImGui::SameLine();
-        ImGui::PushItemWidth(50);
+        ImGui::NextColumn();
+
+        // ImGui::SameLine();
+        // ImGui::PushItemWidth(50);
         ImGui::Text("distance (m)");
-        ImGui::PopItemWidth();
+        // ImGui::PopItemWidth();
+
+        ImGui::Columns(1);
     }
 
     // add a new lane to the individual route
 
+    ImGui::Columns(3, NULL, false);
+    ImGui::SetColumnWidth(0, 60);
+    ImGui::SetColumnWidth(1, 60);
+    ImGui::SetColumnWidth(2, 60);
     std::set<size_t> remove_indexes;
     std::set<size_t> insert_indexes;
     for (size_t i = 0; i < route.lane_input_sequence.size(); ++i)
     {
         render(route.lane_input_sequence[i], i, remove_indexes, insert_indexes);
     }
+    ImGui::Columns(1);
 
     // apply inserts and deletes
     for (auto it : remove_indexes)
@@ -295,8 +559,8 @@ void render(std::vector<local_map::statik::route_creation_input> &inputs,
     }
     for (auto it : insert_indexes)
     {
-        local_map::statik::lane_creation_input i;
-        route.lane_input_sequence.insert(route.lane_input_sequence.begin() + it, i);
+        local_map::statik::lane_creation_input i = *(route.lane_input_sequence.begin() + it);
+        route.lane_input_sequence.insert(route.lane_input_sequence.begin() + it + 1, i);
     }
 
 
@@ -305,6 +569,7 @@ void render(std::vector<local_map::statik::route_creation_input> &inputs,
     {
         inputs.emplace_back(route);
     }
+
 
     ImGui::End();
 }
@@ -406,124 +671,6 @@ bool poll_for_events(SDL_Window *window)
     return done;
 }
 
-void draw_range(ImDrawList *draw_list)
-{
-}
-
-void draw_rectangle(ImDrawList *draw_list, rectangle_settings const &settings)
-{
-    draw_list->AddRectFilled(
-        ImVec2(settings.x, settings.y),
-        ImVec2(settings.x + settings.width, settings.y + settings.height),
-        IM_COL32(settings.color_fill.r, settings.color_fill.g, settings.color_fill.b, settings.color_fill.alpha),
-        0,
-        ImDrawCornerFlags_All);
-
-    draw_list->AddRect(
-        ImVec2(settings.x, settings.y),
-        ImVec2(settings.x + settings.width, settings.y + settings.height),
-        IM_COL32(
-            settings.color_border.r, settings.color_border.g, settings.color_border.b, settings.color_border.alpha),
-        0,
-        ImDrawCornerFlags_All,
-        settings.thickness);
-
-    if (ImGui::IsMouseHoveringRect(
-            ImVec2(settings.x, settings.y), ImVec2(settings.x + settings.width, settings.y + settings.height), false))
-    {
-        std::cout << settings.x << std::endl;
-    }
-}
-
-void render(std::vector<local_map::statik::event_annotated_route> &event_routes)
-{
-    ImDrawList * draw_list = ImGui::GetWindowDrawList();
-    const ImVec2 p         = ImGui::GetCursorScreenPos();
-
-
-    int                normal_size = 30;
-    rectangle_settings rec;
-    rec.x                  = 20 + p.x;
-    rec.y                  = 20 + p.y;
-    rec.width              = normal_size;
-    rec.height             = normal_size;
-    rec.thickness          = 1;
-    rec.color_border.r     = 0;
-    rec.color_border.g     = 0;
-    rec.color_border.b     = 0;
-    rec.color_border.alpha = 255;
-    rec.color_fill.r       = 116;
-    rec.color_fill.g       = 183;
-    rec.color_fill.b       = 224;
-    rec.color_fill.alpha   = 255;
-
-    for (auto route : event_routes)
-    {
-
-        for (auto lane : route.event_lane_sequence)
-        {
-            draw_rectangle(draw_list, rec);
-            rec.x += normal_size - 1;
-        }
-        rec.x = 20 + p.x;
-
-
-        // draw the event window
-        int start_x = 0;
-        if (route.evaluation_range.previous)
-        {
-            start_x = rec.x + ((normal_size - 1) * (*route.evaluation_range.previous)) + (rec.width / 2);
-        }
-        else
-        {
-            start_x = rec.x - (rec.width / 2);
-        }
-
-        int end_x = 0;
-        if (route.evaluation_range.current)
-        {
-            end_x = rec.x + ((normal_size - 1) * (*route.evaluation_range.current)) + (rec.width / 2);
-        }
-        else
-        {
-            end_x = rec.x + ((normal_size - 1) * route.event_lane_sequence.size()) + (rec.width / 2);
-        }
-
-
-        auto start_vec1 = ImVec2(start_x, rec.y + rec.height);
-        auto start_vec2 = ImVec2(start_x, rec.y + rec.height + 10);
-        auto end_vec1   = ImVec2(end_x, rec.y + rec.height);
-        auto end_vec2   = ImVec2(end_x, rec.y + rec.height + 10);
-
-        auto connect_vec1 = ImVec2(start_x, rec.y + rec.height + 10);
-        auto connect_vec2 = ImVec2(end_x, rec.y + rec.height + 10);
-
-        auto test     = rec.x + (end_x - start_x) - rec.width;
-        auto bar_vec1 = ImVec2(test, rec.y + rec.height + 10);
-        auto bar_vec2 = ImVec2(test, rec.y + rec.height + 20);
-
-        draw_list->AddLine(start_vec1, start_vec2, IM_COL32(0, 0, 0, 255), 1);
-        draw_list->AddLine(end_vec1, end_vec2, IM_COL32(0, 0, 0, 255), 1);
-        draw_list->AddLine(connect_vec1, connect_vec2, IM_COL32(0, 0, 0, 255), 1);
-        draw_list->AddLine(bar_vec1, bar_vec2, IM_COL32(0, 0, 0, 255), 1);
-
-
-        rec.y += normal_size + 30;
-
-
-        // render(route.evaluation_range)
-    }
-
-
-    // if (ImGui::IsItemActive())
-    // {
-    //     std::cout << "2" << std::endl;
-    // }
-
-
-    ImGui::End();
-}
-
 void create_route_window(settings &                                            s,
                          std::vector<local_map::statik::route_creation_input> &inputs,
                          local_map::statik::route_creation_input &             route_input)
@@ -531,7 +678,7 @@ void create_route_window(settings &                                            s
 
     // get input routes
     create_window(s.create_route_window);
-    render(inputs, route_input);
+    render(inputs, route_input, s.event_route);
 }
 
 void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
@@ -546,12 +693,32 @@ void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, Im
     SDL_GL_SwapWindow(window);
 }
 
+void handle_menu_item(window_properties &window)
+{
+    if (ImGui::MenuItem(window.menu.title.c_str(), window.menu.shortcut.c_str()))
+    {
+        window.is_open = true;
+    }
+}
+
+void create_main_menu(settings &s)
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        handle_menu_item(s.create_route_window);
+        handle_menu_item(s.annotated_route_window);
+        ImGui::EndMainMenuBar();
+    }
+}
+
 int main()
 {
 
     // settings for the translation route tool
     settings s;
     s.create_route_window.title              = "Create a translated route";
+    s.create_route_window.menu.title         = "Create Routes";
+    s.create_route_window.menu.shortcut      = "CTRL+N";
     s.create_route_window.position.x         = 20;
     s.create_route_window.position.y         = 38;
     s.create_route_window.position.condition = ImGuiCond_Once;
@@ -560,7 +727,7 @@ int main()
     s.create_route_window.size.condition     = ImGuiCond_Once;
     s.create_route_window.titlebar           = true;
     s.create_route_window.scrollbar          = true;
-    s.create_route_window.menu               = false;
+    s.create_route_window.has_menu           = false;
     s.create_route_window.move               = true;
     s.create_route_window.resize             = true;
     s.create_route_window.collapse           = true;
@@ -572,6 +739,8 @@ int main()
 
     // settings for the event annotation simulation tool
     s.annotated_route_window.title              = "Event Annotated Routes";
+    s.annotated_route_window.menu.title         = "Simulate Events";
+    s.annotated_route_window.menu.shortcut      = "CTRL+S";
     s.annotated_route_window.position.x         = 830;
     s.annotated_route_window.position.y         = 20;
     s.annotated_route_window.position.condition = ImGuiCond_Once;
@@ -580,7 +749,7 @@ int main()
     s.annotated_route_window.size.condition     = ImGuiCond_Once;
     s.annotated_route_window.titlebar           = true;
     s.annotated_route_window.scrollbar          = true;
-    s.annotated_route_window.menu               = false;
+    s.annotated_route_window.has_menu           = false;
     s.annotated_route_window.move               = true;
     s.annotated_route_window.resize             = true;
     s.annotated_route_window.collapse           = true;
@@ -590,7 +759,47 @@ int main()
     s.annotated_route_window.focus              = false;
     s.annotated_route_window.bg_alpha           = 1;
 
-    // settings for the main menu
+    // settings for rendering annotated routes
+    s.event_route.draw_lanes            = true;
+    s.event_route.draw_submaps          = true;
+    s.event_route.draw_evaluation_range = true;
+    s.event_route.distinct_colors       = distinct_colors();
+
+    s.event_route.lane_annotated.width              = 30;
+    s.event_route.lane_annotated.height             = 30;
+    s.event_route.lane_annotated.thickness          = 1;
+    s.event_route.lane_annotated.color_border.r     = 0;
+    s.event_route.lane_annotated.color_border.g     = 0;
+    s.event_route.lane_annotated.color_border.b     = 0;
+    s.event_route.lane_annotated.color_border.alpha = 255;
+    s.event_route.lane_annotated.color_fill.r       = 116;
+    s.event_route.lane_annotated.color_fill.g       = 183;
+    s.event_route.lane_annotated.color_fill.b       = 224;
+    s.event_route.lane_annotated.color_fill.alpha   = 255;
+
+    s.event_route.lane_unannotated.width              = 30;
+    s.event_route.lane_unannotated.height             = 30;
+    s.event_route.lane_unannotated.thickness          = 1;
+    s.event_route.lane_unannotated.color_border.r     = 0;
+    s.event_route.lane_unannotated.color_border.g     = 0;
+    s.event_route.lane_unannotated.color_border.b     = 0;
+    s.event_route.lane_unannotated.color_border.alpha = 255;
+    s.event_route.lane_unannotated.color_fill.r       = 116;
+    s.event_route.lane_unannotated.color_fill.g       = 183;
+    s.event_route.lane_unannotated.color_fill.b       = 224;
+    s.event_route.lane_unannotated.color_fill.alpha   = 255;
+
+    s.event_route.submap.width              = 30;
+    s.event_route.submap.height             = 60;
+    s.event_route.submap.thickness          = 0;
+    s.event_route.submap.color_border.r     = 0;
+    s.event_route.submap.color_border.g     = 0;
+    s.event_route.submap.color_border.b     = 0;
+    s.event_route.submap.color_border.alpha = 255;
+    s.event_route.submap.color_fill.r       = 116;
+    s.event_route.submap.color_fill.g       = 183;
+    s.event_route.submap.color_fill.b       = 224;
+    s.event_route.submap.color_fill.alpha   = 255;
 
 
     setup_sdl();
@@ -637,18 +846,7 @@ int main()
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::MenuItem("Create Routes", "CTRL+N"))
-            {
-                s.create_route_window.is_open = true;
-            }
-            if (ImGui::MenuItem("Simulate Events", "CTRL+S"))
-            {
-                s.annotated_route_window.is_open = true;
-            }
-            ImGui::EndMainMenuBar();
-        }
+        create_main_menu(s);
 
 
         // for testing
@@ -660,16 +858,9 @@ int main()
             create_route_window(s, inputs, route_input);
         }
 
-        // turn inputs into actual routes
-        std::vector<local_map::statik::route> translated_routes;
-        for (auto const &it : inputs)
-        {
-            translated_routes.emplace_back(local_map::statik::create_route_from_test_input(it));
-        }
-
-        // turn translated routes into event annotated routes
+        // turn inputs into event routes
         std::vector<local_map::statik::event_annotated_route> event_routes;
-        for (auto const &it : translated_routes)
+        for (auto const &it : inputs)
         {
             event_routes.emplace_back(local_map::statik::create_event_route(it));
         }
@@ -678,7 +869,7 @@ int main()
         if (s.annotated_route_window.is_open)
         {
             create_window(s.annotated_route_window);
-            render(event_routes);
+            render(event_routes, s.event_route);
         }
 
 
