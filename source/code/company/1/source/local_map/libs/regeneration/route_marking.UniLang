@@ -380,6 +380,30 @@ knowing when to regenerate is one such use case􏷯
     EXPECT_TRUE(indexes.find(4) != indexes.end());
 􏴮
 
+􏷘+􏷗􏷒mark all lanes in entered submap loop􏷑
+􏴅Lane Marking􏴆
+􏷐when we detect submap loops, mark the all lanes that are part of the first time we are in the submap􏷏
+􏶠Ensures that each marked lane is part of the first set of lanes in the loop conflicting submap􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route);
+    for (auto const& it: conflicting_submap_indexes){
+        auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
+        for (size_t i = it; i < number_of_lanes(route); ++i){
+            auto next_submap = local_map::internal::submap_identifier(route.lane_sequence[i]);
+            if (next_submap == conflicting_submap){
+                lane_indexes.insert(i);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+􏶳
+
+
 􏷘+􏷗􏷒mark first lane after loop causing submaps􏷑
 􏴅Lane Marking􏴆
 􏷐when we detect submap loops, mark the first lane along the route that is past the conflicting submap􏷏
@@ -614,16 +638,29 @@ knowing when to regenerate is one such use case􏷯
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     􏶲perform marking policy􏶱
-    lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m);
+    lane_indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,distance_m);
     
     􏶲perform marking policy􏶱
-    auto loop_marks = mark_lanes_prior_to_forming_a_submap_loop(route);
+    auto in_loop = mark_all_lanes_in_entered_submap_loop(route);
+    
+    􏶲perform marking policy􏶱
+    auto after_loop = mark_first_lane_after_loop_causing_submaps(route);
+    
+    􏶲perform marking policy􏶱
+    auto first = mark_first_lane(route);
+    
+    􏶲perform marking policy􏶱
+    auto last = mark_last_lane(route);
     
     􏶲combine policy results􏶱
-    lane_indexes.insert(loop_marks.begin(),loop_marks.end());
+    lane_indexes.insert(in_loop.begin(),in_loop.end());
+    lane_indexes.insert(after_loop.begin(),after_loop.end());
+    lane_indexes.insert(first.begin(),first.end());
+    lane_indexes.insert(last.begin(),last.end());
     
     􏶲we may want to do additional filtering􏶱
-    
+    􏶲probably convert this to a distance aware loop cutting with an offset from the explicitly marked first lane􏶱
+    􏶲currently using a strategy that has little to no effect on PBM􏶱
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -947,6 +984,27 @@ Expiring the route sets a processing view that will allow process to the end des
     }
 􏶳
 
+􏷘+􏷗􏷒distance to lane index􏷑
+􏴅Annotated Route􏴆
+􏷐convert the total accumulated distance along the route into the corresponding lane index􏷏
+􏶠if we decide to traverse over the route using raw distance, we may also want to match that distance to a particular lane
+if the distance provided goes beyond the distance of the route, the no lane index can be returned
+if the route is empty, no lane index can be returned􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to find the lane on􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to to traverse the route with to find the corresponding lane􏶿
+􏶚m?􏶛􏶾size􏶽􏶼lane index􏶻􏲅stdx::nullopt􏲆􏶺the lane index􏶹
+􏶴
+    double total_distance_m = 0;
+    if (has_lanes(route)){
+        for (size_t i = 0; i < number_of_lanes(route); ++i){
+            total_distance_m += lane_length(route,i);
+            if (total_distance_m > distance_m){
+                return i;
+            }
+        }
+    }
+􏶳
+
 􏷘-􏷗􏷒first index to process􏷑
 􏷐gets the first index to process over the route􏷏
 􏶠determined through the event view of the route􏶡
@@ -1047,4 +1105,30 @@ Expiring the route sets a processing view that will allow process to the end des
 􏴅Shared Interface􏴆
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to count lanes on􏶿
 􏶚m􏶛􏶾size􏶽􏶼number of lanes􏶻􏲅route.lane_sequence.size()􏲆􏶺the number of lanes in the route􏶹
+􏶴􏶳
+
+
+
+
+􏷘-􏷗􏷒has lanes􏷑
+􏷐checks whether the route has lanes􏷏
+􏶠True if there are any lanes, False if there is not􏶡
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
+􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏲅!route.event_lane_sequence.empty()􏲆􏶺whether the route has lanes􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒lane length􏷑
+􏷐get the length of a particular indexed lane􏷏
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the lane index􏶿
+􏶚m􏶛􏶾d􏶽􏶼length􏶻􏵜meters􏵝􏲅route.event_lane_sequence[index].lane.annotation.distance􏲆􏶺the length of the lane􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒number of lanes􏷑
+􏷐the number of lanes in the route􏷏
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to count lanes on􏶿
+􏶚m􏶛􏶾size􏶽􏶼number of lanes􏶻􏲅route.event_lane_sequence.size()􏲆􏶺the number of lanes in the route􏶹
 􏶴􏶳
