@@ -72,6 +72,61 @@ knowing when to regenerate is one such use case􏷯
     meets_preconditions = true;
 􏶳
 
+􏷘+􏷗􏷒mark lanes􏷑
+􏴅Lane Marking􏴆
+􏷐mark lanes based on the configured marking strategy􏷏
+􏶠This is a frontend for calling the different marking algorithms
+Manily used for testing􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to mark lanes on􏶿
+􏶜􏶝􏷆marking_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄settings􏷃􏷀the marking strategy to use􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    if (settings.exceeding_accumulated_distance){
+        auto indexes = mark_lanes_that_exceed_accumulated_distance(route,settings.distance_m);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.before_exceeding_accumulated_distance){
+        auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,settings.distance_m);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.prior_to_loop){
+        auto indexes = mark_lanes_prior_to_forming_a_submap_loop(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.first_lane_loop){
+        auto indexes = mark_first_lanes_involved_in_submap_loop(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.all_lanes_loop){
+        auto indexes = mark_all_lanes_in_entered_submap_loop(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.after_loop){
+        auto indexes = mark_first_lane_after_loop_causing_submaps(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.submap_transition){
+        auto indexes = mark_lanes_that_transition_to_new_submaps(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.first){
+        auto indexes = mark_first_lane(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.last){
+        auto indexes = mark_last_lane(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.all){
+        auto indexes = mark_all_lanes(route);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+    if (settings.regen_sla){
+        auto indexes = mark_lanes_for_local_map_sla_requirement(route,settings.distance_m);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
+􏶳
+
 􏷘+􏷗􏷒mark lanes that exceed accumulated distance􏷑
 􏴅Lane Marking􏴆
 􏷐mark lanes along that route that exceed an accumulated distance greater than the provided distance􏷏
