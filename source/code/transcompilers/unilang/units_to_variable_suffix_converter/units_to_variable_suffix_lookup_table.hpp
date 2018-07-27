@@ -326,6 +326,9 @@ static const std::unordered_map<std::string,std::string> UNITS_TO_VARIABLE_SUFFI
   
   //uncategorized
   ,{"percentage","pct"}
+  ,{"percent","pct"} //should we allow more than one name for the same measurement?
+//maybe but we would need to specify that they are actually the same somehow
+//that way during analysis we dont think we are comparing two different measurements
   
   //frequency
   ,{"hertz","Hz"}
