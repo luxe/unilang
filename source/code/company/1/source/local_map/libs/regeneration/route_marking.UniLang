@@ -695,7 +695,7 @@ Manily used for testing􏶡
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     􏶲perform marking policy􏶱
-    lane_indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,distance_m);
+    lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m);
     
     􏶲perform marking policy􏶱
     auto in_loop = mark_all_lanes_in_entered_submap_loop(route);
@@ -1023,6 +1023,23 @@ Expiring the route sets a processing view that will allow process to the end des
     
     for (size_t i = start_index; i <= end_index; ++i){
         if (route.event_lane_sequence[i].entrance_event == event_action_regenerate){
+            return true;
+        }
+    }
+􏶳
+
+􏷘+􏷗􏷒markers exist on current lane􏷑
+􏴅Annotated Route􏴆
+􏷐determines whether the current lane has markers􏷏
+􏶠This does not take into account the previous lane that was analyzed􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for markers􏶿
+􏶚m􏶛􏶾bool􏶽􏶼has markers􏶻􏲅false􏲆􏶺whether there are markers on the current lane􏶹
+􏶴
+    if (*route.evaluation_range.current < route.event_lane_sequence.size())
+    {
+        if (route.event_lane_sequence[*route.evaluation_range.current].entrance_event
+            == event_action_regenerate)
+        {
             return true;
         }
     }
