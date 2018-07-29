@@ -744,9 +744,9 @@ Manily used for testing􏶡
     event_route.route_plan_id = route.route_plan_id;
     event_route.evaluation_range.current = route.route_progress_index;
     for (size_t i = 0; i < number_of_lanes(route); ++i){
-        lane_event event;
-        event.lane.map_ref = route.lane_sequence[i];
-        event.lane.annotation = route.annotation_sequence[i];
+        lane event;
+        event.info.map_ref = route.lane_sequence[i];
+        event.info.annotation = route.annotation_sequence[i];
         event_route.event_lane_sequence.emplace_back(event);
     }
 􏶳
@@ -825,8 +825,30 @@ Manily used for testing􏶡
 􏶜􏶝􏷆regeneration_reason􏷅􏷄reason􏷃􏷀the reason you are regenerating on these lanes􏶿
 􏶴
     for (const auto & lane_index: lane_indexes){
-        route.event_lane_sequence[lane_index].entrance_event = event_action_regenerate;
-        route.event_lane_sequence[lane_index].reason = reason;
+    
+        event e;
+        e.entrance_event = event_action_regenerate;
+        e.reason = reason;
+        route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
+    }
+􏶳
+
+􏷘+􏷗􏷒set regeneration events􏷑
+􏴅Annotated Route􏴆
+􏷐Decide where along the event annotated route where to place regeneration events􏷏
+􏶠Applies event actions to take on the lane based on the lane indexes given􏶡
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to set events on􏶿
+􏶜􏶝􏷆unordered_indexes􏷅􏷄lane indexes􏷃􏷀the lane indexes to apply regeneration events to􏶿
+􏶜􏶝􏷆regeneration_reason􏷅􏷄reason􏷃􏷀the reason you are regenerating on these lanes􏶿
+􏶜􏶝􏷆i􏷅􏷄placement􏷃􏵘percentage􏵙􏷀where along the lane to place the maker􏶿
+􏶴
+    for (const auto & lane_index: lane_indexes){
+    
+        event e;
+        e.entrance_event = event_action_regenerate;
+        e.reason = reason;
+        e.distance_m = (route.event_lane_sequence[lane_index].info.annotation.distance / 100) * placement_pct;
+        route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
 
@@ -1008,6 +1030,10 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for regeneration􏶿
 􏶚m􏶛􏶾bool􏶽􏶼should regenerate􏶻􏲅false􏲆􏶺whether we should regenerate based on our current progress􏶹
 􏶴
+    if (!has_lanes(route)){
+        return false;
+    }
+    
     􏶲if we already processed the last lane index in the route,􏶱
     􏶲then there is nothing to regenerate􏶱
     if (route.evaluation_range.previous){
@@ -1022,8 +1048,26 @@ Expiring the route sets a processing view that will allow process to the end des
     size_t end_index = last_index_to_process(route);
     
     for (size_t i = start_index; i <= end_index; ++i){
-        if (route.event_lane_sequence[i].entrance_event == event_action_regenerate){
+        if (!route.event_lane_sequence[i].event_sequence.empty()){
             return true;
+        }
+    }
+􏶳
+
+􏷘+􏷗􏷒current lanes with annotations􏷑
+􏴅Annotated Route􏴆
+􏷐get back the lane indexes of the current lanes under evaluation that have annotations􏷏
+􏶠Uses the event view to iterate over a window of lanes and return the ones that have annotations􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane indexes from􏶿
+􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route's event view􏶹
+􏶴
+    􏶲get index interval to check for events on􏶱
+    size_t start_index = first_index_to_process(route);
+    size_t end_index = last_index_to_process(route);
+    
+    for (size_t i = start_index; i <= end_index; ++i){
+        if (!route.event_lane_sequence[i].event_sequence.empty()){
+            lane_indexes.emplace_back(i);
         }
     }
 􏶳
@@ -1037,8 +1081,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶴
     if (*route.evaluation_range.current < route.event_lane_sequence.size())
     {
-        if (route.event_lane_sequence[*route.evaluation_range.current].entrance_event
-            == event_action_regenerate)
+        if (!route.event_lane_sequence[*route.evaluation_range.current].event_sequence.empty())
         {
             return true;
         }
@@ -1054,7 +1097,7 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶴
     􏶲choosing range iteration over std::accumulate􏶱
     for (const auto & event : route.event_lane_sequence){
-        total_distance += event.lane.annotation.distance;
+        total_distance += event.info.annotation.distance;
     }
 􏶳
 
@@ -1197,7 +1240,7 @@ if the route is empty, no lane index can be returned􏶡
 􏴅Shared Interface􏴆
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
 􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the lane index􏶿
-􏶚m􏶛􏶾d􏶽􏶼length􏶻􏵜meters􏵝􏲅route.event_lane_sequence[index].lane.annotation.distance􏲆􏶺the length of the lane􏶹
+􏶚m􏶛􏶾d􏶽􏶼length􏶻􏵜meters􏵝􏲅route.event_lane_sequence[index].info.annotation.distance􏲆􏶺the length of the lane􏶹
 􏶴􏶳
 
 􏷘-􏷗􏷒number of lanes􏷑

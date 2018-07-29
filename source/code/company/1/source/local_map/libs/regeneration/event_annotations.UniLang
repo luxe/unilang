@@ -61,7 +61,7 @@
 􏶆regenerate􏶅􏶂causes the regenerate trigger to be called on the corresponding lane􏶁
 􏶆none􏶅􏶂causes nothing to trigger for the corresponding lane􏶁
 
-􏶊The reason we are regenerating on a particular lane􏶉
+􏶊The reason the event exists on a particular lane􏶉
 􏶈Primarily used to aid in debugging􏶇
 􏵮􏵯􏶀regeneration reason􏶋
 􏶆distance􏶅􏶂regenerating because of distance􏶁
@@ -79,21 +79,37 @@ we observe the optionality of the event view to determine the contextual state o
 􏶆expired􏶅􏶂no current lane is given.  we an assume all lanes from the previous to the end of the route􏶁
 􏶆invalid􏶅􏶂we do not have a valid interval over the route at all􏶁
 
-􏳃A lane with annotated event information􏳄
-􏳁contains event information about the particular lane􏳂
-􏲿lane_event􏳀
 
-􏶨the lane that the event may occur on􏶧
-􏶦derived from the annotation and lane sequence of the translated route􏶥
-􏶘+􏶙􏶰􏶯􏷔lane_event􏷓􏶮lane_info􏶭􏶬lane􏶫
+􏳃An event along a particular lane􏳄
+􏳁contains the location of the event and information about the event􏳂
+􏲿event􏳀
 
 􏶨a regeneration event that will trigger when the lane is reached􏶧
 􏶦a user callback will be made for the event of the given lane􏶥
-􏶘+􏶙􏶰􏶯􏷔lane_event􏷓􏶮event_action􏶭􏶬entrance event􏶫􏶪event_action_none􏶩
+􏶘+􏶙􏶰􏶯􏷔event􏷓􏶮event_action􏶭􏶬entrance event􏶫􏶪event_action_none􏶩
 
 􏶨Why we may be regenerating on a lane􏶧
 􏶦provides explanation on why a regeneration event is present􏶥
-􏶘+􏶙􏶰􏶯􏷔lane_event􏷓􏶮regeneration_reason􏶭􏶬reason􏶫􏶪regeneration_reason_none􏶩
+􏶘+􏶙􏶰􏶯􏷔event􏷓􏶮regeneration_reason􏶭􏶬reason􏶫􏶪regeneration_reason_none􏶩
+
+􏶨the distance along the lane that the event is placed􏶧
+􏶦0 is beginning of lane. lane distance is the end of the lane
+0 <= distance <= lane length􏶥
+􏶘+􏶙􏶰􏶯􏷔event􏷓􏶮d􏶭􏶬distance􏶫􏵚meters􏵛􏶪0􏶩
+
+
+􏳃A lane with annotated event information􏳄
+􏳁contains event information about the particular lane􏳂
+􏲿lane􏳀
+
+􏶨the lane that the event may occur on􏶧
+􏶦derived from the annotation and lane sequence of the translated route􏶥
+􏶘+􏶙􏶰􏶯􏷔lane􏷓􏶮lane_info􏶭􏶬info􏶫
+
+􏶨Events that occur along the lane􏶧
+􏶦Contains the location of the events and information about the event
+events may overlap. they are not ordered by distance.􏶥
+􏶘+􏶙􏶰􏶯􏷔lane􏷓􏶮seq􏶭􏳟event􏳠􏶬events􏶫
 
 􏳃the previously determined lane, and the new currently determined lane􏳄
 􏳁creates an interval of lanes to evaluate for events.
@@ -126,11 +142,11 @@ You can leave it blank􏶥
 􏲹local_map/libs/route/serializable/route_plan_identifier􏲺
 􏲱local_map/libs/route/serializable/serializable_route_overlay􏲲
 
-􏶨The regeneration events that should occur on the change of particular lanes􏶧
+􏶨The events that should occur on the change of particular lanes􏶧
 􏶦The change in lanes is expected to be in the same order that they appear in the original route.
 The sequence may contain duplicate lanes.
 We are simply taking an existing route, and tagging it with events􏶥
-􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮seq􏶭􏳟lane_event􏳠􏶬event_lanes􏶫
+􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮seq􏶭􏳟lane􏳠􏶬event_lanes􏶫
 
 􏶨The interval of lanes that need to be evaluated for events􏶧
 􏶦Uses the previous and current lanes observed to create an interval for evaluation.
