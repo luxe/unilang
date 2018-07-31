@@ -2,12 +2,15 @@ class
 
 
 ❪"code/transcompilers/unilang/options/comment/comment_grammar_settings"❫
+❪vector❫
+❪iostream❫
 ⚯
 ❪"code/transcompilers/unilang/structure-adjuster/words_deriver"❫
 ❪"code/utilities/types/strings/transformers/trimming/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get_Adjusted(std::string comment_text, Comment_Grammar_Settings grammar)❰
@@ -17,11 +20,26 @@ class
     //apply possible grammar changes
     Potentially_Capitalize(str,grammar);
     Potentially_Punctuate(str,grammar);
-    Potentially_Sensor_Bad_Words(str,grammar);
-    Potentially_Auto_Correct_Words(str,grammar);
-    Potentially_Auto_Retaste_Words(str,grammar);
-    Potentially_Auto_Capitalize_Words(str,grammar);
-    Potentially_Auto_Full_Caps_Words(str,grammar);
+    
+    std::vector<std::string> warnings;
+    
+    //rebuild sentence and perform actions on each word
+    auto words = Words_Deriver::Derive(comment_text);
+    for (auto & word: words){
+        warnings += Potentially_Sensor_Bad_Words(word,grammar);
+        warnings += Potentially_Auto_Correct_Words(word,grammar);
+        warnings += Potentially_Auto_Retaste_Words(word,grammar);
+        warnings += Potentially_Auto_Fix_Correct_Words(word,grammar);
+        warnings += Potentially_Auto_Capitalize_Words(word,grammar);
+        warnings += Potentially_Auto_Full_Caps_Words(word,grammar);
+    }
+    str = Put_Words_Into_A_Sentence(words);
+    
+    
+    //print the warnings
+    for (auto & it: warnings){
+      std::cerr << it << std::endl;
+    }
     
     return str;
 ❱
@@ -82,37 +100,120 @@ class
 	return "";
 ❱
 
-◀private: static▶ void ☀Potentially_Sensor_Bad_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Sensor_Bad_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+  std::vector<std::string> warnings;
+  for (auto const& bad_word : grammar.bad_words){
+    if (bad_word == word){
+      
+      //warn about it
+      if (grammar.warn_bad_words){
+        warnings.emplace_back("bad word found: " + word);
+      }
+      
+      //fix it
+      if (grammar.auto_sensor_bad_words){
+        word = grammar.sensor_pattern;
+      }
+      
+      
+    }
+  }
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Correct_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+  std::vector<std::string> warnings;
+  
+  for (auto const& to_from : grammar.auto_corrects){
+    if (to_from.first == word){
+      
+      //warn about it
+      if (grammar.warn_about_auto_corrects){
+          warnings.emplace_back("did you mean " + to_from.second + " instead of " + to_from.first + "?");
+      }
+      
+      //fix it
+      if (grammar.use_auto_corrects){
+          word = to_from.first;
+      }
+      
+      
+    }
+  }
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Retaste_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+  std::vector<std::string> warnings;
+  
+  for (auto const& to_from : grammar.taste_corrections){
+    if (to_from.first == word){
+      
+      //warn about it
+      if (grammar.warn_about_taste_suggestion){
+        warnings.emplace_back("people would prefer " + to_from.second + " over " + to_from.first);
+      }
+      
+      //fix it
+      if (grammar.auto_retaste_words){
+        word = to_from.first;
+      }
+      
+      
+    }
+  }
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Fix_Correct_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+  std::vector<std::string> warnings;
+  
+  for (auto const& to_from : grammar.taste_corrections){
+    if (to_from.first == word){
+      
+      //warn about it
+      if (grammar.warn_correctly_spelled_typo){
+          warnings.emplace_back(to_from.first + " is valid, but did you maybe mean " + to_from.second + "?");
+      }
+      
+      //fix it
+      if (grammar.fix_correctly_spelled_typo){
+        word = to_from.first;
+      }
+      
+      
+    }
+  }
+  
+  return warnings;
+❱
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Capitalize_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+  std::vector<std::string> warnings;
+    for (auto const& capital_word : grammar.capitalize_words){
+      if (capital_word == word){
+        
+        //warn about it
+        if (grammar.warn_about_uncapitalized_words){
+          warnings.emplace_back(word + " should be capitalized");
+        }
+        
+        //fix it
+        if (grammar.auto_capitalize_certain_words){
+          CapitalizeFirstChar(word);
+        }
+        
+      }
+    }
+  return warnings;
+❱
 
-  if (grammar.auto_sensor_bad_words){
-    //TODO: use bad word filter
-  }
-❱
-◀private: static▶ void ☀Potentially_Auto_Correct_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
-  if (grammar.use_auto_corrects){
-    //TODO: implement
-  }
-❱
-◀private: static▶ void ☀Potentially_Auto_Retaste_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
-  if (grammar.use_auto_corrects){
-    //TODO: implement
-  }
-❱
-◀private: static▶ void ☀Potentially_Auto_Capitalize_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
-  if (grammar.auto_capitalize_certain_words){
-    //TODO: implement
-  }
-❱
-◀private: static▶ void ☀Potentially_Auto_Full_Caps_Words(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+
+
+
+
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Full_Caps_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+  std::vector<std::string> warnings;
   if (grammar.auto_full_caps_certain_words){
-    auto words = Words_Deriver::Derive(comment_text);
-    for (auto & word: words){
-        //caps a possibly punctuated word
-        Possibly_Caps_A_Possibly_Puncuated_Word(word,grammar);
-	}
-     //put words back into the sentence
-	 comment_text = Put_Words_Into_A_Sentence(words);
+      Possibly_Caps_A_Possibly_Puncuated_Word(word,grammar);
   }
+  return warnings;
 ❱
 
 ◀private: static▶ void ☀Possibly_Caps_A_Possibly_Puncuated_Word(std::string & word, Comment_Grammar_Settings grammar)❰

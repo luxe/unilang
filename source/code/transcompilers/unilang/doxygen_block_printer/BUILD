@@ -53,6 +53,7 @@ hcp(name = "grammar_adjuster", deps = [
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
+"//code/utilities/types/vectors/operators:lib",
 ])
 
 hcp(name = "value_constraint_comment_deriver", deps = [
