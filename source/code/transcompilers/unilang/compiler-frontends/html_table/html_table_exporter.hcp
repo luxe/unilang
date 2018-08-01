@@ -6,6 +6,7 @@ class
 ❪"code/transcompilers/unilang/contributor/contributor"❫
 ❪"code/transcompilers/unilang/structure/inlined_structures"❫
 ❪"code/transcompilers/unilang/options/language-specific/html_table_options"❫
+❪"code/transcompilers/unilang/compiler-frontends/xml/xml_exporter"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/converters/lib"❫
@@ -17,23 +18,16 @@ class
 ❪"code/transcompilers/unilang/options/manipulation/case_adjustment_settings"❫
 ❪"code/transcompilers/unilang/structure-adjuster/casing_adjuster"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
-❪"code/transcompilers/unilang/compiler-frontends/xml/xml_exporter"❫
 ❪"code/transcompilers/unilang/structure-adjuster/structure_adjuster"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Html_Table_Options const& settings)❰
    
    Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::HtmlTable);
    
-  //create file
-  std::vector<std::string> created;
-  std::string file_name = structure.name + "." + settings.file_extension;
-  created.emplace_back(file_name);
-  std::ofstream outfile(file_name);
-  
-  //create header
-  outfile << settings.css<< "\n";
-  
+   
+   
   //transfer settings over
   Xml_Options xml_settings;
   xml_settings.cell_tag_start = settings.cell_tag_start;
@@ -42,6 +36,42 @@ class
   xml_settings.cell_tag_end = settings.cell_tag_end;
   xml_settings.grid_tag_end = settings.grid_tag_end;
   xml_settings.row_tag_end = settings.row_tag_end;
+  xml_settings.show_base_type = false;
+  xml_settings.show_special_types = false;
+  xml_settings.show_identifier = false;
+  xml_settings.show_units = false;
+  
+  
+   
+  //created files
+  std::vector<std::string> created;
+  xml_settings.show_base_type = true;
+  xml_settings.show_special_types = true;
+  created += Create_Table_Files(structure,xml_settings,settings,"type");
+  
+  xml_settings.show_base_type = false;
+  xml_settings.show_special_types = false;
+  xml_settings.show_identifier = true;
+  created += Create_Table_Files(structure,xml_settings,settings,"identifier");
+  
+  xml_settings.show_identifier = false;
+  xml_settings.show_units =true;
+  created += Create_Table_Files(structure,xml_settings,settings,"units");
+  
+  
+  
+  return created;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Create_Table_Files(Structure const& structure, Xml_Options const& xml_settings, Html_Table_Options const& settings, std::string const& suffix)❰
+  std::vector<std::string> created;
+  
+  std::string file_name = structure.name + "-" + suffix + "." + settings.file_extension;
+  created.emplace_back(file_name);
+  std::ofstream outfile(file_name);
+  
+  //create header
+  outfile << settings.css<< "\n";
   
   outfile << settings.before_table<< "\n";
   auto code_as_xml = Xml_Exporter::Get(structure,xml_settings);
@@ -51,20 +81,29 @@ class
   
   
   Export_Html_File_As_Image(file_name);
-  std::string what_the_name_should_be = structure.name + "-html_table.png";
+  std::string what_the_name_should_be = structure.name + "-" + suffix + "-html_table.png";
   execute("mv screenshot.png " +  what_the_name_should_be);
   Trim_Whitespace_From_Image(what_the_name_should_be);
   created.emplace_back(what_the_name_should_be);
   return created;
 ❱
 
+
 ◀private: static▶ void ☀Export_Html_File_As_Image(std::string file_name)❰
+
+  bool set_resolution = true;
+  std::string x_res = "2480";
+  std::string y_res = "1698";
+
   //turn into image
   std::string command = "chromium-browser";
   command += " --headless";
   command += " --hide-scrollbars";
   command += " --disable-gpu";
   command += " --screenshot";
+  if (set_resolution){
+    command += " --window-size=" + x_res + "," + y_res;
+  }
   command += " ";
   command += file_name;
   if (Unsuccessful_Run_Of_Command(command)){

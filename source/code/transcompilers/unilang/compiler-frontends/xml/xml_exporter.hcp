@@ -57,7 +57,7 @@ class
     //recurse on data members
     for (auto it: structure.data_members.data_members){
       if (Data_Member_Is_Inside_Because_Of_Base_Type(type,it)){
-        print_representation = Data_Member_Representation(it);
+        print_representation = Data_Member_Representation(it, settings);
         str += Structure_As_String(as_string(it.type.value),print_representation,structure,settings);
         
           for (auto j: it.type_specializations){
@@ -79,28 +79,25 @@ class
   return str;
 ❱
 
-◀private: static▶ std::string ☀Data_Member_Representation(Data_Member_Item const& item)❰
-  
-  bool show_base_type = true;
-  bool show_special_types = false;
-  bool show_identifier = false;
-  
-  
+◀private: static▶ std::string ☀Data_Member_Representation(Data_Member_Item const& item, Xml_Options const& settings)❰
   
   std::string identifier = as_string(item.name.value);
   std::string base_type = as_string(item.type.value);
+  std::string units = as_string(item.units.value);
   std::vector<std::string> specials;
   for (auto it: item.type_specializations){
     specials.emplace_back(as_string(it.type.value));
   }
   
+  
+  
   std::string result;
   
-  if (show_base_type){
+  if (settings.show_base_type){
     result += base_type;
   }
   
-  if (show_special_types){
+  if (settings.show_special_types){
     if (!specials.empty()){
       result += "(";
       result += Get_As_Comma_Seperated_String(specials);
@@ -108,9 +105,14 @@ class
     }
   }
   
-  if (show_identifier){
+  if (settings.show_identifier){
     result += " ";
     result += identifier;
+  }
+  
+  if (settings.show_units){
+    result += " ";
+    result += units;
   }
   return result;
   

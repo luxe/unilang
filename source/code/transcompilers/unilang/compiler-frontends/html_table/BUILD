@@ -18,6 +18,7 @@ hcp(name = "html_table_exporter", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/compiler-frontends/xml:xml_exporter",
 "//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
+"//code/utilities/types/vectors/operators:lib",
 ])
 
 hcp(name = "html_table_options_getter", deps = [
