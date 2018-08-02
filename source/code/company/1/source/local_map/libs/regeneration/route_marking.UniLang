@@ -115,6 +115,9 @@ Mainly used for testing􏶡
         auto indexes = mark_all_lanes(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
+    if (settings.specific_lane_index){
+        auto indexes = mark_specific_lane_index(route,
+    }
     if (settings.regen_sla){
         auto indexes = mark_lanes_for_local_map_sla_requirement(route,settings.sla_distance_m);
         lane_indexes.insert(indexes.begin(),indexes.end());
@@ -842,6 +845,32 @@ Mainly used for testing􏶡
         e.action = event_action_regenerate;
         e.reason = reason;
         e.distance_m = (route.event_lane_sequence[lane_index].info.annotation.distance / 100) * placement_pct;
+        route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
+    }
+􏶳
+
+􏷘+􏷗􏷒set regeneration events􏷑
+􏴅Annotated Route􏴆
+􏷐Decide where along the event annotated route where to place regeneration events􏷏
+􏶠Applies event actions to take on the lane based on the lane indexes given
+If the distance is long􏶡
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to set events on􏶿
+􏶜􏶝􏷆unordered_indexes􏷅􏷄lane indexes􏷃􏷀the lane indexes to apply regeneration events to􏶿
+􏶜􏶝􏷆ascii_string􏷅􏷄reason􏷃􏷀the reason you are regenerating on these lanes􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker􏶿
+􏶴
+    for (const auto & lane_index: lane_indexes){
+    
+        event e;
+        e.action = event_action_regenerate;
+        e.reason = reason;
+        
+        if (distance_m > route.event_lane_sequence[lane_index].info.annotation.distance){
+            e.distance_m = route.event_lane_sequence[lane_index].info.annotation.distance;
+        }
+        else{
+            e.distance_m = distance_m;
+        }
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
