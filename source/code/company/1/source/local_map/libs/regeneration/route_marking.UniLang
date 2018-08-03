@@ -116,7 +116,7 @@ Mainly used for testing􏶡
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.specific_lane_index){
-        auto indexes = mark_specific_lane_index(route,settings.lane_index);
+        auto indexes = mark_specific_lane_index(route,settings.placement.lane_index);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.regen_sla){
@@ -712,22 +712,14 @@ The set returned will never have more than 1 element􏶡
     lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m);
     
     􏶲perform marking policy􏶱
-    auto in_loop = mark_all_lanes_in_entered_submap_loop(route);
-    
-    􏶲perform marking policy􏶱
     auto after_loop = mark_first_lane_after_loop_causing_submaps(route);
     
     􏶲perform marking policy􏶱
     auto first = mark_first_lane(route);
     
-    􏶲perform marking policy􏶱
-    auto last = mark_last_lane(route);
-    
     􏶲combine policy results􏶱
-    lane_indexes.insert(in_loop.begin(),in_loop.end());
     lane_indexes.insert(after_loop.begin(),after_loop.end());
     lane_indexes.insert(first.begin(),first.end());
-    lane_indexes.insert(last.begin(),last.end());
     
     􏶲we may want to do additional filtering􏶱
     􏶲probably convert this to a distance aware loop cutting with an offset from the explicitly marked first lane􏶱

@@ -98,6 +98,8 @@ we observe the optionality of the event view to determine the contextual state o
 􏶘+􏶙􏶰􏶯􏷔event􏷓􏶮d􏶭􏶬distance􏶫􏵚meters􏵛􏶪0􏶩
 
 
+
+
 􏳃A lane with annotated event information􏳄
 􏳁contains event information about the particular lane􏳂
 􏲿lane􏳀
@@ -110,6 +112,10 @@ we observe the optionality of the event view to determine the contextual state o
 􏶦Contains the location of the events and information about the event
 events may overlap. they are not ordered by distance.􏶥
 􏶘+􏶙􏶰􏶯􏷔lane􏷓􏶮seq􏶭􏳟event􏳠􏶬events􏶫
+
+
+
+
 
 􏳃the previously determined lane, and the new currently determined lane􏳄
 􏳁creates an interval of lanes to evaluate for events.
@@ -127,6 +133,33 @@ If the car drives past the end of the route, there is no current index􏳂
 􏶦interval end is closed􏶥
 􏶘+?􏶙􏶰􏶯􏷔event_view􏷓􏶮i32􏶭􏶬current􏶫
 
+
+
+
+􏳃An event region along a route􏳄
+􏳁contains a start and end location along the route
+the entire region is a continuous event􏳂
+􏲿event_region􏳀
+
+􏶨a regeneration event that will trigger when the lane is reached􏶧
+􏶦a user callback will be made for the event of the given lane􏶥
+􏶘+􏶙􏶰􏶯􏷔event_region􏷓􏶮event_action􏶭􏶬action􏶫􏶪event_action_none􏶩
+
+􏶨The reason the event exists􏶧
+􏶦provides explanation on why an event is present􏶥
+􏶘+􏶙􏶰􏶯􏷔event_region􏷓􏶮ascii_string􏶭􏶬reason􏶫􏶪􏶩
+
+􏶨the start distance of the event region along the route􏶧
+􏶦0 is beginning of route
+0 <= start <= end􏶥
+􏶘+􏶙􏶰􏶯􏷔event_region􏷓􏶮d􏶭􏶬start􏶫􏵚meters􏵛􏶪0􏶩
+
+􏶨the end distance of the event region along the route􏶧
+􏶦start <= end <= route length􏶥
+􏶘+􏶙􏶰􏶯􏷔event_region􏷓􏶮d􏶭􏶬end􏶫􏵚meters􏵛􏶪0􏶩
+
+
+
 􏳃The sequence of regeneration events that occur along a route􏳄
 􏳁The events will be triggered in the order of the sequence􏳂
 􏲿event_annotated_route􏳀
@@ -134,7 +167,7 @@ If the car drives past the end of the route, there is no current index􏳂
 􏶨A name for the route􏶧
 􏶦This is mainly for debugging and experimentation
 You can leave it blank􏶥
-􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮string􏶭􏶬name􏶫
+􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮ascii_string􏶭􏶬name􏶫
 
 􏶨The unique id of the route plan.􏶧
 􏶦sourced from navigator􏶥
@@ -144,15 +177,33 @@ You can leave it blank􏶥
 
 􏶨The events that should occur on the change of particular lanes􏶧
 􏶦The change in lanes is expected to be in the same order that they appear in the original route.
-The sequence may contain duplicate lanes.
+The sequence may not contain duplicate lanes.
 We are simply taking an existing route, and tagging it with events􏶥
 􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮seq􏶭􏳟lane􏳠􏶬event_lanes􏶫
+
+􏶨Region areas representing continuous events over a route􏶧
+􏶦Agnostic to lanes
+A distance interval over the route containing event information􏶥
+􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮seq􏶭􏳟event_region􏳠􏶬event_regions􏶫
 
 􏶨The interval of lanes that need to be evaluated for events􏶧
 􏶦Uses the previous and current lanes observed to create an interval for evaluation.
 The reason we do this, is because we may not evaluate every lane as we pass over them.
-We need to make sure we don't forget to evaluate lanes that we have already passed over􏶥
+We need to make sure we don't forget to evaluate lanes that we have already passed over.
+Although we may store exact distance locations in the evaluation range, the user can still
+check and adjust the window at the less discrete lane index.􏶥
 􏶘+􏶙􏶰􏶯􏷔event_annotated_route􏷓􏶮event_view􏶭􏶬evaluation range􏶫
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -184,6 +235,10 @@ We need to make sure we don't forget to evaluate lanes that we have already pass
 this input decides how the user wants to place them􏳂
 􏲿marking_placement_input􏳀
 
+􏶨index used when marking a specific lane index􏶧
+􏶦can be used during testing to mark based on the "specific lane index" API􏶥
+􏶘+􏶙􏶰􏶯􏷔marking_placement_input􏷓􏶮size􏶭􏶬lane index􏶫􏶪0􏶩
+
 􏶨Decides how to place markers on a lane􏶧
 􏶦Decides which marker placement inputs to use and which API to call when placing markers􏶥
 􏶘+􏶙􏶰􏶯􏷔marking_placement_input􏷓􏶮marker_placement_strategy􏶭􏶬placement_strategy􏶫􏶪marker_placement_strategy_by_percentage􏶩
@@ -195,6 +250,10 @@ this input decides how the user wants to place them􏳂
 􏶨A marker can be placed anywhere along the lane􏶧
 􏶦For demonstration purposes we'll allow them to be set at specific offsets from a chosen lane􏶥
 􏶘+􏶙􏶰􏶯􏷔marking_placement_input􏷓􏶮d􏶭􏶬distance offset from lane􏶫􏵚meters􏵛􏶪0􏶩
+
+􏶨The reason for placing the marker􏶧
+􏶦Markers can contain a reason for the marking.  This can aid in debugability and choosing how to process the marker later􏶥
+􏶘+􏶙􏶰􏶯􏷔marking_placement_input􏷓􏶮string􏶭􏶬reason􏶫
 
 􏳃Testing input used to annotate lanes􏳄
 􏳁The marking input can be used to call the appropriate lane marking APIs􏳂
@@ -227,7 +286,7 @@ this input decides how the user wants to place them􏳂
 􏶨use particular marking strategy when annotating a route􏶧
 􏶦can be used during testing to mark based on an API􏶥
 􏶘+􏶙􏶰􏶯􏷔marking_input􏷓􏶮bool􏶭􏶬all lanes loop􏶫􏶪false􏶩
-c
+
 􏶨use particular marking strategy when annotating a route􏶧
 􏶦can be used during testing to mark based on an API􏶥
 􏶘+􏶙􏶰􏶯􏷔marking_input􏷓􏶮bool􏶭􏶬after loop􏶫􏶪false􏶩
@@ -251,10 +310,6 @@ c
 􏶨use particular marking strategy when annotating a route􏶧
 􏶦can be used during testing to mark based on an API􏶥
 􏶘+􏶙􏶰􏶯􏷔marking_input􏷓􏶮bool􏶭􏶬specific lane index􏶫􏶪false􏶩
-
-􏶨index used when marking a specific lane index􏶧
-􏶦can be used during testing to mark based on the "specific lane index" API􏶥
-􏶘+􏶙􏶰􏶯􏷔marking_input􏷓􏶮size􏶭􏶬lane index􏶫􏶪0􏶩
 
 􏶨use particular marking strategy when annotating a route􏶧
 􏶦can be used during testing to mark based on an API􏶥
