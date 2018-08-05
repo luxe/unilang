@@ -75,52 +75,52 @@ Mainly used for testing􏶡
 􏶜􏶝􏷆marking_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄settings􏷃􏷀the marking strategy to use􏶿
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    if (settings.exceeding_accumulated_distance){
-        auto indexes = mark_lanes_that_exceed_accumulated_distance(route,settings.exceeding_distance_m);
+    if (settings.lane_selection.exceeding_accumulated_distance){
+        auto indexes = mark_lanes_that_exceed_accumulated_distance(route,settings.lane_selection.exceeding_distance_m);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.before_exceeding_accumulated_distance){
-        auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,settings.before_exceeding_distance_m);
+    if (settings.lane_selection.before_exceeding_accumulated_distance){
+        auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,settings.lane_selection.before_exceeding_distance_m);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.prior_to_loop){
+    if (settings.lane_selection.prior_to_loop){
         auto indexes = mark_lanes_prior_to_forming_a_submap_loop(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.first_lane_loop){
+    if (settings.lane_selection.first_lane_loop){
         auto indexes = mark_first_lanes_involved_in_submap_loop(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.all_lanes_loop){
+    if (settings.lane_selection.all_lanes_loop){
         auto indexes = mark_all_lanes_in_entered_submap_loop(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.after_loop){
+    if (settings.lane_selection.after_loop){
         auto indexes = mark_first_lane_after_loop_causing_submaps(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.submap_transition){
+    if (settings.lane_selection.submap_transition){
         auto indexes = mark_lanes_that_transition_to_new_submaps(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.first){
+    if (settings.lane_selection.first){
         auto indexes = mark_first_lane(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.last){
+    if (settings.lane_selection.last){
         auto indexes = mark_last_lane(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.all){
+    if (settings.lane_selection.all){
         auto indexes = mark_all_lanes(route);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.specific_lane_index){
+    if (settings.lane_selection.specific_lane_index){
         auto indexes = mark_specific_lane_index(route,settings.placement.lane_index);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
-    if (settings.regen_sla){
-        auto indexes = mark_lanes_for_local_map_sla_requirement(route,settings.sla_distance_m);
+    if (settings.lane_selection.regen_sla){
+        auto indexes = mark_lanes_for_local_map_sla_requirement(route,settings.lane_selection.sla_distance_m);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
 􏶳
@@ -831,7 +831,6 @@ The set returned will never have more than 1 element􏶡
 􏶜􏶝􏷆ascii_string􏷅􏷄reason􏷃􏷀the reason you are regenerating on these lanes􏶿
 􏶴
     for (const auto & lane_index: lane_indexes){
-    
         event e;
         e.action = event_action_regenerate;
         e.reason = reason;
@@ -849,7 +848,6 @@ The set returned will never have more than 1 element􏶡
 􏶜􏶝􏷆i􏷅􏷄placement􏷃􏵘percentage􏵙􏷀where along the lane to place the maker􏶿
 􏶴
     for (const auto & lane_index: lane_indexes){
-    
         event e;
         e.action = event_action_regenerate;
         e.reason = reason;
@@ -869,7 +867,6 @@ If the distance is long􏶡
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker􏶿
 􏶴
     for (const auto & lane_index: lane_indexes){
-    
         event e;
         e.action = event_action_regenerate;
         e.reason = reason;
@@ -882,6 +879,29 @@ If the distance is long􏶡
         }
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
+􏶳
+
+􏷘+􏷗􏷒set regeneration events􏷑
+􏴅Annotated Route􏴆
+􏷐Creates a region of events along the route􏷏
+􏶠Agnostic to the individual lanes along the route.
+Can span multiple lanes􏶡
+􏵪start_distance_m <= end_distance_m􏵫
+􏵨start_distance_m <= end_distance_m􏵩
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to set events on􏶿
+􏶜􏶝􏷆ascii_string􏷅􏷄reason􏷃􏷀the reason you are regenerating in this region􏶿
+􏶜􏶝􏷆d􏷅􏷄start distance􏷃􏵘meters􏵙􏷀the start of the region􏶿
+􏶜􏶝􏷆d􏷅􏷄end distance􏷃􏵘meters􏵙􏷀the end of the region􏶿
+􏶴
+    // create region
+    event_region region;
+    region.action = event_action_regenerate;
+    region.reason = reason;
+    region.start_m = start_distance_m;
+    region.end_m = end_distance_m;
+    
+    // store region
+    route.event_region_sequence.emplace_back(region);
 􏶳
 
 􏷘+􏷗􏷒set previous index on route􏷑
