@@ -1140,6 +1140,27 @@ Expiring the route sets a processing view that will allow process to the end des
     }
 􏶳
 
+􏷘+􏷗􏷒inside event region􏷑
+􏴅Annotated Route􏴆
+􏷐determines whether the current position is in an event region􏷏
+􏶠True if we are; False if we are not􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for event regions􏶿
+􏶚m􏶛􏶾bool􏶽􏶼within region􏶻􏲅false􏲆􏶺whether we are within an event region􏶹
+􏶴
+    //TODO(thickey): use distance granularity (make event window from distance; not index)
+    if (route.evaluation_range.current){
+        if (*route.evaluation_range.current < route.event_lane_sequence.size())
+        {
+            auto current_distance_m = lane_index_to_distance(route,*route.evaluation_range.current);
+            for (const auto & it: route.event_region_sequence){
+                if (it.start_m <= current_distance_m && it.end_m >= current_distance_m){
+                    return true;
+                }
+            }
+        }
+    }
+􏶳
+
 􏷘+􏷗􏷒total distance􏷑
 􏴅Annotated Route􏴆
 􏷐the total distance of the route􏷏
@@ -1157,20 +1178,37 @@ Expiring the route sets a processing view that will allow process to the end des
 􏴅Annotated Route􏴆
 􏷐convert a total accumulated distance along the route into the corresponding lane index􏷏
 􏶠if we decide to traverse over the route using raw distance, we may also want to match that distance to a particular lane
-if the distance provided goes beyond the distance of the route, the no lane index can be returned
+if the distance provided goes beyond the distance of the route, then no lane index can be returned
 if the route is empty, no lane index can be returned􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to find the lane on􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to to traverse the route with to find the corresponding lane􏶿
 􏶚m?􏶛􏶾size􏶽􏶼lane index􏶻􏲅stdx::nullopt􏲆􏶺the lane index􏶹
 􏶴
     double total_distance_m = 0;
-    if (has_lanes(route)){
-        for (size_t i = 0; i < number_of_lanes(route); ++i){
-            total_distance_m += lane_length(route,i);
-            if (total_distance_m > distance_m){
-                return i;
-            }
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        total_distance_m += lane_length(route,i);
+        if (total_distance_m > distance_m){
+            return i;
         }
+    }
+􏶳
+
+􏷘+􏷗􏷒lane index to distance􏷑
+􏴅Annotated Route􏴆
+􏷐convert a lane index to the total accumulated distance of the route where the lane starts􏷏
+􏶠if we decide to traverse over the route using lane indexes, we may also want to match that lane to our distance progress
+if the lane index provided goes beyond the lane count of the route, the no distance is returned
+if the route is empty, no distance is returned􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to find the lane's distance on􏶿
+􏶜􏶝􏷆size􏷅􏷄lane_index􏷃􏵘􏵙􏷀the index of the lane to find its starting distance of􏶿
+􏶚m?􏶛􏶾d􏶽􏶼distance􏶻􏵜meters􏵝􏲅stdx::nullopt􏲆􏶺the lane index's starting distance􏶹
+􏶴
+    double total_distance_m = 0;
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        if (i == lane_index){
+            return total_distance_m;
+        }
+        total_distance_m += lane_length(route,i);
     }
 􏶳
 
@@ -1182,6 +1220,19 @@ if the route is empty, no lane index can be returned􏶡
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to to traverse the route with to find the corresponding lane and distance offset􏶿
 􏶚m􏶛􏶾d􏶽􏶼distance offset􏶻􏲅0􏲆􏶺the distance offset from the lane􏶹
 􏶴
+    double total_distance_m = 0;
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        total_distance_m += lane_length(route,i);
+        if (total_distance_m > distance_m){
+            return lane_length(route,i) - (total_distance_m - distance_m);
+        }
+    }
+    
+    // distance greater than entire route
+    // we use the full length of the last lane
+    if (!route.event_lane_sequence.empty()){
+        distance_offset = lane_length(route,route.event_lane_sequence.size()-1);
+    }
 􏶳
 
 􏷘-􏷗􏷒first index to process􏷑
