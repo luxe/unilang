@@ -41,6 +41,7 @@ hcp(name = "file_transferer", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transferer",
+"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_action_getter",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
