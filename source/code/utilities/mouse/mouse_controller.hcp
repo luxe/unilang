@@ -25,7 +25,7 @@ class
 ❱
 
 //functionality
-◀public:▶ void ☀move_mouse(Point to)
+◀public:▶ void ☀move_mouse_dynamically_random(Point to, const int low_budge_wait_micro_s, const int high_budge_wait_micro_s)
 ❰
     //where we are starting from
     auto from = current_mouse_position();
@@ -35,51 +35,66 @@ class
     
     for (auto point: trajectory){
         jump_to_mouse_position(point);
-        auto delay_ms = RandomIntFromRange(400,900);
+        auto delay_ms = RandomIntFromRange(low_budge_wait_micro_s,high_budge_wait_micro_s);
         Sleep_For_N_Microseconds(delay_ms);
     }
 ❱
-◀public:▶ void ☀click()❰
+◀public:▶ void ☀move_mouse(Point to, const int budge_wait_micro_s)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        Sleep_For_N_Microseconds(budge_wait_micro_s);
+    }
+❱
+◀public:▶ void ☀click(const int millisecond_hold)❰
+    //I think 700 is maybe a good default for millisecond hold
     xdo_mouse_down(xdo,0,1);
-    Sleep_For_N_Milliseconds(700);
+    Sleep_For_N_Milliseconds(millisecond_hold);
     xdo_mouse_up(xdo,0,1);
 ❱
 
 
 ◀public:▶ void ☀pixel_shake()
 ❰
+    const int speed = 1000;
     auto current = current_mouse_position();
     current.x+=10;
     current.y+=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x-=10;
     current.y-=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x+=10;
     current.y+=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x-=10;
     current.y-=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x+=10;
     current.y+=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x-=10;
     current.y-=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x+=10;
     current.y+=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
     current.x-=10;
     current.y-=10;
-    move_mouse(current);
+    move_mouse(current,speed);
     Sleep_For_N_Milliseconds(500);
 ❱
 
