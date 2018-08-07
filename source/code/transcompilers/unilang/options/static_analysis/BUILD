@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name="static_analysis_settings",deps=[
 "//code/transcompilers/unilang/options/static_analysis/sections:section_analysis",

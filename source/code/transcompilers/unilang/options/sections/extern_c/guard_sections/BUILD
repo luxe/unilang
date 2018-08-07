@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name="define_guard_settings", deps = [
 "//code/transcompilers/unilang/options/sections/extern_c/define_check:define_check_settings",

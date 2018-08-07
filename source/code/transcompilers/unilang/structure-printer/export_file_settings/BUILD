@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name = "export_file_settings", deps = [
 "//code/transcompilers/unilang/structure/sections/meta:code_type",

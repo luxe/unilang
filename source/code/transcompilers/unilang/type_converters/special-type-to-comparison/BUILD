@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name = "special_type_comparison_getter", deps = [
 "//code/transcompilers/unilang/type_converters/special-type-to-comparison/settings:special_comparison_settings",

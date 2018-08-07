@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name = "value_constraints_to_interval_constraints", deps = [
 "//code/transcompilers/unilang/constraint_exporter/interval_constraint:interval_constraint",

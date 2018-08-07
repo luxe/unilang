@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name = "enum_utility_function_options", deps =[
 "//code/transcompilers/unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",

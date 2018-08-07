@@ -1,4 +1,3 @@
-load("//bazel/cookbook:make_symlink.bzl", "make_symlink_tag")
 load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 load("//bazel/cookbook:bootstrap_hcp.bzl", "bootstrap_hcp")
 load("//bazel/cookbook:hcp.bzl", "hcp")

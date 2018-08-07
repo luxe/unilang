@@ -1,5 +1,6 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "hcp","cpp_object")
+load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
 hcp(name = "file_extension_lookup_table", deps = [
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
