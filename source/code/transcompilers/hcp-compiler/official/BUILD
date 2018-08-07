@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:core.bzl", "bootstrap_hcp")
+load("//bazel/cookbook:bootstrap_hcp.bzl", "bootstrap_hcp")
 
 bootstrap_hcp(
     name = "class_structure",
