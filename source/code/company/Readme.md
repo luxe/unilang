@@ -8,7 +8,7 @@ The world of UniLang is a beautiful place.
 The reality of life however, is not UniLang.  
 Nonetheless, I refuse to stoop down to the poor languages of our current industry.  
 I also realize its untenable to get an entire company or community to adopt my language.  
-Its not worth the social effort.  I also don't think I have skills to convince people right now.
+Its not worth the social effort.  I also don't think I have the skills to convince people right now.
 So its clear that I must join the two worlds together.  
 We write a mirrored version of a repository here in UniLang, and then there is s a transfer process
 to convert UniLang to the company/community's repository.  Clearly UniLang code will need to interact/reference non-UniLang
@@ -19,5 +19,5 @@ All other repositories written in any other language are insufficient for long t
 Simply put, they lack the transformation and reflective properties of a codebase written in UniLang, making them unworthwile
 I would go so far as to say that writing anything in c++ or python is immediate code debt, if it is not first generated through UniLang.  
 UniLang is a superset of everything.  It leverages its power by being able to adapt to any language, framework, config, etc.
-And it does it in a way that is not overwhelming.  if the languages of today are coined "high level languages", then UniLang is next
+And it does it in a way that is not overwhelming.  if the languages of today are coined "high level languages", then UniLang is the next
 evolutionary step in effective software engineering; essentially a "higher high level language".
