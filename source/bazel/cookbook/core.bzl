@@ -1,76 +1,7 @@
 load("//bazel/cookbook:make_symlink.bzl", "make_symlink_tag")
-
-
-def cpp_object(name,deps=[]):
-
-    #implicit file names
-    explicit_cpp_file = name + ".cpp"
-    explicit_hpp_file = name + ".hpp"
-
-    #ccompile object file
-    native.cc_library(
-        name = name,
-        srcs = [explicit_cpp_file],
-        hdrs = [explicit_hpp_file],
-        deps = deps,
-    )  
-
-#using the hcp compiler built from raw c++
-def bootstrap_hcp(name,deps=[]):
-
-    #the file names to use
-    hcp_target_name = name + "_hcp"
-    explicit_hcp_file = name + ".hcp"
-    explicit_cpp_file = name + ".cpp"
-    explicit_hpp_file = name + ".hpp"
-
-    #converting hcp to hpp/cpp
-    native.genrule(
-        name = hcp_target_name,
-        srcs = [explicit_hcp_file],
-        outs = [explicit_cpp_file,explicit_hpp_file],
-        tools = ["//code/transcompilers/hcp-compiler/bootstrap:hcp-compiler"],
-        cmd = """
-    $(location //code/transcompilers/hcp-compiler/bootstrap:hcp-compiler) $(SRCS) -o $(@D) --no-utility-functions
-                 """
-    )
-    
-    #compiling hpp/cpp
-    cpp_object(name,deps)
-
-#using the hcp compiler built from hcp files
-def hcp(name,deps=[]):
-
-    #the file names to use
-    hcp_target_name = name + "_hcp"
-    explicit_hcp_file = name + ".hcp"
-    explicit_cpp_file = name + ".cpp"
-    explicit_hpp_file = name + ".hpp"
-    
-    #converting hcp to hpp/cpp
-    native.genrule(
-        name = hcp_target_name,
-        srcs = [explicit_hcp_file],
-        outs = [explicit_cpp_file,explicit_hpp_file],
-        tools = ["//code/transcompilers/hcp-compiler/official:hcp-compiler"],
-        cmd = """
-    $(location //code/transcompilers/hcp-compiler/official:hcp-compiler) $(SRCS) -o $(@D) --no-utility-functions
-        """
-    )
-      
-    #compiling hpp/cpp
-    cpp_object(name,deps)
-    
-
-def derive_deps_from_hcp(name):
-    deps = []
-    # ???
-    # https://stackoverflow.com/questions/51165886/is-there-any-way-to-generate-the-deps-list-for-particular-rules
-    return deps
-
-def hcp_derive(name):
-    deps = derive_deps_from_hcp(name)
-    hcp(name,deps)
+load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook:bootstrap_hcp.bzl", "bootstrap_hcp")
+load("//bazel/cookbook:hcp.bzl", "hcp")
 
 def generate_unilang_token_files():
 
@@ -88,3 +19,17 @@ def generate_unilang_token_files():
     cpp_object(name="global_token_table",deps=["//code/transcompilers/unilang/tokens:generic_token",
       "//code/transcompilers/unilang/tokens:token_group",
       "//code/transcompilers/unilang/tokens:token_name"])
+      
+      
+
+#attempting to derive dependencies
+#this will probably need to be done as an external process before even running bazel
+def derive_deps_from_hcp(name):
+    deps = []
+    # ???
+    # https://stackoverflow.com/questions/51165886/is-there-any-way-to-generate-the-deps-list-for-particular-rules
+    return deps
+
+def hcp_derive(name):
+    deps = derive_deps_from_hcp(name)
+    hcp(name,deps)
