@@ -1,0 +1,23 @@
+TLDR:
+The directories here mirror the Desktop directories of non-unilang codebases on other machines.  
+We write our unilang code in these directories and they are transcompiled and transferred onto the remote machine's repo.  
+We do this because we want to keep the UniLang files in our codebase, but we don't want to keep the generated artifacts.
+
+Sales Pitch:
+The world of UniLang is a beautiful place.  
+The reality of life however, is not UniLang.  
+Nonetheless, I refuse to stoop down to the poor languages of our current industry.  
+I also realize its untenable to get an entire company or community to adopt my language.  
+Its not worth the social effort.  I also don't think I have skills to convince people right now.
+So its clear that I must join the two worlds together.  
+We write a mirrored version of a repository here in UniLang, and then there is s a transfer process
+to convert UniLang to the company/community's repository.  Clearly UniLang code will need to interact/reference non-UniLang
+code, and that can become a gray area / dead end for certain analysis, but its necessary as I'm injecting UniLang artifacts into other code bases.  
+
+Other Notes:
+All other repositories written in any other language are insufficient for long term software engineering.
+Simply put, they lack the transformation and reflective properties of a codebase written in UniLang, making them unworthwile
+I would go so far as to say that writing anything in c++ or python is immediate code debt, if it is not first generated through UniLang.  
+UniLang is a superset of everything.  It leverages its power by being able to adapt to any language, framework, config, etc.
+And it does it in a way that is not overwhelming.  if the languages of today are coined "high level languages", then UniLang is next
+evolutionary step in effective software engineering; essentially a "higher high level language".
