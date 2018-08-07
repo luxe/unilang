@@ -18,7 +18,14 @@ class
 	//std::cout << dest_path << std::endl;
 	
     Make_Sure_Pulse_Is_Running_If_It_Needs_To_Be(settings);
-	std::string command = create_lftp_command(settings.lftp_tool_to_use,settings.computer_user,action.password,settings.computer_name,action.from,action.to);
+    
+    std::string command;
+    if (action.directory){
+        command = create_lftp_command_for_directory(settings.lftp_tool_to_use,settings.computer_user,action.password,settings.computer_name,action.from,action.to);
+    }
+    else{
+	   command = create_lftp_command_for_single_file(settings.lftp_tool_to_use,settings.computer_user,action.password,settings.computer_name,action.from,action.to);
+    }
 
     //waiting for the program to fail works, but takes a long time to time out.  
     //hopefully this shouldn't happen since we ensure the client is running before hand.  
@@ -59,7 +66,7 @@ class
 ❱
 
 
-◀private: static▶ std::string ☀create_lftp_command(std::string const& tool, std::string const& user, std::string const& pass, std::string const& computer, std::string const& from, std::string const& to)❰
+◀private: static▶ std::string ☀create_lftp_command_for_single_file(std::string const& tool, std::string const& user, std::string const& pass, std::string const& computer, std::string const& from, std::string const& to)❰
 	std::string command;
     command += tool;
 	command += " ";
@@ -82,4 +89,28 @@ class
 	command += from;
 	command += "'";
 	return command;
+❱
+◀private: static▶ std::string ☀create_lftp_command_for_directory(std::string const& tool, std::string const& user, std::string const& pass, std::string const& computer, std::string const& from, std::string const& to)❰
+    std::string command;
+    command += tool;
+    command += " ";
+    command += "-c ";
+    command += "'";
+    command += "open -u ";
+    command += user;
+    command += ",";
+    command += pass;
+    command += " ";
+    command += "sftp://";
+    command += user;
+    command += "@";
+    command += computer;
+    command += "; ";
+    command += "mirror ";
+    command += " -R ";
+    command += to;
+    command += " ";
+    command += from;
+    command += "'";
+    return command;
 ❱

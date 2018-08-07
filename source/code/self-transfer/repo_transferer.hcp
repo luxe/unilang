@@ -1,10 +1,14 @@
 class
 ❪string❫
 ❪vector❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_transferer"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_action_getter"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 
 ⚞⚟
 
@@ -16,7 +20,29 @@ class
     auto transfer_settings = File_Transfer_Settings_Getter::Get();
     auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(transfer_settings);
     
-    std::vector<std::string> created_files;
-    created_files.emplace_back("source/bazel/cookbook/bootstrap_hcp.bzl");
-    File_Transferer::Transfer(specific_user_settings,created_files);
+    Move_File_Over(specific_user_settings,"source/bazel/cookbook/bootstrap_hcp.bzl");
+    Move_File_Over(specific_user_settings,"source/bazel/cookbook/BUILD");
+    Move_File_Over(specific_user_settings,"source/bazel/cookbook/cpp_object.bzl");
+    Move_File_Over(specific_user_settings,"source/bazel/cookbook/generate_unilang_token_files.bzl");
+    Move_File_Over(specific_user_settings,"source/bazel/cookbook/hcp.bzl");
+    //Move_File_Over(specific_user_settings,"source/bazel/cookbook/make_symlink.bzl");
+    Move_File_Over(specific_user_settings,"source/bazel/cookbook/other-experiment.bzl");
+    
+    Move_Directory_Over(specific_user_settings,"source/code");
+    
+❱
+
+◀public: static▶ void ☀Move_File_Over(Pulse_Settings settings, std::string const& file_path)❰
+
+    auto action = Pulse_Action_Getter::Get(settings,file_path);
+    action.to = string_replace_all(action.to,"everything","1");
+    action.directory = false;
+    Pulse_Transferer::Transfer(settings,action);
+❱
+◀public: static▶ void ☀Move_Directory_Over(Pulse_Settings settings, std::string const& file_path)❰
+
+    auto action = Pulse_Action_Getter::Get(settings,file_path);
+    action.to = string_replace_all(action.to,"everything","1");
+    action.directory = true;
+    Pulse_Transferer::Transfer(settings,action);
 ❱
