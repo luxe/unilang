@@ -1,7 +1,7 @@
 #pragma once
-#include <boost/graph/directed_graph.hpp>
-#include <boost/graph/graphviz.hpp>
-#include <boost/graph/breadth_first_search.hpp>
+#include "boost/graph/directed_graph.hpp"
+#include "boost/graph/graphviz.hpp"
+#include "boost/graph/breadth_first_search.hpp"
 #include <vector>
 #include <map>
 
