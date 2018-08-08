@@ -16,5 +16,6 @@ cc_library(
 "//code/utilities/types/strings/observers/converting:lib",
 "//code/utilities/types/strings/creators:lib",
 "//code/utilities/types/booleans:lib",
+"@com_github_boost_algorithm//:algorithm"
 ]
 )

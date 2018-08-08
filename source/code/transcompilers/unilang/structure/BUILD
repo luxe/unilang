@@ -27,4 +27,5 @@ hcp(name = "structure", deps = [
 "//code/transcompilers/unilang/structure/sections/data_member:data_member_section",
 "//code/transcompilers/unilang/structure/sections/enum:enum_section",
 "//code/transcompilers/unilang/structure/unit_tests:unit_tests",
+"@com_github_boost_variant//:variant",
 ])

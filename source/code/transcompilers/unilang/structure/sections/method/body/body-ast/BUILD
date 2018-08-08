@@ -9,4 +9,5 @@ hcp(name = "root_body_element", deps = [
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:regular_statement",
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:return_statement",
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:uncaught_statement",
+"@com_github_boost_variant//:variant",
 ])
