@@ -8,5 +8,6 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = ["//code/utilities/types/char:lib",
     "//code/utilities/types/wstrings/transformers/trimming:lib",
-    "@com_github_boost_algorithm//:algorithm",]
+    "@com_github_boost_algorithm//:algorithm",
+    "@com_github_boost_range//:range",]
 )

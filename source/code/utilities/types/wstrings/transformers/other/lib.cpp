@@ -6,8 +6,8 @@
 #include <map>
 #include <utility>
 #include <string>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/range/adaptor/reversed.hpp>
+#include "boost/algorithm/string/predicate.hpp"
+#include "boost/range/adaptor/reversed.hpp"
 
 //transforming string functions
 

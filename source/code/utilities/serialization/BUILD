@@ -6,4 +6,7 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
+    deps = [
+    "@com_github_boost_serialization//:serialization",
+    ]
 )

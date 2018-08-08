@@ -6,5 +6,8 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/types/char:lib", "//code/utilities/types/general:lib"]
+    deps = ["//code/utilities/types/char:lib",
+    "//code/utilities/types/general:lib",
+    "@com_github_boost_range//:range",
+    ]
 )

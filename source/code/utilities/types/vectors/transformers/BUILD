@@ -9,6 +9,7 @@ cc_library(
     deps = [
 "//code/utilities/types/strings/observers/char:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/types/strings/transformers/squeeze:lib"
+"//code/utilities/types/strings/transformers/squeeze:lib",
+"@com_github_boost_range//:range",
 ]
 )

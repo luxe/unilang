@@ -81,6 +81,7 @@ wchar_t Class_Structure_Creator::Set_Next_Char(std::wifstream & infile,Class_Str
         case Structure_State::IN_DATA_MEMBER:
         structure.Add_To_After_Headers_Portion(c);
         break;
+        default:;
     }
     
 

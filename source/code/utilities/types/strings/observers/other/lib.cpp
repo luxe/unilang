@@ -1,7 +1,7 @@
 #include "code/utilities/types/strings/observers/other/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string.hpp>
+#include "boost/algorithm/string/predicate.hpp"
+#include "boost/algorithm/string.hpp"
 #include <sstream>
 #include <cctype>
 #include <map>
