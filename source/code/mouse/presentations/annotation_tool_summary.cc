@@ -69,8 +69,8 @@ void show_first_message(std::string const& str){
     size.x = 600;
     size.y = 40;
     Point p;
-    p.x = 1000;
-    p.y = 400;
+    p.x = 900;
+    p.y = 900;
     create_presentation_text(size,p,str);
 }
 
