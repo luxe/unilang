@@ -2,6 +2,7 @@
 #include <string>
 #include <X11/Xcursor/Xcursor.h>
 
+//I think this prints the height of the mouse pointer icon
 int main(int argc, char** argv){
 
 	auto fp = fopen(argv[1], "r");

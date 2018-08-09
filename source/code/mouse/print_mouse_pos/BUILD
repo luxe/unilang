@@ -1,6 +1,6 @@
 
 cc_binary(
-    name = "mouse_manual_presentation",
+    name = "print_mouse_pos",
     srcs = ["main.cc"],
     deps = [
     "//code/utilities/mouse:mouse_controller",
