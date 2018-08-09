@@ -3,7 +3,7 @@ package(default_visibility = ["//visibility:public"])
 licenses(["notice"])
 
 cc_library(
-  name = "throw_exception",
+  name = "exception",
   includes = [
     "include/",
   ],
