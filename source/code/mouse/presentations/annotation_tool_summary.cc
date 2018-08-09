@@ -16,8 +16,8 @@ int main(int argc, char** argv){
     controller.presentation_click();
     
     //click "Name Box"
-    p.x = 726;
-    p.y = 568;
+    p.x = 809;
+    p.y = 573;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
@@ -28,8 +28,8 @@ int main(int argc, char** argv){
     
     
     //click add lane button multiple times
-    p.x = 809;
-    p.y = 573;
+    p.x = 735;
+    p.y = 598;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
