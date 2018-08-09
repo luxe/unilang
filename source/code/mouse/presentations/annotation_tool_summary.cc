@@ -29,19 +29,19 @@ int main(int argc, char** argv){
     p.y = 596;
     controller.move_mouse_at_presentation_speed(p);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(600);
     controller.presentation_click();
     
     //click marking button
