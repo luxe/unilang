@@ -30,21 +30,21 @@ int main(int argc, char** argv){
     p.x = 734;
     p.y = 596;
     controller.move_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(200);
-    controller.presentation_click();
     Sleep_For_N_Milliseconds(500);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
     
     //click marking button
@@ -91,21 +91,55 @@ int main(int argc, char** argv){
     //slide left
     p.x = 1034;
     p.y = 994;
-    controller.drag_mouse_at_presentation_speed(p);
+    controller.drag_mouse(p,6000);
     Sleep_For_N_Milliseconds(200);
     
     //slide right
     p.x = 1112;
     p.y = 994;
-    controller.drag_mouse_at_presentation_speed(p);
+    controller.drag_mouse(p,6000);
     Sleep_For_N_Milliseconds(200);
     
     //close algorithm tab
     p.x = 1112;
     p.y = 771;
-    controller.drag_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(200);
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //click "Settings Tab"
+    p.x = 753;
+    p.y = 531;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //Enable "Event Markings"
+    p.x = 1162;
+    p.y = 641;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //Refocus Mark Route Window
+    p.x = 1058;
+    p.y = 719;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //Open Marker Placement
+    p.x = 1058;
+    p.y = 793;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    
+    
 }
