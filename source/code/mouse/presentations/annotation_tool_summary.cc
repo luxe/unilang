@@ -132,7 +132,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    remove_all_presentation_text();
+    //remove_all_presentation_text();
     show_first_message("Apply Annotation Algos");
     
     //toggle start marking
@@ -333,28 +333,28 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     
     //show The Event View
-    p.x = 1161;
-    p.y = 758;
+    p.x = 1123;
+    p.y = 781;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     Sleep_For_N_Milliseconds(200);
     
     //open the Time
-    p.x = 1206;
-    p.y = 798;
+    p.x = 1179;
+    p.y = 804;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     Sleep_For_N_Milliseconds(200);
     
     //make it faster
-    p.x = 1191;
+    p.x = 1154;
     p.y = 825;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     
-    p.x = 1150;
+    p.x = 1112;
     p.y = 825;
     controller.drag_mouse(p,6000);
     
