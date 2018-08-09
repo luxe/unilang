@@ -27,6 +27,7 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     command += "Arial Black-24";
     command += "\"";
     command += " &";
+    std::cout << command << std::endl;
     
     execute_quietly(command);
 }
