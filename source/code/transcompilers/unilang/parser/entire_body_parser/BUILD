@@ -17,6 +17,7 @@ hcp(name = "nested_body_tokens", deps = [
 "//code/transcompilers/unilang/parser/entire_body_parser:forward_decls",
 "//code/transcompilers/unilang/parser/body_parser:body_token_value",
 "@com_github_boost_variant//:variant",
+"@com_github_boost_container//:container",
 ])
 
 hcp(name = "body_tokenizer", deps = [
