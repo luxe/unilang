@@ -13,5 +13,7 @@ cc_library(
   srcs = [
   ],
   deps = [
+    "@com_github_boost_property_map//:property_map",
+    "@com_github_boost_lexical_cast//:lexical_cast",
   ]
 )
