@@ -333,8 +333,8 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     
     //show The Event View
-    p.x = 1123;
-    p.y = 781;
+    p.x = 1160;
+    p.y = 777;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
@@ -356,7 +356,7 @@ int main(int argc, char** argv){
     
     p.x = 1112;
     p.y = 825;
-    controller.drag_mouse(p,6000);
+    controller.drag_mouse(p,9000);
     
     
     
