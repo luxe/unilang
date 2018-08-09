@@ -13,5 +13,6 @@ cc_library(
   srcs = [
   ],
   deps = [
+    "@com_github_boost_core//:core",
   ],
 )
