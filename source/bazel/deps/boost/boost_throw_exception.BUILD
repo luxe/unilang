@@ -16,6 +16,5 @@ cc_library(
     "@com_github_boost_type_traits//:type_traits",
     "@com_github_boost_core//:core",
     "@com_github_boost_config//:config",
-    "@com_github_boost_lexical_cast//:lexical_cast",
   ]
 )
