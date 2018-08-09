@@ -17,7 +17,7 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     command += "-g ";
     command += std::to_string(size.x);
     command += "x";
-    command += std::to_strng(size.y);
+    command += std::to_string(size.y);
     command += "+";
     command += std::to_string(p.x);
     command += "+";
