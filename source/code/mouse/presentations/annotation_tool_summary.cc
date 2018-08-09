@@ -4,6 +4,20 @@
 #include "code/utilities/shell/lib.hpp"
 
 
+std::string build_geo_flag(Point size, Point p){
+    std::string command;
+    if (size.x >= 0){
+        command += std::to_string(size.x);
+    }
+    command += "x";
+    command += std::to_string(size.y);
+    command += "+";
+    command += std::to_string(p.x);
+    command += "+";
+    command += std::to_string(p.y);
+    return command;
+}
+
 void create_transparent_presentation_text(Point size, Point p, std::string const& str){
     std::string command;
     command += "echo \"";
@@ -46,20 +60,6 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     std::cout << command << std::endl;
     
     system(command);
-}
-
-std::string build_geo_flag(Point size, Point p){
-    std::string command;
-    if (size.x >= 0){
-        command += std::to_string(size.x);
-    }
-    command += "x";
-    command += std::to_string(size.y);
-    command += "+";
-    command += std::to_string(p.x);
-    command += "+";
-    command += std::to_string(p.y);
-    return command;
 }
 
 void remove_all_presentation_text(){
