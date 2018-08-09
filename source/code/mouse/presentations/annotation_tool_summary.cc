@@ -170,7 +170,7 @@ int main(int argc, char** argv){
     
     //click label box
     p.x = 1018;
-    p.y = 974;
+    p.y = 880;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
@@ -178,6 +178,44 @@ int main(int argc, char** argv){
     
     // type into "Label Box"
     controller.type_something_at_presentation_speed("regenerate");
+    
+    //click "Apply"
+    p.x = 1088;
+    p.y = 880;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //switch to "Annotating Over a Route"
+    p.x = 946;
+    p.y = 746;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //get to end marker
+    p.x = 1061;
+    p.y = 812;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    
+    //extend end marker
+    p.x = 1271;
+    p.y = 812;
+    controller.drag_mouse(p,6000);
+    
+    //got to start marker
+    p.x = 977;
+    p.y = 812;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    
+    //extend start marker
+    p.x = 1041;
+    p.y = 812;
+    controller.drag_mouse(p,6000);
     
     
 }
