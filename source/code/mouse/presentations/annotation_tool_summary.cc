@@ -38,10 +38,10 @@ void remove_all_presentation_text(){
 
 void show_first_message(std::string const& str){
     Point size;
-    size.x = 200;
+    size.x = 400;
     size.y = 40;
     Point p;
-    p.x = 1500;
+    p.x = 1200;
     p.y = 700;
     create_presentation_text(size,p,str);
 }
