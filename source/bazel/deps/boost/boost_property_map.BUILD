@@ -3,7 +3,7 @@ package(default_visibility = ["//visibility:public"])
 licenses(["notice"])
 
 cc_library(
-  name = "property_tree",
+  name = "property_map",
   includes = [
     "include/",
   ],
