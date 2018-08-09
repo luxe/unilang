@@ -59,8 +59,8 @@ int main(int argc, char** argv){
     p.y = 472;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
-    show_first_message("Load/Create Routes");
     controller.presentation_click();
+    show_first_message("Load/Create Routes");
     
     //click "Name Box"
     p.x = 809;
@@ -100,9 +100,9 @@ int main(int argc, char** argv){
     p.y = 574;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
     remove_all_presentation_text();
     show_first_message("Apply Annotation Algos");
-    controller.presentation_click();
     
     //toggle start marking
     p.x = 860;
