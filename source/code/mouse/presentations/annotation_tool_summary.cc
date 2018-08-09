@@ -29,11 +29,11 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     command += " &";
     std::cout << command << std::endl;
     
-    execute_quietly(command);
+    system(command);
 }
 
 void remove_all_presentation_text(){
-    execute_quietly("pkill lemonbar");
+    system("pkill lemonbar");
 }
 
 void show_first_message(std::string const& str){
