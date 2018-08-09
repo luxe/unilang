@@ -22,4 +22,31 @@ int main(int argc, char** argv){
     
     // type into "Name Box"
     controller.type_something_at_presentation_speed("loopy road");
+    
+    
+    //click add lane button multiple times
+    p.x = 734;
+    p.y = 596;
+    controller.move_mouse_at_presentation_speed(p);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(400);
+    controller.presentation_click();
+    
+    //click marking button
+    p.x = 892;
+    p.y = 574;
+    controller.move_mouse_at_presentation_speed(p);
+    controller.presentation_click();
 }
