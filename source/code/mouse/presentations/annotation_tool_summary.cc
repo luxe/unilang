@@ -24,7 +24,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     
     // type into "Name Box"
-    controller.type_something_at_presentation_speed("loopy road");
+    controller.type_something_at_presentation_speed("test route");
     
     
     //click add lane button multiple times
@@ -35,17 +35,17 @@ int main(int argc, char** argv){
     controller.presentation_click();
     Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(300);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(290);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(280);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(270);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(260);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(250);
     controller.presentation_click();
     
     //click marking button
@@ -163,7 +163,7 @@ int main(int argc, char** argv){
     controller.drag_mouse(p,6000);
     
     //slide left
-    p.x = 990;
+    p.x = 1000;
     p.y = 858;
     controller.drag_mouse(p,6000);
     Sleep_For_N_Milliseconds(200);
@@ -202,7 +202,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     
     //extend end marker
-    p.x = 1271;
+    p.x = 1080;
     p.y = 812;
     controller.drag_mouse(p,6000);
     
@@ -216,6 +216,69 @@ int main(int argc, char** argv){
     p.x = 1041;
     p.y = 812;
     controller.drag_mouse(p,6000);
+    
+    //click label box
+    p.x = 993;
+    p.y = 832;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    // type into "Label Box"
+    controller.type_something_at_presentation_speed("hotspot");
+    
+    //click "Apply"
+    p.x = 1092;
+    p.y = 832;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //close the mark route window
+    p.x = 1352;
+    p.y = 720;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //open Event View
+    p.x = 1279;
+    p.y = 753;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //show The Event View
+    p.x = 1161;
+    p.y = 758;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //open the Time
+    p.x = 1206;
+    p.y = 798;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //make it faster
+    p.x = 1191;
+    p.y = 825;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    
+    p.x = 1150;
+    p.y = 825;
+    controller.drag_mouse(p,6000);
+    
+    
     
     
 }
