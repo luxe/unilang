@@ -279,7 +279,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     
     //extend end marker
-    p.x = 1080;
+    p.x = 1150;
     p.y = 812;
     controller.drag_mouse(p,6000);
     
