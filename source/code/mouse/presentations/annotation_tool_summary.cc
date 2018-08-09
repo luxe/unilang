@@ -1,13 +1,52 @@
 #include <iostream>
 #include <string>
 #include "code/utilities/mouse/mouse_controller.hpp"
+#include "code/utilities/shell/lib.hpp"
 
 
+void create_presentation_text(Point size, Point p, std::string const& str){
+    std::string command;
+    command += "echo \"";
+    command += str;
+    command += "\"";
+    command += " | ";
+    command += "lemonbar ";
+    command += "-p ";
+    command += "-F#FF000000 ";
+    command += "-B#00000000 ";
+    command += "-g ";
+    command += std::to_string(size.x);
+    command += "x";
+    command += std::to_strng(size.y);
+    command += "+";
+    command += std::to_string(p.x);
+    command += "+";
+    command += std::to_strng(p.y);
+    command += "-f ";
+    command += "\"";
+    command += "Arial Black-24";
+    command += "\"";
+    command += " &";
+    
+    execute_quietly(command);
+}
 
+void remove_all_presentation_text(){
+    execute_quietly("pkill lemonbar");
+}
+
+void show_first_message(std::string const& str){
+    Point size;
+    size.x = 200;
+    size.y = 40;
+    Point p;
+    p.x = 1500;
+    p.y = 700;
+    create_presentation_text(size,p,str);
+}
 
 //create bar at the top
 //echo "hello world" | ./lemonbar -p -F#FFFFFFFF -B#FF222222
-
 int main(int argc, char** argv){
 
     Sleep_For_N_Milliseconds(5000);
@@ -19,6 +58,7 @@ int main(int argc, char** argv){
     p.y = 472;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
+    show_first_message("Load/Create Routes");
     controller.presentation_click();
     
     //click "Name Box"
@@ -59,6 +99,8 @@ int main(int argc, char** argv){
     p.y = 574;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
+    remove_all_presentation_text();
+    show_first_message("Apply Annotation Algos");
     controller.presentation_click();
     
     //toggle start marking
