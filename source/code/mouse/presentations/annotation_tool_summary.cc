@@ -15,13 +15,7 @@ void create_transparent_presentation_text(Point size, Point p, std::string const
     command += "-F#FF000000 ";
     command += "-B#00000000 ";
     command += "-g ";
-    command += std::to_string(size.x);
-    command += "x";
-    command += std::to_string(size.y);
-    command += "+";
-    command += std::to_string(p.x);
-    command += "+";
-    command += std::to_string(p.y);
+    command += build_geo_flag(size,p);
     command += " -f ";
     command += "\"";
     command += "Arial Black-24";
@@ -40,16 +34,10 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     command += " | ";
     command += "lemonbar ";
     command += "-p ";
-    command += "-F#00000000 ";
+    command += "-F#FFFFFFFF ";
     command += "-B#FF000000 ";
     command += "-g ";
-    command += std::to_string(size.x);
-    command += "x";
-    command += std::to_string(size.y);
-    command += "+";
-    command += std::to_string(p.x);
-    command += "+";
-    command += std::to_string(p.y);
+    command += build_geo_flag(size,p);
     command += " -f ";
     command += "\"";
     command += "Arial Black-24";
@@ -60,17 +48,32 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     system(command);
 }
 
+std::string build_geo_flag(Point size, Point p){
+    std::string command;
+    if (size.x >= 0){
+        command += std::to_string(size.x);
+    }
+    command += "x";
+    command += std::to_string(size.y);
+    command += "+";
+    command += std::to_string(p.x);
+    command += "+";
+    command += std::to_string(p.y);
+    return command;
+}
+
 void remove_all_presentation_text(){
     system("pkill lemonbar");
 }
 
 void show_first_message(std::string const& str){
     Point size;
-    size.x = 600;
+    //size.x = 600;
+    size.x = -1;
     size.y = 40;
     Point p;
-    p.x = 900;
-    p.y = 900;
+    p.x = 1200;
+    p.y = 459;
     create_presentation_text(size,p,str);
 }
 
