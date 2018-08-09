@@ -15,5 +15,6 @@ cc_library(
   deps = [
     "@com_github_boost_config//:config",
     "@com_github_boost_intrusive//:intrusive",
+    "@com_github_boost_type_traits//:type_traits",
   ]
 )
