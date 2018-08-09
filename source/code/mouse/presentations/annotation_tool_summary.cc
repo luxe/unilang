@@ -21,16 +21,17 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
     
     // type into "Name Box"
     controller.type_something_at_presentation_speed("loopy road");
     
     
     //click add lane button multiple times
-    p.x = 734;
-    p.y = 596;
+    p.x = 809;
+    p.y = 573;
     controller.move_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(500);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     Sleep_For_N_Milliseconds(400);
     controller.presentation_click();
@@ -140,6 +141,43 @@ int main(int argc, char** argv){
     controller.presentation_click();
     Sleep_For_N_Milliseconds(200);
     
+    //move to marker placement slider
+    p.x = 970;
+    p.y = 858;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    
+    //slide right
+    p.x = 1070;
+    p.y = 858;
+    controller.drag_mouse(p,6000);
+    
+    //slide left
+    p.x = 970;
+    p.y = 858;
+    controller.drag_mouse(p,6000);
+    
+    //slide right
+    p.x = 1070;
+    p.y = 858;
+    controller.drag_mouse(p,6000);
+    
+    //slide left
+    p.x = 990;
+    p.y = 858;
+    controller.drag_mouse(p,6000);
+    Sleep_For_N_Milliseconds(200);
+    
+    //click label box
+    p.x = 1018;
+    p.y = 974;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    // type into "Label Box"
+    controller.type_something_at_presentation_speed("regenerate");
     
     
 }
