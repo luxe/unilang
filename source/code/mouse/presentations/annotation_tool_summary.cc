@@ -203,6 +203,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
+    show_first_message("View/Adjust Annotation Points");
     Sleep_For_N_Milliseconds(200);
     
     //Refocus Mark Route Window
@@ -273,6 +274,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
+    show_first_message("Create Event Regions");
     Sleep_For_N_Milliseconds(200);
     
     //get to end marker
@@ -330,6 +332,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
+    show_first_message("Event Processing On Cycles");
     Sleep_For_N_Milliseconds(200);
     
     //show The Event View
@@ -346,6 +349,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
+    show_first_message("Simulate Speed/Lag");
     Sleep_For_N_Milliseconds(200);
     
     //make it faster
