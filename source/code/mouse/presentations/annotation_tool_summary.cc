@@ -66,11 +66,11 @@ void remove_all_presentation_text(){
 
 void show_first_message(std::string const& str){
     Point size;
-    size.x = 400;
+    size.x = 600;
     size.y = 40;
     Point p;
-    p.x = 1200;
-    p.y = 700;
+    p.x = 1000;
+    p.y = 400;
     create_presentation_text(size,p,str);
 }
 
