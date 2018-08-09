@@ -2,6 +2,12 @@
 #include <string>
 #include "code/utilities/mouse/mouse_controller.hpp"
 
+
+
+
+//create bar at the top
+//echo "hello world" | ./lemonbar -p -F#FFFFFFFF -B#FF222222
+
 int main(int argc, char** argv){
 
     Sleep_For_N_Milliseconds(5000);
