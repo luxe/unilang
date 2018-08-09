@@ -24,7 +24,7 @@ class
     xdo_free(xdo);
 ❱
 
-//functionality
+//moving the mouse
 ◀public:▶ void ☀move_mouse_dynamically_random(Point to, const int low_budge_wait_micro_s, const int high_budge_wait_micro_s)
 ❰
     //where we are starting from
@@ -52,13 +52,41 @@ class
         Sleep_For_N_Microseconds(budge_wait_micro_s);
     }
 ❱
-◀public:▶ void ☀click(const int millisecond_hold)❰
-    //I think 700 is maybe a good default for millisecond hold
-    xdo_mouse_down(xdo,0,1);
-    Sleep_For_N_Milliseconds(millisecond_hold);
-    xdo_mouse_up(xdo,0,1);
+◀public:▶ void ☀move_mouse_at_presentation_speed(Point to)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        Sleep_For_N_Microseconds(3100);
+    }
 ❱
 
+◀public:▶ void ☀move_mouse_by_journey_time(Point to, const int journey_time_ms)
+❰
+    //where we are starting from
+    auto from = current_mouse_position();
+    
+    //build a mouse trajectory
+    auto trajectory = build_efficient_trajectory(from,to);
+    
+    int time_per_budge_micro_s = (journey_time_ms / trajectory.size()) * 1000;
+    
+    
+    for (auto point: trajectory){
+        jump_to_mouse_position(point);
+        Sleep_For_N_Microseconds(time_per_budge_micro_s);
+    }
+❱
+
+◀public:▶ void ☀move_mouse_immediate(Point to)
+❰
+    jump_to_mouse_position(to);
+❱
 
 ◀public:▶ void ☀pixel_shake()
 ❰
@@ -98,7 +126,26 @@ class
     Sleep_For_N_Milliseconds(500);
 ❱
 
+//clicking
+◀public:▶ void ☀click(const int millisecond_hold)❰
+    xdo_mouse_down(xdo,0,1);
+    Sleep_For_N_Milliseconds(millisecond_hold);
+    xdo_mouse_up(xdo,0,1);
+❱
 
+◀public:▶ void ☀standard_click()❰
+    xdo_mouse_down(xdo,0,1);
+    Sleep_For_N_Milliseconds(700);
+    xdo_mouse_up(xdo,0,1);
+❱
+
+◀public:▶ void ☀presentation_click()❰
+    xdo_mouse_down(xdo,0,1);
+    Sleep_For_N_Milliseconds(700);
+    xdo_mouse_up(xdo,0,1);
+❱
+
+//implementation
 ◀private:▶ std::vector<Point> ☀build_efficient_trajectory(Point from, const Point & to)
 ❰
     //find out the distance between the coordinates
