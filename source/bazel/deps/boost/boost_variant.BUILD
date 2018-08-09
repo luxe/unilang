@@ -16,5 +16,6 @@ cc_library(
     "@com_github_boost_type_index//:type_index",
     "@com_github_boost_type_traits//:type_traits",
     "@com_github_boost_config//:config",
+    "@com_github_boost_move//:move",
   ]
 )
