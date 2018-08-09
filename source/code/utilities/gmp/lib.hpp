@@ -1,6 +1,7 @@
 #pragma once
-#include <gmpxx.h>
 #include <vector>
+#include <string>
+#include <gmpxx.h>
 
 //gmp functions
 

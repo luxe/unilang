@@ -1,6 +1,7 @@
-#include <gmpxx.h>
 #include "code/utilities/gmp/lib.hpp"
+#include <vector>
 #include <sstream>
+#include <iostream>
 
 //gmp function wrapper
 
