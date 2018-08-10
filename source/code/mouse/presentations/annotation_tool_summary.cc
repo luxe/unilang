@@ -407,9 +407,9 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     
-    p.x = 1112;
+    p.x = 1155;
     p.y = 825;
-    controller.drag_mouse(p,12000);
+    controller.drag_mouse(p,20000);
     
     
     
