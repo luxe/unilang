@@ -40,7 +40,7 @@ void create_transparent_presentation_text(Point size, Point p, std::string const
     system(command);
 }
 
-void create_presentation_text(Point size, Point p, std::string const& str){
+void create_presentation_text(Point size, Point p, std::string const& str, std::string const& bg_color, std::string const& fg_color){
     std::string command;
     command += "echo \"";
     command += str;
@@ -48,8 +48,12 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     command += " | ";
     command += "lemonbar ";
     command += "-p ";
-    command += "-F#FFFFFFFF ";
-    command += "-B#FF000000 ";
+    command += "-F#FF";
+    command += fg_color;
+    command += " ";
+    command += "-B#FF";
+    command += bg_color;
+    command += " ";
     command += "-g ";
     command += build_geo_flag(size,p);
     command += " -f ";
@@ -62,11 +66,56 @@ void create_presentation_text(Point size, Point p, std::string const& str){
     system(command);
 }
 
+std::string lemon_light_green(){
+    return "C5E8A2";
+}
+std::string lemon_light_blue(){
+    return "A2E8E6";
+}
+std::string lemon_light_pink(){
+    return "E8A2C8";
+}
+std::string lemon_light_orange(){
+    return "E8B9A2";
+}
+std::string lemon_light_yellow(){
+    return "E2E8A2";
+}
+std::string lemon_light_gray(){
+    return "B6BCC1";
+}
+
+std::string lemon_dark_green(){
+    return "3a6d36";
+}
+std::string lemon_dark_blue(){
+    return "36586d";
+}
+std::string lemon_dark_pink(){
+    return "6d3658";
+}
+std::string lemon_dark_orange(){
+    return "6d5936";
+}
+std::string lemon_dark_yellow(){
+    return "6d6836";
+}
+std::string lemon_dark_gray(){
+    return "56554b";
+}
+
+std::string lemon_white(){
+    return "000000";
+}
+std::string lemon_black(){
+    return "FFFFFF";
+}
+
 void remove_all_presentation_text(){
     system("pkill lemonbar");
 }
 
-void show_first_message(std::string const& str){
+void show_first_message(std::string const& str, std::string const& bg_color, std::string const& fg_color){
     Point size;
     //size.x = 600;
     size.x = -1;
@@ -74,7 +123,7 @@ void show_first_message(std::string const& str){
     Point p;
     p.x = 1200;
     p.y = 459;
-    create_presentation_text(size,p,str);
+    create_presentation_text(size,p,str,bg_color,fg_color);
 }
 
 //create bar at the top
@@ -91,7 +140,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Load/Create Routes");
+    show_first_message("Load/Create Routes",lemon_black(),lemon_white());
     
     //click "Name Box"
     p.x = 809;
@@ -133,7 +182,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     //remove_all_presentation_text();
-    show_first_message("Apply Annotation Algos");
+    show_first_message("Apply Annotation Algos",lemon_dark_pink(),lemon_white());
     
     //toggle start marking
     p.x = 860;
@@ -203,7 +252,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("View/Adjust Annotation Points");
+    show_first_message("View/Adjust Annotation Points",lemon_dark_blue(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //Refocus Mark Route Window
@@ -274,7 +323,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Create Event Regions");
+    show_first_message("Create Event Regions",lemon_dark_orange(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //get to end marker
@@ -332,7 +381,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Event Processing On Cycles");
+    show_first_message("Event Processing On Cycles",lemon_dark_green(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //show The Event View
@@ -341,7 +390,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(200);
+    Sleep_For_N_Milliseconds(900);
     
     //open the Time
     p.x = 1179;
@@ -349,7 +398,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Simulate Speed/Lag");
+    show_first_message("Simulate Speed/Lag",lemon_dark_yellow(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //make it faster
@@ -360,7 +409,7 @@ int main(int argc, char** argv){
     
     p.x = 1112;
     p.y = 825;
-    controller.drag_mouse(p,9000);
+    controller.drag_mouse(p,12000);
     
     
     
