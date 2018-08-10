@@ -213,9 +213,8 @@ int main(int argc, char** argv){
     p.x = 892;
     p.y = 574;
     controller.move_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(200);
+    Sleep_For_N_Milliseconds(250);
     controller.presentation_click();
-    //remove_all_presentation_text();
     show_first_message("Apply Annotation Algos",lemon_dark_pink(),lemon_white());
     
     //toggle start marking
