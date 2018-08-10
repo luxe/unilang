@@ -140,7 +140,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Load/Create Routes",lemon_black(),lemon_white());
+    show_first_message("Load/Create Routes",lemon_white(),lemon_black());
     
     //click "Name Box"
     p.x = 809;
@@ -174,6 +174,40 @@ int main(int argc, char** argv){
     controller.presentation_click();
     Sleep_For_N_Milliseconds(250);
     controller.presentation_click();
+    
+    //adjust submaps
+    p.x = 691;
+    p.y = 633;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    controller.type_something_at_presentation_speed("1");
+    
+    p.x = 691;
+    p.y = 724;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    controller.type_something_at_presentation_speed("1");
+    
+    p.x = 691;
+    p.y = 771;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    controller.type_something_at_presentation_speed("1");
+    
+    //set a lane length
+    p.x = 749;
+    p.y = 750;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    
+    //slide right
+    p.x = 794;
+    p.y = 750;
+    controller.drag_mouse(p,6000);
+    Sleep_For_N_Milliseconds(200);
     
     //click marking button
     p.x = 892;
@@ -406,10 +440,18 @@ int main(int argc, char** argv){
     p.y = 825;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
-    
     p.x = 1155;
     p.y = 825;
     controller.drag_mouse(p,20000);
+    
+    //Open log
+    p.x = 759;
+    p.y = 557;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    show_first_message("Observe Events",lemon_dark_pink(),lemon_white());
+    Sleep_For_N_Milliseconds(200);
     
     
     
