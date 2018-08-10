@@ -184,14 +184,14 @@ int main(int argc, char** argv){
     controller.type_something_at_presentation_speed("1");
     
     p.x = 691;
-    p.y = 724;
+    p.y = 751;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     controller.type_something_at_presentation_speed("1");
     
     p.x = 691;
-    p.y = 771;
+    p.y = 774;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
@@ -444,8 +444,8 @@ int main(int argc, char** argv){
     controller.drag_mouse(p,20000);
     
     //Open log
-    p.x = 759;
-    p.y = 557;
+    p.x = 800;
+    p.y = 529;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
