@@ -429,13 +429,38 @@ int main(int argc, char** argv){
     controller.presentation_click();
     Sleep_For_N_Milliseconds(1500);
     
+    //open Location
+    p.x = 1240;
+    p.y = 731;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    show_first_message("Simulate Speed/Lag",lemon_dark_green(),lemon_white());
+    Sleep_For_N_Milliseconds(200);
+    
+    //show speed
+    p.x = 1160;
+    p.y = 892;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    //close location
+    p.x = 1240;
+    p.y = 731;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    Sleep_For_N_Milliseconds(200);
+    
+    
     //open the Time
     p.x = 1179;
     p.y = 804;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Simulate Speed/Lag",lemon_dark_green(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //make it faster
