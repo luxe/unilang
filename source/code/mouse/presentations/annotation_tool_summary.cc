@@ -427,7 +427,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(1500);
+    Sleep_For_N_Milliseconds(1000);
     
     //open Location
     p.x = 1240;
@@ -470,7 +470,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     p.x = 1145;
     p.y = 823;
-    controller.drag_mouse(p,80000);
+    controller.drag_mouse(p,30000);
     Sleep_For_N_Milliseconds(2500);
     
     //Open log
