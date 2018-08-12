@@ -452,7 +452,7 @@ int main(int argc, char** argv){
     p.x = 800;
     p.y = 529;
     controller.move_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(300);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     show_first_message("Observe Events",lemon_dark_pink(),lemon_white());
     Sleep_For_N_Milliseconds(3000);
