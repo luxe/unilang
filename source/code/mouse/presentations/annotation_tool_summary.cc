@@ -85,12 +85,6 @@ std::string lemon_light_gray(){
     return "B6BCC1";
 }
 
-std::string lemon_dark_green(){
-    return "3a6d36";
-}
-std::string lemon_dark_blue(){
-    return "36586d";
-}
 std::string lemon_dark_pink(){
     return "6d3658";
 }
@@ -99,6 +93,15 @@ std::string lemon_dark_orange(){
 }
 std::string lemon_dark_yellow(){
     return "6d6836";
+}
+std::string lemon_dark_green(){
+    return "3a6d36";
+}
+std::string lemon_dark_blue(){
+    return "36586d";
+}
+std::string lemon_dark_purple(){
+    return "542487";
 }
 std::string lemon_dark_gray(){
     return "56554b";
@@ -140,7 +143,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Load/Create Routes",lemon_white(),lemon_black());
+    show_first_message("Load/Create Routes",lemon_dark_pink(),lemon_black());
     
     //click "Name Box"
     p.x = 809;
@@ -215,7 +218,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(250);
     controller.presentation_click();
-    show_first_message("Apply Annotation Algos",lemon_dark_pink(),lemon_white());
+    show_first_message("Apply Annotation Algos",lemon_dark_orange(),lemon_white());
     
     //toggle start marking
     p.x = 860;
@@ -285,7 +288,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("View/Adjust Annotation Points",lemon_dark_blue(),lemon_white());
+    show_first_message("View/Adjust Annotation Points",lemon_dark_yellow(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //Refocus Mark Route Window
@@ -356,7 +359,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Create Event Regions",lemon_dark_orange(),lemon_white());
+    show_first_message("Create Event Regions",lemon_dark_green(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //get to end marker
@@ -414,7 +417,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Event Processing On Cycles",lemon_dark_green(),lemon_white());
+    show_first_message("Event Processing On Cycles",lemon_dark_blue(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //show The Event View
@@ -431,7 +434,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Simulate Speed/Lag",lemon_dark_yellow(),lemon_white());
+    show_first_message("Simulate Speed/Lag",lemon_dark_purple(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //make it faster
@@ -459,7 +462,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Reactive Profiling",lemon_dark_blue(),lemon_white());
+    show_first_message("Reactive Profiling",lemon_dark_orange(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
     //increase history
