@@ -133,7 +133,7 @@ void show_first_message(std::string const& str, std::string const& bg_color, std
 //echo "hello world" | ./lemonbar -p -F#FFFFFFFF -B#FF222222
 int main(int argc, char** argv){
 
-    show_first_message("Local Map Sim",lemon_black(),lemon_black());
+    show_first_message("Local Map Sim",lemon_white(),lemon_black());
     Sleep_For_N_Milliseconds(5000);
     Mouse_Controller controller;
     
@@ -144,7 +144,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    show_first_message("Load/Create Routes",lemon_dark_green(),lemon_black());
+    show_first_message("Load/Create Routes",lemon_dark_green(),lemon_white());
     
     //click "Name Box"
     p.x = 809;
@@ -452,7 +452,7 @@ int main(int argc, char** argv){
     p.x = 800;
     p.y = 529;
     controller.move_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(200);
+    Sleep_For_N_Milliseconds(250);
     controller.presentation_click();
     show_first_message("Observe Events",lemon_dark_pink(),lemon_white());
     Sleep_For_N_Milliseconds(3000);
@@ -465,7 +465,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     show_first_message("Reactive Profiling",lemon_dark_orange(),lemon_white());
-    Sleep_For_N_Milliseconds(200);
+    Sleep_For_N_Milliseconds(1000);
     
     //increase history
     p.x = 773;
@@ -474,7 +474,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     p.x = 872;
     p.y = 735;
-    controller.drag_mouse(p,20000);
+    controller.drag_mouse(p,10000);
     
     //auto scale
     p.x = 1278;
@@ -488,6 +488,6 @@ int main(int argc, char** argv){
     p.y = 809;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
-    show_first_message("and much much more...",lemon_black(),lemon_white());
+    show_first_message("and much much more...",lemon_white(),lemon_black());
     
 }
