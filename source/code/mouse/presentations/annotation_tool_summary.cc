@@ -423,7 +423,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(900);
+    Sleep_For_N_Milliseconds(2500);
     
     //open the Time
     p.x = 1179;
@@ -441,7 +441,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     p.x = 1155;
     p.y = 825;
-    controller.drag_mouse(p,20000);
+    controller.drag_mouse(p,40000);
     
     //Open log
     p.x = 800;
@@ -469,7 +469,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     p.x = 872;
     p.y = 735;
-    controller.drag_mouse(p,20000);
+    controller.drag_mouse(p,40000);
     
     //auto scale
     p.x = 1278;
