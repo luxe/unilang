@@ -450,9 +450,37 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     show_first_message("Observe Events",lemon_dark_pink(),lemon_white());
+    Sleep_For_N_Milliseconds(1200);
+    
+    
+    //Open Profiler
+    p.x = 854;
+    p.y = 528;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
+    show_first_message("Reactive Profiling",lemon_dark_blue(),lemon_white());
     Sleep_For_N_Milliseconds(200);
     
+    //increase history
+    p.x = 773;
+    p.y = 735;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    p.x = 872;
+    p.y = 735;
+    controller.drag_mouse(p,20000);
     
+    //auto scale
+    p.x = 1278;
+    p.y = 734;
+    controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    controller.presentation_click();
     
+    //hover to see numbers
+    p.x = 1020;
+    p.y = 809;
+    controller.move_mouse_at_presentation_speed(p);
     
 }
