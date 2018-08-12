@@ -133,6 +133,7 @@ void show_first_message(std::string const& str, std::string const& bg_color, std
 //echo "hello world" | ./lemonbar -p -F#FFFFFFFF -B#FF222222
 int main(int argc, char** argv){
 
+    show_first_message("Local Map Sim",lemon_black(),lemon_black());
     Sleep_For_N_Milliseconds(5000);
     Mouse_Controller controller;
     
@@ -486,5 +487,7 @@ int main(int argc, char** argv){
     p.x = 1020;
     p.y = 809;
     controller.move_mouse_at_presentation_speed(p);
+    Sleep_For_N_Milliseconds(200);
+    show_first_message("and much much more...",lemon_black(),lemon_white());
     
 }
