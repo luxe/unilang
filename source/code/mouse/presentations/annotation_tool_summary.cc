@@ -209,7 +209,7 @@ int main(int argc, char** argv){
     
     //slide right
     p.x = 794;
-    p.y = 750;
+    p.y = 705;
     controller.drag_mouse(p,6000);
     Sleep_For_N_Milliseconds(200);
     
@@ -427,7 +427,7 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(2500);
+    Sleep_For_N_Milliseconds(1500);
     
     //open the Time
     p.x = 1179;
