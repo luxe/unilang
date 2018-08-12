@@ -164,19 +164,19 @@ int main(int argc, char** argv){
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(400);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(300);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     Sleep_For_N_Milliseconds(290);
     controller.presentation_click();
     Sleep_For_N_Milliseconds(280);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(270);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(260);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
-    Sleep_For_N_Milliseconds(250);
+    Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     
     //adjust submaps
@@ -203,7 +203,7 @@ int main(int argc, char** argv){
     
     //set a lane length
     p.x = 749;
-    p.y = 750;
+    p.y = 705;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     
@@ -452,7 +452,7 @@ int main(int argc, char** argv){
     p.x = 800;
     p.y = 529;
     controller.move_mouse_at_presentation_speed(p);
-    Sleep_For_N_Milliseconds(250);
+    Sleep_For_N_Milliseconds(300);
     controller.presentation_click();
     show_first_message("Observe Events",lemon_dark_pink(),lemon_white());
     Sleep_For_N_Milliseconds(3000);
