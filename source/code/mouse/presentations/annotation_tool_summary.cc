@@ -480,7 +480,7 @@ int main(int argc, char** argv){
     Sleep_For_N_Milliseconds(200);
     controller.presentation_click();
     show_first_message("Observe Events",lemon_dark_pink(),lemon_white());
-    Sleep_For_N_Milliseconds(3000);
+    Sleep_For_N_Milliseconds(6000);
     
     
     //Open Profiler
