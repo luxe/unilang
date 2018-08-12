@@ -465,11 +465,11 @@ int main(int argc, char** argv){
     
     //make it faster
     p.x = 1191;
-    p.y = 800;
+    p.y = 823;
     controller.move_mouse_at_presentation_speed(p);
     Sleep_For_N_Milliseconds(200);
     p.x = 1145;
-    p.y = 800;
+    p.y = 823;
     controller.drag_mouse(p,80000);
     Sleep_For_N_Milliseconds(2500);
     
