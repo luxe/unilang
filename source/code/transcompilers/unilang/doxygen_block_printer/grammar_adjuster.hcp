@@ -52,7 +52,15 @@ class
 
   std::vector<std::string> warnings;
   if (Sentence_Ends_In_A_Preposition(sentence,grammar)){
+    //TODO: I don't know how to fix sentences that end in prepositions
+    //I'm guessing the entire grammar of the sentence needs restructured
+    //there ought to be grammar fixing tools out there to learn from
+    //at the very least, we can warn about it
+    Add_Warning(warnings,"sentence ends in a preposition: \"" + sentence + "\"");
+    
   }
+  
+  //TODO: not currently handling 2 word/ 3 word preposition phrases
   return warnings;
 ❱
 
@@ -144,7 +152,7 @@ class
       
       //warn about it
       if (grammar.warn_bad_words){
-        warnings.emplace_back("bad word found: " + word);
+        Add_Warning(warnings,"bad word found: " + word);
       }
       
       //fix it
@@ -165,7 +173,7 @@ class
       
       //warn about it
       if (grammar.warn_about_auto_corrects){
-          warnings.emplace_back("did you mean " + to_from.second + " instead of " + to_from.first + "?");
+          Add_Warning(warnings,"did you mean " + to_from.second + " instead of " + to_from.first + "?");
       }
       
       //fix it
@@ -186,7 +194,7 @@ class
       
       //warn about it
       if (grammar.warn_about_taste_suggestion){
-        warnings.emplace_back("people would prefer " + to_from.second + " over " + to_from.first);
+        Add_Warning(warnings,"people would prefer " + to_from.second + " over " + to_from.first);
       }
       
       //fix it
@@ -207,7 +215,7 @@ class
       
       //warn about it
       if (grammar.warn_correctly_spelled_typo){
-          warnings.emplace_back(to_from.first + " is valid, but did you maybe mean " + to_from.second + "?");
+          Add_Warning(warnings,to_from.first + " is valid, but did you maybe mean " + to_from.second + "?");
       }
       
       //fix it
@@ -228,7 +236,7 @@ class
         
         //warn about it
         if (grammar.warn_about_uncapitalized_words){
-          warnings.emplace_back(word + " should be capitalized");
+          Add_Warning(warnings,word + " should be capitalized");
         }
         
         //fix it
@@ -242,6 +250,9 @@ class
 ❱
 
 
+◀private: static▶ void ☀Add_Warning(std::vector<std::string> & warnings, std::string const& warning)❰
+  warnings.emplace_back(warning);
+❱
 
 
 
