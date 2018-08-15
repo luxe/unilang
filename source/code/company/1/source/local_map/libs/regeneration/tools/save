@@ -1,17 +1,37 @@
 #include "local_map/libs/regeneration/route_marking.hh"
 #include "local_map/libs/regeneration/event_annotations.hh"
 #include "local_map/libs/regeneration/preset_routes.hh"
+#define STB_IMAGE_IMPLEMENTATION
+#include "local_map/libs/regeneration/tools/stb_image.h"
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_opengl3.h"
 #include <GL/gl3w.h>
 #include "SDL.h"
 
+#include "obm/libs/auto_json.hh"
+#include "xis/config/config_writer.hh"
+#include "xis/config/config_parser.hh"
+#include "xis/utility/paths.hh"
+
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
+#include <sstream>
+#include <iomanip>
+#include <memory>
+#include <cstring>
+#include <chrono>
 
+template <typename T>
+std::string to_string_with_precision(const T a_value, const int n = 6)
+{
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(n) << a_value;
+    return out.str();
+}
 
 // all settings
 struct window_position
@@ -45,19 +65,23 @@ struct window_properties
 {
     std::string     title;
     window_position position;
+    window_position initial_position; // only used if the windows starting position is relative to another window
     window_size     size;
     menu_properties menu;
-    bool            titlebar  = true;
-    bool            scrollbar = true;
-    bool            has_menu  = false;
-    bool            move      = true;
-    bool            resize    = true;
-    bool            collapse  = true;
-    bool            nav       = true;
-    bool            close     = false;
-    bool            is_open   = false;
-    bool            focus     = true;
-    float           bg_alpha  = 1;
+    bool            titlebar                   = true;
+    bool            scrollbar                  = true;
+    bool            has_menu                   = false;
+    bool            move                       = true;
+    bool            resize                     = true;
+    bool            collapse                   = true;
+    bool            nav                        = true;
+    bool            close                      = false;
+    bool            is_open                    = false;
+    bool            focus                      = true;
+    bool            refocus_on_use             = true;
+    bool            scroll_with_mouse          = true;
+    bool            allow_horizontal_scrollbar = true;
+    float           bg_alpha                   = 1;
 };
 
 struct color
@@ -70,75 +94,301 @@ struct color
     color(int r, int g, int b, int alpha) : r(r), g(g), b(b), alpha(alpha) {}
 };
 
+ImU32 to_imgui_color(const color &c)
+{
+    return IM_COL32(c.r, c.g, c.b, c.alpha);
+}
+
 
 struct rectangle_settings
 {
-    int   width     = 50;
-    int   height    = 50;
-    int   thickness = 1;
-    color color_border;
-    color color_fill;
+    std::string label;
+    int         width     = 50;
+    int         height    = 50;
+    int         thickness = 1;
+    float       rounding  = 0.0;
+    color       color_border;
+    color       color_fill;
 };
 
-struct rectangle_events
+struct triangle_settings
+{
+    position p1;
+    position p2;
+    position p3;
+    int      thickness = 1;
+    color    color_border;
+    color    color_fill;
+};
+
+struct circle_settings
+{
+    position center;
+    float    radius;
+    int      thickness = 1;
+    int      segments  = 12;
+    color    color_border;
+    color    color_fill;
+};
+
+struct text_settings
+{
+    std::string text;
+    color       font_color;
+};
+
+struct mouse_events
 {
     bool hovered = false;
+    bool clicked = false;
+};
+
+struct simulated_distance_settings
+{
+    // time
+    float current_time_s = 0;
+    float last_time_s    = 0;
+    float update_rate_s  = .2;
+
+    // distance
+    float step_amount_m      = 1;
+    float total_distance_m   = 0;
+    float current_distance_m = 0;
+};
+
+struct distance_marker_settings
+{
+    bool              show_total_pixels_covered     = false;
+    bool              show_total_distance_covered   = true;
+    bool              show_current_distance_on_lane = false;
+    bool              show_current_pixels_on_lane   = false;
+    bool              show_meters_per_second        = false;
+    bool              show_mph                      = false;
+    triangle_settings shape;
+};
+
+class image
+{
+
+private:
+    unsigned char *img_data = nullptr;
+    GLuint         texture  = 0;
+    int            width    = 0;
+    int            height   = 0;
+    int            rows     = 0;
+
+public:
+    image() {}
+    void set_image(std::string path)
+    {
+        free(img_data);
+        img_data = stbi_load(path.c_str(), &width, &height, &rows, 4);
+        // stbir_resize_uint8(img_data, width, height, 0)
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
+    }
+
+    ~image() { free(img_data); }
+
+    void imgui_image() { ImGui::Image((void *) (intptr_t) texture, ImVec2(width, height)); }
+    void imgui_drawlist(ImDrawList *draw_list, position pos)
+    {
+        draw_list->AddImage((void *) (intptr_t) texture, ImVec2(pos.x, pos.y), ImVec2(pos.x + width, pos.y + height));
+    }
 };
 
 struct event_route_render_settings
 {
-    bool               draw_lanes            = true;
-    bool               draw_submaps          = true;
-    bool               draw_evaluation_range = true;
-    rectangle_settings lane_annotated;
-    rectangle_settings lane_unannotated;
-    rectangle_settings submap;
+    bool draw_lanes             = true;
+    bool highlight_marked_lane  = true;
+    bool draw_lane_markers      = true;
+    bool draw_event_regions     = true;
+    bool draw_lane_indexes      = false;
+    bool draw_submaps           = true;
+    bool draw_submap_names      = false;
+    bool draw_distance_progress = true;
+    bool draw_car               = true;
+    bool draw_evaluation_window = true;
+    bool draw_evaluation_range  = true;
+
+    position                 base_draw_position;
+    rectangle_settings       lane_annotated;
+    rectangle_settings       lane_unannotated;
+    circle_settings          markings;
+    circle_settings          region_start;
+    rectangle_settings       region_bar;
+    circle_settings          region_end;
+    rectangle_settings       submap;
+    distance_marker_settings distance_marker;
+    color                    event_window_color;
+
+    image       car;
+    int         car_selection = 0;
+    std::string xenon_car     = "";
+    std::string krypton_car   = "";
+    std::string pride_car     = "";
 
     // generated colors
-    std::vector<color> distinct_colors;
+    std::vector<color>          distinct_colors;
+    simulated_distance_settings create_route_simulated_distance;
+};
+
+struct terminal_line
+{
+    std::string text;
+    color       color;
+};
+
+// information related to in app terminal
+struct terminal_window
+{
+    window_properties          window;
+    ImGuiTextBuffer            buf;
+    std::vector<terminal_line> lines;
+    ImGuiTextFilter            filter;
+    ImVector<int>              lineOffsets; // Index to lines offset
+    bool                       scrollToBottom = false;
+
+
+    // behavior
+    bool add_timestamp = true;
+    bool add_newline   = true;
+};
+
+struct log_settings
+{
+    bool log_expired = true;
+    bool log_new     = true;
+    bool log_regen   = true;
+};
+
+struct collapsing_header_settings
+{
+    std::string name;
+    bool        is_open = false;
+};
+
+struct profile_settings
+{
+    // frame latency display
+    double             current_frame_latency = 0;
+    std::vector<float> history;
+    int                max_history   = 50;
+    bool               auto_scale    = false;
+    std::string        title         = "Cycle Latency:";
+    std::string        label         = "##cycle_latency";
+    std::string        overlay_text  = "Cycle Latency";
+    int                scale_min     = 1000;
+    int                scale_max     = 3000;
+    int                values_offset = 0;
+    int                height        = 0;
+    int                width         = 0;
 };
 
 struct settings
 {
-    // windows
-    window_properties annotated_route_window;
-    window_properties create_route_window;
+    // main window title
+    std::string program_window_name;
 
-    // rendering
-    event_route_render_settings event_route;
+    // windows
+    window_properties create_route_window;
+    window_properties create_route_window_settings;
+    window_properties mark_route_window;
+    window_properties profile_window;
+
+    // in marking menu
+    collapsing_header_settings algorithm_header;
+    collapsing_header_settings marking_header;
+    collapsing_header_settings marking_region_header;
+
+    // in settings menu
+    collapsing_header_settings setting_route_header;
+    collapsing_header_settings setting_location_header;
+    collapsing_header_settings setting_event_window_header;
+    collapsing_header_settings setting_time_header;
+
+    // other windows
+    terminal_window terminal;
+    log_settings    logging;
+
+    // data on profiling
+    profile_settings profiling;
+
+    // experimentation state
+    local_map::statik::route_creation_input              route_input;
+    std::vector<local_map::statik::route_creation_input> applied_route_inputs;
+
+    // rendering state
+    event_route_render_settings              event_route;
+    local_map::statik::event_annotated_route annotated_route;
 };
+
+
+void add_line(terminal_window &terminal, terminal_line line)
+{
+
+    // adjust string before printing
+    if (terminal.add_timestamp)
+    {
+        auto time = ImGui::GetTime();
+        line.text = to_string_with_precision(time, 2) + "> " + line.text;
+    }
+    if (terminal.add_newline)
+    {
+        line.text += "\n";
+    }
+
+
+    int old_size = terminal.buf.size();
+    terminal.buf.appendf("%s", line.text.c_str());
+    for (int new_size = terminal.buf.size(); old_size < new_size; old_size++)
+        if (terminal.buf[old_size] == '\n')
+            terminal.lineOffsets.push_back(old_size);
+    terminal.scrollToBottom = true;
+    terminal.lines.emplace_back(line);
+}
+
+static void Show_Tool_Tip(const char *desc)
+{
+    ImGui::BeginTooltip();
+    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+    ImGui::TextUnformatted(desc);
+    ImGui::PopTextWrapPos();
+    ImGui::EndTooltip();
+}
 
 static void ShowHelpMarker(const char *desc)
 {
     ImGui::TextDisabled("(?)");
     if (ImGui::IsItemHovered())
     {
-        ImGui::BeginTooltip();
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
+        Show_Tool_Tip(desc);
     }
 }
 
 std::vector<color> distinct_colors()
 {
     std::vector<color> colors;
+    colors.emplace_back(172, 237, 161, 255);
     colors.emplace_back(0, 130, 200, 255);
+    colors.emplace_back(230, 25, 75, 255);
     colors.emplace_back(245, 130, 48, 255);
     colors.emplace_back(0, 128, 128, 255);
-    colors.emplace_back(230, 25, 75, 255);
     colors.emplace_back(60, 180, 75, 255);
     colors.emplace_back(250, 190, 190, 255);
     colors.emplace_back(255, 255, 25, 255);
     return colors;
 }
 
-void create_window(window_properties &properties)
+bool begin_window(window_properties &properties)
 {
 
     ImGuiWindowFlags window_flags = 0;
-    bool *           p_open       = NULL;
+    bool *           p_open       = nullptr;
     if (!properties.titlebar)
     {
         window_flags |= ImGuiWindowFlags_NoTitleBar;
@@ -167,9 +417,21 @@ void create_window(window_properties &properties)
     {
         window_flags |= ImGuiWindowFlags_NoNav;
     }
+    if (!properties.scroll_with_mouse)
+    {
+        window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
+    }
+    if (properties.allow_horizontal_scrollbar)
+    {
+        window_flags |= ImGuiWindowFlags_HorizontalScrollbar;
+    }
+    if (!properties.refocus_on_use)
+    {
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+    }
     if (!properties.close)
     {
-        p_open = NULL;
+        p_open = nullptr;
     }
 
     if (properties.position.force)
@@ -190,7 +452,47 @@ void create_window(window_properties &properties)
         ImGui::SetNextWindowFocus();
         properties.focus = false;
     }
-    ImGui::Begin(properties.title.c_str(), &properties.is_open, window_flags);
+
+    return ImGui::Begin(properties.title.c_str(), &properties.is_open, window_flags);
+}
+
+template <typename T>
+void render_window(window_properties &properties, T fun)
+{
+    bool was_rendered = begin_window(properties);
+    if (was_rendered)
+    {
+        fun();
+    }
+    ImGui::End();
+}
+
+template <typename T>
+void render_main_menu_bar(T fun)
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        fun();
+        ImGui::EndMainMenuBar();
+    }
+}
+template <typename T>
+void render_menu_bar(T fun)
+{
+    if (ImGui::BeginMenuBar())
+    {
+        fun();
+        ImGui::EndMenuBar();
+    }
+}
+template <typename T>
+void render_menu(std::string const &title, T fun)
+{
+    if (ImGui::BeginMenu(title.c_str()))
+    {
+        fun();
+        ImGui::EndMenu();
+    }
 }
 
 position window_adjusted_position(int x, int y)
@@ -200,6 +502,21 @@ position window_adjusted_position(int x, int y)
     p.x = x + screen_position.x;
     p.y = y + screen_position.y;
     return p;
+}
+position window_adjusted_position(position pos)
+{
+    const ImVec2 screen_position = ImGui::GetCursorScreenPos();
+    position     p;
+    p.x = pos.x + screen_position.x;
+    p.y = pos.y + screen_position.y;
+    return p;
+}
+window_position window_adjusted_position(window_position pos)
+{
+    const ImVec2 screen_position = ImGui::GetCursorScreenPos();
+    pos.x += screen_position.x;
+    pos.y += screen_position.y;
+    return pos;
 }
 
 
@@ -228,31 +545,48 @@ void colorize_turquoise_button()
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4) ImColor::HSV(3 / 7.0f, 0.8f, 0.8f));
 }
 
-void draw_range(ImDrawList *draw_list)
+
+bool mouse_clicked_area(position pos, rectangle_settings const &settings)
 {
+    if (ImGui::IsMouseClicked(0))
+    {
+        auto mouse_pos = ImGui::GetMousePos();
+        if (mouse_pos.x > pos.x && mouse_pos.x < pos.x + settings.width)
+        {
+            if (mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + settings.height)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
-rectangle_events draw_rectangle(ImDrawList *draw_list, position pos, rectangle_settings const &settings)
+mouse_events draw_rectangle(ImDrawList *draw_list, position pos, rectangle_settings const &settings)
 {
-    draw_list->AddRectFilled(
-        ImVec2(pos.x, pos.y),
-        ImVec2(pos.x + settings.width, pos.y + settings.height),
-        IM_COL32(settings.color_fill.r, settings.color_fill.g, settings.color_fill.b, settings.color_fill.alpha),
-        0,
-        ImDrawCornerFlags_All);
+    // draw it
+    draw_list->AddRectFilled(ImVec2(pos.x, pos.y),
+                             ImVec2(pos.x + settings.width, pos.y + settings.height),
+                             to_imgui_color(settings.color_fill),
+                             settings.rounding,
+                             ImDrawCornerFlags_All);
 
-    draw_list->AddRect(
-        ImVec2(pos.x, pos.y),
-        ImVec2(pos.x + settings.width, pos.y + settings.height),
-        IM_COL32(
-            settings.color_border.r, settings.color_border.g, settings.color_border.b, settings.color_border.alpha),
-        0,
-        ImDrawCornerFlags_All,
-        settings.thickness);
 
-    rectangle_events events;
+    draw_list->AddRect(ImVec2(pos.x, pos.y),
+                       ImVec2(pos.x + settings.width, pos.y + settings.height),
+                       to_imgui_color(settings.color_border),
+                       settings.rounding,
+                       ImDrawCornerFlags_All,
+                       settings.thickness);
+
+    // look for any events
+    mouse_events events;
+    if (mouse_clicked_area(pos, settings))
+    {
+        events.clicked = true;
+    }
     if (ImGui::IsMouseHoveringRect(
-            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.width, pos.y + settings.height), false))
+            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.width - 1, pos.y + settings.height), false))
     {
         events.hovered = true;
     }
@@ -260,16 +594,379 @@ rectangle_events draw_rectangle(ImDrawList *draw_list, position pos, rectangle_s
     return events;
 }
 
-void render(ImDrawList *                         draw_list,
-            const local_map::statik::event_view &view,
-            const position &                     pos,
-            const int                            spanning_length,
-            const size_t &                       lane_count)
+void draw_triangle(ImDrawList *draw_list, position pos, triangle_settings const &settings)
 {
-    int start_x = 0;
-    if (view.previous)
+
+    draw_list->AddTriangleFilled(ImVec2(settings.p1.x + pos.x, settings.p1.y + pos.y),
+                                 ImVec2(settings.p2.x + pos.x, settings.p2.y + pos.y),
+                                 ImVec2(settings.p3.x + pos.x, settings.p3.y + pos.y),
+                                 to_imgui_color(settings.color_fill));
+
+    draw_list->AddTriangle(ImVec2(settings.p1.x + pos.x, settings.p1.y + pos.y),
+                           ImVec2(settings.p2.x + pos.x, settings.p2.y + pos.y),
+                           ImVec2(settings.p3.x + pos.x, settings.p3.y + pos.y),
+                           to_imgui_color(settings.color_fill),
+                           settings.thickness);
+}
+
+int distance(position p1, position p2)
+{
+    return std::sqrt(std::pow(p2.x - p1.x, 2) + std::pow(p2.y - p1.y, 2));
+}
+
+mouse_events mouse_events_of_circle(position pos, circle_settings const &settings)
+{
+    auto     mouse_pos = ImGui::GetMousePos();
+    position mouse_pos2;
+    mouse_pos2.x     = mouse_pos.x;
+    mouse_pos2.y     = mouse_pos.y;
+    auto true_center = settings.center;
+    true_center.x += pos.x;
+    true_center.y += pos.y;
+    auto d = distance(mouse_pos2, true_center);
+
+    mouse_events events;
+    if (d < settings.radius)
     {
-        start_x = pos.x + ((spanning_length - 1) * (*view.previous)) + (spanning_length / 2);
+        events.hovered = true;
+        if (ImGui::IsMouseClicked(0))
+        {
+            events.clicked = true;
+        }
+    }
+    return events;
+}
+
+
+mouse_events draw_circle(ImDrawList *draw_list, position pos, circle_settings const &settings)
+{
+    draw_list->AddCircleFilled(ImVec2(settings.center.x + pos.x, settings.center.y + pos.y),
+                               settings.radius,
+                               to_imgui_color(settings.color_fill),
+                               settings.segments);
+
+    draw_list->AddCircle(ImVec2(settings.center.x + pos.x, settings.center.y + pos.y),
+                         settings.radius,
+                         to_imgui_color(settings.color_border),
+                         settings.segments,
+                         settings.thickness);
+
+    return mouse_events_of_circle(pos, settings);
+}
+
+void draw_text(ImDrawList *draw_list, position pos, text_settings const &settings)
+{
+    draw_list->AddText(ImVec2(pos.x, pos.y), to_imgui_color(settings.font_color), settings.text.c_str(), nullptr);
+}
+
+std::map<hub::base::guid, color> decide_submap_colors(local_map::statik::event_annotated_route const &route,
+                                                      event_route_render_settings const &settings)
+{
+    std::map<hub::base::guid, color> submap_colors;
+    for (auto lane : route.event_lane_sequence)
+    {
+        if (submap_colors.find(lane.info.map_ref.map_index) == submap_colors.end())
+        {
+            if (settings.distinct_colors.size() >= submap_colors.size())
+            {
+                submap_colors[lane.info.map_ref.map_index] = settings.distinct_colors[submap_colors.size()];
+            }
+            else
+            {
+                submap_colors[lane.info.map_ref.map_index] = settings.distinct_colors[0];
+            }
+        }
+    }
+    return submap_colors;
+}
+
+std::vector<rectangle_settings> build_submap_rendering_settings(local_map::statik::event_annotated_route const &route,
+                                                                event_route_render_settings const &settings,
+                                                                std::map<hub::base::guid, color> submap_colors)
+{
+    std::vector<rectangle_settings> submap_settings;
+    rectangle_settings              temp = settings.submap;
+    stdx::optional<hub::base::guid> previous_guid;
+    for (auto lane : route.event_lane_sequence)
+    {
+        if (previous_guid)
+        {
+            if (*previous_guid == lane.info.map_ref.map_index)
+            {
+                temp.width += settings.submap.width - 1;
+            }
+            else
+            {
+                temp.color_fill = submap_colors[*previous_guid];
+                temp.label      = std::to_string(previous_guid->to_int64());
+                submap_settings.emplace_back(temp);
+                temp = settings.submap;
+            }
+        }
+
+        previous_guid = lane.info.map_ref.map_index;
+    }
+
+    if (previous_guid)
+    {
+        temp.color_fill = submap_colors[*previous_guid];
+        temp.label      = std::to_string(previous_guid->to_int64());
+        submap_settings.emplace_back(temp);
+    }
+    return submap_settings;
+}
+
+
+bool move_virtual_av_through_route(local_map::statik::event_annotated_route const &route,
+                                   event_route_render_settings &                   settings)
+{
+    // move simulated av through the route
+    settings.create_route_simulated_distance.current_time_s   = ImGui::GetTime();
+    settings.create_route_simulated_distance.total_distance_m = local_map::statik::total_distance(route);
+
+    // if we have no length on our route, we can only ever be at 0m.
+    if (settings.create_route_simulated_distance.total_distance_m == 0)
+    {
+        settings.create_route_simulated_distance.current_distance_m = 0;
+        return false;
+    }
+
+
+    // adjust distance
+    bool distance_was_adjusted = false;
+    if (settings.create_route_simulated_distance.current_time_s - settings.create_route_simulated_distance.last_time_s
+        >= settings.create_route_simulated_distance.update_rate_s)
+    {
+        distance_was_adjusted = true;
+        settings.create_route_simulated_distance.current_distance_m
+            += settings.create_route_simulated_distance.step_amount_m;
+        settings.create_route_simulated_distance.last_time_s = settings.create_route_simulated_distance.current_time_s;
+
+        // reset with carry over
+        if (settings.create_route_simulated_distance.current_distance_m
+            > settings.create_route_simulated_distance.total_distance_m)
+        {
+            settings.create_route_simulated_distance.current_distance_m
+                -= settings.create_route_simulated_distance.total_distance_m;
+        }
+    }
+    return distance_was_adjusted;
+}
+
+void possibly_draw_submaps(ImDrawList *                                    draw_list,
+                           local_map::statik::event_annotated_route const &route,
+                           event_route_render_settings &                   settings)
+{
+    if (settings.draw_submaps)
+    {
+        auto submap_colors   = decide_submap_colors(route, settings);
+        auto submap_settings = build_submap_rendering_settings(route, settings, submap_colors);
+
+        // draw submap settings
+        auto pos = window_adjusted_position(settings.base_draw_position.x,
+                                            settings.base_draw_position.y - (settings.submap.height / 4));
+
+        for (auto s : submap_settings)
+        {
+            draw_rectangle(draw_list, pos, s);
+
+
+            if (settings.draw_submap_names)
+            {
+                text_settings text;
+                text.text             = s.label;
+                text.font_color.r     = 0;
+                text.font_color.g     = 0;
+                text.font_color.b     = 0;
+                text.font_color.alpha = 255;
+                auto adjusted         = pos;
+                adjusted.x += 2;
+                adjusted.y += 2;
+                draw_text(draw_list, adjusted, text);
+            }
+
+            pos.x += s.width - 1;
+        }
+    }
+}
+
+template <typename T>
+void render_popup(std::string const &name, T fun)
+{
+    if (ImGui::BeginPopup(name.c_str()))
+    {
+        fun();
+        ImGui::EndPopup();
+    }
+}
+
+void possibly_draw_lanes(ImDrawList *                                    draw_list,
+                         local_map::statik::event_annotated_route const &route,
+                         event_route_render_settings &                   settings)
+{
+
+    auto annotated_width  = settings.lane_annotated.width - 1;
+    auto annotated_height = settings.lane_annotated.height;
+    if (settings.draw_lanes)
+    {
+        // draw lanes
+        auto pos = window_adjusted_position(settings.base_draw_position);
+        for (auto lane : route.event_lane_sequence)
+        {
+
+            mouse_events events;
+            if (!lane.event_sequence.empty() && settings.highlight_marked_lane)
+            {
+                events = draw_rectangle(draw_list, pos, settings.lane_annotated);
+                pos.x += annotated_width;
+            }
+            else
+            {
+                events = draw_rectangle(draw_list, pos, settings.lane_unannotated);
+                pos.x += settings.lane_unannotated.width - 1;
+            }
+
+            if (events.hovered)
+            {
+                if (!ImGui::IsPopupOpen("lane_click"))
+                {
+                    Show_Tool_Tip(lane.format_as_string(0).c_str());
+                }
+            }
+            if (events.clicked)
+            {
+                ImGui::OpenPopup("lane_click");
+            }
+        }
+    }
+
+    if (settings.draw_lane_markers)
+    {
+        auto pos = window_adjusted_position(settings.base_draw_position);
+        for (auto lane : route.event_lane_sequence)
+        {
+            for (auto event : lane.event_sequence)
+            {
+                int  extra_pixels_from_placement = annotated_width * (event.distance_m / lane.info.annotation.distance);
+                auto adjusted                    = pos;
+                adjusted.x += extra_pixels_from_placement;
+                draw_circle(draw_list, adjusted, settings.markings);
+            }
+            pos.x += annotated_width;
+        }
+    }
+
+    if (settings.draw_lanes && settings.draw_lane_indexes)
+    {
+        auto pos   = window_adjusted_position(settings.base_draw_position);
+        int  index = 0;
+        for (auto lane : route.event_lane_sequence)
+        {
+            text_settings text;
+            text.text             = std::to_string(index);
+            text.font_color.r     = 0;
+            text.font_color.g     = 0;
+            text.font_color.b     = 0;
+            text.font_color.alpha = 255;
+            auto adjusted         = pos;
+            adjusted.x += 2;
+            adjusted.y += annotated_height / 2;
+            draw_text(draw_list, adjusted, text);
+
+            pos.x += annotated_width;
+            ++index;
+        }
+    }
+}
+
+int route_distance_to_pixel_placement_start(local_map::statik::event_annotated_route const &route,
+                                            event_route_render_settings &                   settings,
+                                            double                                          distance)
+{
+    auto annotated_width    = settings.lane_annotated.width - 1;
+    int  x_pixel            = 0;
+    auto current_lane_index = local_map::statik::distance_to_lane_index(route, distance);
+
+    if (current_lane_index)
+    {
+        x_pixel = annotated_width * (*current_lane_index);
+        x_pixel += local_map::statik::distance_from_start_of_lane(route, distance);
+    }
+    else
+    {
+        x_pixel = annotated_width * route.event_lane_sequence.size();
+    }
+    return x_pixel;
+}
+
+int route_distance_to_pixel_placement_end(local_map::statik::event_annotated_route const &route,
+                                          event_route_render_settings &                   settings,
+                                          double                                          distance)
+{
+    auto annotated_width    = settings.lane_annotated.width - 1;
+    int  x_pixel            = 0;
+    auto current_lane_index = local_map::statik::distance_to_lane_index(route, distance);
+    if (current_lane_index)
+    {
+        x_pixel = annotated_width * (*current_lane_index);
+        x_pixel += local_map::statik::distance_from_start_of_lane(route, distance);
+    }
+    else
+    {
+        x_pixel = annotated_width * route.event_lane_sequence.size();
+    }
+    return x_pixel;
+}
+
+void possibly_draw_event_regions(ImDrawList *                                    draw_list,
+                                 local_map::statik::event_annotated_route const &route,
+                                 event_route_render_settings &                   settings)
+{
+    if (settings.draw_event_regions && settings.draw_lanes)
+    {
+        auto pos = window_adjusted_position(settings.base_draw_position);
+        for (auto region : route.event_region_sequence)
+        {
+
+            // decide relative pixel locations
+            auto start_pixel = route_distance_to_pixel_placement_start(route, settings, region.start_m);
+            auto end_pixel   = route_distance_to_pixel_placement_end(route, settings, region.end_m);
+
+            // decide exact pixel locations
+            auto adjusted_first = pos;
+            adjusted_first.x += start_pixel;
+            auto adjusted_last = pos;
+            adjusted_last.x += end_pixel;
+
+            auto adjusted_bar = pos;
+            adjusted_bar.x += start_pixel;
+            adjusted_bar.y += 23;
+
+            // draw connector
+            settings.region_bar.width = adjusted_last.x - adjusted_first.x;
+            draw_rectangle(draw_list, adjusted_bar, settings.region_bar);
+
+            // draw end points
+            draw_circle(draw_list, adjusted_first, settings.region_start);
+            draw_circle(draw_list, adjusted_last, settings.region_end);
+        }
+    }
+}
+
+void possibly_draw_event_window(ImDrawList *                                    draw_list,
+                                local_map::statik::event_annotated_route const &route,
+                                event_route_render_settings &                   settings)
+{
+    auto pos             = window_adjusted_position(settings.base_draw_position);
+    int  spanning_length = settings.lane_annotated.width;
+    int  lane_count      = route.event_lane_sequence.size();
+
+
+    // calculate marker positions
+    int start_x = 0;
+    if (route.evaluation_range.previous)
+    {
+        start_x = pos.x + ((spanning_length - 1) * (*route.evaluation_range.previous)) + (spanning_length / 2);
     }
     else
     {
@@ -277,15 +974,14 @@ void render(ImDrawList *                         draw_list,
     }
 
     int end_x = 0;
-    if (view.current)
+    if (route.evaluation_range.current)
     {
-        end_x = pos.x + ((spanning_length - 1) * (*view.current)) + (spanning_length / 2);
+        end_x = pos.x + ((spanning_length - 1) * (*route.evaluation_range.current)) + (spanning_length / 2);
     }
     else
     {
         end_x = pos.x + ((spanning_length - 1) * lane_count) + (spanning_length / 2);
     }
-
 
     auto start_vec1 = ImVec2(start_x, pos.y + spanning_length);
     auto start_vec2 = ImVec2(start_x, pos.y + spanning_length + 10);
@@ -295,108 +991,190 @@ void render(ImDrawList *                         draw_list,
     auto connect_vec1 = ImVec2(start_x, pos.y + spanning_length + 10);
     auto connect_vec2 = ImVec2(end_x, pos.y + spanning_length + 10);
 
-    auto test     = pos.x + (end_x - start_x) - spanning_length;
+    auto test = start_x + ((end_x - start_x) / 2);
+    if (start_x == end_x)
+    {
+        test = end_x;
+    }
+
     auto bar_vec1 = ImVec2(test, pos.y + spanning_length + 10);
     auto bar_vec2 = ImVec2(test, pos.y + spanning_length + 20);
 
-    draw_list->AddLine(start_vec1, start_vec2, IM_COL32(0, 0, 0, 255), 1);
-    draw_list->AddLine(end_vec1, end_vec2, IM_COL32(0, 0, 0, 255), 1);
-    draw_list->AddLine(connect_vec1, connect_vec2, IM_COL32(0, 0, 0, 255), 1);
-    draw_list->AddLine(bar_vec1, bar_vec2, IM_COL32(0, 0, 0, 255), 1);
+
+    if (settings.draw_evaluation_window)
+    {
+        draw_list->AddLine(start_vec1, start_vec2, to_imgui_color(settings.event_window_color), 1);
+        draw_list->AddLine(end_vec1, end_vec2, to_imgui_color(settings.event_window_color), 1);
+        draw_list->AddLine(connect_vec1, connect_vec2, to_imgui_color(settings.event_window_color), 1);
+        draw_list->AddLine(bar_vec1, bar_vec2, to_imgui_color(settings.event_window_color), 1);
+    }
+
+
+    // decide label
+    std::string prev = "?";
+    std::string curr = "?";
+    if (route.evaluation_range.previous)
+    {
+        prev = std::to_string(*route.evaluation_range.previous);
+    }
+    if (route.evaluation_range.current)
+    {
+        curr = std::to_string(*route.evaluation_range.current);
+    }
+    std::string final_label = "(" + prev + "," + curr + "]";
+
+    // print label
+    text_settings text;
+    text.text             = final_label;
+    text.font_color.r     = 0;
+    text.font_color.g     = 0;
+    text.font_color.b     = 0;
+    text.font_color.alpha = 255;
+    position text_pos;
+    text_pos.x = bar_vec2.x - 15;
+    text_pos.y = bar_vec2.y + 9;
+
+    if (settings.draw_evaluation_range)
+    {
+        draw_text(draw_list, text_pos, text);
+    }
 }
 
-void render(local_map::statik::event_annotated_route const &route, event_route_render_settings const &settings)
+
+void possibly_draw_progress_marker(ImDrawList *                                    draw_list,
+                                   local_map::statik::event_annotated_route const &route,
+                                   event_route_render_settings &                   settings)
+{
+    if (settings.create_route_simulated_distance.total_distance_m > 0)
+    {
+        // adjust position of marker
+        auto pos = window_adjusted_position(settings.base_draw_position);
+        pos.x -= settings.distance_marker.shape.p3.x;
+        pos.y -= settings.distance_marker.shape.p3.y;
+
+        // move marker forward based on distance
+        // get total pixel distance for each actual lane distance
+        std::vector<std::pair<int, float>> pixels_per_distance;
+        for (auto lane : route.event_lane_sequence)
+        {
+            pixels_per_distance.emplace_back(settings.lane_unannotated.width - 1, lane.info.annotation.distance);
+        }
+
+
+        int   total_pixels_covered        = 0;
+        float total_distance_covered      = 0;
+        float real_total_distance_covered = 0;
+        float current_distance_on_lane    = 0;
+        int   current_pixels_on_lane      = 0;
+        for (auto const &it : pixels_per_distance)
+        {
+            total_distance_covered += it.second;
+            if (total_distance_covered >= settings.create_route_simulated_distance.current_distance_m)
+            {
+                pos.x += total_pixels_covered;
+                current_distance_on_lane = std::abs(
+                    total_distance_covered - settings.create_route_simulated_distance.current_distance_m - it.second);
+                current_pixels_on_lane = (current_distance_on_lane / it.second) * it.first;
+                pos.x += current_pixels_on_lane;
+
+                real_total_distance_covered = total_distance_covered - it.second + current_distance_on_lane;
+                break;
+            }
+            total_pixels_covered += it.first;
+        }
+
+        if (settings.draw_car)
+        {
+            auto car_pos = pos;
+            car_pos.x -= 25;
+            settings.car.imgui_drawlist(draw_list, car_pos);
+        }
+
+        if (settings.draw_distance_progress)
+        {
+            draw_triangle(draw_list, pos, settings.distance_marker.shape);
+
+            // decide which labels to print
+            std::vector<std::string> labels;
+            if (settings.distance_marker.show_total_pixels_covered)
+            {
+                int precision = 0;
+                labels.emplace_back(to_string_with_precision(total_pixels_covered + current_pixels_on_lane, precision)
+                                    + "px");
+            }
+            if (settings.distance_marker.show_current_pixels_on_lane)
+            {
+                int precision = 0;
+                labels.emplace_back(to_string_with_precision(current_pixels_on_lane, precision) + "px");
+            }
+            if (settings.distance_marker.show_current_distance_on_lane)
+            {
+                int precision = 0;
+                labels.emplace_back(to_string_with_precision(current_distance_on_lane, precision) + "m");
+            }
+            if (settings.distance_marker.show_total_distance_covered)
+            {
+                int precision = 0;
+                labels.emplace_back(to_string_with_precision(real_total_distance_covered, precision) + "m");
+            }
+            if (settings.distance_marker.show_meters_per_second)
+            {
+                int  precision = 0;
+                auto speed_mps = settings.create_route_simulated_distance.step_amount_m
+                                 / settings.create_route_simulated_distance.update_rate_s;
+                labels.emplace_back(to_string_with_precision(speed_mps, precision) + "m/s");
+            }
+            if (settings.distance_marker.show_mph)
+            {
+                int  precision = 0;
+                auto speed_mph = (settings.create_route_simulated_distance.step_amount_m
+                                  / settings.create_route_simulated_distance.update_rate_s)
+                                 * 2.24;
+                labels.emplace_back(to_string_with_precision(speed_mph, precision) + "mph");
+            }
+
+
+            // print labels
+            text_settings text;
+            text.font_color.r     = 0;
+            text.font_color.g     = 0;
+            text.font_color.b     = 0;
+            text.font_color.alpha = 255;
+            pos.x -= 5;
+            pos.y -= 25;
+
+            for (auto const &it : labels)
+            {
+                text.text = it;
+                draw_text(draw_list, pos, text);
+                pos.y -= 10;
+            }
+        }
+    }
+}
+
+void possibly_draw_car(ImDrawList *                                    draw_list,
+                       local_map::statik::event_annotated_route const &route,
+                       event_route_render_settings &                   settings)
+{
+}
+
+void render(local_map::statik::event_annotated_route &route, event_route_render_settings &settings)
 {
 
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
 
-    auto pos = window_adjusted_position(180, 85);
-
-    // decide submap colors
-    std::map<hub::base::guid, color> submap_colors;
-    for (auto lane : route.event_lane_sequence)
-    {
-        if (submap_colors.find(lane.lane.map_ref.map_index) == submap_colors.end())
-        {
-            if (settings.distinct_colors.size() >= submap_colors.size())
-            {
-                submap_colors[lane.lane.map_ref.map_index] = settings.distinct_colors[submap_colors.size()];
-            }
-            else
-            {
-                submap_colors[lane.lane.map_ref.map_index] = settings.distinct_colors[0];
-            }
-        }
-    }
-
-    // build submap settings
-    std::vector<rectangle_settings> submap_settings;
-    rectangle_settings              temp = settings.submap;
-    stdx::optional<hub::base::guid> previous_guid;
-    for (auto lane : route.event_lane_sequence)
-    {
-        if (previous_guid)
-        {
-            if (*previous_guid == lane.lane.map_ref.map_index)
-            {
-                temp.width += settings.submap.width;
-            }
-            else
-            {
-                temp.color_fill = submap_colors[previous_guid];
-                submap_settings.emplace_back(temp);
-                temp = settings.submap;
-            }
-        }
-
-        previous_guid = lane.lane.map_ref.map_index;
-    }
-    temp.color_fill = submap_colors[previous_guid];
-    submap_settings.emplace_back(temp);
-
-
-    // draw submap settings
-    if (settings.draw_submaps)
-    {
-        for (auto s : submap_settings)
-        {
-            pos.x -= (s.width / settings.submap.width) - 1;
-            draw_rectangle(draw_list, pos, s);
-            pos.x += s.width;
-        }
-    }
-
-
-    // draw lanes
-    pos = window_adjusted_position(180, 100);
-    if (settings.draw_lanes)
-    {
-        for (auto lane : route.event_lane_sequence)
-        {
-            draw_rectangle(draw_list, pos, settings.lane_annotated);
-            pos.x += settings.lane_annotated.width - 1;
-        }
-    }
-    pos = window_adjusted_position(180, 100);
-
-
-    // rectangle_settings lane_annotated;
-    // rectangle_settings lane_unannotated;
-    // rectangle_settings submap;
-
-
-    // draw the event window
-    if (settings.draw_evaluation_range)
-    {
-        render(draw_list, route.evaluation_range, pos, settings.lane_annotated.width, route.event_lane_sequence.size());
-    }
-
-
-    pos.y += settings.lane_annotated.width + 30;
+    // draw information related to the event annotated route
+    possibly_draw_submaps(draw_list, route, settings);
+    possibly_draw_lanes(draw_list, route, settings);
+    possibly_draw_event_regions(draw_list, route, settings);
+    possibly_draw_event_window(draw_list, route, settings);
+    possibly_draw_progress_marker(draw_list, route, settings);
+    possibly_draw_car(draw_list, route, settings);
 }
 
 void render(std::vector<local_map::statik::event_annotated_route> const &event_routes,
-            event_route_render_settings const &                          settings)
+            event_route_render_settings &                                settings)
 {
     for (auto route : event_routes)
     {
@@ -404,6 +1182,50 @@ void render(std::vector<local_map::statik::event_annotated_route> const &event_r
     }
 
     ImGui::End();
+}
+
+
+void drag_positive_double(std::string const &name, double &d)
+{
+    float temp = d;
+    ImGui::DragFloat(name.c_str(), &temp, 1.0f, 0.0f);
+    d = temp;
+    if (d < 0)
+    {
+        d = 0;
+    }
+}
+
+void drag_positive_int(std::string const &name, int &d)
+{
+    ImGui::DragInt(name.c_str(), &d);
+    if (d < 0)
+    {
+        d = 0;
+    }
+}
+void drag_positive_int(std::string const &name, uint64_t &x)
+{
+    int d = x;
+    ImGui::DragInt(name.c_str(), &d);
+    if (d < 0)
+    {
+        d = 0;
+    }
+    x = d;
+}
+
+void select_positive_int(std::string const &name, uint64_t &x)
+{
+    int i = x;
+    ImGui::InputInt(name.c_str(), &i);
+
+    if (i < 0)
+    {
+        i = 0;
+    }
+
+    x = i;
 }
 
 std::set<size_t> render(local_map::statik::lane_creation_input &lane,
@@ -421,14 +1243,7 @@ std::set<size_t> render(local_map::statik::lane_creation_input &lane,
 
     // ImGui::SameLine();
     ImGui::PushItemWidth(50);
-    name       = "##distance" + std::to_string(index);
-    float test = lane.distance_m;
-    ImGui::DragFloat(name.c_str(), &test, 1.0f, 0.0f);
-    lane.distance_m = test;
-    if (lane.distance_m < 0)
-    {
-        lane.distance_m = 0;
-    }
+    drag_positive_double("##distance" + std::to_string(index), lane.distance_m);
     ImGui::PopItemWidth();
 
     ImGui::NextColumn();
@@ -471,30 +1286,365 @@ std::set<size_t> render(local_map::statik::lane_creation_input &lane,
     return remove_indexes;
 }
 
-void render(std::vector<local_map::statik::route_creation_input> &inputs,
-            local_map::statik::route_creation_input &             route,
-            event_route_render_settings const &                   settings)
+void handle_menu_item(window_properties &window)
+{
+    if (ImGui::MenuItem(window.menu.title.c_str(), window.menu.shortcut.c_str()))
+    {
+        window.is_open = true;
+    }
+}
+
+
+void possibly_log_event_occurance(settings &s)
 {
 
-    render(local_map::statik::create_event_route(route), settings);
+    if (local_map::statik::should_regenerate(s.annotated_route))
+    {
+        if (s.logging.log_regen)
+        {
+            auto        indexes = local_map::statik::current_lanes_with_annotations(s.annotated_route);
+            std::string str     = "[";
+            for (size_t i = 0; i < indexes.size(); ++i)
+            {
+                if (i == indexes.size() - 1)
+                {
+                    str += std::to_string(indexes[i]);
+                }
+                else
+                {
+                    str += std::to_string(indexes[i]) + ",";
+                }
+            }
+            str += "]";
+            terminal_line line;
+            line.text        = "Should regenerate " + str;
+            line.color.r     = 215;
+            line.color.g     = 219;
+            line.color.b     = 0;
+            line.color.alpha = 255;
+            add_line(s.terminal, line);
+        }
+    }
 
-    ImGui::Text("Create a new route");
+    if (local_map::statik::inside_event_region(s.annotated_route,
+                                               s.event_route.create_route_simulated_distance.current_distance_m))
+    {
+        std::string current_distance = std::to_string(s.event_route.create_route_simulated_distance.current_distance_m);
+
+        terminal_line line;
+        line.text        = "Inside Region: " + current_distance;
+        line.color.r     = 219;
+        line.color.g     = 171;
+        line.color.b     = 0;
+        line.color.alpha = 255;
+        add_line(s.terminal, line);
+    }
+}
+
+void possibly_log_new_route(settings &s)
+{
+
+    if (local_map::statik::interpret_route_status(s.annotated_route) == local_map::statik::route_status_new_route)
+    {
+        if (s.logging.log_new)
+        {
+
+            terminal_line line;
+            line.text        = "New route";
+            line.color.r     = 82;
+            line.color.g     = 221;
+            line.color.b     = 144;
+            line.color.alpha = 255;
+            add_line(s.terminal, line);
+        }
+    }
+}
+
+void possibly_log_expired_route(settings &s)
+{
+    if (s.logging.log_expired)
+    {
+        terminal_line line;
+        line.text        = "Route Expired";
+        line.color.r     = 232;
+        line.color.g     = 106;
+        line.color.b     = 92;
+        line.color.alpha = 255;
+
+        add_line(s.terminal, line);
+    }
+}
+
+stdx::optional<size_t> get_the_lane_we_are_on(settings &s)
+{
+    auto current_lane_index = local_map::statik::distance_to_lane_index(
+        s.annotated_route, s.event_route.create_route_simulated_distance.current_distance_m);
+    return current_lane_index;
+}
+
+void open_popup_button(std::string const &button, std::string const &popup)
+{
+    if (ImGui::Button(button.c_str()))
+    {
+        ImGui::OpenPopup(popup.c_str());
+    }
+}
+
+void open_window_button(std::string const &button, window_properties &window)
+{
+    if (ImGui::Button(button.c_str()))
+    {
+        window.is_open = true;
+    }
+}
+
+void percentage_slider(int &b)
+{
+    ImGui::DragInt("percent", &b, 1, 0, 100, "%d%%");
+    if (b < 0)
+    {
+        b = 0;
+    }
+    if (b > 100)
+    {
+        b = 100;
+    }
+}
+
+
+void decide_marking_strategy_option(settings &s)
+{
+    int choice = s.route_input.marking_strategy.placement.placement_strategy;
+    ImGui::RadioButton("Percentage", &choice, 0);
     ImGui::SameLine();
-    ShowHelpMarker("You create the data that comes from a \"translated route\"\nThen you configure your \"annotation "
-                   "strategy\" to get an \"event annotated route\".");
+    ImGui::RadioButton("Distance", &choice, 1);
+
+    // chose strategy
+    if (choice == 0)
+    {
+        s.route_input.marking_strategy.placement.placement_strategy
+            = local_map::statik::marker_placement_strategy_by_percentage;
+    }
+    else if (choice == 1)
+    {
+        s.route_input.marking_strategy.placement.placement_strategy
+            = local_map::statik::marker_placement_strategy_by_distance;
+    }
+}
+
+void decide_route_point_discovery(settings &s)
+{
+    int choice = s.route_input.marking_strategy.point_discovery;
+    ImGui::RadioButton("On Lanes", &choice, 0);
+    ImGui::SameLine();
+    ImGui::RadioButton("Over Route", &choice, 1);
+
+    // chose strategy
+    if (choice == 0)
+    {
+        s.route_input.marking_strategy.point_discovery = local_map::statik::route_point_discovery_by_lane;
+    }
+    else if (choice == 1)
+    {
+        s.route_input.marking_strategy.point_discovery = local_map::statik::route_point_discovery_by_overall_route;
+    }
+}
+
+void string_input(
+    std::string const &label, std::string const &unique_id, int label_width, std::string &content, int content_width)
+{
+    char buf[64];
+    std::strcpy(buf, content.c_str());
+
+    ImGui::PushItemWidth(label_width);
+    ImGui::Text("%s", label.c_str());
+    ImGui::PopItemWidth();
+
+    ImGui::SameLine();
+    ImGui::PushItemWidth(content_width);
+    ImGui::InputText(unique_id.c_str(), buf, IM_ARRAYSIZE(buf));
+    ImGui::PopItemWidth();
+    content = std::string(buf);
+}
+
+void set_regeneration_events_through_lane_algorithms(local_map::statik::route_creation_input & route_input,
+                                                     local_map::statik::event_annotated_route &annotated_route)
+{
+    // set regeneration events
+    auto markings = local_map::statik::mark_lanes(local_map::statik::create_route_from_test_input(route_input),
+                                                  route_input.marking_strategy);
+
+    if (route_input.marking_strategy.placement.placement_strategy
+        == local_map::statik::marker_placement_strategy_by_percentage)
+    {
+        set_regeneration_events(annotated_route,
+                                markings,
+                                route_input.marking_strategy.placement.reason,
+                                route_input.marking_strategy.placement.placement_along_lane_pct);
+    }
+    else if (route_input.marking_strategy.placement.placement_strategy
+             == local_map::statik::marker_placement_strategy_by_distance)
+    {
+        set_regeneration_events(annotated_route,
+                                markings,
+                                route_input.marking_strategy.placement.reason,
+                                route_input.marking_strategy.placement.distance_offset_from_lane_m);
+    }
+}
+
+void set_regeneration_events_through_selected_region(local_map::statik::route_creation_input & route_input,
+                                                     local_map::statik::event_annotated_route &annotated_route)
+{
+
+    set_regeneration_events(annotated_route,
+                            route_input.marking_strategy.placement.reason,
+                            route_input.marking_strategy.placement.start_distance_offset_from_lane_m,
+                            route_input.marking_strategy.placement.end_distance_offset_from_lane_m);
+}
+
+void apply_all_marking_inputs(settings &s)
+{
+
+    // apply the saved individual markings and regions
+    for (auto it : s.applied_route_inputs)
+    {
+        if (it.marking_strategy.point_discovery == local_map::statik::route_point_discovery_by_lane)
+        {
+            set_regeneration_events_through_lane_algorithms(it, s.annotated_route);
+        }
+        else
+        {
+            set_regeneration_events_through_selected_region(it, s.annotated_route);
+        }
+    }
+
+
+    // how to draw currently (not applied) marking selection
+    if (s.route_input.marking_strategy.point_discovery == local_map::statik::route_point_discovery_by_lane)
+    {
+        set_regeneration_events_through_lane_algorithms(s.route_input, s.annotated_route);
+    }
+    else
+    {
+        set_regeneration_events_through_selected_region(s.route_input, s.annotated_route);
+    }
+}
+
+void render_file_menu(settings &s)
+{
+    render_menu_bar([&]() {
+        render_menu("File", [&]() {
+            if (ImGui::MenuItem("Load", NULL, false))
+            {
+            }
+            if (ImGui::MenuItem("Save", NULL, false))
+            {
+            }
+        });
+        handle_menu_item(s.create_route_window_settings);
+        handle_menu_item(s.terminal.window);
+        handle_menu_item(s.profile_window);
+    });
+}
+
+void core_algorithm_logic(settings &s)
+{
+    // refresh lane data
+    // update and render the route
+    auto previous_current_index  = s.annotated_route.evaluation_range.current;
+    auto previous_previous_index = s.annotated_route.evaluation_range.previous;
+    auto previous_distance       = s.event_route.create_route_simulated_distance.current_distance_m;
+    s.annotated_route            = local_map::statik::create_event_route(s.route_input);
+
+    // preserve event window
+    s.annotated_route.evaluation_range.current  = previous_current_index;
+    s.annotated_route.evaluation_range.previous = previous_previous_index;
+
+    apply_all_marking_inputs(s);
+
+
+    // attempt to move forward in our simulated progression
+    bool distance_was_adjusted = move_virtual_av_through_route(s.annotated_route, s.event_route);
+
+    if (distance_was_adjusted)
+    {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        if (previous_distance > s.event_route.create_route_simulated_distance.current_distance_m)
+        {
+            possibly_log_expired_route(s);
+            local_map::statik::expire_route(s.annotated_route);
+        }
+        else
+        {
+            possibly_log_new_route(s);
+            auto current_lane_index = get_the_lane_we_are_on(s);
+            if (current_lane_index)
+            {
+                local_map::statik::advance_forward_on_route(s.annotated_route, *current_lane_index);
+            }
+        }
+
+        possibly_log_event_occurance(s);
+
+        // calculate current frame's latency
+        auto   end_time = std::chrono::high_resolution_clock::now();
+        double latency  = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
+        s.profiling.current_frame_latency = latency;
+
+        // add latency for displaying
+        s.profiling.history.emplace_back(latency);
+
+        // start removing elements if we have too many
+        while (s.profiling.history.size() > s.profiling.max_history)
+        {
+            s.profiling.history.erase(s.profiling.history.begin());
+        }
+
+        // possibly auto scale
+        if (s.profiling.auto_scale)
+        {
+            s.profiling.scale_min
+                = static_cast<int>(*std::min_element(std::begin(s.profiling.history), std::end(s.profiling.history)));
+            s.profiling.scale_max
+                = static_cast<int>(*std::max_element(std::begin(s.profiling.history), std::end(s.profiling.history)));
+        }
+    }
+}
+
+void render(settings &s)
+{
+
+    render_file_menu(s);
+    core_algorithm_logic(s);
+
+
+    // draw the currently annotated route:
+    render(s.annotated_route, s.event_route);
+
+    ImGui::Text("Create an annotated route");
+    ImGui::SameLine();
+    ShowHelpMarker(
+        "You can create the data that comes from a \"translated route\"\nThen you configure your \"annotation "
+        "strategies\" to get an \"event annotated route\".");
 
     std::string name;
-    static char buf[64];
+    string_input("Name: ", "##name", 50, s.route_input.name, 150);
 
-    ImGui::PushItemWidth(50);
-    ImGui::Text("Name: ");
-    ImGui::PopItemWidth();
+
+    ImGui::SetNextWindowSize(ImVec2(100, 120));
+    render_popup("lane_click", [&]() {
+        bool b = false;
+        ImGui::MenuItem("Mark", "", &b);
+
+        // ImGui::PushItemWidth(60);
+        // ImGui::DragInt(
+        //     "percent", &s.route_input.marking_strategy.placement.placement_along_lane_pct, 1, 0, 100,
+        //     "%d%%");
+        // ImGui::PopItemWidth();
+    });
 
     ImGui::SameLine();
-    ImGui::PushItemWidth(150);
-    ImGui::InputText("##name", buf, IM_ARRAYSIZE(buf));
-    ImGui::PopItemWidth();
-    name = std::string(buf);
+    open_window_button("Mark", s.mark_route_window);
 
 
     ImGui::Text("Lanes: ");
@@ -504,22 +1654,23 @@ void render(std::vector<local_map::statik::route_creation_input> &inputs,
     if (ImGui::Button("+"))
     {
         local_map::statik::lane_creation_input i;
-        route.lane_input_sequence.emplace_back(i);
+        i.distance_m = 20;
+        s.route_input.lane_input_sequence.emplace_back(i);
     }
     ImGui::PopStyleColor(3);
 
     // clear all the lanes on the individual route
-    if (!route.lane_input_sequence.empty())
+    if (!s.route_input.lane_input_sequence.empty())
     {
         ImGui::SameLine();
         colorize_red_button();
         if (ImGui::Button("x"))
         {
-            route.lane_input_sequence.clear();
+            s.route_input.lane_input_sequence.clear();
         }
         ImGui::PopStyleColor(3);
 
-        ImGui::Columns(2, NULL, false);
+        ImGui::Columns(2, nullptr, false);
         ImGui::SetColumnWidth(0, 60);
         ImGui::SetColumnWidth(1, 120);
 
@@ -540,38 +1691,32 @@ void render(std::vector<local_map::statik::route_creation_input> &inputs,
 
     // add a new lane to the individual route
 
-    ImGui::Columns(3, NULL, false);
+    ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 60);
     ImGui::SetColumnWidth(1, 60);
     ImGui::SetColumnWidth(2, 60);
     std::set<size_t> remove_indexes;
     std::set<size_t> insert_indexes;
-    for (size_t i = 0; i < route.lane_input_sequence.size(); ++i)
+    for (size_t i = 0; i < s.route_input.lane_input_sequence.size(); ++i)
     {
-        render(route.lane_input_sequence[i], i, remove_indexes, insert_indexes);
+        render(s.route_input.lane_input_sequence[i], i, remove_indexes, insert_indexes);
     }
     ImGui::Columns(1);
 
     // apply inserts and deletes
     for (auto it : remove_indexes)
     {
-        route.lane_input_sequence.erase(route.lane_input_sequence.begin() + it);
+        s.route_input.lane_input_sequence.erase(s.route_input.lane_input_sequence.begin() + it);
     }
     for (auto it : insert_indexes)
     {
-        local_map::statik::lane_creation_input i = *(route.lane_input_sequence.begin() + it);
-        route.lane_input_sequence.insert(route.lane_input_sequence.begin() + it + 1, i);
+        local_map::statik::lane_creation_input i = *(s.route_input.lane_input_sequence.begin() + it);
+        s.route_input.lane_input_sequence.insert(s.route_input.lane_input_sequence.begin() + it + 1, i);
     }
 
-
-    // Add the route to the global set of routes
-    if (ImGui::Button("Save"))
-    {
-        inputs.emplace_back(route);
-    }
-
-
-    ImGui::End();
+    // this is for forcing the width based on the drawn lane
+    ImGui::SetCursorPosX((s.route_input.lane_input_sequence.size() * 30) + 180);
+    ImGui::InvisibleButton("sdsdf", ImVec2(5, 5));
 }
 
 void setup_sdl()
@@ -623,7 +1768,7 @@ bool user_asked_to_quit(SDL_Window *window, SDL_Event event)
     return false;
 }
 
-SDL_Window *create_main_window()
+SDL_Window *create_main_window(std::string const &window_name)
 {
     // Setup window
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -631,7 +1776,7 @@ SDL_Window *create_main_window()
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    SDL_Window *window = SDL_CreateWindow("Annotating Routes",
+    SDL_Window *window = SDL_CreateWindow(window_name.c_str(),
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
                                           1280,
@@ -671,14 +1816,11 @@ bool poll_for_events(SDL_Window *window)
     return done;
 }
 
-void create_route_window(settings &                                            s,
-                         std::vector<local_map::statik::route_creation_input> &inputs,
-                         local_map::statik::route_creation_input &             route_input)
+void create_route_window(settings &s)
 {
 
     // get input routes
-    create_window(s.create_route_window);
-    render(inputs, route_input, s.event_route);
+    render_window(s.create_route_window, [&]() { render(s); });
 }
 
 void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
@@ -693,31 +1835,479 @@ void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, Im
     SDL_GL_SwapWindow(window);
 }
 
-void handle_menu_item(window_properties &window)
-{
-    if (ImGui::MenuItem(window.menu.title.c_str(), window.menu.shortcut.c_str()))
-    {
-        window.is_open = true;
-    }
-}
-
 void create_main_menu(settings &s)
 {
-    if (ImGui::BeginMainMenuBar())
+    render_main_menu_bar([&]() { handle_menu_item(s.create_route_window); });
+}
+
+void choose_car(settings &s)
+{
+    if (s.event_route.car_selection == 0)
     {
-        handle_menu_item(s.create_route_window);
-        handle_menu_item(s.annotated_route_window);
-        ImGui::EndMainMenuBar();
+        s.event_route.draw_car = false;
+    }
+    else if (s.event_route.car_selection == 1)
+    {
+        s.event_route.car.set_image(s.event_route.xenon_car);
+        s.event_route.draw_car = true;
+    }
+    else if (s.event_route.car_selection == 2)
+    {
+        s.event_route.car.set_image(s.event_route.krypton_car);
+        s.event_route.draw_car = true;
+    }
+    else if (s.event_route.car_selection == 3)
+    {
+        s.event_route.car.set_image(s.event_route.pride_car);
+        s.event_route.draw_car = true;
     }
 }
 
-int main()
+void create_route_window_settings(settings &s)
 {
 
-    // settings for the translation route tool
+    render_window(s.create_route_window_settings, [&]() {
+
+        ImGuiTreeNodeFlags flags = 0;
+        flags |= ImGuiTreeNodeFlags_DefaultOpen;
+        if (ImGui::CollapsingHeader(s.setting_route_header.name.c_str(), flags))
+        {
+            ImGui::Checkbox("Lanes", &s.event_route.draw_lanes);
+            ImGui::Checkbox("Lane Indexes", &s.event_route.draw_lane_indexes);
+            ImGui::Checkbox("Highlight Marked Lanes", &s.event_route.highlight_marked_lane);
+            ImGui::Checkbox("Event Markings", &s.event_route.draw_lane_markers);
+            ImGui::Checkbox("Event Regions", &s.event_route.draw_event_regions);
+            ImGui::Checkbox("Submaps", &s.event_route.draw_submaps);
+            ImGui::Checkbox("Submap Names", &s.event_route.draw_submap_names);
+        }
+        if (ImGui::CollapsingHeader(s.setting_location_header.name.c_str()))
+        {
+            ImGui::Checkbox("Progress Marker##show_location", &s.event_route.draw_distance_progress);
+            ImGui::RadioButton("None", &s.event_route.car_selection, 0);
+            ImGui::SameLine();
+            ImGui::RadioButton("Xenon", &s.event_route.car_selection, 1);
+            ImGui::SameLine();
+            ImGui::RadioButton("Krypton", &s.event_route.car_selection, 2);
+            ImGui::SameLine();
+            ImGui::RadioButton("Pride", &s.event_route.car_selection, 3);
+            choose_car(s);
+            ImGui::Checkbox("Route Distance (m)", &s.event_route.distance_marker.show_total_distance_covered);
+            ImGui::Checkbox("Route Distance (px)", &s.event_route.distance_marker.show_total_pixels_covered);
+            ImGui::Checkbox("Lane Distance (m)", &s.event_route.distance_marker.show_current_distance_on_lane);
+            ImGui::Checkbox("Lane Distance (px)", &s.event_route.distance_marker.show_current_pixels_on_lane);
+            ImGui::Checkbox("Speed (m/s)", &s.event_route.distance_marker.show_meters_per_second);
+            ImGui::Checkbox("Speed (mph)", &s.event_route.distance_marker.show_mph);
+        }
+        if (ImGui::CollapsingHeader(s.setting_event_window_header.name.c_str()))
+        {
+            ImGui::Checkbox("Show##event_window", &s.event_route.draw_evaluation_window);
+            s.event_route.draw_evaluation_range = s.event_route.draw_evaluation_window;
+        }
+        if (ImGui::CollapsingHeader(s.setting_time_header.name.c_str()))
+        {
+            ImGui::SliderFloat("Rate (s)", &s.event_route.create_route_simulated_distance.update_rate_s, .01, 1);
+            ImGui::SliderFloat("Step (m)", &s.event_route.create_route_simulated_distance.step_amount_m, 0, 20);
+        }
+    });
+}
+
+void set_columns(std::vector<int> const &widths)
+{
+    ImGui::Columns(widths.size(), nullptr, false);
+    for (int i = 0; i < widths.size(); ++i)
+    {
+        ImGui::SetColumnWidth(i, widths[i]);
+    }
+}
+
+void lane_algorithm_selection(settings &s)
+{
+
+    std::vector<int> columns3{150, 150, 150};
+    std::vector<int> columns2{150, 300};
+
+    ImGuiTreeNodeFlags flags = 0;
+    flags |= ImGuiTreeNodeFlags_DefaultOpen;
+    if (ImGui::CollapsingHeader(s.algorithm_header.name.c_str(), flags))
+    {
+        set_columns(columns3);
+        ImGui::Separator();
+        ImGui::Text("Index:");
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("First", &s.route_input.marking_strategy.lane_selection.first);
+        ImGui::NextColumn();
+        ImGui::Checkbox("Last", &s.route_input.marking_strategy.lane_selection.last);
+        ImGui::NextColumn();
+        ImGui::Checkbox("All", &s.route_input.marking_strategy.lane_selection.all);
+        ImGui::NextColumn();
+
+        set_columns(columns2);
+        ImGui::Checkbox("Lane Index", &s.route_input.marking_strategy.lane_selection.specific_lane_index);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(120);
+        select_positive_int("##lane_index", s.route_input.marking_strategy.placement.lane_index);
+        ImGui::PopItemWidth();
+        ImGui::NextColumn();
+
+        set_columns(columns3);
+        ImGui::Separator();
+        ImGui::Text("Distance:");
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+
+        set_columns(columns2);
+        ImGui::Checkbox("Exceeding", &s.route_input.marking_strategy.lane_selection.exceeding_accumulated_distance);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(120);
+        drag_positive_double("Distance (m)##exceeding_distance",
+                             s.route_input.marking_strategy.lane_selection.exceeding_distance_m);
+        ImGui::PopItemWidth();
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("Before Exceeding",
+                        &s.route_input.marking_strategy.lane_selection.before_exceeding_accumulated_distance);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(120);
+        drag_positive_double("Distance (m)##before_exceeding_distance",
+                             s.route_input.marking_strategy.lane_selection.before_exceeding_distance_m);
+        ImGui::PopItemWidth();
+        ImGui::NextColumn();
+
+        set_columns(columns3);
+        ImGui::Separator();
+        ImGui::Text("Submaps:");
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("Prior Loop", &s.route_input.marking_strategy.lane_selection.prior_to_loop);
+        ImGui::NextColumn();
+        ImGui::Checkbox("First Lane Loop", &s.route_input.marking_strategy.lane_selection.first_lane_loop);
+        ImGui::NextColumn();
+        ImGui::Checkbox("All Lanes Loop", &s.route_input.marking_strategy.lane_selection.all_lanes_loop);
+        ImGui::NextColumn();
+
+        ImGui::Checkbox("After Loop", &s.route_input.marking_strategy.lane_selection.after_loop);
+        ImGui::NextColumn();
+        ImGui::Checkbox("Submap Transition", &s.route_input.marking_strategy.lane_selection.submap_transition);
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+
+        set_columns(columns2);
+        ImGui::Checkbox("Regeneration SLA", &s.route_input.marking_strategy.lane_selection.regen_sla);
+        ImGui::NextColumn();
+        ImGui::PushItemWidth(120);
+        drag_positive_double("Distance (m)##sla_distance",
+                             s.route_input.marking_strategy.lane_selection.sla_distance_m);
+        ImGui::PopItemWidth();
+        ImGui::NextColumn();
+        ImGui::Columns(1);
+    }
+}
+
+void lane_algorithm_placement_selection(settings &s)
+{
+
+    if (ImGui::CollapsingHeader(s.marking_header.name.c_str()))
+    {
+        ImGui::Text("Choose marker placement:");
+        decide_marking_strategy_option(s);
+
+
+        // show the appropriate GUI elements for the placement strategy chosen
+        if (s.route_input.marking_strategy.placement.placement_strategy
+            == local_map::statik::marker_placement_strategy_by_percentage)
+        {
+            int i = s.route_input.marking_strategy.placement.placement_along_lane_pct;
+            percentage_slider(i);
+            s.route_input.marking_strategy.placement.placement_along_lane_pct = i;
+        }
+        else if (s.route_input.marking_strategy.placement.placement_strategy
+                 == local_map::statik::marker_placement_strategy_by_distance)
+        {
+            drag_positive_double("##distance_placement_slider",
+                                 s.route_input.marking_strategy.placement.distance_offset_from_lane_m);
+            ImGui::SameLine();
+            ImGui::Text("Distance (m)");
+        }
+    }
+}
+
+void route_region_placement_selection(settings &s)
+{
+
+    ImGuiTreeNodeFlags flags = 0;
+    flags |= ImGuiTreeNodeFlags_DefaultOpen;
+    if (ImGui::CollapsingHeader(s.marking_region_header.name.c_str(), flags))
+    {
+        ImGui::Text("Choose marked region placement:");
+
+        // // decide_marking_strategy_option(s);
+        // drag_positive_double("##distance_region_start",
+        //                   s.route_input.marking_strategy.placement.start_distance_offset_from_lane_m);
+        // ImGui::SameLine();
+        // ImGui::Text("Start (m)");
+        // drag_positive_double("##distance_region_end",
+        //                   s.route_input.marking_strategy.placement.end_distance_offset_from_lane_m);
+
+        // ImGui::SameLine();
+        // ImGui::Text("End (m)");
+
+
+        int begin_i = s.route_input.marking_strategy.placement.start_distance_offset_from_lane_m;
+        int end_i   = s.route_input.marking_strategy.placement.end_distance_offset_from_lane_m;
+        ImGui::DragIntRange2("##region_range_slider", &begin_i, &end_i, 1, 0, 0, "start: %d m", "end: %d m");
+        s.route_input.marking_strategy.placement.start_distance_offset_from_lane_m = begin_i;
+        s.route_input.marking_strategy.placement.end_distance_offset_from_lane_m   = end_i;
+
+        // ensure values stay positive
+        if (s.route_input.marking_strategy.placement.start_distance_offset_from_lane_m < 0)
+        {
+            s.route_input.marking_strategy.placement.start_distance_offset_from_lane_m = 0;
+        }
+        if (s.route_input.marking_strategy.placement.end_distance_offset_from_lane_m < 0)
+        {
+            s.route_input.marking_strategy.placement.end_distance_offset_from_lane_m = 0;
+        }
+    }
+}
+
+void apply_individual_markings(settings &s)
+{
+    auto markings = local_map::statik::mark_lanes(local_map::statik::create_route_from_test_input(s.route_input),
+                                                  s.route_input.marking_strategy);
+    for (auto index : markings)
+    {
+        local_map::statik::route_creation_input single_marking;
+        single_marking.lane_input_sequence              = s.route_input.lane_input_sequence;
+        single_marking.marking_strategy.point_discovery = s.route_input.marking_strategy.point_discovery;
+        single_marking.marking_strategy.lane_selection.specific_lane_index = true;
+        single_marking.marking_strategy.placement                          = s.route_input.marking_strategy.placement;
+        single_marking.marking_strategy.placement.lane_index               = index;
+        s.applied_route_inputs.emplace_back(single_marking);
+    }
+}
+
+void apply_event_regions(settings &s)
+{
+    local_map::statik::route_creation_input single_marking;
+    single_marking.lane_input_sequence              = s.route_input.lane_input_sequence;
+    single_marking.marking_strategy.point_discovery = s.route_input.marking_strategy.point_discovery;
+    single_marking.marking_strategy.placement       = s.route_input.marking_strategy.placement;
+    s.applied_route_inputs.emplace_back(single_marking);
+}
+
+void clear_marker_menu_selections(settings &s)
+{
+    s.route_input.marking_strategy.placement.reason                                     = "";
+    s.route_input.marking_strategy.lane_selection.first                                 = false;
+    s.route_input.marking_strategy.lane_selection.last                                  = false;
+    s.route_input.marking_strategy.lane_selection.all                                   = false;
+    s.route_input.marking_strategy.lane_selection.specific_lane_index                   = false;
+    s.route_input.marking_strategy.lane_selection.exceeding_accumulated_distance        = false;
+    s.route_input.marking_strategy.lane_selection.before_exceeding_accumulated_distance = false;
+    s.route_input.marking_strategy.lane_selection.prior_to_loop                         = false;
+    s.route_input.marking_strategy.lane_selection.first_lane_loop                       = false;
+    s.route_input.marking_strategy.lane_selection.all_lanes_loop                        = false;
+    s.route_input.marking_strategy.lane_selection.after_loop                            = false;
+    s.route_input.marking_strategy.lane_selection.submap_transition                     = false;
+    s.route_input.marking_strategy.lane_selection.regen_sla                             = false;
+}
+
+void apply_marker_menu(settings &s)
+{
+    string_input("Label: ", "##mark_reason", 50, s.route_input.marking_strategy.placement.reason, 150);
+    ImGui::SameLine();
+    if (ImGui::Button("Apply"))
+    {
+        if (s.route_input.marking_strategy.point_discovery == local_map::statik::route_point_discovery_by_lane)
+        {
+            apply_individual_markings(s);
+        }
+        else
+        {
+            apply_event_regions(s);
+        }
+        clear_marker_menu_selections(s);
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Clear"))
+    {
+    }
+}
+
+void create_mark_route_window(settings &s)
+{
+
+    render_window(s.mark_route_window, [&]() {
+        decide_route_point_discovery(s);
+
+        if (s.route_input.marking_strategy.point_discovery == local_map::statik::route_point_discovery_by_lane)
+        {
+            lane_algorithm_selection(s);
+            lane_algorithm_placement_selection(s);
+        }
+        else
+        {
+            route_region_placement_selection(s);
+        }
+        apply_marker_menu(s);
+    });
+}
+
+void create_terminal(settings &s)
+{
+
+    color bg_color;
+
+    bg_color.r     = 0;
+    bg_color.g     = 0;
+    bg_color.b     = 0;
+    bg_color.alpha = 255;
+
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, to_imgui_color(bg_color));
+    render_window(s.terminal.window, [&]() {
+        render_menu_bar([&]() {
+            render_menu("Settings", [&]() {
+                ImGui::Checkbox("new routes", &s.logging.log_new);
+                ImGui::Checkbox("expired routes", &s.logging.log_expired);
+                ImGui::Checkbox("events", &s.logging.log_regen);
+            });
+            if (ImGui::MenuItem("Clear"))
+            {
+                s.terminal.lines.clear();
+            }
+        });
+
+        ImGui::BeginChild("scrolling", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+
+        for (auto it : s.terminal.lines)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, to_imgui_color(it.color));
+            ImGui::TextUnformatted(it.text.c_str());
+            ImGui::PopStyleColor();
+        }
+
+        // ImGui::TextUnformatted(s.terminal.buf.begin());
+        ImGui::SetScrollHere(1.0f);
+        ImGui::EndChild();
+    });
+    ImGui::PopStyleColor();
+}
+
+void create_profiler(settings &s)
+{
+    render_window(s.profile_window, [&]() {
+        render_menu_bar([&]() {
+            render_menu("Settings", [&]() {
+                // ImGui::Checkbox("new routes", &s.logging.log_new);
+                // ImGui::Checkbox("expired routes", &s.logging.log_expired);
+                // ImGui::Checkbox("events", &s.logging.log_regen);
+            });
+        });
+
+        // PlotLines(const char* label, const float* values, int values_count, int values_offset = 0, const
+        // char* overlay_text = NULL,
+        // float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0,0), int stride =
+        // sizeof(float));
+        //
+
+        std::vector<int> columns3{250, 350, 250};
+        set_columns(columns3);
+
+        ImGui::Text("%s", s.profiling.title.c_str());
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+        ImGui::NextColumn();
+
+        ImGui::Text("%s", "History:");
+        ImGui::SameLine();
+        drag_positive_int("##history", s.profiling.max_history);
+        ImGui::NextColumn();
+
+        ImGui::Text("%s", "Scale:");
+        ImGui::SameLine();
+        ImGui::DragIntRange2("##region_range_slider",
+                             &s.profiling.scale_min,
+                             &s.profiling.scale_max,
+                             1,
+                             0,
+                             0,
+                             "min: %d ns",
+                             "max: %d ns");
+        ImGui::NextColumn();
+        ImGui::Checkbox("Auto Scale", &s.profiling.auto_scale);
+        ImGui::NextColumn();
+        ImGui::Columns(1);
+
+        // adjust plot based on window size
+        auto window_size   = ImGui::GetWindowSize();
+        s.profiling.width  = window_size.x - 32; // i guessed
+        s.profiling.height = window_size.y - 94; // i guessed
+
+        ImGui::PlotLines(s.profiling.label.c_str(),
+                         s.profiling.history.data(),
+                         s.profiling.history.size(),
+                         s.profiling.values_offset,
+                         s.profiling.overlay_text.c_str(),
+                         s.profiling.scale_min,
+                         s.profiling.scale_max,
+                         ImVec2(s.profiling.width, s.profiling.height));
+
+
+    });
+}
+
+void before_frame_logic(settings &s)
+{
+    choose_car(s);
+}
+
+void frame_logic(settings &s)
+{
+    create_main_menu(s);
+
+    // for testing
+    //bool show_demo_window = true;
+    //ImGui::ShowDemoWindow(&show_demo_window);
+
+    if (s.create_route_window.is_open)
+    {
+        create_route_window(s);
+    }
+
+    if (s.create_route_window_settings.is_open)
+    {
+        create_route_window_settings(s);
+    }
+
+    if (s.mark_route_window.is_open)
+    {
+        create_mark_route_window(s);
+    }
+
+    if (s.terminal.window.is_open)
+    {
+        create_terminal(s);
+    }
+
+    if (s.profile_window.is_open)
+    {
+        create_profiler(s);
+    }
+}
+
+settings get_settings()
+{
+    // settings for the route annotation tool
     settings s;
-    s.create_route_window.title              = "Create a translated route";
-    s.create_route_window.menu.title         = "Create Routes";
+    s.program_window_name                    = "Annotating Routes";
+    s.create_route_window.title              = "Create Route";
+    s.create_route_window.menu.title         = "Create Route";
     s.create_route_window.menu.shortcut      = "CTRL+N";
     s.create_route_window.position.x         = 20;
     s.create_route_window.position.y         = 38;
@@ -727,7 +2317,7 @@ int main()
     s.create_route_window.size.condition     = ImGuiCond_Once;
     s.create_route_window.titlebar           = true;
     s.create_route_window.scrollbar          = true;
-    s.create_route_window.has_menu           = false;
+    s.create_route_window.has_menu           = true;
     s.create_route_window.move               = true;
     s.create_route_window.resize             = true;
     s.create_route_window.collapse           = true;
@@ -735,35 +2325,134 @@ int main()
     s.create_route_window.close              = true;
     s.create_route_window.is_open            = false;
     s.create_route_window.focus              = false;
+    s.create_route_window.refocus_on_use     = false;
     s.create_route_window.bg_alpha           = 1;
 
-    // settings for the event annotation simulation tool
-    s.annotated_route_window.title              = "Event Annotated Routes";
-    s.annotated_route_window.menu.title         = "Simulate Events";
-    s.annotated_route_window.menu.shortcut      = "CTRL+S";
-    s.annotated_route_window.position.x         = 830;
-    s.annotated_route_window.position.y         = 20;
-    s.annotated_route_window.position.condition = ImGuiCond_Once;
-    s.annotated_route_window.size.width         = 400;
-    s.annotated_route_window.size.height        = 600;
-    s.annotated_route_window.size.condition     = ImGuiCond_Once;
-    s.annotated_route_window.titlebar           = true;
-    s.annotated_route_window.scrollbar          = true;
-    s.annotated_route_window.has_menu           = false;
-    s.annotated_route_window.move               = true;
-    s.annotated_route_window.resize             = true;
-    s.annotated_route_window.collapse           = true;
-    s.annotated_route_window.nav                = true;
-    s.annotated_route_window.close              = true;
-    s.annotated_route_window.is_open            = false;
-    s.annotated_route_window.focus              = false;
-    s.annotated_route_window.bg_alpha           = 1;
+    s.mark_route_window.title              = "Mark Route";
+    s.mark_route_window.menu.title         = "Mark Route";
+    s.mark_route_window.menu.shortcut      = "CTRL+M";
+    s.mark_route_window.position.x         = 200;
+    s.mark_route_window.position.y         = 250;
+    s.mark_route_window.position.condition = ImGuiCond_Once;
+    s.mark_route_window.size.width         = 520;
+    s.mark_route_window.size.height        = 350;
+    s.mark_route_window.size.condition     = ImGuiCond_Once;
+    s.mark_route_window.titlebar           = true;
+    s.mark_route_window.scrollbar          = true;
+    s.mark_route_window.has_menu           = false;
+    s.mark_route_window.move               = true;
+    s.mark_route_window.resize             = true;
+    s.mark_route_window.collapse           = true;
+    s.mark_route_window.nav                = false;
+    s.mark_route_window.close              = true;
+    s.mark_route_window.is_open            = false;
+    s.mark_route_window.focus              = false;
+    s.mark_route_window.refocus_on_use     = true;
+    s.mark_route_window.bg_alpha           = 1;
+
+    s.create_route_window_settings.title              = "Settings";
+    s.create_route_window_settings.menu.title         = "Settings";
+    s.create_route_window_settings.menu.shortcut      = "CTRL+S";
+    s.create_route_window_settings.position.x         = 500;
+    s.create_route_window_settings.position.y         = 50;
+    s.create_route_window_settings.position.condition = ImGuiCond_Always;
+    s.create_route_window_settings.size.width         = 300;
+    s.create_route_window_settings.size.height        = 500;
+    s.create_route_window_settings.size.condition     = ImGuiCond_Always;
+    s.create_route_window_settings.titlebar           = true;
+    s.create_route_window_settings.scrollbar          = true;
+    s.create_route_window_settings.has_menu           = false;
+    s.create_route_window_settings.move               = true;
+    s.create_route_window_settings.resize             = true;
+    s.create_route_window_settings.collapse           = true;
+    s.create_route_window_settings.nav                = false;
+    s.create_route_window_settings.close              = true;
+    s.create_route_window_settings.is_open            = false;
+    s.create_route_window_settings.focus              = false;
+    s.create_route_window_settings.refocus_on_use     = true;
+    s.create_route_window_settings.bg_alpha           = 1;
+
+    s.terminal.window.title              = "Log";
+    s.terminal.window.menu.title         = "Log";
+    s.terminal.window.menu.shortcut      = "CTRL+L";
+    s.terminal.window.position.x         = 500;
+    s.terminal.window.position.y         = 50;
+    s.terminal.window.position.condition = ImGuiCond_Always;
+    s.terminal.window.size.width         = 300;
+    s.terminal.window.size.height        = 500;
+    s.terminal.window.size.condition     = ImGuiCond_Always;
+    s.terminal.window.titlebar           = true;
+    s.terminal.window.scrollbar          = true;
+    s.terminal.window.has_menu           = true;
+    s.terminal.window.move               = true;
+    s.terminal.window.resize             = true;
+    s.terminal.window.collapse           = true;
+    s.terminal.window.nav                = false;
+    s.terminal.window.close              = true;
+    s.terminal.window.is_open            = false;
+    s.terminal.window.focus              = false;
+    s.terminal.window.refocus_on_use     = true;
+    s.terminal.window.bg_alpha           = 1;
+
+    s.profile_window.title              = "Profile";
+    s.profile_window.menu.title         = "Profile";
+    s.profile_window.menu.shortcut      = "CTRL+P";
+    s.profile_window.position.x         = 20;
+    s.profile_window.position.y         = 200;
+    s.profile_window.position.condition = ImGuiCond_Once;
+    s.profile_window.size.width         = 800;
+    s.profile_window.size.height        = 350;
+    s.profile_window.size.condition     = ImGuiCond_Always;
+    s.profile_window.titlebar           = true;
+    s.profile_window.scrollbar          = true;
+    s.profile_window.has_menu           = true;
+    s.profile_window.move               = true;
+    s.profile_window.resize             = true;
+    s.profile_window.collapse           = true;
+    s.profile_window.nav                = false;
+    s.profile_window.close              = true;
+    s.profile_window.is_open            = false;
+    s.profile_window.focus              = false;
+    s.profile_window.refocus_on_use     = true;
+    s.profile_window.bg_alpha           = 1;
+
+    s.algorithm_header.name    = "Algorithm";
+    s.algorithm_header.is_open = true;
+
+    s.marking_header.name    = "Marker Placement";
+    s.marking_header.is_open = false;
+
+    s.marking_region_header.name    = "Region Placement";
+    s.marking_region_header.is_open = false;
+
+    s.setting_route_header.name    = "Route";
+    s.setting_route_header.is_open = true;
+
+    s.setting_location_header.name    = "Location";
+    s.setting_location_header.is_open = false;
+
+    s.setting_event_window_header.name    = "Event Window";
+    s.setting_event_window_header.is_open = false;
+
+    s.setting_time_header.name    = "Time";
+    s.setting_time_header.is_open = false;
 
     // settings for rendering annotated routes
-    s.event_route.draw_lanes            = true;
-    s.event_route.draw_submaps          = true;
-    s.event_route.draw_evaluation_range = true;
-    s.event_route.distinct_colors       = distinct_colors();
+    s.event_route.draw_lanes             = true;
+    s.event_route.draw_lane_indexes      = false;
+    s.event_route.highlight_marked_lane  = true;
+    s.event_route.draw_lane_markers      = false;
+    s.event_route.draw_event_regions     = true;
+    s.event_route.draw_submaps           = true;
+    s.event_route.draw_submap_names      = false;
+    s.event_route.draw_evaluation_window = false;
+    s.event_route.draw_evaluation_range  = false;
+    s.event_route.draw_distance_progress = true;
+    s.event_route.draw_car               = true;
+    s.event_route.distinct_colors        = distinct_colors();
+
+    s.event_route.base_draw_position.x = 180;
+    s.event_route.base_draw_position.y = 85;
 
     s.event_route.lane_annotated.width              = 30;
     s.event_route.lane_annotated.height             = 30;
@@ -772,9 +2461,9 @@ int main()
     s.event_route.lane_annotated.color_border.g     = 0;
     s.event_route.lane_annotated.color_border.b     = 0;
     s.event_route.lane_annotated.color_border.alpha = 255;
-    s.event_route.lane_annotated.color_fill.r       = 116;
-    s.event_route.lane_annotated.color_fill.g       = 183;
-    s.event_route.lane_annotated.color_fill.b       = 224;
+    s.event_route.lane_annotated.color_fill.r       = 215;
+    s.event_route.lane_annotated.color_fill.g       = 219;
+    s.event_route.lane_annotated.color_fill.b       = 0;
     s.event_route.lane_annotated.color_fill.alpha   = 255;
 
     s.event_route.lane_unannotated.width              = 30;
@@ -784,10 +2473,61 @@ int main()
     s.event_route.lane_unannotated.color_border.g     = 0;
     s.event_route.lane_unannotated.color_border.b     = 0;
     s.event_route.lane_unannotated.color_border.alpha = 255;
-    s.event_route.lane_unannotated.color_fill.r       = 116;
-    s.event_route.lane_unannotated.color_fill.g       = 183;
-    s.event_route.lane_unannotated.color_fill.b       = 224;
+    s.event_route.lane_unannotated.color_fill.r       = 206;
+    s.event_route.lane_unannotated.color_fill.g       = 199;
+    s.event_route.lane_unannotated.color_fill.b       = 179;
     s.event_route.lane_unannotated.color_fill.alpha   = 255;
+
+    s.event_route.markings.center.x           = 0;
+    s.event_route.markings.center.y           = 15;
+    s.event_route.markings.radius             = 5;
+    s.event_route.markings.thickness          = 1;
+    s.event_route.markings.color_border.r     = 0;
+    s.event_route.markings.color_border.g     = 0;
+    s.event_route.markings.color_border.b     = 0;
+    s.event_route.markings.color_border.alpha = 255;
+    s.event_route.markings.color_fill.r       = 215;
+    s.event_route.markings.color_fill.g       = 219;
+    s.event_route.markings.color_fill.b       = 0;
+    s.event_route.markings.color_fill.alpha   = 255;
+
+    s.event_route.region_start.center.x           = 0;
+    s.event_route.region_start.center.y           = 25;
+    s.event_route.region_start.radius             = 5;
+    s.event_route.region_start.thickness          = 1;
+    s.event_route.region_start.color_border.r     = 0;
+    s.event_route.region_start.color_border.g     = 0;
+    s.event_route.region_start.color_border.b     = 0;
+    s.event_route.region_start.color_border.alpha = 255;
+    s.event_route.region_start.color_fill.r       = 219;
+    s.event_route.region_start.color_fill.g       = 171;
+    s.event_route.region_start.color_fill.b       = 0;
+    s.event_route.region_start.color_fill.alpha   = 255;
+
+    s.event_route.region_end.center.x           = 0;
+    s.event_route.region_end.center.y           = 25;
+    s.event_route.region_end.radius             = 5;
+    s.event_route.region_end.thickness          = 1;
+    s.event_route.region_end.color_border.r     = 0;
+    s.event_route.region_end.color_border.g     = 0;
+    s.event_route.region_end.color_border.b     = 0;
+    s.event_route.region_end.color_border.alpha = 255;
+    s.event_route.region_end.color_fill.r       = 219;
+    s.event_route.region_end.color_fill.g       = 171;
+    s.event_route.region_end.color_fill.b       = 0;
+    s.event_route.region_end.color_fill.alpha   = 255;
+
+    s.event_route.region_bar.width              = 0;
+    s.event_route.region_bar.height             = 5;
+    s.event_route.region_bar.thickness          = 1;
+    s.event_route.region_bar.color_border.r     = 0;
+    s.event_route.region_bar.color_border.g     = 0;
+    s.event_route.region_bar.color_border.b     = 0;
+    s.event_route.region_bar.color_border.alpha = 255;
+    s.event_route.region_bar.color_fill.r       = 219;
+    s.event_route.region_bar.color_fill.g       = 171;
+    s.event_route.region_bar.color_fill.b       = 0;
+    s.event_route.region_bar.color_fill.alpha   = 255;
 
     s.event_route.submap.width              = 30;
     s.event_route.submap.height             = 60;
@@ -801,12 +2541,64 @@ int main()
     s.event_route.submap.color_fill.b       = 224;
     s.event_route.submap.color_fill.alpha   = 255;
 
+    // settings for annotated route distance marker
+    s.event_route.distance_marker.show_total_pixels_covered     = false;
+    s.event_route.distance_marker.show_total_distance_covered   = true;
+    s.event_route.distance_marker.show_current_distance_on_lane = false;
+    s.event_route.distance_marker.show_current_pixels_on_lane   = false;
+    s.event_route.distance_marker.show_meters_per_second        = false;
+    s.event_route.distance_marker.show_mph                      = false;
+    s.event_route.distance_marker.shape.p1.x                    = 0;
+    s.event_route.distance_marker.shape.p1.y                    = 0;
+    s.event_route.distance_marker.shape.p2.x                    = 10;
+    s.event_route.distance_marker.shape.p2.y                    = 0;
+    s.event_route.distance_marker.shape.p3.x                    = 5;
+    s.event_route.distance_marker.shape.p3.y                    = 10;
+    s.event_route.distance_marker.shape.thickness               = 1;
+    s.event_route.distance_marker.shape.color_border.r          = 0;
+    s.event_route.distance_marker.shape.color_border.g          = 0;
+    s.event_route.distance_marker.shape.color_border.b          = 0;
+    s.event_route.distance_marker.shape.color_border.alpha      = 255;
+    s.event_route.distance_marker.shape.color_fill.r            = 0;
+    s.event_route.distance_marker.shape.color_fill.g            = 0;
+    s.event_route.distance_marker.shape.color_fill.b            = 0;
+    s.event_route.distance_marker.shape.color_fill.alpha        = 255;
 
+    s.event_route.event_window_color.r     = 0;
+    s.event_route.event_window_color.g     = 0;
+    s.event_route.event_window_color.b     = 0;
+    s.event_route.event_window_color.alpha = 255;
+
+    // distance simulation
+    s.event_route.create_route_simulated_distance.current_time_s     = 0;
+    s.event_route.create_route_simulated_distance.last_time_s        = 0;
+    s.event_route.create_route_simulated_distance.update_rate_s      = .2;
+    s.event_route.create_route_simulated_distance.step_amount_m      = 1;
+    s.event_route.create_route_simulated_distance.total_distance_m   = 0;
+    s.event_route.create_route_simulated_distance.current_distance_m = 0;
+
+    s.event_route.car_selection = 1;
+    auto config_directory       = xis::get_config_directory() / "tools" / "route_annotation";
+    config_directory            = "/home/thickey/Desktop/1/config/tools/route_annotation";
+    s.event_route.xenon_car     = config_directory.str() + "/img/xenon-small.png";
+    s.event_route.krypton_car   = config_directory.str() + "/img/krypton-small.png";
+    s.event_route.pride_car     = config_directory.str() + "/img/pride-small.png";
+
+    s.route_input.marking_strategy.lane_selection.before_exceeding_distance_m = 40;
+    s.route_input.marking_strategy.lane_selection.exceeding_distance_m        = 20;
+    s.route_input.marking_strategy.lane_selection.sla_distance_m              = 40;
+
+    return s;
+}
+
+template <typename T, typename U>
+int render_each_frame(std::string const &window_name, T before, U during)
+{
+    // set up GL and SDL
     setup_sdl();
-    auto glsl_version = decide_sdl_glsl_version();
-    auto window       = create_main_window();
-
-    SDL_GLContext gl_context = SDL_GL_CreateContext(window);
+    auto          glsl_version = decide_sdl_glsl_version();
+    auto          window       = create_main_window(window_name);
+    SDL_GLContext gl_context   = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1); // Enable vsync
     gl3wInit();
 
@@ -814,68 +2606,47 @@ int main()
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
-    (void) io;
-    // io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; // Enable Keyboard Controls
-
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
+    // clear frame color
+    //(not sure if this is important)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
-    // customize overall look
+    // customize imgui overall look
+    // (maybe move to overall settings)
     ImGui::StyleColorsLight();
     ImGuiStyle &style      = ImGui::GetStyle();
     style.FrameBorderSize  = 1;
     style.PopupBorderSize  = 1;
     style.WindowBorderSize = 1;
 
+    before();
 
-    // input
-    std::vector<local_map::statik::route_creation_input> inputs;
-
-    // start the route input with a single lane
-    local_map::statik::route_creation_input route_input;
-
-    bool done = false;
-    while (!done)
+    // render each frame until we decide to exit
+    while (!poll_for_events(window))
     {
-        done = poll_for_events(window);
-
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        create_main_menu(s);
-
-
-        // for testing
-        bool show_demo_window = true;
-        ImGui::ShowDemoWindow(&show_demo_window);
-
-        if (s.create_route_window.is_open)
-        {
-            create_route_window(s, inputs, route_input);
-        }
-
-        // turn inputs into event routes
-        std::vector<local_map::statik::event_annotated_route> event_routes;
-        for (auto const &it : inputs)
-        {
-            event_routes.emplace_back(local_map::statik::create_event_route(it));
-        }
-
-
-        if (s.annotated_route_window.is_open)
-        {
-            create_window(s.annotated_route_window);
-            render(event_routes, s.event_route);
-        }
-
+        // our custom frame logic
+        during();
 
         render_frame(window, gl_context, io, clear_color);
     }
 
     clean_up_resources(gl_context, window);
     return EXIT_SUCCESS;
+}
+
+int main()
+{
+    // get program's overall settings and state
+    auto s = get_settings();
+
+    // run frame logic per rendering cycle
+    return render_each_frame(s.program_window_name, [&]() { before_frame_logic(s); }, [&]() { frame_logic(s); });
 }
