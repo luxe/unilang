@@ -10,11 +10,30 @@ class
 
 ◀public: static▶ Pulse_Settings ☀Get_Pulse_Settings(Transfer_Account_Settings const& settings)❰
     
+    //basically extract enough info in any way possible so that we can determine what machine we are on
+    //
     std::string user = whoami();
     if (user == settings.home_name){
         return settings.home;
     }
     
+    std::string hostname = hostname();
+    if (hostname == settings.work_hostname){
+        return settings.work;
+    }
+    else if(hostname == settinsg.self_hostname){
+        return settings.self;
+    }
+    
+    //some other things
+    
+    //getting machine id
+    //hostnamectl has machine id and boot id
+    //there is apparently a machine-id program...
+    //the actual file is just /etc/machine-id
+    
+    std::cerr << "I have no idea where I am, so I don't know how to transfer files" << std::endl;
+    std::cerr << "Assuming you are on the same machine as the repo you are transcompiling to" << std::endl;
     return settings.work;
 ❱
 
@@ -22,14 +41,16 @@ class
     Transfer_Account_Settings settings;
     settings.home = Get_Pulse_Settings_For_Machine_Off_The_Network();
     settings.work = Get_Pulse_Settings_For_Machine_On_The_Network();
+    settings.self = Get_Pulse_Settings_For_The_Same_Machine();
     return settings;
 ❱
 
 ◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_Machine_Off_The_Network()❰
     Pulse_Settings pulse_settings;
+    pulse_settings.transfer_necessary = true;
     pulse_settings.computer_user = "thickey";
     pulse_settings.computer_name = "tower";
-    pulse_settings.lftp_password_location = Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
+    pulse_settings.lftp_password_location = get_lftp_password_location();
     pulse_settings.expected_process_name = "pulseUi";
     pulse_settings.program_to_start = "pulse";
     pulse_settings.lftp_tool_to_use = "lftp";
@@ -39,17 +60,42 @@ class
 ❱
 ◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_Machine_On_The_Network()❰
     Pulse_Settings pulse_settings;
+    pulse_settings.transfer_necessary = true;
     pulse_settings.computer_user = "thickey";
     
     //we could derive this on VMs and other machines on the same network
     //I found it with ifconfig on the machine where files are being transfered to
-    //not sure how to do it from actual VM
+    //not sure how to do it from the actual VM though.
     pulse_settings.computer_name = "192.168.253.1";
-    pulse_settings.lftp_password_location = Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
+    
+    pulse_settings.lftp_password_location = get_lftp_password_location();
     pulse_settings.expected_process_name = "pulseUi";
     pulse_settings.program_to_start = "pulse";
     pulse_settings.lftp_tool_to_use = "lftp";
     pulse_settings.pulse_required = false;
     pulse_settings.show_file_progress = true;
     return pulse_settings;
+❱
+
+//If we can get the unilang repo and the export repo on the same machine, that would be ideal.
+//In which case, we wouldn't need to do any network transfers.  
+//I'm not even sure that these "same machine" settings are even necessary.  
+//Because ideally, we would transfer directly into the export repo, and then we just "skip" the transfer step.
+◀private: static▶ Pulse_Settings ☀Get_Pulse_Settings_For_The_Same_Machine()❰
+    Pulse_Settings pulse_settings;
+    pulse_settings.transfer_necessary = false;
+    pulse_settings.computer_user = "thickey";
+    pulse_settings.computer_name = "tower";
+    pulse_settings.lftp_password_location = get_lftp_password_location();
+    pulse_settings.expected_process_name = "pulseUi";
+    pulse_settings.program_to_start = "pulse";
+    pulse_settings.lftp_tool_to_use = "lftp";
+    pulse_settings.pulse_required = true;
+    pulse_settings.show_file_progress = true;
+    return pulse_settings;
+❱
+
+
+◀private: static▶ std::string ☀get_lftp_password_location()❰
+    return Full_Path_To_Desktop() + "secret/computer_keys/LFTP_PASSWORD";
 ❱

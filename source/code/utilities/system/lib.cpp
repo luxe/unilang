@@ -4,3 +4,6 @@
 std::string whoami(){
 	return execute("whoami");
 }
+std::string hostname(){
+    return execute("hostname");
+}
