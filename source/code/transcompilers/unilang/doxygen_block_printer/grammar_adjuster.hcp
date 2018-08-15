@@ -11,14 +11,18 @@ class
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get_Adjusted(std::string comment_text, Comment_Grammar_Settings grammar)❰
+◀public: static▶ std::string ☀Get_Adjusted(std::string comment_text, Comment_Grammar_Settings const& grammar)❰
     std::string str = comment_text;
     trim(str);
     
     std::vector<std::string> warnings;
     
+    warnings += Possibly_Fix_Setences_Ending_In_A_Preposition(str,grammar);
+  
+  
     //rebuild sentence and perform actions on each word
     auto words = Words_Deriver::Derive(comment_text);
     for (auto & word: words){
@@ -44,12 +48,45 @@ class
     return str;
 ❱
 
-◀private: static▶ void ☀Potentially_Capitalize(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Possibly_Fix_Setences_Ending_In_A_Preposition(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
+
+  std::vector<std::string> warnings;
+  if (Sentence_Ends_In_A_Preposition(sentence,grammar)){
+  }
+  return warnings;
+❱
+
+◀private: static▶ bool ☀Sentence_Ends_In_A_Preposition(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰
+  
+  //split into words
+  auto words = Words_Deriver::Derive(sentence);
+  if (!words.empty()){
+    
+    //get the last word of the sentence
+    auto last_word = Last_Element(words);
+    Strip_Off_Puncuation(last_word,grammar);
+    
+    //check if the word is a preposition
+    if (Is_A_Preposition(last_word,grammar)){
+      return true;
+    }
+  }
+  
+  return false;
+❱
+
+◀private: static▶ bool ☀Is_A_Preposition(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰
+
+  return true;
+❱
+
+
+◀private: static▶ void ☀Potentially_Capitalize(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
   if (grammar.auto_capitalize_comments){
     CapitalizeFirstChar(comment_text);
   }
 ❱
-◀private: static▶ void ☀Potentially_Punctuate(std::string & comment_text, Comment_Grammar_Settings grammar)❰
+◀private: static▶ void ☀Potentially_Punctuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
   if (grammar.auto_puncuate_comments){
   
       //decide whether there is currently puncuation at the end of the comment
@@ -100,7 +137,7 @@ class
 	return "";
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Potentially_Sensor_Bad_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Sensor_Bad_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   for (auto const& bad_word : grammar.bad_words){
     if (bad_word == word){
@@ -120,7 +157,7 @@ class
   }
   return warnings;
 ❱
-◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Correct_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Correct_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   
   for (auto const& to_from : grammar.auto_corrects){
@@ -141,7 +178,7 @@ class
   }
   return warnings;
 ❱
-◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Retaste_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Retaste_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   
   for (auto const& to_from : grammar.taste_corrections){
@@ -162,7 +199,7 @@ class
   }
   return warnings;
 ❱
-◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Fix_Correct_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Fix_Correct_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   
   for (auto const& to_from : grammar.correctly_spelled_mistypes){
@@ -184,7 +221,7 @@ class
   
   return warnings;
 ❱
-◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Capitalize_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Capitalize_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
     for (auto const& capital_word : grammar.capitalize_words){
       if (capital_word == word){
@@ -208,7 +245,7 @@ class
 
 
 
-◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Full_Caps_Words(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Full_Caps_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   if (grammar.auto_full_caps_certain_words){
       Possibly_Caps_A_Possibly_Puncuated_Word(word,grammar);
@@ -216,7 +253,7 @@ class
   return warnings;
 ❱
 
-◀private: static▶ void ☀Possibly_Caps_A_Possibly_Puncuated_Word(std::string & word, Comment_Grammar_Settings grammar)❰
+◀private: static▶ void ☀Possibly_Caps_A_Possibly_Puncuated_Word(std::string & word, Comment_Grammar_Settings const& grammar)❰
 	std::string word_copy = word;
 
     auto front_punc = Strip_Off_Non_Word_Puncuation_From_Front(word_copy,grammar);
