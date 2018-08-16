@@ -12,6 +12,7 @@ class
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/general/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get_Adjusted(std::string comment_text, Comment_Grammar_Settings const& grammar)❰
@@ -56,7 +57,9 @@ class
     //I'm guessing the entire grammar of the sentence needs restructured
     //there ought to be grammar fixing tools out there to learn from
     //at the very least, we can warn about it
-    Add_Warning(warnings,"sentence ends in a preposition: \"" + sentence + "\"");
+    if (grammar.warn_about_sentences_ending_in_preposition){
+      Add_Warning(warnings,"sentence ends in a preposition: \"" + sentence + "\"");
+    }
     
   }
   
@@ -83,9 +86,12 @@ class
   return false;
 ❱
 
-◀private: static▶ bool ☀Is_A_Preposition(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰
+◀private: static▶ bool ☀Is_A_Preposition(std::string const& word, Comment_Grammar_Settings const& grammar)❰
 
-  return true;
+  if (Contains(grammar.prepositions,word)){
+    return true;
+  }
+  return false;
 ❱
 
 

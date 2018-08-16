@@ -56,6 +56,7 @@ hcp(name = "grammar_adjuster", deps = [
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/types/vectors/observers:lib",
+"//code/utilities/types/general:lib",
 
 ])
 
