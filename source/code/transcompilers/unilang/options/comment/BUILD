@@ -8,10 +8,15 @@ hcp(name = "comment_grammar_puncuation_settings",
 deps = [
 ])
 
+hcp(name = "comment_grammar_preposition_settings",
+deps = [
+])
+
 hcp(name = "comment_grammar_settings",
 deps = [
 "//code/transcompilers/unilang/options/comment/doxygen:doxygen_block_options",
 "//code/transcompilers/unilang/options/comment:comment_grammar_puncuation_settings",
+"//code/transcompilers/unilang/options/comment:comment_grammar_preposition_settings",
 ])
 
 hcp(name = "comment_settings",
