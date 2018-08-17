@@ -22,6 +22,7 @@ class
     std::vector<std::string> warnings;
     
     warnings += Possibly_Fix_Setences_Ending_In_A_Preposition(str,grammar);
+    warnings += Possibly_Fix_Setences_That_Use_Cliche(str,grammar);
   
   
     //rebuild sentence and perform actions on each word
@@ -30,7 +31,7 @@ class
         warnings += Potentially_Sensor_Bad_Words(word,grammar);
         warnings += Potentially_Auto_Correct_Words(word,grammar);
         warnings += Potentially_Auto_Retaste_Words(word,grammar);
-        warnings += Potentially_Auto_Fix_Correct_Words(word,grammar);
+        warnings += Potentially_Auto_Fix_Already_Correct_Words(word,grammar);
         warnings += Potentially_Auto_Capitalize_Words(word,grammar);
         warnings += Potentially_Auto_Full_Caps_Words(word,grammar);
     }
@@ -49,21 +50,33 @@ class
     return str;
 ❱
 
+◀private: static▶ std::vector<std::string> ☀Possibly_Fix_Setences_That_Use_Cliche(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
+  std::vector<std::string> warnings;
+  if (grammar.warn_about_cliches){
+    for (auto cliche: grammar.cliches){
+      if (Contains_Substring(sentence,cliche)){
+        Add_Warning(warnings,"sentence has a cliche: " + cliche);
+      }
+    }
+  }
+  
+  return warnings;
+❱
+
 ◀private: static▶ std::vector<std::string> ☀Possibly_Fix_Setences_Ending_In_A_Preposition(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
 
   std::vector<std::string> warnings;
-  if (Sentence_Ends_In_A_Preposition(sentence,grammar)){
-    //TODO: I don't know how to fix sentences that end in prepositions
-    //I'm guessing the entire grammar of the sentence needs restructured
-    //there ought to be grammar fixing tools out there to learn from
-    //at the very least, we can warn about it
-    if (grammar.warn_about_sentences_ending_in_preposition){
-      Add_Warning(warnings,"sentence ends in a preposition: \"" + sentence + "\"");
-    }
-    
+  if (grammar.warn_about_sentences_ending_in_preposition){
+    if (Sentence_Ends_In_A_Preposition(sentence,grammar)){
+      //TODO: I don't know how to fix sentences that end in prepositions
+      //I'm guessing the entire grammar of the sentence needs restructured
+      //there ought to be grammar fixing tools out there to learn from
+      //at the very least, we can warn about it
+        Add_Warning(warnings,"sentence ends in a preposition: \"" + sentence + "\"");
+      }
   }
   
-  //TODO: not currently handling 2 word/ 3 word preposition phrases
+  //TODO: not currently not handling 2 word/ 3 word preposition phrases
   return warnings;
 ❱
 
@@ -213,7 +226,7 @@ class
   }
   return warnings;
 ❱
-◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Fix_Correct_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
+◀private: static▶ std::vector<std::string> ☀Potentially_Auto_Fix_Already_Correct_Words(std::string & word, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   
   for (auto const& to_from : grammar.correctly_spelled_mistypes){
