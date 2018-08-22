@@ -16,12 +16,17 @@ hcp(name = "comment_grammar_cliche_settings",
 deps = [
 ])
 
+hcp(name = "comment_grammar_bad_word_settings",
+deps = [
+])
+
 hcp(name = "comment_grammar_settings",
 deps = [
 "//code/transcompilers/unilang/options/comment/doxygen:doxygen_block_options",
 "//code/transcompilers/unilang/options/comment:comment_grammar_puncuation_settings",
 "//code/transcompilers/unilang/options/comment:comment_grammar_preposition_settings",
 "//code/transcompilers/unilang/options/comment:comment_grammar_cliche_settings",
+"//code/transcompilers/unilang/options/comment:comment_grammar_bad_word_settings",
 ])
 
 hcp(name = "comment_settings",
