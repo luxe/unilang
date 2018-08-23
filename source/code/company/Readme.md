@@ -1,7 +1,7 @@
-TLDR:
-The directories here mirror the Desktop directories of non-unilang codebases on other machines.  
-We write our unilang code in these directories and they are transcompiled and transferred onto the remote machine's repo.  
-We do this because we want to keep the UniLang files in our codebase, but we don't want to keep the generated artifacts and deal with gitignoring them somehow.
+Summary:
+The directories here mirror the Desktop directories of non-unilang codebases that exist on either on or off the same machines.  
+We write our unilang code in these directories and they are transcompiled and transferred onto the repo (possibly over the network).  
+We do this because we want to keep the UniLang files in our codebase, and avoid generated artifacts then deal with gitignoring them somehow.
 
 Sales Pitch:
 The world of UniLang is a beautiful place.  
