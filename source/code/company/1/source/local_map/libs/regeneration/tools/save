@@ -16,6 +16,15 @@
 #include "xis/config/config_parser.hh"
 #include "xis/utility/paths.hh"
 
+// related  to reading from channel
+#include "xis/channels/channel.hh"
+#include "xis/channels/channel_factory.hh"
+#include "hub/serialization/codec_resolver.hh"
+#include "hub/base/event_queue.hh"
+#include "xis/channels/tools/xspy/xspy_utils.hh"
+#include "local_map/messages/local_map_message.hh"
+#include "local_map/messages/static_local_map_task_debug_message.hh"
+
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
@@ -24,6 +33,8 @@
 #include <memory>
 #include <cstring>
 #include <chrono>
+#include <thread>
+#include <atomic>
 
 template <typename T>
 std::string to_string_with_precision(const T a_value, const int n = 6)
@@ -289,6 +300,13 @@ struct profile_settings
     int                width         = 0;
 };
 
+struct channel_input_settings
+{
+    xis::channel_ptr                                         local_map_debug_channel;
+    local_map::internal::static_local_map_task_debug_message debug_message; // cant make atomic
+    std::atomic_bool                                         get_next_message;
+};
+
 struct settings
 {
     // main window title
@@ -318,9 +336,14 @@ struct settings
     // data on profiling
     profile_settings profiling;
 
-    // experimentation state
+    // experimentation state (types of input essentially)
     local_map::statik::route_creation_input              route_input;
     std::vector<local_map::statik::route_creation_input> applied_route_inputs;
+
+    // from network
+    // atomics aren't copyable, so we use shared pointer
+    bool                                    listen_to_debug;
+    std::shared_ptr<channel_input_settings> debug;
 
     // rendering state
     event_route_render_settings              event_route;
@@ -698,7 +721,15 @@ std::vector<rectangle_settings> build_submap_rendering_settings(local_map::stati
             else
             {
                 temp.color_fill = submap_colors[*previous_guid];
-                temp.label      = std::to_string(previous_guid->to_int64());
+
+                try
+                {
+                    temp.label = std::to_string(previous_guid->to_int64());
+                }
+                catch (...)
+                {
+                    temp.label = "?";
+                }
                 submap_settings.emplace_back(temp);
                 temp = settings.submap;
             }
@@ -710,47 +741,18 @@ std::vector<rectangle_settings> build_submap_rendering_settings(local_map::stati
     if (previous_guid)
     {
         temp.color_fill = submap_colors[*previous_guid];
-        temp.label      = std::to_string(previous_guid->to_int64());
+
+        try
+        {
+            temp.label = std::to_string(previous_guid->to_int64());
+        }
+        catch (...)
+        {
+            temp.label = "?";
+        }
         submap_settings.emplace_back(temp);
     }
     return submap_settings;
-}
-
-
-bool move_virtual_av_through_route(local_map::statik::event_annotated_route const &route,
-                                   event_route_render_settings &                   settings)
-{
-    // move simulated av through the route
-    settings.create_route_simulated_distance.current_time_s   = ImGui::GetTime();
-    settings.create_route_simulated_distance.total_distance_m = local_map::statik::total_distance(route);
-
-    // if we have no length on our route, we can only ever be at 0m.
-    if (settings.create_route_simulated_distance.total_distance_m == 0)
-    {
-        settings.create_route_simulated_distance.current_distance_m = 0;
-        return false;
-    }
-
-
-    // adjust distance
-    bool distance_was_adjusted = false;
-    if (settings.create_route_simulated_distance.current_time_s - settings.create_route_simulated_distance.last_time_s
-        >= settings.create_route_simulated_distance.update_rate_s)
-    {
-        distance_was_adjusted = true;
-        settings.create_route_simulated_distance.current_distance_m
-            += settings.create_route_simulated_distance.step_amount_m;
-        settings.create_route_simulated_distance.last_time_s = settings.create_route_simulated_distance.current_time_s;
-
-        // reset with carry over
-        if (settings.create_route_simulated_distance.current_distance_m
-            > settings.create_route_simulated_distance.total_distance_m)
-        {
-            settings.create_route_simulated_distance.current_distance_m
-                -= settings.create_route_simulated_distance.total_distance_m;
-        }
-    }
-    return distance_was_adjusted;
 }
 
 void possibly_draw_submaps(ImDrawList *                                    draw_list,
@@ -1540,6 +1542,9 @@ void render_file_menu(settings &s)
             if (ImGui::MenuItem("Save", NULL, false))
             {
             }
+            if (ImGui::MenuItem("Listen", NULL, &s.listen_to_debug))
+            {
+            }
         });
         handle_menu_item(s.create_route_window_settings);
         handle_menu_item(s.terminal.window);
@@ -1547,80 +1552,164 @@ void render_file_menu(settings &s)
     });
 }
 
-void core_algorithm_logic(settings &s)
+
+void build_annotated_route_from_gui_inputs(settings &s)
 {
     // refresh lane data
     // update and render the route
     auto previous_current_index  = s.annotated_route.evaluation_range.current;
     auto previous_previous_index = s.annotated_route.evaluation_range.previous;
-    auto previous_distance       = s.event_route.create_route_simulated_distance.current_distance_m;
-    s.annotated_route            = local_map::statik::create_event_route(s.route_input);
+    // auto previous_distance       = s.event_route.create_route_simulated_distance.current_distance_m;
+    s.annotated_route = local_map::statik::create_event_route(s.route_input);
 
     // preserve event window
     s.annotated_route.evaluation_range.current  = previous_current_index;
     s.annotated_route.evaluation_range.previous = previous_previous_index;
 
     apply_all_marking_inputs(s);
+}
 
-
-    // attempt to move forward in our simulated progression
-    bool distance_was_adjusted = move_virtual_av_through_route(s.annotated_route, s.event_route);
-
-    if (distance_was_adjusted)
+bool build_annotated_route_from_network_inputs(settings &s)
+{
+    bool new_message_received = false;
+    if (!s.debug->get_next_message.load())
     {
-        auto start_time = std::chrono::high_resolution_clock::now();
-        if (previous_distance > s.event_route.create_route_simulated_distance.current_distance_m)
+        s.annotated_route = s.debug->debug_message.wrapper_debug.annotated_route;
+        s.debug->get_next_message.store(true);
+        new_message_received = true;
+    }
+    return new_message_received;
+}
+
+bool move_virtual_av_through_route(local_map::statik::event_annotated_route const &route,
+                                   event_route_render_settings &                   settings)
+{
+    // move simulated av through the route
+    settings.create_route_simulated_distance.current_time_s   = ImGui::GetTime();
+    settings.create_route_simulated_distance.total_distance_m = local_map::statik::total_distance(route);
+
+    // if we have no length on our route, we can only ever be at 0m.
+    if (settings.create_route_simulated_distance.total_distance_m == 0)
+    {
+        settings.create_route_simulated_distance.current_distance_m = 0;
+        return false;
+    }
+
+
+    // adjust distance
+    bool distance_was_adjusted = false;
+    if (settings.create_route_simulated_distance.current_time_s - settings.create_route_simulated_distance.last_time_s
+        >= settings.create_route_simulated_distance.update_rate_s)
+    {
+        distance_was_adjusted = true;
+        settings.create_route_simulated_distance.current_distance_m
+            += settings.create_route_simulated_distance.step_amount_m;
+        settings.create_route_simulated_distance.last_time_s = settings.create_route_simulated_distance.current_time_s;
+
+        // reset with carry over
+        if (settings.create_route_simulated_distance.current_distance_m
+            > settings.create_route_simulated_distance.total_distance_m)
         {
-            possibly_log_expired_route(s);
-            local_map::statik::expire_route(s.annotated_route);
+            settings.create_route_simulated_distance.current_distance_m
+                -= settings.create_route_simulated_distance.total_distance_m;
         }
-        else
+    }
+    return distance_was_adjusted;
+}
+
+template <typename Fun>
+void profile_function(settings &s, Fun fun)
+{
+    auto start_time = std::chrono::high_resolution_clock::now();
+
+    fun();
+
+    // calculate current frame's latency
+    auto   end_time = std::chrono::high_resolution_clock::now();
+    double latency  = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
+    s.profiling.current_frame_latency = latency;
+
+    // add latency for displaying
+    s.profiling.history.emplace_back(latency);
+
+    // start removing elements if we have too many
+    while (s.profiling.history.size() > s.profiling.max_history)
+    {
+        s.profiling.history.erase(s.profiling.history.begin());
+    }
+
+    // possibly auto scale
+    if (s.profiling.auto_scale)
+    {
+        s.profiling.scale_min
+            = static_cast<int>(*std::min_element(std::begin(s.profiling.history), std::end(s.profiling.history)));
+        s.profiling.scale_max
+            = static_cast<int>(*std::max_element(std::begin(s.profiling.history), std::end(s.profiling.history)));
+    }
+}
+
+void core_algorithm_logic(settings &s)
+{
+
+    if (s.listen_to_debug)
+    {
+        bool new_message_came_in = build_annotated_route_from_network_inputs(s);
+
+        if (new_message_came_in)
         {
-            possibly_log_new_route(s);
-            auto current_lane_index = get_the_lane_we_are_on(s);
-            if (current_lane_index)
-            {
-                local_map::statik::advance_forward_on_route(s.annotated_route, *current_lane_index);
-            }
+            profile_function(s, [&]() {
+                s.event_route.create_route_simulated_distance.total_distance_m
+                    = local_map::statik::total_distance(s.annotated_route);
+
+                auto distance = local_map::statik::current_distance(s.annotated_route);
+                if (distance)
+                {
+                    s.event_route.create_route_simulated_distance.current_distance_m = *distance;
+                }
+                else
+                {
+                    s.event_route.create_route_simulated_distance.current_distance_m = 0;
+                }
+
+                possibly_log_event_occurance(s);
+            });
         }
+    }
+    else
+    {
+        build_annotated_route_from_gui_inputs(s);
 
-        possibly_log_event_occurance(s);
 
-        // calculate current frame's latency
-        auto   end_time = std::chrono::high_resolution_clock::now();
-        double latency  = std::chrono::duration_cast<std::chrono::nanoseconds>(end_time - start_time).count();
-        s.profiling.current_frame_latency = latency;
+        // attempt to move forward in our simulated progression
+        auto previous_distance     = s.event_route.create_route_simulated_distance.current_distance_m;
+        bool distance_was_adjusted = move_virtual_av_through_route(s.annotated_route, s.event_route);
 
-        // add latency for displaying
-        s.profiling.history.emplace_back(latency);
-
-        // start removing elements if we have too many
-        while (s.profiling.history.size() > s.profiling.max_history)
+        if (distance_was_adjusted)
         {
-            s.profiling.history.erase(s.profiling.history.begin());
-        }
+            profile_function(s, [&]() {
+                if (previous_distance > s.event_route.create_route_simulated_distance.current_distance_m)
+                {
+                    possibly_log_expired_route(s);
+                    local_map::statik::expire_route(s.annotated_route);
+                }
+                else
+                {
+                    possibly_log_new_route(s);
+                    auto current_lane_index = get_the_lane_we_are_on(s);
+                    if (current_lane_index)
+                    {
+                        local_map::statik::advance_forward_on_route(s.annotated_route, *current_lane_index);
+                    }
+                }
 
-        // possibly auto scale
-        if (s.profiling.auto_scale)
-        {
-            s.profiling.scale_min
-                = static_cast<int>(*std::min_element(std::begin(s.profiling.history), std::end(s.profiling.history)));
-            s.profiling.scale_max
-                = static_cast<int>(*std::max_element(std::begin(s.profiling.history), std::end(s.profiling.history)));
+                possibly_log_event_occurance(s);
+            });
         }
     }
 }
 
-void render(settings &s)
+void draw_gui_input_for_annotated_route(settings &s)
 {
-
-    render_file_menu(s);
-    core_algorithm_logic(s);
-
-
-    // draw the currently annotated route:
-    render(s.annotated_route, s.event_route);
-
     ImGui::Text("Create an annotated route");
     ImGui::SameLine();
     ShowHelpMarker(
@@ -1635,12 +1724,6 @@ void render(settings &s)
     render_popup("lane_click", [&]() {
         bool b = false;
         ImGui::MenuItem("Mark", "", &b);
-
-        // ImGui::PushItemWidth(60);
-        // ImGui::DragInt(
-        //     "percent", &s.route_input.marking_strategy.placement.placement_along_lane_pct, 1, 0, 100,
-        //     "%d%%");
-        // ImGui::PopItemWidth();
     });
 
     ImGui::SameLine();
@@ -1688,9 +1771,25 @@ void render(settings &s)
 
         ImGui::Columns(1);
     }
+}
+
+void render(settings &s)
+{
+
+    render_file_menu(s);
+    core_algorithm_logic(s);
+
+
+    // draw the currently annotated route:
+    render(s.annotated_route, s.event_route);
+
+    // if we are listening to live input, there is no reason to render the gui input
+    if (!s.listen_to_debug)
+    {
+        draw_gui_input_for_annotated_route(s);
+    }
 
     // add a new lane to the individual route
-
     ImGui::Columns(3, nullptr, false);
     ImGui::SetColumnWidth(0, 60);
     ImGui::SetColumnWidth(1, 60);
@@ -2262,9 +2361,33 @@ void create_profiler(settings &s)
     });
 }
 
+void read_in_debug_message(settings &s)
+{
+
+    hub::base::event_queue queue;
+    queue.add_handle(s.debug->local_map_debug_channel->get_pollable_handle(), hub::base::poll_flag_read);
+
+    while (true)
+    {
+        queue.wait(-1);
+        hub::comms::message_ptr message;
+        if (s.debug->get_next_message.load())
+        {
+            if (s.debug->local_map_debug_channel->read_message(message) == true)
+            {
+                message->deserialize_object(s.debug->debug_message);
+                s.debug->get_next_message.store(false);
+            }
+        }
+    }
+}
+
 void before_frame_logic(settings &s)
 {
     choose_car(s);
+
+    std::thread t(read_in_debug_message, std::ref(s));
+    t.detach();
 }
 
 void frame_logic(settings &s)
@@ -2272,8 +2395,8 @@ void frame_logic(settings &s)
     create_main_menu(s);
 
     // for testing
-    //bool show_demo_window = true;
-    //ImGui::ShowDemoWindow(&show_demo_window);
+    // bool show_demo_window = true;
+    // ImGui::ShowDemoWindow(&show_demo_window);
 
     if (s.create_route_window.is_open)
     {
@@ -2588,6 +2711,27 @@ settings get_settings()
     s.route_input.marking_strategy.lane_selection.exceeding_distance_m        = 20;
     s.route_input.marking_strategy.lane_selection.sla_distance_m              = 40;
 
+
+    // create the listening channel
+    // xis::register_global_codec_types();
+    auto channel_shmem_pair      = strip_shm_prefix("/local_map/static/debug");
+    auto channel_name            = channel_shmem_pair.first;
+    auto factory_shmem_base_path = channel_shmem_pair.second;
+
+    //
+    // Connect the channel using all of the default settings.
+    //
+    xis::channel_factory_configuration factory_config;
+    if (!factory_shmem_base_path.empty())
+    {
+        factory_config.shmem_base_path = factory_shmem_base_path;
+    }
+    xis::channel_factory factory(factory_config);
+    s.debug                          = std::make_shared<channel_input_settings>();
+    s.debug->local_map_debug_channel = factory.get_subscriber(channel_name);
+    s.debug->get_next_message.store(true);
+    s.listen_to_debug = false;
+
     return s;
 }
 
@@ -2648,5 +2792,9 @@ int main()
     auto s = get_settings();
 
     // run frame logic per rendering cycle
-    return render_each_frame(s.program_window_name, [&]() { before_frame_logic(s); }, [&]() { frame_logic(s); });
+    auto return_code
+        = render_each_frame(s.program_window_name, [&]() { before_frame_logic(s); }, [&]() { frame_logic(s); });
+
+    // from this point on, we've decided to exit the program
+    return return_code;
 }

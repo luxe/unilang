@@ -10,12 +10,15 @@ knowing when to regenerate is one such use case􏷯
 􏴁functions that decide where to mark lanes along a route􏴂
 􏴃Annotated Route􏴄
 􏴁functions related to the annotated route􏴂
+􏴃String Representations􏴄
+􏴁functions for printing things about the annotated route as a string􏴂
 􏷬Trevor Hickey􏷫
 
 􏶔􏶕􏶒local_map/libs/regeneration/preset_routes􏶓
 􏶔s􏶕􏶒algorithm􏶓
 􏶔s􏶕􏶒set􏶓
 􏶔s􏶕􏶒iostream􏶓􏲐
+􏶔s􏶕􏶒string􏶓􏲐
 
 􏲏􏲐
 􏲍local_map/libs/regeneration/preset_routes􏲎
@@ -1124,6 +1127,48 @@ Expiring the route sets a processing view that will allow process to the end des
     }
 􏶳
 
+􏷘+􏷗􏷒current lane guids with annotations􏷑
+􏴅Annotated Route􏴆
+􏷐get back the lane guids of the current lanes under evaluation that have annotations􏷏
+􏶠Uses the event view to iterate over a window of lanes and return the ones that have annotations􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane guids from􏶿
+􏶚m􏶛􏶾ordered_guids􏶽􏶼lane guids􏶻􏶺marked lanes along the route's event view􏶹
+􏶴
+    auto indexes = current_lanes_with_annotations(route);
+    for (auto index: indexes){
+        lane_guids.emplace_back(route.event_lane_sequence[index].info.map_ref.element_id);
+    }
+􏶳
+
+􏷘+􏷗􏷒all lanes with annotations􏷑
+􏴅Annotated Route􏴆
+􏷐get back any of the lane indexes that have annotations􏷏
+􏶠iterates over lanes and return the ones that have annotations􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane indexes from􏶿
+􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        if (!route.event_lane_sequence[i].event_sequence.empty()){
+            lane_indexes.emplace_back(i);
+        }
+    }
+􏶳
+
+􏷘+􏷗􏷒all lane guids with annotations􏷑
+􏴅Annotated Route􏴆
+􏷐get back any of the lane guids that have annotations􏷏
+􏶠iterates over lanes and return the ones that have annotations􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane guids from􏶿
+􏶚m􏶛􏶾ordered_guids􏶽􏶼lane guids􏶻􏶺marked lanes along the route􏶹
+􏶴
+    for (size_t i = 0; i < number_of_lanes(route); ++i){
+        if (!route.event_lane_sequence[i].event_sequence.empty()){
+            lane_guids.emplace_back(route.event_lane_sequence[i].info.map_ref.element_id);
+        }
+    }
+􏶳
+
+
 􏷘+􏷗􏷒markers exist on current lane􏷑
 􏴅Annotated Route􏴆
 􏷐determines whether the current lane has markers􏷏
@@ -1261,6 +1306,82 @@ if the route is empty, no distance is returned􏶡
     if (!route.event_lane_sequence.empty()){
         distance_offset = lane_length(route,route.event_lane_sequence.size()-1);
     }
+􏶳
+
+􏷘+􏷗􏷒event range as string􏷑
+􏴅String Representations􏴆
+􏷐returns a string representation of the current event range to process for events over􏷏
+􏶠new routes don't have a starting index in the interval
+expired routes don't have an ending index in the interval
+invalid routes don't have any interval to process
+In all of these states we will display the unknown intervals with '?'
+format: (#,#]􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the event range from􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼event range􏶻􏲅􏲆􏶺the string representation of the event range􏶹
+􏶴
+    // representation of starting index
+    std::string previous_index = "?";
+    if (route.evaluation_range.previous)
+    {
+        previous_index = std::to_string(*(route.evaluation_range.previous));
+    }
+
+    // representation of ending index
+    std::string current_index = "?";
+    if (route.evaluation_range.current)
+    {
+        current_index = std::to_string(*(route.evaluation_range.current));
+    }
+
+    // representation of indexes as an interval
+    event_range = "(" + previous_index + "," + current_index + "]";
+􏶳
+
+􏷘+􏷗􏷒evented lane indexes as string􏷑
+􏴅String Representations􏴆
+􏷐returns a string representation of the current lane indexes with events􏷏
+􏶠format: [#,#,#,#]􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get event lane indexes from􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼event lane indexes􏶻􏲅"["􏲆􏶺the string representation of the current event lane indexes􏶹
+􏶴
+    auto indexes = all_lanes_with_annotations(route);
+    bool first = true;
+    for (const auto & it: indexes){
+        if (first){
+            first = false;
+        }else{
+            event_lane_indexes += ", ";
+        }
+        
+        event_lane_indexes += std::to_string(it);
+    }
+    event_lane_indexes += "]";
+􏶳
+􏷘+􏷗􏷒evented lane guids as string􏷑
+􏴅String Representations􏴆
+􏷐returns a string representation of the current lane guids with events􏷏
+􏶠format: guids separated by newlines􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get event lane guids from􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼event lane guids􏶻􏲅􏲆􏶺the string representation of the current event lane guids􏶹
+􏶴
+    auto guids = all_lane_guids_with_annotations(route);
+    for (const auto & it: guids){
+        event_lane_guids += it.str() + "\n";
+    }
+􏶳
+
+􏷘+􏷗􏷒summary of state􏷑
+􏴅String Representations􏴆
+􏷐a brief but hopefully sufficient string representation of the annotated route's current state􏷏
+􏶠for more detail on the route's state, you could dump all of its json, but we use this to provide the key information to aid in debugging􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get a summary of its state􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼summary􏶻􏲅􏲆􏶺the string representation summarizing the current state of the annotated route􏶹
+􏶴
+    summary += "event range: " + event_range_as_string(route);
+    summary += "\n";
+    summary += "annotated lanes: " + evented_lane_indexes_as_string(route);
+    summary += "\n";
+    summary += evented_lane_guids_as_string(route);
 􏶳
 
 􏷘-􏷗􏷒first index to process􏷑
