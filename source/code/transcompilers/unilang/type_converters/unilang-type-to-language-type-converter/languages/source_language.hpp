@@ -38,5 +38,6 @@ Ada
 //Documentation
 ,PlantUml
 ,HtmlTable
+,Mermaid
 
 };
