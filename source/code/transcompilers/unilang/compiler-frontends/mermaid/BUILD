@@ -19,6 +19,7 @@ hcp(name = "mermaid_exporter", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
 "//code/utilities/types/vectors/operators:lib",
+"//code/utilities/types/char:lib",
 ])
 
 hcp(name = "mermaid_settings_getter", deps = [

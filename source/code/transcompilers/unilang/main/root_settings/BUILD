@@ -26,4 +26,5 @@ hcp(name = "root_settings_getter", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transfer_settings_getter",
 "//code/transcompilers/unilang/compiler-frontends/processing:processing_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/cpp_test:cpp_test_options_getter",
+"//code/transcompilers/unilang/compiler-frontends/mermaid:mermaid_settings_getter",
 ])

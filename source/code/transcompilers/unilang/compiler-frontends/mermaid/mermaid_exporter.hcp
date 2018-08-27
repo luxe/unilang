@@ -19,6 +19,8 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/transcompilers/unilang/structure-adjuster/structure_adjuster"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/transcompilers/unilang/normal-design-printer/method_sorter"❫
+❪"code/utilities/types/char/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Mermaid_Settings const& settings)❰
@@ -29,14 +31,106 @@ class
   std::vector<std::string> created;
   
   auto code = Build_Mermaid_Graph_Description(structure, settings);
+  std::string source_code_filename = structure.name + ".txt";
+  std::ofstream outfile(source_code_filename);
+  outfile << code;
+  outfile.close();
   
+  auto command = Create_Command(settings,source_code_filename);
+  std::cout << command << std::endl;
+  
+    if (Unsuccessful_Run_Of_Command(command)){
+      std::cerr << "Failed to produce image" << std::endl;
+    }else{
+        std::cout << "created image" << std::endl;
+      //created_files.emplace_back(file_name + ".png");
+    }
+  
+  created.emplace_back(source_code_filename);
   return created;
 ❱
+
+◀private: static▶ std::string ☀Create_Command(Mermaid_Settings const& settings, std::string source_code_filename)❰
+    std::string command;
+    command += settings.program_name;
+    command += " ";
+    command += source_code_filename;
+    command += " ";
+    command += settings.to_png_flag;
+    return command;
+❱
+
 
 ◀private: static▶ std::string ☀Build_Mermaid_Graph_Description(Structure const& structure, Mermaid_Settings const& settings)❰
     std::string text;
     text += settings.graph_keyword;
     text += " ";
-    text += Orientation_Choice_To_Keyword
+    text += Orientation_Choice_To_Keyword(settings);
+    text += "\n";
+    text += Connection_Statements(structure, settings);
+    text += "\n";
+    text += SubGraph_Statements(structure,settings);
+    text += "\n";
     return text;
+❱
+
+
+◀private: static▶ std::string ☀Orientation_Choice_To_Keyword(Mermaid_Settings const& settings)❰
+    switch(settings.orientation){
+        case Mermaid_Graph_Orientation::TOP_BOTTOM: return settings.top_bottom_keyword;
+        case Mermaid_Graph_Orientation::BOTTOM_TOP: return settings.bottom_top_keyword;
+        case Mermaid_Graph_Orientation::LEFT_RIGHT: return settings.left_right_keyword;
+        case Mermaid_Graph_Orientation::RIGHT_LEFT: return settings.right_left_keyword;
+    }
+    return "UNKNOWN";
+❱
+
+◀private: static▶ std::string ☀Connection_Statements(Structure const& structure, Mermaid_Settings const& settings)❰
+  auto sorted_methods = Method_Sorter::Get_As_Sorted(structure.methods.methods,settings.portion.method_options.sorting.interface);
+  
+  std::vector<std::string> connection_statements;
+  for (auto group: sorted_methods.subgroups){
+    for (auto method: group.methods){
+        connection_statements.emplace_back(Build_Function_Node(method,settings));
+    }
+  }
+    
+    auto as_text = Get_Each_Element_Of_Vector_As_A_Line_In_A_String(connection_statements);
+    return as_text;
+❱
+
+◀private: static▶ std::string ☀Build_Function_Node(Method_Item const& method, Mermaid_Settings const& settings)❰
+    auto id_name = Case_Modifier::As_Modified_Casing(settings.node_id_format,as_string(method.names.function_name.value));
+    auto text = Case_Modifier::As_Modified_Casing(settings.node_text_format,as_string(method.names.function_name.value));
+    
+    std::string str;
+    str += "\t";
+    str += id_name;
+    str += settings.square_start;
+    str += Get_Double_Quote();
+    str += text;
+    str += Get_Double_Quote();
+    str += settings.square_end;
+    return str;
+❱
+
+
+◀private: static▶ std::string ☀SubGraph_Statements(Structure const& structure, Mermaid_Settings const& settings)❰
+    std::string all;
+    auto sorted_methods = Method_Sorter::Get_As_Sorted(structure.methods.methods,settings.portion.method_options.sorting.interface);
+    for (auto group: sorted_methods.subgroups){
+        all += settings.subgraph_start_keyword;
+        all += " ";
+        all += group.subgroup;
+        all += "\n";
+        for (auto method: group.methods){
+            auto id_name = Case_Modifier::As_Modified_Casing(settings.node_id_format,as_string(method.names.function_name.value));
+            all += id_name;
+            all += "\n";
+        }
+        all += settings.subgraph_end_keyword;
+        all += "\n";
+    }
+    
+    return all;
 ❱
