@@ -28,6 +28,17 @@ hcp(name = "return_results_description_adder", deps = [
 "//code/utilities/converters:lib",
 ])
 
+hcp(name = "suggested_return_identifier_adder", deps = [
+"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
+"//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
+"//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
+"//code/transcompilers/unilang/doxygen_block_printer/method_getter/adders:units_description_adder",
+"//code/utilities/converters:lib",
+])
+
 hcp(name = "main_description_adder", deps = [
 "//code/transcompilers/unilang/structure/sections/method:method_item",
 "//code/transcompilers/unilang/structure/sections/data_member:data_member_item",

@@ -11,4 +11,5 @@ hcp(name = "doxygen_data_getter_for_methods", deps = [
 "//code/transcompilers/unilang/doxygen_block_printer/method_getter/adders:contract_description_adder",
 "//code/transcompilers/unilang/doxygen_block_printer/method_getter/adders:argument_description_adder",
 "//code/transcompilers/unilang/doxygen_block_printer/method_getter/adders:return_results_description_adder",
+"//code/transcompilers/unilang/doxygen_block_printer/method_getter/adders:suggested_return_identifier_adder",
 ])
