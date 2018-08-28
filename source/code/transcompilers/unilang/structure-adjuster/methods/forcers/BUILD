@@ -37,6 +37,8 @@ hcp(name = "instantiate_and_return_injector_for_return_type", deps = [
 "//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
+"//code/utilities/types/variant:lib",
+"//code/utilities/types/strings/observers/char:lib",
 ])
 
 

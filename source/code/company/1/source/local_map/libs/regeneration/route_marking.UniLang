@@ -822,8 +822,44 @@ The set returned will never have more than 1 element􏶡
 􏶴
 􏶳
 
+􏷘+􏷗􏷒create slmt event route􏷑
+􏴅Annotated Route􏴆
+􏷐Create an event route specific to the SLMT use case􏷏
+􏶠We assume the information provided will be gathered cycle over cycle
+This means we we will create an entirely new event route every cycle based on other information known in the SLMT􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to create an event route from􏶿
+􏶜􏶝􏷆static_local_map_task_wrapper_seed􏷅􏲧local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲨􏲥local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲦􏷄seed􏷃􏷀the current seed for the current cycle of the SLMT􏶿
+􏶜􏶝􏷆bool􏷅􏷄route has changed􏷃􏷀whether or not the route has changed prior to the previous task cycle􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker when using the SLMT marking algorithm􏶿
+􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(route)􏲆􏶺a route with SLMT event information attached􏶹
+􏶴
 
+    // the event window is preserved based on indexes in the seed
+    // we apply this window to the annotated route
+    set_event_window_from_slmt_seed(event_route,seed,route_has_changed);
+    
+    // Mark lanes for regeneration.
+    // Using the chosen lane marking algorithm, mark lanes to determine when we should regenerate.
+    auto lane_markings = mark_lanes_for_local_map_sla_requirement(route, distance_m);
+    set_regeneration_events(event_route, lane_markings, "SLA");
+􏶳
 
+􏷘-􏷗􏷒set event window from slmt seed􏷑
+􏴅Detail􏴆
+􏷐Configure the SLMT annotated route according to the task's seed􏷏
+􏶠This will properly configure the event window where will process for events, based on the information in the seed􏶡
+􏶜m􏶝􏷆event_annotated_route􏷅􏷄event route􏷃􏷀the input to create an event route from􏶿
+􏶜􏶝􏷆static_local_map_task_wrapper_seed􏷅􏲧local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲨􏲥local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲦􏷄seed􏷃􏷀the current seed for the current cycle of the SLMT􏶿
+􏶜􏶝􏷆bool􏷅􏷄route has changed􏷃􏷀whether or not the route has changed prior to the previous task cycle􏶿
+􏶴
+    // if the route changed, we'll keep the default start of the window
+    // this will ensure we process from the beginning of the route all the way to the current index
+    if (!route_has_changed)
+    {
+        set_previous_index_on_route(event_route, seed.previous_lane_index);
+    }
+    set_current_index_on_route(event_route, seed.route_lane_index);
+􏶳
 
 􏷘+􏷗􏷒set regeneration events􏷑
 􏴅Annotated Route􏴆
@@ -952,6 +988,50 @@ Expiring the route sets a processing view that will allow process to the end des
     route.evaluation_range.current = stdx::nullopt;
 􏶳
 
+􏷘+􏷗􏷒invalidate route􏷑
+􏴅Annotated Route􏴆
+􏷐mark the route as invalidated􏷏
+􏶠This invalidates the processing window, interpreting the route as invalid
+There may be reasons outside the scope of the annotating a route API, that you may want to invalidate an annotated route
+Calling this function will ensure that interpret_route_status returns route_status_invalid􏶡
+􏶜rm􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route in which to invalidate􏶿
+􏶴
+    route.evaluation_range.previous = stdx::nullopt;
+    route.evaluation_range.current = stdx::nullopt;
+􏶳
+
+􏷘+􏷗􏷒is existing route􏷑
+􏴅Annotated Route􏴆
+􏷐Checks whether the route we are on has existed since the previous event window adjustment􏷏
+􏶠Uses the event window to interpret the route status􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is existing􏶻􏲅(route.evaluation_range.previous && route.evaluation_range.current)􏲆􏶺whether the route is already existing or not􏶹
+􏶴􏶳
+
+􏷘+􏷗􏷒is new route􏷑
+􏴅Annotated Route􏴆
+􏷐Checks whether the route is new, and the event window has yet to be adjusted􏷏
+􏶠Uses the event window to interpret the route status􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is new􏶻􏲅(!route.evaluation_range.previous && route.evaluation_range.current)􏲆􏶺whether the route is new or not􏶹
+􏶴􏶳
+
+􏷘+􏷗􏷒is expired route􏷑
+􏴅Annotated Route􏴆
+􏷐Checks to see if the route has expired meaning we are now past the end of the route􏷏
+􏶠Uses the event window to interpret the route status􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is expired􏶻􏲅(route.evaluation_range.previous && !route.evaluation_range.current)􏲆􏶺whether the route is expired or not􏶹
+􏶴􏶳
+
+􏷘+􏷗􏷒is invalid route􏷑
+􏴅Annotated Route􏴆
+􏷐Checks to see if the route is invalidated warranting that events can not be processed on it􏷏
+􏶠Uses the event window to interpret the route status􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is invalid􏶻􏲅(!route.evaluation_range.previous && !route.evaluation_range.current)􏲆􏶺whether the route is invalid or not􏶹
+􏶴􏶳
+
 􏷘+􏷗􏷒interpret route status􏷑
 􏴅Annotated Route􏴆
 􏷐interpret the status of the route by observing the range of lanes that need evaluated􏷏
@@ -960,24 +1040,25 @@ Expiring the route sets a processing view that will allow process to the end des
 􏶚m􏶛􏶾route_status􏶽􏶼route interpretation􏶻􏲅route_status_invalid􏲆􏶺an interpretation about the status of the route􏶹
 􏶴
     􏶲(n,n) = existing route􏶱
-    if (route.evaluation_range.previous && route.evaluation_range.current){
+    if (is_existing_route(route)){
         return route_status_existing_route;
     }
     
     􏶲(?,n) = new route􏶱
-    else if(!route.evaluation_range.previous && route.evaluation_range.current){
+    else if(is_new_route(route)){
         return route_status_new_route;
     }
     
     􏶲(n,?) = expired route􏶱
-    else if(route.evaluation_range.previous && !route.evaluation_range.current){
+    else if(is_expired_route(route)){
         return route_status_expired;
     }
     
     􏶲(?,?) = invalid route􏶱
-    else if(!route.evaluation_range.previous && !route.evaluation_range.current){
+    else if(is_invalid_route(route)){
         return route_status_invalid;
     }
+    􏶲... impossible ...􏶱
 􏶳
 􏴯converting a route makes it new􏴰
 􏲝Converting a route makes its status new (since we don't have any previous indexes)􏲞
@@ -1336,6 +1417,50 @@ format: (#,#]􏶡
     // representation of indexes as an interval
     event_range = "(" + previous_index + "," + current_index + "]";
 􏶳
+􏴯new route has expected event range􏴰
+􏲝We know what the event range of a new route should look like.  Check for it.􏲞
+􏲛The format of the range has changed, or initial window configuration no longer holds􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto range = event_range_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(range,"(?,0]");
+􏴮
+􏴯new to expired route has expected event range􏴰
+􏲝We know what the event range of an expired route should look like.  Check for it.􏲞
+􏲛The format of the range has changed, or window configuration no longer transitions the same way􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    expire_route(event_route);
+    auto range = event_range_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(range,"(0,?]");
+􏴮
+􏴯invalidated routes have an expected event range􏴰
+􏲝We know what the event range of an invalidated route should look like.  Check for it.􏲞
+􏲛The format of the range has changed, or window configuration no longer transitions the same way􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    invalidate_route(event_route);
+    auto range = event_range_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(range,"(?,?]");
+􏴮
 
 􏷘+􏷗􏷒evented lane indexes as string􏷑
 􏴅String Representations􏴆
@@ -1383,6 +1508,61 @@ format: (#,#]􏶡
     summary += "\n";
     summary += evented_lane_guids_as_string(route);
 􏶳
+􏴯summary of state on full route does not crash􏴰
+􏲝We should be able to get the summary of a populated route without crashing􏲞
+􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
+􏴭
+    //ARRANGE
+    route r;
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(2);
+        r.lane_sequence.emplace_back(ref);
+    }
+    {
+        route_planning::lane_neighbor_annotation annotation;
+        annotation.distance = 5;
+        r.annotation_sequence.emplace_back(annotation);
+        
+        mlp::lane_graph::map_ref_id ref;
+        ref.map_index = hub::base::guid::from_int64(1);
+        r.lane_sequence.emplace_back(ref);
+    }
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto results = summary_of_state(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(results.empty());
+􏴮
+􏴯summary of state on empty route does not crash􏴰
+􏲝We should be able to get the summary of an empty route without crashing􏲞
+􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto results = summary_of_state(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(results.empty());
+􏴮
 
 􏷘-􏷗􏷒first index to process􏷑
 􏷐gets the first index to process over the route􏷏

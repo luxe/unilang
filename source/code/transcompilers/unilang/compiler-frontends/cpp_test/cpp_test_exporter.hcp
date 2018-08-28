@@ -15,15 +15,16 @@ class
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/transcompilers/unilang/structure-printer/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
 
 ⚯
 ❪"code/transcompilers/unilang/structure-printer/filename/file_name_getter"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
 ❪"code/transcompilers/unilang/structure-printer/namespace_printer"❫
-❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/char/lib"❫
+❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Test_Export_Settings const& settings)❰
@@ -144,6 +145,14 @@ class
 ◀private: static▶ std::string ☀Get_Each_Unit_Test_Section(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::string result;
     
+    //TODO: MOVE OUT
+    bool add_function_under_test = true;
+    std::string function_under_test_title = "Function under test";
+    bool add_reason_for_testing = true;
+    std::string reason_for_testing_title = "Reason for testing";
+    bool add_failure_explanation = true;
+    std::string failure_explanation_title = "Failure explanation";
+    
     for (auto const& it: structure.methods.methods){
         
         result += Maybe_Get_Divider(settings.portion.method_options.test_case.before_test_group);
@@ -162,14 +171,30 @@ class
                 fail_reasons.emplace_back(as_string(x.reason.value));
             }
             
-            result += "// Reason for testing: ";
-            result += reason_for_testing;
-            result += "\n";
-            result += "// Failure explanation: ";
-            for (auto const& x: fail_reasons){
-                result += x;
+            //possibly attach comment onto test
+            if (add_function_under_test){
+                result += "// " + function_under_test_title + ": ";
+                auto settings2 = dont_do_this(settings);
+                result += Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
                 result += "\n";
             }
+            
+            //possibly attach comment onto test
+            if (add_reason_for_testing){
+                result += "// " + reason_for_testing_title + ": ";
+                result += reason_for_testing;
+                result += "\n";
+            }
+            
+            //possibly attach comment onto test
+            if (add_failure_explanation){
+                result += "// " + failure_explanation_title + ": ";
+                for (auto const& x: fail_reasons){
+                    result += x;
+                    result += "\n";
+                }
+            }
+            
             result += "TEST(";
             result += test_name;
             result += ", ";
@@ -184,6 +209,14 @@ class
         result += Maybe_Get_Divider(settings.portion.method_options.test_case.after_test_group);
     }
     return result;
+❱
+
+◀private: static▶ C_Export_Settings ☀dont_do_this(Cpp_Test_Export_Settings const& settings)❰
+    C_Export_Settings x;
+    x.portion = settings.portion;
+    x.general = settings.general;
+    x.manipulations = settings.manipulations;
+    return x;
 ❱
 
 ◀private: static▶ std::string ☀Maybe_Get_Divider(Divider_Settings const& divider)❰
