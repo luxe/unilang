@@ -238,54 +238,58 @@ class
     Print_To_Stream_With_Newline(out,"");
 ❱
 ◀private: static▶ void ☀Print_Method_Signature(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
-
-  //TODO: MOVE OUT
-  std::string static_keyword = "static";
   
   
-	//[attributes]
+    //[attributes]
     auto attributes1 = Method_Attributes_Getter::Get_Method_Section_1(method,options,location);
-    if (!attributes1.empty()){
-      Print_To_Stream(out,attributes1);
-    }
+    Print_To_Stream_Unless_Empty(out,attributes1);
 
      //template params
      Print_Template_Argument_List(out,method.template_arguments);
 
-	//[attributes]
+    //[attributes]
     auto attributes2 = Method_Attributes_Getter::Get_Method_Section_2(method,options,location);
-    if (!attributes2.empty()){
-      Print_To_Stream(out,attributes2);
-    }
+    Print_To_Stream_Unless_Empty(out,attributes2);
 
-     //static qualifier
-     if (method.storage == Storage_Specifier::STATIC){
-        if (!options.portion.namespace_options.use_anonymous){
-            Print_To_Stream(out,static_keyword);
-            Print_To_Stream(out," ");
-        }
-     }
+     Possibly_Print_Static_Keyword(out,method,options);
 
-	//[attributes]
+    //[attributes]
     auto attributes3 = Method_Attributes_Getter::Get_Method_Section_3(method,options,location);
-    if (!attributes3.empty()){
-      Print_To_Stream(out,attributes3);
-    }
+    Print_To_Stream_Unless_Empty(out,attributes3);
      
     //print the return type
     Print_To_Stream(out,Return_Type_Str_Getter::Get_C(file_name,method,options));
 
-	//[attributes]
+    //[attributes]
     auto attributes4 = Method_Attributes_Getter::Get_Method_Section_4(method,options,location);
-    if (!attributes4.empty()){
-      Print_To_Stream(out,attributes4);
-    }
+    Print_To_Stream_Unless_Empty(out,attributes4);
     
     Print_To_Stream(out,Shared_Printer::Derive_Function_Name(file_name,code_type,method,options));
     Print_Function_Argument_List(out,method.function_arguments,options,location);
 ❱
 
+◀private: static▶ void ☀Possibly_Print_Static_Keyword(std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+      
+    //TODO: MOVE OUT
+    std::string static_keyword = "static";
+    std::string static_keyword_spacer = " ";
+     
+     //static qualifier
+     if (method.storage == Storage_Specifier::STATIC){
+        if (!options.portion.namespace_options.use_anonymous){
+            Print_To_Stream(out,static_keyword);
+            Print_To_Stream(out,static_keyword_spacer);
+        }
+     }
+❱
 
+
+
+◀private: static▶ void ☀Print_To_Stream_Unless_Empty(std::wofstream & out, std::string const& str)❰
+  if (!str.empty()){
+    Print_To_Stream(out,str);
+  }
+❱
 
 ◀private: static▶ void ☀Print_The_Void_Type(std::wofstream & out, C_Export_Settings const& options)❰
   Function_Result result;
