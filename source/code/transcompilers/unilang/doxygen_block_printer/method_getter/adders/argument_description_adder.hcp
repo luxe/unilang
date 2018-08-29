@@ -6,6 +6,7 @@ class
 ❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
 ❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_block_maker"❫
 ❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data"❫
+❪"code/transcompilers/unilang/options/comment/doxygen/doxygen_parameter_direction"❫
 ⚯
 ❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
 ❪"code/transcompilers/unilang/doxygen_block_printer/value_constraint_comment_deriver"❫
@@ -17,6 +18,7 @@ class
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/strings/transformers/stripping/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/transcompilers/unilang/structure-query/argument_direction_decider"❫
 ⚞⚟
 
 
@@ -47,37 +49,19 @@ class
 ❱
 ◀private: static▶ std::string ☀Decide_In_Out_Pass_String(Function_Argument const& argument, C_Export_Settings const& options)❰
 
-  auto type       = as_string(argument.type.value);
-  auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
-  bool is_pointer = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*") || !array_part.empty() || argument.is_reference;
-  return Create_Doxygen_INOUT_Tag_Based_On_Parameter_Properties(is_pointer,argument.is_mutable,options);
+auto direction = Argument_Direction_Decider::Decide_Direction(argument);
+  auto tag = direction_to_tag(direction,options);
+  return tag;
 ❱
 
-◀private: static▶ std::string ☀Create_Doxygen_INOUT_Tag_Based_On_Parameter_Properties(bool is_pointer, bool is_mutable, C_Export_Settings const& options)❰
+
+
+◀private: static▶ std::string ☀direction_to_tag(Doxygen_Parameter_Direction direction, C_Export_Settings const& options)❰
   
-  //if it's not a pointer, it can't be an out parameter; it HAS to be an "in" parameter"
-  if (!is_pointer){
-    return options.general.comment.doxygen.in_parameters;
+  switch (direction){
+    case Doxygen_Parameter_Direction::IN: return options.general.comment.doxygen.in_parameters;
+    case Doxygen_Parameter_Direction::OUT: return options.general.comment.doxygen.out_parameters;
+    case Doxygen_Parameter_Direction::IN_OUT: return options.general.comment.doxygen.in_and_out_parameters;
   }
-  
-  //if its also mutable, we'll assume its an IN/OUT
-  //this might not be the case once we get better detection for plain "out" params
-  if (is_mutable){
-    return options.general.comment.doxygen.in_and_out_parameters;
-  }
-  
-  //for now, we'll just assume anything else is an IN parameter
-  return options.general.comment.doxygen.in_parameters;
-  
-  //note on [out]
-  //there is no easy way to determine if a parameter is solely an out parameter.  
-  //The parameter would have to be fully examined in the body the function to determine if its initial value was ever read,
-  //or if it was only ever written to.  Even if it were passed as a parameter, you would have to recursively go down the call tree,
-  //and see if the value was ever read from.  For the time being, we will have to work with never actually deriving an "[Out]".  
-  //Lets just pray to god no one calls me out on it.  There is a small chance we might decide to make a language token
-  //along with the existing copy/reference tokens but I would like to avoid it as it seems like future implementations would be able
-  //to derive it.  Although,  I'm thinking about the D language here.  If you make something an "out" param, it automatically re-initializes it.  
-  //but I still picture that as a short hand.  I wouldn't want to specify every single parameter.  If a user re-initalizes it at the begining of a function,
-  //we can use the "out" shorthand in D, and document that correctly in doxygen. mm, maybe the shorthand would be nice then...
-  //again, deriving OUT can't be done right now until we have full call tree analysis and knowing when vars are set (think about references / pointers changing them also...)
+  return "unknown";
 ❱

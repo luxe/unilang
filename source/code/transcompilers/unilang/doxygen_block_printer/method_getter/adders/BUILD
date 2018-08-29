@@ -67,6 +67,7 @@ hcp(name = "contract_description_adder", deps = [
 "//code/transcompilers/unilang/units_to_variable_suffix_converter:unit_suffix_lookuper",
 "//code/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
 "//code/utilities/converters:lib",
+
 ])
 
 hcp(name = "argument_description_adder", deps = [
@@ -85,4 +86,6 @@ hcp(name = "argument_description_adder", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
+"//code/transcompilers/unilang/options/comment/doxygen:doxygen_parameter_direction",
+"//code/transcompilers/unilang/structure-query:argument_direction_decider",
 ])

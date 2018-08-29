@@ -20,21 +20,26 @@ class
 
     for (auto & method: methods){
         if (Return_Is_Valid_For_This_Adjustment(method)){
-            auto uni_type = Type_Name_Deriver::Derive_Name(method.return_results[0],Source_Language::CPP);
-            
-            auto identifier = Decide_Identifier(method.return_results[0]);
-            auto lang_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(uni_type,Source_Language::CPP);
-            auto default_value = as_string(method.return_results[0].default_value.value);
-            
-            if (!Body_Is_Empty(method)){
-                Add_Instantiate_Statement(method,lang_type.name,identifier,default_value);
-                Add_Return_Statement(method,identifier);
-            }
-            else
-            {
-                Add_Immediate_Value_Return(method,default_value);
-            }
+            Inject_What_Is_Needed_Into_Body(method,settings);
         }
+    }
+❱
+
+◀private: static▶ void ☀Inject_What_Is_Needed_Into_Body(Method_Item & method, Struct_Manipulation_Settings const& settings)❰
+            
+    //derive some information that we need
+    auto uni_type = Type_Name_Deriver::Derive_Name(method.return_results[0],Source_Language::CPP);
+    auto identifier = Decide_Identifier(method.return_results[0]);
+    auto lang_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(uni_type,Source_Language::CPP);
+    auto default_value = as_string(method.return_results[0].default_value.value);
+    
+    if (!Body_Is_Empty(method)){
+        Add_Instantiate_Statement(method,lang_type.name,identifier,default_value);
+        Add_Return_Statement(method,identifier);
+    }
+    else
+    {
+        Add_Immediate_Value_Return(method,default_value);
     }
 ❱
 

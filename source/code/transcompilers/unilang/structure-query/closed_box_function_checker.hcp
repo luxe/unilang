@@ -1,0 +1,31 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/options/comment/doxygen/doxygen_parameter_direction"❫
+⚯
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/transcompilers/unilang/structure-query/argument_direction_decider"❫
+⚞⚟
+
+//a closed box function is a function that takes all IN parameters and doesnt return anything.
+//It makes you question what the function is actually doing then (if anything at all)
+//In order for it to be closed box and still serve any meaningful purpose, the function MUST have side effects.
+//If the function doesn't have side effects, it was probably a mistake of the author, and one of the parameters should be OUT.. or the function should actually return something
+◀public: static▶ bool ☀Is_Closed_Box(Method_Item const& method)❰
+
+  if (!method.return_results.empty()){
+    return false;
+  }
+  
+  for (auto arg: method.function_arguments){
+    auto direction = Argument_Direction_Decider::Decide_Direction(arg);
+    if (direction !=  Doxygen_Parameter_Direction::IN){
+      return false;
+    }
+  }
+  return true;
+❱

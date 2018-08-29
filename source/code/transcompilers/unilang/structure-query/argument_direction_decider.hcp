@@ -1,0 +1,56 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/options/comment/doxygen/doxygen_parameter_direction"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/doxygen_data_shared"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+◀public: static▶ Doxygen_Parameter_Direction ☀Decide_Direction(Function_Argument const& argument)❰
+    bool is_pointer_like = Is_Pointer_Like(argument);
+    auto direction = Deduce_Parameter_Direction(is_pointer_like,argument.is_mutable);
+    return direction;
+❱
+
+◀private: static▶ bool ☀Is_Pointer_Like(Function_Argument const& argument)❰
+  auto type       = as_string(argument.type.value);
+  auto array_part = Strip_Out_Data_Between_First_Set_Of_Square_Brackets(type);
+  bool is_pointer_like = Begins_Or_Ends_With(type,"&") || Ends_With(type,"*const") || Ends_With(type,"*") || !array_part.empty() || argument.is_reference;
+  return is_pointer_like;
+❱
+
+◀private: static▶ Doxygen_Parameter_Direction ☀Deduce_Parameter_Direction(bool is_pointer_like, bool is_mutable)❰
+  
+  //if it's not a pointer, it can't be an out parameter; it HAS to be an "in" parameter"
+  // by pointer we also mean references
+  if (!is_pointer_like){
+    return Doxygen_Parameter_Direction::IN;
+  }
+  
+  //if its also mutable, we'll assume its an IN/OUT
+  //this might not be the case once we get better detection for plain "out" params
+  if (is_mutable){
+    return Doxygen_Parameter_Direction::IN_OUT;
+  }
+  
+  //for now, we'll just assume anything else is an IN parameter
+  return Doxygen_Parameter_Direction::IN;
+  
+  //note on [out]
+  //there is no easy way to determine if a parameter is solely an out parameter.  
+  //The parameter would have to be fully examined in the body the function to determine if its initial value was ever read,
+  //or if it was only ever written to.  Even if it were passed as a parameter, you would have to recursively go down the call tree,
+  //and see if the value was ever read from.  For the time being, we will have to work with never actually deriving an "[Out]".  
+  //Lets just pray to god no one calls me out on it.  There is a small chance we might decide to make a language token
+  //along with the existing copy/reference tokens but I would like to avoid it as it seems like future implementations would be able
+  //to derive it.  Although,  I'm thinking about the D language here.  If you make something an "out" param, it automatically re-initializes it.  
+  //but I still picture that as a short hand.  I wouldn't want to specify every single parameter.  If a user re-initalizes it at the begining of a function,
+  //we can use the "out" shorthand in D, and document that correctly in doxygen. mm, maybe the shorthand would be nice then...
+  //again, deriving OUT can't be done right now until we have full call tree analysis and knowing when vars are set (think about references / pointers changing them also...)
+❱
