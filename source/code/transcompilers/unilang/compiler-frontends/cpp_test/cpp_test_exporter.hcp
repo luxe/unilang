@@ -25,6 +25,7 @@ class
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/transcompilers/unilang/structure-printer/shared_printer"❫
+❪"code/transcompilers/unilang/compiler-frontends/cpp_test/test_coverage_summary_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Test_Export_Settings const& settings)❰
@@ -51,17 +52,14 @@ class
 ❱
 
 ◀private: static▶ std::string ☀Create_Path_To_Test_File(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Test_Export_Settings const& settings)❰
-
-        std::string file_test_suffix = "_test";
-        std::string file_test_directory = "test";
     
         //create base file name with file extension
-        auto file_name = File_Name_Getter::Get(file_settings,structure.name + file_test_suffix,settings.general.filesystem_naming);
+        auto file_name = File_Name_Getter::Get(file_settings,structure.name + settings.file_test_suffix,settings.general.filesystem_naming);
         
         //create the test directory we will create a file in
-        Create_Path_If_It_Doesnt_Already_Exist(Current_Path() + "/" + file_test_directory);
+        Create_Path_If_It_Doesnt_Already_Exist(Current_Path() + "/" + settings.file_test_directory);
         
-        std::string full_path = file_test_directory + "/" + file_name;
+        std::string full_path = settings.file_test_directory + "/" + file_name;
         return full_path;
 ❱
 
@@ -78,14 +76,16 @@ class
         std::wofstream out(full_path);
         
         Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,settings.portion.meta,full_path);
+        
+        if (settings.print_test_coverage_information){
+            out << as_wstring("\n");
+            out << as_wstring(Test_Coverage_Summary_Getter::Get(structure,settings));
+        }
+        
         out << as_wstring(Get_Include_Section(structure));
         
         
-    //TODO: FIX THIS
-    C_Export_Settings BAD_DONT_DO_THIS;
-    BAD_DONT_DO_THIS.general = settings.general;
-    BAD_DONT_DO_THIS.portion = settings.portion;
-    BAD_DONT_DO_THIS.manipulations = settings.manipulations;
+    auto BAD_DONT_DO_THIS = dont_do_this(settings);
     Namespace_Printer::Print_Namespace(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
         out << as_wstring(Structure_As_Unit_Test(structure,settings));
     Namespace_Printer::Print_Namespace_End(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
@@ -94,6 +94,7 @@ class
     }
     return files_created;
 ❱
+
 
 ◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
     std::string result;

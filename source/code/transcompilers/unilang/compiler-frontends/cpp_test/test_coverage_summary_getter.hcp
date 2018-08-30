@@ -1,0 +1,91 @@
+class
+
+❪vector❫
+❪string❫
+❪iostream❫
+❪fstream❫
+❪"code/transcompilers/unilang/structure/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/cpp_test_export_settings"❫
+❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/utilities/converters/lib"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/normal-design-printer/data/subgroup_methods"❫
+
+⚯
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/transcompilers/unilang/normal-design-printer/method_sorter"❫
+❪"code/utilities/types/strings/transformers/inflection/settings/inflection_settings"❫
+❪"code/utilities/types/strings/transformers/inflection/inflection_converter"❫
+❪"code/utilities/types/strings/transformers/inflection/getters/inflection_settings_getter"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+    std::string str;
+    str += "Test Coverage Over the Following:\n";
+    str += Grouped_Test_Summary(structure,settings);
+    Append_To_Front_Of_Each_Line(str,"///   ");
+    
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Grouped_Test_Summary(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+    std::string all;
+    auto sorted_methods = Method_Sorter::Get_As_Sorted(structure.methods.methods,settings.portion.method_options.sorting.interface);
+    for (auto group: sorted_methods.subgroups){
+        
+        //if all the methods are private, we don't care about testing them
+        if (Group_Has_Public_Functions(group)){
+            all += Get_Summary_Stats_For_Group(group,settings);
+        }
+    }
+    
+    return all;
+❱
+
+◀private: static▶ std::string ☀Get_Summary_Stats_For_Group(Subgroup_Methods const& group, Cpp_Test_Export_Settings const& settings)❰
+    std::string all;
+    
+    all += "   ";
+    all += Case_Modifier::As_Modified_Casing(settings.group_casing_format,group.subgroup);
+    all += ":\n";
+    for (auto method: group.methods){
+        all += "      ";
+        auto id_name = Case_Modifier::As_Modified_Casing(settings.function_casing_format,as_string(method.names.function_name.value));
+        all += id_name;
+        all += Get_Test_Info(method);
+        all += "\n";
+    }
+    all += "\n";
+    
+    return all;
+❱
+
+◀private: static▶ bool ☀Group_Has_Public_Functions(Subgroup_Methods const& group)❰
+    for (auto method: group.methods){
+        if (method.class_access == Class_Access::PUBLIC){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ std::string ☀Get_Test_Info(Method_Item const& method)❰
+    std::string str;
+    str += " (";
+    if (method.unit_tests.test_cases.empty()){
+        str += "UNTESTED";
+    }
+    else{
+        auto amount = method.unit_tests.test_cases.size();
+        str += std::to_string(amount) + " ";
+        auto inflection_settings = Inflection_Settings_Getter::Get();
+        str += Inflection_Converter::Inflect_Based_On_Count("test",inflection_settings,amount);
+        
+    }
+    str += ")";
+    return str;
+❱
