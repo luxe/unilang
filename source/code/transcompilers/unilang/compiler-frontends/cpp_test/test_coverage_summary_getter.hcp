@@ -20,15 +20,27 @@ class
 ❪"code/utilities/types/strings/transformers/inflection/settings/inflection_settings"❫
 ❪"code/utilities/types/strings/transformers/inflection/inflection_converter"❫
 ❪"code/utilities/types/strings/transformers/inflection/getters/inflection_settings_getter"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::string str;
-    str += "Test Coverage Over the Following:\n";
+    str += Decide_Test_Coverage_Title(structure,settings);
     str += Grouped_Test_Summary(structure,settings);
     Append_To_Front_Of_Each_Line(str,"///   ");
     
     
+    return str;
+❱
+
+◀private: static▶ std::string ☀Decide_Test_Coverage_Title(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+    std::string str;
+    str += "Test Coverage Over ";
+    if (settings.use_the){
+        str += "the ";
+    }
+    str += Case_Modifier::As_Modified_Casing(settings.summary_title_casing_format,structure.name) + " API";
+    str += ":\n\n";
     return str;
 ❱
 
@@ -52,13 +64,25 @@ class
     all += "   ";
     all += Case_Modifier::As_Modified_Casing(settings.group_casing_format,group.subgroup);
     all += ":\n";
+    
+    //build test table
+    std::vector<std::vector<std::string>> table;
     for (auto method: group.methods){
-        all += "      ";
+        
+        //get row data
         auto id_name = Case_Modifier::As_Modified_Casing(settings.function_casing_format,as_string(method.names.function_name.value));
-        all += id_name;
-        all += Get_Test_Info(method);
-        all += "\n";
+        auto test_tag = Get_Test_Info(method,settings);
+        
+        //add row to table
+        std::vector<std::string> row;
+        row.emplace_back(id_name);
+        row.emplace_back(test_tag);
+        table.emplace_back(row);
     }
+    
+    auto aligned_table = Table_As_Column_Aligned(table);
+    Append_To_Front_Of_Each_Line(aligned_table,"   ");
+    all += aligned_table;
     all += "\n";
     
     return all;
@@ -73,17 +97,19 @@ class
     return false;
 ❱
 
-◀private: static▶ std::string ☀Get_Test_Info(Method_Item const& method)❰
+◀private: static▶ std::string ☀Get_Test_Info(Method_Item const& method, Cpp_Test_Export_Settings const& settings)❰
+    
+    
     std::string str;
     str += " (";
     if (method.unit_tests.test_cases.empty()){
-        str += "UNTESTED";
+        str += settings.no_direct_test_name;
     }
     else{
         auto amount = method.unit_tests.test_cases.size();
         str += std::to_string(amount) + " ";
         auto inflection_settings = Inflection_Settings_Getter::Get();
-        str += Inflection_Converter::Inflect_Based_On_Count("test",inflection_settings,amount);
+        str += Inflection_Converter::Inflect_Based_On_Count(settings.name_for_test_case,inflection_settings,amount);
         
     }
     str += ")";

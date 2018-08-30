@@ -16,3 +16,48 @@ std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs){
   
   return list;
 }
+size_t Longest_Element_Size(std::vector<std::string> strs)
+{
+    size_t max_size = 0;
+    for (auto it: strs){
+        if (it.size() > max_size){
+            max_size = it.size();
+        }
+    }
+    return max_size;
+}
+std::string Table_As_Column_Aligned(std::vector<std::vector<std::string>> table)
+{
+    //early return on empty table
+    if (table.empty()){return "";}
+    
+    //what we expect all the column size to remain moving forward
+    size_t column_count = table[0].size();
+    
+    
+    //decide the max column widths
+    std::vector<size_t> row_maxes;
+    for (size_t i = 0; i < column_count; ++i){
+        size_t a_max = 0;
+        for (auto t: table){
+            if (t[i].size() > a_max){
+                a_max = t[i].size();
+            }
+        }
+        row_maxes.emplace_back(a_max);
+    }
+    
+    //rebuild as string while applying column widths
+    std::string results;
+    for (auto row: table){
+        for (size_t i = 0; i < row.size(); ++i){
+            results += row[i];
+            auto spacing = row_maxes[i] - row[i].size();
+            for (size_t j = 0; j < spacing; ++j){
+                results += " ";
+            }
+        }
+        results += "\n";
+    }
+    return results;
+}

@@ -38,6 +38,48 @@ knowing when to regenerate is one such use case􏷯
         return false;
     }
 􏶳
+􏴯positive pass􏴰
+􏲝The accumulated distance must be positive.  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = 1;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_that_exceed_accumulated_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_TRUE(meets_preconditions);
+􏴮
+􏴯zero fail􏴰
+􏲝The accumulated distance must be positive  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = 0;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_that_exceed_accumulated_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
+􏴯negative fail􏴰
+􏲝The accumulated distance must be positive  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = -1;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_that_exceed_accumulated_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
 
 􏷘+􏷗􏷒precondition mark lanes prior to exceeding distance􏷑
 􏴅Precondition Checks􏴆
@@ -55,6 +97,76 @@ knowing when to regenerate is one such use case􏷯
         return false;
     }
 􏶳
+􏴯positive_pass􏴰
+􏲝The accumulated distance must be positive.  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = 1;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_TRUE(meets_preconditions);
+􏴮
+􏴯zero fail􏴰
+􏲝The accumulated distance must be positive  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = 0;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
+􏴯negative fail􏴰
+􏲝The accumulated distance must be positive  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = -1;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
+􏴯lane too long fail􏴰
+􏲝We can't mark lanes prior to exceeding a distance if the lane itself is longer than the distance􏲞
+􏲛Implementation is no longer enforcing that lanes are shorter than provided distance􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({5,5,5,11,5});
+    int distance = 10;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
+􏴯lanes small enough pass􏴰
+􏲝We can't mark lanes prior to exceeding a distance if the lane itself is longer than the distance􏲞
+􏲛Implementation is no longer enforcing that lanes are shorter than provided distance􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({5,5,5,5,5});
+    int distance = 10;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    
+    //ASSERT
+    EXPECT_TRUE(meets_preconditions);
+􏴮
 
 􏷘+􏷗􏷒precondition mark lanes for local map sla requirement􏷑
 􏴅Precondition Checks􏴆
@@ -68,6 +180,50 @@ knowing when to regenerate is one such use case􏷯
         return false;
     }
 􏶳
+􏴯positive_pass􏴰
+􏲝The accumulated distance must be positive.  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = 1;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_for_local_map_sla_requirement(r,distance);
+    
+    //ASSERT
+    EXPECT_TRUE(meets_preconditions);
+􏴮
+􏴯zero fail􏴰
+􏲝The accumulated distance must be positive  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = 0;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_for_local_map_sla_requirement(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
+􏴯negative fail􏴰
+􏲝The accumulated distance must be positive  Zero is not positive􏲞
+􏲛Implementation is no longer enforcing positive distance􏲜
+􏴭
+    //ARRANGE
+    route r;
+    int distance = -1;
+    
+    //ACT
+    auto meets_preconditions = precondition_mark_lanes_for_local_map_sla_requirement(r,distance);
+    
+    //ASSERT
+    EXPECT_FALSE(meets_preconditions);
+􏴮
+
+
 
 􏷘+􏷗􏷒mark lanes􏷑
 􏴅Lane Marking􏴆
@@ -127,6 +283,28 @@ Mainly used for testing􏶡
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
 􏶳
+􏴯defaults mark nothing􏴰
+􏲝Using a default route and default settings should execute successfully and mark nothing􏲞
+􏲛Something has changed in an underlying algorithm resulting in an integration failure􏲜
+􏴭
+    //ARRANGE
+    route r;
+    marking_input settings;
+    
+    //ACT
+    auto indexes = mark_lanes(r,settings);
+    
+    //ASSERT
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯discussion􏴰
+􏲝We provide a fake test to discuss the tool that is using this function for integration􏲞
+􏲛If the Annotation Tool crashes internally within the API, this is the integration point that should be evaluated and fixed􏲜
+􏴭
+    // The implementation of this function dispatches to already tested algorithms.
+    // The Annotation Tool uses it as an integration point.
+    // Any crashes in the tool related to the API can be investigated here.
+􏴮
 
 􏷘+􏷗􏷒mark lanes that exceed accumulated distance􏷑
 􏴅Lane Marking􏴆
@@ -460,6 +638,44 @@ Mainly used for testing􏶡
         }
     }
 􏶳
+􏴯empty􏴰
+􏲝We should be able to mark empty routes without issue􏲞
+􏲛Implementation is no longer handling empty routes correctly􏲜
+􏴭
+    //ARRANGE
+    route r;
+    
+    //ACT
+    auto indexes = mark_all_lanes_in_entered_submap_loop(r);
+    
+    //ASSERT
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯multiple submap loop start􏴰
+􏲝Check that all the lanes in the beginning of a submap loop are marked􏲞
+􏲛Implementation is no longer marking the first lanes in the submap loop􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({1,0,0,2,3,4,5,0,0,0});
+    
+    //ACT
+    auto indexes = mark_all_lanes_in_entered_submap_loop(r);
+    
+    //ASSERT
+    //zero is the submap loop
+    //we check for the first lanes that are a part of that loop
+    EXPECT_EQ(indexes.size(),2);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) == indexes.end());
+    EXPECT_TRUE(indexes.find(6) == indexes.end());
+    EXPECT_TRUE(indexes.find(7) == indexes.end());
+    EXPECT_TRUE(indexes.find(8) == indexes.end());
+    EXPECT_TRUE(indexes.find(9) == indexes.end());
+􏴮
 
 
 􏷘+􏷗􏷒mark first lane after loop causing submaps􏷑
@@ -644,6 +860,7 @@ Mainly used for testing􏶡
     EXPECT_EQ(indexes.size(),1);
     EXPECT_TRUE(indexes.find(3) != indexes.end());
 􏴮
+
 􏷘+􏷗􏷒mark all lanes􏷑
 􏴅Lane Marking􏴆
 􏷐Marks all of the lanes in the route􏷏
@@ -699,7 +916,57 @@ The set returned will never have more than 1 element􏶡
         lane_indexes.insert(lane_index);
     }
 􏶳
-
+􏴯mark first lane􏴰
+􏲝We should be able to mark the first lane of a route􏲞
+􏲛Implementation is no longer allowing the first lane to be marked􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({1,2,3,4,5,6});
+    
+    //ACT
+    auto indexes = mark_specific_lane_index(r,0);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) != indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) == indexes.end());
+􏴮
+􏴯mark specific lane􏴰
+􏲝We should be able to mark a specific lane of a route􏲞
+􏲛Implementation is no longer allowing a specific lane to be marked􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({1,2,3,4,5,6});
+    
+    //ACT
+    auto indexes = mark_specific_lane_index(r,2);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) == indexes.end());
+􏴮
+􏴯out of bounds lane marks nothing􏴰
+􏲝WIf we try to mark a lane index that doesn't exist, we get no indexes back􏲞
+􏲛Implementation is no longer allowing invalid lane indexes for silently marking nothing􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({1,2,3,4,5,6});
+    
+    //ACT
+    auto indexes = mark_specific_lane_index(r,6);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),0);
+􏴮
 
 
 
@@ -847,34 +1114,7 @@ The set returned will never have more than 1 element􏶡
 􏲛Conversion is not preserving lane count􏲜
 􏴭
     //ARRANGE
-    route r;
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
+    auto r = create_route_from_submap_ids({1,0,1});
     
     //ACT
     auto event_route = create_event_route(r);
@@ -889,8 +1129,31 @@ The set returned will never have more than 1 element􏶡
 􏶠The event annotated route may have regeneration events marked based on the route creation's annotation strategy􏶡
 􏶜􏶝􏷆route_creation_input􏷅􏲥local_map/libs/regeneration/local_map_regeneration_preset_routes􏲦􏷄input􏷃􏷀the input to create an event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_route_from_test_input(input))􏲆􏶺a route with regeneration information attached􏶹
-􏶴
-􏶳
+􏶴􏶳
+􏴯preserve lane count 2􏴰
+􏲝Converting a route creation input to an event route preserves the lane count􏲞
+􏲛Conversion is not preserving lane count􏲜
+􏴭
+    //ARRANGE
+    route_creation_input input;
+    lane_creation_input lane;
+    lane.submap_id = 1;
+    lane.distance_m = 100;
+    input.lane_input_sequence.emplace_back(lane);
+    lane.submap_id = 2;
+    lane.distance_m = 100;
+    input.lane_input_sequence.emplace_back(lane);
+    lane.submap_id = 3;
+    lane.distance_m = 100;
+    input.lane_input_sequence.emplace_back(lane);
+    
+    //ACT
+    auto event_route = create_event_route(input);
+    
+    //ASSERT
+    EXPECT_EQ(event_route.event_lane_sequence.size(),3);
+􏴮
+
 
 􏷘+􏷗􏷒create slmt event route􏷑
 􏴅Annotated Route􏴆
@@ -913,6 +1176,60 @@ This means we we will create an entirely new event route every cycle based on ot
     auto lane_markings = mark_lanes_for_local_map_sla_requirement(route, distance_m);
     set_regeneration_events(event_route, lane_markings, "SLA");
 􏶳
+􏴯simulate slmt cycle changes on route􏴰
+􏲝Ensure that we are progressing through the route when we create an annotated route cycle over cycle􏲞
+􏲛We are no longer advancing forward through the annotated route cycle over cycle􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 0;
+    seed.route_lane_index = 0;
+    bool route_changed = true;
+    int distance_m = 100;
+    
+    //ACT
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(?,0]");
+    EXPECT_EQ(event_route.event_lane_sequence.size(),6);
+    
+    //ARRANGE
+    route_changed = false;
+    
+    //ACT
+    event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(0,0]");
+    EXPECT_EQ(event_route.event_lane_sequence.size(),6);
+    
+    //ARRANGE
+    seed.previous_lane_index = 1;
+    seed.route_lane_index = 2;
+    
+    //ACT
+    event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(1,2]");
+    EXPECT_EQ(event_route.event_lane_sequence.size(),6);
+    
+    //ARRANGE
+    seed.previous_lane_index = 2;
+    seed.route_lane_index = 3;
+    
+    //ACT
+    event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(2,3]");
+    EXPECT_EQ(event_route.event_lane_sequence.size(),6);
+􏴮
+
+
 
 􏷘-􏷗􏷒set event window from slmt seed􏷑
 􏴅Detail􏴆
@@ -946,6 +1263,20 @@ This means we we will create an entirely new event route every cycle based on ot
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
+􏴯mark some lanes􏴰
+􏲝Check that we can mark lanes and see that they are marked􏲞
+􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴭
+    //ARRANGE
+    auto r = create_event_route(create_route_from_submap_ids({1,2,3,4,5}));
+    std::set<size_t> marks{2,3};
+    
+    //ACT
+    set_regeneration_events(r,marks,"test");
+    
+    //ASSERT
+    EXPECT_EQ(total_event_markings(r),2);
+􏴮
 
 􏷘+􏷗􏷒set regeneration events􏷑
 􏴅Annotated Route􏴆
@@ -964,6 +1295,21 @@ This means we we will create an entirely new event route every cycle based on ot
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
+􏴯mark some lanes 2􏴰
+􏲝Check that we can mark lanes and see that they are marked􏲞
+􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴭
+    //ARRANGE
+    auto r = create_event_route(create_route_from_submap_ids({1,2,3,4,5}));
+    std::set<size_t> marks{2,3};
+    int placement_pct = 33;
+    
+    //ACT
+    set_regeneration_events(r,marks,"test",placement_pct);
+    
+    //ASSERT
+    EXPECT_EQ(total_event_markings(r),2);
+􏴮
 
 􏷘+􏷗􏷒set regeneration events􏷑
 􏴅Annotated Route􏴆
@@ -989,6 +1335,21 @@ If the distance is long􏶡
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
+􏴯mark some lanes 3􏴰
+􏲝Check that we can mark lanes and see that they are marked􏲞
+􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴭
+    //ARRANGE
+    auto r = create_event_route(create_route_from_submap_ids({1,2,3,4,5}));
+    std::set<size_t> marks{2,3};
+    double distance_m = 0.0;
+    
+    //ACT
+    set_regeneration_events(r,marks,"test",distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(total_event_markings(r),2);
+􏴮
 
 􏷘+􏷗􏷒set regeneration events􏷑
 􏴅Annotated Route􏴆
@@ -1012,6 +1373,21 @@ Can span multiple lanes􏶡
     // store region
     route.event_region_sequence.emplace_back(region);
 􏶳
+􏴯mark some lanes 4􏴰
+􏲝Check that we can mark lanes and see that they are marked􏲞
+􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴭
+    //ARRANGE
+    auto r = create_event_route(create_route_from_lane_distances({5,5,5,5,5}));
+    double start_distance_m = 1.0;
+    double end_distance_m = 2.0;
+    
+    //ACT
+    set_regeneration_events(r,"test",start_distance_m,end_distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(total_event_regions(r),1);
+􏴮
 
 􏷘+􏷗􏷒set previous index on route􏷑
 􏴅Annotated Route􏴆
@@ -1023,6 +1399,20 @@ If you need to create the route in a particular state however, you can explicitl
 􏶴
     route.evaluation_range.previous = previous_lane_index;
 􏶳
+􏴯we can set the previous index of the routes event window directly􏴰
+􏲝we can set the previous index of the routes event window directly􏲞
+􏲛setting the previous index on the rout's event window directly does not work􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    set_previous_index_on_route(event_route,2);
+    
+    //ASSERT
+    EXPECT_EQ((*event_route.evaluation_range.previous),2);
+􏴮
 
 􏷘+􏷗􏷒set current index on route􏷑
 􏴅Annotated Route􏴆
@@ -1034,6 +1424,20 @@ If you need to create the route in a particular state however, you can explicitl
 􏶴
     route.evaluation_range.current = current_lane_index;
 􏶳
+􏴯we can set the current index of the routes event window directly􏴰
+􏲝we can set the current index of the routes event window directly􏲞
+􏲛setting the current index on the rout's event window directly does not work􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    set_current_index_on_route(event_route,2);
+    
+    //ASSERT
+    EXPECT_EQ((*event_route.evaluation_range.current),2);
+􏴮
 
 􏷘+􏷗􏷒advance forward on route􏷑
 􏴅Annotated Route􏴆
@@ -1046,6 +1450,38 @@ This way we won't skip any lanes when evaluating for regeneration events􏶡
     route.evaluation_range.previous = route.evaluation_range.current;
     route.evaluation_range.current = current_lane_index;
 􏶳
+􏴯check forward progressing of route􏴰
+􏲝as we progress forward on the route, check that our previous and current index update correctly􏲞
+􏲛moving forward along the route does not increment previous/current indexes correctly􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    advance_forward_on_route(event_route,1);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(0,1]");
+    
+    //ACT
+    advance_forward_on_route(event_route,2);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(1,2]");
+    
+    //ACT
+    advance_forward_on_route(event_route,2);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(2,2]");
+    
+    //ACT
+    advance_forward_on_route(event_route,4);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(2,4]");
+􏴮
 
 􏷘+􏷗􏷒expire route􏷑
 􏴅Annotated Route􏴆
@@ -1057,6 +1493,26 @@ Expiring the route sets a processing view that will allow process to the end des
     route.evaluation_range.previous = route.evaluation_range.current;
     route.evaluation_range.current = stdx::nullopt;
 􏶳
+􏴯expiring a route makes the current index unknown􏴰
+􏲝when we expire a route, ensure that the current index becomes unknown􏲞
+􏲛expiring a route is no longer giving the expected event window􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    advance_forward_on_route(event_route,1);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(0,1]");
+    
+    //ACT
+    expire_route(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(0,?]");
+􏴮
 
 􏷘+􏷗􏷒invalidate route􏷑
 􏴅Annotated Route􏴆
@@ -1069,6 +1525,26 @@ Calling this function will ensure that interpret_route_status returns route_stat
     route.evaluation_range.previous = stdx::nullopt;
     route.evaluation_range.current = stdx::nullopt;
 􏶳
+􏴯invalidating a route makes the entire event window unknown􏴰
+􏲝when we invalidate a route, ensure that both indexes of the event window become unknown􏲞
+􏲛invalidating a route is no longer giving the expected event window􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    advance_forward_on_route(event_route,1);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(0,1]");
+    
+    //ACT
+    invalidate_route(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(event_range_as_string(event_route),"(?,?]");
+􏴮
 
 􏷘+􏷗􏷒is existing route􏷑
 􏴅Annotated Route􏴆
@@ -1077,6 +1553,20 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
 􏶚m􏶛􏶾bool􏶽􏶼is existing􏶻􏲅(route.evaluation_range.previous && route.evaluation_range.current)􏲆􏶺whether the route is already existing or not􏶹
 􏶴􏶳
+􏴯moving forward on a route transitions it to existing􏴰
+􏲝Moving forward on a route transitions it to an existing route􏲞
+􏲛Moving forward did not transition the route to an existing route􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    advance_forward_on_route(event_route,1);
+    
+    //ASSERT
+    EXPECT_TRUE(is_existing_route(event_route));
+􏴮
 
 􏷘+􏷗􏷒is new route􏷑
 􏴅Annotated Route􏴆
@@ -1085,6 +1575,19 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
 􏶚m􏶛􏶾bool􏶽􏶼is new􏶻􏲅(!route.evaluation_range.previous && route.evaluation_range.current)􏲆􏶺whether the route is new or not􏶹
 􏶴􏶳
+􏴯converting a route makes it new􏴰
+􏲝Converting a route makes its status new (since we don't have any previous indexes)􏲞
+􏲛Converting a route did not make it new􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_TRUE(is_new_route(event_route));
+􏴮
 
 􏷘+􏷗􏷒is expired route􏷑
 􏴅Annotated Route􏴆
@@ -1093,6 +1596,20 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
 􏶚m􏶛􏶾bool􏶽􏶼is expired􏶻􏲅(route.evaluation_range.previous && !route.evaluation_range.current)􏲆􏶺whether the route is expired or not􏶹
 􏶴􏶳
+􏴯expiring a route makes it expired􏴰
+􏲝Expiring a route makes it expired􏲞
+􏲛Expiring a route still returns false when checking if its expired􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    expire_route(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(is_expired_route(event_route));
+􏴮
 
 􏷘+􏷗􏷒is invalid route􏷑
 􏴅Annotated Route􏴆
@@ -1101,6 +1618,20 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze the status of􏶿
 􏶚m􏶛􏶾bool􏶽􏶼is invalid􏶻􏲅(!route.evaluation_range.previous && !route.evaluation_range.current)􏲆􏶺whether the route is invalid or not􏶹
 􏶴􏶳
+􏴯invalidating a route makes it invalid􏴰
+􏲝invalidating a route makes it invalid􏲞
+􏲛invalidating a route still returns false when checking if its invalid􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    invalidate_route(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(is_invalid_route(event_route));
+􏴮
 
 􏷘+􏷗􏷒interpret route status􏷑
 􏴅Annotated Route􏴆
@@ -1135,34 +1666,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏲛Converting a route did not make it new􏲜
 􏴭
     //ARRANGE
-    route r;
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
+    auto r = create_route_from_submap_ids({1,2,3,4});
     
     //ACT
     auto event_route = create_event_route(r);
@@ -1175,34 +1679,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏲛Status is not correct when transitioning the status of a route􏲜
 􏴭
     //ARRANGE
-    route r;
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
+    auto r = create_route_from_submap_ids({1,2,3,4});
     
     //ACT
     auto event_route = create_event_route(r);
@@ -1227,6 +1704,64 @@ Calling this function will ensure that interpret_route_status returns route_stat
     
     //ASSERT
     EXPECT_EQ(interpret_route_status(event_route),route_status_expired);
+    
+    //ACT
+    invalidate_route(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(interpret_route_status(event_route),route_status_invalid);
+􏴮
+􏴯walk though route status with explicit checking􏴰
+􏲝We should be able to transition the status from new, to current, to expired􏲞
+􏲛Status is not correct when transitioning the status of a route􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_TRUE(is_new_route(event_route));
+    EXPECT_FALSE(is_existing_route(event_route));
+    EXPECT_FALSE(is_expired_route(event_route));
+    EXPECT_FALSE(is_invalid_route(event_route));
+    
+    //ACT
+    advance_forward_on_route(event_route,1);
+    
+    //ASSERT
+    EXPECT_FALSE(is_new_route(event_route));
+    EXPECT_TRUE(is_existing_route(event_route));
+    EXPECT_FALSE(is_expired_route(event_route));
+    EXPECT_FALSE(is_invalid_route(event_route));
+    
+    //ACT
+    advance_forward_on_route(event_route,2);
+    
+    //ASSERT
+    EXPECT_FALSE(is_new_route(event_route));
+    EXPECT_TRUE(is_existing_route(event_route));
+    EXPECT_FALSE(is_expired_route(event_route));
+    EXPECT_FALSE(is_invalid_route(event_route));
+    
+    //ACT
+    expire_route(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(is_new_route(event_route));
+    EXPECT_FALSE(is_existing_route(event_route));
+    EXPECT_TRUE(is_expired_route(event_route));
+    EXPECT_FALSE(is_invalid_route(event_route));
+
+    //ACT
+    invalidate_route(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(is_new_route(event_route));
+    EXPECT_FALSE(is_existing_route(event_route));
+    EXPECT_FALSE(is_expired_route(event_route));
+    EXPECT_TRUE(is_invalid_route(event_route));
 􏴮
 
 􏷘+􏷗􏷒should regenerate􏷑
@@ -1370,6 +1905,28 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
+
+􏷘+􏷗􏷒total event markings􏷑
+􏴅Annotated Route􏴆
+􏷐the total number of events that exist along the route􏷏
+􏶠calculates the total number of events across lanes over the route
+does not count "event regions"; only "event markers"􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to calculate event markings over􏶿
+􏶚m􏶛􏶾i􏶽􏶼total_event_markings􏶻􏲅0􏲆􏶺the total number of event markings across the lanes over the route􏶹
+􏶴
+    for (const auto & lane: route.event_lane_sequence){
+        total_event_markings += lane.event_sequence.size();
+    }
+􏶳
+
+􏷘+􏷗􏷒total event regions􏷑
+􏴅Annotated Route􏴆
+􏷐the total number of event regions that exist along the route􏷏
+􏶠calculates the total number of event regions across lanes of the route
+does not count "event markers"; only "event regions"􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to calculate event regions over􏶿
+􏶚m􏶛􏶾i􏶽􏶼total_event_regions􏶻􏲅route.event_region_sequence.size();􏲆􏶺the total number of event regions across the lanes of the route􏶹
+􏶴􏶳
 
 􏷘+􏷗􏷒total distance􏷑
 􏴅Annotated Route􏴆
@@ -1552,6 +2109,20 @@ format: (#,#]􏶡
     }
     event_lane_indexes += "]";
 􏶳
+􏴯empty indexes when given empty route􏴰
+􏲝We should be able to get the string representation of marked lanes when no lanes are marked􏲞
+􏲛A runtime crash should not be possible. The string we get back should be and empty list􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto results = evented_lane_indexes_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(results,"[]");
+􏴮
 􏷘+􏷗􏷒evented lane guids as string􏷑
 􏴅String Representations􏴆
 􏷐returns a string representation of the current lane guids with events􏷏
@@ -1564,6 +2135,20 @@ format: (#,#]􏶡
         event_lane_guids += it.str() + "\n";
     }
 􏶳
+􏴯empty string when given empty route􏴰
+􏲝We should be able to get an empty string representation of marked lane guids, when no lanes are marked􏲞
+􏲛A runtime crash should not be possible. The string we get back should be empty􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto results = evented_lane_guids_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(results,"");
+􏴮
 
 􏷘+􏷗􏷒summary of state􏷑
 􏴅String Representations􏴆
@@ -1583,34 +2168,7 @@ format: (#,#]􏶡
 􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
 􏴭
     //ARRANGE
-    route r;
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(2);
-        r.lane_sequence.emplace_back(ref);
-    }
-    {
-        route_planning::lane_neighbor_annotation annotation;
-        annotation.distance = 5;
-        r.annotation_sequence.emplace_back(annotation);
-        
-        mlp::lane_graph::map_ref_id ref;
-        ref.map_index = hub::base::guid::from_int64(1);
-        r.lane_sequence.emplace_back(ref);
-    }
+    auto r = create_route_from_submap_ids({1,2,3,4});
     auto event_route = create_event_route(r);
     
     //ACT
