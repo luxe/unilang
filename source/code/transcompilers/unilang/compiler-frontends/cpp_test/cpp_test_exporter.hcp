@@ -45,7 +45,7 @@ class
         file_settings.special = Special_File_Type::NORMAL;
         file_settings.file = File_Type::IMPLEMENTATION;
     
-    files_created += Create_Test(copy,file_settings,settings);
+    files_created += Possibly_Create_Test(copy,file_settings,settings);
     
     return files_created;
 ❱
@@ -66,7 +66,7 @@ class
 ❱
 
 
-◀private: static▶ std::vector<std::string> ☀Create_Test(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Test_Export_Settings const& settings)❰
+◀private: static▶ std::vector<std::string> ☀Possibly_Create_Test(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Test_Export_Settings const& settings)❰
     std::vector<std::string> files_created;
     
     if (Has_Unit_Tests(structure)){
@@ -145,14 +145,6 @@ class
 ◀private: static▶ std::string ☀Get_Each_Unit_Test_Section(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::string result;
     
-    //TODO: MOVE OUT
-    bool add_function_under_test = true;
-    std::string function_under_test_title = "Function under test";
-    bool add_reason_for_testing = true;
-    std::string reason_for_testing_title = "Reason for testing";
-    bool add_failure_explanation = true;
-    std::string failure_explanation_title = "Failure explanation";
-    
     for (auto const& it: structure.methods.methods){
         
         result += Maybe_Get_Divider(settings.portion.method_options.test_case.before_test_group);
@@ -164,38 +156,9 @@ class
             //extract all the data into strings
             std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_name_casing,as_string(j.name.value));
             std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_tag_casing,as_string(j.tag.value));
-            std::string reason_for_testing = as_string(j.reason_for_testing.value);
             
-            std::vector<std::string> fail_reasons;
-            for (auto const& x: j.reasons_for_failing){
-                fail_reasons.emplace_back(as_string(x.reason.value));
-            }
-            
-            //possibly attach comment onto test
-            if (add_function_under_test){
-                result += "// " + function_under_test_title + ": ";
-                auto settings2 = dont_do_this(settings);
-                result += Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
-                result += "\n";
-            }
-            
-            //possibly attach comment onto test
-            if (add_reason_for_testing){
-                result += "// " + reason_for_testing_title + ": ";
-                result += reason_for_testing;
-                result += "\n";
-            }
-            
-            //possibly attach comment onto test
-            if (add_failure_explanation){
-                result += "// " + failure_explanation_title + ": ";
-                for (auto const& x: fail_reasons){
-                    result += x;
-                    result += "\n";
-                }
-            }
-            
-            result += "TEST(";
+            result += Add_Test_Comments(structure,it,j,settings);
+            result += settings.test_case_construct_word + "(";
             result += test_name;
             result += ", ";
             result += test_tag;
@@ -211,6 +174,45 @@ class
     return result;
 ❱
 
+◀private: static▶ std::string ☀Add_Test_Comments(Structure const& structure, Method_Item const& method, Test_Case const& test_case, Cpp_Test_Export_Settings const& settings)❰
+    std::string comment;
+    
+    std::string reason_for_testing = as_string(test_case.reason_for_testing.value);
+    
+    std::vector<std::string> fail_reasons;
+    for (auto const& x: test_case.reasons_for_failing){
+        fail_reasons.emplace_back(as_string(x.reason.value));
+    }
+    
+    //possibly attach comment onto test
+    if (settings.add_function_under_test){
+        comment += "// " + settings.function_under_test_title + ": ";
+        auto settings2 = dont_do_this(settings);
+        comment += Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
+        comment += "\n";
+    }
+    
+    //possibly attach comment onto test
+    if (settings.add_reason_for_testing){
+        comment += "// " + settings.reason_for_testing_title + ": ";
+        comment += reason_for_testing;
+        comment += "\n";
+    }
+    
+    //possibly attach comment onto test
+    if (settings.add_failure_explanation){
+        comment += "// " + settings.failure_explanation_title + ": ";
+        for (auto const& x: fail_reasons){
+            comment += x;
+            comment += "\n";
+        }
+    }
+    
+    return comment;
+❱
+
+
+//TODO: REMOVE THIS
 ◀private: static▶ C_Export_Settings ☀dont_do_this(Cpp_Test_Export_Settings const& settings)❰
     C_Export_Settings x;
     x.portion = settings.portion;
