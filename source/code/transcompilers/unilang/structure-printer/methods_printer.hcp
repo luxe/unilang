@@ -24,6 +24,7 @@ class
 ❪"code/utilities/streams/filestreams/lib"❫
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/general/lib"❫
+❪"code/transcompilers/unilang/structure-printer/method_signature_printer"❫
 
 ⚞⚟
 
@@ -215,7 +216,7 @@ class
 
 ◀private: static▶ void ☀Print_Method_Deceleration(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options)❰
     
-    Print_Method_Signature(out,file_name,code_type,method,options,Function_Declaration_Location::DECLARATION);
+    Method_Signature_Printer::Print(out,file_name,code_type,method,options,Function_Declaration_Location::DECLARATION);
     
 	//[attributes]
     auto attributes5 = Method_Attributes_Getter::Get_Method_Section_5(method,options,Function_Declaration_Location::DECLARATION);
@@ -226,7 +227,7 @@ class
 ❱
 ◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, std::vector<Data_Member_Item> const& members, std::vector<Method_Item> const& methods, bool const& object_method, C_Export_Settings const& options, std::string implicit_name, Object_Export_Method const& export_method)❰
 
-    Print_Method_Signature(out,file_name,code_type,method,options,Function_Declaration_Location::DEFINITION);
+    Method_Signature_Printer::Print(out,file_name,code_type,method,options,Function_Declaration_Location::DEFINITION);
     Print_To_Stream_With_Newline(out,"");
     Print_To_Stream_With_Newline(out,"{");
     
@@ -237,139 +238,12 @@ class
     Print_To_Stream_With_Newline(out,"} " + possible_end_comment);
     Print_To_Stream_With_Newline(out,"");
 ❱
-◀private: static▶ void ☀Print_Method_Signature(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
-  
-  
-    //[attributes]
-    auto attributes1 = Method_Attributes_Getter::Get_Method_Section_1(method,options,location);
-    Print_To_Stream_Unless_Empty(out,attributes1);
-
-     //template params
-     Print_Template_Argument_List(out,method.template_arguments);
-
-    //[attributes]
-    auto attributes2 = Method_Attributes_Getter::Get_Method_Section_2(method,options,location);
-    Print_To_Stream_Unless_Empty(out,attributes2);
-
-     Possibly_Print_Static_Keyword(out,method,options);
-
-    //[attributes]
-    auto attributes3 = Method_Attributes_Getter::Get_Method_Section_3(method,options,location);
-    Print_To_Stream_Unless_Empty(out,attributes3);
-     
-    //print the return type
-    Print_To_Stream(out,Return_Type_Str_Getter::Get_C(file_name,method,options));
-
-    //[attributes]
-    auto attributes4 = Method_Attributes_Getter::Get_Method_Section_4(method,options,location);
-    Print_To_Stream_Unless_Empty(out,attributes4);
-    
-    Print_To_Stream(out,Shared_Printer::Derive_Function_Name(file_name,code_type,method,options));
-    Print_Function_Argument_List(out,method.function_arguments,options,location);
-❱
-
-◀private: static▶ void ☀Possibly_Print_Static_Keyword(std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
-      
-    //TODO: MOVE OUT
-    std::string static_keyword = "static";
-    std::string static_keyword_spacer = " ";
-     
-     //static qualifier
-     if (method.storage == Storage_Specifier::STATIC){
-        if (!options.portion.namespace_options.use_anonymous){
-            Print_To_Stream(out,static_keyword);
-            Print_To_Stream(out,static_keyword_spacer);
-        }
-     }
-❱
-
-
-
-◀private: static▶ void ☀Print_To_Stream_Unless_Empty(std::wofstream & out, std::string const& str)❰
-  if (!str.empty()){
-    Print_To_Stream(out,str);
-  }
-❱
-
-◀private: static▶ void ☀Print_The_Void_Type(std::wofstream & out, C_Export_Settings const& options)❰
-  Function_Result result;
-  result.type.value = as_wstring("void");
-  auto real_type = Type_Name_Deriver::Derive_Name(result,Source_Language::CPP);
-  Print_To_Stream(out,real_type);
-❱
 
 
 
 
 
 //other goodies
-
-
-◀public: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Template_Argument> const& arguments)❰
-❱
-◀public: static▶ void ☀Print_Function_Argument_List(std::wofstream & out, std::vector<Function_Argument> const& arguments, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
-    Print_To_Stream(out,"(");
-    if (arguments.empty()){
-        Print_The_Void_Type(out,options);
-    }else{
-        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
-         ,[&](Function_Argument arg){
-            
-           Print_To_Stream(out,Get_Printable_Argument(arg,options,location));
-           Print_To_Stream(out,", ");
-         }
-         ,[&](Function_Argument arg){
-           Print_To_Stream(out,Get_Printable_Argument(arg,options,location));
-         });
-    }
-    Print_To_Stream(out,")");
-❱
-
-◀public: static▶ std::string ☀Get_Printable_Argument(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
-  
-	if (arg.infinitely_more){
-		return "...";
-	}
-	return Get_Printable_Single_Argument(arg,options,location);
-❱
-
-◀public: static▶ std::string ☀Get_Printable_Single_Argument(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
-  std::string str;
-  
-	//[attributes]
-    auto attributes1 = Method_Attributes_Getter::Get_Argument_Section_1(arg,options,location);
-    Append(str,attributes1);
-
-   //whether to put 'const' in front
-   if (!arg.is_mutable){Append(str,"const ");}
-
-	//[attributes]
-    auto attributes2 = Method_Attributes_Getter::Get_Argument_Section_2(arg,options,location);
-    Append(str,attributes2);
-   
-   //handling the array as part of the type
-   auto type = as_string(arg.type.value);
-   
-   //append type and type name
-   auto real_type = Type_Name_Deriver::Derive_Name(arg,Source_Language::CPP);
-   Append(str,real_type);
-   Append(str," ");
-   Append(str,Decide_How_To_Print_After_Type_Specifier(arg,options));
-
-	//[attributes]
-	auto attributes3 = Method_Attributes_Getter::Get_Argument_Section_3(arg,options,location);
-	Append(str,attributes3);
-  
-  return str;
-❱
-
-◀public: static▶ std::string ☀Decide_How_To_Print_After_Type_Specifier(Function_Argument const& arg, C_Export_Settings const& options)❰
-   
-   auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
-   auto derived_name = Identifier_Name_Deriver::Derive_Name(arg,options);
-   return Type_Qualifier_Dresser::Add_Qualifers_Back_To_Derived_Language_Argument_Type(stripped_type_detail, derived_name, options);
-❱
-
 
 
 

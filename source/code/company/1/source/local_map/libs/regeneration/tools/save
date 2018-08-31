@@ -35,6 +35,7 @@
 #include <chrono>
 #include <thread>
 #include <atomic>
+#include <random>
 
 template <typename T>
 std::string to_string_with_precision(const T a_value, const int n = 6)
@@ -42,6 +43,15 @@ std::string to_string_with_precision(const T a_value, const int n = 6)
     std::ostringstream out;
     out << std::fixed << std::setprecision(n) << a_value;
     return out.str();
+}
+
+template <typename T>
+T RandomRealFromRange(T low, T high)
+{
+    std::random_device                random_device;
+    std::mt19937                      engine{random_device()};
+    std::uniform_real_distribution<T> dist(low, high);
+    return dist(engine);
 }
 
 // all settings
@@ -165,6 +175,14 @@ struct simulated_distance_settings
     float step_amount_m      = 1;
     float total_distance_m   = 0;
     float current_distance_m = 0;
+
+    // wiggling forward progress along the route
+    // simulate weird situations where we observe the car not moving consistently through the route
+    bool  wiggle              = false;
+    float random_backward_min = 0;
+    float random_backward_max = 5;
+    float random_forward_min  = 1;
+    float random_forward_max  = 5;
 };
 
 struct distance_marker_settings
@@ -1364,16 +1382,19 @@ void possibly_log_new_route(settings &s)
 
 void possibly_log_expired_route(settings &s)
 {
-    if (s.logging.log_expired)
+    if (local_map::statik::interpret_route_status(s.annotated_route) == local_map::statik::route_status_expired)
     {
-        terminal_line line;
-        line.text        = "Route Expired";
-        line.color.r     = 232;
-        line.color.g     = 106;
-        line.color.b     = 92;
-        line.color.alpha = 255;
+        if (s.logging.log_expired)
+        {
+            terminal_line line;
+            line.text        = "Route Expired";
+            line.color.r     = 232;
+            line.color.g     = 106;
+            line.color.b     = 92;
+            line.color.alpha = 255;
 
-        add_line(s.terminal, line);
+            add_line(s.terminal, line);
+        }
     }
 }
 
@@ -1581,40 +1602,65 @@ bool build_annotated_route_from_network_inputs(settings &s)
     return new_message_received;
 }
 
-bool move_virtual_av_through_route(local_map::statik::event_annotated_route const &route,
-                                   event_route_render_settings &                   settings)
+
+struct moving_av_results
+{
+    bool distance_was_adjusted = false;
+    bool roll_over_occured     = false;
+};
+
+moving_av_results move_virtual_av_through_route(local_map::statik::event_annotated_route const &route,
+                                                event_route_render_settings &                   settings)
 {
     // move simulated av through the route
     settings.create_route_simulated_distance.current_time_s   = ImGui::GetTime();
     settings.create_route_simulated_distance.total_distance_m = local_map::statik::total_distance(route);
+    moving_av_results results;
 
     // if we have no length on our route, we can only ever be at 0m.
     if (settings.create_route_simulated_distance.total_distance_m == 0)
     {
         settings.create_route_simulated_distance.current_distance_m = 0;
-        return false;
+        return results;
     }
 
 
-    // adjust distance
-    bool distance_was_adjusted = false;
     if (settings.create_route_simulated_distance.current_time_s - settings.create_route_simulated_distance.last_time_s
         >= settings.create_route_simulated_distance.update_rate_s)
     {
-        distance_was_adjusted = true;
-        settings.create_route_simulated_distance.current_distance_m
-            += settings.create_route_simulated_distance.step_amount_m;
+        results.distance_was_adjusted = true;
+
+
+        if (settings.create_route_simulated_distance.wiggle)
+        {
+            auto backwards_amount = RandomRealFromRange(settings.create_route_simulated_distance.random_backward_min,
+                                                        settings.create_route_simulated_distance.random_backward_max);
+            auto forwards_amount = RandomRealFromRange(settings.create_route_simulated_distance.random_forward_min,
+                                                       settings.create_route_simulated_distance.random_forward_max);
+            settings.create_route_simulated_distance.current_distance_m += forwards_amount;
+            settings.create_route_simulated_distance.current_distance_m -= backwards_amount;
+        }
+        else
+        {
+
+            // update the progress using the typical step amount
+            settings.create_route_simulated_distance.current_distance_m
+                += settings.create_route_simulated_distance.step_amount_m;
+        }
+
+
         settings.create_route_simulated_distance.last_time_s = settings.create_route_simulated_distance.current_time_s;
 
         // reset with carry over
         if (settings.create_route_simulated_distance.current_distance_m
             > settings.create_route_simulated_distance.total_distance_m)
         {
+            results.roll_over_occured = true;
             settings.create_route_simulated_distance.current_distance_m
                 -= settings.create_route_simulated_distance.total_distance_m;
         }
     }
-    return distance_was_adjusted;
+    return results;
 }
 
 template <typename Fun>
@@ -1681,13 +1727,12 @@ void core_algorithm_logic(settings &s)
 
 
         // attempt to move forward in our simulated progression
-        auto previous_distance     = s.event_route.create_route_simulated_distance.current_distance_m;
-        bool distance_was_adjusted = move_virtual_av_through_route(s.annotated_route, s.event_route);
+        auto move_results = move_virtual_av_through_route(s.annotated_route, s.event_route);
 
-        if (distance_was_adjusted)
+        if (move_results.distance_was_adjusted)
         {
             profile_function(s, [&]() {
-                if (previous_distance > s.event_route.create_route_simulated_distance.current_distance_m)
+                if (move_results.roll_over_occured)
                 {
                     possibly_log_expired_route(s);
                     local_map::statik::expire_route(s.annotated_route);
@@ -1962,6 +2007,37 @@ void choose_car(settings &s)
     }
 }
 
+void float_range_slider(std::string label, float &min, float &max, int range_low, int range_high)
+{
+    int min_int = min;
+    int max_int = max;
+    ImGui::DragIntRange2(label.c_str(), &min_int, &max_int, 1, range_low, range_high, "min: %d", "max: %d");
+    min = min_int;
+    max = max_int;
+}
+
+void wiggle_menu(settings &s)
+{
+    ImGui::Checkbox("Wiggle", &s.event_route.create_route_simulated_distance.wiggle);
+    if (s.event_route.create_route_simulated_distance.wiggle)
+    {
+        ImGui::Text("%s", "backwards:");
+        ImGui::SameLine();
+        float_range_slider("##wiggle_backwards",
+                           s.event_route.create_route_simulated_distance.random_backward_min,
+                           s.event_route.create_route_simulated_distance.random_backward_max,
+                           0,
+                           20);
+        ImGui::Text("%s", "forwards:");
+        ImGui::SameLine();
+        float_range_slider("##wiggle_forwards",
+                           s.event_route.create_route_simulated_distance.random_forward_min,
+                           s.event_route.create_route_simulated_distance.random_forward_max,
+                           0,
+                           20);
+    }
+}
+
 void create_route_window_settings(settings &s)
 {
 
@@ -2005,7 +2081,13 @@ void create_route_window_settings(settings &s)
         if (ImGui::CollapsingHeader(s.setting_time_header.name.c_str()))
         {
             ImGui::SliderFloat("Rate (s)", &s.event_route.create_route_simulated_distance.update_rate_s, .01, 1);
-            ImGui::SliderFloat("Step (m)", &s.event_route.create_route_simulated_distance.step_amount_m, 0, 20);
+
+            if (!s.event_route.create_route_simulated_distance.wiggle)
+            {
+                ImGui::SliderFloat("Step (m)", &s.event_route.create_route_simulated_distance.step_amount_m, 0, 20);
+            }
+
+            wiggle_menu(s);
         }
     });
 }
@@ -2693,12 +2775,17 @@ settings get_settings()
     s.event_route.event_window_color.alpha = 255;
 
     // distance simulation
-    s.event_route.create_route_simulated_distance.current_time_s     = 0;
-    s.event_route.create_route_simulated_distance.last_time_s        = 0;
-    s.event_route.create_route_simulated_distance.update_rate_s      = .2;
-    s.event_route.create_route_simulated_distance.step_amount_m      = 1;
-    s.event_route.create_route_simulated_distance.total_distance_m   = 0;
-    s.event_route.create_route_simulated_distance.current_distance_m = 0;
+    s.event_route.create_route_simulated_distance.current_time_s      = 0;
+    s.event_route.create_route_simulated_distance.last_time_s         = 0;
+    s.event_route.create_route_simulated_distance.update_rate_s       = .2;
+    s.event_route.create_route_simulated_distance.step_amount_m       = 1;
+    s.event_route.create_route_simulated_distance.total_distance_m    = 0;
+    s.event_route.create_route_simulated_distance.current_distance_m  = 0;
+    s.event_route.create_route_simulated_distance.wiggle              = false;
+    s.event_route.create_route_simulated_distance.random_backward_min = 0;
+    s.event_route.create_route_simulated_distance.random_backward_max = 5;
+    s.event_route.create_route_simulated_distance.random_forward_min  = 1;
+    s.event_route.create_route_simulated_distance.random_forward_max  = 5;
 
     s.event_route.car_selection = 1;
     auto config_directory       = xis::get_config_directory() / "tools" / "route_annotation";

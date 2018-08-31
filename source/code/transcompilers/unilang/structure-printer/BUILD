@@ -132,6 +132,32 @@ hcp(name = "methods_printer", deps=[
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",
+"//code/transcompilers/unilang/structure-printer:method_signature_printer",
+])
+
+hcp(name = "method_signature_printer", deps=[
+"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/tokens:token_name",
+"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure-printer:function_declaration_location",
+"//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
+"//code/transcompilers/unilang/in-out-design-printer:input_struct_getter",
+"//code/transcompilers/unilang/structure-printer:method_body_token_printer",
+"//code/transcompilers/unilang/structure-printer:shared_printer",
+"//code/transcompilers/unilang/test-wrapper-printer:test_wrapper_utilities",
+"//code/utilities/types/strings/transformers/casing:case_modifier",
+"//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
+"//code/transcompilers/unilang/structure-printer/attributes:method_attributes_getter",
+"//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",
+"//code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_dresser",
+"//code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
+"//code/transcompilers/unilang/structure-printer:return_type_str_getter",
+"//code/transcompilers/unilang/structure-printer:method_block_ender",
+"//code/utilities/streams/filestreams:lib",
+"//code/utilities/converters:lib",
+"//code/utilities/types/general:lib",
 ])
 
 hcp(name = "struct_printer", deps = [

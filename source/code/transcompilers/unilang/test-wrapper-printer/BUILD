@@ -101,6 +101,7 @@ hcp(name = "test_wrapper_methods_printer", deps = [
 "//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",
 "//code/transcompilers/unilang/structure-printer:return_type_str_getter",
 "//code/transcompilers/unilang/structure-printer:function_declaration_location",
+"//code/transcompilers/unilang/structure-printer:method_signature_printer",
 "va_list_part_getter",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
