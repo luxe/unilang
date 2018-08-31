@@ -235,51 +235,51 @@ Mainly used for testing􏶡
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     if (settings.lane_selection.exceeding_accumulated_distance){
-        auto indexes = mark_lanes_that_exceed_accumulated_distance(route,settings.lane_selection.exceeding_distance_m);
+        auto indexes = mark_lanes_that_exceed_accumulated_distance(route,settings.lane_selection.exceeding_distance_m,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.before_exceeding_accumulated_distance){
-        auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,settings.lane_selection.before_exceeding_distance_m);
+        auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(route,settings.lane_selection.before_exceeding_distance_m,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.prior_to_loop){
-        auto indexes = mark_lanes_prior_to_forming_a_submap_loop(route);
+        auto indexes = mark_lanes_prior_to_forming_a_submap_loop(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.first_lane_loop){
-        auto indexes = mark_first_lanes_involved_in_submap_loop(route);
+        auto indexes = mark_first_lanes_involved_in_submap_loop(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.all_lanes_loop){
-        auto indexes = mark_all_lanes_in_entered_submap_loop(route);
+        auto indexes = mark_all_lanes_in_entered_submap_loop(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.after_loop){
-        auto indexes = mark_first_lane_after_loop_causing_submaps(route);
+        auto indexes = mark_first_lane_after_loop_causing_submaps(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.submap_transition){
-        auto indexes = mark_lanes_that_transition_to_new_submaps(route);
+        auto indexes = mark_lanes_that_transition_to_new_submaps(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.first){
-        auto indexes = mark_first_lane(route);
+        auto indexes = mark_first_lane(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.last){
-        auto indexes = mark_last_lane(route);
+        auto indexes = mark_last_lane(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.all){
-        auto indexes = mark_all_lanes(route);
+        auto indexes = mark_all_lanes(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.specific_lane_index){
-        auto indexes = mark_specific_lane_index(route,settings.placement.lane_index);
+        auto indexes = mark_specific_lane_index(route,settings.placement.lane_index,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.regen_sla){
-        auto indexes = mark_lanes_for_local_map_sla_requirement(route,settings.lane_selection.sla_distance_m);
+        auto indexes = mark_lanes_for_local_map_sla_requirement(route,settings.lane_selection.sla_distance_m,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
 􏶳
@@ -306,6 +306,66 @@ Mainly used for testing􏶡
     // Any crashes in the tool related to the API can be investigated here.
 􏴮
 
+􏷘-􏷗􏷒algorithm start􏷑
+􏴅Lane Marking􏴆
+􏷐decide the starting index for the algorithm to being applying􏷏
+􏶠ensures the index is valid for the route given􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route used to check the bounds of the given window􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window used to derive the index􏶿
+􏶚m􏶛􏶾size􏶽􏶼algorithm start􏶻􏲅0􏲆􏶺the starting index for the algorithm to being applying􏶹
+􏶴
+    if (range.start){
+        //fitting for safety
+        //might consider a non-safe version later
+        algorithm_start = fitted_index_for_iteration(route,*range.start);
+    }
+􏶳
+
+􏷘-􏷗􏷒algorithm end􏷑
+􏴅Lane Marking􏴆
+􏷐decide the ending index for the algorithm to stop applying􏷏
+􏶠ensures the index is valid for the route given􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route used to check the bounds of the given window􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window used to derive the index􏶿
+􏶚m􏶛􏶾size􏶽􏶼algorithm end􏶻􏲅number_of_lanes(route)􏲆􏶺the ending index for the algorithm to stop applying􏶹
+􏶴
+    if (range.end){
+        //fitting for safety
+        //might consider a non-safe version later
+        algorithm_end = fitted_index_for_iteration(route,*range.end);
+    }
+􏶳
+
+􏷘-􏷗􏷒fitted index for iteration􏷑
+􏴅Lane Marking􏴆
+􏷐takes an index and fits it to the particular route so that it would be valid to use when iterating􏷏
+􏶠fitting the start and end indexes will ensure no indexing is out of bounds􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route used to fit the index􏶿
+􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index to fit for iteration􏶿
+􏶚m􏶛􏶾size􏶽􏶼fitted index􏶻􏲅index􏲆􏶺the fitted index􏶹
+􏶴
+    if (index < 0){
+        fitted_index = 0;
+    }
+    else if(index > number_of_lanes(route)){
+        fitted_index = number_of_lanes(route);
+    }
+􏶳
+
+􏷘-􏷗􏷒iterate with algorithm window􏷑
+􏴅Lane Marking􏴆
+􏷐iterate over a route according to the algorithm window, and apply the function on each lane index􏷏
+􏶠higher order function for iterating over portions of route􏶡
+􏷌Fun􏷋􏷈the function to apply on each iteration􏷇
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to iterate over􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window used to derive index range􏶿
+􏶜􏶝􏷆Fun􏷅􏷄fun􏷃􏷀the function to apply on each iteration; typically lambda􏶿
+􏶴
+    for (size_t i = algorithm_start(route,range); i < algorithm_end(route,range); ++i){
+        fun(i);
+    }
+􏶳
+
 􏷘+􏷗􏷒mark lanes that exceed accumulated distance􏷑
 􏴅Lane Marking􏴆
 􏷐mark lanes along that route that exceed an accumulated distance greater than the provided distance􏷏
@@ -318,7 +378,7 @@ Mainly used for testing􏶡
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
-    for (size_t i = 0; i < number_of_lanes(route); ++i){
+    iterate_with_algorithm_window(route,range,[&](size_t i){
         double lane_distance_m = lane_length(route,i);
         if (total_distance+lane_distance_m > distance_m){
             lane_indexes.insert(i);
@@ -327,7 +387,7 @@ Mainly used for testing􏶡
         else{
             total_distance += lane_distance_m;
         }
-    }
+    });
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -407,10 +467,11 @@ Mainly used for testing􏶡
 􏵨the distance must be positive􏵩
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance that must not be exceeded􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
-    for (size_t i = 0; i < number_of_lanes(route); ++i){
+    iterate_with_algorithm_window(route,range,[&](size_t i){
         double lane_distance_m = lane_length(route,i);
         if (total_distance+lane_distance_m > distance_m){
             insert_previous(lane_indexes,i);
@@ -419,7 +480,7 @@ Mainly used for testing􏶡
         else{
             total_distance += lane_distance_m;
         }
-    }
+    });
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -480,11 +541,12 @@ Mainly used for testing􏶡
 􏶠Ensures that each marked lane comes before a submap loop is formed along the route􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨
 􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     std::set<hub::base::guid> seen;
     hub::base::guid previous;
-    for (size_t i = 0; i < number_of_lanes(route); ++i){
+    iterate_with_algorithm_window(route,range,[&](size_t i){
         auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
@@ -496,7 +558,7 @@ Mainly used for testing􏶡
         }
         previous = id;
         seen.insert(id);
-    }
+    });
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -549,13 +611,14 @@ Mainly used for testing􏶡
 􏷐when we detect submap loops, mark the first lane that is part of the submap loop􏷏
 􏶠Ensures that each marked lane is the first lane in a submap that is part of a submap loop􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     std::map<hub::base::guid,size_t> seen;
     stdx::optional<hub::base::guid> previous;
     
     
-    for (size_t i = 0; i < number_of_lanes(route); ++i){
+    iterate_with_algorithm_window(route,range,[&](size_t i){
         auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (!previous || *previous != id){
@@ -566,7 +629,7 @@ Mainly used for testing􏶡
             seen[id] = i;
         }
         previous = id;
-    }
+    });
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -622,12 +685,13 @@ Mainly used for testing􏶡
 􏷐when we detect submap loops, mark the all lanes that are part of the first time we are in the submap􏷏
 􏶠Ensures that each marked lane is part of the first set of lanes in the loop conflicting submap􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route);
+    auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route,range);
     for (auto const& it: conflicting_submap_indexes){
         auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
-        for (size_t i = it; i < number_of_lanes(route); ++i){
+        for (size_t i = it; i < algorithm_end(route,range); ++i){
             auto next_submap = local_map::internal::submap_identifier(route.lane_sequence[i]);
             if (next_submap == conflicting_submap){
                 lane_indexes.insert(i);
@@ -684,12 +748,13 @@ Mainly used for testing􏶡
 􏷐when we detect submap loops, mark the first lane along the route that is past the conflicting submap􏷏
 􏶠The lanes that are marked are still a part of the overall loop, but we are now outside the submap that we will later revisit􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route);
+    auto conflicting_submap_indexes = mark_first_lanes_involved_in_submap_loop(route,range);
     for (auto const& it: conflicting_submap_indexes){
         auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
-        for (size_t i = it; i < number_of_lanes(route); ++i){
+        for (size_t i = it; i < algorithm_end(route,range); ++i){
             auto next_submap = local_map::internal::submap_identifier(route.lane_sequence[i]);
             if (next_submap != conflicting_submap){
                 lane_indexes.insert(i);
@@ -740,17 +805,18 @@ Mainly used for testing􏶡
 􏷐mark every lane that transitions to a different submap􏷏
 􏶠Ensures that each marked lane exists in a different submap that the previous marked lane􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     hub::base::guid previous;
-    for (size_t i = 0; i < number_of_lanes(route); ++i){
+    iterate_with_algorithm_window(route,range,[&](size_t i){
         auto id = local_map::internal::submap_identifier(route.lane_sequence[i]);
         
         if (previous != id){
             lane_indexes.insert(i);
         }
         previous = id;
-    }
+    });
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -790,10 +856,14 @@ Mainly used for testing􏶡
 􏴅Lane Marking􏴆
 􏷐Marks the first lane of the route􏷏
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     if (has_lanes(route)){
-        lane_indexes.insert(0);
+        auto index = algorithm_start(route,range);
+        if (index < number_of_lanes(route)){
+            lane_indexes.insert(index);
+        }
     }
 􏶳
 􏴯empty􏴰
@@ -828,10 +898,14 @@ Mainly used for testing􏶡
 􏴅Lane Marking􏴆
 􏷐Marks the last lane of the route􏷏
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     if (has_lanes(route)){
-        lane_indexes.insert(number_of_lanes(route) -1);
+        auto index = algorithm_end(route,range);
+        if (index > 0){
+            lane_indexes.insert(index -1);
+        }
     }
 􏶳
 􏴯empty􏴰
@@ -866,11 +940,12 @@ Mainly used for testing􏶡
 􏴅Lane Marking􏴆
 􏷐Marks all of the lanes in the route􏷏
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    for (size_t i = 0; i < number_of_lanes(route); ++i){
+    iterate_with_algorithm_window(route,range,[&](size_t i){
         lane_indexes.insert(i);
-    }
+    });
 􏶳
 􏴯empty􏴰
 􏲝We should be able to mark empty routes without issue􏲞
@@ -911,10 +986,12 @@ Mainly used for testing􏶡
 The set returned will never have more than 1 element􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
 􏶜􏶝􏷆size􏷅􏷄lane index􏷃􏷀the index of the lane to mark􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
-    if (lane_index < number_of_lanes(route)){
-        lane_indexes.insert(lane_index);
+    auto adjusted_lane_index = algorithm_start(route,range) + lane_index;
+    if (adjusted_lane_index < algorithm_end(route,range)){
+        lane_indexes.insert(adjusted_lane_index);
     }
 􏶳
 􏴯mark first lane􏴰
@@ -977,16 +1054,17 @@ The set returned will never have more than 1 element􏶡
 􏶠Ensures that the proper lanes are marked to guarantee by the local map's SLA requirements during regeneration􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
 􏶴
     􏶲perform marking policy􏶱
-    lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m);
+    lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m,range);
     
     􏶲perform marking policy􏶱
-    auto after_loop = mark_first_lane_after_loop_causing_submaps(route);
+    auto after_loop = mark_first_lane_after_loop_causing_submaps(route,range);
     
     􏶲perform marking policy􏶱
-    auto first = mark_first_lane(route);
+    auto first = mark_first_lane(route,range);
     
     􏶲combine policy results􏶱
     lane_indexes.insert(after_loop.begin(),after_loop.end());

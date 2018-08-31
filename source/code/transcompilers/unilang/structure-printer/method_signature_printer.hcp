@@ -35,7 +35,7 @@ class
     Print_To_Stream_Unless_Empty(out,attributes1);
 
      //template params
-     Print_Template_Argument_List(out,method.template_arguments);
+     Print_Template_Argument_List(out,method.template_arguments,options,location);
 
     //[attributes]
     auto attributes2 = Method_Attributes_Getter::Get_Method_Section_2(method,options,location);
@@ -73,7 +73,20 @@ class
      }
 ❱
 
-◀public: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Template_Argument> const& arguments)❰
+◀public: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Template_Argument> const& arguments, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  if (!arguments.empty()){
+      Print_To_Stream(out,"template <");
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
+         ,[&](Template_Argument arg){
+            
+           Print_To_Stream(out,Get_Printable_Template_Argument(arg,options,location));
+           Print_To_Stream(out,", ");
+         }
+         ,[&](Template_Argument arg){
+           Print_To_Stream(out,Get_Printable_Template_Argument(arg,options,location));
+         });
+      Print_To_Stream(out,">");
+  }
 ❱
 ◀public: static▶ void ☀Print_Function_Argument_List(std::wofstream & out, std::vector<Function_Argument> const& arguments, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
     Print_To_Stream(out,"(");
@@ -106,6 +119,14 @@ class
     }
     return Get_Printable_Single_Argument(arg,options,location);
 ❱
+◀private: static▶ std::string ☀Get_Printable_Template_Argument(Template_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  std::string str;
+  str += "typename ";
+  str += as_string(arg.identifier.value);
+  return str;
+❱
+
+
 
 ◀public: static▶ std::string ☀Get_Printable_Single_Argument(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
   std::string str;
@@ -129,6 +150,7 @@ class
    Append(str,real_type);
    Append(str," ");
    Append(str,Decide_How_To_Print_After_Type_Specifier(arg,options));
+   Possibly_Append_Default_Value(str,arg,options,location);
 
     //[attributes]
     auto attributes3 = Method_Attributes_Getter::Get_Argument_Section_3(arg,options,location);
@@ -136,6 +158,31 @@ class
   
   return str;
 ❱
+
+◀private: static▶ void ☀Possibly_Append_Default_Value(std::string & str, Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+
+  //we only put default values on decelerations
+  if (location == Function_Declaration_Location::DECLARATION){
+    
+    //check if the value exists
+    if (Has_Default_Value(arg)){
+      str += Default_Argument_Being_Set(arg);
+    }
+  }
+❱
+
+◀private: static▶ bool ☀Has_Default_Value(Function_Argument const& arg)❰
+  return !arg.default_value.value.empty();
+❱
+
+◀private: static▶ std::string ☀Default_Argument_Being_Set(Function_Argument const& arg)❰
+  std::string str;
+  str += " = ";
+  std::string default_value = as_string(arg.default_value.value);
+  str += default_value;
+  return str;
+❱
+
 
 ◀public: static▶ std::string ☀Decide_How_To_Print_After_Type_Specifier(Function_Argument const& arg, C_Export_Settings const& options)❰
    
