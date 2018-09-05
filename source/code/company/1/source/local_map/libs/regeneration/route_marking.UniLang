@@ -1155,8 +1155,8 @@ The set returned will never have more than 1 element􏶡
     EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯a1 b1 a1 should b1􏴰
-􏲝In the case of an ABA submap loop, we should regenerate in the B submap􏲞
-􏲛Algorithm is no longer marking the B lane in an ABA situation􏲜
+􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
+􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
    auto r = create_route_from_submap_ids({1,2,1});
@@ -1169,12 +1169,12 @@ The set returned will never have more than 1 element􏶡
     auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
-    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
 􏴮
 
 􏴯buffer a1 b1 a1 should b1􏴰
-􏲝In the case of an ABA submap loop, we should regenerate in the B submap􏲞
-􏲛Algorithm is no longer marking the B lane in an ABA situation􏲜
+􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
+􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({0,0,0,1,2,1});
@@ -1187,11 +1187,11 @@ The set returned will never have more than 1 element􏶡
     auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
-    EXPECT_TRUE(indexes.find(4) != indexes.end());
+    EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 􏴯a1 b1 a1 buffer should b1􏴰
-􏲝In the case of an ABA submap loop, we should regenerate in the B submap􏲞
-􏲛Algorithm is no longer marking the B lane in an ABA situation􏲜
+􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
+􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,1,0,0,0});
@@ -1204,11 +1204,11 @@ The set returned will never have more than 1 element􏶡
     auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
-    EXPECT_TRUE(indexes.find(1) != indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
 􏴮
 􏴯buffer a1 b1 a1 buffer should b1􏴰
-􏲝In the case of an ABA submap loop, we should regenerate in the B submap􏲞
-􏲛Algorithm is no longer marking the B lane in an ABA situation􏲜
+􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
+􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({0,0,0,1,2,1,0,0,0});
@@ -1221,7 +1221,7 @@ The set returned will never have more than 1 element􏶡
     auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
-    EXPECT_TRUE(indexes.find(4) != indexes.end());
+    EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 
 􏷘+􏷗􏷒create event route􏷑
@@ -1317,7 +1317,11 @@ This means we we will create an entirely new event route every cycle based on ot
     
     // Mark lanes for regeneration.
     // Using the chosen lane marking algorithm, mark lanes to determine when we should regenerate.
-    auto lane_markings = mark_lanes_for_local_map_sla_requirement(route, distance_m);
+    // Start the algorithm at the "current index" of the route
+    // This is our true route beginning along a merged route.
+    algorithm_window window;
+    window.start = route.route_progress_index;
+    auto lane_markings = mark_lanes_for_local_map_sla_requirement(route, distance_m,window);
     set_regeneration_events(event_route, lane_markings, "SLA");
 􏶳
 􏴯simulate slmt cycle changes on route􏴰
