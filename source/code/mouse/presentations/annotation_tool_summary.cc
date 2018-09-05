@@ -4,6 +4,8 @@
 #include "code/utilities/shell/lib.hpp"
 
 
+//this was a presentation tool designed to show functionality of a GUI tool
+//we keep it here as an example.  we'll consider generating this kind of movie code later
 std::string build_geo_flag(Point size, Point p){
     std::string command;
     if (size.x >= 0){
