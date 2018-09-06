@@ -609,6 +609,9 @@ Mainly used for testing􏶡
 
 
 
+
+
+
 􏷘+􏷗􏷒mark first lanes involved in submap loop􏷑
 􏴅Lane Marking􏴆
 􏷐when we detect submap loops, mark the first lane that is part of the submap loop􏷏
@@ -803,11 +806,40 @@ Mainly used for testing􏶡
     EXPECT_TRUE(indexes.empty());
 􏴮
 
+􏷘+􏷗􏷒mark first lane in unique submap after entering loop􏷑
+􏴅Lane Marking􏴆
+􏷐when we enter a submap inside a submap loop, mark the first lane in the next submap􏷏
+􏶠A1 B1 A2 will mark A2
+A1 B1 C1 D1 A2 will mark C1􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶴
+    auto first_lanes = mark_first_lane_after_loop_causing_submaps(route,range);
+    for (const auto & i: first_lanes){
+        auto lane_index = first_lane_of_next_unique_submap(route,range,i);
+        if (lane_index){
+            lane_indexes.insert(*lane_index);
+        }
+    }
+􏶳
 
-
-
-
-
+􏷘-􏷗􏷒first lane of next unique submap􏷑
+􏴅Detail􏴆
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to search for further lanes on􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
+􏶜􏶝􏷆size􏷅􏷄lane index􏷃􏷀the lane index to start looking forward from􏶿
+􏶚m?􏶛􏶾size􏶽􏶼next lane in unique submap􏶻􏶺the first lane of the next unique submap􏶹
+􏶴
+    auto current_submap = local_map::internal::submap_identifier(route.lane_sequence[lane_index]);
+    for (size_t i = lane_index; i < algorithm_end(route,range); ++i){
+        auto next_submap = local_map::internal::submap_identifier(route.lane_sequence[i]);
+        if (current_submap != next_submap){
+            next_lane_in_unique_submap = i;
+            break;
+        }
+    }
+􏶳
 
 􏷘+􏷗􏷒mark second lane after loop causing submaps􏷑
 􏴅Lane Marking􏴆
