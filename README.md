@@ -1,30 +1,7 @@
 # everything
 mono repo
 
-BAZEL NOTES:
-deps that need to be part of the build system
-gmp
-json (ttps://github.com/nlohmann/json)
-pretty_printers
-curl
-pstreams
-
-NOTES CARRIED OVER FROM OLD PRE-JSTD:
-libraries to add in:
-- add-range-v3 library (Eric Neibler)
-- add klmr-cpp11-range
-
-- figure out how to do all of this better with concepts
-- start creating data types that have the pre-jstd function, but as data members
-
-- unit test functions with Catch
-- unit test with clang sanatizers
 - unit test with memoryleax and valgrind
-
-- prepare for filesystem lib being added to c++
-
-- add all the needed header files into one file
-- maybe do something better with namespaces
 
 
 
