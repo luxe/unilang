@@ -246,6 +246,10 @@ Mainly used for testing􏶡
         auto indexes = mark_lanes_prior_to_forming_a_submap_loop(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
+    if (settings.lane_selection.next_unique_submap_in_loop){
+        auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(route,settings.lane_selection.apply_window);
+        lane_indexes.insert(indexes.begin(),indexes.end());
+    }
     if (settings.lane_selection.first_lane_loop){
         auto indexes = mark_first_lanes_involved_in_submap_loop(route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
@@ -817,18 +821,71 @@ A1 B1 C1 D1 A2 will mark C1􏶡
 􏶴
     auto first_lanes = mark_first_lane_after_loop_causing_submaps(route,range);
     for (const auto & i: first_lanes){
-        auto lane_index = first_lane_of_next_unique_submap(route,range,i);
+        auto lane_index = first_lane_of_next_unique_submap(route,i,range);
         if (lane_index){
             lane_indexes.insert(*lane_index);
         }
     }
 􏶳
+􏴯empty􏴰
+􏲝We should be able to mark empty routes without issue􏲞
+􏲛Implementation is no longer handling empty routes correctly􏲜
+􏴭
+    //ARRANGE
+    route r;
+    
+    //ACT
+    auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+    
+    //ASSERT
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯aba mark second a􏴰
+􏲝For this algorithm, we should mark A2 in an A1 B1 A2 submap loop􏲞
+􏲛Implementation is no longer meeting ABA example􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({0,0,0,0,1,0,0,0,0});
+    
+    //ACT
+    auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) == indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+    EXPECT_TRUE(indexes.find(5) != indexes.end());
+    EXPECT_TRUE(indexes.find(6) == indexes.end());
+    EXPECT_TRUE(indexes.find(7) == indexes.end());
+    EXPECT_TRUE(indexes.find(8) == indexes.end());
+􏴮
+􏴯abcda mark c􏴰
+􏲝For this algorithm, we should mark A2 in an A1 B1 A2 submap loop􏲞
+􏲛Implementation is no longer meeting ABA example􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({0,1,2,3,0});
+    
+    //ACT
+    auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),1);
+    EXPECT_TRUE(indexes.find(0) == indexes.end());
+    EXPECT_TRUE(indexes.find(1) == indexes.end());
+    EXPECT_TRUE(indexes.find(2) != indexes.end());
+    EXPECT_TRUE(indexes.find(3) == indexes.end());
+    EXPECT_TRUE(indexes.find(4) == indexes.end());
+􏴮
 
 􏷘-􏷗􏷒first lane of next unique submap􏷑
 􏴅Detail􏴆
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to search for further lanes on􏶿
-􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶜􏶝􏷆size􏷅􏷄lane index􏷃􏷀the lane index to start looking forward from􏶿
+􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
 􏶚m?􏶛􏶾size􏶽􏶼next lane in unique submap􏶻􏶺the first lane of the next unique submap􏶹
 􏶴
     auto current_submap = local_map::internal::submap_identifier(route.lane_sequence[lane_index]);
@@ -1159,7 +1216,7 @@ The set returned will never have more than 1 element􏶡
     lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m,range);
     
     􏶲perform marking policy􏶱
-    auto after_loop = mark_second_lane_after_loop_causing_submaps(route,range);
+    auto after_loop = mark_first_lane_in_unique_submap_after_entering_loop(route,range);
     
     􏶲perform marking policy􏶱
     auto first = mark_first_lane(route,range);
@@ -1254,6 +1311,23 @@ The set returned will never have more than 1 element􏶡
     
     //ASSERT
     EXPECT_TRUE(indexes.find(5) != indexes.end());
+􏴮
+􏴯buffer a1 b1 b2 b3 c1 c2 a1 buffer should c1􏴰
+􏲝In the case of an ABBBCCA submap loop, we should regenerate on the first C􏲞
+􏲛Algorithm is no longer marking the correct lane􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({0,0,0,1,1,1,1,2,2,0,0,0});
+    
+    //ACT
+    // We set a very large distance, because we aren't interested in any lanes being marked by the distance requirement.
+    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be marked
+    // This allows us to test the SLA submap loop marking logic without influence from the distance
+    auto any_valid_distance_m = 10000.0;
+    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    
+    //ASSERT
+    EXPECT_TRUE(indexes.find(7) != indexes.end());
 􏴮
 
 􏷘+􏷗􏷒create event route􏷑
