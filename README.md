@@ -1,7 +1,6 @@
 # everything
 mono repo
 
-
 BAZEL NOTES:
 deps that need to be part of the build system
 gmp
