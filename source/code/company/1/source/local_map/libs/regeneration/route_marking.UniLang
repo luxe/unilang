@@ -1216,7 +1216,7 @@ The set returned will never have more than 1 element􏶡
     lane_indexes = mark_lanes_that_exceed_accumulated_distance(route,distance_m,range);
     
     􏶲perform marking policy􏶱
-    auto after_loop = mark_first_lane_in_unique_submap_after_entering_loop(route,range);
+    auto after_loop = mark_first_lane_in_unique_submap_after_entering_loop(route);
     
     􏶲perform marking policy􏶱
     auto first = mark_first_lane(route,range);
@@ -1459,6 +1459,78 @@ They are converted to guids􏶡
 􏶜􏶝􏷆route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_route_from_test_input(creation_input))􏲆􏶺an event route􏶹
 􏶴􏶳
+􏴯create with distances􏴰
+􏲝We should be able to create an event route with creation input􏲞
+􏲛The distances are no longer being set correctly􏲜
+􏴭
+    //ARRANGE
+    std::vector<double> distances_m{20,40,60,80};
+    route_creation_input input;
+    lane_creation_input lane;
+    
+    for (size_t i = 0; i < distances_m.size(); ++i){
+        lane.distance_m = distances_m[i];
+        input.lane_input_sequence.emplace_back(lane);
+    }
+    
+    //ACT
+    auto event_route = create_event_route_from_test_input(input);
+    
+    //ASSERT
+    for (size_t i = 0; i < event_route.event_lane_sequence.size(); ++i){
+        EXPECT_EQ(event_route.event_lane_sequence[i].info.annotation.distance,distances_m[i]);
+    }
+􏴮
+􏴯create with ids􏴰
+􏲝We should be able to create an event route with creation input􏲞
+􏲛The submap ids are no longer being set correctly􏲜
+􏴭
+    //ARRANGE
+    std::vector<int> submap_ids{2,4,6,8};
+    route_creation_input input;
+    lane_creation_input lane;
+    
+    for (size_t i = 0; i < submap_ids.size(); ++i){
+        lane.submap_id = submap_ids[i];
+        input.lane_input_sequence.emplace_back(lane);
+    }
+    
+    //ACT
+    auto event_route = create_event_route_from_test_input(input);
+    
+    //ASSERT
+    for (size_t i = 0; i < event_route.event_lane_sequence.size(); ++i){
+        EXPECT_EQ(event_route.event_lane_sequence[i].info.map_ref.map_index.to_int64(),submap_ids[i]);
+    }
+􏴮
+
+􏴯create with distances and ids􏴰
+􏲝We should be able to create an event route with creation input􏲞
+􏲛The submap ids and the distances are no longer being set correctly􏲜
+􏴭
+    //ARRANGE
+    std::vector<double> distances_m{20,40,60,80};
+    std::vector<int> submap_ids{2,4,6,8};
+    route_creation_input input;
+    lane_creation_input lane;
+    
+    for (size_t i = 0; i < distances_m.size(); ++i){
+        lane.submap_id = submap_ids[i];
+        lane.distance_m = distances_m[i];
+        input.lane_input_sequence.emplace_back(lane);
+    }
+    
+    //ACT
+    auto event_route = create_event_route_from_test_input(input);
+    
+    //ASSERT
+    for (size_t i = 0; i < event_route.event_lane_sequence.size(); ++i){
+        EXPECT_EQ(event_route.event_lane_sequence[i].info.map_ref.map_index.to_int64(),submap_ids[i]);
+    }
+    for (size_t i = 0; i < event_route.event_lane_sequence.size(); ++i){
+        EXPECT_EQ(event_route.event_lane_sequence[i].info.annotation.distance,distances_m[i]);
+    }
+􏴮
 
 
 􏷘+􏷗􏷒create slmt event route􏷑
@@ -1475,7 +1547,7 @@ This means we we will create an entirely new event route every cycle based on ot
 
     // the event window is preserved based on indexes in the seed
     // we apply this window to the annotated route
-    set_event_window_from_slmt_seed(event_route,seed,route_has_changed);
+    set_event_window_from_slmt_seed(event_route,seed,route_has_changed,route.route_progress_index);
     
     // Mark lanes for regeneration.
     // Using the chosen lane marking algorithm, mark lanes to determine when we should regenerate.
@@ -1548,6 +1620,7 @@ This means we we will create an entirely new event route every cycle based on ot
 􏶜rm􏶝􏷆event_annotated_route􏷅􏷄event route􏷃􏷀the input to create an event route from􏶿
 􏶜􏶝􏷆static_local_map_task_wrapper_seed􏷅􏲧local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲨􏲥local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲦􏷄seed􏷃􏷀the current seed for the current cycle of the SLMT􏶿
 􏶜􏶝􏷆bool􏷅􏷄route has changed􏷃􏷀whether or not the route has changed prior to the previous task cycle􏶿
+􏶜􏶝􏷆size􏷅􏷄current progress index􏷃􏷀the route to create an event route from􏶿
 􏶴
     // if the route changed, we'll keep the default start of the window
     // this will ensure we process from the beginning of the route all the way to the current index
@@ -1555,7 +1628,7 @@ This means we we will create an entirely new event route every cycle based on ot
     {
         set_previous_index_on_route(event_route, seed.previous_lane_index);
     }
-    set_current_index_on_route(event_route, seed.route_lane_index);
+    set_current_index_on_route(event_route, route_has_changed ? current_progress_index : seed.route_lane_index);
 􏶳
 
 􏷘+􏷗􏷒set regeneration events􏷑
@@ -1749,6 +1822,130 @@ If you need to create the route in a particular state however, you can explicitl
     EXPECT_EQ((*event_route.evaluation_range.current),2);
 􏴮
 
+􏷘+􏷗􏷒is evaluation range consistent􏷑
+􏴅Annotated Route􏴆
+􏷐check that the evaluation range for the event route is logically valid􏷏
+􏶠we expect to move through the route from beginning to end
+this means that we expect our previous lane index to be <= to our current lane index
+this "previous/current index interval" forms the window that we will scan looking for events
+as such, we expect our window to be (x,y] such that x <= y
+if x > y, we will never process any events (since we scan from x to y)
+being in this state is not dangerous from the event route's perspective
+it's merely a questionable state from an autonomy perspective
+we moved backwards along our route? That debatably shouldn't happen
+
+does this happen in autonomy?
+in past implementations, PBM log d617e5bc-3487-48a2-efa4-992d21329e77 shows an interesting case where we are given a new route with a stale "progress"
+this results in an interval like (?,6).
+(The question mark is an indication that we are on a "new route", (since we've never been on that route previously))
+the next time we update our lane progress we determine we are actually on the first lane
+that transitions the window to (6,0) which is logically inconsistent
+our next lane is likely to remain 0, resulting in (0,0], which causes us to skip any events on 0 (because of the open interval)
+
+contractually enforcing that this remains logically consistent can be done using this check
+since we are explicitly given our evaluation range from the SLMT, we expose this check to the caller for optional checking and handling of what to do
+from an event route's perspective there's no reason you couldn't go forwards or backwards on a route
+other people may want to enforce forward progress only􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to check evaluation range on􏶿
+􏶚m􏶛􏶾bool􏶽􏶼consistent evaluation range􏶻􏲅false􏲆􏶺whether the evaluation range is valid or not􏶹
+􏶴
+    if (is_new_route(route)){
+        return true;
+    }
+    if (is_expired_route(route)){
+        return true;
+    }
+    if (is_invalid_route(route)){
+        return false;
+    }
+    if (is_existing_route(route)){
+        return *route.evaluation_range.previous <= route.evaluation_range.current;
+    }
+􏶳
+􏴯new route is valid􏴰
+􏲝ensure that a new route has a consistent range􏲞
+􏲛this should be a valid range when assuming we only move forward through a route􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_consistent(event_route));
+􏴮
+􏴯expired route is valid􏴰
+􏲝ensure that an expired route has a consistent range􏲞
+􏲛this should be a valid range when assuming we only move forward through a route􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    expire_route(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_consistent(event_route));
+􏴮
+􏴯invalid route is invalid􏴰
+􏲝ensure that an invalidated route does not have a consistent range􏲞
+􏲛this should not be a valid range when assuming we only move forward through a route􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    invalidate_route(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_consistent(event_route));
+􏴮
+􏴯zero zero is valid􏴰
+􏲝ensure that (0,0] is a consistent range􏲞
+􏲛this should be a valid range when assuming we only move forward through a route􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,0);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_consistent(route));
+􏴮
+􏴯zero one is valid􏴰
+􏲝ensure that (0,1] is a consistent range􏲞
+􏲛this should be a valid range when assuming we only move forward through a route􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,1);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_consistent(route));
+􏴮
+􏴯one zero is invalid􏴰
+􏲝ensure that (1,0] is an inconsistent range􏲞
+􏲛this should not be a valid range when assuming we only move forward through a route􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,1);
+    set_current_index_on_route(route,0);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_consistent(route));
+􏴮
+
 􏷘+􏷗􏷒advance forward on route􏷑
 􏴅Annotated Route􏴆
 􏷐extends the processing view forward to the current lane provided􏷏
@@ -1855,7 +2052,6 @@ Calling this function will ensure that interpret_route_status returns route_stat
     //ASSERT
     EXPECT_EQ(event_range_as_string(event_route),"(?,?]");
 􏴮
-
 􏷘+􏷗􏷒is existing route􏷑
 􏴅Annotated Route􏴆
 􏷐Checks whether the route we are on has existed since the previous event window adjustment􏷏
