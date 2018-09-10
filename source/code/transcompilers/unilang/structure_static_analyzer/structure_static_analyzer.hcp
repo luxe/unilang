@@ -1,6 +1,7 @@
 class
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/options/static_analysis/static_analysis_settings"❫
+❪"code/transcompilers/unilang/structure_static_analyzer/error_message"❫
 ⚯
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/transformers/trimming/lib"❫
@@ -13,7 +14,36 @@ class
 //need the file markers stored inside the structure
 ◀public: static▶ void ☀Print_Warnings(Structure const& structure, Static_Analysis_Settings const& settings)❰
 
-    std::vector<std::pair<std::string,std::string>> error_messages;
+    auto error_messages = Get_All_Of_The_Error_Messages(structure,settings);
+    Print_Error_Messages(error_messages,settings);
+❱
+
+◀private: static▶ void ☀Print_Error_Messages(std::vector<Error_Message> const& error_messages, Static_Analysis_Settings const& settings)❰
+
+    for (auto const& it: error_messages){
+        auto str = Full_Error_Message(it,settings);
+        std::cout << str << std::endl;
+    }
+❱
+
+
+◀private: static▶ std::string ☀Full_Error_Message(Error_Message const& error_message, Static_Analysis_Settings const& settings)❰
+    std::string str;
+    str += error_message.file_name;
+    str += ":";
+    str += std::to_string(error_message.location.start.row);
+    str += ":";
+    str += std::to_string(error_message.location.start.column);
+    str += ": ";
+    str += error_message.message;
+    
+    return str;
+❱
+
+
+◀private: static▶ std::vector<Error_Message> ☀Get_All_Of_The_Error_Messages(Structure const& structure, Static_Analysis_Settings const& settings)❰
+    std::vector<Error_Message> error_messages;
+    
     Print_Warnings_About_Meta_Section(error_messages,structure,settings);
     Print_Warnings_About_Import_Section(error_messages,structure,settings);
     Print_Warnings_About_Method_Section(error_messages,structure,settings);
@@ -24,17 +54,15 @@ class
     //warn if the identifier indicates there should probably be a length but no length is provided
     //certain words can tip this off: length, distance, weight, etc
     
-    for (auto it: error_messages){
-        std::cerr << it.first << ": " << it.second << std::endl;
-    }
+    return error_messages;
 ❱
 
-◀private: static▶ void ☀Get_Warnings_About_Measurements(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Get_Warnings_About_Measurements(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     
     Warn_About_Missing_Measurements(error_messages,structure,settings);
 ❱
 
-◀private: static▶ void ☀Warn_About_Missing_Measurements(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Warn_About_Missing_Measurements(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     
     for (auto const& it: structure.data_members.data_members){
         auto identifier = as_string(it.name.value);
@@ -66,7 +94,7 @@ class
     
 ❱
 
-◀private: static▶ void ☀Add_Warning_If_Relevant_Identifier_Is_Missing_Units(std::vector<std::pair<std::string,std::string>> & error_messages, File_Range_Location const& location, Structure const& structure, Static_Analysis_Settings const& settings, std::string const& identifier, std::string const& units)❰
+◀private: static▶ void ☀Add_Warning_If_Relevant_Identifier_Is_Missing_Units(std::vector<Error_Message> & error_messages, File_Range_Location const& location, Structure const& structure, Static_Analysis_Settings const& settings, std::string const& identifier, std::string const& units)❰
         if (Exists_In_Set(settings.measurements.measurements_that_should_have_units,identifier)){
             if (units.empty()){
                 std::string error_message = identifier;
@@ -76,7 +104,7 @@ class
         }
 ❱
 
-◀private: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Brief_Description();
     //Spell_Check_Detailed_Description();
     //Spell_Check_Group_Names();
@@ -97,7 +125,7 @@ class
     
     
 ❱
-◀private: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Brief_Import_Comment();
     for (auto it: structure.imports.interface_dependencies){
         Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_interface_import_comment,error_messages,structure,"Missing interface import comment");
@@ -106,7 +134,7 @@ class
         Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_implementation_import_comment,error_messages,structure,"Missing implementation import comment");
     }
 ❱
-◀private: static▶ void ☀Print_Warnings_About_Method_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Method_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Function_Name();
     //Spell_Check_Function_Brief_Description();
     //Spell_Check_Function_Detailed_Brief_Description();
@@ -129,7 +157,7 @@ class
         }
     }
 ❱
-◀private: static▶ void ☀Print_Warnings_About_Data_Member_Section(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+◀private: static▶ void ☀Print_Warnings_About_Data_Member_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
 //Brief
 //Detailed
 ❱
@@ -148,7 +176,7 @@ class
 ❱
 
 //the expression needs to be true and we need to have a desire to print the error, else dont
-◀private: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error)❰
+◀private: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<Error_Message> & error_messages, Structure const& structure, std::string const& error)❰
     if (expression && desire){
         
         //TODO: SET
@@ -157,9 +185,10 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Add_Error(std::vector<std::pair<std::string,std::string>> & error_messages, File_Range_Location const& location, Structure const& structure, std::string const& error_message)❰
-    std::pair<std::string,std::string> error;
-    error.first = structure.full_file_path;
-    error.second = error_message;
+◀private: static▶ void ☀Add_Error(std::vector<Error_Message> & error_messages, File_Range_Location const& location, Structure const& structure, std::string const& error_message)❰
+    Error_Message error;
+    error.file_name = structure.full_file_path;
+    error.location = location;
+    error.message = error_message;
     error_messages.push_back(error);
 ❱

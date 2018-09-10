@@ -10,4 +10,9 @@ hcp(name = "structure_static_analyzer", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/sets:lib",
 "//code/transcompilers/unilang/structure-query:closed_box_function_checker",
+":error_message",
+])
+
+hcp(name = "error_message", deps = [
+"//code/transcompilers/unilang/parser/body_parser:file_range_location",
 ])
