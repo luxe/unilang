@@ -39,35 +39,39 @@ class
     for (auto const& it: structure.data_members.data_members){
         auto identifier = as_string(it.name.value);
         auto units = as_string(it.units.value);
-        Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+        auto location = it.name.location;
+        Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,location,structure,settings,identifier,units);
     }
     
     for (auto const& it: structure.methods.methods){
         for (auto const& j: it.template_arguments){
             auto identifier = as_string(j.identifier.value);
             auto units = as_string(j.units.value);
-            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+            auto location = j.identifier.location;
+            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,location,structure,settings,identifier,units);
         }
         for (auto const& j: it.function_arguments){
             auto identifier = as_string(j.identifier.value);
             auto units = as_string(j.units.value);
-            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+            auto location = j.identifier.location;
+            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,location,structure,settings,identifier,units);
         }
         for (auto const& j: it.return_results){
             auto identifier = as_string(j.identifier.value);
             auto units = as_string(j.units.value);
-            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,structure,settings,identifier,units);
+            auto location = j.identifier.location;
+            Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,location,structure,settings,identifier,units);
         }
     }
     
 ❱
 
-◀private: static▶ void ☀Add_Warning_If_Relevant_Identifier_Is_Missing_Units(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings, std::string const& identifier, std::string const& units)❰
+◀private: static▶ void ☀Add_Warning_If_Relevant_Identifier_Is_Missing_Units(std::vector<std::pair<std::string,std::string>> & error_messages, File_Range_Location const& location, Structure const& structure, Static_Analysis_Settings const& settings, std::string const& identifier, std::string const& units)❰
         if (Exists_In_Set(settings.measurements.measurements_that_should_have_units,identifier)){
             if (units.empty()){
                 std::string error_message = identifier;
                 error_message += " has no units, and it probably should";
-                Add_Error(error_messages,structure,error_message);
+                Add_Error(error_messages,location,structure,error_message);
             }
         }
 ❱
@@ -117,7 +121,10 @@ class
         for (auto it: structure.methods.methods){
             if (Closed_Box_Function_Checker::Is_Closed_Box(it)){
                 std::string error = "closed-box method detected: " + as_string(it.names.original_function_name.value);
-                Add_Error(error_messages,structure,error);
+                
+                //TODO: SET
+                File_Range_Location location;
+                Add_Error(error_messages,location,structure,error);
             }
         }
     }
@@ -143,11 +150,14 @@ class
 //the expression needs to be true and we need to have a desire to print the error, else dont
 ◀private: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error)❰
     if (expression && desire){
-        Add_Error(error_messages,structure,error);
+        
+        //TODO: SET
+        File_Range_Location location;
+        Add_Error(error_messages,location,structure,error);
     }
 ❱
 
-◀private: static▶ void ☀Add_Error(std::vector<std::pair<std::string,std::string>> & error_messages, Structure const& structure, std::string const& error_message)❰
+◀private: static▶ void ☀Add_Error(std::vector<std::pair<std::string,std::string>> & error_messages, File_Range_Location const& location, Structure const& structure, std::string const& error_message)❰
     std::pair<std::string,std::string> error;
     error.first = structure.full_file_path;
     error.second = error_message;
