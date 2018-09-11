@@ -348,7 +348,8 @@ Mainly used for testing􏶡
 􏴅Lane Marking􏴆
 􏷐takes an index and fits it to the particular route so that it would be valid to use when iterating􏷏
 􏶠fitting the start and end indexes will ensure no indexing is out of bounds􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route used to fit the index􏶿
+􏷌Route􏷋􏷈the route used to fit the index􏷇
+􏶜􏶝􏷆Route􏷅􏷄route􏷃􏷀the route used to fit the index􏶿
 􏶜􏶝􏷆size􏷅􏷄index􏷃􏷀the index to fit for iteration􏶿
 􏶚m􏶛􏶾size􏶽􏶼fitted index􏶻􏲅index􏲆􏶺the fitted index􏶹
 􏶴
@@ -1856,7 +1857,7 @@ other people may want to enforce forward progress only􏶡
         return true;
     }
     if (􏵲is invalid route􏵳route)){
-        return false;
+        return true;
     }
     if (􏵲is existing route􏵳route)){
         return *route.evaluation_range.previous <= route.evaluation_range.current;
@@ -1889,9 +1890,9 @@ other people may want to enforce forward progress only􏶡
     //ASSERT
     EXPECT_TRUE(is_evaluation_range_consistent(event_route));
 􏴮
-􏴯invalid route is invalid􏴰
-􏲝ensure that an invalidated route does not have a consistent range􏲞
-􏲛this should not be a valid range when assuming we only move forward through a route􏲜
+􏴯invalid route is valid􏴰
+􏲝ensure that an invalidated route is still a consistent range􏲞
+􏲛this should not be invalid range when assuming we only move forward through a route􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5});
@@ -1901,7 +1902,7 @@ other people may want to enforce forward progress only􏶡
     invalidate_route(event_route);
     
     //ASSERT
-    EXPECT_FALSE(is_evaluation_range_consistent(event_route));
+    EXPECT_TRUE(is_evaluation_range_consistent(event_route));
 􏴮
 􏴯zero zero is valid􏴰
 􏲝ensure that (0,0] is a consistent range􏲞
@@ -1945,6 +1946,191 @@ other people may want to enforce forward progress only􏶡
     //ASSERT
     EXPECT_FALSE(is_evaluation_range_consistent(route));
 􏴮
+
+􏷘+􏷗􏷒is evaluation range in bounds􏷑
+􏴅Annotated Route􏴆
+􏷐Check that the evaluation range is within bounds of the route􏷏
+􏶠the previous lane and the current lane may be outside the current route
+we allow this by having optionals on each end of our evaluation range
+however, these interval indexes may be set explicitly by the SLMT
+In this case, its possible that we are given a lane index that is invalid for the route
+We provide and optional check over this invariant􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to check evaluation range on􏶿
+􏶚m􏶛􏶾bool􏶽􏶼in bounds􏶻􏲅true􏲆􏶺whether the evaluation range's explicit indexes are in bounds􏶹
+􏶴
+    if (route.evaluation_range.previous){
+        if (!􏵲index in bounds􏵳route,*route.evaluation_range.previous)){
+            return false;
+        }
+    }
+    if (route.evaluation_range.current){
+        if (!􏵲index in bounds􏵳route,*route.evaluation_range.current)){
+            return false;
+        }
+    }
+􏶳
+􏴯new empty route has valid bounds􏴰
+􏲝ensure that a new route has an evaluation range within bounds of the lane sequence􏲞
+􏲛this should be a valid in-bounds evaluation range􏲜
+􏴭
+    //ARRANGE
+    event_annotated_route r;
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_in_bounds(r));
+􏴮
+􏴯new route has valid bounds􏴰
+􏲝ensure that a new route has an evaluation range within bounds of the lane sequence􏲞
+􏲛this should be a valid in-bounds evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_in_bounds(event_route));
+􏴮
+􏴯zero zero is valid􏴰
+􏲝ensure that (0,0] is an evaluation range within bounds of the lane sequence􏲞
+􏲛this should be a valid in-bounds evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,0);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯zero one is valid􏴰
+􏲝ensure that (0,1] is an evaluation range within bounds of the lane sequence􏲞
+􏲛this should be a valid in-bounds evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,1);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯last lane is valid􏴰
+􏲝ensure that a range on the last lane is an evaluation range within bounds of the lane sequence􏲞
+􏲛this should be a valid in-bounds evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,4);
+    set_current_index_on_route(route,4);
+    
+    //ASSERT
+    EXPECT_TRUE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯last last lane is invalid v1􏴰
+􏲝ensure that a range past the last lane is an evaluation range not within bounds of the lane sequence􏲞
+􏲛this should be an invalid bounded evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,5);
+    set_current_index_on_route(route,4);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯last last lane is invalid v2􏴰
+􏲝ensure that a range past the last lane is an evaluation range not within bounds of the lane sequence􏲞
+􏲛this should be an invalid bounded evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,4);
+    set_current_index_on_route(route,5);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯last last lane is invalid v3􏴰
+􏲝ensure that a range past the last lane is an evaluation range not within bounds of the lane sequence􏲞
+􏲛this should be an invalid bounded evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,5);
+    set_current_index_on_route(route,5);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯negative lane index is invalid v1􏴰
+􏲝ensure that a negative lane index is not within bounds of the lane sequence􏲞
+􏲛this should be an invalid bounded evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,-1);
+    set_current_index_on_route(route,0);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯negative lane index is invalid v2􏴰
+􏲝ensure that a negative lane index is not within bounds of the lane sequence􏲞
+􏲛this should be an invalid bounded evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,-1);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_in_bounds(route));
+􏴮
+􏴯negative lane index is invalid v3􏴰
+􏲝ensure that a negative lane index is not within bounds of the lane sequence􏲞
+􏲛this should be an invalid bounded evaluation range􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,-1);
+    set_current_index_on_route(route,-1);
+    
+    //ASSERT
+    EXPECT_FALSE(is_evaluation_range_in_bounds(route));
+􏴮
+
+􏷘-􏷗􏷒index in bounds􏷑
+􏴅Detail􏴆
+􏷐Check that the index is within bounds of the route's lane sequence􏷏
+􏶠returns true if it is in bounds; false otherwise􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route whose lane sequence will be used to check bounds􏶿
+􏶜􏶝􏷆size􏷅􏷄lane index􏷃􏷀the lane index we are checking to see is in bounds􏶿
+􏶚m􏶛􏶾bool􏶽􏶼in bounds􏶻􏲅false􏲆􏶺whether the lane index provided is within bounds􏶹
+􏶴
+    if (lane_index >= 0 && lane_index < 􏵲number of lanes􏵳route)){
+        return true;
+    }
+􏶳
 
 􏷘+􏷗􏷒advance forward on route􏷑
 􏴅Annotated Route􏴆
@@ -2337,6 +2523,23 @@ Calling this function will ensure that interpret_route_status returns route_stat
     //ASSERT
     EXPECT_TRUE(should_regenerate(event_route));
 􏴮
+􏴯out of bounds evaluation range can regenerate􏴰
+􏲝If the route is valid and new, we can regenerate􏲞
+􏲛The route is valid and new yet we are deciding not to regenerate􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    set_previous_index_on_route(event_route,0);
+    set_current_index_on_route(event_route,999);
+    
+    //ASSERT
+    EXPECT_TRUE(should_regenerate(event_route));
+􏴮
 
 􏷘+􏷗􏷒current lanes with annotations􏷑
 􏴅Annotated Route􏴆
@@ -2346,15 +2549,75 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route's event view􏶹
 􏶴
     􏶲get index interval to check for events on􏶱
-    size_t start_index = 􏵲first index to process􏵳route);
-    size_t end_index = 􏵲last index to process􏵳route);
-    
-    for (size_t i = start_index; i <= end_index; ++i){
-        if (!route.event_lane_sequence[i].event_sequence.empty()){
-            lane_indexes.emplace_back(i);
+    if (!􏵲is invalid route􏵳route)){
+        size_t start_index = 􏵲first index to process􏵳route);
+        size_t end_index = 􏵲last index to process􏵳route);
+        
+        for (size_t i = start_index; i <= end_index; ++i){
+            if (!route.event_lane_sequence[i].event_sequence.empty()){
+                lane_indexes.emplace_back(i);
+            }
         }
     }
 􏶳
+􏴯invalid route has no annotated lanes􏴰
+􏲝If the route is invalid, we don't have any annotated lanes􏲞
+􏲛An invalid route is invalid so we shouldn't have any current lanes􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    invalidate_route(event_route);
+    auto lane_indexes = current_lanes_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(lane_indexes.empty());
+􏴮
+􏴯valid new route has the lane annotated􏴰
+􏲝If the route is valid and new, we will detect our lane as annotated􏲞
+􏲛The route is valid and new yet we are no longer detecting the annotated lane􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto lane_indexes = current_lanes_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(lane_indexes.size(),1);
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),0) != lane_indexes.end());
+􏴮
+􏴯out of bounds evaluation range finds all annotated lanes through fitting􏴰
+􏲝Given a full range, we will find all of the annotated lanes􏲞
+􏲛Given a full range, we are no longer discovering that all of the lanes are annotated􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    set_previous_index_on_route(event_route,0);
+    set_current_index_on_route(event_route,999);
+    auto lane_indexes = current_lanes_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(lane_indexes.size(),5);
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),0) == lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),1) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),2) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),3) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),4) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),5) != lane_indexes.end());
+􏴮
 
 􏷘+􏷗􏷒current lane guids with annotations􏷑
 􏴅Annotated Route􏴆
@@ -2368,6 +2631,64 @@ Calling this function will ensure that interpret_route_status returns route_stat
         lane_guids.emplace_back(route.event_lane_sequence[index].info.map_ref.element_id);
     }
 􏶳
+􏴯invalid route has no annotated lanes􏴰
+􏲝If the route is invalid, we don't have any annotated lanes􏲞
+􏲛An invalid route is invalid so we shouldn't have any current lanes􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    invalidate_route(event_route);
+    auto lane_guids = current_lane_guids_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(lane_guids.empty());
+􏴮
+􏴯valid new route has the first lane annotated􏴰
+􏲝If the route is valid and new, we will detect our first lane as annotated􏲞
+􏲛The route is valid and new yet we are no longer detecting the first annotated lane􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto lane_guids = current_lane_guids_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(lane_guids.size(),1);
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(1)) != lane_guids.end());
+􏴮
+􏴯out of bounds evaluation range finds all annotated lanes through fitting􏴰
+􏲝Given a full range, we will find all of the annotated lanes􏲞
+􏲛Given a full range, we are no longer discovering that all of the lanes are annotated􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    set_previous_index_on_route(event_route,0);
+    set_current_index_on_route(event_route,999);
+    auto lane_guids = current_lane_guids_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(lane_guids.size(),5);
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(1)) == lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(2)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(3)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(4)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(5)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(6)) != lane_guids.end());
+􏴮
 
 􏷘+􏷗􏷒all lanes with annotations􏷑
 􏴅Annotated Route􏴆
@@ -2382,6 +2703,28 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
+􏴯marking all lanes gives back all lanes􏴰
+􏲝marking all of the lanes gives back all of the lanes􏲞
+􏲛Some of the lanes are not being returned􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto lane_indexes = all_lanes_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(lane_indexes.size(),6);
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),0) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),1) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),2) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),3) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),4) != lane_indexes.end());
+    EXPECT_TRUE(std::find(lane_indexes.begin(),lane_indexes.end(),5) != lane_indexes.end());
+􏴮
 
 􏷘+􏷗􏷒all lane guids with annotations􏷑
 􏴅Annotated Route􏴆
@@ -2396,6 +2739,28 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
+􏴯marking all lanes gives back all lanes􏴰
+􏲝marking all of the lanes gives back all of the lanes􏲞
+􏲛Some of the lanes are not being returned􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_ids({1,2,3,4,5,6});
+    auto indexes = mark_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto lane_guids = all_lane_guids_with_annotations(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(lane_guids.size(),6);
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(1)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(2)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(3)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(4)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(5)) != lane_guids.end());
+    EXPECT_TRUE(std::find(lane_guids.begin(),lane_guids.end(),hub::base::guid::from_int64(6)) != lane_guids.end());
+􏴮
 
 
 􏷘+􏷗􏷒markers exist on current lane􏷑
@@ -2413,6 +2778,40 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
+􏴯lane without annotation􏴰
+􏲝make our current lane a lane without an annotation; no markers􏲞
+􏲛We are claiming there is a marker on the lane when there should be􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_specific_lane_index(r,2);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    set_current_index_on_route(event_route,3);
+    auto exists = markers_exist_on_current_lane(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(exists);
+􏴮
+􏴯lane with annotation􏴰
+􏲝make our current lane a lane with an annotation; has markers􏲞
+􏲛We are claiming there is no marker on the lane when there should be􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_specific_lane_index(r,2);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    set_current_index_on_route(event_route,2);
+    auto exists = markers_exist_on_current_lane(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(exists);
+􏴮
 
 􏷘+􏷗􏷒inside event region􏷑
 􏴅Annotated Route􏴆
@@ -2434,6 +2833,38 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
+􏴯check inside event region􏴰
+􏲝moving into the event region will ensure we are inside the event region􏲞
+􏲛We set an event region and moved into it, but it says we are not in it􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,"test",10,20);
+    
+    //ACT
+    set_current_index_on_route(event_route,1);
+    auto inside = inside_event_region(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(inside);
+􏴮
+􏴯check outside event region􏴰
+􏲝moving outside the event region will ensure we are not inside the event region􏲞
+􏲛We set an event region and move outside it it, but it says we are in it􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,"test",10,20);
+    
+    //ACT
+    set_current_index_on_route(event_route,3);
+    auto inside = inside_event_region(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(inside);
+􏴮
 􏷘+􏷗􏷒inside event region􏷑
 􏴅Annotated Route􏴆
 􏷐determines whether the current position is in an event region􏷏
@@ -2448,6 +2879,37 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
+􏴯check inside event region with distance􏴰
+􏲝moving into the event region will ensure we are inside the event region􏲞
+􏲛We set an event region and moved into it, but it says we are not in it􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,"test",10,20);
+    
+    //ACT
+    auto inside = inside_event_region(event_route,15);
+    
+    //ASSERT
+    EXPECT_TRUE(inside);
+􏴮
+􏴯check outside event region with distance􏴰
+􏲝moving outside the event region will ensure we are not inside the event region􏲞
+􏲛We set an event region and move outside it it, but it says we are in it􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,"test",10,20);
+    
+    //ACT
+    auto inside = inside_event_region(event_route,21);
+    
+    //ASSERT
+    EXPECT_FALSE(inside);
+􏴮
+
 
 􏷘+􏷗􏷒total event markings􏷑
 􏴅Annotated Route􏴆
@@ -2461,6 +2923,38 @@ does not count "event regions"; only "event markers"􏶡
         total_event_markings += lane.event_sequence.size();
     }
 􏶳
+􏴯no events􏴰
+􏲝check that a route with no events has no events􏲞
+􏲛The new route somehow has events􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto amount = total_event_markings(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(amount,0);
+􏴮
+􏴯multiple events on the same lane􏴰
+􏲝check that a route can have multiple events on the same lane􏲞
+􏲛The route does not have the expected number of events􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto indexes = mark_specific_lane_index(r,2);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test 1");
+    set_regeneration_events(event_route,indexes,"test 2");
+    set_regeneration_events(event_route,indexes,"test 3");
+    
+    //ACT
+    auto amount = total_event_markings(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(amount,3);
+􏴮
 
 􏷘+􏷗􏷒total event regions􏷑
 􏴅Annotated Route􏴆
@@ -2470,6 +2964,37 @@ does not count "event markers"; only "event regions"􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to calculate event regions over􏶿
 􏶚m􏶛􏶾i􏶽􏶼total_event_regions􏶻􏲅route.event_region_sequence.size()􏲆􏶺the total number of event regions across the lanes of the route􏶹
 􏶴􏶳
+􏴯no event regions􏴰
+􏲝check that a route with no event regions has no event regions􏲞
+􏲛The new route somehow has event regions􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto amount = total_event_regions(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(amount,0);
+􏴮
+􏴯multiple event regions on the same lane􏴰
+􏲝check that a route can have multiple event regions on the same lane􏲞
+􏲛The route does not have the expected number of event regions􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,"test 1",10,20);
+    set_regeneration_events(event_route,"test 2",15,25);
+    set_regeneration_events(event_route,"test 3",20,30);
+    
+    //ACT
+    auto amount = total_event_regions(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(amount,3);
+􏴮
 
 􏷘+􏷗􏷒total distance􏷑
 􏴅Annotated Route􏴆
@@ -2821,7 +3346,27 @@ format: (#,#]􏶡
 
 􏷘-􏷗􏷒first index to process􏷑
 􏷐gets the first index to process over the route􏷏
-􏶠determined through the event view of the route􏶡
+􏶠determined through the event view of the route
+this may or may not check for bounds validity depending on how we configure it􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅first_index_to_process_safe(route)􏲆􏶺the lane index􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒last index to process􏷑
+􏷐gets the last index to process over the route􏷏
+􏶠determined through the event view of the route
+this may or may not check for bounds validity depending on how we configure it􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅last_index_to_process_safe(route)􏲆􏶺the lane index􏶹
+􏶴􏶳
+
+
+􏷘-􏷗􏷒first index to process unsafe􏷑
+􏷐gets the first index to process over the route􏷏
+􏶠determined through the event view of the route
+the event view's index is not checked for bounds validity􏶡
 􏴅Detail􏴆
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
 􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅0􏲆􏶺the lane index􏶹
@@ -2832,9 +3377,18 @@ format: (#,#]􏶡
         lane_index = *route.evaluation_range.previous + 1;
     }
 􏶳
-􏷘-􏷗􏷒last index to process􏷑
+􏷘-􏷗􏷒first index to process safe􏷑
+􏷐gets the first index to process over the route􏷏
+􏶠determined through the event view of the route
+the index is fitted for bounds validity􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅fitted_index_for_iteration(route,first_index_to_process_unsafe(route))􏲆􏶺the lane index􏶹
+􏶴􏶳
+􏷘-􏷗􏷒last index to process unsafe􏷑
 􏷐gets the last index to process over the route􏷏
-􏶠determined through the event view of the route􏶡
+􏶠determined through the event view of the route
+the event view's index is not checked for bounds validity􏶡
 􏴅Detail􏴆
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
 􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅last_lane_index(route)􏲆􏶺the lane index􏶹
@@ -2845,6 +3399,14 @@ format: (#,#]􏶡
         lane_index = *route.evaluation_range.current;
     }
 􏶳
+􏷘-􏷗􏷒last index to process safe􏷑
+􏷐gets the last index to process over the route􏷏
+􏶠determined through the event view of the route
+the index is fitted for bounds validity􏶡
+􏴅Detail􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀event annotated route􏶿
+􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅fitted_index_for_iteration(route,last_index_to_process_unsafe(route))􏲆􏶺the lane index􏶹
+􏶴􏶳
 
 􏷘-􏷗􏷒last lane index􏷑
 􏷐the index of the last lane􏷏
@@ -2855,7 +3417,7 @@ format: (#,#]􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the last lane index from􏶿
 􏶚m􏶛􏶾size􏶽􏶼lane index􏶻􏲅0􏲆􏶺the index of the last lane􏶹
 􏶴
-    if (!􏵲has lanes􏵳route)){
+    if (􏵲has lanes􏵳route)){
         lane_index = route.event_lane_sequence.size()-1;
     }
 􏶳
