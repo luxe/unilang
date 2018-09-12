@@ -3050,6 +3050,55 @@ in which case, we won't know where we are in the lane, and we will assume we are
         distance_m = 􏵲lane index to distance􏵳route,*route.evaluation_range.current);
     }
 􏶳
+􏴯an empty route can not have a current distance􏴰
+􏲝check that an empty route has no available current distance􏲞
+􏲛an empty route should have no current distance􏲜
+􏴭
+    //ARRANGE
+    event_annotated_route r;
+    
+    //ACT
+    auto distance = current_distance(r);
+    
+    //ASSERT
+    EXPECT_FALSE(distance);
+􏴮
+􏴯different locations along route􏴰
+􏲝check the distance as we progress through the route􏲞
+􏲛the expected distance does not match what our current index is􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    set_current_index_on_route(event_route,0);
+    auto distance = current_distance(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,0);
+    
+    //ACT
+    set_current_index_on_route(event_route,1);
+    distance = current_distance(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,10);
+    
+    //ACT
+    set_current_index_on_route(event_route,2);
+    distance = current_distance(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,20);
+    
+    //ACT
+    set_current_index_on_route(event_route,3);
+    distance = current_distance(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,30);
+􏴮
 
 􏷘+􏷗􏷒distance to lane index􏷑
 􏴅Annotated Route􏴆
@@ -3069,6 +3118,44 @@ if the route is empty, no lane index can be returned􏶡
         }
     }
 􏶳
+􏴯convert different distances to lane indexes􏴰
+􏲝try different distances along route and confirm correct index􏲞
+􏲛we did not get the expected distance to lane conversion􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto index = distance_to_lane_index(event_route,0);
+    
+    //ASSERT
+    EXPECT_EQ(*index,0);
+    
+    //ACT
+    index = distance_to_lane_index(event_route,5);
+    
+    //ASSERT
+    EXPECT_EQ(*index,0);
+    
+    //ACT
+    index = distance_to_lane_index(event_route,15);
+    
+    //ASSERT
+    EXPECT_EQ(*index,1);
+    
+    //ACT
+    index = distance_to_lane_index(event_route,25);
+    
+    //ASSERT
+    EXPECT_EQ(*index,2);
+    
+    //ACT
+    index = distance_to_lane_index(event_route,35);
+    
+    //ASSERT
+    EXPECT_EQ(*index,3);
+􏴮
 
 􏷘+􏷗􏷒lane index to distance􏷑
 􏴅Annotated Route􏴆
@@ -3088,6 +3175,38 @@ if the route is empty, no distance is returned􏶡
         total_distance_m += 􏵲lane length􏵳route,i);
     }
 􏶳
+􏴯convert different lane indexes to distances􏴰
+􏲝try different distances along route and confirm correct index􏲞
+􏲛we did not get the expected distance to lane conversion􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto distance = lane_index_to_distance(event_route,0);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,0);
+    
+    //ACT
+    distance = lane_index_to_distance(event_route,1);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,10);
+    
+    //ACT
+    distance = lane_index_to_distance(event_route,2);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,20);
+    
+    //ACT
+    distance = lane_index_to_distance(event_route,3);
+    
+    //ASSERT
+    EXPECT_EQ(*distance,30);
+􏴮
 
 􏷘+􏷗􏷒distance from start of lane􏷑
 􏴅Annotated Route􏴆
@@ -3111,6 +3230,39 @@ if the route is empty, no distance is returned􏶡
         distance_offset = 􏵲lane length􏵳route,route.event_lane_sequence.size()-1);
     }
 􏶳
+􏴯convert different distances to start of lane offset􏴰
+􏲝try different distances and ensure they are the correct offset from the lane􏲞
+􏲛we did not get the expected distance to lane conversion􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto offset = distance_from_start_of_lane(event_route,0);
+    
+    //ASSERT
+    EXPECT_EQ(offset,0);
+    
+    //ACT
+    offset = distance_from_start_of_lane(event_route,5);
+    
+    //ASSERT
+    EXPECT_EQ(offset,5);
+    
+    //ACT
+    offset = distance_from_start_of_lane(event_route,10);
+    
+    //ASSERT
+    EXPECT_EQ(offset,0);
+    
+    //ACT
+    offset = distance_from_start_of_lane(event_route,12);
+    
+    //ASSERT
+    EXPECT_EQ(offset,2);
+􏴮
+
 
 􏷘+􏷗􏷒algorithm range as string􏷑
 􏴅String Representations􏴆
