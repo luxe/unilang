@@ -5,9 +5,41 @@
 􏷬Trevor Hickey􏷫
 
 􏶔s􏶕􏶒utility􏶓
+􏶔s􏶕􏶒random􏶓
 
 􏷞local_map􏷝􏷞statik􏷝
 
+􏷘-􏷗􏷒random real from range􏷑
+􏴅Random􏴆
+􏷌Real􏷋􏷈any type that represents a real number􏷇
+􏷐Creates a random real from the specified range􏷏
+􏶠The engine and distribution are an implementation detail
+the interval is closed􏶡
+􏶜􏶝􏷆Real􏷅􏷄low􏷃􏷀low end of the random interval􏶿
+􏶜􏶝􏷆Real􏷅􏷄high􏷃􏷀high end of the random interval􏶿
+􏶚m􏶛􏶾Real􏶽􏶼random value􏶻􏶺the generated random value􏶹
+􏶴
+    std::random_device                random_device;
+    std::mt19937                      engine{random_device()};
+    std::uniform_real_distribution<Real> dist(low, high);
+    random_value = dist(engine);
+􏶳
+
+􏷘-􏷗􏷒random integral from range􏷑
+􏴅Random􏴆
+􏷌Integral􏷋􏷈any type that represents an integral number􏷇
+􏷐Creates a random integral from the specified range􏷏
+􏶠The engine and distribution are an implementation detail
+the interval is closed􏶡
+􏶜􏶝􏷆Integral􏷅􏷄low􏷃􏷀low end of the random interval􏶿
+􏶜􏶝􏷆Integral􏷅􏷄high􏷃􏷀high end of the random interval􏶿
+􏶚m􏶛􏶾Integral􏶽􏶼random value􏶻􏶺the generated random value􏶹
+􏶴
+    std::random_device random_device;
+    std::mt19937 engine{random_device()};
+    std::uniform_int_distribution<Integral> dist(low, high);
+    random_value = dist(engine);
+􏶳
 
 􏷘+􏷗􏷒create route from lane distances􏷑
 􏴅Testing􏴆
@@ -112,3 +144,29 @@ They are converted to guids􏶡
         route.annotation_sequence.emplace_back(annotation);
     }
 􏶳
+
+􏷘+􏷗􏷒create random route􏷑
+􏴅Testing􏴆
+􏷐Creates a random input route based on the provided route creation input􏷏
+􏶠Creates a random version of a translated route based on the creation input provided􏶡
+􏶜􏶝􏷆random_route_creation_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄creation input􏷃􏷀creation input used to create the translated route􏶿
+􏶚m􏶛􏶾route􏶽􏲣local_map/static/route/local_map_route􏲤􏲡local_map/static/route/local_map_route_lib􏲢􏶼route􏶻􏶺the generated route􏶹
+􏶴
+    auto number_of_lanes = random_integral_from_range(creation_input.low_lane_count,creation_input.high_lane_count);
+    for (size_t i = 0; i < number_of_lanes; ++i){
+        
+        􏶲creating / setting map index􏶱
+        mlp::lane_graph::map_ref_id ref;
+        auto id = random_integral_from_range(creation_input.lane_inputs.low_submap_id,creation_input.lane_inputs.high_submap_id);
+        ref.map_index = hub::base::guid::from_int64(id);
+        route.lane_sequence.emplace_back(ref);
+        
+        􏶲creating / setting lane distance􏶱
+        route_planning::lane_neighbor_annotation annotation;
+        auto distance_m = random_real_from_range(creation_input.lane_inputs.low_distance_m,creation_input.lane_inputs.high_distance_m);
+        annotation.distance = distance_m;
+        route.annotation_sequence.emplace_back(annotation);
+    }
+􏶳
+
+
