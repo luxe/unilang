@@ -13,6 +13,7 @@ class
 ❪"code/transcompilers/unilang/structure-printer/derivers/structure_typename_deriver"❫
 ❪"code/transcompilers/unilang/structure-adjuster/methods/api_and_lifetime/api_and_lifetime_creator"❫
 ❪"code/transcompilers/unilang/structure-adjuster/methods/forcers/function_unit_test_name_defaulter"❫
+❪"code/transcompilers/unilang/structure-adjuster/comment_adjuster"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Adjust(Structure & structure, Struct_Manipulation_Settings const& settings)❰
@@ -25,6 +26,8 @@ class
     bool adjust_functions_to_avoid_overloads = false; //basically languages that dont have function overloading
     bool force_default_create_and_return_for_non_void_functions = true;
     bool add_default_test_name = true;
+    bool comment_adjust_brief = true;
+    bool comment_adjust_detail = true;
     
     
     //add new methods based on settings and existing structure properties
@@ -69,10 +72,17 @@ class
     if (add_default_test_name){
         Function_Unit_Test_Name_Defaulter::Default_Missing_Test_Names(structure,settings);
     }
-    
-    //TODO(regen change): add comment fixers:
-    //Comment_Adjuster::Adjust(it.brief,settings.grammar,settings.reflow);
-    //Comment_Adjuster::Adjust(it.detail,settings.grammar,settings.reflow);
+
+    if (comment_adjust_brief){
+        for (auto & it: structure.methods.methods){
+            Comment_Adjuster::Adjust(it.brief_description,settings.methods.brief_comment.grammar,settings.methods.brief_comment.reflow);
+        }
+    }
+    if (comment_adjust_detail){
+        for (auto & it: structure.methods.methods){
+            Comment_Adjuster::Adjust(it.detailed_description,settings.methods.detail_comment.grammar,settings.methods.detail_comment.reflow);
+        }
+    }
 ❱
 ◀public: static▶ void ☀Transform_And_Add_Lifetime_Methods(Structure & structure, Struct_Manipulation_Settings const& settings)❰
 	//structure.methods = Api_And_Lifetime_Creator::Get_All_Methods_After_Necessary_Transformation(structure,settings);
