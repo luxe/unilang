@@ -1430,6 +1430,19 @@ The set returned will never have more than 1 element􏶡
 􏶜􏶝􏷆random_route_creation_input􏷅􏲥local_map/libs/regeneration/local_map_regeneration_preset_routes􏲦􏷄input􏷃􏷀the input to create a random event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_random_route(input))􏲆􏶺a random route with random regeneration information attached􏶹
 􏶴􏶳
+􏴯create􏴰
+􏲝make sure that creating a random event route does not crash􏲞
+􏲛creating a random route with default random settings should always pass􏲜
+􏴭
+    //ARRANGE
+    random_route_creation_input input;
+    
+    //ACT
+    auto event_route = create_random_event_route(input);
+    
+    //ASSERT
+    (void)event_route;
+􏴮
 
 􏷘+􏷗􏷒create event route from lane distances􏷑
 􏴅Annotated Route􏴆
@@ -1849,8 +1862,33 @@ If you need to create the route in a particular state however, you can explicitl
     EXPECT_EQ((*event_route.evaluation_range.current),2);
 􏴮
 
+􏷘+􏷗􏷒check invariants􏷑
+􏴅Invariant Checks􏴆
+􏷐check all of the invariants that we expect to hold about the event route during autonomy within the SLMT􏷏
+􏶠these checks are the closest thing we have to requirements
+they provide checks on how we think autonomy should be integrating with the regeneration framework
+they help ensure that the SLMT is not providing any incorrect data cycle over cycle
+these checks can help detect things based on the status of the event route that we would find questionable for autonomy􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to check invariants on􏶿
+􏶚m􏶛􏶾event_annotated_route_invariants􏶽􏶼checked invariants􏶻􏲅􏲆􏶺all of he invariants checked􏶹
+􏶴
+    checked_invariants.evaluation_range_consistent = 􏵲is evaluation range consistent􏵳route);
+    checked_invariants.evaluation_range_in_bounds = 􏵲is evaluation range in bounds􏵳route);
+    checked_invariants.has_not_jumped_over_1_or_more_lanes = !􏵲jumped over 1 or more lanes􏵳route);
+    checked_invariants.has_route_hysteresis = 􏵲has route hysteresis􏵳route);
+    checked_invariants.exists_on_or_after_merge_point = !􏵲exists before merge point􏵳route);
+􏶳
+
+
+
+
+routes that are too long
+lanes that are too long
+"A one lane route is possible, but extremely unlikely outside of a user error or navigator rerecord bug.  the rerecord we drop them." -- Bob Dean
+
+
 􏷘+􏷗􏷒is evaluation range consistent􏷑
-􏴅Annotated Route􏴆
+􏴅Invariant Checks􏴆
 􏷐check that the evaluation range for the event route is logically valid􏷏
 􏶠we expect to move through the route from beginning to end
 this means that we expect our previous lane index to be <= to our current lane index
@@ -1972,7 +2010,7 @@ other people may want to enforce forward progress only􏶡
 􏴮
 
 􏷘+􏷗􏷒is evaluation range in bounds􏷑
-􏴅Annotated Route􏴆
+􏴅Invariant Checks􏴆
 􏷐Check that the evaluation range is within bounds of the route􏷏
 􏶠the previous lane and the current lane may be outside the current route
 we allow this by having optionals on each end of our evaluation range
@@ -2142,6 +2180,232 @@ We provide and optional check over this invariant􏶡
     //ASSERT
     EXPECT_FALSE(is_evaluation_range_in_bounds(route));
 􏴮
+
+􏷘+􏷗􏷒jumped over 1 or more lanes􏷑
+􏴅Invariant Checks􏴆
+􏷐Check whether our current lane is two or more lanes greater than our previous lane􏷏
+􏶠This would mean that we jumped over a lane
+Jumping over a lane is not an error from the regeneration framework perspective
+the regeneration framework still process any events on lanes that we skipped over
+We provide it as a check to help evaluate any assumptions about the lane associator
+The lag of associating to a lane, may also affect our SLA on available local map
+consider this check a soft invariant used to raise awareness about hopping over 1 or more lanes
+if the route is invalid (i.e. we don't have a route), this will be false
+we'll consider unknown previous locations on the route as the beginning of the route
+we'll consider unknown current locations on the route as the end of the route􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route whose lane sequence will be used to check bounds􏶿
+􏶚m􏶛􏶾bool􏶽􏶼jumped􏶻􏲅false􏲆􏶺whether or not we jumped over a lane􏶹
+􏶴
+    if(is_invalid_route(route)){
+        return false;
+    }
+    
+    int previous = route.evaluation_range.previous.value_or(0);
+    int current = route.evaluation_range.current.value_or(􏵲number of lanes􏵳route));
+    jumped = (current-previous > 1);
+􏶳
+
+􏴯new empty route does not violate lane hop check􏴰
+􏲝ensure that a new empty route does not violate a lane hop check􏲞
+􏲛because the route is invalid, we should not be violating the lane hop check􏲜
+􏴭
+    //ARRANGE
+    event_annotated_route r;
+    
+    //ASSERT
+    EXPECT_FALSE(jumped_over_1_or_more_lanes(r));
+􏴮
+􏴯new route does not violate lane hop check􏴰
+􏲝ensure that a new route does not violate a lane hop check􏲞
+􏲛because the route is valid, we should be at the beginning of the route and not have hopped lanes􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_FALSE(jumped_over_1_or_more_lanes(event_route));
+􏴮
+􏴯zero zero is no jump􏴰
+􏲝ensure that (0,0] does not violate a lane hop check􏲞
+􏲛this is not an evaluation range that shows we skipped over a lane􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,0);
+    
+    //ASSERT
+    EXPECT_FALSE(jumped_over_1_or_more_lanes(route));
+􏴮
+􏴯zero one is no jump􏴰
+􏲝ensure that (0,1] does not violate a lane hop check􏲞
+􏲛this is not an evaluation range that shows we skipped over a lane􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,0);
+    set_current_index_on_route(route,1);
+    
+    //ASSERT
+    EXPECT_FALSE(jumped_over_1_or_more_lanes(route));
+􏴮
+􏴯one three is lane jump􏴰
+􏲝ensure that (1,3] is a violation of the lane hop check􏲞
+􏲛this is an evaluation range that shows we skipped over a lane􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,1);
+    set_current_index_on_route(route,3);
+    
+    //ASSERT
+    EXPECT_TRUE(jumped_over_1_or_more_lanes(route));
+􏴮
+􏴯more than 1 lane is a violation􏴰
+􏲝ensure that (1,4] is a violation of the lane hop check􏲞
+􏲛this is an evaluation range that shows we skipped over a lane􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    set_previous_index_on_route(route,1);
+    set_current_index_on_route(route,4);
+    
+    //ASSERT
+    EXPECT_TRUE(jumped_over_1_or_more_lanes(route));
+􏴮
+
+􏷘+􏷗􏷒has route hysteresis􏷑
+􏴅Invariant Checks􏴆
+􏷐Check whether the SLA event annotated route for SLMT has route hysteresis􏷏
+􏶠Assuming the route was marked using the SLA algorithm, we can determine route hysteresis
+This is because we mark the first logical lane of the route based on our merge point (the current lane index of the route)􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the SLA annotated route from SLMT to evaluate for hysteresis􏶿
+􏶚m􏶛􏶾bool􏶽􏶼has route hysteresis􏶻􏲅false􏲆􏶺whether or not the route has hysteresis􏶹
+􏶴
+    auto lane_index = merge_point(route);
+    if (lane_index){
+        return *lane_index > 0;
+    }
+􏶳
+􏴯an unannotated route makes it unclear whether there is hysteresis􏴰
+􏲝if we didn't annotate the route, we don't know where the merge point is, so we have to assume it doesn't have hysteresis􏲞
+􏲛because we can't find an annotated lane in the route, we assume the route does not have hysteresis􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4,5});
+    
+    //ACT
+    auto event_route = create_event_route(r);
+    
+    //ASSERT
+    EXPECT_FALSE(has_route_hysteresis(event_route));
+􏴮
+􏴯an slmt whose current index starts at 0 does not have hysteresis􏴰
+􏲝create a route for the SLMT and determine that it does not have hysteresis􏲞
+􏲛we created a route that we believe should not have hysteresis􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    r.route_progress_index = 0; //why we don't have hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 0;
+    seed.route_lane_index = 0;
+    bool route_changed = true;
+    int distance_m = 100;
+    
+    //ACT
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_FALSE(has_route_hysteresis(event_route));
+􏴮
+􏴯an slmt whose current index starts above 0 has hysteresis􏴰
+􏲝create a route for the SLMT and determine that it has hysteresis􏲞
+􏲛we created a route that we believe should have hysteresis􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    r.route_progress_index = 1; //why we have hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 3;
+    seed.route_lane_index = 3;
+    bool route_changed = true;
+    int distance_m = 100;
+    
+    //ACT
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_TRUE(has_route_hysteresis(event_route));
+􏴮
+
+􏷘+􏷗􏷒exists before merge point􏷑
+􏴅Invariant Checks􏴆
+􏷐check to see if we've existing on the route before the merge point􏷏
+􏶠have we ever been or claimed to be on the current route's portion of hysteresis?􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the SLA annotated route from SLMT􏶿
+􏶚m􏶛􏶾bool􏶽􏶼existed before merge point􏶻􏲅false􏲆􏶺we have been somewhere on the route before the merge point􏶹
+􏶴
+    auto lane_index = 􏵲merge point􏵳route);
+    
+    //if we don't have a merge point that means we have no hysteresis
+    //which means we can't be behind the merge point and on the hysteresis part of the route
+    if (lane_index){
+        if (route.evaluation_range.previous){
+            if (*route.evaluation_range.previous < *lane_index){
+                return true;
+            }
+        }
+        if (route.evaluation_range.current){
+            if (*route.evaluation_range.current < *lane_index){
+                return true;
+            }
+        }
+    }
+􏶳
+
+􏷘-􏷗􏷒merge point􏷑
+􏴅Detail􏴆
+􏷐find the logical first lane which represents the start of the route􏷏
+􏶠The merge point is the lane after hysteresis
+Assumes you are using an event route created for the SLMT􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to find the merge point on􏶿
+􏶚m?􏶛􏶾size􏶽􏶼merge point􏶻􏲅􏲆􏶺the first lane after hysteresis representing the merge point􏶹
+􏶴
+    //since we always mark the first logical lane with SLMT SLA algorithm (i.e. the merge point),
+    //we can assume that the first marked lane is the merge point
+    //if we need to store the merge point explicitly later, we can do that
+    //for now, we derive it as followed
+    return first_lane_index_with_an_event(route);
+􏶳
+
+􏷘-􏷗􏷒first lane index with an event􏷑
+􏴅Detail􏴆
+􏷐Check that the index is within bounds of the route's lane sequence􏷏
+􏶠returns true if it is in bounds; false otherwise􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route whose lane sequence will be used to check bounds􏶿
+􏶚m?􏶛􏶾size􏶽􏶼lane index with event􏶻􏲅􏲆􏶺the first lane of the route with an event􏶹
+􏶴
+    for (size_t i = 0; i < 􏵲number of lanes􏵳route); ++i){
+        if (!route.event_lane_sequence[i].event_sequence.empty()){
+            lane_index_with_event = i;
+            break;
+        }
+    }
+􏶳
 
 􏷘-􏷗􏷒index in bounds􏷑
 􏴅Detail􏴆
@@ -3287,6 +3551,121 @@ if the route is empty, no distance is returned􏶡
     EXPECT_EQ(offset,2);
 􏴮
 
+􏷘+􏷗􏷒summary of state􏷑
+􏴅String Representations􏴆
+􏷐a brief but hopefully sufficient string representation of the annotated route's current state􏷏
+􏶠for more detail on the route's state, you could dump all of its json, but we use this to provide the key information to aid in debugging􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get a summary of its state􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼summary􏶻􏲅􏲆􏶺the string representation summarizing the current state of the annotated route􏶹
+􏶴
+    summary += "event range: " + 􏵲event range as string􏵳route);
+    summary += "\n";
+    summary += "annotated lanes: " + 􏵲evented lane indexes as string􏵳route);
+    summary += "\n";
+    summary += 􏵲evented lane guids as string􏵳route);
+    auto broken_invariants = 􏵲broken invariants as string􏵳route);
+    if (!broken_invariants.empty()){
+        summary += "broken invariants:";
+        summary += "\n";
+        summary += broken_invariants;
+    }
+􏶳
+􏴯summary of state on full route does not crash􏴰
+􏲝We should be able to get the summary of a populated route without crashing􏲞
+􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
+􏴭
+    //ARRANGE
+    auto r = create_route_from_submap_ids({1,2,3,4});
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto results = summary_of_state(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(results.empty());
+􏴮
+􏴯summary of state on empty route does not crash􏴰
+􏲝We should be able to get the summary of an empty route without crashing􏲞
+􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto results = summary_of_state(event_route);
+    
+    //ASSERT
+    EXPECT_FALSE(results.empty());
+􏴮
+
+􏷘+􏷗􏷒broken invariants as string􏷑
+􏴅String Representations􏴆
+􏷐a string where each line is a statement of a broken invariant􏷏
+􏶠if there are no broken invariants, then the string is empty􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get broken invariants on􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼broken invariants􏶻􏲅􏲆􏶺the string representing broken invariants􏶹
+􏶴
+    // gather up all of the broken invariants
+    // Although these broken invariants are handled safely in the regeneration framework
+    // but they result in questionable SLMT's behavior
+    std::vector<std::string> statements;
+    auto checked_invariants = 􏵲check invariants􏵳route);
+    if (!checked_invariants.evaluation_range_consistent){
+        statements.emplace_back("the evaluation is inconsistent. you're telling me you went backwards.");
+    }
+    if (!checked_invariants.evaluation_range_in_bounds){
+        statements.emplace_back("the evaluation range is out of bounds from the actual route");
+    }
+    if (!checked_invariants.has_not_jumped_over_1_or_more_lanes){
+        statements.emplace_back("You jumped over a lane");
+    }
+    if (!checked_invariants.has_route_hysteresis){
+        statements.emplace_back("You don't have any route hysteresis right now");
+    }
+    if (!checked_invariants.exists_on_or_after_merge_point){
+        statements.emplace_back("You claim to be on a route before the merge point");
+    }
+    
+    //turn statements into single string
+    for (auto const& it: statements){
+        broken_invariants += it + '\n';
+    }
+􏶳
+􏴯a new route does not have hysteresis􏴰
+􏲝When we create a new route, it should not have any broken invariants except for lacking hysteresis􏲞
+􏲛for some reason a new route does not have the same invariants􏲜
+􏴭
+    //ARRANGE
+    auto r = create_event_route_from_submap_ids({1,2,3,4});
+    
+    //ACT
+    auto results = broken_invariants_as_string(r);
+    
+    //ASSERT
+    EXPECT_EQ(results,"You don't have any route hysteresis right now\n");
+􏴮
+􏴯an expected creation of SLMT event route􏴰
+􏲝We create an SLA annotated event route for SLMT and we expect it to not have any invariants broken􏲞
+􏲛for some reason the route has broken invariants􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    r.route_progress_index = 1; //why we have some hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 2;
+    seed.route_lane_index = 3;
+    bool route_changed = true;
+    int distance_m = 100;
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ACT
+    auto results = broken_invariants_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(results,"");
+􏴮
 
 􏷘+􏷗􏷒algorithm range as string􏷑
 􏴅String Representations􏴆
@@ -3504,48 +3883,6 @@ format: (#,#]􏶡
     
     //ASSERT
     EXPECT_EQ(results,"");
-􏴮
-
-􏷘+􏷗􏷒summary of state􏷑
-􏴅String Representations􏴆
-􏷐a brief but hopefully sufficient string representation of the annotated route's current state􏷏
-􏶠for more detail on the route's state, you could dump all of its json, but we use this to provide the key information to aid in debugging􏶡
-􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get a summary of its state􏶿
-􏶚m􏶛􏶾ascii_string􏶽􏶼summary􏶻􏲅􏲆􏶺the string representation summarizing the current state of the annotated route􏶹
-􏶴
-    summary += "event range: " + 􏵲event range as string􏵳route);
-    summary += "\n";
-    summary += "annotated lanes: " + 􏵲evented lane indexes as string􏵳route);
-    summary += "\n";
-    summary += 􏵲evented lane guids as string􏵳route);
-􏶳
-􏴯summary of state on full route does not crash􏴰
-􏲝We should be able to get the summary of a populated route without crashing􏲞
-􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
-􏴭
-    //ARRANGE
-    auto r = create_route_from_submap_ids({1,2,3,4});
-    auto event_route = create_event_route(r);
-    
-    //ACT
-    auto results = summary_of_state(event_route);
-    
-    //ASSERT
-    EXPECT_FALSE(results.empty());
-􏴮
-􏴯summary of state on empty route does not crash􏴰
-􏲝We should be able to get the summary of an empty route without crashing􏲞
-􏲛A runtime crash should not be possible. The string we get back should not be empty.􏲜
-􏴭
-    //ARRANGE
-    route r;
-    auto event_route = create_event_route(r);
-    
-    //ACT
-    auto results = summary_of_state(event_route);
-    
-    //ASSERT
-    EXPECT_FALSE(results.empty());
 􏴮
 
 􏷘-􏷗􏷒first index to process􏷑

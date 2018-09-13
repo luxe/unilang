@@ -25,6 +25,8 @@ class
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::string str;
+    str += Total_Number_Of_Tests_Statment(structure,settings);
+    str += Get_Existing_Public_Test_Case_Ratio(structure,settings);
     str += Decide_Test_Coverage_Title(structure,settings);
     str += Grouped_Test_Summary(structure,settings);
     Append_To_Front_Of_Each_Line(str,"///   ");
@@ -33,13 +35,74 @@ class
     return str;
 ❱
 
+◀private: static▶ std::string ☀Total_Number_Of_Tests_Statment(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+    
+    //count number of tests
+    int test_count = 0;
+    for (auto method: structure.methods.methods){
+        if (method.class_access == Class_Access::PUBLIC){
+            test_count += method.unit_tests.test_cases.size();
+        }
+    }
+    
+    //turn count into string
+    auto inflection_settings = Inflection_Settings_Getter::Get();
+    std::string str;
+    str += std::to_string(test_count);
+    str += " ";
+    str += Inflection_Converter::Inflect_Based_On_Count(settings.name_for_test_case,inflection_settings,test_count);
+    str += "\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Existing_Public_Test_Case_Ratio(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
+
+    //calculate ratio
+    int total_public_methods = 0;
+    int total_tested_methods = 0;
+    for (auto method: structure.methods.methods){
+        if (method.class_access == Class_Access::PUBLIC){
+            ++total_public_methods;
+            if (!method.unit_tests.test_cases.empty()){
+                ++total_tested_methods;
+            }
+        }
+    }
+    
+    //TODO: move to settings
+    std::string title = "Public APIs Tested";
+    bool print_ratio = true;
+    bool print_percentage = true;
+    
+    std::string str;
+    str += title;
+    str += ":";
+    
+    if (print_ratio){
+        str += " ";
+        str += "(";
+        str += std::to_string(total_tested_methods);
+        str += "/";
+        str += std::to_string(total_public_methods);
+        str += ")";
+    }
+    if (print_percentage){
+        str += " ";
+        auto ratio = static_cast<float>(total_tested_methods) / static_cast<float>(total_public_methods);
+        str += std::to_string(static_cast<int>(ratio * 100));
+        str += "%";
+    }
+    str += "\n";
+    return str;
+❱
+
 ◀private: static▶ std::string ☀Decide_Test_Coverage_Title(Structure const& structure, Cpp_Test_Export_Settings const& settings)❰
     std::string str;
-    str += "Test Coverage Over ";
+    str += "Test Coverage Over Specific";
     if (settings.use_the){
         str += "the ";
     }
-    str += Case_Modifier::As_Modified_Casing(settings.summary_title_casing_format,structure.name) + " API";
+    str += Case_Modifier::As_Modified_Casing(settings.summary_title_casing_format,structure.name) + " APIs";
     str += ":\n\n";
     return str;
 ❱
