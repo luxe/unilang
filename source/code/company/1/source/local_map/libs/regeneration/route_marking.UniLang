@@ -3584,6 +3584,8 @@ if the route is empty, no distance is returned􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get a summary of its state􏶿
 􏶚m􏶛􏶾ascii_string􏶽􏶼summary􏶻􏲅􏲆􏶺the string representation summarizing the current state of the annotated route􏶹
 􏶴
+    summary += "route status: " + 􏵲route status as string􏵳route);
+    summary += "\n";
     summary += "event range: " + 􏵲event range as string􏵳route);
     summary += "\n";
     summary += "annotated lanes: " + 􏵲evented lane indexes as string􏵳route);
@@ -3691,6 +3693,71 @@ if the route is empty, no distance is returned􏶡
     
     //ASSERT
     EXPECT_EQ(results,"");
+􏴮
+
+􏷘+􏷗􏷒route status as string􏷑
+􏴅String Representations􏴆
+􏷐returns a string representing the conceptual state of the route􏷏
+􏶠"new", "existing","current","invalid"􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get the status of􏶿
+􏶚m􏶛􏶾ascii_string􏶽􏶼route status􏶻􏲅format_route_status_as_string(interpret_route_status(route))􏲆􏶺the status of the route􏶹
+􏶴􏶳
+􏴯a new route is called new􏴰
+􏲝check that we have the right string representation for the route state􏲞
+􏲛The route is probably not the state we expect it to be anymore. Or the state name has changed􏲜
+􏴭
+    //ARRANGE
+    route r;
+    auto event_route = create_event_route(r);
+    
+    //ACT
+    auto name = route_status_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(name,"new");
+􏴮
+􏴯an existing route is called existing􏴰
+􏲝check that we have the right string representation for the route state􏲞
+􏲛The route is probably not the state we expect it to be anymore. Or the state name has changed􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_submap_ids({1,2,3,4,5});
+    advance_forward_on_route(event_route,2);
+    
+    //ACT
+    auto name = route_status_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(name,"existing");
+􏴮
+􏴯an expired route is called expired􏴰
+􏲝check that we have the right string representation for the route state􏲞
+􏲛The route is probably not the state we expect it to be anymore. Or the state name has changed􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_submap_ids({1,2,3,4,5});
+    advance_forward_on_route(event_route,2);
+    expire_route(event_route);
+    
+    //ACT
+    auto name = route_status_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(name,"expired");
+􏴮
+􏴯an invalid route is called invalid􏴰
+􏲝check that we have the right string representation for the route state􏲞
+􏲛The route is probably not the state we expect it to be anymore. Or the state name has changed􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_submap_ids({1,2,3,4,5});
+    invalidate_route(event_route);
+    
+    //ACT
+    auto name = route_status_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(name,"invalid");
 􏴮
 
 􏷘+􏷗􏷒algorithm range as string􏷑
