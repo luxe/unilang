@@ -90,8 +90,13 @@ class
 ❱
 ◀public: static▶ void ☀Print_Function_Argument_List(std::wofstream & out, std::vector<Function_Argument> const& arguments, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
     Print_To_Stream(out,"(");
+    
+    
+    
+    
     if (arguments.empty()){
-        Print_The_Void_Type(out,options);
+        auto str = Empty_Parameters_Filler(options);
+        Print_To_Stream(out,str);
     }else{
         Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
          ,[&](Function_Argument arg){
@@ -106,11 +111,24 @@ class
     Print_To_Stream(out,")");
 ❱
 
-◀private: static▶ void ☀Print_The_Void_Type(std::wofstream & out, C_Export_Settings const& options)❰
+◀private: static▶ std::string ☀Empty_Parameters_Filler(C_Export_Settings const& options)❰
+  
+  //TODO: move to settings
+  bool print_void = false;
+  
+  std::string str;
+  if (print_void){
+    str += Get_The_Void_Type(options);
+  }
+  return str;
+  
+❱
+
+◀private: static▶ std::string ☀Get_The_Void_Type(C_Export_Settings const& options)❰
   Function_Result result;
   result.type.value = as_wstring("void");
   auto real_type = Type_Name_Deriver::Derive_Name(result,Source_Language::CPP);
-  Print_To_Stream(out,real_type);
+  return real_type;
 ❱
 ◀public: static▶ std::string ☀Get_Printable_Argument(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
   

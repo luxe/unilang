@@ -1430,7 +1430,7 @@ The set returned will never have more than 1 element􏶡
 􏶜􏶝􏷆random_route_creation_input􏷅􏲥local_map/libs/regeneration/local_map_regeneration_preset_routes􏲦􏷄input􏷃􏷀the input to create a random event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_random_route(input))􏲆􏶺a random route with random regeneration information attached􏶹
 􏶴􏶳
-􏴯create􏴰
+􏴯create deterministically􏴰
 􏲝make sure that creating a random event route does not crash􏲞
 􏲛creating a random route with default random settings should always pass􏲜
 􏴭
@@ -1442,6 +1442,32 @@ The set returned will never have more than 1 element􏶡
     
     //ASSERT
     (void)event_route;
+􏴮
+􏴯prove its deterministic􏴰
+􏲝show that we are testing deterministic random􏲞
+􏲛we are unable to create an event or the event creation is no longer deterministic􏲜
+􏴭
+    //ARRANGE
+    random_route_creation_input input;
+    input.low_lane_count = 5;
+    input.high_lane_count = 5;
+    
+    //ACT
+    auto event_route = create_random_event_route(input);
+    
+    //ASSERT
+    //the values are the same random sequence every program invocation
+    EXPECT_EQ(static_cast<int>(event_route.event_lane_sequence[0].info.annotation.distance),33);
+    EXPECT_EQ(static_cast<int>(event_route.event_lane_sequence[1].info.annotation.distance),21);
+    EXPECT_EQ(static_cast<int>(event_route.event_lane_sequence[2].info.annotation.distance),24);
+    EXPECT_EQ(static_cast<int>(event_route.event_lane_sequence[3].info.annotation.distance),17);
+    EXPECT_EQ(static_cast<int>(event_route.event_lane_sequence[4].info.annotation.distance),2);
+    
+    EXPECT_EQ(event_route.event_lane_sequence[0].info.map_ref.map_index.to_int64(),6);
+    EXPECT_EQ(event_route.event_lane_sequence[1].info.map_ref.map_index.to_int64(),6);
+    EXPECT_EQ(event_route.event_lane_sequence[2].info.map_ref.map_index.to_int64(),9);
+    EXPECT_EQ(event_route.event_lane_sequence[3].info.map_ref.map_index.to_int64(),7);
+    EXPECT_EQ(event_route.event_lane_sequence[4].info.map_ref.map_index.to_int64(),3);
 􏴮
 
 􏷘+􏷗􏷒create event route from lane distances􏷑
@@ -2186,7 +2212,7 @@ We provide and optional check over this invariant􏶡
 􏷐Check whether our current lane is two or more lanes greater than our previous lane􏷏
 􏶠This would mean that we jumped over a lane
 Jumping over a lane is not an error from the regeneration framework perspective
-the regeneration framework still process any events on lanes that we skipped over
+the regeneration framework still processes any events on lanes that we skipped over
 We provide it as a check to help evaluate any assumptions about the lane associator
 The lag of associating to a lane, may also affect our SLA on available local map
 consider this check a soft invariant used to raise awareness about hopping over 1 or more lanes
@@ -2622,12 +2648,12 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶴
     􏶲(n,n) = existing route􏶱
     if (􏵲is existing route􏵳route)){
-        return route_status_existing_route;
+        return route_status_existing;
     }
     
     􏶲(?,n) = new route􏶱
     else if(􏵲is new route􏵳route)){
-        return route_status_new_route;
+        return route_status_new;
     }
     
     􏶲(n,?) = expired route􏶱
@@ -2652,7 +2678,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
     auto event_route = create_event_route(r);
     
     //ASSERT
-    EXPECT_EQ(interpret_route_status(event_route),route_status_new_route);
+    EXPECT_EQ(interpret_route_status(event_route),route_status_new);
 􏴮
 􏴯walk though route status􏴰
 􏲝We should be able to transition the status from new, to current, to expired􏲞
@@ -2665,19 +2691,19 @@ Calling this function will ensure that interpret_route_status returns route_stat
     auto event_route = create_event_route(r);
     
     //ASSERT
-    EXPECT_EQ(interpret_route_status(event_route),route_status_new_route);
+    EXPECT_EQ(interpret_route_status(event_route),route_status_new);
     
     //ACT
     advance_forward_on_route(event_route,1);
     
     //ASSERT
-    EXPECT_EQ(interpret_route_status(event_route),route_status_existing_route);
+    EXPECT_EQ(interpret_route_status(event_route),route_status_existing);
     
     //ACT
     advance_forward_on_route(event_route,2);
     
     //ASSERT
-    EXPECT_EQ(interpret_route_status(event_route),route_status_existing_route);
+    EXPECT_EQ(interpret_route_status(event_route),route_status_existing);
     
     //ACT
     expire_route(event_route);
@@ -3607,8 +3633,8 @@ if the route is empty, no distance is returned􏶡
 􏶚m􏶛􏶾ascii_string􏶽􏶼broken invariants􏶻􏲅􏲆􏶺the string representing broken invariants􏶹
 􏶴
     // gather up all of the broken invariants
-    // Although these broken invariants are handled safely in the regeneration framework
-    // but they result in questionable SLMT's behavior
+    // Although these broken invariants are handled safely in the regeneration framework,
+    // they result in questionable awareness of SLMT's behavior
     std::vector<std::string> statements;
     auto checked_invariants = 􏵲check invariants􏵳route);
     if (!checked_invariants.evaluation_range_consistent){
