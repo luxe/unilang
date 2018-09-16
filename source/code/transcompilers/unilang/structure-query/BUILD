@@ -22,3 +22,9 @@ hcp(name = "closed_box_function_checker", deps = [
 "//code/utilities/types/strings/observers/other:lib",
 "//code/transcompilers/unilang/structure-query:argument_direction_decider",
 ])
+
+hcp(name = "is_overload_decider", deps = [
+"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/utilities/converters:lib",
+])

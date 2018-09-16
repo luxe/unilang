@@ -40,12 +40,12 @@ class
     }
 ❱
 
-◀public: static▶ void ☀Print_Method_Interface(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options)❰
-    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,options);
+◀public: static▶ void ☀Print_Method_Interface(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, std::vector<Method_Item> const& methods, C_Export_Settings const& options)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,methods,options);
     Print_Method_Deceleration(out,file_name,code_type,method,options);
 ❱
 ◀public: static▶ void ☀Print_Method_Implementation(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, std::vector<Data_Member_Item> const& members, std::vector<Method_Item> const& methods, bool const& object_method, C_Export_Settings const& options, std::string implicit_name, Object_Export_Method const& export_method)❰
-    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,options);
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,methods,options);
     Print_Method_Definition(out,file_name,code_type,method,members,methods,object_method,options,implicit_name,export_method);
 ❱
 
@@ -61,7 +61,7 @@ class
 
     for (auto it: methods){
         if (it.class_access == Class_Access::PUBLIC){
-            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,options);
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,methods,options);
         }
     }
 ❱
@@ -74,7 +74,7 @@ class
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_decl));
-            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,options);
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,methods,options);
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
         }
     }
@@ -103,8 +103,10 @@ class
 ❱
 
 ◀public: static▶ void ☀Print_Anon_Namespace_Start(std::wofstream & out, C_Export_Settings const& options)❰
+    std::string namespace_keyword = "namespace";
   if (options.portion.namespace_options.use_anonymous){
-    Print_To_Stream_With_Newline(out,"namespace {\n");
+    Print_To_Stream(out,namespace_keyword);
+    Print_To_Stream_With_Newline(out," {\n");
   }
 ❱
 ◀public: static▶ void ☀Print_Anon_Namespace_End(std::wofstream & out, C_Export_Settings const& options)❰
@@ -129,7 +131,7 @@ class
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_decl));
-            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,options);
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,methods,options);
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
         }
     }

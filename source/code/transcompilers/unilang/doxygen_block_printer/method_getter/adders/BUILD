@@ -89,3 +89,12 @@ hcp(name = "argument_description_adder", deps = [
 "//code/transcompilers/unilang/options/comment/doxygen:doxygen_parameter_direction",
 "//code/transcompilers/unilang/structure-query:argument_direction_decider",
 ])
+
+hcp(name = "overload_note_adder", deps = [
+"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
+"//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
+"//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
+"//code/transcompilers/unilang/structure-query:is_overload_decider",
+])
