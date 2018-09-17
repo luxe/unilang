@@ -1390,7 +1390,42 @@ The set returned will never have more than 1 element􏶡
         route.annotation_sequence.emplace_back(event_route.event_lane_sequence[i].info.annotation);
     }
 􏶳
-
+􏴯sub id event route back to translated􏴰
+􏲝check that we can create an event route from submap ids and convert it back to a translated route􏲞
+􏲛the translated route no longer has the same information as the event route once converted􏲜
+􏴭
+    //ARRANGE
+    std::vector<int> submap_ids{2,4,6,8,10};
+    auto event_route = create_event_route_from_submap_ids(submap_ids);
+    
+    //ACT
+    auto translated_route = create_translated_route(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(translated_route.lane_sequence[0].map_index.to_int64(),2);
+    EXPECT_EQ(translated_route.lane_sequence[1].map_index.to_int64(),4);
+    EXPECT_EQ(translated_route.lane_sequence[2].map_index.to_int64(),6);
+    EXPECT_EQ(translated_route.lane_sequence[3].map_index.to_int64(),8);
+    EXPECT_EQ(translated_route.lane_sequence[4].map_index.to_int64(),10);
+􏴮
+􏴯distance event route back to translated􏴰
+􏲝check that we can create an event route from distances and convert it back to a translated route􏲞
+􏲛the translated route no longer has the same information as the event route once converted􏲜
+􏴭
+    //ARRANGE
+    std::vector<double> distances{2.5,4.5,6.5,8.5,10.5};
+    auto event_route = create_event_route_from_lane_distances(distances);
+    
+    //ACT
+    auto translated_route = create_translated_route(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(translated_route.annotation_sequence[0].distance,2.5);
+    EXPECT_EQ(translated_route.annotation_sequence[1].distance,4.5);
+    EXPECT_EQ(translated_route.annotation_sequence[2].distance,6.5);
+    EXPECT_EQ(translated_route.annotation_sequence[3].distance,8.5);
+    EXPECT_EQ(translated_route.annotation_sequence[4].distance,10.5);
+􏴮
 
 􏷘+􏷗􏷒create event route􏷑
 􏴅Annotated Route􏴆
@@ -1903,9 +1938,38 @@ these checks can help detect things based on the status of the event route that 
     checked_invariants.has_not_jumped_over_1_or_more_lanes = !􏵲jumped over 1 or more lanes􏵳route);
     checked_invariants.has_route_hysteresis = 􏵲has route hysteresis􏵳route);
     checked_invariants.exists_on_or_after_merge_point = !􏵲exists before merge point􏵳route);
+    checked_invariants.merge_point_in_bounds = 􏵲merge point in bounds􏵳route);
+    checked_invariants.route_has_lanes       = 􏵲has lanes􏵳route);
+    checked_invariants.all_lanes_have_size = 􏵲lanes have size􏵳route);
 􏶳
-
-
+􏴯slmt example where every invariant holds􏴰
+􏲝give an example where the invariant stats returned all pass􏲞
+􏲛we are now breaking an invariant on an example of an slmnt route that previously was not􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9,10});
+    r.route_progress_index = 1; //why we have hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 3;
+    seed.route_lane_index = 4;
+    bool route_changed = false;
+    int distance_m = 100;
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ACT
+    auto invariants = check_invariants(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(invariants.evaluation_range_consistent);
+    EXPECT_TRUE(invariants.evaluation_range_in_bounds);
+    EXPECT_TRUE(invariants.has_not_jumped_over_1_or_more_lanes);
+    EXPECT_TRUE(invariants.has_route_hysteresis);
+    EXPECT_TRUE(invariants.exists_on_or_after_merge_point);
+    EXPECT_TRUE(invariants.merge_point_in_bounds);
+    EXPECT_TRUE(invariants.route_has_lanes);
+    EXPECT_TRUE(invariants.all_lanes_have_size);
+􏴮
 
 
 routes that are too long
@@ -2357,7 +2421,7 @@ This is because we mark the first logical lane of the route based on our merge p
     //ASSERT
     EXPECT_FALSE(has_route_hysteresis(event_route));
 􏴮
-􏴯an slmt whose current index starts above 0 has hysteresis􏴰
+􏴯an slmt whose current index starts above 1 has hysteresis􏴰
 􏲝create a route for the SLMT and determine that it has hysteresis􏲞
 􏲛we created a route that we believe should have hysteresis􏲜
 􏴭
@@ -2402,6 +2466,159 @@ This is because we mark the first logical lane of the route based on our merge p
         }
     }
 􏶳
+􏴯evaluation window on slmnt is ahead of merge point pass invariant􏴰
+􏲝we are in front of the merge point􏲞
+􏲛we should be building an event route that should be ahead of merge point􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6});
+    r.route_progress_index = 1; //why we have hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 3;
+    seed.route_lane_index = 3;
+    bool route_changed = true;
+    int distance_m = 100;
+    
+    //ACT
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_FALSE(exists_before_merge_point(event_route));
+􏴮
+􏴯evaluation window on slmnt is behind the merge point failed invariant􏴰
+􏲝we are behind the merge point􏲞
+􏲛we should be building an event route that is behind the merge point􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
+    r.route_progress_index = 4; //why we have hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 2;
+    seed.route_lane_index = 5;
+    bool route_changed = false;
+    int distance_m = 1;
+    
+    //ACT
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ASSERT
+    EXPECT_TRUE(exists_before_merge_point(event_route));
+􏴮
+
+􏷘+􏷗􏷒merge point in bounds􏷑
+􏴅Invariant Checks􏴆
+􏷐check whether the derived merge point is in the bounds of the route􏷏
+􏶠if there is no merge point found, we consider its absence to be in bounds􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to check invariant on􏶿
+􏶚m􏶛􏶾bool􏶽􏶼in bounds􏶻􏲅true􏲆􏶺whether the merge point (if it exists at all) is in bounds or not􏶹
+􏶴
+    auto lane_index = 􏵲merge point􏵳route);
+    if (lane_index){
+        if (!􏵲index in bounds􏵳route,*lane_index)){
+            return false;
+        }
+    }
+􏶳
+􏴯create an event route with a valid merge point􏴰
+􏲝make sure the invariant passes􏲞
+􏲛the merge point is in bounds so the invariant should not be failing􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    auto r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
+    r.route_progress_index = 1; //why we have hysteresis
+    static_local_map_task_wrapper_seed seed;
+    seed.previous_lane_index = 2;
+    seed.route_lane_index = 3;
+    bool route_changed = false;
+    int distance_m = 1;
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    
+    //ACT
+    auto in_bounds = merge_point_in_bounds(event_route);
+    
+    //ASSERT
+    EXPECT_TRUE(in_bounds);
+􏴮
+􏴯create an event route with an invalid merge point􏴰
+􏲝this is not possible􏲞
+􏲛it is not possible to create an event route with an invalid merge point􏲜
+􏴭
+    // the merge point is currently discovered by finding
+    // the first lane along the route that is marked.
+    // Since we assume that the SLA algorithm will always mark the first
+    // lane, we find it by scanning the lanes.
+    // this means the merge point is either a valid lane, or it doesn't exist.
+    // Therefore, we can't create a scenario based on current implementation where this invariant would fail
+􏴮
+
+􏷘+􏷗􏷒lanes have size􏷑
+􏴅Invariant Checks􏴆
+􏷐ensure that all of the lanes have a valid size􏷏
+􏶠if the distance of any lane is found to be negative or 0 we return false􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to check invariant on􏶿
+􏶚m􏶛􏶾bool􏶽􏶼valid distances􏶻􏲅true􏲆􏶺whether all the lanes are a valid distance􏶹
+􏶴
+    for (size_t i = 0; i < 􏵲number of lanes􏵳route); ++i){
+        if (􏵲lane length􏵳route,i) <= 0){
+            return false;
+        }
+    }
+􏶳
+􏴯all valid distances􏴰
+􏲝create a route of all valid distances and ensure it passes the invariant􏲞
+􏲛the route was created with valid distances yet it is failing the distance check􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_lane_distances({1,20,1000,.5});
+    
+    //ACT
+    auto valid_sizes = lanes_have_size(route);
+    
+    //ASSERT
+    EXPECT_TRUE(valid_sizes);
+􏴮
+􏴯no_distances pass􏴰
+􏲝create a route with no lanes and ensure it passes the invariant􏲞
+􏲛the route was created with no lanes so it should pass the distance check􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_lane_distances({});
+    
+    //ACT
+    auto valid_sizes = lanes_have_size(route);
+    
+    //ASSERT
+    EXPECT_TRUE(valid_sizes);
+􏴮
+􏴯an invalid distance zero􏴰
+􏲝create a route with an invalid distance and ensure it fails the invariant􏲞
+􏲛the route was created with an invalid distance yet it is still passing the distance check somehow􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_lane_distances({1,20,0,1000,.5});
+    
+    //ACT
+    auto valid_sizes = lanes_have_size(route);
+    
+    //ASSERT
+    EXPECT_FALSE(valid_sizes);
+􏴮
+􏴯an invalid distance negative􏴰
+􏲝create a route with an invalid distance and ensure it fails the invariant􏲞
+􏲛the route was created with an invalid distance yet it is still passing the distance check somehow􏲜
+􏴭
+    //ARRANGE
+    auto route = create_event_route_from_lane_distances({1,20,-1,1000,.5});
+    
+    //ACT
+    auto valid_sizes = lanes_have_size(route);
+    
+    //ASSERT
+    EXPECT_FALSE(valid_sizes);
+􏴮
 
 􏷘-􏷗􏷒merge point􏷑
 􏴅Detail􏴆
@@ -3637,26 +3854,10 @@ if the route is empty, no distance is returned􏶡
     // gather up all of the broken invariants
     // Although these broken invariants are handled safely in the regeneration framework,
     // they result in questionable awareness of SLMT's behavior
-    std::vector<std::string> statements;
-    auto checked_invariants = 􏵲check invariants􏵳route);
-    if (!checked_invariants.evaluation_range_consistent){
-        statements.emplace_back("the evaluation is inconsistent. you're telling me you went backwards.");
-    }
-    if (!checked_invariants.evaluation_range_in_bounds){
-        statements.emplace_back("the evaluation range is out of bounds from the actual route");
-    }
-    if (!checked_invariants.has_not_jumped_over_1_or_more_lanes){
-        statements.emplace_back("You jumped over a lane");
-    }
-    if (!checked_invariants.has_route_hysteresis){
-        statements.emplace_back("You don't have any route hysteresis right now");
-    }
-    if (!checked_invariants.exists_on_or_after_merge_point){
-        statements.emplace_back("You claim to be on a route before the merge point");
-    }
+    auto messages = 􏵲failed invariants as messages􏵳route);
     
     //turn statements into single string
-    for (auto const& it: statements){
+    for (auto const& it: messages){
         broken_invariants += it + '\n';
     }
 􏶳
@@ -3694,6 +3895,45 @@ if the route is empty, no distance is returned􏶡
     //ASSERT
     EXPECT_EQ(results,"");
 􏴮
+
+
+􏷘-􏷗􏷒failed invariants as messages􏷑
+􏴅Detail􏴆
+􏷐get all the failed invariants as a collection of messages􏷏
+􏶠check status of all invariants and convert broken invariants into messages􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get broken invariants on􏶿
+􏶚m􏶛􏶾strings􏶽􏶼messages􏶻􏲅􏲆􏶺messages of broken invariants􏶹
+􏶴
+    // gather up all of the broken invariants
+    // Although these broken invariants are handled safely in the regeneration framework,
+    // they result in questionable awareness of SLMT's behavior
+    auto checked_invariants = 􏵲check invariants􏵳route);
+    if (!checked_invariants.evaluation_range_consistent){
+        messages.emplace_back("the evaluation is inconsistent. you're telling me you went backwards.");
+    }
+    if (!checked_invariants.evaluation_range_in_bounds){
+        messages.emplace_back("the evaluation range is out of bounds from the actual route");
+    }
+    if (!checked_invariants.has_not_jumped_over_1_or_more_lanes){
+        messages.emplace_back("You jumped over a lane");
+    }
+    if (!checked_invariants.has_route_hysteresis){
+        messages.emplace_back("You don't have any route hysteresis right now");
+    }
+    if (!checked_invariants.exists_on_or_after_merge_point){
+        messages.emplace_back("You claim to be on a route before the merge point");
+    }
+    if (!checked_invariants.merge_point_in_bounds){
+        messages.emplace_back("the merge point exists outside the route");
+    }
+    if (!checked_invariants.route_has_lanes){
+        messages.emplace_back("the route doesn't have any lanes");
+    }
+    if (!checked_invariants.all_lanes_have_size){
+        messages.emplace_back("some of these lanes are distance 0");
+    }
+􏶳
+
 
 􏷘+􏷗􏷒route status as string􏷑
 􏴅String Representations􏴆
