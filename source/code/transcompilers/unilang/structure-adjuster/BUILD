@@ -13,6 +13,7 @@ hcp(name = "comment_adjuster", deps = [
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
+"//code/transcompilers/unilang/structure-adjuster:greedy_reflower",
 ])
 
 hcp(name = "words_deriver", deps = [
