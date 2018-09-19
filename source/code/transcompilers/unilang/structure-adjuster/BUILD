@@ -7,7 +7,7 @@ hcp(name = "comment_adjuster", deps = [
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
 "//code/transcompilers/unilang/options/comment:comment_grammar_settings",
-"//code/transcompilers/unilang/options/manipulation:comment_reflow_settings",
+"//code/transcompilers/unilang/options/manipulation/reflow:comment_reflow_settings",
 "//code/transcompilers/unilang/structure-adjuster:words_deriver",
 "//code/transcompilers/unilang/parser:token_value",
 "//code/utilities/types/strings/observers/splitting:lib",
@@ -59,4 +59,17 @@ hcp(name = "casing_adjuster", deps = [
 "//code/utilities/shell:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/options/manipulation:case_adjustment_settings",
+])
+
+hcp(name = "greedy_reflower", deps = [
+"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
+"//code/transcompilers/unilang/options/comment:comment_grammar_settings",
+"//code/transcompilers/unilang/options/manipulation/reflow:comment_reflow_settings",
+"//code/transcompilers/unilang/parser:token_value",
+"//code/transcompilers/unilang/structure-adjuster:words_deriver",
+"//code/utilities/types/strings/observers/splitting:lib",
+"//code/utilities/types/strings/observers/other:lib",
+"//code/utilities/types/strings/transformers/trimming:lib",
 ])

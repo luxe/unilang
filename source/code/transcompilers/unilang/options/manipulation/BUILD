@@ -2,8 +2,6 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook:hcp.bzl", "hcp")
 load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
 
-hcp(name = "comment_reflow_settings")
-
 hcp(name = "struct_manipulation_settings", deps = [
 "//code/transcompilers/unilang/options/manipulation/meta:meta_manipulation_settings",
 "//code/transcompilers/unilang/options/manipulation/imports:import_manipulation_settings",
@@ -24,5 +22,5 @@ hcp(name = "case_adjustment_settings", deps = [
 
 hcp(name = "comment_adjustment_settings", deps = [
 "//code/transcompilers/unilang/options/comment:comment_grammar_settings",
-"//code/transcompilers/unilang/options/manipulation:comment_reflow_settings",
+"//code/transcompilers/unilang/options/manipulation/reflow:comment_reflow_settings",
 ])
