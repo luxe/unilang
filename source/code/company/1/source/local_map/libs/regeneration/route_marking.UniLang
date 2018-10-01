@@ -1643,12 +1643,13 @@ This means we we will create an entirely new event route every cycle based on ot
 􏶜􏶝􏷆static_local_map_task_wrapper_seed􏷅􏲧local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲨􏲥local_map/static/static_local_map_task/static_local_map_task_wrapper_seed􏲦􏷄seed􏷃􏷀the current seed for the current cycle of the SLMT􏶿
 􏶜􏶝􏷆bool􏷅􏷄route has changed􏷃􏷀whether or not the route has changed prior to the previous task cycle􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker when using the SLMT marking algorithm􏶿
+􏶜􏶝􏷆size􏷅􏷄current route index􏷃􏷀the current route index for the route in current task cycle􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(route)􏲆􏶺a route with SLMT event information attached􏶹
 􏶴
 
     // the event window is preserved based on indexes in the seed
     // we apply this window to the annotated route
-    􏵲set event window from slmt seed􏵳event_route,seed,route_has_changed,route.route_progress_index);
+    􏵲set event window from slmt seed􏵳event_route, seed, route_has_changed, current_progress_index);
     
     // Mark lanes for regeneration.
     // Using the chosen lane marking algorithm, mark lanes to determine when we should regenerate.
@@ -1667,13 +1668,13 @@ This means we we will create an entirely new event route every cycle based on ot
     //SLMT state
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 0;
+    size_t current_route_lane_index = 0;
     seed.route_lane_index = 0;
     bool route_changed = true;
     int distance_m = 100;
     
     //ACT
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_EQ(event_range_as_string(event_route),"(?,0]");
@@ -1683,29 +1684,29 @@ This means we we will create an entirely new event route every cycle based on ot
     route_changed = false;
     
     //ACT
-    event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_EQ(event_range_as_string(event_route),"(0,0]");
     EXPECT_EQ(event_route.event_lane_sequence.size(),6);
     
     //ARRANGE
-    seed.previous_lane_index = 1;
-    seed.route_lane_index = 2;
+    seed.route_lane_index = 1;
+    current_route_lane_index = 2;
     
     //ACT
-    event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_EQ(event_range_as_string(event_route),"(1,2]");
     EXPECT_EQ(event_route.event_lane_sequence.size(),6);
     
     //ARRANGE
-    seed.previous_lane_index = 2;
-    seed.route_lane_index = 3;
+    seed.route_lane_index = 2;
+    current_route_lane_index = 3;
     
     //ACT
-    event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_EQ(event_range_as_string(event_route),"(2,3]");
@@ -1727,9 +1728,9 @@ This means we we will create an entirely new event route every cycle based on ot
     // this will ensure we process from the beginning of the route all the way to the current index
     if (!route_has_changed)
     {
-        􏵲set previous index on route􏵳event_route, seed.previous_lane_index);
+        􏵲set previous index on route􏵳event_route, seed.route_lane_index);
     }
-    􏵲set current index on route􏵳event_route, route_has_changed ? current_progress_index : seed.route_lane_index);
+    􏵲set current index on route􏵳event_route, current_progress_index);
 􏶳
 
 􏷘+􏷗􏷒set regeneration events􏷑
@@ -1951,11 +1952,11 @@ these checks can help detect things based on the status of the event route that 
     auto r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9,10});
     r.route_progress_index = 1; //why we have hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 3;
-    seed.route_lane_index = 4;
+    seed.route_lane_index = 3;
+    auto current_route_lane_index = 4;
     bool route_changed = false;
     int distance_m = 100;
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ACT
     auto invariants = check_invariants(event_route);
@@ -2410,13 +2411,13 @@ This is because we mark the first logical lane of the route based on our merge p
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
     r.route_progress_index = 0; //why we don't have hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 0;
     seed.route_lane_index = 0;
+    auto current_route_lane_index = 0;
     bool route_changed = true;
     int distance_m = 100;
     
     //ACT
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_FALSE(has_route_hysteresis(event_route));
@@ -2430,13 +2431,13 @@ This is because we mark the first logical lane of the route based on our merge p
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
     r.route_progress_index = 1; //why we have hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 3;
     seed.route_lane_index = 3;
+    auto current_route_lane_index = 3;
     bool route_changed = true;
     int distance_m = 100;
     
     //ACT
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_TRUE(has_route_hysteresis(event_route));
@@ -2475,13 +2476,13 @@ This is because we mark the first logical lane of the route based on our merge p
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
     r.route_progress_index = 1; //why we have hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 3;
     seed.route_lane_index = 3;
+    auto current_route_lane_index = 3;
     bool route_changed = true;
     int distance_m = 100;
     
     //ACT
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_FALSE(exists_before_merge_point(event_route));
@@ -2495,13 +2496,13 @@ This is because we mark the first logical lane of the route based on our merge p
     auto r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
     r.route_progress_index = 4; //why we have hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 2;
-    seed.route_lane_index = 5;
+    seed.route_lane_index = 2;
+    auto current_route_lane_index = 5;
     bool route_changed = false;
     int distance_m = 1;
     
     //ACT
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ASSERT
     EXPECT_TRUE(exists_before_merge_point(event_route));
@@ -2530,11 +2531,11 @@ This is because we mark the first logical lane of the route based on our merge p
     auto r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
     r.route_progress_index = 1; //why we have hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 2;
-    seed.route_lane_index = 3;
+    seed.route_lane_index = 2;
+    auto current_route_lane_index = 3;
     bool route_changed = false;
     int distance_m = 1;
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ACT
     auto in_bounds = merge_point_in_bounds(event_route);
@@ -3883,11 +3884,11 @@ if the route is empty, no distance is returned􏶡
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
     r.route_progress_index = 1; //why we have some hysteresis
     static_local_map_task_wrapper_seed seed;
-    seed.previous_lane_index = 2;
-    seed.route_lane_index = 3;
+    seed.route_lane_index = 2;
+    auto current_route_lane_index = 3;
     bool route_changed = true;
     int distance_m = 100;
-    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m);
+    auto event_route = create_slmt_event_route(r,seed,route_changed,distance_m,current_route_lane_index);
     
     //ACT
     auto results = broken_invariants_as_string(event_route);
