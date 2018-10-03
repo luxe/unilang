@@ -1848,9 +1848,10 @@ route_info.current_lane_index = x;
 􏷐Create an event route specific to the SLMT use case􏷏
 􏶠We assume the information provided will be gathered cycle over cycle
 This means we we will create an entirely new event route every cycle based on other information known in the SLMT􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to create an event route from􏶿
 􏶜􏶝􏷆slmt_route_information􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route info􏷃􏷀information about the AV's current route provided by the SLMT􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker when using the SLMT marking algorithm􏶿
-􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(route_info.route)􏲆􏶺a route with SLMT event information attached􏶹
+􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(route)􏲆􏶺a route with SLMT event information attached􏶹
 􏶴
 
     // the event window is preserved based on indexes in the seed
@@ -1859,11 +1860,11 @@ This means we we will create an entirely new event route every cycle based on ot
     
     // Mark lanes for regeneration.
     // Using the chosen lane marking algorithm, mark lanes to determine when we should regenerate.
-    // Start the algorithm at the "current index" of the route
+    // Start the algorithm at the "current index" of the route.
     // This is our true route beginning along a merged route.
     algorithm_window window;
-    window.start = route_info.route.route_progress_index;
-    auto lane_markings = 􏵲mark lanes for local map sla requirement􏵳route_info.route, distance_m,window);
+    window.start = route_info.merge_point_index;
+    auto lane_markings = 􏵲mark lanes for local map sla requirement􏵳route, distance_m,window);
     􏵲set regeneration events􏵳event_route, lane_markings, "SLA");
 􏶳
 􏴯simulate slmt cycle changes on route􏴰
@@ -1871,7 +1872,7 @@ This means we we will create an entirely new event route every cycle based on ot
 􏲛We are no longer advancing forward through the annotated route cycle over cycle􏲜
 􏴭
     //ARRANGE
-    //SLMT statec
+    //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6});
     route_info.route_changed = true;
@@ -2155,7 +2156,7 @@ these checks can help detect things based on the status of the event route that 
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9,10});
-    route_info.route.route_progress_index = 1; //why we have hysteresis
+    route_info.merge_point_index = 1; //why we have hysteresis
     route_info.route_changed = false;
     route_info.previous_lane_index = 3;
     route_info.current_lane_index = 4;
@@ -2614,7 +2615,7 @@ This is because we mark the first logical lane of the route based on our merge p
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6});
-    route_info.route.route_progress_index = 0; //why we don't have hysteresis
+    route_info.merge_point_index = 0; //why we don't have hysteresis
     route_info.route_changed = true;
     route_info.previous_lane_index = 0;
     route_info.current_lane_index = 0;
@@ -2634,7 +2635,7 @@ This is because we mark the first logical lane of the route based on our merge p
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6});
-    route_info.route.route_progress_index = 1; //why we have hysteresis
+    route_info.merge_point_index = 1; //why we have hysteresis
     route_info.route_changed = true;
     route_info.previous_lane_index = 3;
     route_info.current_lane_index = 3;
@@ -2679,7 +2680,7 @@ This is because we mark the first logical lane of the route based on our merge p
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6});
-    route_info.route.route_progress_index = 1; //why we have hysteresis
+    route_info.merge_point_index = 1; //why we have hysteresis
     route_info.route_changed = true;
     route_info.previous_lane_index = 3;
     route_info.current_lane_index = 3;
@@ -2699,7 +2700,7 @@ This is because we mark the first logical lane of the route based on our merge p
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
-    route_info.route.route_progress_index = 4; //why we have hysteresis
+    route_info.merge_point_index = 4; //why we have hysteresis
     route_info.route_changed = false;
     route_info.previous_lane_index = 2;
     route_info.current_lane_index = 5;
@@ -2734,7 +2735,7 @@ This is because we mark the first logical lane of the route based on our merge p
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
-    route_info.route.route_progress_index = 1; //why we have hysteresis
+    route_info.merge_point_index = 1; //why we have hysteresis
     route_info.route_changed = false;
     route_info.previous_lane_index = 2;
     route_info.current_lane_index = 1;
@@ -4087,7 +4088,7 @@ if the route is empty, no distance is returned􏶡
     //SLMT state
     slmt_route_information route_info;
     route_info.route = create_route_from_submap_ids({1,2,3,4,5,6});
-    route_info.route.route_progress_index = 1; //why we have hysteresis
+    route_info.merge_point_index = 1; //why we have hysteresis
     route_info.route_changed = true;
     route_info.previous_lane_index = 2;
     route_info.current_lane_index = 1;
