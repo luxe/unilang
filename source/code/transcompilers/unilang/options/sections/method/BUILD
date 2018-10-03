@@ -34,4 +34,7 @@ hcp(name = "method_divider_settings", deps = [
 hcp(name = "method_test_case_settings", deps = [
 "//code/transcompilers/unilang/options/sections/method:divider_settings",
 "//code/utilities/types/strings/transformers/casing:case_format_style",
+"//code/transcompilers/unilang/options/sections/method:method_test_case_speed_settings",
 ])
+
+hcp(name = "method_test_case_speed_settings")
