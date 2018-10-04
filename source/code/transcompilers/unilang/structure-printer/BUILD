@@ -250,6 +250,7 @@ hcp(name = "global_printer", deps = [
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/structure-printer:namespace_printer",
 "//code/transcompilers/unilang/normal-design-printer:method_sorting_and_grouping_order_printer",
+"//code/transcompilers/unilang/structure-printer/table_of_contents:function_table_of_contents_printer",
 ])
 
 hcp(name = "file_printer", deps = [
