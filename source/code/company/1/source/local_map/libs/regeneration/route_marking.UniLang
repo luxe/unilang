@@ -1,13 +1,13 @@
 􏶞g􏶟
-􏷲various algorithms for analyzing and lane marking a route
-algorithms decide to make markings based on annotated route information, and provided user data􏷱
-􏷰there may be various reasons to mark lanes along a route
+􏷲various algorithms for analyzing and lane selecting a route
+algorithms decide to make selectings based on annotated route information, and provided user data􏷱
+􏷰there may be various reasons to select lanes along a route
 knowing when to regenerate is one such use case􏷯
 􏷮Regeneration􏷭
 􏴃Precondition Checks􏴄
 􏴁functions for checking the preconditions of various APIs􏴂
-􏴃Lane Marking􏴄
-􏴁functions that decide where to mark lanes along a route􏴂
+􏴃Lane Selection􏴄
+􏴁functions that decide where to select lanes along a route􏴂
 􏴃Annotated Route􏴄
 􏴁functions related to the annotated route􏴂
 􏴃String Representations􏴄
@@ -26,7 +26,7 @@ knowing when to regenerate is one such use case􏷯
 􏷞local_map􏷝􏷞statik􏷝
 
 
-􏷘+􏷗􏷒precondition mark lanes that exceed accumulated distance􏷑
+􏷘+􏷗􏷒precondition select lanes that exceed accumulated distance􏷑
 􏴅Precondition Checks􏴆
 􏷐Checks whether the arguments are valid as a precondition to the call􏷏
 􏶠This function is a predicate for checking all the necessary preconditions􏶡
@@ -47,7 +47,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = 1;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_that_exceed_accumulated_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_that_exceed_accumulated_distance(r,distance);
     
     //ASSERT
     EXPECT_TRUE(meets_preconditions);
@@ -61,7 +61,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = 0;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_that_exceed_accumulated_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_that_exceed_accumulated_distance(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
@@ -75,13 +75,13 @@ knowing when to regenerate is one such use case􏷯
     int distance = -1;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_that_exceed_accumulated_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_that_exceed_accumulated_distance(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
 􏴮
 
-􏷘+􏷗􏷒precondition mark lanes prior to exceeding distance􏷑
+􏷘+􏷗􏷒precondition select lanes prior to exceeding distance􏷑
 􏴅Precondition Checks􏴆
 􏷐Checks whether the arguments are valid as a precondition to the call􏷏
 􏶠This function is a predicate for checking all the necessary preconditions􏶡
@@ -106,7 +106,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = 1;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_prior_to_exceeding_distance(r,distance);
     
     //ASSERT
     EXPECT_TRUE(meets_preconditions);
@@ -120,7 +120,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = 0;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_prior_to_exceeding_distance(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
@@ -134,13 +134,13 @@ knowing when to regenerate is one such use case􏷯
     int distance = -1;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_prior_to_exceeding_distance(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
 􏴮
 􏴯lane too long fail􏴰
-􏲝We can't mark lanes prior to exceeding a distance if the lane itself is longer than the distance􏲞
+􏲝We can't select lanes prior to exceeding a distance if the lane itself is longer than the distance􏲞
 􏲛Implementation is no longer enforcing that lanes are shorter than provided distance􏲜
 􏴭
     //ARRANGE
@@ -148,13 +148,13 @@ knowing when to regenerate is one such use case􏷯
     int distance = 10;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_prior_to_exceeding_distance(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
 􏴮
 􏴯lanes small enough pass􏴰
-􏲝We can't mark lanes prior to exceeding a distance if the lane itself is longer than the distance􏲞
+􏲝We can't select lanes prior to exceeding a distance if the lane itself is longer than the distance􏲞
 􏲛Implementation is no longer enforcing that lanes are shorter than provided distance􏲜
 􏴭
     //ARRANGE
@@ -162,13 +162,13 @@ knowing when to regenerate is one such use case􏷯
     int distance = 10;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_prior_to_exceeding_distance(r,distance);
+    auto meets_preconditions = precondition_select_lanes_prior_to_exceeding_distance(r,distance);
     
     //ASSERT
     EXPECT_TRUE(meets_preconditions);
 􏴮
 
-􏷘+􏷗􏷒precondition mark lanes for local map sla requirement􏷑
+􏷘+􏷗􏷒precondition select lanes for local map sla requirement􏷑
 􏴅Precondition Checks􏴆
 􏷐Checks whether the arguments are valid as a precondition to the call􏷏
 􏶠This function is a predicate for checking all the necessary preconditions􏶡
@@ -176,7 +176,7 @@ knowing when to regenerate is one such use case􏷯
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
 􏶚m􏶛􏶾bool􏶽􏶼meets preconditions􏶻􏲅true􏲆􏶺whether the arguments meet the implementation's preconditions􏶹
 􏶴
-    if (!􏵲precondition mark lanes that exceed accumulated distance􏵳route,distance_m)){
+    if (!􏵲precondition select lanes that exceed accumulated distance􏵳route,distance_m)){
         return false;
     }
 􏶳
@@ -189,7 +189,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = 1;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_for_local_map_sla_requirement(r,distance);
+    auto meets_preconditions = precondition_select_lanes_for_local_map_sla_requirement(r,distance);
     
     //ASSERT
     EXPECT_TRUE(meets_preconditions);
@@ -203,7 +203,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = 0;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_for_local_map_sla_requirement(r,distance);
+    auto meets_preconditions = precondition_select_lanes_for_local_map_sla_requirement(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
@@ -217,7 +217,7 @@ knowing when to regenerate is one such use case􏷯
     int distance = -1;
     
     //ACT
-    auto meets_preconditions = precondition_mark_lanes_for_local_map_sla_requirement(r,distance);
+    auto meets_preconditions = precondition_select_lanes_for_local_map_sla_requirement(r,distance);
     
     //ASSERT
     EXPECT_FALSE(meets_preconditions);
@@ -225,74 +225,74 @@ knowing when to regenerate is one such use case􏷯
 
 
 
-􏷘+􏷗􏷒mark lanes􏷑
-􏴅Lane Marking􏴆
-􏷐mark lanes based on the configured marking strategy􏷏
-􏶠This is a frontend for calling the different marking algorithms
+􏷘+􏷗􏷒select lanes􏷑
+􏴅Lane Selection􏴆
+􏷐select lanes based on the configured selecting strategy􏷏
+􏶠This is a frontend for calling the different selecting algorithms
 Mainly used for testing􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
-􏶜􏶝􏷆marking_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄settings􏷃􏷀the marking strategy to use􏶿
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
+􏶜􏶝􏷆marking_input􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄settings􏷃􏷀the selecting strategy to use􏶿
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     if (settings.lane_selection.exceeding_accumulated_distance){
-        auto indexes = 􏵲mark lanes that exceed accumulated distance􏵳route,settings.lane_selection.exceeding_distance_m,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select lanes that exceed accumulated distance􏵳route,settings.lane_selection.exceeding_distance_m,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.before_exceeding_accumulated_distance){
-        auto indexes = 􏵲mark lanes prior to exceeding accumulated distance􏵳route,settings.lane_selection.before_exceeding_distance_m,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select lanes prior to exceeding accumulated distance􏵳route,settings.lane_selection.before_exceeding_distance_m,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.prior_to_loop){
-        auto indexes = 􏵲mark lanes prior to forming a submap loop􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select lanes prior to forming a submap loop􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.next_unique_submap_in_loop){
-        auto indexes = 􏵲mark first lane in unique submap after entering loop􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select first lane in unique submap after entering loop􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.first_lane_loop){
-        auto indexes = 􏵲mark first lanes involved in submap loop􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select first lanes involved in submap loop􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.all_lanes_loop){
-        auto indexes = 􏵲mark all lanes in entered submap loop􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select all lanes in entered submap loop􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.after_loop){
-        auto indexes = 􏵲mark first lane after loop causing submaps􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select first lane after loop causing submaps􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.after_loop_second){
-        auto indexes = 􏵲mark second lane after loop causing submaps􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select second lane after loop causing submaps􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.submap_transition){
-        auto indexes = 􏵲mark lanes that transition to new submaps􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select lanes that transition to new submaps􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.first){
-        auto indexes = 􏵲mark first lane􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select first lane􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.last){
-        auto indexes = 􏵲mark last lane􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select last lane􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.all){
-        auto indexes = 􏵲mark all lanes􏵳route,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select all lanes􏵳route,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.specific_lane_index){
-        auto indexes = 􏵲mark specific lane index􏵳route,settings.placement.lane_index,settings.lane_selection.apply_window);
+        auto indexes = 􏵲select specific lane index􏵳route,settings.placement.lane_index,settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(),indexes.end());
     }
     if (settings.lane_selection.regen_sla){
-        auto indexes = 􏵲mark lanes for local map sla requirement􏵳route, settings.lane_selection.sla_distance_m, settings.lane_selection.apply_window);
+        auto indexes = 􏵲select lanes for local map sla requirement􏵳route, settings.lane_selection.sla_distance_m, settings.lane_selection.apply_window);
         lane_indexes.insert(indexes.begin(), indexes.end());
     }
 􏶳
-􏴯defaults mark nothing􏴰
-􏲝Using a default route and default settings should execute successfully and mark nothing􏲞
+􏴯defaults select nothing􏴰
+􏲝Using a default route and default settings should execute successfully and select nothing􏲞
 􏲛Something has changed in an underlying algorithm resulting in an integration failure􏲜
 􏴭
     //ARRANGE
@@ -300,7 +300,7 @@ Mainly used for testing􏶡
     marking_input settings;
     
     //ACT
-    auto indexes = mark_lanes(r,settings);
+    auto indexes = select_lanes(r,settings);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
@@ -315,7 +315,7 @@ Mainly used for testing􏶡
 􏴮
 
 􏷘-􏷗􏷒algorithm start􏷑
-􏴅Lane Marking􏴆
+􏴅Lane Selection􏴆
 􏷐decide the starting index for the algorithm to being applying􏷏
 􏶠ensures the index is valid for the route given􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route used to check the bounds of the given window􏶿
@@ -330,7 +330,7 @@ Mainly used for testing􏶡
 􏶳
 
 􏷘-􏷗􏷒algorithm end􏷑
-􏴅Lane Marking􏴆
+􏴅Lane Selection􏴆
 􏷐decide the ending index for the algorithm to stop applying􏷏
 􏶠ensures the index is valid for the route given􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route used to check the bounds of the given window􏶿
@@ -345,7 +345,7 @@ Mainly used for testing􏶡
 􏶳
 
 􏷘-􏷗􏷒fitted index for iteration􏷑
-􏴅Lane Marking􏴆
+􏴅Lane Selection􏴆
 􏷐takes an index and fits it to the particular route so that it would be valid to use when iterating􏷏
 􏶠fitting the start and end indexes will ensure no indexing is out of bounds􏶡
 􏷌Route􏷋􏷈the route used to fit the index􏷇
@@ -362,7 +362,7 @@ Mainly used for testing􏶡
 􏶳
 
 􏷘-􏷗􏷒iterate with algorithm window􏷑
-􏴅Lane Marking􏴆
+􏴅Lane Selection􏴆
 􏷐iterate over a route according to the algorithm window, and apply the function on each lane index􏷏
 􏶠higher order function for iterating over portions of route􏶡
 􏷌Fun􏷋􏷈the function to apply on each iteration􏷇
@@ -375,16 +375,16 @@ Mainly used for testing􏶡
     }
 􏶳
 
-􏷘+􏷗􏷒mark lanes that exceed accumulated distance􏷑
-􏴅Lane Marking􏴆
-􏷐mark lanes along that route that exceed an accumulated distance greater than the provided distance􏷏
+􏷘+􏷗􏷒select lanes that exceed accumulated distance􏷑
+􏴅Lane Selection􏴆
+􏷐select lanes along that route that exceed an accumulated distance greater than the provided distance􏷏
 􏶠Ensures the distance is minimally met along each division made on the route􏶡
 􏵪distance_must_be_positive()􏵫
 􏵨the distance must be positive􏵩
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance to minimally reach􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
     􏵲iterate with algorithm window􏵳route,range,[&](size_t i){
@@ -399,7 +399,7 @@ Mainly used for testing􏶡
     });
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
@@ -407,13 +407,13 @@ Mainly used for testing􏶡
     
     //ACT
     auto any_valid_distance_m = 1.0;
-    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,any_valid_distance_m);
+    auto indexes = select_lanes_that_exceed_accumulated_distance(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
-􏴯mark every lane􏴰
-􏲝If every lane exceeds the distance given, all of the lanes should be marked􏲞
+􏴯select every lane􏴰
+􏲝If every lane exceeds the distance given, all of the lanes should be selected􏲞
 􏲛Implementation is no longer handling the exceeded distance check properly􏲜
 􏴭
     //ARRANGE
@@ -421,7 +421,7 @@ Mainly used for testing􏶡
     
     //ACT
     auto distance_m = 50;
-    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+    auto indexes = select_lanes_that_exceed_accumulated_distance(r,distance_m);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -429,8 +429,8 @@ Mainly used for testing􏶡
     EXPECT_TRUE(indexes.find(1) != indexes.end());
     EXPECT_TRUE(indexes.find(2) != indexes.end());
 􏴮
-􏴯mark every other lane􏴰
-􏲝If the distance is exceeded every other lane, we should have every other lane marked􏲞
+􏴯select every other lane􏴰
+􏲝If the distance is exceeded every other lane, we should have every other lane selected􏲞
 􏲛Implementation is no longer handling the exceeded distance check properly􏲜
 􏴭
     //ARRANGE
@@ -438,7 +438,7 @@ Mainly used for testing􏶡
     
     //ACT
     auto distance_m = 101;
-    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+    auto indexes = select_lanes_that_exceed_accumulated_distance(r,distance_m);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -450,15 +450,15 @@ Mainly used for testing􏶡
     EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 􏴯distance not reached􏴰
-􏲝If the distance is never reached along the route, no lanes should be marked􏲞
-􏲛Implementation is accidentally marking lanes before the distance is exceeded along the route􏲜
+􏲝If the distance is never reached along the route, no lanes should be selected􏲞
+􏲛Implementation is accidentally selecting lanes before the distance is exceeded along the route􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_lane_distances({25,25,25,25});
     
     //ACT
     auto distance_m = 100;
-    auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+    auto indexes = select_lanes_that_exceed_accumulated_distance(r,distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
@@ -478,21 +478,21 @@ Mainly used for testing􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_lanes_that_exceed_accumulated_distance(r,distance_m);
+        auto indexes = select_lanes_that_exceed_accumulated_distance(r,distance_m);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark lanes prior to exceeding accumulated distance􏷑
-􏴅Lane Marking􏴆
-􏷐mark lanes along that route that each division does not exceed the distance given􏷏
+􏷘+􏷗􏷒select lanes prior to exceeding accumulated distance􏷑
+􏴅Lane Selection􏴆
+􏷐select lanes along that route that each division does not exceed the distance given􏷏
 􏶠Ensures no division is greater than the distance provided􏶡
 􏵪distance_must_be_positive()􏵫
 􏵨the distance must be positive􏵩
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏲧local_map/libs/submap/submap_identifier􏲨􏲥local_map/libs/submap/local_map_submap􏲦􏷀the distance that must not be exceeded􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     double total_distance = 0.0;
     􏵲iterate with algorithm window􏵳route,range,[&](size_t i){
@@ -507,7 +507,7 @@ Mainly used for testing􏶡
     });
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
@@ -515,21 +515,21 @@ Mainly used for testing􏶡
     
     //ACT
     auto any_valid_distance_m = 1.0;
-    auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,any_valid_distance_m);
+    auto indexes = select_lanes_prior_to_exceeding_accumulated_distance(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
-􏴯mark every lane except last􏴰
-􏲝We should be able to mark every lane except the last one􏲞
-􏲛Implementation is no longer marking the lanes before the lanes that exceed an accumulated distance􏲜
+􏴯select every lane except last􏴰
+􏲝We should be able to select every lane except the last one􏲞
+􏲛Implementation is no longer selecting the lanes before the lanes that exceed an accumulated distance􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_lane_distances({100,100,100});
     
     //ACT
     auto distance_m = 50;
-    auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
+    auto indexes = select_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),2);
@@ -537,16 +537,16 @@ Mainly used for testing􏶡
     EXPECT_TRUE(indexes.find(1) != indexes.end());
     EXPECT_TRUE(indexes.find(2) == indexes.end());
 􏴮
-􏴯mark lanes before distance is exceeded􏴰
-􏲝We should be able to mark only the lanes prior to exceeding an accumulated distance􏲞
-􏲛Implementation is no longer marking the lanes before the lanes that exceed an accumulated distance􏲜
+􏴯select lanes before distance is exceeded􏴰
+􏲝We should be able to select only the lanes prior to exceeding an accumulated distance􏲞
+􏲛Implementation is no longer selecting the lanes before the lanes that exceed an accumulated distance􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_lane_distances({5,5,5,5,5,5});
     
     //ACT
     auto distance_m = 21;
-    auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
+    auto indexes = select_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -568,19 +568,19 @@ Mainly used for testing􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
+        auto indexes = select_lanes_prior_to_exceeding_accumulated_distance(r,distance_m);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark lanes prior to forming a submap loop􏷑
-􏴅Lane Marking􏴆
+􏷘+􏷗􏷒select lanes prior to forming a submap loop􏷑
+􏴅Lane Selection􏴆
 􏷐Mark the lanes prior to the lanes that would create a submap loop􏷏
-􏶠Ensures that each marked lane comes before a submap loop is formed along the route􏶡
+􏶠Ensures that each selected lane comes before a submap loop is formed along the route􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨
-􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     std::set<hub::base::guid> seen;
     hub::base::guid previous;
@@ -599,41 +599,41 @@ Mainly used for testing􏶡
     });
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
+    auto indexes = select_lanes_prior_to_forming_a_submap_loop(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
-􏴯mark before submap loop􏴰
-􏲝We should be able to mark the lane before the submap loop occurs􏲞
-􏲛Implementation is no longer marking the lane before the submap loop􏲜
+􏴯select before submap loop􏴰
+􏲝We should be able to select the lane before the submap loop occurs􏲞
+􏲛Implementation is no longer selecting the lane before the submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,1,1});
     
     //ACT
-    auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
+    auto indexes = select_lanes_prior_to_forming_a_submap_loop(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
     EXPECT_TRUE(indexes.find(3) != indexes.end());
 􏴮
-􏴯mark before submap loop twice􏴰
-􏲝We should be able to mark the lane before the submap loops occur􏲞
-􏲛Implementation is no longer marking the lane before each submap loop􏲜
+􏴯select before submap loop twice􏴰
+􏲝We should be able to select the lane before the submap loops occur􏲞
+􏲛Implementation is no longer selecting the lane before each submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,1,1,2,2,1,1});
     
     //ACT
-    auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
+    auto indexes = select_lanes_prior_to_forming_a_submap_loop(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -651,7 +651,7 @@ Mainly used for testing􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_lanes_prior_to_forming_a_submap_loop(r);
+        auto indexes = select_lanes_prior_to_forming_a_submap_loop(r);
         EXPECT_TRUE(true);
     }
 􏴮
@@ -660,13 +660,13 @@ Mainly used for testing􏶡
 
 
 
-􏷘+􏷗􏷒mark first lanes involved in submap loop􏷑
-􏴅Lane Marking􏴆
-􏷐when we detect submap loops, mark the first lane that is part of the submap loop􏷏
-􏶠Ensures that each marked lane is the first lane in a submap that is part of a submap loop􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select first lanes involved in submap loop􏷑
+􏴅Lane Selection􏴆
+􏷐when we detect submap loops, select the first lane that is part of the submap loop􏷏
+􏶠Ensures that each selected lane is the first lane in a submap that is part of a submap loop􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     std::map<hub::base::guid,size_t> seen;
     stdx::optional<hub::base::guid> previous;
@@ -686,27 +686,27 @@ Mainly used for testing􏶡
     });
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_first_lanes_involved_in_submap_loop(r);
+    auto indexes = select_first_lanes_involved_in_submap_loop(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
-􏴯mark first lane of submap loop􏴰
-􏲝We should be able to mark the first laneof a submap loop􏲞
-􏲛Implementation is no longer marking the first lane of a submap loop􏲜
+􏴯select first lane of submap loop􏴰
+􏲝We should be able to select the first laneof a submap loop􏲞
+􏲛Implementation is no longer selecting the first lane of a submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,1,1});
     
     //ACT
-    auto indexes = mark_first_lanes_involved_in_submap_loop(r);
+    auto indexes = select_first_lanes_involved_in_submap_loop(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -717,15 +717,15 @@ Mainly used for testing􏶡
     EXPECT_TRUE(indexes.find(4) == indexes.end());
     EXPECT_TRUE(indexes.find(5) == indexes.end());
 􏴮
-􏴯mark first lane of each submap loop􏴰
-􏲝We should be able to mark the lane before the submap loops occur􏲞
-􏲛Implementation is no longer marking the lane before each submap loop􏲜
+􏴯select first lane of each submap loop􏴰
+􏲝We should be able to select the lane before the submap loops occur􏲞
+􏲛Implementation is no longer selecting the lane before each submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,1,1,2,2,1,1});
     
     //ACT
-    auto indexes = mark_first_lanes_involved_in_submap_loop(r);
+    auto indexes = select_first_lanes_involved_in_submap_loop(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -743,20 +743,20 @@ Mainly used for testing􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_first_lanes_involved_in_submap_loop(r);
+        auto indexes = select_first_lanes_involved_in_submap_loop(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark all lanes in entered submap loop􏷑
-􏴅Lane Marking􏴆
-􏷐when we detect submap loops, mark the all lanes that are part of the first time we are in the submap􏷏
-􏶠Ensures that each marked lane is part of the first set of lanes in the loop conflicting submap􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select all lanes in entered submap loop􏷑
+􏴅Lane Selection􏴆
+􏷐when we detect submap loops, select the all lanes that are part of the first time we are in the submap􏷏
+􏶠Ensures that each selected lane is part of the first set of lanes in the loop conflicting submap􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
-    auto conflicting_submap_indexes = 􏵲mark first lanes involved in submap loop􏵳route,range);
+    auto conflicting_submap_indexes = 􏵲select first lanes involved in submap loop􏵳route,range);
     for (auto const& it: conflicting_submap_indexes){
         auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
         for (size_t i = it; i < 􏵲algorithm end􏵳route,range); ++i){
@@ -772,27 +772,27 @@ Mainly used for testing􏶡
     }
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_all_lanes_in_entered_submap_loop(r);
+    auto indexes = select_all_lanes_in_entered_submap_loop(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯multiple submap loop start􏴰
-􏲝Check that all the lanes in the beginning of a submap loop are marked􏲞
-􏲛Implementation is no longer marking the first lanes in the submap loop􏲜
+􏲝Check that all the lanes in the beginning of a submap loop are selected􏲞
+􏲛Implementation is no longer selecting the first lanes in the submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,0,0,2,3,4,5,0,0,0});
     
     //ACT
-    auto indexes = mark_all_lanes_in_entered_submap_loop(r);
+    auto indexes = select_all_lanes_in_entered_submap_loop(r);
     
     //ASSERT
     //zero is the submap loop
@@ -819,21 +819,21 @@ Mainly used for testing􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_all_lanes_in_entered_submap_loop(r);
+        auto indexes = select_all_lanes_in_entered_submap_loop(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
 
-􏷘+􏷗􏷒mark first lane after loop causing submaps􏷑
-􏴅Lane Marking􏴆
-􏷐when we detect submap loops, mark the first lane along the route that is past the conflicting submap􏷏
-􏶠The lanes that are marked are still a part of the overall loop, but we are now outside the submap that we will later revisit􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select first lane after loop causing submaps􏷑
+􏴅Lane Selection􏴆
+􏷐when we detect submap loops, select the first lane along the route that is past the conflicting submap􏷏
+􏶠The lanes that are selected are still a part of the overall loop, but we are now outside the submap that we will later revisit􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
-    auto conflicting_submap_indexes = 􏵲mark first lanes involved in submap loop􏵳route,range);
+    auto conflicting_submap_indexes = 􏵲select first lanes involved in submap loop􏵳route,range);
     for (auto const& it: conflicting_submap_indexes){
         auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
         for (size_t i = it; i < 􏵲algorithm end􏵳route,range); ++i){
@@ -845,15 +845,15 @@ Mainly used for testing􏶡
         }
     }
 􏶳
-􏴯mark lanes after loops􏴰
-􏲝We should be able to mark the lanes immediately after submap loops􏲞
-􏲛Implementation is no longer marking the lane after the submap loop􏲜
+􏴯select lanes after loops􏴰
+􏲝We should be able to select the lanes immediately after submap loops􏲞
+􏲛Implementation is no longer selecting the lane after the submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,1,1,2,2,1,1});
     
     //ACT
-    auto indexes = mark_first_lane_after_loop_causing_submaps(r);
+    auto indexes = select_first_lane_after_loop_causing_submaps(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -869,14 +869,14 @@ Mainly used for testing􏶡
     EXPECT_TRUE(indexes.find(9) == indexes.end());
 􏴮
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_first_lane_after_loop_causing_submaps(r);
+    auto indexes = select_first_lane_after_loop_causing_submaps(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
@@ -891,21 +891,21 @@ Mainly used for testing􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_first_lane_after_loop_causing_submaps(r);
+        auto indexes = select_first_lane_after_loop_causing_submaps(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark first lane in unique submap after entering loop􏷑
-􏴅Lane Marking􏴆
-􏷐when we enter a submap inside a submap loop, mark the first lane in the next submap􏷏
-􏶠A1 B1 A2 will mark A2
-A1 B1 C1 D1 A2 will mark C1􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select first lane in unique submap after entering loop􏷑
+􏴅Lane Selection􏴆
+􏷐when we enter a submap inside a submap loop, select the first lane in the next submap􏷏
+􏶠A1 B1 A2 will select A2
+A1 B1 C1 D1 A2 will select C1􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
-    auto first_lanes = 􏵲mark first lane after loop causing submaps􏵳route,range);
+    auto first_lanes = 􏵲select first lane after loop causing submaps􏵳route,range);
     for (const auto & i: first_lanes){
         auto lane_index = 􏵲first lane of next unique submap􏵳route,i,range);
         if (lane_index){
@@ -914,27 +914,27 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     }
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+    auto indexes = select_first_lane_in_unique_submap_after_entering_loop(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
-􏴯aba mark second a􏴰
-􏲝For this algorithm, we should mark A2 in an A1 B1 A2 submap loop􏲞
+􏴯aba select second a􏴰
+􏲝For this algorithm, we should select A2 in an A1 B1 A2 submap loop􏲞
 􏲛Implementation is no longer meeting ABA example􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({0,0,0,0,1,0,0,0,0});
     
     //ACT
-    auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+    auto indexes = select_first_lane_in_unique_submap_after_entering_loop(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -948,15 +948,15 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     EXPECT_TRUE(indexes.find(7) == indexes.end());
     EXPECT_TRUE(indexes.find(8) == indexes.end());
 􏴮
-􏴯abcda mark c􏴰
-􏲝For this algorithm, we should mark A2 in an A1 B1 A2 submap loop􏲞
+􏴯abcda select c􏴰
+􏲝For this algorithm, we should select A2 in an A1 B1 A2 submap loop􏲞
 􏲛Implementation is no longer meeting ABA example􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({0,1,2,3,0});
     
     //ACT
-    auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+    auto indexes = select_first_lane_in_unique_submap_after_entering_loop(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -976,7 +976,7 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_first_lane_in_unique_submap_after_entering_loop(r);
+        auto indexes = select_first_lane_in_unique_submap_after_entering_loop(r);
         EXPECT_TRUE(true);
     }
 􏴮
@@ -998,15 +998,15 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     }
 􏶳
 
-􏷘+􏷗􏷒mark second lane after loop causing submaps􏷑
-􏴅Lane Marking􏴆
-􏷐when we detect submap loops, mark the second lane along the route that is past the conflicting submap􏷏
-􏶠The lanes that are marked are still a part of the overall loop, but we are now either outside the submap that we will later revisit, or back on the revisitation of the submap􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select second lane after loop causing submaps􏷑
+􏴅Lane Selection􏴆
+􏷐when we detect submap loops, select the second lane along the route that is past the conflicting submap􏷏
+􏶠The lanes that are selected are still a part of the overall loop, but we are now either outside the submap that we will later revisit, or back on the revisitation of the submap􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
-    auto conflicting_submap_indexes = 􏵲mark first lanes involved in submap loop􏵳route,range);
+    auto conflicting_submap_indexes = 􏵲select first lanes involved in submap loop􏵳route,range);
     for (auto const& it: conflicting_submap_indexes){
         auto conflicting_submap = local_map::internal::submap_identifier(route.lane_sequence[it]);
         for (size_t i = it; i < 􏵲algorithm end􏵳route,range); ++i){
@@ -1018,15 +1018,15 @@ A1 B1 C1 D1 A2 will mark C1􏶡
         }
     }
 􏶳
-􏴯mark lanes after loops􏴰
-􏲝We should be able to mark the lanes immediately after submap loops􏲞
-􏲛Implementation is no longer marking the lane after the submap loop􏲜
+􏴯select lanes after loops􏴰
+􏲝We should be able to select the lanes immediately after submap loops􏲞
+􏲛Implementation is no longer selecting the lane after the submap loop􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,1,1,2,2,1,1});
     
     //ACT
-    auto indexes = mark_second_lane_after_loop_causing_submaps(r);
+    auto indexes = select_second_lane_after_loop_causing_submaps(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -1042,14 +1042,14 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     EXPECT_TRUE(indexes.find(9) == indexes.end());
 􏴮
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_second_lane_after_loop_causing_submaps(r);
+    auto indexes = select_second_lane_after_loop_causing_submaps(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
@@ -1064,18 +1064,18 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_second_lane_after_loop_causing_submaps(r);
+        auto indexes = select_second_lane_after_loop_causing_submaps(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark lanes that transition to new submaps􏷑
-􏴅Lane Marking􏴆
-􏷐mark every lane that transitions to a different submap􏷏
-􏶠Ensures that each marked lane exists in a different submap that the previous marked lane􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select lanes that transition to new submaps􏷑
+􏴅Lane Selection􏴆
+􏷐select every lane that transitions to a different submap􏷏
+􏶠Ensures that each selected lane exists in a different submap that the previous selected lane􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     hub::base::guid previous;
     􏵲iterate with algorithm window􏵳route,range,[&](size_t i){
@@ -1088,27 +1088,27 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     });
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_lanes_that_transition_to_new_submaps(r);
+    auto indexes = select_lanes_that_transition_to_new_submaps(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
-􏴯mark lanes into new submaps􏴰
-􏲝We should be able to mark each lane in a submap transition􏲞
-􏲛Implementation is no longer marking each new lane in a submap transition􏲜
+􏴯select lanes into new submaps􏴰
+􏲝We should be able to select each lane in a submap transition􏲞
+􏲛Implementation is no longer selecting each new lane in a submap transition􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,2,1});
     
     //ACT
-    auto indexes = mark_lanes_that_transition_to_new_submaps(r);
+    auto indexes = select_lanes_that_transition_to_new_submaps(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),3);
@@ -1129,18 +1129,18 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_lanes_that_transition_to_new_submaps(r);
+        auto indexes = select_lanes_that_transition_to_new_submaps(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
 
-􏷘+􏷗􏷒mark first lane􏷑
-􏴅Lane Marking􏴆
+􏷘+􏷗􏷒select first lane􏷑
+􏴅Lane Selection􏴆
 􏷐Marks the first lane of the route􏷏
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     if (􏵲has lanes􏵳route)){
         auto index = 􏵲algorithm start􏵳route,range);
@@ -1150,27 +1150,27 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     }
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_first_lane(r);
+    auto indexes = select_first_lane(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯last􏴰
 􏲝Marks the first lane􏲞
-􏲛Implementation is no longer marking the first lane􏲜
+􏲛Implementation is no longer selecting the first lane􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,1,2});
     
     //ACT
-    auto indexes = mark_first_lane(r);
+    auto indexes = select_first_lane(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -1186,17 +1186,17 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_first_lane(r);
+        auto indexes = select_first_lane(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark last lane􏷑
-􏴅Lane Marking􏴆
+􏷘+􏷗􏷒select last lane􏷑
+􏴅Lane Selection􏴆
 􏷐Marks the last lane of the route􏷏
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     if (􏵲has lanes􏵳route)){
         auto index = 􏵲algorithm end􏵳route,range);
@@ -1206,27 +1206,27 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     }
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_last_lane(r);
+    auto indexes = select_last_lane(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯last􏴰
 􏲝Marks the last lane􏲞
-􏲛Implementation is no longer marking the last lane􏲜
+􏲛Implementation is no longer selecting the last lane􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,2,2,2});
     
     //ACT
-    auto indexes = mark_last_lane(r);
+    auto indexes = select_last_lane(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -1242,44 +1242,44 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_last_lane(r);
+        auto indexes = select_last_lane(r);
         EXPECT_TRUE(true);
     }
 􏴮
 
-􏷘+􏷗􏷒mark all lanes􏷑
-􏴅Lane Marking􏴆
+􏷘+􏷗􏷒select all lanes􏷑
+􏴅Lane Selection􏴆
 􏷐Marks all of the lanes in the route􏷏
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     􏵲iterate with algorithm window􏵳route,range,[&](size_t i){
         lane_indexes.insert(i);
     });
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
     route r;
     
     //ACT
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯all􏴰
-􏲝All of the lanes should be marked􏲞
-􏲛Implementation is no longer marking all of the lanes􏲜
+􏲝All of the lanes should be selected􏲞
+􏲛Implementation is no longer selecting all of the lanes􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,1,2,2,3,3});
     
     //ACT
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),6);
@@ -1300,34 +1300,34 @@ A1 B1 C1 D1 A2 will mark C1􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_last_lane(r);
+        auto indexes = select_last_lane(r);
         EXPECT_TRUE(true);
     }
 􏴮
-􏷘+􏷗􏷒mark specific lane index􏷑
-􏴅Lane Marking􏴆
+􏷘+􏷗􏷒select specific lane index􏷑
+􏴅Lane Selection􏴆
 􏷐Marks the specific lane index given􏷏
 􏶠If the lane index is greater than the length of the route, then an empty set is returned
 The set returned will never have more than 1 element􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
-􏶜􏶝􏷆size􏷅􏷄lane index􏷃􏷀the index of the lane to mark􏶿
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
+􏶜􏶝􏷆size􏷅􏷄lane index􏷃􏷀the index of the lane to select􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     auto adjusted_lane_index = 􏵲algorithm start􏵳route,range) + lane_index;
     if (adjusted_lane_index < 􏵲algorithm end􏵳route,range)){
         lane_indexes.insert(adjusted_lane_index);
     }
 􏶳
-􏴯mark first lane􏴰
-􏲝We should be able to mark the first lane of a route􏲞
-􏲛Implementation is no longer allowing the first lane to be marked􏲜
+􏴯select first lane􏴰
+􏲝We should be able to select the first lane of a route􏲞
+􏲛Implementation is no longer allowing the first lane to be selected􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,2,3,4,5,6});
     
     //ACT
-    auto indexes = mark_specific_lane_index(r,0);
+    auto indexes = select_specific_lane_index(r,0);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -1338,15 +1338,15 @@ The set returned will never have more than 1 element􏶡
     EXPECT_TRUE(indexes.find(4) == indexes.end());
     EXPECT_TRUE(indexes.find(5) == indexes.end());
 􏴮
-􏴯mark specific lane􏴰
-􏲝We should be able to mark a specific lane of a route􏲞
-􏲛Implementation is no longer allowing a specific lane to be marked􏲜
+􏴯select specific lane􏴰
+􏲝We should be able to select a specific lane of a route􏲞
+􏲛Implementation is no longer allowing a specific lane to be selected􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,2,3,4,5,6});
     
     //ACT
-    auto indexes = mark_specific_lane_index(r,2);
+    auto indexes = select_specific_lane_index(r,2);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),1);
@@ -1357,15 +1357,15 @@ The set returned will never have more than 1 element􏶡
     EXPECT_TRUE(indexes.find(4) == indexes.end());
     EXPECT_TRUE(indexes.find(5) == indexes.end());
 􏴮
-􏴯out of bounds lane marks nothing􏴰
-􏲝WIf we try to mark a lane index that doesn't exist, we get no indexes back􏲞
-􏲛Implementation is no longer allowing invalid lane indexes for silently marking nothing􏲜
+􏴯out of bounds lane selects nothing􏴰
+􏲝WIf we try to select a lane index that doesn't exist, we get no indexes back􏲞
+􏲛Implementation is no longer allowing invalid lane indexes for silently selecting nothing􏲜
 􏴭
     //ARRANGE
     route r = create_route_from_submap_ids({1,2,3,4,5,6});
     
     //ACT
-    auto indexes = mark_specific_lane_index(r,6);
+    auto indexes = select_specific_lane_index(r,6);
     
     //ASSERT
     EXPECT_EQ(indexes.size(),0);
@@ -1380,41 +1380,41 @@ The set returned will never have more than 1 element􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_specific_lane_index(r,0);
+        auto indexes = select_specific_lane_index(r,0);
         EXPECT_TRUE(true);
     }
 􏴮
 
 
 
-􏷘+􏷗􏷒mark lanes for local map sla requirement􏷑
-􏴅Lane Marking􏴆
-􏷐marks lanes based on the local map's regeneration SLA requirements􏷏
-􏶠Ensures that the proper lanes are marked to guarantee by the local map's SLA requirements during regeneration􏶡
-􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to mark lanes􏶿
+􏷘+􏷗􏷒select lanes for local map sla requirement􏷑
+􏴅Lane Selection􏴆
+􏷐selects lanes based on the local map's regeneration SLA requirements􏷏
+􏶠Ensures that the proper lanes are selected to guarantee by the local map's SLA requirements during regeneration􏶡
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route in which to select lanes􏶿
 􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀the distance to minimally reach􏶿
 􏶜􏶝􏷆algorithm_window􏷅􏷄range􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀the window over the route to perform the algorithm on. default is the entire route􏶿􏷂algorithm_window()􏷁
-􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾unordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
-    􏶲perform marking policy􏶱
-    lane_indexes = 􏵲mark lanes that exceed accumulated distance􏵳route,distance_m,range);
+    􏶲perform selecting policy􏶱
+    lane_indexes = 􏵲select lanes that exceed accumulated distance􏵳route,distance_m,range);
     
-    􏶲perform marking policy􏶱
-    auto after_loop = 􏵲mark first lane in unique submap after entering loop􏵳route);
+    􏶲perform selecting policy􏶱
+    auto after_loop = 􏵲select first lane in unique submap after entering loop􏵳route);
     
-    􏶲perform marking policy􏶱
-    auto first = 􏵲mark first lane􏵳route,range);
+    􏶲perform selecting policy􏶱
+    auto first = 􏵲select first lane􏵳route,range);
     
     􏶲combine policy results􏶱
     lane_indexes.insert(after_loop.begin(),after_loop.end());
     lane_indexes.insert(first.begin(),first.end());
     
     􏶲CONSIDER(thickey): we may want to do additional filtering􏶱
-    􏶲probably convert this to a distance aware loop cutting with an offset from the explicitly marked first lane􏶱
+    􏶲probably convert this to a distance aware loop cutting with an offset from the explicitly selected first lane􏶱
     􏶲currently using a strategy that has little to no effect on PBM􏶱
 􏶳
 􏴯empty􏴰
-􏲝We should be able to mark empty routes without issue􏲞
+􏲝We should be able to select empty routes without issue􏲞
 􏲛Implementation is no longer handling empty routes correctly􏲜
 􏴭
     //ARRANGE
@@ -1422,24 +1422,24 @@ The set returned will never have more than 1 element􏶡
     
     //ACT
     auto any_valid_distance_m = 1.0;
-    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    auto indexes = select_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
 􏴯a1 b1 a1 should b1􏴰
 􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
-􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
+􏲛Algorithm is no longer selecting the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
    auto r = create_route_from_submap_ids({1,2,1});
     
     //ACT
-    // We set a very large distance, because we aren't interested in any lanes being marked by the distance requirement.
-    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be marked
-    // This allows us to test the SLA submap loop marking logic without influence from the distance
+    // We set a very large distance, because we aren't interested in any lanes being selected by the distance requirement.
+    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be selected
+    // This allows us to test the SLA submap loop selecting logic without influence from the distance
     auto any_valid_distance_m = 10000.0;
-    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    auto indexes = select_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.find(2) != indexes.end());
@@ -1447,68 +1447,68 @@ The set returned will never have more than 1 element􏶡
 
 􏴯buffer a1 b1 a1 should b1􏴰
 􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
-􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
+􏲛Algorithm is no longer selecting the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({0,0,0,1,2,1});
     
     //ACT
-    // We set a very large distance, because we aren't interested in any lanes being marked by the distance requirement.
-    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be marked
-    // This allows us to test the SLA submap loop marking logic without influence from the distance
+    // We set a very large distance, because we aren't interested in any lanes being selected by the distance requirement.
+    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be selected
+    // This allows us to test the SLA submap loop selecting logic without influence from the distance
     auto any_valid_distance_m = 10000.0;
-    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    auto indexes = select_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 􏴯a1 b1 a1 buffer should b1􏴰
 􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
-􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
+􏲛Algorithm is no longer selecting the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,1,0,0,0});
     
     //ACT
-    // We set a very large distance, because we aren't interested in any lanes being marked by the distance requirement.
-    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be marked
-    // This allows us to test the SLA submap loop marking logic without influence from the distance
+    // We set a very large distance, because we aren't interested in any lanes being selected by the distance requirement.
+    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be selected
+    // This allows us to test the SLA submap loop selecting logic without influence from the distance
     auto any_valid_distance_m = 10000.0;
-    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    auto indexes = select_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.find(2) != indexes.end());
 􏴮
 􏴯buffer a1 b1 a1 buffer should b1􏴰
 􏲝In the case of an ABA submap loop, we should regenerate in the 2nd A submap􏲞
-􏲛Algorithm is no longer marking the 2nd A lane in an ABA situation􏲜
+􏲛Algorithm is no longer selecting the 2nd A lane in an ABA situation􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({0,0,0,1,2,1,0,0,0});
     
     //ACT
-    // We set a very large distance, because we aren't interested in any lanes being marked by the distance requirement.
-    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be marked
-    // This allows us to test the SLA submap loop marking logic without influence from the distance
+    // We set a very large distance, because we aren't interested in any lanes being selected by the distance requirement.
+    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be selected
+    // This allows us to test the SLA submap loop selecting logic without influence from the distance
     auto any_valid_distance_m = 10000.0;
-    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    auto indexes = select_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.find(5) != indexes.end());
 􏴮
 􏴯buffer a1 b1 b2 b3 c1 c2 a1 buffer should c1􏴰
 􏲝In the case of an ABBBCCA submap loop, we should regenerate on the first C􏲞
-􏲛Algorithm is no longer marking the correct lane􏲜
+􏲛Algorithm is no longer selecting the correct lane􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({0,0,0,1,1,1,1,2,2,0,0,0});
     
     //ACT
-    // We set a very large distance, because we aren't interested in any lanes being marked by the distance requirement.
-    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be marked
-    // This allows us to test the SLA submap loop marking logic without influence from the distance
+    // We set a very large distance, because we aren't interested in any lanes being selected by the distance requirement.
+    // If the distance is larger than all of the lane distances accumulated, the distance provided will not cause any additional lanes to be selected
+    // This allows us to test the SLA submap loop selecting logic without influence from the distance
     auto any_valid_distance_m = 10000.0;
-    auto indexes = mark_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
+    auto indexes = select_lanes_for_local_map_sla_requirement(r,any_valid_distance_m);
     
     //ASSERT
     EXPECT_TRUE(indexes.find(7) != indexes.end());
@@ -1524,7 +1524,7 @@ The set returned will never have more than 1 element􏶡
     
     //ACT
     for (const auto & r: routes){
-        auto indexes = mark_lanes_for_local_map_sla_requirement(r,distance_m);
+        auto indexes = select_lanes_for_local_map_sla_requirement(r,distance_m);
         EXPECT_TRUE(true);
     }
 􏴮
@@ -1532,7 +1532,7 @@ The set returned will never have more than 1 element􏶡
 􏷘+􏷗􏷒create event route􏷑
 􏴅Annotated Route􏴆
 􏷐Take a translated route, and convert it into an event annotated route􏷏
-􏶠The event annotated route will not have any regeneration events marked by default􏶡
+􏶠The event annotated route will not have any regeneration events selected by default􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to create an event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏶺a route with regeneration information attached􏶹
 􏶴
@@ -1628,7 +1628,7 @@ The set returned will never have more than 1 element􏶡
 􏷘+􏷗􏷒create event route􏷑
 􏴅Annotated Route􏴆
 􏷐Take the route creation input, and convert it into an event annotated route􏷏
-􏶠The event annotated route may have regeneration events marked based on the route creation's annotation strategy􏶡
+􏶠The event annotated route may have regeneration events selected based on the route creation's annotation strategy􏶡
 􏶜􏶝􏷆route_creation_input􏷅􏲥local_map/libs/regeneration/local_map_regeneration_preset_routes􏲦􏷄input􏷃􏷀the input to create an event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_route_from_test_input(input))􏲆􏶺a route with regeneration information attached􏶹
 􏶴􏶳
@@ -1659,7 +1659,7 @@ The set returned will never have more than 1 element􏶡
 􏷘+􏷗􏷒create random event route􏷑
 􏴅Annotated Route􏴆
 􏷐Take the random route creation input, and convert it into an event annotated route􏷏
-􏶠The event annotated route may have regeneration events marked based on the route creation's annotation strategy􏶡
+􏶠The event annotated route may have regeneration events selected based on the route creation's annotation strategy􏶡
 􏶜􏶝􏷆random_route_creation_input􏷅􏲥local_map/libs/regeneration/local_map_regeneration_preset_routes􏲦􏷄input􏷃􏷀the input to create a random event route from􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(create_random_route(input))􏲆􏶺a random route with random regeneration information attached􏶹
 􏶴􏶳
@@ -1850,7 +1850,7 @@ route_info.current_lane_index = x;
 This means we we will create an entirely new event route every cycle based on other information known in the SLMT􏶡
 􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to create an event route from􏶿
 􏶜􏶝􏷆slmt_route_information􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route info􏷃􏷀information about the AV's current route provided by the SLMT􏶿
-􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker when using the SLMT marking algorithm􏶿
+􏶜􏶝􏷆d􏷅􏷄distance􏷃􏵘meters􏵙􏷀a distance offset along the lane to place the maker when using the SLMT selecting algorithm􏶿
 􏶚m􏶛􏶾event_annotated_route􏶽􏶼event route􏶻􏲅create_event_route(route)􏲆􏶺a route with SLMT event information attached􏶹
 􏶴
 
@@ -1859,13 +1859,13 @@ This means we we will create an entirely new event route every cycle based on ot
     􏵲set event window from slmt state􏵳event_route, route_info);
     
     // Mark lanes for regeneration.
-    // Using the chosen lane marking algorithm, mark lanes to determine when we should regenerate.
+    // Using the chosen lane selecting algorithm, select lanes to determine when we should regenerate.
     // Start the algorithm at the "current index" of the route.
     // This is our true route beginning along a merged route.
     algorithm_window window;
     window.start = route_info.merge_point_index;
-    auto lane_markings = 􏵲mark lanes for local map sla requirement􏵳route, distance_m,window);
-    􏵲set regeneration events􏵳event_route, lane_markings, "SLA");
+    auto lane_selectings = 􏵲select lanes for local map sla requirement􏵳route, distance_m,window);
+    􏵲set regeneration events􏵳event_route, lane_selectings, "SLA");
 􏶳
 􏴯simulate slmt cycle changes on route􏴰
 􏲝Ensure that we are progressing through the route when we create an annotated route cycle over cycle􏲞
@@ -1953,16 +1953,16 @@ This means we we will create an entirely new event route every cycle based on ot
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
-􏴯mark some lanes􏴰
-􏲝Check that we can mark lanes and see that they are marked􏲞
-􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴯select some lanes􏴰
+􏲝Check that we can select lanes and see that they are selected􏲞
+􏲛We are no longer able to select lanes (or observe them being selected)􏲜
 􏴭
     //ARRANGE
     auto r = create_event_route(create_route_from_submap_ids({1,2,3,4,5}));
-    std::set<size_t> marks{2,3};
+    std::set<size_t> selects{2,3};
     
     //ACT
-    set_regeneration_events(r,marks,"test");
+    set_regeneration_events(r,selects,"test");
     
     //ASSERT
     EXPECT_EQ(total_event_markings(r),2);
@@ -1985,17 +1985,17 @@ This means we we will create an entirely new event route every cycle based on ot
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
-􏴯mark some lanes 2􏴰
-􏲝Check that we can mark lanes and see that they are marked􏲞
-􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴯select some lanes 2􏴰
+􏲝Check that we can select lanes and see that they are selected􏲞
+􏲛We are no longer able to select lanes (or observe them being selected)􏲜
 􏴭
     //ARRANGE
     auto r = create_event_route(create_route_from_submap_ids({1,2,3,4,5}));
-    std::set<size_t> marks{2,3};
+    std::set<size_t> selects{2,3};
     int placement_pct = 33;
     
     //ACT
-    set_regeneration_events(r,marks,"test",placement_pct);
+    set_regeneration_events(r,selects,"test",placement_pct);
     
     //ASSERT
     EXPECT_EQ(total_event_markings(r),2);
@@ -2025,17 +2025,17 @@ If the distance is longer than the lane, the event will be placed at the end of 
         route.event_lane_sequence[lane_index].event_sequence.emplace_back(e);
     }
 􏶳
-􏴯mark some lanes 3􏴰
-􏲝Check that we can mark lanes and see that they are marked􏲞
-􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴯select some lanes 3􏴰
+􏲝Check that we can select lanes and see that they are selected􏲞
+􏲛We are no longer able to select lanes (or observe them being selected)􏲜
 􏴭
     //ARRANGE
     auto r = create_event_route(create_route_from_submap_ids({1,2,3,4,5}));
-    std::set<size_t> marks{2,3};
+    std::set<size_t> selects{2,3};
     double distance_m = 0.0;
     
     //ACT
-    set_regeneration_events(r,marks,"test",distance_m);
+    set_regeneration_events(r,selects,"test",distance_m);
     
     //ASSERT
     EXPECT_EQ(total_event_markings(r),2);
@@ -2063,9 +2063,9 @@ Can span multiple lanes􏶡
     // store region
     route.event_region_sequence.emplace_back(region);
 􏶳
-􏴯mark some lanes 4􏴰
-􏲝Check that we can mark lanes and see that they are marked􏲞
-􏲛We are no longer able to mark lanes (or observe them being marked)􏲜
+􏴯select some lanes 4􏴰
+􏲝Check that we can select lanes and see that they are selected􏲞
+􏲛We are no longer able to select lanes (or observe them being selected)􏲜
 􏴭
     //ARRANGE
     auto r = create_event_route(create_route_from_lane_distances({5,5,5,5,5}));
@@ -2197,7 +2197,7 @@ we moved backwards along our route? That debatably shouldn't happen
 does this happen in autonomy?
 in past implementations, PBM log d617e5bc-3487-48a2-efa4-992d21329e77 shows an interesting case where we are given a new route with a stale "progress"
 this results in an interval like [?,6)
-(The question mark is an indication that we are on a "new route", (since we've never been on that route previously))
+(The question select is an indication that we are on a "new route", (since we've never been on that route previously))
 the next time we update our lane progress we determine we are actually on the first lane
 that transitions the window to [6,0) which is logically inconsistent
 our next lane is likely to remain 0, resulting in (0,0], which causes us to skip any events on 0 (because of the open interval)
@@ -2584,8 +2584,8 @@ we'll consider unknown current locations on the route as the end of the route�
 􏷘+􏷗􏷒has route hysteresis􏷑
 􏴅Invariant Checks􏴆
 􏷐Check whether the SLA event annotated route for SLMT has route hysteresis􏷏
-􏶠Assuming the route was marked using the SLA algorithm, we can determine route hysteresis
-This is because we mark the first logical lane of the route based on our merge point (the current lane index of the route)􏶡
+􏶠Assuming the route was selected using the SLA algorithm, we can determine route hysteresis
+This is because we select the first logical lane of the route based on our merge point (the current lane index of the route)􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the SLA annotated route from SLMT to evaluate for hysteresis􏶿
 􏶚m􏶛􏶾bool􏶽􏶼has route hysteresis􏶻􏲅false􏲆􏶺whether or not the route has hysteresis􏶹
 􏶴
@@ -2753,8 +2753,8 @@ This is because we mark the first logical lane of the route based on our merge p
 􏲛it is not possible to create an event route with an invalid merge point􏲜
 􏴭
     // the merge point is currently discovered by finding
-    // the first lane along the route that is marked.
-    // Since we assume that the SLA algorithm will always mark the first
+    // the first lane along the route that is selected.
+    // Since we assume that the SLA algorithm will always select the first
     // lane, we find it by scanning the lanes.
     // this means the merge point is either a valid lane, or it doesn't exist.
     // Therefore, we can't create a scenario based on current implementation where this invariant would fail
@@ -2834,8 +2834,8 @@ Assumes you are using an event route created for the SLMT􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to find the merge point on􏶿
 􏶚m?􏶛􏶾size􏶽􏶼merge point􏶻􏲅􏲆􏶺the first lane after hysteresis representing the merge point􏶹
 􏶴
-    //since we always mark the first logical lane with SLMT SLA algorithm (i.e. the merge point),
-    //we can assume that the first marked lane is the merge point
+    //since we always select the first logical lane with SLMT SLA algorithm (i.e. the merge point),
+    //we can assume that the first selected lane is the merge point
     //if we need to store the merge point explicitly later, we can do that
     //for now, we derive it as followed
     return first_lane_index_with_an_event(route);
@@ -2946,7 +2946,7 @@ Expiring the route sets a processing view that will allow process to the end des
 
 􏷘+􏷗􏷒invalidate route􏷑
 􏴅Annotated Route􏴆
-􏷐mark the route as invalidated􏷏
+􏷐select the route as invalidated􏷏
 􏶠This invalidates the processing window, interpreting the route as invalid
 There may be reasons outside the scope of the annotating a route API, that you may want to invalidate an annotated route
 Calling this function will ensure that interpret_route_status returns route_status_invalid􏶡
@@ -3234,7 +3234,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3250,7 +3250,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3266,7 +3266,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3283,7 +3283,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏷐get back the lane indexes of the current lanes under evaluation that have annotations􏷏
 􏶠Uses the event view to iterate over a window of lanes and return the ones that have annotations􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane indexes from􏶿
-􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route's event view􏶹
+􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route's event view􏶹
 􏶴
     􏶲get index interval to check for events on􏶱
     if (!􏵲is invalid route􏵳route)){
@@ -3303,7 +3303,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3320,7 +3320,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3337,7 +3337,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3361,7 +3361,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏷐get back the lane guids of the current lanes under evaluation that have annotations􏷏
 􏶠Uses the event view to iterate over a window of lanes and return the ones that have annotations􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane guids from􏶿
-􏶚m􏶛􏶾ordered_guids􏶽􏶼lane guids􏶻􏶺marked lanes along the route's event view􏶹
+􏶚m􏶛􏶾ordered_guids􏶽􏶼lane guids􏶻􏶺selected lanes along the route's event view􏶹
 􏶴
     auto indexes = 􏵲current lanes with annotations􏵳route);
     for (auto index: indexes){
@@ -3374,7 +3374,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3391,7 +3391,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_lane_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3408,7 +3408,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴭
     //ARRANGE
     auto r = create_route_from_lane_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3432,7 +3432,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏷐get back any of the lane indexes that have annotations􏷏
 􏶠iterates over lanes and return the ones that have annotations􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane indexes from􏶿
-􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lanes along the route􏶹
 􏶴
     for (size_t i = 0; i < 􏵲number of lanes􏵳route); ++i){
         if (!route.event_lane_sequence[i].event_sequence.empty()){
@@ -3440,13 +3440,13 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
-􏴯marking all lanes gives back all lanes􏴰
-􏲝marking all of the lanes gives back all of the lanes􏲞
+􏴯selecting all lanes gives back all lanes􏴰
+􏲝selecting all of the lanes gives back all of the lanes􏲞
 􏲛Some of the lanes are not being returned􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3468,7 +3468,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏷐get back any of the lane guids that have annotations􏷏
 􏶠iterates over lanes and return the ones that have annotations􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to get annotated lane guids from􏶿
-􏶚m􏶛􏶾ordered_guids􏶽􏶼lane guids􏶻􏶺marked lanes along the route􏶹
+􏶚m􏶛􏶾ordered_guids􏶽􏶼lane guids􏶻􏶺selected lanes along the route􏶹
 􏶴
     for (size_t i = 0; i < 􏵲number of lanes􏵳route); ++i){
         if (!route.event_lane_sequence[i].event_sequence.empty()){
@@ -3476,13 +3476,13 @@ Calling this function will ensure that interpret_route_status returns route_stat
         }
     }
 􏶳
-􏴯marking all lanes gives back all lanes􏴰
-􏲝marking all of the lanes gives back all of the lanes􏲞
+􏴯selecting all lanes gives back all lanes􏴰
+􏲝selecting all of the lanes gives back all of the lanes􏲞
 􏲛Some of the lanes are not being returned􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_lane_ids({1,2,3,4,5,6});
-    auto indexes = mark_all_lanes(r);
+    auto indexes = select_all_lanes(r);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3502,10 +3502,10 @@ Calling this function will ensure that interpret_route_status returns route_stat
 
 􏷘+􏷗􏷒markers exist on current lane􏷑
 􏴅Annotated Route􏴆
-􏷐determines whether the current lane has markers􏷏
+􏷐determines whether the current lane has selecters􏷏
 􏶠This does not take into account the previous lane that was analyzed􏶡
-􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for markers􏶿
-􏶚m􏶛􏶾bool􏶽􏶼has markers􏶻􏲅false􏲆􏶺whether there are markers on the current lane􏶹
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze for selecters􏶿
+􏶚m􏶛􏶾bool􏶽􏶼has selecters􏶻􏲅false􏲆􏶺whether there are selecters on the current lane􏶹
 􏶴
     if (*route.evaluation_range.current < route.event_lane_sequence.size())
     {
@@ -3516,12 +3516,12 @@ Calling this function will ensure that interpret_route_status returns route_stat
     }
 􏶳
 􏴯lane without annotation􏴰
-􏲝make our current lane a lane without an annotation; no markers􏲞
-􏲛We are claiming there is a marker on the lane when there should be􏲜
+􏲝make our current lane a lane without an annotation; no selecters􏲞
+􏲛We are claiming there is a selecter on the lane when there should be􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_specific_lane_index(r,2);
+    auto indexes = select_specific_lane_index(r,2);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3533,12 +3533,12 @@ Calling this function will ensure that interpret_route_status returns route_stat
     EXPECT_FALSE(exists);
 􏴮
 􏴯lane with annotation􏴰
-􏲝make our current lane a lane with an annotation; has markers􏲞
-􏲛We are claiming there is no marker on the lane when there should be􏲜
+􏲝make our current lane a lane with an annotation; has selecters􏲞
+􏲛We are claiming there is no selecter on the lane when there should be􏲜
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_specific_lane_index(r,2);
+    auto indexes = select_specific_lane_index(r,2);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test");
     
@@ -3652,9 +3652,9 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏴅Annotated Route􏴆
 􏷐the total number of events that exist along the route􏷏
 􏶠calculates the total number of events across lanes over the route
-does not count "event regions"; only "event markers"􏶡
-􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to calculate event markings over􏶿
-􏶚m􏶛􏶾i􏶽􏶼total_event_markings􏶻􏲅0􏲆􏶺the total number of event markings across the lanes over the route􏶹
+does not count "event regions"; only "event selecters"􏶡
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to calculate event selectings over􏶿
+􏶚m􏶛􏶾i􏶽􏶼total_event_markings􏶻􏲅0􏲆􏶺the total number of event selectings across the lanes over the route􏶹
 􏶴
     for (const auto & lane: route.event_lane_sequence){
         total_event_markings += lane.event_sequence.size();
@@ -3680,7 +3680,7 @@ does not count "event regions"; only "event markers"􏶡
 􏴭
     //ARRANGE
     auto r = create_route_from_submap_ids({1,2,3,4,5,6});
-    auto indexes = mark_specific_lane_index(r,2);
+    auto indexes = select_specific_lane_index(r,2);
     auto event_route = create_event_route(r);
     set_regeneration_events(event_route,indexes,"test 1");
     set_regeneration_events(event_route,indexes,"test 2");
@@ -3697,7 +3697,7 @@ does not count "event regions"; only "event markers"􏶡
 􏴅Annotated Route􏴆
 􏷐the total number of event regions that exist along the route􏷏
 􏶠calculates the total number of event regions across lanes of the route
-does not count "event markers"; only "event regions"􏶡
+does not count "event selecters"; only "event regions"􏶡
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to calculate event regions over􏶿
 􏶚m􏶛􏶾i􏶽􏶼total_event_regions􏶻􏲅route.event_region_sequence.size()􏲆􏶺the total number of event regions across the lanes of the route􏶹
 􏶴􏶳
@@ -4384,7 +4384,7 @@ format: (#,#]􏶡
     event_lane_indexes += "]";
 􏶳
 􏴯empty indexes when given empty route􏴰
-􏲝We should be able to get the string representation of marked lanes when no lanes are marked􏲞
+􏲝We should be able to get the string representation of selected lanes when no lanes are selected􏲞
 􏲛A runtime crash should not be possible. The string we get back should be and empty list􏲜
 􏴭
     //ARRANGE
@@ -4410,7 +4410,7 @@ format: (#,#]􏶡
     }
 􏶳
 􏴯empty string when given empty route􏴰
-􏲝We should be able to get an empty string representation of marked lane guids, when no lanes are marked􏲞
+􏲝We should be able to get an empty string representation of selected lane guids, when no lanes are selected􏲞
 􏲛A runtime crash should not be possible. The string we get back should be empty􏲜
 􏴭
     //ARRANGE
