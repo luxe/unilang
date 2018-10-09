@@ -1,0 +1,46 @@
+#! /bin/bash
+
+#
+# Uber, Inc. (c) 2018
+#
+
+# Exit on error to stay stable
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# What version are we installing?
+BAZEL_URL=https://github.com/bazelbuild/bazel/releases/download/0.15.2/bazel-0.15.2-installer-linux-x86_64.sh
+BAZEL_SHA256SUM=13eae0f09565cf17fc1c9ce1053b9eac14c11e726a2215a79ebaf5bdbf435241
+
+# Where are we install things?
+BAZEL_DIR="$SCRIPT_DIR/build"
+BAZEL_BIN_DIR="$BAZEL_DIR/bin"
+BAZEL_EXECUTABLE="$BAZEL_BIN_DIR/bazel"
+BAZEL_SHA256SUM_FILENAME="$BAZEL_EXECUTABLE.sha256sum"
+
+# If we have SHA256SUM to compare to read it
+if [ -f $BAZEL_SHA256SUM_FILENAME ]; then
+    CURRENT_BAZEL_MD5=$(sha256sum "$BAZEL_SHA256SUM_FILENAME" | awk '{ print $1; }')
+fi
+
+# Install if we don't have the sum or they don't match
+if [ ! -f $BAZEL_SHA256SUM_FILENAME ] || [[ $CURRENT_BAZEL_MD5 == $BAZEL_SHA256SUM_FILENAME ]]; then
+
+    BAZEL_PATH="$BAZEL_BIN_DIR/bazel-latest-installer"
+    BAZEL_DOWNLOAD_PATH="$BAZEL_BIN_DIR/in_progress_download"
+
+    # Download
+    mkdir -p "$BAZEL_BIN_DIR"
+
+    wget $BAZEL_URL -O "$BAZEL_DOWNLOAD_PATH"
+    mv "$BAZEL_DOWNLOAD_PATH" "$BAZEL_PATH"
+    chmod +x "$BAZEL_PATH"
+
+    # Install
+    $BAZEL_PATH --prefix="$BAZEL_DIR"
+
+    # Record the SHA256SUM
+    sha256sum "$BAZEL_EXECUTABLE" | awk '{ print $1; }' >"$BAZEL_SHA256SUM_FILENAME"
+fi
+exec "$BAZEL_EXECUTABLE" "$@"
