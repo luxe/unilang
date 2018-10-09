@@ -1,5 +1,5 @@
 Summary:
-The directories here mirror the Desktop directories of non-unilang codebases that exist on either on or off the same machines.  
+The directories here mirror the Desktop directories of non-unilang codebases that exist either on or off the same machine.  
 We write our unilang code in these directories and they are transcompiled and transferred onto the repo (possibly over the network).  
 We do this because we want to keep the UniLang files in our codebase, and avoid generated artifacts then deal with gitignoring them somehow.
 
