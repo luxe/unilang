@@ -10,7 +10,7 @@ class
 ❪"code/transcompilers/unilang/options/manipulation/struct_manipulation_settings"❫
 ❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
 ❪"code/transcompilers/unilang/options/comment/comment_grammar_settings"❫
-❪"code/transcompilers/unilang/options/manipulation/reflow/comment_reflow_settings"❫
+❪"code/transcompilers/unilang/options/manipulation/reflow/knuth_plass_reflow_settings"❫
 ❪"code/transcompilers/unilang/parser/token_value"❫
 ❪"code/transcompilers/unilang/structure-adjuster/knuth_plass_entry"❫
 ⚯
@@ -21,8 +21,18 @@ class
 ⚞⚟
 
 
-◀public: static▶ std::string ☀Apply(std::vector<std::string> const& sentences, Comment_Grammar_Settings const& grammar, Comment_Reflow_Settings const& reflow)❰
-    std::string result;
+◀public: static▶ std::string ☀Apply(std::vector<std::string> const& sentences, Comment_Grammar_Settings const& grammar, Knuth_Plass_Reflow_Settings const& reflow)❰
+    
+    std::string sentences_full;
+    for (auto const& it: sentences){
+        sentences_full += it;
+        sentences_full += " ";
+    }
+    
+    auto break_entries = Break(sentences_full,reflow.ideal_width,reflow.max_width);
+    PlassBreak(break_entries,0,reflow.ideal_width,reflow.max_width,0);
+    
+    std::string result = To_String(break_entries,sentences_full,reflow.ideal_width,reflow.max_width);
     return result;
 ❱
 ◀private: static▶ void ☀PlassBreak(std::vector<Knuth_Plass_Entry>& lines, int idx, int idealwidth, int maxwidth, int indent)
@@ -84,8 +94,9 @@ class
     lines.rbegin()->next        = lines.size() + 1;
 ❱
 
-◀private: static▶ void ☀Print(std::vector<Knuth_Plass_Entry> const& lines, std::string const& text, int idealwidth, int maxwidth)
+◀private: static▶ std::string ☀To_String(std::vector<Knuth_Plass_Entry> const& lines, std::string const& text, int idealwidth, int maxwidth)
 ❰
+    std::string result;
     int idx     = 0;
     while (idx < lines.size())
     {
@@ -101,9 +112,11 @@ class
             line    += std::string(maxwidth - line.size(), ' ');
         line[idealwidth]    = '+';
         line                += '|';
-        fprintf(stdout, "%s\n", line.c_str());
+        result += line.c_str();
+        result += "\n";
         idx     = lines[idx].next;
     }
+    return result;
 ❱
 
 ◀private: static▶ std::vector<Knuth_Plass_Entry> ☀Break(std::string const& text, int idealwidth, int maxwidth)
