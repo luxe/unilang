@@ -69,7 +69,18 @@ class
     //print the statics at the top of the source
 
 
-    Print_Anon_Namespace_Start(out,options);
+    bool non_public_methods_exist = false;
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            non_public_methods_exist = true;
+            break;
+        }
+    }
+
+    if (non_public_methods_exist){
+        Print_Anon_Namespace_Start(out,options);
+    }
+    
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
@@ -78,7 +89,10 @@ class
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
         }
     }
-    Print_Anon_Namespace_End(out,options);
+    
+    if (non_public_methods_exist){
+        Print_Anon_Namespace_End(out,options);
+    }
     
     //print the public implementations
     for (auto it: methods){
@@ -90,7 +104,9 @@ class
     }
     
     //print the private/static implementations
-    Print_Anon_Namespace_Start(out,options);
+    if (non_public_methods_exist){
+        Print_Anon_Namespace_Start(out,options);
+    }
     for (auto it: methods){
         if (it.class_access != Class_Access::PUBLIC){
             it.storage = Storage_Specifier::STATIC;
@@ -99,7 +115,9 @@ class
             out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
         }
     }
-    Print_Anon_Namespace_End(out,options);
+    if (non_public_methods_exist){
+            Print_Anon_Namespace_End(out,options);
+        }
 ❱
 
 ◀public: static▶ void ☀Print_Anon_Namespace_Start(std::wofstream & out, C_Export_Settings const& options)❰
