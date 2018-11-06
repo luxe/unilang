@@ -2132,6 +2132,13 @@ If you need to create the route in a particular state however, you can explicitl
     EXPECT_EQ((*event_route.evaluation_range.current),2);
 􏴮
 
+
+
+
+
+
+
+
 􏷘+􏷗􏷒check invariants􏷑
 􏴅Invariant Checks􏴆
 􏷐check all of the invariants that we expect to hold about the event route during autonomy within the SLMT􏷏
@@ -2149,6 +2156,7 @@ these checks can help detect things based on the status of the event route that 
     checked_invariants.exists_on_or_after_merge_point = !􏵲exists before merge point􏵳route);
     checked_invariants.merge_point_in_bounds = 􏵲merge point in bounds􏵳route);
     checked_invariants.route_has_lanes       = 􏵲has lanes􏵳route);
+    checked_invariants.non_single_lane = !􏵲is single lane route􏵳route);
     checked_invariants.all_lanes_have_size = 􏵲lanes have size􏵳route);
 􏶳
 􏴯slmt example where every invariant holds􏴰
@@ -2177,13 +2185,15 @@ these checks can help detect things based on the status of the event route that 
     EXPECT_TRUE(invariants.exists_on_or_after_merge_point);
     EXPECT_TRUE(invariants.merge_point_in_bounds);
     EXPECT_TRUE(invariants.route_has_lanes);
+    EXPECT_TRUE(invariants.non_single_lane);
     EXPECT_TRUE(invariants.all_lanes_have_size);
 􏴮
 
 
 routes that are too long
 lanes that are too long
-"A one lane route is possible, but extremely unlikely outside of a user error or navigator rerecord bug.  the rerecord we drop them." -- Bob Dean
+
+
 
 
 􏷘+􏷗􏷒is evaluation range consistent􏷑
@@ -2828,6 +2838,17 @@ This is because we select the first logical lane of the route based on our merge
     //ASSERT
     EXPECT_FALSE(valid_sizes);
 􏴮
+
+
+
+
+
+
+
+
+
+
+
 
 􏷘-􏷗􏷒merge point􏷑
 􏴅Detail􏴆
@@ -4081,7 +4102,8 @@ if the route is empty, no distance is returned􏶡
     auto results = broken_invariants_as_string(r);
     
     //ASSERT
-    EXPECT_EQ(results,"You don't have any route hysteresis.\n");
+    using ::testing::HasSubstr;
+    EXPECT_THAT(results,HasSubstr("You don't have any route hysteresis."));
 􏴮
 􏴯an expected creation of SLMT event route􏴰
 􏲝We create an SLA annotated event route for SLMT and we expect it to not have any invariants broken􏲞
@@ -4104,7 +4126,28 @@ if the route is empty, no distance is returned􏶡
     //ASSERT
     EXPECT_EQ(results,"");
 􏴮
-
+􏴯a single lane route is detected and reported􏴰
+􏲝We create a single lane route and expect to see a broken invariant about it􏲞
+􏲛We did not find the expected broken invariant􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    slmt_route_information route_info;
+    route r = create_route_from_submap_ids({123});
+    route_info.merge_point_index = 0;
+    route_info.route_changed = true;
+    route_info.previous_lane_index = 0;
+    route_info.current_lane_index = 0;
+    int distance_m = 100;
+    auto event_route = create_slmt_event_route(r, route_info,distance_m);
+    
+    //ACT
+    auto results = broken_invariants_as_string(event_route);
+    
+    //ASSERT
+    using ::testing::HasSubstr;
+    EXPECT_THAT(results,HasSubstr("The route has only 1 lane."));
+􏴮
 
 􏷘-􏷗􏷒failed invariants as messages􏷑
 􏴅Detail􏴆
@@ -4140,6 +4183,13 @@ if the route is empty, no distance is returned􏶡
     }
     if (!checked_invariants.all_lanes_have_size){
         messages.emplace_back("Some of the route lanes are of distance 0.");
+    }
+    
+    // "A one lane route is possible, but extremely unlikely outside
+    // of a user error or navigator rerecord bug.
+    // In rerecord we drop them." -- Bob Dean (@rdean)
+    if (!checked_invariants.non_single_lane){
+        messages.emplace_back("The route has only 1 lane.");
     }
 􏶳
 
@@ -4565,6 +4615,14 @@ the index is fitted for bounds validity􏶡
 􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏲅!route.lane_sequence.empty()􏲆􏶺whether the route has lanes􏶹
 􏶴􏶳
 
+􏷘-􏷗􏷒is single lane route􏷑
+􏷐checks whether the route is a single lane route􏷏
+􏶠True if the route has a single lane; false otherwise􏶡
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆route􏷅􏲧local_map/static/route/local_map_route􏲨􏲥local_map/static/route/local_map_route_lib􏲦􏷄route􏷃􏷀the route to analyze lanes on􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is single lane route􏶻􏲅route.lane_sequence.size() == 1􏲆􏶺whether the route is a single lane􏶹
+􏶴􏶳
+
 􏷘-􏷗􏷒lane length􏷑
 􏷐get the length of a particular indexed lane􏷏
 􏴅Shared Interface􏴆
@@ -4589,6 +4647,14 @@ the index is fitted for bounds validity􏶡
 􏴅Shared Interface􏴆
 􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze lane lengths􏶿
 􏶚m􏶛􏶾bool􏶽􏶼has lanes􏶻􏲅!route.event_lane_sequence.empty()􏲆􏶺whether the route has lanes􏶹
+􏶴􏶳
+
+􏷘-􏷗􏷒is single lane route􏷑
+􏷐checks whether the route is a single lane route􏷏
+􏶠True if the route has a single lane; false otherwise􏶡
+􏴅Shared Interface􏴆
+􏶜􏶝􏷆event_annotated_route􏷅􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷄route􏷃􏷀the route to analyze lanes on􏶿
+􏶚m􏶛􏶾bool􏶽􏶼is single lane route􏶻􏲅route.event_lane_sequence.size() == 1􏲆􏶺whether the route is a single lane􏶹
 􏶴􏶳
 
 􏷘-􏷗􏷒lane length􏷑
