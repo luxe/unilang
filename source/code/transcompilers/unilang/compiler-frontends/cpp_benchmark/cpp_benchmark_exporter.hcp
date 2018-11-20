@@ -105,8 +105,8 @@ class
             
             result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.before_case);
             
-            result += Add_Test_Comments(structure,it,j,settings);
-            //result += Get_Test_Signature(j,settings);
+            result += Add_Comments(structure,it,j,settings);
+            result += Get_Signature(structure,it,j,settings);
             //result += Get_Test_Function_Body(j);
             
             result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.after_case);
@@ -117,18 +117,38 @@ class
     return result;
 ❱
 
-◀private: static▶ std::string ☀Add_Test_Comments(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+◀private: static▶ std::string ☀Get_Signature(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+    
+    //extract all the data into strings
+    std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.benchmark_case.name_casing,as_string(benchmark.name.value));
+    std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.benchmark_case.tag_casing,as_string(benchmark.tag.value));
+    std::string prefix = settings.benchmark_function_prefix;
+    
+    //build signature
+    std::string str;
+    str += prefix + "_" + Get_Function_Name(structure,method,settings) + "(";
+    str += test_name;
+    str += ")";
+    
+    return str;
+❱
+
+◀private: static▶ std::string ☀Add_Comments(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
     std::string comment;
     
     //possibly attach comment onto test
     if (settings.add_function_under_benchmark){
         comment += "// " + settings.function_under_benchmark_title + ": ";
-        auto settings2 = dont_do_this(settings);
-        comment += Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
+        comment += Get_Function_Name(structure,method,settings);
         comment += "\n";
     }
     
     return comment;
+❱
+
+◀private: static▶ std::string ☀Get_Function_Name(Structure const& structure, Method_Item const& method, Cpp_Benchmark_Export_Settings const& settings)❰
+        auto settings2 = dont_do_this(settings);
+        return Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
 ❱
 
 ◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
