@@ -25,7 +25,42 @@ class
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
     std::string str;
+    str += Notes_About_Benchmark_Coverage(structure,settings);
+    str += Total_Number_Of_Tests_Statment(structure,settings);
     
+    return str;
+❱
+
+◀private: static▶ std::string ☀Notes_About_Benchmark_Coverage(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string str;
     
+    std::string link_to_info = "https://code.int.uberatc.com/w/best_practices/benchmarks/";
+    
+    str += "These benchmarks provide performance information on individual APIs.\n";
+    str += "We track the percentage of public APIs that have benchmarks below.\n";
+    str += "For more information on how we evaluate benchmarks see the wiki:\n";
+    str += link_to_info;
+    str += "\n";
+    str += "\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Total_Number_Of_Benchmarks_Statment(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+    
+    //count number of benchmarks
+    int benchmark_count = 0;
+    for (auto method: structure.methods.methods){
+        if (method.class_access == Class_Access::PUBLIC){
+            benchmark_count += method.benchmarks.benchmarks.size();
+        }
+    }
+    
+    //turn count into string
+    auto inflection_settings = Inflection_Settings_Getter::Get();
+    std::string str;
+    str += std::to_string(benchmark_count);
+    str += " ";
+    str += Inflection_Converter::Inflect_Based_On_Count(settings.name_for_test_case,inflection_settings,benchmark_count);
+    str += "\n";
     return str;
 ❱
