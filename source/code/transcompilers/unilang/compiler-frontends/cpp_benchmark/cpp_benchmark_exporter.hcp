@@ -46,7 +46,70 @@ class
         file_settings.special = Special_File_Type::NORMAL;
         file_settings.file = File_Type::IMPLEMENTATION;
     
-    //files_created += Possibly_Create_Test(copy,file_settings,settings);
+    files_created += Possibly_Create_Benchmark_Artifact(copy,file_settings,settings);
     
     return files_created;
+❱
+
+◀private: static▶ std::string ☀Create_Path_To_File(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Benchmark_Export_Settings const& settings)❰
+    
+        //create base file name with file extension
+        auto file_name = File_Name_Getter::Get(file_settings,structure.name + settings.file_suffix,settings.general.filesystem_naming);
+        
+        //create the directory we will create a file in
+        Create_Path_If_It_Doesnt_Already_Exist(Current_Path() + "/" + settings.file_directory);
+        
+        std::string full_path = settings.file_directory + "/" + file_name;
+        return full_path;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Possibly_Create_Benchmark_Artifact(Structure const& structure, Export_File_Settings const& file_settings, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::vector<std::string> files_created;
+    
+    if (Has_Benchmarks(structure)){
+        
+        //create file name
+        auto full_path = Create_Path_To_File(structure,file_settings,settings);
+        files_created.emplace_back(full_path);
+        
+        std::wofstream out(full_path);
+        
+        Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,settings.portion.meta,full_path);
+        
+        if (settings.print_benchmark_coverage_information){
+            out << as_wstring(Benchmark_Coverage_Summary_Getter::Get(structure,settings));
+            out << as_wstring("\n");
+        }
+        
+        //out << as_wstring(Get_Include_Section(structure));
+        
+        
+    auto BAD_DONT_DO_THIS = dont_do_this(settings);
+    Namespace_Printer::Print_Namespace(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
+        //out << as_wstring(Structure_As_Unit_Test(structure,settings));
+    Namespace_Printer::Print_Namespace_End(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
+    Boilerplate_Printer::Print_End(out,structure,file_settings,BAD_DONT_DO_THIS);
+        out.close();
+    }
+    return files_created;
+❱
+
+//TODO: REMOVE THIS
+◀private: static▶ C_Export_Settings ☀dont_do_this(Cpp_Benchmark_Export_Settings const& settings)❰
+    C_Export_Settings x;
+    x.portion = settings.portion;
+    x.general = settings.general;
+    x.manipulations = settings.manipulations;
+    return x;
+❱
+
+
+◀private: static▶ bool ☀Has_Benchmarks(Structure const& structure)❰
+    for (auto const& it: structure.methods.methods){
+        if (!it.benchmarks.benchmarks.empty()){
+            return true;
+        }
+    }
+    
+    return false;
 ❱
