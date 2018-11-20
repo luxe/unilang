@@ -107,7 +107,8 @@ class
             
             result += Add_Comments(structure,it,j,settings);
             result += Get_Signature(structure,it,j,settings);
-            //result += Get_Test_Function_Body(j);
+            result += Get_Body(j);
+            result += Add_Register(structure,it,j,settings);
             
             result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.after_case);
         }
@@ -122,15 +123,56 @@ class
     //extract all the data into strings
     std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.benchmark_case.name_casing,as_string(benchmark.name.value));
     std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.benchmark_case.tag_casing,as_string(benchmark.tag.value));
-    std::string prefix = settings.benchmark_function_prefix;
     
     //build signature
     std::string str;
-    str += prefix + "_" + Get_Function_Name(structure,method,settings) + "(";
-    str += test_name;
+    str += "static void ";
+    str += Get_Benchmark_Function_Name(structure,method,settings) + "(";
+    str += "benchmark::State &s";
     str += ")";
     
     return str;
+❱
+
+◀private: static▶ std::string ☀Get_Body(Benchmark const& benchmark)❰
+    std::string result;
+    result += "\n{\n\n";
+    result += "// ARRANGE";
+    result += "\n";
+    result += as_string(benchmark.setup.body.value);
+    result += "\n\n";
+    result += "// PROFILE";
+    result += "for (auto _ : s) {";
+    result += "benchmark::DoNotOptimize(";
+    result += as_string(benchmark.action.body.value);
+    result += ");\n";
+    result += "benchmark::ClobberMemory();";
+    result += "\n}";
+    result += "\n\n}\n\n";
+    return result;
+❱
+
+◀private: static▶ std::string ☀Add_Register(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string result;
+    result += "// REGISTER";
+    result += "BENCHMARK(";
+    result += Get_Benchmark_Function_Name(structure,method,settings);
+    result += ")";
+    
+    for (auto arg: benchmark.args){
+        
+        //possibly add multiplier
+        auto multiplier = as_string(arg.multiplier.value);
+        if (!multiplier.empty()){
+            result += "->RangeMultiplier(";
+            result += multiplier;
+            result += ")";
+        }
+    }
+    
+    
+    
+    return result;
 ❱
 
 ◀private: static▶ std::string ☀Add_Comments(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
@@ -149,6 +191,12 @@ class
 ◀private: static▶ std::string ☀Get_Function_Name(Structure const& structure, Method_Item const& method, Cpp_Benchmark_Export_Settings const& settings)❰
         auto settings2 = dont_do_this(settings);
         return Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
+❱
+
+◀private: static▶ std::string ☀Get_Benchmark_Function_Name(Structure const& structure, Method_Item const& method, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string prefix = settings.benchmark_function_prefix;
+    std::string func_name = prefix + "_" + Get_Function_Name(structure,method,settings);
+    return func_name;
 ❱
 
 ◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
