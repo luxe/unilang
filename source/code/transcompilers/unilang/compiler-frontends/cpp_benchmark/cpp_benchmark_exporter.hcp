@@ -81,7 +81,7 @@ class
             out << as_wstring("\n");
         }
         
-        //out << as_wstring(Get_Include_Section(structure));
+        out << as_wstring(Get_Include_Section(structure));
         
         
     auto BAD_DONT_DO_THIS = dont_do_this(settings);
@@ -92,6 +92,36 @@ class
         out.close();
     }
     return files_created;
+❱
+
+◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
+    std::string result;
+    
+    Append(result,"#include ");
+    result += Get_Double_Quote();
+    auto path = Get_Path_Of_Directory_After_Found_Folder("source");
+    Append(result,path);
+    Append(result,structure.name);
+    Append(result,".hh");
+    result += Get_Double_Quote();
+    result += "\n";
+    
+    for (auto const& it: structure.imports.test_dependencies){
+        Append(result,"#include ");
+        result += Get_Double_Quote();
+        Append(result,as_string(it.name.value));
+        Append(result,".hh");
+        result += Get_Double_Quote();
+        result += "\n";
+    }
+    
+    Append(result,"#include ");
+    result += "<";
+    Append(result,"benchmark/benchmark.h");
+    result += ">";
+    result += "\n";
+
+    return result;
 ❱
 
 //TODO: REMOVE THIS
