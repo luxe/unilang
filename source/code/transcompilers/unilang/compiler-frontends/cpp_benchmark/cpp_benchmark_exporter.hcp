@@ -86,12 +86,35 @@ class
         
     auto BAD_DONT_DO_THIS = dont_do_this(settings);
     Namespace_Printer::Print_Namespace(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
-        //out << as_wstring(Structure_As_Unit_Test(structure,settings));
+        out << as_wstring(Structure_As_Benchmark(structure,settings));
     Namespace_Printer::Print_Namespace_End(out,structure.namespaces,BAD_DONT_DO_THIS.portion.namespace_options);
     Boilerplate_Printer::Print_End(out,structure,file_settings,BAD_DONT_DO_THIS);
         out.close();
     }
     return files_created;
+❱
+
+◀private: static▶ std::string ☀Structure_As_Benchmark(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string result;
+    
+    for (auto const& it: structure.methods.methods){
+        
+        result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.before_group);
+        
+        for (auto const& j: it.benchmarks.benchmarks){
+            
+            result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.before_case);
+            
+            //result += Add_Test_Comments(structure,it,j,settings);
+            //result += Get_Test_Signature(j,settings);
+            //result += Get_Test_Function_Body(j);
+            
+            result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.after_case);
+        }
+        
+        result += Maybe_Get_Divider(settings.portion.method_options.benchmark_case.after_group);
+    }
+    return result;
 ❱
 
 ◀private: static▶ std::string ☀Get_Include_Section(Structure const& structure)❰
@@ -142,4 +165,11 @@ class
     }
     
     return false;
+❱
+
+◀private: static▶ std::string ☀Maybe_Get_Divider(Divider_Settings const& divider)❰
+    if (divider.print){
+        return divider.divider +"\n\n";
+    }
+    return "";
 ❱
