@@ -26,7 +26,11 @@ class
 ◀public: static▶ std::string ☀Get(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
     std::string str;
     str += Notes_About_Benchmark_Coverage(structure,settings);
-    str += Total_Number_Of_Tests_Statment(structure,settings);
+    str += Total_Number_Of_Benchmarks_Statment(structure,settings);
+    str += Get_Existing_Public_Benchmark_Case_Ratio(structure,settings);
+    str += Decide_Test_Benchmark_Title(structure,settings);
+    str += Grouped_Benchmark_Summary(structure,settings);
+    Append_To_Front_Of_Each_Line(str,"///   ");
     
     return str;
 ❱
@@ -60,7 +64,148 @@ class
     std::string str;
     str += std::to_string(benchmark_count);
     str += " ";
-    str += Inflection_Converter::Inflect_Based_On_Count(settings.name_for_test_case,inflection_settings,benchmark_count);
+    str += Inflection_Converter::Inflect_Based_On_Count(settings.name_for_benchmark_case,inflection_settings,benchmark_count);
     str += "\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Existing_Public_Benchmark_Case_Ratio(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+
+    //calculate ratio
+    int total_public_methods = 0;
+    int total_benchmark_methods = 0;
+    for (auto method: structure.methods.methods){
+        if (method.class_access == Class_Access::PUBLIC){
+            ++total_public_methods;
+            if (!method.benchmarks.benchmarks.empty()){
+                ++total_benchmark_methods;
+            }
+        }
+    }
+    
+    //TODO: move to settings
+    std::string title = "Public APIs Tested";
+    bool print_ratio = true;
+    bool print_percentage = true;
+    
+    std::string str;
+    str += title;
+    str += ":";
+    
+    if (print_ratio){
+        str += " ";
+        str += "(";
+        str += std::to_string(total_benchmark_methods);
+        str += "/";
+        str += std::to_string(total_public_methods);
+        str += ")";
+    }
+    if (print_percentage){
+        str += " ";
+        auto ratio = static_cast<float>(total_benchmark_methods) / static_cast<float>(total_public_methods);
+        str += std::to_string(static_cast<int>(ratio * 100));
+        str += "%";
+    }
+    str += "\n";
+    return str;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ std::string ☀Decide_Test_Benchmark_Title(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string str;
+    str += "Benchmark Coverage Over Specific ";
+    if (settings.use_the){
+        str += "the ";
+    }
+    str += Case_Modifier::As_Modified_Casing(settings.summary_title_casing_format,structure.name) + " APIs";
+    str += ":\n\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Grouped_Benchmark_Summary(Structure const& structure, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string all;
+    auto sorted_methods = Method_Sorter::Get_As_Sorted(structure.methods.methods,settings.portion.method_options.sorting.interface);
+    for (auto group: sorted_methods.subgroups){
+        
+        //if all the methods are private, we don't care about testing them
+        if (Group_Has_Public_Functions(group)){
+            all += Get_Summary_Stats_For_Group(group,settings);
+        }
+    }
+    
+    return all;
+❱
+
+◀private: static▶ std::string ☀Get_Summary_Stats_For_Group(Subgroup_Methods const& group, Cpp_Benchmark_Export_Settings const& settings)❰
+    std::string all;
+    
+    all += "   ";
+    all += Case_Modifier::As_Modified_Casing(settings.group_casing_format,group.subgroup);
+    all += ":\n";
+    
+    //build test table
+    std::vector<std::vector<std::string>> table;
+    for (auto method: group.methods){
+        
+        if (method.class_access == Class_Access::PUBLIC){
+        
+            //get row data
+            auto id_name = Case_Modifier::As_Modified_Casing(settings.function_casing_format,as_string(method.names.function_name.value));
+            auto test_tag = Get_Benchmark_Info(method,settings);
+            
+            //add row to table
+            std::vector<std::string> row;
+            row.emplace_back(id_name);
+            row.emplace_back(test_tag);
+            table.emplace_back(row);
+        }
+    }
+    
+    auto aligned_table = Table_As_Column_Aligned(table);
+    Append_To_Front_Of_Each_Line(aligned_table,"   ");
+    all += aligned_table;
+    all += "\n";
+    
+    return all;
+❱
+
+◀private: static▶ bool ☀Group_Has_Public_Functions(Subgroup_Methods const& group)❰
+    for (auto method: group.methods){
+        if (method.class_access == Class_Access::PUBLIC){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ std::string ☀Get_Benchmark_Info(Method_Item const& method, Cpp_Benchmark_Export_Settings const& settings)❰
+    
+    
+    std::string str;
+    str += " (";
+    if (method.benchmarks.benchmarks.empty()){
+        str += settings.no_direct_benchmark_name;
+    }
+    else{
+        auto amount = method.benchmarks.benchmarks.size();
+        str += std::to_string(amount) + " ";
+        auto inflection_settings = Inflection_Settings_Getter::Get();
+        str += Inflection_Converter::Inflect_Based_On_Count(settings.name_for_benchmark_case,inflection_settings,amount);
+        
+    }
+    str += ")";
     return str;
 ❱
