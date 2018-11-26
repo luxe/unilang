@@ -4819,8 +4819,9 @@ if the route is empty, no distance is returned􏶡
     auto results = broken_invariants_as_string(event_route);
     
     //ASSERT
+    //disabled in implementation
     using ::testing::HasSubstr;
-    EXPECT_THAT(results,HasSubstr("The route has only 1 lane."));
+    EXPECT_THAT(results,Not(HasSubstr("The route has only 1 lane.")));
 􏴮
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
@@ -4844,59 +4845,29 @@ if the route is empty, no distance is returned􏶡
     auto checked_invariants = 􏵲check invariants􏵳route);
     
     // decide which invariants should NOT be reported to the user
-    event_annotated_route_invariants should_print;
-    should_print.non_single_lane = false;
-    
-    // check invariants and possibly print them to the user
-    if (should_print.evaluation_range_consistent){
-        if (!checked_invariants.evaluation_range_consistent){
-            messages.emplace_back("The evaluation range is inconsistent. You're telling me you went backwards.");
-        }
-    }
-    if (should_print.evaluation_range_in_bounds){
-        if (!checked_invariants.evaluation_range_in_bounds){
-            messages.emplace_back("The evaluation range is out of bounds from the actual route.");
-        }
-    }
-    if (should_print.has_not_jumped_over_1_or_more_lanes){
-        if (!checked_invariants.has_not_jumped_over_1_or_more_lanes){
-            messages.emplace_back("You jumped over a lane.");
-        }
-    }
-    if (should_print.has_route_hysteresis){
-        if (!checked_invariants.has_route_hysteresis){
-            messages.emplace_back("You don't have any route hysteresis.");
-        }
-    }
-    if (should_print.exists_on_or_after_merge_point){
-        if (!checked_invariants.exists_on_or_after_merge_point){
-            messages.emplace_back("You claim to be on a route before the merge point.");
-        }
-    }
-    if (should_print.merge_point_in_bounds){
-        if (!checked_invariants.merge_point_in_bounds){
-            messages.emplace_back("The merge point exists outside the route.");
-        }
-    }
-    if (should_print.route_has_lanes){
-        if (!checked_invariants.route_has_lanes){
-            messages.emplace_back("The route doesn't have any lanes.");
-        }
-    }
-    if (should_print.all_lanes_have_size){
-        if (!checked_invariants.all_lanes_have_size){
-            messages.emplace_back("Some of the route lanes are of distance 0.");
-        }
-    }
+    std::vector<event_annotated_route_invariants_rendering> render_settings;
+    render_settings.emplace_back(true,checked_invariants.evaluation_range_consistent,"The evaluation range is inconsistent. You're telling me you went backwards.");
+    render_settings.emplace_back(true,checked_invariants.evaluation_range_in_bounds,"The evaluation range is out of bounds from the actual route.");
+    render_settings.emplace_back(true,checked_invariants.has_not_jumped_over_1_or_more_lanes,"You jumped over a lane.");
+    render_settings.emplace_back(true,checked_invariants.has_route_hysteresis,"You don't have any route hysteresis.");
+    render_settings.emplace_back(true,checked_invariants.exists_on_or_after_merge_point,"You claim to be on a route before the merge point.");
+    render_settings.emplace_back(true,checked_invariants.merge_point_in_bounds,"The merge point exists outside the route.");
+    render_settings.emplace_back(true,checked_invariants.route_has_lanes,"The route doesn't have any lanes.");
+    render_settings.emplace_back(true,checked_invariants.all_lanes_have_size,"Some of the route lanes are of distance 0.");
     
     // "A one lane route is possible, but extremely unlikely outside
     // of a user error or navigator rerecord bug.
     // In rerecord we drop them." -- Bob Dean (@rdean)
     // Assuming 1 lane routes are still valid from vehicle command's perspective,
     // they result in not having hysteresis which is something we already check for.
-    if (should_print.non_single_lane){
-        if (!checked_invariants.non_single_lane){
-            messages.emplace_back("The route has only 1 lane.");
+    render_settings.emplace_back(false,checked_invariants.non_single_lane,"The route has only 1 lane.");
+    
+    // possibly show broken invariants
+    for (auto const& it: render_settings){
+        if (it.should_print){
+            if (!it.condition_holds){
+                messages.emplace_back(it.message);
+            }
         }
     }
 􏶳
