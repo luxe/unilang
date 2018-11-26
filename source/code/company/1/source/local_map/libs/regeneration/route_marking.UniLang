@@ -336,6 +336,36 @@ Mainly used for testing􏶡
     // The Annotation Tool uses it as an integration point.
     // Any crashes in the tool related to the API can be investigated here.
 􏴮
+􏱿regular growth on all algorithms􏲀􏱽􏱾
+􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
+􏱻
+    s.SetComplexityN(s.range(0));
+    
+    //enable all algorithms together
+    marking_input settings;
+    settings.lane_selection.sla_distance_m = 100;
+    settings.lane_selection.exceeding_distance_m = 100;
+    settings.lane_selection.before_exceeding_distance_m = 100;
+    settings.lane_selection.exceeding_accumulated_distance = true;
+    settings.lane_selection.before_exceeding_accumulated_distance = true;
+    settings.lane_selection.prior_to_loop = true;
+    settings.lane_selection.next_unique_submap_in_loop = true;
+    settings.lane_selection.first_lane_loop = true;
+    settings.lane_selection.all_lanes_loop = true;
+    settings.lane_selection.after_loop = true;
+    settings.lane_selection.after_loop_second = true;
+    settings.lane_selection.submap_transition = true;
+    settings.lane_selection.first = true;
+    settings.lane_selection.last = true;
+    settings.lane_selection.all = true;
+    settings.lane_selection.specific_lane_index = true;
+    settings.lane_selection.regen_sla = true;
+    std::vector<double>                       distances(s.range(0), 10.0f);
+    auto                                      route = local_map::statik::create_route_from_lane_distances(distances);
+􏱼
+􏱹local_map::statik::select_lanes(route,settings)􏱺
+
+
 
 􏷘-􏷗􏷒merge􏷑
 􏴅Lane Selection􏴆
@@ -1703,6 +1733,19 @@ The set returned will never have more than 1 element􏶡
     //ASSERT
     EXPECT_EQ(event_route.event_lane_sequence.size(),3);
 􏴮
+􏱿regular growth􏲀􏱽with_input􏱾
+􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
+􏱻
+    s.SetComplexityN(s.range(0));
+    route_creation_input input;
+    for (size_t i = 0; i < s.range(0); ++i){
+        lane_creation_input lane;
+        lane.submap_id = i;
+        lane.distance_m = 100;
+        input.lane_input_sequence.emplace_back(lane);
+    }
+􏱼
+􏱹local_map::statik::create_event_route(input)􏱺
 
 􏷘+􏷗􏷒create random event route􏷑
 􏴅Annotated Route􏴆
@@ -1750,6 +1793,17 @@ The set returned will never have more than 1 element􏶡
     EXPECT_EQ(event_route.event_lane_sequence[3].info.map_ref.map_index.to_int64(),7);
     EXPECT_EQ(event_route.event_lane_sequence[4].info.map_ref.map_index.to_int64(),3);
 􏴮
+􏱿regular growth􏲀􏱽􏱾
+􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
+􏱻
+    s.SetComplexityN(s.range(0));
+    random_route_creation_input input;
+    
+    //set exact route length
+    input.low_lane_count = s.range(0);
+    input.high_lane_count = s.range(0);
+􏱼
+􏱹local_map::statik::create_random_event_route(input)􏱺
 
 􏷘+􏷗􏷒create event route from lane distances􏷑
 􏴅Annotated Route􏴆
@@ -2242,6 +2296,22 @@ these checks can help detect things based on the status of the event route that 
     EXPECT_TRUE(invariants.non_single_lane);
     EXPECT_TRUE(invariants.all_lanes_have_size);
 􏴮
+􏱿regular growth􏲀􏱽􏱾
+􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
+􏱻
+    s.SetComplexityN(s.range(0));
+    std::vector<double>                       distances(s.range(0), 10.0f);
+    auto                                      route = local_map::statik::create_route_from_lane_distances(distances);
+    slmt_route_information route_info;
+    route_info.merge_point_index = 1; //why we have hysteresis
+    route_info.route_changed = false;
+    route_info.previous_lane_index = 3;
+    route_info.current_lane_index = 4;
+    int distance_m = 100;
+    auto event_route = create_slmt_event_route(route, route_info,distance_m);
+􏱼
+􏱹local_map::statik::check_invariants(event_route)􏱺
+
 
 
 routes that are too long
@@ -4127,6 +4197,15 @@ if the route is empty, no distance is returned􏶡
     //ASSERT
     EXPECT_FALSE(results.empty());
 􏴮
+􏱿regular growth􏲀􏱽􏱾
+􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
+􏱻
+    s.SetComplexityN(s.range(0));
+    const std::vector<double>                       distances(s.range(0), 10.0f);
+    const auto                                      route = local_map::statik::create_route_from_lane_distances(distances);
+    const auto event_route = create_event_route(route);
+􏱼
+􏱹local_map::statik::summary_of_state(event_route)􏱺
 
 􏷘+􏷗􏷒broken invariants as string􏷑
 􏴅String Representations􏴆

@@ -127,7 +127,7 @@ class
     //build signature
     std::string str;
     str += "static void ";
-    str += Get_Benchmark_Function_Name(structure,method,settings) + "(";
+    str += Get_Benchmark_Function_Name(structure,method,benchmark,settings) + "(";
     str += "benchmark::State &s";
     str += ")";
     
@@ -158,7 +158,7 @@ class
     result += "// REGISTER";
     result += "\n";
     result += "BENCHMARK(";
-    result += Get_Benchmark_Function_Name(structure,method,settings);
+    result += Get_Benchmark_Function_Name(structure,method,benchmark,settings);
     result += ")";
     
     for (auto arg: benchmark.args){
@@ -224,9 +224,15 @@ class
         return Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
 ❱
 
-◀private: static▶ std::string ☀Get_Benchmark_Function_Name(Structure const& structure, Method_Item const& method, Cpp_Benchmark_Export_Settings const& settings)❰
+◀private: static▶ std::string ☀Get_Benchmark_Function_Name(Structure const& structure, Method_Item const& method, Benchmark const& benchmark, Cpp_Benchmark_Export_Settings const& settings)❰
     std::string prefix = settings.benchmark_function_prefix;
     std::string func_name = prefix + "_" + Get_Function_Name(structure,method,settings);
+    
+    if (!benchmark.tag.value.empty()){
+        func_name += "_" + as_string(benchmark.tag.value);
+    }
+    
+    
     return func_name;
 ❱
 
