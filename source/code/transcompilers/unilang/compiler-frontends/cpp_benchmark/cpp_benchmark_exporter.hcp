@@ -144,9 +144,18 @@ class
     result += "// PROFILE";
     result += "\n";
     result += "for (auto _ : s) {";
-    result += "benchmark::DoNotOptimize(";
-    result += as_string(benchmark.action.body.value);
-    result += ");\n";
+    
+    
+    //we only wrap the benchmark in "do not optimize" if it returns a value
+    if (!method.return_results.empty()){
+        result += "benchmark::DoNotOptimize(";
+        result += as_string(benchmark.action.body.value);
+        result += ");\n";
+    }
+    else{
+        result += as_string(benchmark.action.body.value);
+        result += ";\n";
+    }
     result += "benchmark::ClobberMemory();";
     result += "\n}";
     result += "\n\n}\n\n";
