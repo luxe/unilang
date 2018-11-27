@@ -329,6 +329,34 @@ Mainly used for testing􏶡
     //ASSERT
     EXPECT_TRUE(indexes.empty());
 􏴮
+􏴯run all selected algorithms􏴰
+􏲝Ensure that we can run all of the algorithms that can be selected􏲞
+􏲛We were not able to run all of the selected algorithms􏲜
+􏴭
+    //ARRANGE
+    route r;
+    marking_input settings;
+    settings.lane_selection.exceeding_accumulated_distance = true;
+    settings.lane_selection.before_exceeding_accumulated_distance = true;
+    settings.lane_selection.prior_to_loop = true;
+    settings.lane_selection.next_unique_submap_in_loop = true;
+    settings.lane_selection.first_lane_loop = true;
+    settings.lane_selection.all_lanes_loop = true;
+    settings.lane_selection.after_loop = true;
+    settings.lane_selection.after_loop_second = true;
+    settings.lane_selection.submap_transition = true;
+    settings.lane_selection.first = true;
+    settings.lane_selection.last = true;
+    settings.lane_selection.all = true;
+    settings.lane_selection.specific_lane_index = true;
+    settings.lane_selection.regen_sla = true;
+    
+    //ACT
+    auto indexes = select_lanes(r,settings);
+    
+    //ASSERT
+    EXPECT_TRUE(indexes.empty());
+􏴮
 􏴯discussion􏴰
 􏲝We provide a fake test to discuss the tool that is using this function for integration􏲞
 􏲛If the Annotation Tool crashes internally within the API, this is the integration point that should be evaluated and fixed􏲜
@@ -2351,6 +2379,22 @@ If the distance is longer than the lane, the event will be placed at the end of 
     //ASSERT
     EXPECT_EQ(total_event_markings(r),2);
 􏴮
+􏴯select lane distance offset too large still accepted􏴰
+􏲝Check that we can select lanes with a distance offset longer than the lane (it should be capped to the end of the lane)􏲞
+􏲛We are no longer able to select lanes with a distance longer than the lane􏲜
+􏴭
+    //ARRANGE
+    auto r = create_event_route_from_lane_distances({20,20,20,20,20,20});
+    std::set<size_t> selects{2,3};
+    double distance_m = 10000; //intentionally large to test that the marking is still made
+    
+    //ACT
+    set_regeneration_events(r,selects,"test",distance_m);
+    
+    //ASSERT
+    EXPECT_EQ(total_event_markings(r),2);
+􏴮
+
 􏱿regular growth􏲀􏱽no_selects_with_distance􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
 􏱻
@@ -2590,16 +2634,16 @@ other people may want to enforce forward progress only􏶡
 􏶚m􏶛􏶾bool􏶽􏶼consistent evaluation range􏶻􏲅false􏲆􏶺whether the evaluation range is valid or not􏶹
 􏶴
     if (􏵲is new route􏵳route)){
-        return true;
+        consistent_evaluation_range = true;
     }
-    if (􏵲is expired route􏵳route)){
-        return true;
+    else if (􏵲is expired route􏵳route)){
+        consistent_evaluation_range = true;
     }
-    if (􏵲is invalid route􏵳route)){
-        return true;
+    else if (􏵲is invalid route􏵳route)){
+        consistent_evaluation_range = true;
     }
-    if (􏵲is existing route􏵳route)){
-        return *route.evaluation_range.previous <= route.evaluation_range.current;
+    else if (􏵲is existing route􏵳route)){
+        consistent_evaluation_range = *route.evaluation_range.previous <= route.evaluation_range.current;
     }
 􏶳
 􏴯new route is valid􏴰
@@ -3134,6 +3178,26 @@ This is because we select the first logical lane of the route based on our merge
     //ASSERT
     EXPECT_TRUE(exists_before_merge_point(event_route));
 􏴮
+􏴯evaluation window on slmnt is behind the merge point failed invariant two􏴰
+􏲝we are behind the merge point􏲞
+􏲛we should be building an event route that is behind the merge point􏲜
+􏴭
+    //ARRANGE
+    //SLMT state
+    slmt_route_information route_info;
+    route r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
+    route_info.merge_point_index = 4; //why we have hysteresis
+    route_info.route_changed = false;
+    route_info.previous_lane_index = 5;
+    route_info.current_lane_index = 2;
+    int distance_m = 1;
+    
+    //ACT
+    auto event_route = create_slmt_event_route(r, route_info,distance_m);
+    
+    //ASSERT
+    EXPECT_TRUE(exists_before_merge_point(event_route));
+􏴮
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
 􏱻
@@ -3187,7 +3251,31 @@ This is because we select the first logical lane of the route based on our merge
     // Since we assume that the SLA algorithm will always select the first
     // lane, we find it by scanning the lanes.
     // this means the merge point is either a valid lane, or it doesn't exist.
-    // Therefore, we can't create a scenario based on current implementation where this invariant would fail
+    // Therefore, we can't create a scenario based on the current implementation of merge point discovery where this invariant would fail
+    // This also means we can't get code coverage for a failed invariant (without other implementations changing).
+    // We might consider being more explicit about what the merge point is in the event route.  
+    // Currently we are given the merge point as the starting point of our marking algorithm,
+    // which in turn marks the first lane.. making it then discovered later as derivable merge point.
+    // If an out of range merge point is given now, it is constrained to the route when running the marking algorithm
+    // To prove this:
+    
+    //ARRANGE
+    //SLMT state
+    slmt_route_information route_info;
+    route r = create_route_from_submap_ids({1,2,3,4,5,6,7,8,9});
+    route_info.merge_point_index = 100; //merge point outside
+    route_info.route_changed = false;
+    route_info.previous_lane_index = 0;
+    route_info.current_lane_index = 3;
+    int distance_m = 1;
+    auto event_route = create_slmt_event_route(r, route_info,distance_m);
+    
+    //ACT
+    auto in_bounds = merge_point_in_bounds(event_route);
+    
+    //ASSERT
+    //(we may want to consider this FALSE instead)
+    EXPECT_TRUE(in_bounds);
 􏴮
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
@@ -3585,24 +3673,23 @@ Calling this function will ensure that interpret_route_status returns route_stat
 􏶴
     􏶲(n,n) = existing route􏶱
     if (􏵲is existing route􏵳route)){
-        return route_status_existing;
+        route_interpretation = route_status_existing;
     }
     
     􏶲(?,n) = new route􏶱
     else if(􏵲is new route􏵳route)){
-        return route_status_new;
+        route_interpretation = route_status_new;
     }
     
     􏶲(n,?) = expired route􏶱
     else if(􏵲is expired route􏵳route)){
-        return route_status_expired;
+        route_interpretation = route_status_expired;
     }
     
     􏶲(?,?) = invalid route􏶱
     else if(􏵲is invalid route􏵳route)){
-        return route_status_invalid;
+        route_interpretation = route_status_invalid;
     }
-    􏶲... impossible ...􏶱
 􏶳
 􏴯converting a route makes it new􏴰
 􏲝Converting a route makes its status new (since we don't have any previous indexes)􏲞
@@ -3799,6 +3886,50 @@ Calling this function will ensure that interpret_route_status returns route_stat
     //ASSERT
     EXPECT_TRUE(should_regenerate(event_route));
 􏴮
+􏴯no lanes should not regenerate􏴰
+􏲝If the route has no lanes, we should never regenerate􏲞
+􏲛The route has no lanes, yet we are saying to regenerate􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_submap_ids({});
+    
+    //ACT
+    set_previous_index_on_route(event_route,0);
+    set_current_index_on_route(event_route,999);
+    
+    //ASSERT
+    EXPECT_FALSE(should_regenerate(event_route));
+􏴮
+􏴯last lane already evaluated should not regenerate􏴰
+􏲝if we've already evaluated the last lane, we should not regenerate again􏲞
+􏲛for some reason we are choosing to regenerate despite the last lane having already been evaluated􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_submap_ids({1,2,3,4,5,6});
+    
+    //ACT
+    set_previous_index_on_route(event_route,5);
+    set_current_index_on_route(event_route,5);
+    
+    //ASSERT
+    EXPECT_FALSE(should_regenerate(event_route));
+􏴮
+􏴯valid route but no markings should not regenerate􏴰
+􏲝Test that we can process lanes for regeneration but not regenerate if none of them are marked􏲞
+􏲛The route is valid and there are lanes to process, yet we should not be attempting to regenerate, because there is no markings􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_submap_ids({1,2,3,4,5,6});
+    
+    //ACT
+    set_previous_index_on_route(event_route,0);
+    set_current_index_on_route(event_route,999);
+    
+    //ASSERT
+    EXPECT_FALSE(should_regenerate(event_route));
+􏴮
+
+
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
 􏱻
@@ -4525,32 +4656,52 @@ if the route is empty, no lane index can be returned􏶡
     auto index = distance_to_lane_index(event_route,0);
     
     //ASSERT
+    EXPECT_TRUE(index.has_value());
     EXPECT_EQ(*index,0);
     
     //ACT
     index = distance_to_lane_index(event_route,5);
     
     //ASSERT
+    EXPECT_TRUE(index.has_value());
     EXPECT_EQ(*index,0);
     
     //ACT
     index = distance_to_lane_index(event_route,15);
     
     //ASSERT
+    EXPECT_TRUE(index.has_value());
     EXPECT_EQ(*index,1);
     
     //ACT
     index = distance_to_lane_index(event_route,25);
     
     //ASSERT
+    EXPECT_TRUE(index.has_value());
     EXPECT_EQ(*index,2);
     
     //ACT
     index = distance_to_lane_index(event_route,35);
     
     //ASSERT
+    EXPECT_TRUE(index.has_value());
     EXPECT_EQ(*index,3);
 􏴮
+􏴯provided distance too long for any index􏴰
+􏲝a distance longer than the entire route, cannot be converted into an index􏲞
+􏲛we are somehow getting an index back when the provided distance does not correlate to any lane index􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_lane_distances({10,10,10,10,10,10});
+    
+    //ACT
+    auto index = distance_to_lane_index(event_route,61);
+    
+    //ASSERT
+    EXPECT_FALSE(index.has_value());
+􏴮
+
+
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
 􏱻
@@ -4593,25 +4744,42 @@ if the route is empty, no distance is returned􏶡
     auto distance = lane_index_to_distance(event_route,0);
     
     //ASSERT
+    EXPECT_TRUE(distance.has_value());
     EXPECT_EQ(*distance,0);
     
     //ACT
     distance = lane_index_to_distance(event_route,1);
     
     //ASSERT
+    EXPECT_TRUE(distance.has_value());
     EXPECT_EQ(*distance,10);
     
     //ACT
     distance = lane_index_to_distance(event_route,2);
     
     //ASSERT
+    EXPECT_TRUE(distance.has_value());
     EXPECT_EQ(*distance,20);
     
     //ACT
     distance = lane_index_to_distance(event_route,3);
     
     //ASSERT
+    EXPECT_TRUE(distance.has_value());
     EXPECT_EQ(*distance,30);
+􏴮
+􏴯provided index too high for any distance􏴰
+􏲝an index outside the route, cannot be converted into a distance􏲞
+􏲛we are somehow getting a distance back when the provided index is not in the route􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_lane_distances({10,10,10,10,10,10});
+    
+    //ACT
+    auto distance = lane_index_to_distance(event_route,6);
+    
+    //ASSERT
+    EXPECT_FALSE(distance.has_value());
 􏴮
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
@@ -4652,8 +4820,7 @@ if the route is empty, no distance is returned􏶡
 􏲛we did not get the expected distance to lane conversion􏲜
 􏴭
     //ARRANGE
-    auto r = create_route_from_lane_distances({10,10,10,10,10,10});
-    auto event_route = create_event_route(r);
+    auto event_route = create_event_route_from_lane_distances({10,10,10,10,10,10});
     
     //ACT
     auto offset = distance_from_start_of_lane(event_route,0);
@@ -4678,6 +4845,19 @@ if the route is empty, no distance is returned􏶡
     
     //ASSERT
     EXPECT_EQ(offset,2);
+􏴮
+􏴯distance greater than route 􏴰
+􏲝a user's distance greater than the route is capped to the end of the route.  This means the offset to the last lane will be the length of that lane􏲞
+􏲛the distance provided was either not capped to the end of the route, or the offset was calculated incorrectly􏲜
+􏴭
+    //ARRANGE
+    auto event_route = create_event_route_from_lane_distances({10,10,10,10,10,123});
+    
+    //ACT
+    auto offset = distance_from_start_of_lane(event_route,500);
+    
+    //ASSERT
+    EXPECT_EQ(offset,123);
 􏴮
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
@@ -5157,6 +5337,40 @@ format: (#,#]􏶡
     //ASSERT
     EXPECT_EQ(results,"[]");
 􏴮
+􏴯single index􏴰
+􏲝test that we can see a single index􏲞
+􏲛the single index was not found􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({1,2,3,4,5});
+    auto indexes = select_first_lane(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto results = evented_lane_indexes_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(results,"[0]");
+􏴮
+􏴯all indexes􏴰
+􏲝test that we can see all index􏲞
+􏲛not all indexes were found􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({1,2,3,4,5});
+    auto indexes = select_all_lanes(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto results = evented_lane_indexes_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(results,"[0,1,2,3,4]");
+􏴮
+
+
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
 􏱻
