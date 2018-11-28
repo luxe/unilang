@@ -3831,7 +3831,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
     size_t start_index = 􏵲first index to process􏵳route);
     size_t end_index = 􏵲last index to process􏵳route);
     
-    for (size_t i = start_index; i <= end_index; ++i){
+    for (size_t i = start_index; i < end_index; ++i){
         if (!route.event_lane_sequence[i].event_sequence.empty()){
             return true;
         }
@@ -3864,7 +3864,8 @@ Calling this function will ensure that interpret_route_status returns route_stat
     set_regeneration_events(event_route,indexes,"test");
     
     //ACT
-    //we keep the route valid
+    set_previous_index_on_route(event_route, 0);
+    set_current_index_on_route(event_route, 999);
     
     //ASSERT
     EXPECT_TRUE(should_regenerate(event_route));
@@ -3954,7 +3955,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
         size_t start_index = 􏵲first index to process􏵳route);
         size_t end_index = 􏵲last index to process􏵳route);
         
-        for (size_t i = start_index; i <= end_index; ++i){
+        for (size_t i = start_index; i < end_index; ++i){
             if (!route.event_lane_sequence[i].event_sequence.empty()){
                 lane_indexes.emplace_back(i);
             }
@@ -3989,6 +3990,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
     set_regeneration_events(event_route,indexes,"test");
     
     //ACT
+    set_current_index_on_route(event_route, 1);
     auto lane_indexes = current_lanes_with_annotations(event_route);
     
     //ASSERT
@@ -4073,6 +4075,7 @@ Calling this function will ensure that interpret_route_status returns route_stat
     set_regeneration_events(event_route,indexes,"test");
     
     //ACT
+    set_current_index_on_route(event_route, 1);
     auto lane_guids = current_lane_guids_with_annotations(event_route);
     
     //ASSERT
