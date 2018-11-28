@@ -3251,12 +3251,12 @@ This is because we select the first logical lane of the route based on our merge
     // Since we assume that the SLA algorithm will always select the first
     // lane, we find it by scanning the lanes.
     // this means the merge point is either a valid lane, or it doesn't exist.
-    // Therefore, we can't create a scenario based on the current implementation of merge point discovery where this invariant would fail
+    // Therefore, we can't create a scenario based on the current implementation of merge point discovery where this invariant would fail.  
     // This also means we can't get code coverage for a failed invariant (without other implementations changing).
     // We might consider being more explicit about what the merge point is in the event route.  
     // Currently we are given the merge point as the starting point of our marking algorithm,
     // which in turn marks the first lane.. making it then discovered later as derivable merge point.
-    // If an out of range merge point is given now, it is constrained to the route when running the marking algorithm
+    // If an out of range merge point is given now, it is constrained to the route when running the marking algorithm.  
     // To prove this:
     
     //ARRANGE
@@ -5367,7 +5367,7 @@ format: (#,#]􏶡
     auto results = evented_lane_indexes_as_string(event_route);
     
     //ASSERT
-    EXPECT_EQ(results,"[0,1,2,3,4]");
+    EXPECT_EQ(results,"[0, 1, 2, 3, 4]");
 􏴮
 
 
@@ -5409,6 +5409,23 @@ format: (#,#]􏶡
     //ASSERT
     EXPECT_EQ(results,"");
 􏴮
+􏴯single guid􏴰
+􏲝test that we can see a single index􏲞
+􏲛the single index was not found􏲜
+􏴭
+    //ARRANGE
+    route r = create_route_from_submap_ids({6,7,8,9});
+    auto indexes = select_first_lane(r);
+    auto event_route = create_event_route(r);
+    set_regeneration_events(event_route,indexes,"test");
+    
+    //ACT
+    auto results = evented_lane_guids_as_string(event_route);
+    
+    //ASSERT
+    EXPECT_EQ(results,"{00000000-0000-0000-0000-000000000000}\n");
+􏴮
+
 􏱿regular growth􏲀􏱽􏱾
 􏱷length of route􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
 􏱻
