@@ -36,6 +36,7 @@ hcp(name = "suggested_return_identifier_adder", deps = [
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/transcompilers/unilang/doxygen_block_printer/method_getter/adders:units_description_adder",
+"//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
 "//code/utilities/converters:lib",
 ])
 
