@@ -440,6 +440,64 @@ Mainly used for testing􏶡
     to.insert(from.begin(), from.end());
 􏶳
 
+􏷘+􏷗􏷒as lane indexes􏷑
+􏴅Lane Selection􏴆
+􏷐get the lane selections as a list of lane indexes􏷏
+􏶠converts the lane selections to specific lane indexes􏶡
+􏶜􏶝􏷆route_selections􏷅􏷄selections􏷃􏲧local_map/libs/regeneration/event_annotations􏲨􏲥local_map/libs/regeneration/local_map_regeneration_event_annotations􏲦􏷀selections made over a route􏶿
+􏶚m􏶛􏶾ordered_indexes􏶽􏶼lane indexes􏶻􏶺selected lane indexes along the route􏶹
+􏶴
+    lane_indexes.reserve(selections.lane_sequence.size());
+    for (auto const& it: selections.lane_sequence){
+        lane_indexes.emplace_back(it.index);
+    }
+􏶳
+􏴯default yields no indexes􏴰
+􏲝a default instantiation of route selections yields no indexes􏲞
+􏲛for some reason default constructed route selections have lane indexes􏲜
+􏴭
+    //ARRANGE
+    route_selections selections;
+    
+    //ACT
+    auto indexes = as_lane_indexes(selections);
+    
+    //ASSERT
+    EXPECT_TRUE(indexes.empty());
+􏴮
+􏴯can get back indexes􏴰
+􏲝add selections to the route selections and ensure we get the right lane selections back􏲞
+􏲛we did not get back the expected lane indexes􏲜
+􏴭
+    //ARRANGE
+    route_selections selections;
+    for (size_t i = 0; i < 10; i+=2){
+        selections.lane_sequence.emplace_back(i,"test");
+    }
+    
+    //ACT
+    auto indexes = as_lane_indexes(selections);
+    
+    //ASSERT
+    EXPECT_EQ(indexes.size(),5);
+    EXPECT_TRUE(std::find(std::begin(indexes),std::end(indexes),0) != std::end(indexes));
+    EXPECT_TRUE(std::find(std::begin(indexes),std::end(indexes),2) != std::end(indexes));
+    EXPECT_TRUE(std::find(std::begin(indexes),std::end(indexes),4) != std::end(indexes));
+    EXPECT_TRUE(std::find(std::begin(indexes),std::end(indexes),6) != std::end(indexes));
+    EXPECT_TRUE(std::find(std::begin(indexes),std::end(indexes),8) != std::end(indexes));
+􏴮
+􏱿regular growth􏲀􏱽􏱾
+􏱷number of selections􏱸􏱵8􏱶􏱳8 << 11􏱴􏱱2􏱲
+􏱻
+    s.SetComplexityN(s.range(0));
+    local_map::statik::route_selections selections;
+    for (size_t i = 0; i < s.range(0); ++i){
+        selections.lane_sequence.emplace_back(i,"test");
+    }
+􏱼
+􏱹local_map::statik::as_lane_indexes(selections)􏱺
+
+
 􏷘-􏷗􏷒algorithm start􏷑
 􏴅Lane Selection􏴆
 􏷐decide the starting index for the algorithm to being applying􏷏
