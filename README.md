@@ -12,13 +12,11 @@ We eliminate syntax complexity through unique symbolic tokens.
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
 As a result, no matter how many features get added the the language,  
 the lexical and syntatical analysis remains trivial.  
-Unilang comes with its own font, but users can choose their own glyphs to represent individual [code points][2].  
-Although unilang could equally be represented in a markup format such as json or yaml, we provide this
-textual frontend as it tends to look simpler, allow for custom glyphs, and lends itself to easy syntax highlighting.
-
-Suntax highlighting is trivial.
-
-This makes code easy to read and benefits static analysis tools.  
+Unilang comes with its own font,  
+but users can choose their own glyphs to represent individual [code points][2].  
+Although unilang could equally be represented in a markup format such as json or yaml,   
+we provide the unilang textual frontend as it tends to look simpler,   
+allow for custom glyphs, and is easy to colorize in editors.
 
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
