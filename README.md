@@ -51,5 +51,4 @@ tbd
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
 
 ## Contribute
-There are no rules.  Make a ticket about anything.  
-We'll figure it out.  
+There are no rules.  Make a ticket about anything.  We'll figure it out together.  
