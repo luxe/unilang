@@ -13,7 +13,7 @@ Unilang pulls from [Unicode's Private Use Area (PUA)][1].
 No matter how many features are added the the language,  lexical/syntax analysis remains trivial.  
 
 
-### 2. Grammar
+#### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
 
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
