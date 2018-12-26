@@ -4,8 +4,7 @@ It is the unification of all programming concepts without syntax.
 It is a higher level language above all high level languages.   
 It was built to improve the efficiency of the modern software engineer.    
 
-## About
-Here are the core principals that guide unilang's development:  
+## Guiding Principles
 
 #### 1.  Syntax
 Syntax doesn't matter.  It never has, and it never will.    
