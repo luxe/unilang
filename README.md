@@ -31,9 +31,10 @@ We stand on the shoulder's of giants and transcompile to other languages.
 ...
 
 #### 6. No trade-offs
-Typical programming languages are designed around trade-offs.
-Unilang refuses to make trade-offs.  Most opnions can be dual supported at the language level,  
-with code generation customization.
+Typical programming languages are designed around trade-offs.  
+Unilang refuses to make trade-offs.   
+Most opinions can be dual supported at the language level,  
+and chosen during code generation.
 
 ## Installation
 ```
