@@ -12,6 +12,7 @@ We eliminate syntax complexity through unique symbolic tokens.
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
 And as a result, no matter how many tokens get added the the language,  
 the lexical and syntatical analysis remains trivial.  
+
 Unilang comes with its own font,  
 but users can choose their own glyphs to represent individual [code points][2].  
 Although unilang could equally be represented in a markup format such as json or yaml,   
