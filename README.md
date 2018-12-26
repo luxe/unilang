@@ -18,17 +18,25 @@ but users can choose their own glyphs to represent individual [code points][2].
 Although unilang could equally be represented in a markup format such as json or yaml,   
 we provide the unicode textual frontend as it tends to look simpler,   
 allow for custom glyphs, and is easy to colorize in editors.  
-User's can choose to write directly in this unicode format, or use the graphical system built on top of it.
+User's can choose to write directly in this unicode format,  
+or use the graphical system built on top of it.
 ![alt text](.readme/unilang-look.svg "test")
 
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
-Semantic analysis builds an ADT nearly identical to the tokens you write.
+Semantic analysis builds an ADT nearly identical to the tokens you write.  
+You can leave nearly any token out, and based on various configurations,  
+you can get default values or automated enrichments.
 
 #### 3. Code generation
 Unilang could target LLVM, output byte code for the JVM, or operate under its own interpreter.  
 However, there is little reason to invest in these efforts at this time.  
-We stand on the shoulder's of giants and transcompile to other languages.
+We stand on the shoulder's of giants and transcompile to other languages.  
+This is a strategic decision because it helps Unilang grow in 2 ways.  
+The more languages Unilang can transcompile to other languages,   
+the more we can generisize programming concepts across the ecosystem.  
+It also helps us proof that two seemingly apposing language design decisions  
+can be incorperated into the same language and chosen programatically at build time.
 
 #### 4. Supersets Win
 TODO
