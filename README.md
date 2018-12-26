@@ -19,7 +19,7 @@ Although unilang could equally be represented in a markup format such as json or
 we provide the unicode textual frontend as it tends to look simpler,   
 allow for custom glyphs, and is easy to colorize in editors.  
 User's can choose to write directly in this unicode format,  
-or use the graphical system built on top of it.
+or use the graphical system built on top of it.  
 ![alt text](.readme/unilang-look.svg "test")
 
 #### 2. Grammar
