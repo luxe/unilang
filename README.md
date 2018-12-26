@@ -15,12 +15,22 @@ the lexical and syntatical analysis remains trivial.
 
 Unilang comes with its own font,  
 but users can choose their own glyphs to represent individual [code points][2].  
-Although unilang could equally be represented in a markup format such as json or yaml,   
+Although Unilang could equally be represented in a markup format such as json or yaml,   
 we provide the unicode textual frontend as it tends to look simpler,   
 allow for custom glyphs, and is easy to colorize in editors.  
 User's can choose to write directly in this unicode format,  
 or use the graphical system built on top of it.  
 ![alt text](.readme/unilang-look.svg "test")
+
+The first point of contention people have with the language,  
+is that they cannot fire of vim and start writing in it.  
+In its ascii markup format, Unilang is too dense.  
+It's dense, because we don't play any games with syntax or gramar in an attempt to make it more paletable.  
+We want the user to be encoding concepts as close to the Unilang conceptual ADT as possible.  
+Programming in unicode has proven to be a good trade-off between readability and writeability.  
+I urge you to remember, that software enginering requires a lot more reading than it does writing.  
+
+
 
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
