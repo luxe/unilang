@@ -10,7 +10,7 @@ It was built to improve the efficiency of the modern software engineer.
 Syntax doesn't matter.  It never has, and it never will.    
 We eliminate syntax complexity through unique symbolic tokens.  
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
-And as a result, no matter how many tokens get added the the language,  
+As a result, no matter how many tokens get added the the language,  
 the lexical and syntatical analysis remains trivial.  
 
 Unilang comes with its own font,  
