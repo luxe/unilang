@@ -35,7 +35,7 @@ Typical programming languages are designed around trade-offs.
 Unilang refuses to make trade-offs.  Most opnions can be dual supported at the language level,  
 with code generation customization.
 
-## Install
+## Installation
 ```
 git clone git@github.com:Unilang/everything.git unilang;
 cd unilang/source;
@@ -47,4 +47,6 @@ stand-alone executables coming soon
 
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
 
+## Contribute
+Make a ticket about anything.  Try to contribute anything; we'll make it work.  
 
