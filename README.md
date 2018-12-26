@@ -30,7 +30,10 @@ We want the user to be encoding concepts as close to the Unilang conceptual ADT 
 Programming in unicode has proven to be a good trade-off between readability and writeability.  
 I urge you to remember, that software enginering requires a lot more reading than it does writing.  
 
-
+**Design choice:**
+Code is data.  We intend to make the language as close to a data structure as possible.  
+Without making yet another lisp-like language, and have you drowning in parenthesis, we  
+chose to target a conceptual ADT utilizing nested variants.  It's richer than an AST, or having everything as a list.  
 
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
@@ -39,6 +42,12 @@ You can leave many token out, and based on various configurations,
 you will get default values, automated enrichments, or descriptive errors.  
 So many languages have bad compiler errors.  You will not see these in Unilang  
 due to the rich token set and easy to understand grammar.  
+
+**Design choice:**  
+We are already set on using unique tokens for 1-1 mappings on the conceptual ADT.  
+It is trivial to parse these indepent tokens in any order so why enforce it.  
+If user's want consistency, unilang can simply tidy itself to a particular user chosen order.  
+
 
 #### 3. Code generation
 Unilang could target LLVM, output byte code for the JVM, or operate under its own interpreter.  
@@ -50,6 +59,15 @@ the more we can generisize programming concepts across the ecosystem.
 It also helps us proof that two seemingly apposing language design decisions  
 can be incorperated into the same language and chosen programatically at build time.
 
+**Design choice:**  
+This was an easy decision.  For Unilang to grow in a conceptually pure way,  
+we measure our success by our ability to transcompile to other languages.  
+It's also less work for the backend, and it lets us secretly and immediately use Unilang in industrial cirumstances.  
+We get real situations where Unilang is being used, and user's are unaware that they  
+are contributing to its success by commenting on the transcompiled format.  
+We can usually meet the needs of other programmers reading the transcompiled version  
+of Unilang by putting their opinions into the configuration of the backend transcompiler.  
+
 #### 4. Supersets Win
 Many people believe a language should have a strong and simple core,  
 followed by the advice to have libraries do the rest of the heavy lifting.  
@@ -59,6 +77,11 @@ Unilang puts as much in the language as possible, because anything that is added
 a concept that stands independent of the code that is generated.  
 Extending unilang with new tokens in a backwards-compadible, and doesn't affect the existing grammar.
 [pic]
+
+**Design choice:** 
+The more context a compiler has, the more it can do.  
+It can generate better code, give better error messages,  
+and improve static analysis.
 
 #### 5. Steal
 Unilang is not afraid to steal all the good ideas from other languages.  
