@@ -35,7 +35,7 @@ I urge you to remember, that software enginering requires a lot more reading tha
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
 Semantic analysis builds an ADT nearly identical to the tokens you write.  
-You can leave nearly any token out, and based on various configurations,  
+You can leave many token out, and based on various configurations,  
 you will get default values, automated enrichments, or descriptive errors.  
 So many languages have bad compiler errors.  You will not see these in Unilang  
 due to the rich token set and easy to understand grammar.  
