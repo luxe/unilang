@@ -61,7 +61,7 @@ pray
 leave me a ticket about how it didn't work, and we'll improve the build
 ```
 
-#### stand-alone biaries
+#### stand-alone binaries
 TODO
 
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
