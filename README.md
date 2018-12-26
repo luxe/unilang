@@ -10,13 +10,14 @@ It was built to improve the efficiency of the modern software engineer.
 Syntax doesn't matter.  It never has, and it never will.    
 We eliminate syntax complexity through unique symbolic tokens.  
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
-As a result, no matter how many features get added the the language,  
+And as a result, no matter how many tokens get added the the language,  
 the lexical and syntatical analysis remains trivial.  
 Unilang comes with its own font,  
 but users can choose their own glyphs to represent individual [code points][2].  
 Although unilang could equally be represented in a markup format such as json or yaml,   
-we provide the unilang textual frontend as it tends to look simpler,   
-allow for custom glyphs, and is easy to colorize in editors.
+we provide the unicode textual frontend as it tends to look simpler,   
+allow for custom glyphs, and is easy to colorize in editors.  
+User's can choose to write directly in this unicode format, or use the graphical system built on top of it.
 
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
