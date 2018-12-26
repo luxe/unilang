@@ -36,6 +36,7 @@ Most opinions can be dual supported at the language level,
 and chosen during code generation.
 
 ## Installation
+#### Build from source
 ```
 git clone git@github.com:Unilang/everything.git unilang;
 cd unilang/source;
@@ -43,10 +44,13 @@ bazel build --cxxopt='--std=c++17' //...:all;
 pray
 leave me a ticket about how it didn't work, and we'll improve the build
 ```
-stand-alone executables coming soon
+
+#### stand-alone biaries
+tbd
 
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
 
 ## Contribute
-Make a ticket about anything.  Try to contribute anything; we'll make it work.  
-
+There are no rules.  
+Make a ticket about anything, and we'll figure it out together.  
+Contribute anything you can.  
