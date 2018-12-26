@@ -61,7 +61,8 @@ Extending unilang with new tokens in a backwards-compadible, and doesn't affect 
 [pic]
 
 #### 5. Steal
-TODO
+Unilang is not afraid to steal all the good ideas from other languages.  
+Through its design, it avoids all of the pitfalls that current languages acrue when adding too many features.  
 
 #### 6. No trade-offs
 Typical programming languages are designed around trade-offs.  
