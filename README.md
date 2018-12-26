@@ -1,6 +1,6 @@
 # ᴜɴɪʟᴀɴɢ
 Unilang is a universal programming language.  
-It is the unification of all programming concepts without syntax.  
+It is the unification of programming concepts without syntax.  
 It is a higher level language above all high level languages.   
 It was built to improve the efficiency of the modern software engineer.    
 
@@ -8,10 +8,16 @@ It was built to improve the efficiency of the modern software engineer.
 
 #### 1.  Syntax
 Syntax doesn't matter.  It never has, and it never will.    
-We eliminate syntax complexity through unique token symbols.  
+We eliminate syntax complexity through unique symbolic tokens.  
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
-No matter how many features get added the the language (which you will find is a lot),  
-the lexical and syntax analysis remains trivial.  
+As a result, no matter how many features get added the the language,  
+the lexical and syntatical analysis remains trivial.  
+Unilang comes with its own font, but users can choose their own glyphs to represent individual [code points][2].  
+Although unilang could equally be represented in a markup format such as json or yaml, we provide this
+textual frontend as it tends to look simpler, allow for custom glyphs, and lends itself to easy syntax highlighting.
+
+Suntax highlighting is trivial.
+
 This makes code easy to read and benefits static analysis tools.  
 
 #### 2. Grammar
@@ -24,10 +30,10 @@ However, there is little reason to invest in these efforts at this time.
 We stand on the shoulder's of giants and transcompile to other languages.
 
 #### 4. Supersets Win
-tbd
+TODO
 
 #### 5. Steal
-tbd
+TODO
 
 #### 6. No trade-offs
 Typical programming languages are designed around trade-offs.  
@@ -46,9 +52,10 @@ leave me a ticket about how it didn't work, and we'll improve the build
 ```
 
 #### stand-alone biaries
-tbd
+TODO
 
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
+[2]: https://en.wikipedia.org/wiki/Code_point
 
 ## Contribute
 There are no rules.  Make a ticket about anything.  We'll figure it out together.  
