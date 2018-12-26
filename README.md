@@ -26,7 +26,8 @@ or use the graphical system built on top of it.
 You can express anything in any order assuming that it makes sense conceptually.  
 Semantic analysis builds an ADT nearly identical to the tokens you write.  
 You can leave nearly any token out, and based on various configurations,  
-you can get default values or automated enrichments.
+you will get default values, automated enrichments, or descriptive errors.  
+So many languages have bad compiler errors.  You will not see these in Unilang.  
 
 #### 3. Code generation
 Unilang could target LLVM, output byte code for the JVM, or operate under its own interpreter.  
