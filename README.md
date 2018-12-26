@@ -10,8 +10,8 @@ It was built to improve the efficiency of the modern software engineer.
 Syntax doesn't matter.  It never has, and it never will.    
 We eliminate syntax complexity through unique token symbols.  
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
-No matter how many features get added the the language (which you will see, is a lot),  
-lexical and syntax analysis remains trivial.  
+No matter how many features get added the the language (which you will find is a lot),  
+the lexical and syntax analysis remains trivial.  
 This makes code easy to read and benefits static analysis tools.  
 
 #### 2. Grammar
