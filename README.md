@@ -25,10 +25,10 @@ However, there is little reason to invest in these efforts at this time.
 We stand on the shoulder's of giants and transcompile to other languages.
 
 #### 4. Supersets Win
-...
+tbd
 
 #### 5. Steal
-...
+tbd
 
 #### 6. No trade-offs
 Typical programming languages are designed around trade-offs.  
