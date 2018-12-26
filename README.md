@@ -4,6 +4,7 @@ It is the unification of all programming concepts without syntax.
 It is a higher level language above all high level languages.   
 It was built to improve the efficiency of the modern software engineer.    
 
+## About
 Here are the core principals that guide unilang's development:  
 
 #### 1.  Syntax
@@ -11,7 +12,8 @@ Syntax doesn't matter.  It never has, and it never will.
 We eliminate syntax complexity through unique token symbols.  
 Unilang pulls from [Unicode's Private Use Area (PUA)][1].  
 No matter how many features get added the the language (which you will see, is a lot),  
-lexical/syntax analysis remains trivial.  
+lexical and syntax analysis remains trivial.  
+This makes code easy to read and benefits static analysis tools.  
 
 #### 2. Grammar
 You can express anything in any order assuming that it makes sense conceptually.  
@@ -33,4 +35,16 @@ Typical programming languages are designed around trade-offs.
 Unilang refuses to make trade-offs.  Most opnions can be dual supported at the language level,  
 with code generation customization.
 
+## Install
+```
+git clone git@github.com:Unilang/everything.git unilang;
+cd unilang/source;
+bazel build --cxxopt='--std=c++17' //...:all;
+pray
+leave me a ticket about how it didn't work, and we'll improve the build
+```
+stand-alone executables coming soon
+
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
+
+
