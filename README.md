@@ -30,7 +30,7 @@ We want the user to be encoding concepts as close to the Unilang conceptual ADT 
 Programming in unicode has proven to be a good trade-off between readability and writeability.  
 I urge you to remember, that software enginering requires a lot more reading than it does writing.  
 
-**Design choice:**
+**Design choice:**  
 Code is data.  We intend to make the language as close to a data structure as possible.  
 Without making yet another lisp-like language, and have you drowning in parenthesis, we  
 chose to target a conceptual ADT utilizing nested variants.  It's richer than an AST, or having everything as a list.  
