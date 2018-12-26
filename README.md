@@ -27,7 +27,8 @@ You can express anything in any order assuming that it makes sense conceptually.
 Semantic analysis builds an ADT nearly identical to the tokens you write.  
 You can leave nearly any token out, and based on various configurations,  
 you will get default values, automated enrichments, or descriptive errors.  
-So many languages have bad compiler errors.  You will not see these in Unilang.  
+So many languages have bad compiler errors.  You will not see these in Unilang  
+due to the rich token set and easy to understand grammar.  
 
 #### 3. Code generation
 Unilang could target LLVM, output byte code for the JVM, or operate under its own interpreter.  
@@ -40,7 +41,14 @@ It also helps us proof that two seemingly apposing language design decisions
 can be incorperated into the same language and chosen programatically at build time.
 
 #### 4. Supersets Win
-TODO
+Many people believe a language should have a strong and simple core,  
+followed by the advice to have libraries do the rest of the heavy lifting.  
+This stems from the experience of how difficult it becomes to change a language
+once so much code has been written in it.   
+Unilang puts as much in the language as possible, because anything that is added must be
+a concept that stands independent of the code that is generated.  
+Extending unilang with new tokens in a backwards-compadible, and doesn't affect the existing grammar.
+[pic]
 
 #### 5. Steal
 TODO
