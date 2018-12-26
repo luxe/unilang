@@ -36,3 +36,23 @@ std::string Get_Project_URL(){
 std::string Current_Git_Branch_Name(){
 	return execute("git rev-parse --abbrev-ref HEAD");
 }
+std::string Git_Username(){
+	return execute("git config --global user.name");
+}
+std::string Git_Hosted_User(){
+	auto str = exec("git config --get remote.origin.url");
+	std::string author;
+
+	//parse that url to get the author/organization name and repo name seperate
+	bool add_to_first = true;
+	if (!str.empty()) {
+		str.erase(0, 15);
+		for (auto const& it: str) {
+			if (it == '/') {add_to_first = false;}
+			else{
+				if (add_to_first) {author += it;}
+			}
+		}
+	}
+	return author;
+}
