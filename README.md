@@ -77,7 +77,7 @@ Unilang puts as much in the language as possible, because anything that is added
 a concept that stands independent of the code that is generated.  
 Extending unilang with new tokens in a backwards-compadible, and doesn't affect the existing grammar.
 
-**Design choice:** 
+**Design choice:**  
 The more context a compiler has, the more it can do.  
 It can generate better code, give better error messages,  
 and improve static analysis.
