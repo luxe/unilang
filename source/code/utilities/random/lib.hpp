@@ -26,6 +26,8 @@ T RandomIntFromRange(T low, T high){
     return dist(engine);
 }
 
+std::string RandomIntFromRange(std::string low_in, std::string high_in);
+
 template <typename T>
 std::string Get_Random_String(T const& password_chars, unsigned int const& length){
   std::string password;
