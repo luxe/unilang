@@ -3,7 +3,9 @@ Unilang is a universal programming language.
 It is the unification of all programming concepts without syntax.  
 It is a higher level language above all high level languages.  
 It was built to improve the efficiency of the modern software engineer.  
-![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")
+  
+Consider current language abstractions within the software enginering domain and the integration of unilang.
+![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")  
 
 ## Guiding Principles
 
