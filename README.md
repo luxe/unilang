@@ -3,6 +3,7 @@ Unilang is a universal programming language.
 It is the unification of all programming concepts without syntax.  
 It is a higher level language above all high level languages.  
 It was built to improve the efficiency of the modern software engineer.  
+![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")
 
 ## Guiding Principles
 
@@ -20,7 +21,7 @@ we provide the unicode textual frontend as it tends to look simpler,
 allow for custom glyphs, and is easy to colorize in editors.  
 User's can choose to write directly in this unicode format,  
 or use the graphical system built on top of it.  
-![alt text](.readme/unilang-look.svg "test")
+![unilang's frontend perspectives vs developer experience](.readme/unilang-look.png "test")
 
 The first point of contention people have with the language,  
 is that they cannot fire of vim and start writing in it.  
