@@ -4,7 +4,7 @@ It is the unification of all programming concepts without syntax.
 It is a higher level language above all high level languages.  
 It was built to improve the efficiency of the modern software engineer.  
   
-Consider current language abstractions within the software enginering domain and the integration of unilang.
+Consider the current language abstractions within the software enginering domain with the integration of unilang and its conceptual language model above high level languages.  
 ![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")  
 
 ## Guiding Principles
