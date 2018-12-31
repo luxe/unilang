@@ -26,4 +26,4 @@ Changes don't take effect right away, and I've seen changing the font like this 
 The private area ended at:  u10FD50 / U+10fd50  
 So I started filling in the glyph name, and unicode value myself.  
 Ok, that suddenly went away a different time I encoded into to FULL UNICODE.  
-Hipefully we can ignore his expansion note now.
+Hopefully we can ignore his expansion note now.
