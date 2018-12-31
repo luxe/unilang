@@ -9,3 +9,7 @@ std::vector<std::string> Get_HTML_Of_Site_With_Each_Line_In_Vector(std::string c
     auto it = Get_HTML_Of_Site(website);
     return Put_Each_Line_Of_String_Into_A_Vector(it);
 }
+void Send_Email(std::string const& message, std::string const& email)
+{
+	execute("echo \"" + message + "\" | mail \"" + email + "\"");
+}
