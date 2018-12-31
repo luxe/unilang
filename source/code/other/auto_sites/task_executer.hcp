@@ -1,0 +1,456 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_input"❫
+❪"git_meta_data"❫
+❪"mouse_state"❫
+❪boost/python.hpp❫
+❪"find_by_type"❫
+❪"inbox_dollars_state"❫
+❪"learn_and_earn_question"❫
+❪"python_to_cpp"❫
+❪"weighted_choice"❫
+❪"browser_creator"❫
+⚯
+❪"mouse_mover"❫
+⚞⚟
+
+
+
+◀private: static▶ Mouse_State ☀Get_Mouse_State() ❰
+    
+    std::string temp_file = "/tmp/mouse.png";
+    std::string x_location = "3";
+    std::string y_location = "6";
+    
+    
+    system("save-image-of-mouse " + temp_file);
+    auto color = execute("pixel-color-of-image " + temp_file + " " + x_location + " " + y_location);
+    std::cout << color << std::endl;
+    
+    Mouse_State state = Mouse_State::UNKNOWN;
+    return state;
+❱
+
+◀private: static▶ boost::optional<std::string> ☀Extract_Text_Through_Steps(boost::python::object & py, std::vector<Find_By_Step> const& steps)❰
+     using namespace boost::python;
+     boost::optional<std::string> result;
+     
+     std::string python_var = "thing";
+     std::string find_by_id = "find_element_by_id";
+     std::string find_by_class = "find_element_by_class_name";
+     std::string find_by_tag = "find_element_by_tag_name";
+     
+     try{
+     
+            if (steps.empty()){
+                return {};
+            }
+            
+            //extract first element from the browser
+                if (steps[0].method == Find_By_Method::ID){
+                    std::string query = python_var + " = browser." + find_by_id + "('" + steps[0].value + "')";
+                    boost::python::exec(str(query),py);
+                }
+                else if(steps[0].method == Find_By_Method::CLASS){
+                    std::string query = python_var + " = browser." + find_by_class + "('" + steps[0].value + "')";
+                    boost::python::exec(str(query),py);
+                }
+                else if(steps[0].method == Find_By_Method::TAG){
+                    std::string query = python_var + " = browser." + find_by_tag + "('" + steps[0].value + "')";
+                    boost::python::exec(str(query),py);
+                }
+            
+            
+            //further drill down element to final element
+            for (size_t i = 1; i < steps.size(); ++i){
+                
+                if (steps[i].method == Find_By_Method::ID){
+                    std::string query = python_var + " = " + python_var + "." + find_by_id + "('" + steps[i].value + "')";
+                    boost::python::exec(str(query),py);
+                }
+                else if(steps[i].method == Find_By_Method::CLASS){
+                    std::string query = python_var + " = " + python_var + "." + find_by_class + "('" + steps[i].value + "')";
+                    boost::python::exec(str(query),py);
+                }
+                else if(steps[i].method == Find_By_Method::TAG){
+                    std::string query = python_var + " = " + python_var + "." + find_by_tag + "('" + steps[i].value + "')";
+                    boost::python::exec(str(query),py);
+                }
+            }
+            
+            //extract the text
+            result = Python_To_Cpp::Extract_Python_String_From_Text_Property(py,python_var);
+    }
+    catch(...){
+        std::cout << "failed to extract" << std::endl;
+    }
+    
+    return result;
+    
+❱
+
+◀private: static▶ void ☀Go_To_Url(boost::python::object & py, const std::string & url)❰
+    boost::python::exec(boost::python::str("browser.get('" + url + "')"),py);
+❱
+
+◀private: static▶ boost::optional<std::string> ☀Get_Inbox_Dollar_Mail_Amount(boost::python::object & py)❰
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"emailsBlock");
+    steps.emplace_back(Find_By_Method::CLASS,"textBox");
+    return Extract_Text_Through_Steps(py,steps);
+❱
+
+◀private: static▶ boost::optional<std::string> ☀Get_Inbox_Dollar_Survey_Amount(boost::python::object & py)❰
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"surveysBlock");
+    steps.emplace_back(Find_By_Method::CLASS,"textBox");
+    return Extract_Text_Through_Steps(py,steps);
+❱
+◀private: static▶ boost::optional<std::string> ☀Get_Inbox_Dollar_Balance_Amount(boost::python::object & py)❰
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"earningsBlock");
+    steps.emplace_back(Find_By_Method::CLASS,"textBox");
+    return Extract_Text_Through_Steps(py,steps);
+❱
+◀private: static▶ boost::optional<std::string> ☀Get_Inbox_Dollar_Sweeps_Amount(boost::python::object & py)❰
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"sweepsBlock");
+    steps.emplace_back(Find_By_Method::CLASS,"textBox");
+    return Extract_Text_Through_Steps(py,steps);
+❱
+◀private: static▶ boost::optional<std::string> ☀Get_Inbox_Dollar_Spin_Amount(boost::python::object & py)❰
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"banked_spins");
+    steps.emplace_back(Find_By_Method::TAG,"a");
+    return Extract_Text_Through_Steps(py,steps);
+❱
+◀private: static▶ boost::optional<std::string> ☀Get_Inbox_Dollar_Survey_Token_Amount(boost::python::object & py)❰
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"survey_tokens");
+    return Extract_Text_Through_Steps(py,steps);
+❱
+
+◀private: static▶ Inbox_Dollars_State  ☀Get_Inbox_Dollar_State(boost::python::object & py)❰
+
+    //go to the page that has all the information
+    Go_To_Url(py,"https://www.inboxdollars.com/surveys");
+    
+    //web scrape some data
+    Inbox_Dollars_State state;
+    state.balance_amount = Get_Inbox_Dollar_Balance_Amount(py);
+    state.survey_amount = Get_Inbox_Dollar_Survey_Amount(py);
+    state.mail_amount = Get_Inbox_Dollar_Mail_Amount(py);
+    state.sweeps_amount = Get_Inbox_Dollar_Sweeps_Amount(py);
+    state.spins_amount = Get_Inbox_Dollar_Spin_Amount(py);
+    state.survey_token_amount = Get_Inbox_Dollar_Survey_Token_Amount(py);
+    
+    return state;
+❱
+
+
+◀private: static▶ mpz_class ☀Get_Google_Search_Results_Count(boost::python::object & py, std::string search_qurey)❰
+    
+    //go to google home page
+    Go_To_Url(py,"http://google.com");
+    std::cout << "sdfsdf" << std::endl;
+    boost::python::exec("thing = browser.find_element_by_id('lst-ib')",py);
+    std::cout << "sdfsdf" << std::endl;
+    boost::python::exec(boost::python::str("thing.send_keys('" + search_qurey + "')"),py);
+    boost::python::exec(boost::python::str("thing.send_keys(Keys.RETURN)"),py);
+    
+    std::vector<Find_By_Step> steps;
+    steps.emplace_back(Find_By_Method::ID,"resultStats");
+    auto search_amount = Extract_Text_Through_Steps(py,steps);
+    std::cout << search_amount << std::endl;
+    
+    auto tokens = Split_Into_Parts_From_Delimiter(*search_amount,' ');
+    auto number_part = tokens[1];
+    Remove_All_Instances_Of_Char(number_part,',');
+
+    mpz_class big_num(number_part);
+    std::cout << big_num << std::endl;
+    return big_num;
+❱
+
+◀private: static▶ boost::optional<Learn_And_Earn_Question> ☀Get_Learn_And_Earn(boost::python::object & py)❰
+    
+    Go_To_Url(py,"https://www.inboxdollars.com/surveys");
+    try{
+        boost::python::exec("thing = browser.find_element_by_id('LearnAndEarnIndexForm')",py);
+        std::cout << "learn and earn question exists" << std::endl;
+    }
+    catch(...){
+        return {};
+    }
+    
+    Learn_And_Earn_Question result;
+    boost::python::exec("question = thing.find_element_by_class_name('question')",py);
+    result.question = Python_To_Cpp::Extract_Python_String_From_Text_Property(py,"question");
+    std::cout << result.question << std::endl;
+    
+    
+    boost::python::exec("answers = thing.find_elements_by_class_name('text')",py);
+    boost::python::exec("number_of_answers = len(answers)",py);
+    auto number_of_answers = Python_To_Cpp::Extract_Python_Int(py,"number_of_answers");
+    std::cout << number_of_answers << std::endl;
+    
+    for (int i =0; i < number_of_answers; ++i){
+        boost::python::exec(boost::python::str("next = answers[" + std::to_string(i) + "]"),py);
+        auto answer = Python_To_Cpp::Extract_Python_String_From_Text_Property(py,"next");
+        result.answers.emplace_back(answer);
+    }
+    
+    
+    return result;
+    
+    
+    
+    
+    
+
+❱
+
+◀private: static▶ void ☀Switch_To_Next_Tab_And_Close_It(boost::python::object & py)❰
+//boost::python::exec("browser.driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + Keys.TAB)",py);
+    boost::python::exec("browser.switch_to.window(browser.window_handles[1])",py);
+    boost::python::exec("browser.close()",py);
+❱
+
+◀public: static▶ int ☀Go_To_Mail_Page_And_Get_Mail_Amount(boost::python::object & py)❰
+    Go_To_Url(py,"https://www.inboxdollars.com/mailbox");
+    auto mail_amount = Get_Inbox_Dollar_Mail_Amount(py);
+    if (!mail_amount){
+        std::cerr << "couldn't get mail amount\n";
+        return 0;
+    }
+    return std::stoi(*mail_amount);
+❱
+
+◀public: static▶ void ☀Check_All_The_Mail(boost::python::object & py)❰
+
+    auto amount = Go_To_Mail_Page_And_Get_Mail_Amount(py);
+    while (amount > 0){
+        
+        std::cout << amount << " mail left\n";
+    
+        //email ad guess
+        Sleep_For_N_Seconds(3);
+        Mouse_Mover mover;
+        mover.move_mouse({2242,521});
+        mover.click();
+        Sleep_For_N_Seconds(3);
+      
+        boost::python::exec("browser.switch_to.window(browser.window_handles[1])",py);
+        Sleep_For_N_Seconds(3);
+       Switch_To_Next_Tab_And_Close_It(py);
+       boost::python::exec("browser.switch_to.window(browser.window_handles[0])",py);
+       amount = Go_To_Mail_Page_And_Get_Mail_Amount(py);
+    }
+    
+    std::cout << amount << " mail left\n";
+    std::cout << "got all the mail\n";
+❱
+
+◀public: static▶ void ☀Take_Daily_Survey(boost::python::object & py)❰
+    //get the daily question
+    auto question = Get_Learn_And_Earn(py);
+    
+    if (!question){
+        std::cerr << "couldn't extract question" << '\n';
+    }
+    
+    
+    std::vector<Weighted_Choice> choices;
+    int count = 0;
+    for (auto answer: question->answers){
+        std::string search_query = question->question + " " + answer;
+        auto g_result = Get_Google_Search_Results_Count(py,search_query);
+        
+        //apply weight
+        Weighted_Choice choice;
+        choice.choice_number = count;
+        choice.main_google_weight = g_result;
+        choice.answer = answer;
+        choices.emplace_back(choice);
+        
+        ++count;
+    }
+    
+    std::sort(choices.begin(), choices.end(),[&](Weighted_Choice a, Weighted_Choice b){
+        return a.main_google_weight > b.main_google_weight;
+    });
+    
+    for (auto it: choices){
+        std::cout << it.choice_number << " " << it.answer << " " << it.main_google_weight << '\n';
+    }
+❱
+
+◀public: static▶ std::vector<std::string> ☀Get_Google_Trend_Searches(boost::python::object & py)❰
+    Go_To_Url(py,"https://trends.google.com/trends/topcharts");
+    Sleep_For_N_Seconds(5);
+    
+    std::cout << "sdfsfd" << std::endl;
+    boost::python::exec("answers = browser.find_elements_by_class_name('topcharts-smallchart-entity-title-in-list')",py);
+    std::cout << "sdfsfd" << std::endl;
+    
+    boost::python::exec("number_of_answers = len(answers)",py);
+    std::cout << "sdfsfd" << std::endl;
+    
+    auto number_of_answers = Python_To_Cpp::Extract_Python_Int(py,"number_of_answers");
+    std::cout << "sdfsfd" << std::endl;
+    
+    std::vector<std::string> words;
+    for (int i =0; i < number_of_answers; ++i){
+        try{
+        boost::python::exec(boost::python::str("next = answers[" + std::to_string(i) + "]"),py);
+        std::cout << "qqqq" << std::endl;
+        auto answer = Python_To_Cpp::Extract_Python_String_From_Text_Property(py,"next");
+        std::cout << "qqqq" << std::endl;
+        words.emplace_back(answer);
+        }catch(...){}
+    }
+    
+    return words;
+❱
+
+◀public: static▶ void ☀Perform_A_Search(boost::python::object & py)❰
+
+    auto words = Get_Google_Trend_Searches(py);
+    for (auto it: words){
+        std::cout << it << '\n';
+    }
+❱
+
+
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Input const& input) ❰
+
+    
+    auto py = Browser_Creator::Create();
+    
+    Check_All_The_Mail(py);
+    //Take_Daily_Survey(py);
+    //Perform_A_Search(py);
+    //Watch_Videos(py);
+    //Spin_The_Wheel(py);
+    //Redeem_Sweeps(py);
+    
+    
+    
+    
+    /*
+    
+    
+    //Sleep_For_N_Seconds(100);
+    
+    
+    //spin button
+    //Mouse_Mover mover;
+    //mover.move_mouse({1939,555});
+    //mover.click();
+    
+    }
+    */
+    
+    
+    /*
+    auto state = Get_Inbox_Dollar_State(py);
+    std::cout << state.balance_amount << std::endl;
+    std::cout << state.survey_amount << std::endl;
+    std::cout << state.mail_amount << std::endl;
+    std::cout << state.sweeps_amount << std::endl;
+    std::cout << state.spins_amount << std::endl;
+    std::cout << state.survey_token_amount << std::endl;
+    */
+    
+    
+    
+    
+    
+    /*
+    std::string python_var = "thing";
+    std::string id = "tabs";
+    std::string find_by_id = "find_element_by_id";
+    
+    boost::python::exec("browser.get('https://stackoverflow.com/users/908939/trevor-hickey')",py);
+    std::string query = python_var + " = " + "browser" + "." + find_by_id + "('" + id + "')";
+    boost::python::exec(boost::python::str(query),py);
+    std::cout << "set" << std::endl;
+    
+    boost::python::exec(boost::python::str("print thing.size['width']"),py);
+    boost::python::exec(boost::python::str("print thing.size['height']"),py);
+    boost::python::exec(boost::python::str("print thing.location['x']"),py);
+    boost::python::exec(boost::python::str("print thing.location['y']"),py);
+    std::cout << "set" << std::endl;
+    
+    std::string js_command = "";
+    
+    //jump to the bottom of the page
+    //boost::python::exec(boost::python::str("browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')"),py);
+    boost::python::exec(boost::python::str("browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')"),py);
+    std::cout << "send command" << std::endl;
+    */
+
+
+
+//rint (browser.page_source).encode('utf-8').strip()
+
+
+
+
+//python still leaks.  apparently a known bug.
+//something about static python objects?
+//what a joke. we'll call this function anyway,
+//but the memory sanitizer will still complain because people are terrible at programming
+Py_Finalize();
+    
+    
+    //survey question guessing.  
+    //decide whether it wants a right answer or wrong answer
+    //look for the word NOT
+    
+    //wrong answer: choose lowest likelyhood
+    //right answer: choose highest likelyhood
+    
+    //finding survey forwarding buttons
+    //next
+    
+    //end of survey:
+    //Please Click Here to submit your responses!
+    
+    
+    //beautiful soup:
+    //https://stackoverflow.com/questions/1936466/beautifulsoup-grab-visible-webpage-text
+    
+    //gettinfg source from browser extension:
+    //https://stackoverflow.com/questions/11684454/getting-the-source-html-of-the-current-page-from-chrome-extension
+    
+    //control chrome from command line:
+    //https://github.com/smblott-github/chromix-too
+    
+    //other ocr tools:
+    //https://askubuntu.com/questions/16268/whats-the-best-simplest-ocr-solution
+    
+    //chromium driver flags:
+    //http://www.assertselenium.com/java/list-of-chrome-driver-command-line-arguments/
+    
+    //chromedriver
+    //selenium?
+    //Protractor?
+    
+    //custom software that models a browser (SombieJs, HtmlUnit)
+    //Existing borwser layout engine:
+    //phantomjs - webkit
+    //slimerJS - gecko
+    //trifleJS - tridant
+    
+    //implementation
+    //ruby: watir / nokogiri
+    
+    //security:
+    //catching headless browsers:
+    //https://www.slideshare.net/SergeyShekyan/shekyan-zhang-owasp
+
+    //use headless webdriver: phantomjs
+
+❱
