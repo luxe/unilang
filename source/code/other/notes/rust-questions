@@ -1,0 +1,334 @@
+difference between Rust.lock and rust-lock a directory deeper.  
+The top one manages dependencies for you.  What about the other?
+
+
+how do I define my own preludes?
+
+Are preludes just a set of rust imports?
+
+
+difference between preludes importing, using.  
+"The prelude" is different than "other preludes" because "the prelude" does not automatically use?
+
+
+not returning anything is an empty tuple?  Does the concept of void exist?
+
+Are macros in rust, like templates in C++?
+
+
+What exactly is a variable binding?
+- variable bindings are like variables but have a few other tricks up their sleeve.
+
+
+> let doesn’t take a name on the left hand side of the assignment, it actually accepts a ‘pattern’. We’ll use patterns later.
+me: So I guess the identifier is actually a "pattern"..?
+
+
+Can't I chain calls to ::new() somehow?  since they are basically static methods of the type.  
+Maybe you can't call static methods from an actual instantiation.
+
+
+Extend the C/C++ parameter pass table with rust.
+
+What is the special rust annotation that io:;Result uses to warn when the result in used?
+
+
+Why do traits need their crates used?  Why can't they be scoped like the functions and such?
+example:
+use std::io;
+use rand::Rng;
+
+fn main() {
+    println!("Guess the number!");
+
+    let secret_number = rand::thread_rng().gen_range(1, 101);
+    //...
+    
+    
+Why do I have to specify the thread when getting a local copy of a random number generator?
+> We use the rand::thread_rng() function to get a copy of the random number generator,
+> which is local to the particular thread of execution we're in.
+
+
+
+
+are enums variants?  Nah, they are the same type right?  Or are the sum types?
+enum Foo {
+    Bar,
+    Baz,
+}
+With this definition, anything of type Foo can be either a Foo::Bar or a Foo::Baz. We use the :: to indicate the namespace for a particular enum variant.
+
+
+Is pattern matching a superset of switch statements?
+
+
+
+I learned that:
+let <pattern> = value
+
+
+
+
+rust bindings are required to have a value?  They can't be uninitalized like in C/C++?  Effeciency concern?
+
+
+
+can you return values from main?
+
+
+return value deducing functions in rust?  like auto return types in C++
+
+
+> Rust the value of an assignment is an empty tuple () because the assigned value can have only one owner, 
+> and any other returned value would be too surprising:
+
+doesn't that make different kind of chaining difficult? c = a =d =f =;
+
+
+
+note to self:  
+assignment, and end of statements(;) return empty tuples
+
+
+a function that never returns is said to have diverged
+
+
+a diverged type(if you can even call it a type), is like a std::any type.  
+since you can assign any binding to any functon that diverges.
+Isn't it a bit misleading, that you are assigning a binding to something that will never happen?
+
+
+what exactly are scalar values? in the context of rust?
+
+
+do unsigned ints use modular arithmetic like in C++?
+any implict casting rules?
+
+
+
+how to use the //! rust comment
+
+
+let y = if x == 5 { 10 } else { 15 }; // y: i32
+//can we duduce different return types in a let statement?
+
+
+
+> if without an else always results in () as the value.
+Shouldn't it result in the evaluation of the if body expression?  and an empty tuple if false?
+
+
+
+You can use () and [] in function calls interchangeably?!
+
+
+
+
+
+
+
+
+
+
+
+
+
+How is this dynamic dispatch?
+
+fn call_print_static<T: Print>(t: &T){
+    t.print();
+}
+
+fn call_print_dynamic(p: &Print){
+    p.print();
+}
+
+fn main() {
+    let f = Foo::new(42);
+    call_print_static(&f);
+    call_print_static(&42);
+
+    call_print_dynamic(&f as &Print);
+    call_print_dynamic(&42 as &Print);
+}
+
+
+
+
+Why do arrays have get() and get_mut()?
+
+When pattern matching, are the matches types?  Is Some and None a type of a type, or are the values of a type?  Or can pattern matches accept either?
+
+
+
+
+Figure out all of C++ lvalue rvalue prvalue gvalue stuff
+
+
+
+
+rust has two references?  to represent ownership(memory problems) and sharing(concurrency problems)?
+
+
+
+Family of types from "Rust: Systems Programming for Everyone" 16:55
+Ownership              T
+Esclusive access  &mut T ("mutable")
+Shared access     &    T ("read-only")
+
+
+
+
+Why does having a read-only reference take away write privledges from the owner?  
+Because of multi-threading.  Right.. but can't the compiler detect the situation in a single threaded situation, and make it ok?
+
+
+
+What are athese kinds of shared ownerships?
+TypedAreana<T> Cow<T> 
+Rc<T> vs Arc<T>
+
+
+
+when people talk about lock free data structures, are those just data structures that use locks internally lol?
+
+
+what is rust  phantom data?
+
+
+
+C++:
+are stack frame sizes always known by the compiler?  
+Because it seems like they wouldn't be with the stack_array propsal?  
+Is there anything currently that exibits unknown stack size.
+
+
+
+
+stack unsized hetro
+stack sized hetro
+stack unsized homo
+stack sized homo
+
+
+
+heap sized hetro
+heap unsized hetro
+heap sized homo
+heap unsized homo
+
+
+
+
+Created On (Stack | Heap)
+Can Grow   (Yes | No)   -- statically sized?
+Elements   (Hetro | Homo)
+
+
+std::variant
+std::any
+std::optional
+stack_array
+
+
+
+                                 Homogeneous                       | Heterogenous
+Compile-Time Fixed    (Stack)    std::array<T>                     | std::tuple<T,E,...>
+Compile-Time Fixed    (Heap)     std::unique_ptr<std::array<T,N>>  | std::unique_ptr<std::tuple<T,E,...>>
+Compile-Time Dynamic  (Stack)    N/A                               | N/A
+Compile-Time Dynamic  (Heap)     N/A                               | N/A
+Run-Time     Fixed    (Stack)    N/A                               | N/A
+Run-Time     Fixed    (Heap)     N/A                               | N/A
+Run-Time     Dynamic  (Stack)    ?                                 | ?
+Run-Time     Dynamic  (Heap)     std::vector<T>                    | std::vector<std::any>
+
+
+
+
+
+comparables of ownership, borrowing, and lifetimes
+
+
+
+make programming videos
+
+
+
+
+how do I know if something was copied or moved?  The syntax is the same during the assignment.
+let v = 1;
+let v2 = v;
+println!("v is: {}", v);
+
+
+
+
+
+pass by ownership, (shared borrowing, and mutable borrowing)
+
+
+
+When would I decide actually showing the lifetime or allowing lifetime elision?
+If you leave out the lifwtiem syntax, are the parameters always given unique lifetimes?
+From the webpage: "Each elided lifetime in a function's arguments becomes a distinct lifetime parameter."
+
+Is 'static added'static implicitly as well (only on string literals?   since they are put in the data segment)
+Can you double static something with both a lifetime and the static keyword?
+
+
+Arc give exterior mutability and cell give interior mutability?
+
+
+when do I use string_view?  when I want my function to take both strings and char*?
+
+Can a non-primive be constexpr?
+struct A{
+  constexpr ...
+  constexpr ...
+}
+
+func(constexpr A){
+}
+
+
+
+what kind of sfinae problems does constexpr if not provide any benefit for?
+
+BoostCon has more C++ videos
+D has videos: https://www.youtube.com/playlist?list=PL3jwVPmk_PRyTWWtTAZyvmjDF4pm6EX6z
+
+
+
+will sizeof() ever give different values based on compiler optimizations?
+
+why does deallocate need to pass in the number of elements?
+
+
+difference between a global static thread_local and a global thread_local
+
+get $611 from Gabby Sverchek
+611-275.69 = 335.31
+wanted the money popped instead.
+Still 611
+Developer on Fire podcast 
+
+
+
+types:
+structural vs. nominal
+Higher-rank and higher-kinded types
+parametric polymorphism
+parametric polymorphism introduces functions from types to values, and type operators are functions from types to types.
+
+
+
+data members in UniLang:
+https://en.wikipedia.org/wiki/Interface_description_language
+
+bg music:
+http://imgur.com/gallery/i7317
+
+
+c++
+can the oprimizer remove calls to new/delete ?
