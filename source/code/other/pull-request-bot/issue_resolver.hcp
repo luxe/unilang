@@ -1,0 +1,63 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"current_issue"❫
+❪"processing_settings"❫
+❪"process_spawner"❫
+❪"branch_name_deriver"❫
+❪"code_submit_data"❫
+⚯
+❪"sleeper"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Wait_Until_Current_Issue_Is_Resolved(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+
+    bool issue_resolved = false;
+    while(!issue_resolved){
+        issue_resolved = Issue_Has_Been_Resolved(task,issue,settings);
+        Sleeper::Delay_Before_Rechecking_If_An_Issue_Is_Resolved(settings.workflow.delays);
+        Make_Sure_We_Are_Up_To_Date_And_Handle_Any_Merge_Conflicts(task,issue,settings);
+    }
+❱
+
+◀private: static▶ bool ☀Issue_Has_Been_Resolved(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+    
+    //the issue is automatically resolved if we don't have one yet
+    if (!issue.Exists()){ return true; }
+    
+    //otherwise we want to check if the issue is resolved by looking online or checking by checking the git repo.
+    //there are few ways to do this.  
+    //we can:  
+    //1. check the issue branch and see if it has been merged into dev
+    //2. We can check the jira issue and see if it has been transitioned into "Code Integrated"
+    //(keep in mind, an issue can be merged but not transitioned)  
+    //I've had a few instances where someone merged in my branch, but an admin never transitioned the issue for me.  
+    //I'm not saying we couldn't use that as a signifier, but method 3 seems the most promising.  
+    //3.  Query bit bucket for the list of current pull-requests.  check to see if our pull-request is still there or not.  
+    //If it's not, it's either been accepted and merged, or rejected.  Either way, that took it off the pull-request page.
+    //All of these should be possible, but we'll see what the 3rd party libraries provide.
+    return Issue_Has_Been_Merged(task,issue,settings);
+❱
+
+◀private: static▶ bool ☀Issue_Has_Been_Merged(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+    return Issue_Has_Been_Merged_Via_Command_Line_Git_Check(task,issue,settings);
+❱
+
+◀private: static▶ bool ☀Issue_Has_Been_Merged_Via_Command_Line_Git_Check(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+    
+    //this is the git "has been merged" command line strategy of detecting that a branch has been merged (method 1)
+    //we check for merged branches and grep for the branch to see if its merged
+    //if we get output back, we can assume that the branch has been merged
+    auto branch_name = Branch_Name_Deriver::Derive_Branch_Name(task,issue,settings);
+    auto results = Process_Spawner::Execute_And_Get_Back_Results("git branch --merged development | grep " + branch_name);
+    
+    //TODO: check for the actual string match that we expect
+    return !results.stdout.empty();
+❱
+
+◀public: static▶ void ☀Make_Sure_We_Are_Up_To_Date_And_Handle_Any_Merge_Conflicts(Code_Submit_Data const& task, Current_Issue & issue, Processing_Settings const& settings) ❰
+❱
+
+
+

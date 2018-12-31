@@ -1,0 +1,32 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_options"❫
+⚯
+❪"workflow_initializer"❫
+❪"task_workload_creator"❫
+❪"workload_runner"❫
+⚞⚟
+
+//entry point of program after command line parsing:
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options) ❰
+    
+    //create the workload which is a set of code tasks for the bot to perform,
+    //it also contains settings on how to perform them
+    auto workload = Task_Workload_Creator::Create(program_options);
+
+    //make sure we are in the right repo, and on the right branch, so that our bot is ready to go.
+    //Warning: The bot must be running in its own version of a git repo
+    //The bot is going to switch branches and make commits like a regular developer.
+    //A developer can not expect to work in the same repo while the bot is running.
+    Workflow_Initializer::Prepare_Initial_Setup_Before_Performing_Workflow(workload);
+    
+    //once the workload is created, we will make pull-requests forever.
+    //the workflow for each task in our workload, will look something like this:
+    //discover->create-issue->create-branch->solve-issue->make pull-request->wait-for-merge
+    //if we discover that we can't make a particular code change (because it would have no effect),
+    //we happily move on and attempt the next task in the workload.  
+    //If the codebase quality is good, I expect the bot to not be making pull-requests very often.  
+    //It's only after a real user merges in code, that the bot may discover changes that it can make.
+    Workload_Runner::Keep_Making_Pull_Requests_Forever(workload);
+❱
