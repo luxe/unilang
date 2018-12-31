@@ -1,0 +1,70 @@
+class
+❪"systems"❫
+❪"program_input"❫
+❪"utilities"❫
+❪"repository"❫
+⚯
+❪"repository_getter"❫
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Input const& input) ❰
+
+    //make sure at least one user name is passed for backup
+    if (input.options.usernames.empty() && input.options.organizations.empty()){
+        Exit_With_Error("You need to pass at least one username or one organization");
+    }
+	
+	//backup everything passed into the command line
+	Backup_All_Specified_User_And_Group_Repos(input);
+
+❱
+◀private: static▶ void ☀Backup_All_Specified_User_And_Group_Repos(Program_Input const& input) ❰
+
+    //backup all the repos for each user
+    for (auto const& user: input.options.usernames){
+        Backup_Repo(user);
+        Possibly_Create_A_Zip(input.options,user);
+    }
+    
+    //backup all the repos for each organization
+    for (auto const& user: input.options.organizations){
+        Backup_Organization(user);
+        Possibly_Create_A_Zip(input.options,user);
+    }
+❱
+
+◀private: static▶ void ☀Backup_Repo(std::string const& user_name) ❰
+
+    auto repos = Repository_Getter::Get_Repos_Of_User(user_name);
+    Download_All_Repos(repos,user_name);
+❱
+◀private: static▶ void ☀Backup_Organization(std::string const& user_name) ❰
+
+    auto repos = Repository_Getter::Get_Repos_Of_Organization(user_name);
+    Download_All_Repos(repos,user_name);
+❱
+
+◀private: static▶ void ☀Download_All_Repos(std::vector<Repository> const& repos, std::string const& user_name)❰
+
+    std::cout << "Downloading " << repos.size() << " repos from " << user_name << "..." << std::endl;
+    execute_quietly("mkdir " + user_name + "_backup");
+
+
+    auto current_path = Current_Path();
+    Set_Path(user_name + "_backup");
+    for (size_t i = 0; i < repos.size(); ++i){
+        std::cout << "[" << i+1 << "/" << repos.size() << "] " << repos[i].Repo_Name() << std::endl;
+        execute_quietly("git clone " + repos[i].SSH_URL());
+    }
+    Set_Path(current_path);
+❱
+
+◀private: static▶ void ☀Possibly_Create_A_Zip(Composed_Program_Options const& program_options, std::string const& user_name) ❰
+  if (program_options.zip){
+
+    //create zip
+    Make_Tar_GZ_File(user_name + "_backup");
+    
+    //delete normal folder
+    execute_quietly("rm -rf " + user_name + "_backup");
+  }
+❱
