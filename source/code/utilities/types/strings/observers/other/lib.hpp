@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <algorithm>
+#include <iostream>
 
 
 //searching
@@ -19,3 +21,10 @@ std::string Get_Substring_Found_Between_First_Instance_Of_Two_Characters(std::st
 //scanning from the front
 std::string Get_All_Beginning_Characters_Until_Capital_Letter(std::string const& str);
 bool First_Char_Comes_Before_Second_Char(std::string const& s, char const& c1, char const& c2);
+
+template <typename T>
+void Alphabetize_And_Print(std::vector<T> results){
+	std::sort(results.begin(),results.end());
+	for (auto const& it: results){std::cout << it << '\n';}
+	return;
+}

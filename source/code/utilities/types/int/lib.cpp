@@ -8,4 +8,5 @@ unsigned long reverse_bits(unsigned long num) {
     num = ((num >> s) & mask) | ((num << s) & ~mask);
   }
   return num;
+}
 
