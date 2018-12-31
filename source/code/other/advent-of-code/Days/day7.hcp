@@ -1,0 +1,192 @@
+class
+❪"utilities"❫
+❪"systems"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Go()❰
+  auto input = Read_Each_Line_Of_File_Into_Vector("data/7.txt");
+  Remove_All_Empty_String_Elements(input);
+  
+  int total=0;
+  for (auto it: input){
+    auto insides = Get_Insides(it);
+    auto outsides = Get_Outsides(it);
+    
+    
+    
+    //get the ABAs
+    std::vector<std::string> inside_finds;
+    std::vector<std::string> outside_finds;
+    for (auto x: insides){inside_finds += All_ABA_Patterns(x);}
+    for (auto x: outsides){outside_finds += All_ABA_Patterns(x);}
+    
+    bool found = false;
+    for (auto x: inside_finds){
+        if (!found){
+            for (auto y: outside_finds){
+                if (Is_ABA_BAB_Pair(x,y)){
+                    total++;
+                    found = true;
+                    break;
+                }
+            }
+        }
+        else{
+            break;
+        }
+    }
+    
+    
+  }
+  std::cout << total << std::endl;
+❱
+
+
+
+
+◀private: static▶ std::vector<std::string> ☀Get_Insides(std::string const& str)❰
+    std::vector<std::string> found;
+    std::string temp;
+    bool outside=true;
+    for (auto it: str){
+        if (it == '['){
+            outside = false;
+        }
+        else if(it == ']'){
+            outside = true;
+            found.push_back(temp);
+            temp.clear();
+        }
+        else{
+            if (!outside){
+                temp+= it;
+            }
+        }
+    }
+    
+    if (!temp.empty()){
+        found.push_back(temp);
+    }
+    
+    return found;
+❱
+◀private: static▶ std::vector<std::string> ☀Get_Outsides(std::string const& str)❰
+    std::vector<std::string> found;
+    std::string temp;
+    bool outside=true;
+    for (auto it: str){
+        if (it == '['){
+            outside = false;
+            found.push_back(temp);
+            temp.clear();
+        }
+        else if(it == ']'){
+            outside = true;
+        }
+        else{
+            if (outside){
+                temp+= it;
+            }
+        }
+    }
+    
+    if (!temp.empty()){
+        found.push_back(temp);
+    }
+    
+    return found;
+❱
+
+
+
+
+
+◀private: static▶ std::vector<std::string> ☀All_ABA_Patterns(std::string const& str)❰
+    std::string test;
+    std::vector<std::string> all;
+    for (auto it: str){
+        test+=it;
+        if(test.size() > 3){Remove_First_Char(test);}
+        
+        if (test.size() == 3){
+            if (Is_ABA_Pattern(test)){
+                all.push_back(test);
+            }
+        }
+        
+    if (test.size() > 3){
+        Exit_With_Error("string should not have length > 4");
+    }
+    }
+    return all;
+❱
+◀private: static▶ bool ☀Contains_ABBA_Pattern(std::string const& str)❰
+    std::string test;
+    for (auto it: str){
+        test+=it;
+        if(test.size() > 4){Remove_First_Char(test);}
+        
+        if (test.size() == 4){
+            if (Is_ABBA_Pattern(test)){
+                return true;
+            }
+        }
+        
+    if (test.size() > 4){
+        Exit_With_Error("string should not have length > 4");
+    }
+    }
+    return false;
+❱
+
+
+
+
+
+
+
+◀private: static▶ bool ☀Is_ABBA_Pattern(std::string const& str)❰
+
+    if (str.size() != 4){
+        Exit_With_Error("Is_ABBA_Pattern called with string length != 4");
+    }
+    
+    
+    if (str[0] == str[3]){
+        if (str[1] == str[2]){
+            
+            if (str[0] != str[1]){
+                return true;
+            }
+        }
+    }
+    
+    return false;
+❱
+
+◀private: static▶ bool ☀Is_ABA_Pattern(std::string const& str)❰
+
+    if (str.size() != 3){
+        Exit_With_Error("Is_ABBA_Pattern called with string length != 3");
+    }
+    
+    
+    if (str[0] == str[2]){
+            
+        if (str[0] != str[1]){
+            return true;
+        }
+    }
+    
+    return false;
+❱
+
+◀private: static▶ bool ☀Is_ABA_BAB_Pair(std::string const& str1, std::string str2)❰
+    if ((str1[0] == str1[2]) && str1[0] == str2[1]){
+        if ((str2[0] == str2[2]) && str2[0] == str1[1]){
+            return true;
+        }
+    }
+    return false;
+❱
