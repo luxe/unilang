@@ -11,7 +11,7 @@ Unilang and its conceptual model are placed above these high level languages.
 ## The structure of language
 Many programming languages represent their syntatic input as a tree.  
 Other languages like lisp and its derivations represent input as a list.  
-Unilang uses a specifically composed set of abstract data types.  
+Unilang uses a specifically composed set of algebraic data types.  
 
 ## Guiding Principles
 
