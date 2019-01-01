@@ -10,9 +10,12 @@ Unilang and its conceptual model are placed above these high level languages.
 
 ## The structure of language
 Many programming languages represent their syntatic structure as an abstract syntax tree.  
-Other languages like lisp and its derivations structure choose nested lists.  
+Other languages like lisp and its derivations chose nested lists.  
 The structure of unilang is a composed set of algebraic data types.  
-Generic data structures such as trees and lists have proven insufficient for semantic analysis.  
+This is because g,eneric data structures such as trees and lists have proven insufficient for semantic analysis.  
+Engineers do not think about software in a grammatical terms.  
+The have conceptual models of functions, objects, data, control flow which they encode in an agreed upon way.  
+fix ^
 
 ## Guiding Principles
 
