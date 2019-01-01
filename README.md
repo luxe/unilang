@@ -9,9 +9,10 @@ Unilang and its conceptual model are placed above these high level languages.
 ![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")  
 
 ## The structure of language
-Many programming languages represent their syntatic input as a tree.  
-Other languages like lisp and its derivations represent input as a list.  
-Unilang uses a specifically composed set of algebraic data types.  
+Many programming languages represent their syntatic structure as a tree.  
+Other languages like lisp and its derivations structure the user's input as a list.  
+Unilang chooses a specifically composed set of algebraic data types.  
+Generic data structures such as trees and lists are insufficient for semantic analysis.  
 
 ## Guiding Principles
 
