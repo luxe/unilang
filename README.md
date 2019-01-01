@@ -8,6 +8,11 @@ Consider the current language abstractions within the software engineering domai
 Unilang and its conceptual model are placed above these high level languages.  
 ![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")  
 
+## The structure of language
+Many programming languages represent their syntatic input as a tree.  
+Other languages like lisp and its dialects represent input as a list.  
+Unilang uses a specifically composed abstract data types.  
+
 ## Guiding Principles
 
 #### 1.  Syntax
