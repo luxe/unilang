@@ -14,15 +14,12 @@ Unilang and its conceptual model are placed above these high level languages.
 Many programming languages represent their syntatic structure as an abstract syntax tree.  
 Other languages like Lisp and its derivations choose nested lists.  
 The structure of unilang is a composed set of algebraic data types.  
-IThis is a subtle but important distinction.  
+This is a subtle but important distinction.  
 An ADT models the concise structure and shape of programming concepts.    
 This allows us to work backwards and enable programmers to effeciently populate this structure.  
 Trying to contort a variety of programming concepts syntatically, and then extracting them out with regular expressions and grammars into generic data structures such as trees and lists has proven insufficient for semantic analysis.  
 This is the reason that parsing errors are often confusing and unhelpful.  
 ![choosing the unilang structure](.readme/choosing-structure.png "test")
-
-
-Semantic analysis is hindered because multiple language tokens must be combined to form concrete representations
 
 ## Guiding Principles
 
