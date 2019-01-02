@@ -14,7 +14,13 @@ Unilang and its conceptual model are placed above these high level languages.
 Many programming languages represent their syntatic structure as an abstract syntax tree.  
 Other languages like lisp and its derivations choose nested lists.  
 The structure of unilang is a composed set of algebraic data types.  
-This is because generic data structures such as trees and lists have proven insufficient for semantic analysis.  
+The subtle distinction is that it more appropiately models the   
+concise structure and shape of programming concepts.  
+Relying on generic data structures such as trees and lists has proven insufficient for semantic analysis.
+In particular it takes multiple
+
+
+Semantic analysis is hindered because multiple language tokens must be combined to form concrete representations
 The reason that parsing errors are often confusing and unhelpful, is because they are limited
 
 ## Guiding Principles
