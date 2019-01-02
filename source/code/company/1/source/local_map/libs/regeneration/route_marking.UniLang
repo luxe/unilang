@@ -447,38 +447,30 @@ Mainly used for testing􏶡
 􏶜mr􏶝􏷆route_selections􏷅􏷄to􏷃􏷀the route selections which will contain all of the unique elements between the two􏶿
 􏶜􏶝􏷆route_selections􏷅􏷄from􏷃􏷀the route selections used to merge into the other􏶿
 􏶴
-    /*
-    // merge
+    // structure to avoid duplicates when merging
     std::unordered_map<size_t,std::set<std::string>> merged_selections;
-    auto safe_insert = [&](lane_selection const& selection){
+    auto safe_merge = [&](lane_selection const& selection){
         if (merged_selections.find(selection.index) != merged_selections.end()){
-            merged_selections[selection.index].emplace(selection.reason);
+            􏵲merge􏵳merged_selections[selection.index],selection.reason_collection);
         }
         else {
-            merged_selections.insert({selection.index,{selection.reason}});
+            merged_selections.insert({selection.index,selection.reason_collection});
         }
     };
     
+    // merge lane selections
     for (auto const& it: to.lane_sequence){
-        safe_insert(it);
+        safe_merge(it);
     }
     for (auto const& it: from.lane_sequence){
-        safe_insert(it);
+        safe_merge(it);
     }
     
-    // rebuild (flatten reasons)
+    // adapt existing container
     to.lane_sequence.clear();
-    for (auto const& it: merged_selections){
-        lane_selection selection;
-        selection.index = it.first;
-        for (auto const& reason: it.second){
-            selection.reason += reason;
-        }
-        to.lane_sequence.emplace_back(selection);
+    for (auto const& it: merged_selections){;
+        to.lane_sequence.emplace_back(it.first,it.second);
     }
-    */
-    
-    
 􏶳
 
 􏷘+􏷗􏷒as lane indexes􏷑
@@ -513,7 +505,7 @@ Mainly used for testing􏶡
     //ARRANGE
     route_selections selections;
     for (size_t i = 0; i < 10; i+=2){
-        selections.lane_sequence.emplace_back(i,"test");
+        selections.lane_sequence.emplace_back(i,std::set<std::string>{"test"});
     }
     
     //ACT
@@ -533,7 +525,7 @@ Mainly used for testing􏶡
     s.SetComplexityN(s.range(0));
     local_map::statik::route_selections selections;
     for (size_t i = 0; i < s.range(0); ++i){
-        selections.lane_sequence.emplace_back(i,"test");
+        selections.lane_sequence.emplace_back(i,std::set<std::string>{"test"});
     }
 􏱼
 􏱹local_map::statik::as_lane_indexes(selections)􏱺
