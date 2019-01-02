@@ -22,8 +22,14 @@ This is the reason that parsing errors are often confusing and unhelpful.
 ![choosing the unilang structure](.readme/choosing-structure.png "test")
 
 ## Direct semantic encoding (syntax considered harmful)
+TODO.  
+essentially end at a markup language.  
+markup language is great from the compilers perspective,
+but terrible from the programmers perspective.  
+Explain how we fix this.  
 
 ## Guiding Principles
+All of these need adjusted and organized
 
 #### 1.  Syntax
 Syntax doesn't matter.  It never has, and it never will.    
