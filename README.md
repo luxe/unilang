@@ -19,6 +19,8 @@ An ADT models the concise structure and shape of programming concepts.
 This allows us to work backwards and enable programmers to effeciently populate this structure.  
 Trying to contort a variety of programming concepts syntatically, and then extracting them out with regular expressions and grammars into generic data structures such as trees and lists has proven insufficient for semantic analysis.  
 This is the reason that parsing errors are often confusing and unhelpful.  
+It is the reason that community tooling on code transformation is often limited.  
+Most importantly, its the reason a language's evolution stagnates as more abstract concepts are squeezed into an existing syntax and grammar.  
 ![choosing the unilang structure](.readme/choosing-structure.png "test")
 
 ## Direct semantic encoding (syntax considered harmful)
