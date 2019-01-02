@@ -21,6 +21,8 @@ Trying to contort a variety of programming concepts syntatically, and then extra
 This is the reason that parsing errors are often confusing and unhelpful.  
 ![choosing the unilang structure](.readme/choosing-structure.png "test")
 
+## Direct semantic encoding (syntax considered harmful)
+
 ## Guiding Principles
 
 #### 1.  Syntax
