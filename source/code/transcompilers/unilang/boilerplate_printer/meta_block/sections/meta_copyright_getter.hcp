@@ -1,5 +1,4 @@
 class
-
 ❪string❫
 ❪utility❫
 ❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
@@ -36,24 +35,40 @@ class
             str += " ";
         }
         
-        std::string date_part = Get_Date_Part(options.print_method,options.start_date,options.end_date,options.year_separator);
+        std::string date_part = Get_Date_Part(options.print_method,options);
         Append_With_Newline(str,date_part + options.copyright_date_suffix_statement);
     }
     
     return str;
 ❱
 
-◀private: static▶ std::string ☀Get_Date_Part(Meta_Copyright_Print_Method const& method, std::string start, std::string end, std::string year_separator)❰
+◀private: static▶ std::string ☀Get_Date_Part(Meta_Copyright_Print_Method const& method, Meta_Copyright_Tag_Options const& options)❰
     std::string str;
     
     switch (method){
-        case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_ONLY: str+=start; break;
-        case Meta_Copyright_Print_Method::DERIVED_START_DATE_ONLY: str+=std::to_string(Current_Year()); break;
-        case Meta_Copyright_Print_Method::SPECIFIED_DATE_RANGE: str+=start + year_separator + end; break;
-        case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_WITH_DERIVED_END_DATE: str+=start + year_separator + std::to_string(Current_Year()); break;
+        case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_ONLY: str+=options.start_date; break;
+        case Meta_Copyright_Print_Method::DERIVED_START_DATE_ONLY: str+=Get_Derived_Start_Date(options); break;
+        case Meta_Copyright_Print_Method::SPECIFIED_DATE_RANGE: str+=options.start_date + options.year_separator + options.end_date; break;
+        case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_WITH_DERIVED_END_DATE: str+=options.start_date + options.year_separator + Current_Year_As_String(); break;
         default:;
     }
     
     
     return str;
+❱
+
+
+◀private: static▶ std::string ☀Get_Derived_Start_Date(Meta_Copyright_Tag_Options const& options)❰
+    
+    std::string year;
+    if (options.preserve_creation_date_when_deriving_start_date){
+    }
+    else{
+        year = Current_Year_As_String();
+    }
+    return year;
+❱
+
+◀private: static▶ std::string ☀Current_Year_As_String()❰
+    return std::to_string(Current_Year());
 ❱
