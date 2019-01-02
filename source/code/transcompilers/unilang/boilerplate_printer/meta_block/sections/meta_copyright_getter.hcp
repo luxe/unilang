@@ -4,11 +4,13 @@ class
 ❪"code/transcompilers/unilang/structure/sections/meta/meta_section"❫
 ❪"code/transcompilers/unilang/options/sections/meta/meta_options"❫
 ⚯
+❪fstream❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/time/calendar/tm_wrappers/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(Meta_Copyright_Tag_Options const& options, std::vector<Organization> const& orgs)❰
+◀public: static▶ std::string ☀Get(Meta_Copyright_Tag_Options const& options, std::vector<Organization> const& orgs, std::string const& file_name)❰
     std::string str;
     if (options.print){
         
@@ -35,19 +37,19 @@ class
             str += " ";
         }
         
-        std::string date_part = Get_Date_Part(options.print_method,options);
+        std::string date_part = Get_Date_Part(options.print_method,options,file_name);
         Append_With_Newline(str,date_part + options.copyright_date_suffix_statement);
     }
     
     return str;
 ❱
 
-◀private: static▶ std::string ☀Get_Date_Part(Meta_Copyright_Print_Method const& method, Meta_Copyright_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Date_Part(Meta_Copyright_Print_Method const& method, Meta_Copyright_Tag_Options const& options, std::string const& file_name)❰
     std::string str;
     
     switch (method){
         case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_ONLY: str+=options.start_date; break;
-        case Meta_Copyright_Print_Method::DERIVED_START_DATE_ONLY: str+=Get_Derived_Start_Date(options); break;
+        case Meta_Copyright_Print_Method::DERIVED_START_DATE_ONLY: str+=Get_Derived_Start_Date(options,file_name); break;
         case Meta_Copyright_Print_Method::SPECIFIED_DATE_RANGE: str+=options.start_date + options.year_separator + options.end_date; break;
         case Meta_Copyright_Print_Method::SPECIFIED_START_DATE_WITH_DERIVED_END_DATE: str+=options.start_date + options.year_separator + Current_Year_As_String(); break;
         default:;
@@ -58,15 +60,19 @@ class
 ❱
 
 
-◀private: static▶ std::string ☀Get_Derived_Start_Date(Meta_Copyright_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Derived_Start_Date(Meta_Copyright_Tag_Options const& options, std::string const& file_name)❰
     
-    std::string year;
     if (options.preserve_creation_date_when_deriving_start_date){
+        const auto date_file = file_name + ".date";
+        if (File_Exists(date_file)){
+            std::ifstream infile(date_file);
+            std::string line;
+            std::getline(infile,line);
+            return line;
+        }
     }
-    else{
-        year = Current_Year_As_String();
-    }
-    return year;
+    
+    return Current_Year_As_String();
 ❱
 
 ◀private: static▶ std::string ☀Current_Year_As_String()❰

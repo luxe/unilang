@@ -44,12 +44,13 @@ hcp(name = "meta_copyright_getter", deps = [
 "//code/transcompilers/unilang/options/sections/meta:meta_options",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/time/calendar/tm_wrappers:lib",
+"//code/utilities/filesystem/files/observers/lstat_wrap:lib"
 ])
 
 hcp(name = "meta_copyright_statement_getter", deps = [
 "//code/transcompilers/unilang/structure/sections/meta:meta_section",
 "//code/transcompilers/unilang/options/sections/meta:meta_options",
-"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/types/strings/transformers/appending:lib"
 ])
 
 hcp(name = "meta_distribution_statement_getter", deps = [
