@@ -16,6 +16,7 @@ class
 ❪"code/transcompilers/unilang/compiler-frontends/hidl/hidl_exporter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/cpp/cpp_exporter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/hidl/hidl_options_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/date/date_exporter"❫
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/bazel_options_getter"❫
 ❪"code/transcompilers/unilang/options/bazel/language_to_build_object"❫
 ❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
@@ -75,12 +76,11 @@ class
 	auto unit = Decide_Exporter_Settings(input);
     
     
+    // "High Level Languages"
     // C related
     std::vector<std::string> created_files;
     if (input.options.user_chosen_export_settings.language == "c"){
     }
-    
-    
     
     // C++ related
     else if(input.options.user_chosen_export_settings.language == "cpp"){
@@ -102,11 +102,18 @@ class
     }
     else if(input.options.user_chosen_export_settings.language == "rust"){
     }
+    else if(input.options.user_chosen_export_settings.language == "processing"){
+        created_files += Processing_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.processing);
+    }
+    
+    // IDLs
     else if(input.options.user_chosen_export_settings.language == "hidl"){
         created_files += Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl);
     }
     else if(input.options.user_chosen_export_settings.language == "protobuf"){
     }
+    
+    // Documentation
     else if(input.options.user_chosen_export_settings.language == "plant_uml"){
         created_files += Plant_Uml_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.plant_uml);
     }
@@ -119,18 +126,19 @@ class
     else if(input.options.user_chosen_export_settings.language == "treesheets"){
         //created_files += Treesheets_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.treesheets);
     }
-    else if(input.options.user_chosen_export_settings.language == "processing"){
-        created_files += Processing_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.processing);
+    else if(input.options.user_chosen_export_settings.language == "pandoc"){
     }
     else if(input.options.user_chosen_export_settings.language == "graph_easy"){
         //https://metacpan.org/pod/release/TELS/Graph-Easy-0.64/bin/graph-easy
         //created_files += Graph_Easy_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.graph_easy);
     }
-    else if(input.options.user_chosen_export_settings.language == "processing"){
-        created_files += Processing_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.processing);
-    }
     else if (input.options.user_chosen_export_settings.language == "mermaid"){
         created_files += Mermaid_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.mermaid);
+    }
+    
+    // Meta
+    else if (input.options.user_chosen_export_settings.language == "date"){
+        created_files += Date_Exporter::Export(code_graph.structure,unit.contributors);
     }
     
     else {
