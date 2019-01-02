@@ -27,6 +27,9 @@ essentially end at a markup language.
 markup language is great from the compilers perspective,
 but terrible from the programmers perspective.  
 Explain how we fix this.  
+Discuss Linguistic relativity, the universal grammar, and maybe the poverty of stimulous.  
+uh, we'll probably need a deeper section about natural language vs programming language.  
+what is relevant, what is not. how properties of natural language has incorrectly been applied in programming
 
 ## Guiding Principles
 All of these need adjusted and organized
