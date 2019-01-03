@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook:hcp.bzl", "hcp")
+load("//bazel/cookbook/hcp:main.bzl", "hcp")
 
 hcp(
 	name = "file_marker"
