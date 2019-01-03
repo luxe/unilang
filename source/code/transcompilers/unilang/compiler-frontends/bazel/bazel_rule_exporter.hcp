@@ -28,9 +28,15 @@ class
 ◀public: static▶ std::vector<std::string> ☀Export(std::vector<Code_Graph> const& code_graphs, std::vector<Contributor> const& contributors, Build_Rule_Settings const& settings)❰
     
     auto build_objects = Build_Info_Extractor::Get_All_Build_Objects(code_graphs);
+    
+    //get a source code file name that is representative of the build file
+    //any source file that becomes part of the build file is probably sufficient.
+    //the only reason we need this filename, is because it helps determine if the date
+    //should be updated or remain what is was previously
+    std::string file_name = Get_Filename_Of_Unilang_Source_To_Represent_Build_File(code_graphs);
   
     std::string result;
-    Append_With_Newline(result,Top_Comment_Getter::Get(settings));
+    Append_With_Newline(result,Top_Comment_Getter::Get(settings,file_name));
     Append_With_Newline(result,Load_Getter::Get(build_objects,settings.loads));
     Append_With_Newline(result,Package_Getter::Get(settings));
     
@@ -47,4 +53,13 @@ class
     std::vector<std::string> created_files;
     created_files.emplace_back(settings.name_of_build_file);
     return created_files;
+❱
+
+
+◀private: static▶ std::string ☀Get_Filename_Of_Unilang_Source_To_Represent_Build_File(std::vector<Code_Graph> const& code_graphs)❰
+    std::string file_name = "";
+    if (!code_graphs.empty()){
+        file_name = code_graphs[0].structure.name;
+    }
+    return file_name;
 ❱
