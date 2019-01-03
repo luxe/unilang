@@ -61,13 +61,6 @@
 􏶆regenerate􏶅􏶂causes the regenerate trigger to be called on the corresponding lane􏶁
 􏶆none􏶅􏶂causes nothing to trigger for the corresponding lane􏶁
 
-􏶊The reason the event exists on a particular lane􏶉
-􏶈Primarily used to aid in debugging􏶇
-􏵮􏵯􏶀regeneration reason􏶋
-􏶆distance􏶅􏶂regenerating because of distance􏶁
-􏶆submap loop􏶅􏶂regenerating because of submap loops􏶁
-􏶆none􏶅􏶂no reason to regenerate􏶁
-
 􏶊An interpretation on how to process the route based on the state of the event view􏶉
 􏶈We keep an interval over the route in order to determine what events need to be processed
 however, a new route can't have a starting position in the interval (because no previous lane was visited)
@@ -536,3 +529,58 @@ Everything in this structure must be provided by the SLMT in order to create an 
 􏶦If the route was merged from another route, this index will be the start of the second route before the merge occurred
 We can use this information to ensure a distance SLA􏶥
 􏶘+􏶙􏶰􏶯􏷔slmt_route_information􏷓􏶮i32􏶭􏶬merge point index􏶫􏶪0􏶩
+
+
+
+􏳃Information that can be derived by analyzing the current state of the event annotated route􏳄
+􏳁This is additional meta information that we can learn from looking at the event annotated route􏳂
+􏲿event_annotated_route_derived_information􏳀
+
+􏶨checked invariants􏶧
+􏶦invariants checked over the SLA event annotated route for SLMT􏶥
+􏶘+􏶙􏶰􏶯􏷔event_annotated_route_derived_information􏷓􏶮event_annotated_route_invariants􏶭􏶬invariants􏶫􏶪􏶩
+
+􏶨An interpretation on how to process the route based on the state of the event view􏶧
+􏶦We keep an interval over the route in order to determine what events need to be processed
+however, a new route can't have a starting position in the interval (because no previous lane was visited)
+and an expired route has no ending position in the interval (because the progress index may no longer correlate to the route)
+we observe the optionality of the event view to determine the contextual state of the route􏶥
+􏶘+􏶙􏶰􏶯􏷔event_annotated_route_derived_information􏷓􏶮route_status􏶭􏶬status􏶫􏶪route_status_invalid􏶩
+
+
+􏳃All of the ways a route can be created􏳄
+􏳁This supports users such as SLMT, testing environments, graphical experimentation tools, and used by fuzzers􏳂
+􏲿create_route􏳀
+
+􏶨Testing input used to create translated routes during experimentation􏶧
+􏶦The route creation input can be turned into a translated route for testing with algorithms􏶥
+􏶘+􏶙􏶰􏶯􏷔create_route􏷓􏶮route_creation_input􏶭􏶬regular􏶫􏶪􏶩
+
+􏶨Testing input used to create random translated routes during experimentation􏶧
+􏶦The route creation input can be turned into a translated route for testing with algorithms􏶥
+􏶘+􏶙􏶰􏶯􏷔create_route􏷓􏶮random_route_creation_input􏶭􏶬random􏶫􏶪􏶩
+
+􏶨All of the data provided by the SLMT in order to create an event route􏶧
+􏶦This structure represents an integration point between the SLMT and the event route creation API
+Everything in this structure must be provided by the SLMT in order to create an event route for the SLMT
+optional because we may not populate the event annotated route's state based on slmt information􏶥
+􏶘+?􏶙􏶰􏶯􏷔create_route􏷓􏶮slmt_route_information􏶭􏶬slmt􏶫􏶪􏶩
+
+􏳃All data related to creating routes, marking events, and controlling/analyzing the event annotated route cycle over cycle􏳄
+􏳁The root of the data model􏳂
+􏲿route_marking􏳀
+
+􏶨The data model for creating event annotated routes􏶧
+􏶦The immutable model for creating the event annotated route model􏶥
+􏶘+􏶙􏶰􏶯􏷔route_marking􏷓􏶮create_route􏶭􏶬event_annotated_route􏶫􏶪􏶩
+
+􏶨The data model of the event annotated route􏶧
+􏶦The stateful model that APIs are built around􏶥
+􏶘+􏶙􏶰􏶯􏷔route_marking􏷓􏶮route_creation_input􏶭􏶬event_annotated_route􏶫􏶪􏶩
+
+􏶨The data model for observations made on the event annotated route􏶧
+􏶦The immutable model for getting additional information in regards to the event annotated route􏶥
+􏶘+􏶙􏶰􏶯􏷔route_marking􏷓􏶮route_creation_input􏶭􏶬event_annotated_route_derived_information􏶫􏶪􏶩
+
+
+

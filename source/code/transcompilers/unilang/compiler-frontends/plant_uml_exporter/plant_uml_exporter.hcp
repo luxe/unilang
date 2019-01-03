@@ -18,32 +18,62 @@ class
 ❪"code/transcompilers/unilang/options/manipulation/case_adjustment_settings"❫
 ❪"code/transcompilers/unilang/structure-adjuster/casing_adjuster"❫
 ❪"code/transcompilers/unilang/structure-adjuster/structure_adjuster"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Plant_Uml_Settings const& settings)❰
 
   Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::PlantUml);
   
-  std::vector<std::string> created_files;
+  // create plant uml text file
   std::string file_name = structure.name + "." + settings.file_extension;
+  std::vector<std::string> created_files = Create_Plant_Uml_File(structure,settings,file_name);
+  
+  // create plant uml image file
+  created_files += Export_Plant_Uml_As_Image(settings,file_name);
+  return created_files;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Create_Plant_Uml_File(Structure structure, Plant_Uml_Settings const& settings, std::string const& file_name)❰
+  std::vector<std::string> created_files;
   created_files.emplace_back(file_name);
+  
   std::ofstream outfile(file_name);
   outfile << settings.start_plant_uml_language_tag << "\n\n";
   auto code_as_plant_uml = Structure_As_String(structure,settings);
-  outfile << code_as_plant_uml;
+  outfile << code_as_plant_uml << std::endl;
   outfile << settings.end_plant_uml_language_tag << "\n";
   outfile.close();
   
-  //turn the plant uml file into an image
-  if (!code_as_plant_uml.empty()){
+  return created_files;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Export_Plant_Uml_As_Image(Plant_Uml_Settings const& settings, std::string const& file_name)❰
+  std::vector<std::string> created_files;
+  
+  if (File_Exists(file_name)){
     std::string command = settings.program_name + " " + file_name;
-    if (Unsuccessful_Run_Of_Command(command)){
-      std::cerr << "Failed to produce image" << std::endl;
-    }else{
-      created_files.emplace_back(file_name + ".png");
+    auto results = execute(command);
+    
+    //this causes a partly built image.  super weird.  
+    //its probably because it calls the system command.  
+    //we will need to fix this with pstreams or something.
+    //actually I think it has to with plantuml spawning some other process that gets killed or something
+    //because it works when I run the command locally in my own terminal session
+    //Unsuccessful_Run_Of_Command(command)
+    
+    if (!results.empty()){
+      std::cerr << "Failed to produce image with this command:" << std::endl;
+      std::cerr << command << std::endl;
+    }
+    else{
+        std::cout << "created " << file_name << ".png" << std::endl;
+        created_files.emplace_back(file_name + ".png");
     }
   }
-  
+  else{
+    std::cerr << file_name << " file does not exist" << std::endl;
+  }
   return created_files;
 ❱
 
