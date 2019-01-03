@@ -20,7 +20,7 @@ This allows us to work backwards and enable programmers to effeciently populate 
 Trying to contort a variety of programming concepts syntatically, and then extracting them out with regular expressions and grammars into generic data structures such as trees and lists has proven insufficient for semantic analysis.  
 This is the reason that parsing errors are often confusing and unhelpful.  
 It is the reason that community tooling on code transformation is often limited.  
-Most importantly, its the reason a language's evolution stagnates as more abstract concepts are squeezed into an existing syntax and grammar.  
+Most importantly, its the reason that a language's evolution stagnates as more abstract concepts are squeezed into an existing syntax and grammar.  
 ![choosing the unilang structure](.readme/choosing-structure.png "test")
 
 ## Direct semantic encoding (syntax considered harmful)
@@ -32,6 +32,7 @@ Explain how we fix this.
 Discuss Linguistic relativity, the universal grammar, and maybe the poverty of stimulous.  
 uh, we'll probably need a deeper section about natural language vs programming language.  
 what is relevant, what is not. how properties of natural language has incorrectly been applied in programming
+talk about how semantics is what matters most in programming
 
 ## Guiding Principles
 All of these need adjusted and organized
