@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
-load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "json_function_name_getter", deps = [
 "//code/transcompilers/unilang/type_converters/type-to-json-serialization-call/settings:json_function_settings",

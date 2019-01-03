@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
-load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "hungarian_left_prefix_decider", deps = [
 "//code/transcompilers/unilang/options/hungarian/characteristic:hungarian_characteristic_settings",

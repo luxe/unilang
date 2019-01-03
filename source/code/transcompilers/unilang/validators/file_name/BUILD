@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
-load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "filename_exception", deps = [
 "//code/transcompilers/unilang/file_marker:file_marker"

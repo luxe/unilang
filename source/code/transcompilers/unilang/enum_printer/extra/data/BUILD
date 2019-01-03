@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
-load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "enum_utility_value_printer", deps = [
 "//code/transcompilers/unilang/structure/sections/enum/item:enum_item",

@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
-load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "body_param_in_method_printer", deps = [
 "//code/transcompilers/unilang/structure/sections/method:method_item",

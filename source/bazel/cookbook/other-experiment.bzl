@@ -1,4 +1,4 @@
-load("//bazel/cookbook:cpp_object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/hcp:bootstrap.bzl", "bootstrap_hcp")
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook:generate_unilang_token_files.bzl", "generate_unilang_token_files")
