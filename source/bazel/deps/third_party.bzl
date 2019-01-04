@@ -20,3 +20,12 @@ def third_party_repositories():
             "https://sourceforge.net/projects/boost/files/boost/1.68.0/boost_1_68_0.tar.gz",
         ],
     )
+    
+    http_archive(
+        name = "com_google_googletest",
+        sha256 = "3efbb860886c6018d707f1b5ee3e84d4ef63517ee85744aa2a8cb12b2feef57b",
+        strip_prefix = "googletest-e5e2ef7cd27cc089c1d8302a11970ef870554294",
+        urls = [
+            "https://github.com/google/googletest/archive/e5e2ef7cd27cc089c1d8302a11970ef870554294.tar.gz",
+        ],
+    )
