@@ -60,6 +60,7 @@ def third_party_repositories():
         ],
     )
     
+    # Other google-like standard library
     http_archive(
         name = "com_google_absl",
         sha256 = "57b7817ad91856399a77300349eda39d2edae2c3c037d453fee0a16b85e92a4d",
