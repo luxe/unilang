@@ -92,6 +92,15 @@ def third_party_repositories():
             "https://github.com/google/benchmark/archive/d939634b8ce7e0741a79c1c1f22205fae54b375d.tar.gz",
         ],
     )
+    http_archive(
+        name = "gperftools",
+        build_file = "//third_party:gperftools.BUILD",
+        sha256 = "1ee8c8699a0eff6b6a203e59b43330536b22bbcbe6448f54c7091e5efb0763c9",
+        strip_prefix = "gperftools-2.7",
+        urls = [
+            "https://github.com/gperftools/gperftools/releases/download/gperftools-2.7/gperftools-2.7.tar.gz",
+        ],
+    )
     
     # Serialization
     http_archive(
