@@ -9,8 +9,8 @@ cc_library(
     deps = [
 "//code/utilities/shell:lib",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
-"@com_github_boost_filesystem//:filesystem",
-"@com_github_boost_range//:range",
+"@boost//:filesystem",
+"@boost//:range",
 ],
 linkopts = ["-lboost_system", "-lboost_filesystem"]
 )
