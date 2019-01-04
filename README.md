@@ -1,5 +1,5 @@
-# ᴜɴɪʟᴀɴɢ
-
+# ᴜɴɪʟᴀɴɢ  
+[![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)  
 Unilang is a universal programming language.  
 It is the unification of all programming concepts without syntax.  
 It is a higher level language above all high level languages.  
