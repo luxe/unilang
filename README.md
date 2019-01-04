@@ -9,6 +9,7 @@ It was built to improve the efficiency of the modern software engineer.
 Consider the current language abstractions within the software engineering domain.  
 Unilang and its conceptual model are placed above these high level languages.  
 ![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "test")  
+Unilang can transcompile down to other languages.  
 
 ## The structure of language
 Many programming languages represent their syntatic structure as an abstract syntax tree.  
