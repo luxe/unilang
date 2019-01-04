@@ -126,7 +126,13 @@ and chosen during code generation.
 ## Installation
 
 #### Continuous Integration
+| Command | Description |
 | Travis CI | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything) |  
+
+| Continuous Integration | Status |
+| :---         | :---           |
+| Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     |
+| Circle     | [![CircleCI](https://circleci.com/gh/Unilang/everything.svg?style=svg)](https://circleci.com/gh/Unilang/everything)       |
 
 #### Build from source
 ```
