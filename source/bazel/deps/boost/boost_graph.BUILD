@@ -13,7 +13,7 @@ cc_library(
   srcs = [
   ],
   deps = [
-    "@com_github_boost_property_map//:property_map",
+    "@boost//:property_map",
     "@boost//:property_tree",
     "@boost//:lexical_cast",
     "@boost//:xpressive",
