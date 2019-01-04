@@ -10,5 +10,5 @@ hcp(name = "root_body_element", deps = [
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:return_statement",
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/statement_types:uncaught_statement",
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast/function_types:function_call_local",
-"@com_github_boost_variant//:variant",
+"@boost//:variant",
 ])

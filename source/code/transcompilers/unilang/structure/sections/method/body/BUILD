@@ -4,5 +4,5 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "function_body", deps = [
 "//code/transcompilers/unilang/structure/sections/method/body/body-ast:root_body_element",
-"@com_github_boost_variant//:variant",
+"@boost//:variant",
 ])
