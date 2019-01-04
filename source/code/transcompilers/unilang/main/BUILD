@@ -15,8 +15,8 @@ hcp(name = "program_input_validator", deps = [
 
 hcp(name = "root_exception_handler", deps = [
 "//code/utilities/colors:lib",
-"@com_github_boost_exception//:exception",
-"@com_github_boost_throw_exception//:throw_exception",
+"@boost//:exception",
+"@boost//:throw_exception",
 ])
 
 hcp(name = "task_executer", deps = [
