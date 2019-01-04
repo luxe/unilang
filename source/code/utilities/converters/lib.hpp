@@ -13,8 +13,8 @@ std::string as_string(std::string const& s);
 std::wstring as_wstring(std::wstring const& s);
 
 //char* coverage
-std::string as_string(char* s);
-std::wstring as_wstring(char* s);
+std::string as_string(const char* s);
+std::wstring as_wstring(const char* s);
 
 //fallback
 template <typename T>

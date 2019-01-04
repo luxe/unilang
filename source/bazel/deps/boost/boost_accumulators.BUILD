@@ -13,7 +13,7 @@ cc_library(
   srcs = [
   ],
   deps = [
-      "@com_github_boost_assert//:assert",
+      "@boost//:assert",
       "@com_github_boost_config//:config",
       "@com_github_boost_concept_check//:concept_check",
       "@com_github_boost_fusion//:fusion",

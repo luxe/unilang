@@ -16,10 +16,10 @@ def third_party_repositories():
     # Boost 2 (the rules to build boost code)
     http_archive(
         name = "com_github_nelhage_rules_boost",
-        sha256 = "69456f85900a3fa30e2e921025c3e0c650e77af8f0976dddf339eb33cadafe33",
-        strip_prefix = "rules_boost-master",
+        sha256 = "725d8979e752acb3228ddf87477a42c59af80473318b5f52f5116dae0142b12a",
+        strip_prefix = "rules_boost-0be13900fbf54aaf66dac06634e500747879e554",
         urls = [
-            "https://github.com/nelhage/rules_boost/archive/master.zip",
+            "https://github.com/nelhage/rules_boost/archive/0be13900fbf54aaf66dac06634e500747879e554.zip",
         ],
     )
     

@@ -3,11 +3,11 @@
 #include <cassert>
 
 //char* coverage
-std::string as_string(char* s){
+std::string as_string(const char* s){
    std::string str(s);
    return as_string(str);
 }
-std::wstring as_wstring(char* s){
+std::wstring as_wstring(const char* s){
    std::string str(s);
    return as_wstring(str);
 }
