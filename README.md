@@ -129,6 +129,7 @@ and chosen during code generation.
 | :---         | :---           |
 | Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     |
 | Circle     | [![CircleCI](https://circleci.com/gh/Unilang/everything.svg?style=svg)](https://circleci.com/gh/Unilang/everything)       |
+| App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar?svg=true)](https://ci.appveyor.com/project/luxe/everything) |
 
 #### Build from source
 ```
