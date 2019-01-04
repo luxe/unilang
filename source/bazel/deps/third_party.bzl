@@ -20,6 +20,9 @@ def third_party_repositories():
     http_archive(
         name = "com_github_nelhage_rules_boost",
         sha256 = "725d8979e752acb3228ddf87477a42c59af80473318b5f52f5116dae0142b12a",
+        patches = [
+            "//bazel/deps:rules_boost.patch",
+        ],
         strip_prefix = "rules_boost-0be13900fbf54aaf66dac06634e500747879e554",
         urls = [
             "https://github.com/nelhage/rules_boost/archive/0be13900fbf54aaf66dac06634e500747879e554.zip",
