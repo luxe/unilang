@@ -87,7 +87,7 @@ We stand on the shoulder's of giants and transcompile to other languages.
 This is a strategic decision because it helps Unilang grow in 2 ways.  
 The more languages Unilang can transcompile to other languages,   
 the more we can generisize programming concepts across the ecosystem.  
-It also helps us proof that two seemingly apposing language design decisions  
+It also helps us prove that two seemingly apposing language design decisions  
 can be incorperated into the same language and chosen programatically at build time.
 
 **Design choice:**  
