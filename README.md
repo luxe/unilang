@@ -1,5 +1,4 @@
 # ᴜɴɪʟᴀɴɢ  
-[![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)  
 Unilang is a universal programming language.  
 It is the unification of all programming concepts without syntax.  
 It is a higher level language above all high level languages.  
@@ -125,6 +124,10 @@ Most opinions can be dual supported at the language level,
 and chosen during code generation.
 
 ## Installation
+
+#### Continuous Integration
+| Travis CI | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything) |  
+
 #### Build from source
 ```
 git clone git@github.com:Unilang/everything.git unilang;
