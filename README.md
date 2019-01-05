@@ -139,8 +139,12 @@ and chosen during code generation.
 </details>
 
 <details>
+<summary>Features</summary>
+TODO
+</details>
+<details>
 <summary>User manual</summary>
-haha nope
+TODO
 </details>
 
 <details>
@@ -165,8 +169,11 @@ leave me a ticket about how it didn't work, and we'll improve the build
 TODO
 </details>
 
-## Contribute
+<details>
+<summary>Contribute</summary>
+<br>
 There are no rules.  Make a ticket about anything.  We'll figure it out together.  
+</details>
 
 [1]: https://en.wikipedia.org/wiki/Private_Use_Areas
 [2]: https://en.wikipedia.org/wiki/Code_point
