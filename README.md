@@ -1,4 +1,6 @@
-# ᴜɴɪʟᴀɴɢ  
+<p align="center">
+  <img width="395" height="112" src=".readme/unilang-trimmed.png">
+</p>
 Unilang is a universal programming language.  
 It is the unification of all programming concepts without syntax.  
 It is a higher level language above all high level languages.  
