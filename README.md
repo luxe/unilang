@@ -1,7 +1,7 @@
 <p align="left">
   <img width="395" height="112" src=".readme/unilang-trimmed.png">
 </p>
-A univeral programming language
+**A univeral programming language**
 
 
 
