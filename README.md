@@ -146,17 +146,22 @@ and chosen during code generation.
 <details>
 <summary>Features</summary>
 <br>  
-TODO
+  
+TODO  
+
 </details>
 <details>
 <summary>User manual</summary>
 <br>  
-TODO
+  
+TODO  
+  
 </details>
 
 <details>
 <summary>Installation</summary>
 <br>  
+
 | Continuous Integration | Status |
 | :---         | :---           |
 | Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     |
