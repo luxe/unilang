@@ -138,7 +138,13 @@ Most opinions can be dual supported at the language level,
 and chosen during code generation.
 </details>
 
-## Installation
+<details>
+<summary>User manual</summary>
+haha nope
+</details>
+
+<details>
+<summary>Installation</summary>
 
 | Continuous Integration | Status |
 | :---         | :---           |
@@ -157,9 +163,10 @@ leave me a ticket about how it didn't work, and we'll improve the build
 
 #### stand-alone binaries
 TODO
-
-[1]: https://en.wikipedia.org/wiki/Private_Use_Areas
-[2]: https://en.wikipedia.org/wiki/Code_point
+</details>
 
 ## Contribute
 There are no rules.  Make a ticket about anything.  We'll figure it out together.  
+
+[1]: https://en.wikipedia.org/wiki/Private_Use_Areas
+[2]: https://en.wikipedia.org/wiki/Code_point
