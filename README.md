@@ -3,6 +3,7 @@
 </p>
 A univeral programming language  
 
+---
 
 <details>
 <summary>Introduction</summary>
