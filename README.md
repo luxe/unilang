@@ -9,8 +9,7 @@ It was built to improve the efficiency of the modern software engineer.
 
 <details>
 <summary>Language Design</summary>
-  test
-</details>
+<br>
 
 
 ## The hierarchy of language
@@ -131,6 +130,7 @@ Typical programming languages are designed around trade-offs.
 Unilang refuses to make trade-offs.   
 Most opinions can be dual supported at the language level,  
 and chosen during code generation.
+</details>
 
 ## Installation
 
