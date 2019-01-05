@@ -16,6 +16,11 @@ bazel="${install_dir}/bazel"
 if [[ ! -f "${bazel}" ]]; then
 
     # Check for some bootstraping necessities
+    # If these bare-bone requirements don't exist, I considered installing them for the user automatically,
+    # but that seems hard to figure out due to the different systems and package managers.  
+    # One of the online CIs, does not have wget when it spins up.
+    # For now, we can handle these kinds of dependencies prior to running this script.
+    # For example, most CI services have some kind of pre-install phase.  where you can install system packages.
     command -v mkdir >/dev/null 2>&1 || { echo >&2 "I require mkdir but it's not installed.  Aborting."; exit 1; }
     command -v rm >/dev/null 2>&1 || { echo >&2 "I require rm but it's not installed.  Aborting."; exit 1; }
     command -v chmod >/dev/null 2>&1 || { echo >&2 "I require chmod but it's not installed.  Aborting."; exit 1; }
@@ -23,6 +28,7 @@ if [[ ! -f "${bazel}" ]]; then
     command -v tty >/dev/null 2>&1 || { echo >&2 "I require tty but it's not installed.  Aborting."; exit 1; }
     command -v wget >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Aborting."; exit 1; }
     command -v sha256sum >/dev/null 2>&1 || { echo >&2 "I require sha256sum but it's not installed.  Aborting."; exit 1; }
+    # Do you need some kind of Java tooling installed for bazel?  If so, add it here!
 
     # Say that we are missing bazel, and will install it
     echo "INFO: Required bazel version not found."
