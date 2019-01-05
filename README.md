@@ -3,7 +3,7 @@
 </p>
 
 <details>
-<summary>Intro</summary>
+<summary>Introduction</summary>
 <br>  
   
 Unilang is a universal programming language.  
