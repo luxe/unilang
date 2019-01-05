@@ -4,11 +4,14 @@
 
 set -euo pipefail
 
-# the build system we are using
+# the version of bazel we are using
 url=https://github.com/bazelbuild/bazel/releases/download/0.21.0/bazel-0.21.0-linux-x86_64
 sha256=7a2f347d779c4c772cdb318f0435f8d489a238be42e7a9bf1e2bad94b1c3094f
 
 # paths to place bazel related artifacts
+# CONSIDER(thickey): should we really install bazel in the user's home directory?  
+# Are we sure they will even have a home repo?  Would it be better to install it inside the repo itself?
+# I think this is fine for now.  We'll see if any problems arise.
 cache_root=${CACHE_ROOT:-"${HOME}/.cache"}
 install_dir="${cache_root}/bazel/${sha256}"
 bazel="${install_dir}/bazel"
@@ -28,7 +31,9 @@ if [[ ! -f "${bazel}" ]]; then
     command -v tty >/dev/null 2>&1 || { echo >&2 "I require tty but it's not installed.  Aborting."; exit 1; }
     command -v wget >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Aborting."; exit 1; }
     command -v sha256sum >/dev/null 2>&1 || { echo >&2 "I require sha256sum but it's not installed.  Aborting."; exit 1; }
-    # Do you need some kind of Java tooling installed for bazel?  If so, add it here!
+    # CONSIDER(thickey): Do you need some kind of Java tooling installed for bazel first?  If so, add it here!
+    # I think sfortson mentioned that he had to install bazel first.  The CIs seem to be fine, but sam was on arch linux
+    # I'm not sure if bazel's thing is truely stand-alone or what.  you probably need the jvm first.
 
     # Say that we are missing bazel, and will install it
     echo "INFO: Required bazel version not found."
