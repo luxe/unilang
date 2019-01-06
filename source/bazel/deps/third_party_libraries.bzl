@@ -4,6 +4,11 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file"
 # make copies and store them somewhere else.  Give multiple mirrors
 # for the urls.  the first url can be where we host it.
 
+# TODO(thickey): as a rule of thumb, we do not want patch files.  
+# when a patch file is created, we need to work the original author to merge it back.
+# In the worst case scenarios where an agreement cannot be made with the author, or
+# the original author is unresponsive, we can fork the project.
+
 def third_party_libraries():
     
     # C++
@@ -23,13 +28,10 @@ def third_party_libraries():
     # Boost 2 (the rules to build boost code)
     http_archive(
         name = "com_github_nelhage_rules_boost",
-        sha256 = "725d8979e752acb3228ddf87477a42c59af80473318b5f52f5116dae0142b12a",
-        patches = [
-            "//bazel/deps/build_files:rules_boost.patch",
-        ],
-        strip_prefix = "rules_boost-0be13900fbf54aaf66dac06634e500747879e554",
+        sha256 = "d44f1e293f58b9c4ed2fe55d3f0fa2888b7f8e406e667b8734f4a4fe3eaa0277",
+        strip_prefix = "rules_boost-c1d618315fa152958baef8ea0d77043eebf7f573",
         urls = [
-            "https://github.com/nelhage/rules_boost/archive/0be13900fbf54aaf66dac06634e500747879e554.zip",
+            "https://github.com/nelhage/rules_boost/archive/c1d618315fa152958baef8ea0d77043eebf7f573.zip",
         ],
     )
     
