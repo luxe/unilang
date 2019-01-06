@@ -174,7 +174,9 @@ Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/bran
 
 #### Build from source
 ```
-git clone git@github.com:Unilang/everything.git unilang && cd unilang && ./build_everything
+git clone git@github.com:Unilang/everything.git unilang
+cd unilang
+./build_everything
 pray
 leave me a ticket about how it didn't work, and we'll improve the build
 ```
