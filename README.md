@@ -170,6 +170,7 @@ TODO
 | Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)]() |
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/everything) |
 | Codeship | TODO |
+| Cirrus | TODO |
 
 #### Build from source
 ```
