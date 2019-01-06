@@ -62,7 +62,7 @@ std::string Get_As_String_With_Char_Between_Each_Element(const Container& contai
 template<class InputIt>
 bool all_unique(InputIt first, InputIt last){
   std::set<typename std::iterator_traits<InputIt>::value_type> s(first,last);
-  return s.size() == std::distance(first,last);
+  return static_cast<int>(s.size()) == std::distance(first,last);
 }
 
 //test for unique-ness on all elements based off a data member
