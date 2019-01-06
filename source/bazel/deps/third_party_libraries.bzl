@@ -4,7 +4,7 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file"
 # make copies and store them somewhere else.  Give multiple mirrors
 # for the urls.  the first url can be where we host it.
 
-def third_party_repositories():
+def third_party_libraries():
     
     # C++
     # General Libraries
