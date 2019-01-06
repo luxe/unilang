@@ -1,5 +1,9 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
+# TODO(thickey): we can't trust that these git repos will always exist.  
+# make copies and store them somewhere else.  Give multiple mirrors
+# for the urls.  the first url can be where we host it.
+
 def third_party_repositories():
     
     # C++
@@ -163,3 +167,38 @@ def third_party_repositories():
             "https://github.com/grpc/grpc/archive/v1.16.0.tar.gz",
         ],
     )
+
+
+
+    #other dependencies needed:
+
+    #other things to add
+    #gmp
+    #json (ttps://github.com/nlohmann/json)
+    #pretty_printers
+    #curl
+    #pstreams
+    #add-range-v3 library (Eric Neibler)
+    #add klmr-cpp11-range
+
+    #need to make hermetic
+    #sudo apt-get install libsdl2-dev
+    #sudo apt-get install libsdl1.2-dev
+    #sudo apt install libjpeg9-dev libwebp-dev libtiff5-dev libsdl2-image-dev libsdl2-image-2.0-0
+    http_archive(
+          name = "imgui",
+          urls = ['https://github.com/ocornut/imgui/archive/v1.62.tar.gz'],
+          build_file = "//bazel/deps:imgui.BUILD",
+          strip_prefix = 'imgui-1.62',
+    )
+
+    #need to make hermetic
+    #sudo apt-get install xdotool
+    #sudo apt-get install libxdo-dev
+    #sudo apt-get install libxtst-dev
+    # http_archive(
+    #     name = "xdo",
+    #     build_file = "//bazel/deps/xdo:xdo.BUILD",
+    #     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
+    #     remote = "https://github.com/jordansissel/xdotool.git",
+    # )
