@@ -35,19 +35,19 @@ class
     std::string result = To_String(break_entries,sentences_full,reflow.ideal_width,reflow.max_width);
     return result;
 ❱
-◀private: static▶ void ☀PlassBreak(std::vector<Knuth_Plass_Entry>& lines, int idx, int idealwidth, int maxwidth, int indent)
+◀private: static▶ void ☀PlassBreak(std::vector<Knuth_Plass_Entry>& lines, size_t idx, size_t idealwidth, size_t maxwidth, size_t indent)
 ❰
-    int jdx     = idx+1;
-    int llen    = lines[idx].last - lines[idx].first;
-    int bscore  = idealwidth - llen;
+    size_t jdx     = idx+1;
+    size_t llen    = lines[idx].last - lines[idx].first;
+    size_t bscore  = idealwidth - llen;
     bscore      *= bscore;
-    int btail   = jdx;
+    size_t btail   = jdx;
 
     while ((jdx < lines.size()))
     {
-        int wwidth  = lines[jdx].last - lines[jdx].first;
+        size_t wwidth  = lines[jdx].last - lines[jdx].first;
         if ((llen + wwidth) >= maxwidth) break;
-        int lscore  = idealwidth - (llen + wwidth);
+        size_t lscore  = idealwidth - (llen + wwidth);
         lscore      *= lscore;
         llen        += wwidth + 1;
 
@@ -67,20 +67,20 @@ class
 
     lines[idx].score    = bscore;
     lines[idx].next     = btail;
-    if ((lines[idx].next + 1) == lines.size())
+    if (static_cast<size_t>((lines[idx].next + 1)) == lines.size())
     {
         lines[idx].score    = 0;
     }
 ❱
 
-◀private: static▶ void ☀GreedBreak(std::vector<Knuth_Plass_Entry>& lines, int idx, int idealwidth, int maxwidth, int indent)
+◀private: static▶ void ☀GreedBreak(std::vector<Knuth_Plass_Entry>& lines, size_t idx, size_t idealwidth, size_t maxwidth, size_t indent)
 ❰
-    int llen    = 0;
-    int linest  = 0;
+    size_t llen    = 0;
+    size_t linest  = 0;
 
-    for (int II = 0, IE = (int)lines.size(); II < IE; ++II)
+    for (size_t II = 0, IE = (int)lines.size(); II < IE; ++II)
     {
-        int wwidth              = lines[II].last - lines[II].first;
+        size_t wwidth              = lines[II].last - lines[II].first;
         if ((llen + wwidth + 1) >= idealwidth)
         {
             lines[linest].next  = II-1;
@@ -94,15 +94,15 @@ class
     lines.rbegin()->next        = lines.size() + 1;
 ❱
 
-◀private: static▶ std::string ☀To_String(std::vector<Knuth_Plass_Entry> const& lines, std::string const& text, int idealwidth, int maxwidth)
+◀private: static▶ std::string ☀To_String(std::vector<Knuth_Plass_Entry> const& lines, std::string const& text, size_t idealwidth, size_t maxwidth)
 ❰
     std::string result;
-    int idx     = 0;
+    size_t idx     = 0;
     while (idx < lines.size())
     {
-        int next    = lines[idx].next;
+        size_t next    = lines[idx].next;
         std::string line;
-        for (int II = idx; (II <= next) && ((II+1) < lines.size()); ++II)
+        for (size_t II = idx; (II <= next) && ((II+1) < lines.size()); ++II)
         {
             if ((lines[II].last - lines[II].first) <= 0) break;
             line    += (II == idx) ? "" : " ";
@@ -119,18 +119,18 @@ class
     return result;
 ❱
 
-◀private: static▶ std::vector<Knuth_Plass_Entry> ☀Break(std::string const& text, int idealwidth, int maxwidth)
+◀private: static▶ std::vector<Knuth_Plass_Entry> ☀Break(std::string const& text, size_t idealwidth, size_t maxwidth)
 ❰
     std::vector<Knuth_Plass_Entry> lines;
 
-    int idx = 0;
+    size_t idx = 0;
     while (idx < text.size())
     {
         while ((idx < text.size()) && std::isspace(text[idx]))
         {
             ++idx;
         }
-        int start   = idx;
+        size_t start   = idx;
         while ((idx < text.size()) && !std::isspace(text[idx]))
         {
             ++idx;
@@ -138,8 +138,8 @@ class
         if (start < idx)
         {
             lines.push_back({
-                .first  = start,
-                .last   = idx,
+                .first  = static_cast<int>(start),
+                .last   = static_cast<int>(idx),
                 .next   = -1,
                 .score  = -1,
             });
@@ -158,7 +158,7 @@ class
 // FILE* fp    = fopen(argv[1], "r");
 // if (!fp) return 1;
 // fseek(fp, 0, SEEK_END);
-// int length  = (int)ftell(fp);
+// size_t length  = (int)ftell(fp);
 // rewind(fp);
 
 // char buffer[length+1];
@@ -168,8 +168,8 @@ class
 
 // std::string text            = buffer;
 
-// int idealwidth              = (int)std::strtoul(argv[2], 0, 0);
-// int maxwidth                = (int)std::strtoul(argv[3], 0, 0);
+// size_t idealwidth              = (int)std::strtoul(argv[2], 0, 0);
+// size_t maxwidth                = (int)std::strtoul(argv[3], 0, 0);
 // std::vector<Knuth_Plass_Entry> lines1  = Break(text, idealwidth, maxwidth);
 // std::vector<Knuth_Plass_Entry> lines2  = lines1;
 
