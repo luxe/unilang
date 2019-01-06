@@ -25,7 +25,7 @@ def third_party_repositories():
         name = "com_github_nelhage_rules_boost",
         sha256 = "725d8979e752acb3228ddf87477a42c59af80473318b5f52f5116dae0142b12a",
         patches = [
-            "//bazel/deps:rules_boost.patch",
+            "//bazel/deps/build_files:rules_boost.patch",
         ],
         strip_prefix = "rules_boost-0be13900fbf54aaf66dac06634e500747879e554",
         urls = [
@@ -188,7 +188,7 @@ def third_party_repositories():
     http_archive(
           name = "imgui",
           urls = ['https://github.com/ocornut/imgui/archive/v1.62.tar.gz'],
-          build_file = "//bazel/deps:imgui.BUILD",
+          build_file = "//bazel/deps/build_files:imgui.BUILD",
           strip_prefix = 'imgui-1.62',
     )
 
@@ -198,7 +198,7 @@ def third_party_repositories():
     #sudo apt-get install libxtst-dev
     # http_archive(
     #     name = "xdo",
-    #     build_file = "//bazel/deps/xdo:xdo.BUILD",
+    #     build_file = "//bazel/deps/build_files/xdo:xdo.BUILD",
     #     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
     #     remote = "https://github.com/jordansissel/xdotool.git",
     # )
