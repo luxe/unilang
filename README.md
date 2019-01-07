@@ -179,6 +179,7 @@ We strive to get all of these to pass.
 Due to the different limitations of these free services, that might not always be possible.  
 At the very least, it gives us some good visibility of different issues.  
 If the majority of these are passing in the cloud, you have a good chance of succeeded a local build.  
+
 | Continuous Integration | Status |
 | :---         | :---           |
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar?svg=true)](https://ci.appveyor.com/project/luxe/everything) |
