@@ -12,5 +12,4 @@ cc_library(
 "@boost//:filesystem",
 "@boost//:range",
 ],
-linkopts = ["-lboost_system", "-lboost_filesystem"]
 )

@@ -116,5 +116,4 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = ["//code/transcompilers/hcp-compiler/official/program_options:lib",
             "task_executer"],
-    linkopts = ["-lboost_system"],
 )
