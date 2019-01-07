@@ -64,7 +64,7 @@ def third_party_libraries():
     # Boost 5 (boost dependency)
     http_archive(
         name = "net_zlib_zlib",
-        build_file = "//third_party:zlib.BUILD",
+        build_file = "//bazel/deps/build_files:zlib.BUILD",
         sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
         strip_prefix = "zlib-1.2.11",
         urls = [
@@ -103,7 +103,7 @@ def third_party_libraries():
     )
     http_archive(
         name = "gperftools",
-        build_file = "//third_party:gperftools.BUILD",
+        build_file = "//bazel/deps/build_files:gperftools.BUILD",
         sha256 = "1ee8c8699a0eff6b6a203e59b43330536b22bbcbe6448f54c7091e5efb0763c9",
         strip_prefix = "gperftools-2.7",
         urls = [
@@ -114,7 +114,7 @@ def third_party_libraries():
     # Serialization
     http_archive(
         name = "com_github_tencent_rapidjson",
-        build_file = "//third_party:rapidjson.BUILD",
+        build_file = "//bazel/deps/build_files:rapidjson.BUILD",
         sha256 = "bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e",
         strip_prefix = "rapidjson-1.1.0",
         urls = [
@@ -133,7 +133,7 @@ def third_party_libraries():
     # Other Data Structures
     http_archive(
         name = "andres_graph",
-        build_file = "//third_party:andres_graph.BUILD",
+        build_file = "//bazel/deps/build_files:andres_graph.BUILD",
         sha256 = "00432f3007b4cb2a8d6f2e021fd5625a79e307d6532971719ca6ab81dd0ae752",
         strip_prefix = "graph-1.11",
         urls = [
@@ -144,7 +144,7 @@ def third_party_libraries():
     # Graphics
     http_archive(
         name = "cairo",
-        build_file = "//third_party:cairo.BUILD",
+        build_file = "//bazel/deps/build_files:cairo.BUILD",
         sha256 = "8c90f00c500b2299c0a323dd9beead2a00353752b2092ead558139bd67f7bf16",
         strip_prefix = "cairo-1.14.12",
         urls = [
@@ -152,10 +152,30 @@ def third_party_libraries():
         ],
     )
     
+    # Web Query
+    http_archive(
+        name = "cpr",
+        build_file = "//bazel/deps/build_files:cpr.BUILD",
+        sha256 = "82597627e8b2aef1f0482631c9b11595c63a7565bb462a5995d126da4419ac99",
+        strip_prefix = "cpr-1.3.0",
+        urls = [
+            "https://github.com/whoshuu/cpr/archive/1.3.0.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "curl",
+        build_file = "//bazel/deps/build_files:curl.BUILD",
+        sha256 = "55ccd5b5209f8cc53d4250e2a9fd87e6f67dd323ae8bd7d06b072cfcbb7836cb",
+        strip_prefix = "curl-7.62.0",
+        urls = [
+            "https://github.com/curl/curl/releases/download/curl-7_62_0/curl-7.62.0.tar.gz",
+        ],
+    )
+    
     # CLI
     http_archive(
         name = "CLI11",
-        build_file = "//third_party:CLI11.BUILD",
+        build_file = "//bazel/deps/build_files:CLI11.BUILD",
         sha256 = "5ce138794b28b48717101cd57aea70382cb14b8d9859c403fbca1dc5ada0101e",
         strip_prefix = "CLI11-1.6.2",
         urls = [
@@ -170,6 +190,16 @@ def third_party_libraries():
         strip_prefix = "grpc-1.16.0",
         urls = [
             "https://github.com/grpc/grpc/archive/v1.16.0.tar.gz",
+        ],
+    )
+
+    http_archive(
+        name = "fmt",
+        build_file = "//bazel/deps/build_files:fmt.BUILD",
+        sha256 = "3c812a18e9f72a88631ab4732a97ce9ef5bcbefb3235e9fd465f059ba204359b",
+        strip_prefix = "fmt-5.2.1",
+        urls = [
+            "https://github.com/fmtlib/fmt/archive/5.2.1.tar.gz",
         ],
     )
 
