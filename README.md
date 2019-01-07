@@ -180,7 +180,7 @@ TODO
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar?svg=true)](https://ci.appveyor.com/project/luxe/everything) |
 | Circle     | [![CircleCI](https://circleci.com/gh/Unilang/everything.svg?style=svg)](https://circleci.com/gh/Unilang/everything)       |
 | Cirrus | [![Build Status](https://api.cirrus-ci.com/github/unilang/everything.svg)](https://cirrus-ci.com/github/unilang/everything) |
-| Codeship | TODO |
+| Codeship | [![Codeship Status for Unilang/everything](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](/projects/320613) |
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/everything) |
 | Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)]() |
 | Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     |
