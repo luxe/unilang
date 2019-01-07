@@ -125,7 +125,9 @@ This stems from the experience of how difficult it becomes to change a language
 once so much code has been written in it.   
 Unilang puts as much in the language as possible, because anything that is added must be
 a concept that stands independent of the code that is generated.  
-Extending unilang with new tokens in a backwards-compadible, and doesn't affect the existing grammar.
+Extending unilang with new tokens is backwards-compadible, and doesn't affect the existing grammar.
+Although Unilang may have an overwhelming amount of language tokens to account for all these concepts,  
+it is not overwhelming, because the majority of them are not required.
 
 **Design choice:**  
 The more context a compiler has, the more it can do.  
