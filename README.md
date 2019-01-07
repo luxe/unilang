@@ -187,7 +187,8 @@ Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/bran
 
 
 #### is the build hermetic?  
-I'm trying.  Here is an overview of the build system
+I'm trying.  Here is an overview of the build system  
+
 ![diagram of the build system](.readme/build-system.png "test")
 
 
