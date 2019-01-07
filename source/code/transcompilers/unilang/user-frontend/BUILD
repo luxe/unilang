@@ -54,6 +54,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/compiler-frontends/html_table:html_table_options_getter",
 "//code/utilities/diagnostic:diagnostic_printer",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_action_getter",
+"//code/utilities/filesystem/paths:lib",
 ])
 
 hcp(name = "language_guesser", deps = [
