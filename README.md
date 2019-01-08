@@ -186,15 +186,15 @@ Due to the different limitations of these free services, that might not always b
 At the very least, it gives us some good visibility into different issues.  
 If the majority of these are passing, you have a good chance of succeeding in a local build.  
 
-| Continuous Integration | Status |
-| :---         | :---           |
-| App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar?svg=true)](https://ci.appveyor.com/project/luxe/everything) |
-| Circle     | [![CircleCI](https://circleci.com/gh/Unilang/everything.svg?style=svg)](https://circleci.com/gh/Unilang/everything)       |
-| Cirrus | [![Build Status](https://api.cirrus-ci.com/github/unilang/everything.svg)](https://cirrus-ci.com/github/unilang/everything) |
-| Codeship | [![Codeship Status for Unilang/everything](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](/projects/320613) |
-Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/everything) |
+| Continuous Integration | Status | Notes |
+| :---         | :---           | :---           |
+| App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar?svg=true)](https://ci.appveyor.com/project/luxe/everything) | should work
+| Circle     | [![CircleCI](https://circleci.com/gh/Unilang/everything.svg?style=svg)](https://circleci.com/gh/Unilang/everything)       | 10 minute timeout
+| Cirrus | [![Build Status](https://api.cirrus-ci.com/github/unilang/everything.svg)](https://cirrus-ci.com/github/unilang/everything) | confused on how to setup
+| Codeship | [![Codeship Status for Unilang/everything](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](/projects/320613) | confused on how to setup
+Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/everything) | should work
 | Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)]() |
-| Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     |
+| Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     | should work
 
 
 #### Is the build hermetic?  
