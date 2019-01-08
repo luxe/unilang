@@ -91,6 +91,15 @@ def third_party_libraries():
             "https://github.com/google/googletest/archive/e5e2ef7cd27cc089c1d8302a11970ef870554294.tar.gz",
         ],
     )
+    http_archive(
+        name = "lcov",
+        build_file = "//bazel/deps/build_files:lcov.BUILD",
+        sha256 = "97615b9cbb3fae1d1c655c7201b9aa61d59dd8c18eae2a4f94dcea747aa6ecf4",
+        strip_prefix = "lcov-a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3",
+        urls = [
+            "https://github.com/linux-test-project/lcov/archive/a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3.tar.gz",
+        ],
+    )
     
     # Benchmarking
     http_archive(
@@ -111,6 +120,17 @@ def third_party_libraries():
         ],
     )
     
+    # Logging
+    http_archive(
+        name = "spdlog",
+        build_file = "//bazel/deps/build_files:spdlog.BUILD",
+        sha256 = "867a4b7cedf9805e6f76d3ca41889679054f7e5a3b67722fe6d0eae41852a767",
+        strip_prefix = "spdlog-1.2.1",
+        urls = [
+            "https://github.com/gabime/spdlog/releases/tag/v1.2.1",
+        ],
+    )
+    
     # Serialization
     http_archive(
         name = "com_github_tencent_rapidjson",
@@ -122,6 +142,24 @@ def third_party_libraries():
         ],
     )
     http_archive(
+        name = "nlohmann_json",
+        build_file = "//bazel/deps/build_files:nlohmann_json.BUILD",
+        sha256 = "e0b1fc6cc6ca05706cce99118a87aca5248bd9db3113e703023d23f044995c1d",
+        strip_prefix = "json-3.5.0",
+        urls = [
+            "https://github.com/nlohmann/json/archive/v3.5.0.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "yaml-cpp",
+        build_file = "//bazel/deps/build_files:yaml-cpp.BUILD",
+        sha256 = "e4d8560e163c3d875fd5d9e5542b5fd5bec810febdcba61481fe5fc4e6b1fd05",
+        strip_prefix = "yaml-cpp-yaml-cpp-0.6.2",
+        urls = [
+            "https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.2.tar.gz",
+        ],
+    )
+    http_archive(
         name = "com_google_protobuf",
         sha256 = "fd65488e618032ac924879a3a94fa68550b3b5bcb445b93b7ddf3c925b1a351f",
         strip_prefix = "protobuf-3.6.1",
@@ -129,8 +167,17 @@ def third_party_libraries():
             "https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.tar.gz",
         ],
     )
+    http_archive(
+        name = "org_apache_thrift",
+        build_file = "//bazel/deps/build_files:thrift.BUILD",
+        sha256 = "0e324569321a1b626381baabbb98000c8dd3a59697292dbcc71e67135af0fefd",
+        strip_prefix = "thrift-0.11.0",
+        urls = [
+            "https://github.com/apache/thrift/archive/0.11.0.tar.gz",
+        ],
+    )
     
-    # Other Data Structures
+    # Data Structures
     http_archive(
         name = "andres_graph",
         build_file = "//bazel/deps/build_files:andres_graph.BUILD",
@@ -138,6 +185,15 @@ def third_party_libraries():
         strip_prefix = "graph-1.11",
         urls = [
             "https://github.com/bjoern-andres/graph/archive/v1.11.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "tbb",
+        build_file = "//bazel/deps/build_files:tbb.BUILD",
+        sha256 = "4d149895826cea785cd3b9a14f4aa743b6ef0df520eca7ee27d438fdc3d73399",
+        strip_prefix = "tbb-2019",
+        urls = [
+            "https://github.com/01org/tbb/archive/2019.tar.gz",
         ],
     )
     
@@ -149,6 +205,61 @@ def third_party_libraries():
         strip_prefix = "cairo-1.14.12",
         urls = [
             "https://www.cairographics.org/releases/cairo-1.14.12.tar.xz",
+        ],
+    )
+    http_archive(
+        name = "gd",
+        build_file = "//bazel/deps/build_files:gd.BUILD",
+        sha256 = "a66111c9b4a04e818e9e2a37d7ae8d4aae0939a100a36b0ffb52c706a09074b5",
+        strip_prefix = "libgd-2.2.5",
+        urls = [
+            "https://github.com/libgd/libgd/releases/download/gd-2.2.5/libgd-2.2.5.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "opencv",
+        build_file = "//bazel/deps/build_files:opencv.BUILD",
+        sha256 = "4eef85759d5450b183459ff216b4c0fa43e87a4f6aa92c8af649f89336f002ec",
+        strip_prefix = "opencv-3.4.3",
+        urls = [
+            "https://github.com/opencv/opencv/archive/3.4.3.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "opencv_testdata",
+        build_file = "//bazel/deps/build_files:opencv_testdata.BUILD",
+        sha256 = "dbdab9548b6365ca63f5d4d3a2b27cecd03644a6898cc98c05f3b129a46b416c",
+        strip_prefix = "opencv_extra-3.4.3",
+        urls = [
+            "https://github.com/opencv/opencv_extra/archive/3.4.3.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "pixman",
+        build_file = "//bazel/deps/build_files:pixman.BUILD",
+        sha256 = "21b6b249b51c6800dc9553b65106e1e37d0e25df942c90531d4c3997aa20a88e",
+        strip_prefix = "pixman-0.34.0",
+        urls = [
+            "https://www.cairographics.org/releases/pixman-0.34.0.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "plantuml",
+        build_file = "//bazel/deps/build_files:plantuml.BUILD",
+        sha256 = "53eecf601da9e3f495e1861f064b76e337346f51aa6069e750f1b8ec78b89a55",
+        urls = [
+            "https://downloads.sourceforge.net/project/plantuml/1.2018.12/plantuml-jar-asl-1.2018.12.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fplantuml%2Ffiles%2Fplantuml-jar-asl-1.2018.12.zip%2Fdownload&ts=1542658651",
+        ],
+    )
+    
+    # Database
+    http_archive(
+        name = "sqlite3",
+        build_file = "//bazel/deps/build_files:sqlite3.BUILD",
+        sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
+        strip_prefix = "sqlite-amalgamation-3240000",
+        urls = [
+            "https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip",
         ],
     )
     
@@ -183,6 +294,16 @@ def third_party_libraries():
         ],
     )
     
+    # Language Interop
+    http_archive(
+        name = "pybind11",
+        build_file = "//bazel/deps/build_files:pybind11.BUILD",
+        sha256 = "b69e83658513215b8d1443544d0549b7d231b9f201f6fc787a2b2218b408181e",
+        urls = [
+            "https://github.com/pybind/pybind11/archive/v2.2.4.tar.gz",
+        ],
+    )
+    
     # Other
     http_archive(
         name = "com_github_grpc_grpc",
@@ -192,7 +313,6 @@ def third_party_libraries():
             "https://github.com/grpc/grpc/archive/v1.16.0.tar.gz",
         ],
     )
-
     http_archive(
         name = "fmt",
         build_file = "//bazel/deps/build_files:fmt.BUILD",
