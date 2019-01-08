@@ -17,6 +17,7 @@ hcp(name = "root_exception_handler", deps = [
 "//code/utilities/colors:lib",
 "@boost//:exception",
 "@boost//:throw_exception",
+"@boost//:smart_ptr",
 ])
 
 hcp(name = "task_executer", deps = [
