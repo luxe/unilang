@@ -150,6 +150,7 @@ and chosen during code generation.
 <br>  
   
 TODO  
+also consider a language matrix of tests/features that we have working across languages.
 
 </details>
 <details>
@@ -173,14 +174,17 @@ pray
 leave me a ticket about how it didn't work, and we'll improve the build
 ```
 
-#### stand-alone binaries
-TODO
+#### Stand-alone binaries
+TODO.  
+what do we want here?  
+deb packages? rpm?  other distribution methods?
+I want a quick and easy installer for people.
 
-#### is it building in the cloud?  
+#### Is it building in the cloud?  
 We strive to get all of these to pass.  
 Due to the different limitations of these free services, that might not always be possible.  
-At the very least, it gives us some good visibility of different issues.  
-If the majority of these are passing in the cloud, you have a good chance of succeeded a local build.  
+At the very least, it gives us some good visibility into different issues.  
+If the majority of these are passing, you have a good chance of succeeding in a local build.  
 
 | Continuous Integration | Status |
 | :---         | :---           |
@@ -193,8 +197,8 @@ Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/bran
 | Travis   | [![Build Status](https://travis-ci.com/Unilang/everything.svg?branch=master)](https://travis-ci.com/Unilang/everything)     |
 
 
-#### is the build hermetic?  
-I'm trying.  Here is an overview of the build system  
+#### Is the build hermetic?  
+I'm trying.  Here is an overview of the build system.
 
 ![diagram of the build system](.readme/build-system.png "test")
 
