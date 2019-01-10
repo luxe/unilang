@@ -15,3 +15,8 @@ def toolchains():
         urls = ["https://github.com/grailbio/bazel-toolchain/archive/master.tar.gz"],
     )
 
+    git_repository(
+        name = "io_bazel_rules_m4",
+        remote = "https://github.com/jmillikin/rules_m4",
+        commit = "2bf69df77dfb6b3ba6b7fc95c304b0dc279375bc",
+    )

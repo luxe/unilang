@@ -1,4 +1,5 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -195,6 +196,13 @@ def third_party_libraries():
         urls = [
             "https://github.com/01org/tbb/archive/2019.tar.gz",
         ],
+    )
+    
+    # Math
+    git_repository(
+        name = "bazelify_gmp",
+        remote = "https://github.com/robin-thomas/bazelify-gmp",
+        commit = "bb4881b35e6864c90493980d035e1d984cafd093",
     )
     
     # Graphics
