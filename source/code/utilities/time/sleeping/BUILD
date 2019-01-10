@@ -7,7 +7,7 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-"//code/utilities/filesystem/paths:lib",
-#"@bazelify_gmp//:gmp",
-]
+        "//code/utilities/filesystem/paths:lib",
+        #"@bazelify_gmp//:gmp",
+    ]
 )
