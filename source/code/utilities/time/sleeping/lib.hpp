@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 #include <thread>
-#include "gmpxx.h"
+#include <gmpxx.h>
 
 // sleep functions
 void Sleep_For_N_Nanoseconds(unsigned int const& number_of_nanoseconds);
