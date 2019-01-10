@@ -52,3 +52,11 @@ mpz_class to_mpz_class(char c){
 	}
 	return mpz_class("0");
 }
+
+std::string add_big_numbers(std::string const& num1, std::string const& num2)
+{
+	mpz_class a(num1);
+	mpz_class b(num2);
+	auto result = a + b;
+	return to_string(result);
+}
