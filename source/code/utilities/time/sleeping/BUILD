@@ -8,6 +8,6 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
         "//code/utilities/filesystem/paths:lib",
-        #"@bazelify_gmp//:gmp",
+        "//code/utilities/gmp:lib"
     ]
 )
