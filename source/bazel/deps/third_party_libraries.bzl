@@ -200,7 +200,7 @@ def third_party_libraries():
     
     # Math
     git_repository(
-        name = "bazelify_gmp",
+        name = "gmp",
         remote = "https://github.com/robin-thomas/bazelify-gmp",
         commit = "bb4881b35e6864c90493980d035e1d984cafd093",
     )
