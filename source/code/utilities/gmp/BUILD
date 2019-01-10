@@ -6,5 +6,6 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["@bazelify_gmp//:gmp"],
+    #TODO(thickey): fix
+    #deps = ["@bazelify_gmp//:gmp"],
 )
