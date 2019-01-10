@@ -53,6 +53,10 @@ uh, we'll probably need a deeper section about natural language vs programming l
 what is relevant, what is not. how properties of natural language has incorrectly been applied in programming
 talk about how semantics is what matters most in programming
 
+here is a good example that sumarizes why the whole syntatical approach is incorrect.  
+Where they focus on keyword, we have unilang language tokens
+http://mail.openjdk.java.net/pipermail/amber-spec-experts/2019-January/000945.html
+
 ## Guiding Principles
 All of these need adjusted and organized
 
@@ -126,8 +130,8 @@ once so much code has been written in it.
 Unilang puts as much in the language as possible, because anything that is added must be
 a concept that stands independent of the code that is generated.  
 Extending unilang with new tokens is backwards-compadible, and doesn't affect the existing grammar.
-Although Unilang may have an overwhelming amount of language tokens to account for all these concepts,  
-it is not overwhelming, because the majority of them are not required.
+Although Unilang may have a large number of language tokens to account for all these concepts,  
+it is not very overwhelming because the majority of them are not required.
 
 **Design choice:**  
 The more context a compiler has, the more it can do.  
