@@ -282,8 +282,28 @@ def third_party_libraries():
         ],
     )
     http_archive(
+        name = "net_zlib_zlib",
+        build_file = "//bazel/deps/build_files:zlib.BUILD",
+        sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
+        strip_prefix = "zlib-1.2.11",
+        urls = [
+            "https://zlib.net/zlib-1.2.11.tar.gz",
+        ],
+    )
+    http_archive(
+        name = "openssl",
+        build_file = "//bazel/deps/build_files:openssl.BUILD",
+        patches = ["//bazel/deps/build_files:openssl.patch"],
+        sha256 = "fb6b5de486f1739dc34f2854a0c8f94d13c130eb9c4876cad73b3d40996f8ba6",
+        strip_prefix = "openssl-OpenSSL_1_1_1",
+        urls = [
+            "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1.tar.gz",
+        ],
+    )
+    http_archive(
         name = "curl",
         build_file = "//bazel/deps/build_files:curl.BUILD",
+        patches = ["//bazel/deps/build_files:curl.patch"],
         sha256 = "55ccd5b5209f8cc53d4250e2a9fd87e6f67dd323ae8bd7d06b072cfcbb7836cb",
         strip_prefix = "curl-7.62.0",
         urls = [
