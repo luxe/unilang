@@ -206,7 +206,12 @@ I'm trying.  Here is an overview of the build system.
 
 ![diagram of the build system](.readme/build-system.png "test")
 
-
+Things to improve:  
+ - bundle sysroot
+ - disable all external linking / include file paths (same as sysroot?)
+ - test in different docker containers (kind of have this with existing CIs)
+ - move more system dependencies (see CI config files) into bazel deps (GMP specifically)
+ - set a default compiler toolchain automatically? (instead of specifying directly on cli)
 </details>
 
 <details>
