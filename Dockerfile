@@ -10,6 +10,3 @@ RUN apt-get install -y libgmp3-dev
 
 # Copy the content of your repository into the image
 COPY . ./
-
-WORKDIR /unilang
-VOLUME /cache
