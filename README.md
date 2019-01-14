@@ -206,6 +206,10 @@ I'm trying.  Here is an overview of the build system.
 
 ![diagram of the build system](.readme/build-system.png "test")
 
+If you experience a build issue, make a ticket.  
+Also take a look at the CIs that are passing, and see if they  
+do anything extra to get a successful build.  
+
 Things to improve:  
  - bundle sysroot
  - disable all external linking / include file paths (same as sysroot?)
