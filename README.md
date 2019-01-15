@@ -10,12 +10,13 @@
 <details>
 <summary>Introduction</summary>
 <br>  
-  
-Unilang is a universal programming language.  
-It is the unification of all programming concepts without syntax.  
-It is a higher level language above all high level languages.  
+
+Functioning as a universal programming language, 
+Unilang is the reconstruction of how language ought to be designed for software.
+It encompasses the unification of all programming concepts without syntax.  
+It can be thought of as a higher level language above all high level languages.  
 It was built to improve the efficiency of the modern software engineer.  
-Use unilang to transcompile to other langauges and data formats.  
+You can use unilang to transcompile to other langauges and data formats.  
 Unilang has an abundance of interesting code transformations and static analysis techniques.  
 </details>
 <details>
