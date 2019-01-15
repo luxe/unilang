@@ -4,7 +4,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "macro_resolver", deps = [
 "//code/transcompilers/unilang/parser:parser_token",
-"//code/transcompilers/unilang/tokens:global_token_table",
 "//code/transcompilers/unilang/options/parser:macro_resolving_settings",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
@@ -51,7 +50,6 @@ hcp(name = "parser_token", deps = [
 ])
 
 hcp(name = "global_tokens_table_utilities", deps = [
-"//code/transcompilers/unilang/tokens:global_token_table",
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",

@@ -13,7 +13,6 @@ hcp(name = "tokenizer_marker", deps = [
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
 "//code/transcompilers/unilang/tokenizer:tokenizer_testing_settings",
 "//code/transcompilers/unilang/file_marker:file_marker_adjuster",
-"//code/transcompilers/unilang/tokens:global_token_table",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
 ])
 
