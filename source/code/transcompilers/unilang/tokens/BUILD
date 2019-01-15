@@ -35,7 +35,12 @@ hcp(
 
 hcp(
     name = "all_language_tokens",
-    deps = ["//code/transcompilers/unilang/tokens:generic_token",]
+    deps = ["//code/transcompilers/unilang/tokens:generic_token",
+    "//code/transcompilers/unilang/tokens:standalone_symbols",]
+)
+
+hcp(
+    name = "standalone_symbols",
 )
 
 hcp(

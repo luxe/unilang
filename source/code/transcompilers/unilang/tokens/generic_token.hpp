@@ -60,6 +60,8 @@ public: Generic_Token(Token_Name_Type const& name
             , description(description)
             
             {}
+      
+      Generic_Token(){}
             
 
 };
