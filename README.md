@@ -13,10 +13,11 @@
  
 Unilang is the reconstruction of how language ought to be designed for software.  
 It encompasses the unification of all programming concepts without syntax.  
-It can be thought of as a higher level language above all high level languages.  
-It was built to improve the efficiency of the modern software engineer.  
+Think of it as a higher level language above all high level languages.   
 You can use Unilang to transcompile to other langauges and data formats.  
-Unilang has an abundance of interesting code transformations and static analysis techniques.  
+Unilang has an abundance of interesting code transformations and static analysis techniques. 
+It was built to improve the efficiency of the modern software engineer.  
+The language empowers a level of enginering displine that users would not be able to sustain in other languages.
 </details>
 <details>
 <summary>Language Design</summary>
