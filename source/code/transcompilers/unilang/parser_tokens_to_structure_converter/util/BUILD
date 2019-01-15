@@ -15,6 +15,7 @@ hcp(name = "special_parser_filters", deps = [
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/tokens:global_token_table",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 hcp(name = "parser_utilities", deps = [

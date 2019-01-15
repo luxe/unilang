@@ -2,6 +2,7 @@ class
 ❪"code/transcompilers/unilang/parser/parser_token"❫
 ❪"code/transcompilers/unilang/tokens/global_token_table"❫
 ❪"code/transcompilers/unilang/options/parser/macro_resolving_settings"❫
+❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ⚯
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
@@ -18,41 +19,42 @@ class
 ◀private: static▶ std::wstring ☀As_Resolved_Macro_String(std::wstring str, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
     std::wstring new_str;
     
+    auto all_tokens = Get_Tokens::Get();
     bool saw_escape = false;
     for (auto it: str){
         
         
         //handle escape character encounter
-        if (it == ESCAPE_CHARACTER){
+        if (it == all_tokens.standalone_symbols.ESCAPE_CHARACTER){
             
             if (!saw_escape){
                 saw_escape = true;
             }else{
-                new_str += ESCAPE_CHARACTER;
+                new_str += all_tokens.standalone_symbols.ESCAPE_CHARACTER;
                 saw_escape = false;
             }
         }
         
         //handle code from macro encounter
-        else if (it == CLASS_NAME_CODE_FORM_MACRO){
-            Handle_Code_Form_Macro(new_str,saw_escape,path_to_file);
+        else if (it == all_tokens.standalone_symbols.CLASS_NAME_CODE_FORM_MACRO){
+            Handle_Code_Form_Macro(new_str,saw_escape,path_to_file,all_tokens);
         }
         
         //handle print from macro encounter
-        else if (it == CLASS_NAME_PRINT_FORM_MACRO){
-            Handle_Print_Form_Macro(new_str,saw_escape,path_to_file);
+        else if (it == all_tokens.standalone_symbols.CLASS_NAME_PRINT_FORM_MACRO){
+            Handle_Print_Form_Macro(new_str,saw_escape,path_to_file,all_tokens);
         }
         //true macro
-        else if (it == TRUE_MACRO){
-            Handle_True_Macro(new_str,saw_escape,path_to_file,settings);
+        else if (it == all_tokens.standalone_symbols.TRUE_MACRO){
+            Handle_True_Macro(new_str,saw_escape,path_to_file,settings,all_tokens);
         }
         //false macro
-        else if (it == FALSE_MACRO){
-            Handle_False_Macro(new_str,saw_escape,path_to_file,settings);
+        else if (it == all_tokens.standalone_symbols.FALSE_MACRO){
+            Handle_False_Macro(new_str,saw_escape,path_to_file,settings,all_tokens);
         }
         //false macro
-        else if (it == NULL_MACRO){
-            Handle_Null_Macro(new_str,saw_escape,path_to_file,settings);
+        else if (it == all_tokens.standalone_symbols.NULL_MACRO){
+            Handle_Null_Macro(new_str,saw_escape,path_to_file,settings,all_tokens);
         }
         
         
@@ -71,29 +73,29 @@ class
     
     return new_str;
 ❱
-◀private: static▶ void ☀Handle_Print_Form_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file)❰
-    if (saw_escape){new_str += CLASS_NAME_PRINT_FORM_MACRO;}
+◀private: static▶ void ☀Handle_Print_Form_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, All_Language_Tokens const& all_tokens)❰
+    if (saw_escape){new_str += all_tokens.standalone_symbols.CLASS_NAME_PRINT_FORM_MACRO;}
     else{new_str+= as_wstring(Turn_Path_To_File_To_Printable_Name_Form(path_to_file));}
     saw_escape = false;
 ❱
-◀private: static▶ void ☀Handle_Code_Form_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file)❰
-    if (saw_escape){new_str += CLASS_NAME_CODE_FORM_MACRO;}
+◀private: static▶ void ☀Handle_Code_Form_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, All_Language_Tokens const& all_tokens)❰
+    if (saw_escape){new_str += all_tokens.standalone_symbols.CLASS_NAME_CODE_FORM_MACRO;}
     else{new_str+= as_wstring(Turn_Path_To_File_To_Code_Name_Form(path_to_file));}
     saw_escape = false;
 ❱
 
-◀private: static▶ void ☀Handle_True_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
-    if (saw_escape){new_str += TRUE_MACRO;}
+◀private: static▶ void ☀Handle_True_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings, All_Language_Tokens const& all_tokens)❰
+    if (saw_escape){new_str += all_tokens.standalone_symbols.TRUE_MACRO;}
     else{new_str+= as_wstring(settings.true_macro);}
     saw_escape = false;
 ❱
-◀private: static▶ void ☀Handle_False_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
-    if (saw_escape){new_str += FALSE_MACRO;}
+◀private: static▶ void ☀Handle_False_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings, All_Language_Tokens const& all_tokens)❰
+    if (saw_escape){new_str += all_tokens.standalone_symbols.FALSE_MACRO;}
     else{new_str+= as_wstring(settings.false_macro);}
     saw_escape = false;
 ❱
-◀private: static▶ void ☀Handle_Null_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings)❰
-    if (saw_escape){new_str += NULL_MACRO;}
+◀private: static▶ void ☀Handle_Null_Macro(std::wstring & new_str, bool & saw_escape, std::string const& path_to_file, Macro_Resolving_Settings const& settings, All_Language_Tokens const& all_tokens)❰
+    if (saw_escape){new_str += all_tokens.standalone_symbols.NULL_MACRO;}
     else{new_str+= as_wstring(settings.null_macro);}
     saw_escape = false;
 ❱

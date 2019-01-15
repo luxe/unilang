@@ -21,6 +21,7 @@ hcp(name = "language_file_creator", deps = [
 "//code/transcompilers/unilang/language-and-theme-creator:shared",
 "//code/utilities/converters:lib",
 "//code/utilities/filesystem/paths:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 hcp(name = "reference_file_creator", deps = [
@@ -31,6 +32,7 @@ hcp(name = "reference_file_creator", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 hcp(name = "shared")
@@ -54,6 +56,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/exits:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 hcp(name = "theme_file_creator", deps = [
@@ -63,6 +66,7 @@ hcp(name = "theme_file_creator", deps = [
 "//code/transcompilers/unilang/language-and-theme-creator:shared",
 "//code/utilities/converters:lib",
 "//code/utilities/filesystem/paths:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 cc_binary(

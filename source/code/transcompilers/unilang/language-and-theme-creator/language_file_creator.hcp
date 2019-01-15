@@ -3,6 +3,7 @@ class
 
 ❪"code/transcompilers/unilang/tokens/generic_token"❫
 ❪"code/transcompilers/unilang/tokens/global_token_table"❫
+❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ⚯
 ❪"code/transcompilers/unilang/language-and-theme-creator/global"❫
 ❪"code/transcompilers/unilang/language-and-theme-creator/shared"❫
@@ -20,11 +21,12 @@ class
     out << "<string>" << as_wstring(LANGUAGE_NAME) << "</string></array>" << '\n';
     out << "<key>name</key><string>" << as_wstring(LANGUAGE_NAME) << "</string><key>patterns</key><array>" << '\n';
     
-    Macro_And_Nested_Targeting(out);
+    auto all_tokens = Get_Tokens::Get();
+    Macro_And_Nested_Targeting(out,all_tokens);
     
     
     //all the root element themes
-    for(auto const& it: TOKENS){
+    for(auto const& it: all_tokens.tokens){
         out << "<dict><key>begin</key><string>" << it.start << "</string><key>end</key><string>" << it.end << "\\n|" << it.end << "</string><key>name</key><string>";
         out << as_wstring(as_string(it.name)) << "</string></dict>\n";
     }
@@ -37,36 +39,36 @@ class
 ❱
 
 
-◀public: static▶ void ☀Macro_And_Nested_Targeting(std::wofstream & out) ❰
+◀public: static▶ void ☀Macro_And_Nested_Targeting(std::wofstream & out, All_Language_Tokens const& all_tokens) ❰
 
     out << L"<dict><key>begin</key><string>􏶴</string><key>end</key><string>􏶳</string><key>name</key><string>FUNCTION_BODY</string><key>patterns</key><array>\n";
-        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO_IN_BODY</string></dict>\n";
-        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO_IN_BODY</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO_IN_BODY</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO_IN_BODY</string></dict>\n";
         
         //all the body root element themes
-        for(auto const& it: BODY_TOKENS){
+        for(auto const& it: all_tokens.body_tokens){
             out << "<dict><key>begin</key><string>" << it.start << "</string><key>end</key><string>" << it.end << "\\n|" << it.end << "</string><key>name</key><string>";
             out << as_wstring(as_string(it.name)) << "</string></dict>\n";
         }
     out << L"</array></dict>\n";
     
     out << L"<dict><key>begin</key><string>􏷀</string><key>end</key><string>􏶿</string><key>name</key><string>FUNCTION_ARGUMENT_COMMENT</string><key>patterns</key><array>\n";
-        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
-        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
     out << L"</array></dict>\n";
     
     out << L"<dict><key>begin</key><string>􏶺</string><key>end</key><string>􏶹</string><key>name</key><string>FUNCTION_RESULT_COMMENT</string><key>patterns</key><array>\n";
-        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
-        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
     out << L"</array></dict>\n";
     
     out << L"<dict><key>begin</key><string>􏶠</string><key>end</key><string>􏶡</string><key>name</key><string>FUNCTION_DETAILED_DESCRIPTION</string><key>patterns</key><array>\n";
-        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
-        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
     out << L"</array></dict>\n";
     
     out << L"<dict><key>begin</key><string>􏷐</string><key>end</key><string>􏷏</string><key>name</key><string>FUNCTION_BRIEF_DESCRIPTION</string><key>patterns</key><array>\n";
-        out << L"<dict><key>match</key><string>" << TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
-        out << L"<dict><key>match</key><string>" << FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.TRUE_MACRO << L"</string><key>name</key><string>TRUE_MACRO</string></dict>\n";
+        out << L"<dict><key>match</key><string>" << all_tokens.standalone_symbols.FALSE_MACRO << L"</string><key>name</key><string>FALSE_MACRO</string></dict>\n";
     out << L"</array></dict>\n";
 ❱

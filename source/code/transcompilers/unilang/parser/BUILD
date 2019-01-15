@@ -9,7 +9,8 @@ hcp(name = "macro_resolver", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
-"//code/utilities/types/strings/transformers/stripping:lib"
+"//code/utilities/types/strings/transformers/stripping:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 hcp(name = "parser", deps = [
@@ -53,7 +54,8 @@ hcp(name = "global_tokens_table_utilities", deps = [
 "//code/transcompilers/unilang/tokens:global_token_table",
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/vectors/observers:lib",
-"//code/utilities/types/vectors/operators:lib"
+"//code/utilities/types/vectors/operators:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
 
 hcp(name = "token_value", deps = [
