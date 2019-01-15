@@ -10,8 +10,7 @@
 <details>
 <summary>Introduction</summary>
 <br>  
-
-Functioning as a universal programming language,  
+ 
 Unilang is the reconstruction of how language ought to be designed for software.  
 It encompasses the unification of all programming concepts without syntax.  
 It can be thought of as a higher level language above all high level languages.  
