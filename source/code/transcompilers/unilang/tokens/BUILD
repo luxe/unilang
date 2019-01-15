@@ -33,6 +33,24 @@ hcp(
     deps = ["//code/utilities/data_structures/unique_str_vertex_graph:lib"]
 )
 
+hcp(
+    name = "all_language_tokens",
+    deps = ["//code/transcompilers/unilang/tokens:generic_token",]
+)
+
+hcp(
+    name = "get_tokens",
+deps = [
+    "//code/transcompilers/unilang/tokens:all_ast_markers",
+    "//code/utilities/streams/filestreams:lib",
+    "//code/utilities/types/strings/transformers/casing:lib",
+    "//code/transcompilers/unilang/tokens:generic_token",
+    "//code/transcompilers/unilang/tokens:token_name",
+    "//code/transcompilers/unilang/tokens:token_group",
+    "//code/transcompilers/unilang/tokens:all_language_tokens",
+]
+)
+
 cc_binary(
     name = "unilang_token_file_generator",
     srcs = ["main.cpp"],
