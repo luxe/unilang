@@ -7,6 +7,7 @@ class
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/important/sub_structure_builder"❫
 ❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
 ❪"code/transcompilers/unilang/structure/inlined_structures"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_token_stripper"❫
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
@@ -38,12 +39,12 @@ class
 
 //again, this conversion process, while inefficient, is not slow enough for me to consider it a priority task to fix.  
 //I'm basically trying to express a variant tree in flat manner, and its messy.  Maybe once this gets tried and tested, and we have unit tests, we can consider rewriting this conversion process
-◀public: static▶ Structure ☀Create_Code_Object_From_Token_Stream(std::vector<Parser_Token> tokens, std::string const& path_to_file, Token_Attribute_Settings const& settings)❰
+◀public: static▶ Structure ☀Create_Code_Object_From_Token_Stream(std::vector<Parser_Token> tokens, std::string const& path_to_file, Parser_Settings const& settings)❰
     Structure code;
 
     //a poor-mans mustache templating resolver (an alternative to languge specific templates/template constraints and/or macros)
     //works at the UniLang level.  allows function generation into main Structure
-	Stamp_Expander::Perform_Expansion(tokens,settings);
+	Stamp_Expander::Perform_Expansion(tokens,settings.tokens.symbols);
     
     //set the file name that the code structure was derived from
     // "path/to/file/thing.Unilang" becomes "thing"
@@ -56,25 +57,25 @@ class
     //the overall structure of any UniLang file
     
     //single section:
-    code.meta = Sub_Structure_Builder::Build_Meta_Section(tokens,settings);
+    code.meta = Sub_Structure_Builder::Build_Meta_Section(tokens,settings.tokens.symbols);
 
     //multi-sections
-    code.imports.interface_dependencies      = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Item>           (settings,tokens,Token_Group::IMPORT_INTERFACE          ,Sub_Structure_Builder::Build_Import_Interface_Item);
-    code.imports.implementation_dependencies = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Item>           (settings,tokens,Token_Group::IMPORT_IMPLEMENTATION     ,Sub_Structure_Builder::Build_Import_Implementation_Item);
-    code.imports.test_dependencies           = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Item>           (settings,tokens,Token_Group::IMPORT_TEST               ,Sub_Structure_Builder::Build_Import_Test_Item);
-    code.libraries.libraries                 = Parser_Token_Stripper::Strip_Out_Type_V2<Library_Dependency>    (settings,tokens,Token_Group::LIBRARY                   ,Sub_Structure_Builder::Build_Library_Item);
-    code.compile_options.flags               = Parser_Token_Stripper::Strip_Out_Type_V2<Compile_Option>        (settings,tokens,Token_Group::COPTS                     ,Sub_Structure_Builder::Build_Compile_Option);
-    code.link_options.flags                  = Parser_Token_Stripper::Strip_Out_Type_V2<Link_Option>           (settings,tokens,Token_Group::LINKOPTS                  ,Sub_Structure_Builder::Build_Link_Option);
-    code.namespaces.namespaces               = Parser_Token_Stripper::Strip_Out_Type_V2<Namespace_Item>        (settings,tokens,Token_Group::NAMESPACE                 ,Sub_Structure_Builder::Build_Namespace_Item);
-    code.types.types                         = Parser_Token_Stripper::Strip_Out_Type_V2<Type_Item>             (settings,tokens,Token_Group::TYPES                     ,Sub_Structure_Builder::Build_Type_Item);
-    code.macros.macros                       = Parser_Token_Stripper::Strip_Out_Type_V2<Macro_Item>            (settings,tokens,Token_Group::MACRO                     ,Sub_Structure_Builder::Build_Macro_Item);
-    code.forwards.forwards                   = Parser_Token_Stripper::Strip_Out_Type_V2<Forward_Declare_Item>  (settings,tokens,Token_Group::FORWARD_DECLARE           ,Sub_Structure_Builder::Build_Forward_Declare_Item);
-    code.enums.enumerated_types              = Parser_Token_Stripper::Strip_Out_Type_V2<Enum_Item>             (settings,tokens,Token_Group::ENUM                      ,Sub_Structure_Builder::Build_Enum_Item);
-    code.inheritance.inherited_objects       = Parser_Token_Stripper::Strip_Out_Type_V2<Inheritance_Item>      (settings,tokens,Token_Group::INHERITANCE               ,Sub_Structure_Builder::Build_Inheritance_Item);
-	code.templates.arguments                 = Parser_Token_Stripper::Strip_Out_Type_V2<Template_Argument>     (settings,tokens,Token_Group::OBJECT_TEMPLATE_ARGUMENT  ,Sub_Structure_Builder::Build_Object_Template_Argument);
-    code.methods.methods                     = Parser_Token_Stripper::Strip_Out_Type_V2<Method_Item>           (settings,tokens,Token_Group::FUNCTION                  ,Sub_Structure_Builder::Build_Method_Item);
-    code.typedefs.typedefs                   = Parser_Token_Stripper::Strip_Out_Type_V2<Typedef_Item>          (settings,tokens,Token_Group::TYPEDEF                   ,Sub_Structure_Builder::Build_Typedef_Item);
-    code.data_members.data_members           = Parser_Token_Stripper::Strip_Out_Type_V2<Data_Member_Item>      (settings,tokens,Token_Group::DATA_MEMBER               ,Sub_Structure_Builder::Build_Data_Member_Item);
+    code.imports.interface_dependencies      = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Item>           (settings.tokens.symbols,tokens,Token_Group::IMPORT_INTERFACE          ,Sub_Structure_Builder::Build_Import_Interface_Item);
+    code.imports.implementation_dependencies = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Item>           (settings.tokens.symbols,tokens,Token_Group::IMPORT_IMPLEMENTATION     ,Sub_Structure_Builder::Build_Import_Implementation_Item);
+    code.imports.test_dependencies           = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Item>           (settings.tokens.symbols,tokens,Token_Group::IMPORT_TEST               ,Sub_Structure_Builder::Build_Import_Test_Item);
+    code.libraries.libraries                 = Parser_Token_Stripper::Strip_Out_Type_V2<Library_Dependency>    (settings.tokens.symbols,tokens,Token_Group::LIBRARY                   ,Sub_Structure_Builder::Build_Library_Item);
+    code.compile_options.flags               = Parser_Token_Stripper::Strip_Out_Type_V2<Compile_Option>        (settings.tokens.symbols,tokens,Token_Group::COPTS                     ,Sub_Structure_Builder::Build_Compile_Option);
+    code.link_options.flags                  = Parser_Token_Stripper::Strip_Out_Type_V2<Link_Option>           (settings.tokens.symbols,tokens,Token_Group::LINKOPTS                  ,Sub_Structure_Builder::Build_Link_Option);
+    code.namespaces.namespaces               = Parser_Token_Stripper::Strip_Out_Type_V2<Namespace_Item>        (settings.tokens.symbols,tokens,Token_Group::NAMESPACE                 ,Sub_Structure_Builder::Build_Namespace_Item);
+    code.types.types                         = Parser_Token_Stripper::Strip_Out_Type_V2<Type_Item>             (settings.tokens.symbols,tokens,Token_Group::TYPES                     ,Sub_Structure_Builder::Build_Type_Item);
+    code.macros.macros                       = Parser_Token_Stripper::Strip_Out_Type_V2<Macro_Item>            (settings.tokens.symbols,tokens,Token_Group::MACRO                     ,Sub_Structure_Builder::Build_Macro_Item);
+    code.forwards.forwards                   = Parser_Token_Stripper::Strip_Out_Type_V2<Forward_Declare_Item>  (settings.tokens.symbols,tokens,Token_Group::FORWARD_DECLARE           ,Sub_Structure_Builder::Build_Forward_Declare_Item);
+    code.enums.enumerated_types              = Parser_Token_Stripper::Strip_Out_Type_V2<Enum_Item>             (settings.tokens.symbols,tokens,Token_Group::ENUM                      ,Sub_Structure_Builder::Build_Enum_Item);
+    code.inheritance.inherited_objects       = Parser_Token_Stripper::Strip_Out_Type_V2<Inheritance_Item>      (settings.tokens.symbols,tokens,Token_Group::INHERITANCE               ,Sub_Structure_Builder::Build_Inheritance_Item);
+	code.templates.arguments                 = Parser_Token_Stripper::Strip_Out_Type_V2<Template_Argument>     (settings.tokens.symbols,tokens,Token_Group::OBJECT_TEMPLATE_ARGUMENT  ,Sub_Structure_Builder::Build_Object_Template_Argument);
+    code.methods.methods                     = Parser_Token_Stripper::Strip_Out_Type_V2<Method_Item>           (settings.tokens.symbols,tokens,Token_Group::FUNCTION                  ,Sub_Structure_Builder::Build_Method_Item);
+    code.typedefs.typedefs                   = Parser_Token_Stripper::Strip_Out_Type_V2<Typedef_Item>          (settings.tokens.symbols,tokens,Token_Group::TYPEDEF                   ,Sub_Structure_Builder::Build_Typedef_Item);
+    code.data_members.data_members           = Parser_Token_Stripper::Strip_Out_Type_V2<Data_Member_Item>      (settings.tokens.symbols,tokens,Token_Group::DATA_MEMBER               ,Sub_Structure_Builder::Build_Data_Member_Item);
     
     return code;
 ❱
