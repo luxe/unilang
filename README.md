@@ -17,8 +17,8 @@ You can use Unilang to transcompile down to other langauges and data formats.
 Unilang has an abundance of interesting code transformations and static analysis techniques.  
 Built to improve the efficiency of the modern software engineer,  
 the language empowers a level of enginering displine that users would not be able to sustain in other languages.  
-  
-</details>
+</details>  
+
 <details>
 <summary>Language Design</summary>
 <br>
