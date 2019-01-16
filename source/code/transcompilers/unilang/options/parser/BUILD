@@ -12,5 +12,6 @@ deps = [
 ])
 hcp(name="tokenize_settings",
 deps = [
-"//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings"
+"//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
+"//code/transcompilers/unilang/tokens:all_language_tokens"
 ])
