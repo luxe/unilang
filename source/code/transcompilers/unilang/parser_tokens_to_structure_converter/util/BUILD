@@ -10,7 +10,7 @@ cpp_object(name = "parser_aliases", deps = [
 hcp(name = "special_parser_filters", deps = [
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/tokens:token_group",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
 "//code/utilities/types/vectors/observers:lib",
@@ -28,13 +28,13 @@ hcp(name = "parser_utilities", deps = [
 ])
 
 hcp(name = "parser_token_stripper", deps = [
-"//code/transcompilers/unilang/structure/sections/import:import_item",
-"//code/transcompilers/unilang/structure/sections/namespace:namespace_item",
-"//code/transcompilers/unilang/structure/sections/macro:macro_item",
-"//code/transcompilers/unilang/structure/sections/inheritance:inheritance_item",
-"//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/import:import_item",
+"//code/transcompilers/unilang/structure/model/sections/namespace:namespace_item",
+"//code/transcompilers/unilang/structure/model/sections/macro:macro_item",
+"//code/transcompilers/unilang/structure/model/sections/inheritance:inheritance_item",
+"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
 "//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:special_parser_filters",

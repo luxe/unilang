@@ -10,9 +10,9 @@ hcp(name = "type_to_hungarian_notation_converter", deps=[
 
 hcp(name = "data_member_to_hungarian_notation_converter", deps = [
 "//code/transcompilers/unilang/type_converters/type_to_hungarian:type_to_hungarian_notation_converter",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_argument",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_result",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_argument",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_result",
 "//code/transcompilers/unilang/options/hungarian:identifier_notation_settings",
 "//code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
 "//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",

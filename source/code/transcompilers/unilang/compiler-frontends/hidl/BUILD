@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "hidl_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/options/language-specific:hidl_export_settings",
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
@@ -13,7 +13,7 @@ hcp(name = "hidl_exporter", deps = [
 "//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:stream_creator",
 "//code/transcompilers/unilang/structure-printer/filename:file_name_getter",
 "//code/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
@@ -32,6 +32,6 @@ hcp(name = "hidl_exporter", deps = [
 hcp(name = "hidl_options_getter", deps = [
 "//code/transcompilers/unilang/options/language-specific:hidl_export_settings",
 "//code/transcompilers/unilang/options/sections/meta/organizations:organization",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/utilities/exits:lib",
 ])

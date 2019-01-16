@@ -3,11 +3,11 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "destructor_creator", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer:methods_printer",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:implicit_contract_adder",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",
@@ -15,11 +15,11 @@ hcp(name = "destructor_creator", deps = [
 ])
 
 hcp(name = "forwarded_destructor_creator", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer:methods_printer",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:implicit_contract_adder",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",

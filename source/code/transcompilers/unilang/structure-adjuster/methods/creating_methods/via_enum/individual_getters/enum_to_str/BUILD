@@ -3,11 +3,11 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "enum_to_str_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
+"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/options/sections/enum:enum_options",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/enum_printer/core:enum_value_creator",
 "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
@@ -19,11 +19,11 @@ hcp(name = "enum_to_str_getter", deps = [
 ])
 
 hcp(name = "enum_to_str_inflection_count_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
+"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/options/sections/enum:enum_options",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/enum_printer/core:enum_value_creator",
 "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
@@ -35,11 +35,11 @@ hcp(name = "enum_to_str_inflection_count_getter", deps = [
 ])
 
 hcp(name = "enum_to_str_plural_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
+"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/options/sections/enum:enum_options",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/enum_printer/core:enum_value_creator",
 "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
@@ -51,11 +51,11 @@ hcp(name = "enum_to_str_plural_getter", deps = [
 ])
 
 hcp(name = "enum_to_str_singular_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
+"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/options/sections/enum:enum_options",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/enum_printer/core:enum_value_creator",
 "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",

@@ -16,7 +16,7 @@ hcp(name = "macro_resolver", deps = [
 hcp(name = "parser", deps = [
 "//code/transcompilers/unilang/parser:structure_creator",
 "//code/transcompilers/unilang/user-frontend/command_line_arguments:dependency_paths",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/parser:parser_settings",
 "//code/transcompilers/unilang/parser:parser_shared",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
@@ -26,7 +26,7 @@ hcp(name = "parser", deps = [
 
 
 hcp(name = "structure_creator", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/options/parser:parser_settings",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",

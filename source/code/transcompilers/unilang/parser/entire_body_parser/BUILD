@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "entire_body_parser", deps = [
-"//code/transcompilers/unilang/structure/sections/method/body:function_body",
+"//code/transcompilers/unilang/structure/model/sections/method/body:function_body",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/converters:lib",
@@ -21,7 +21,7 @@ hcp(name = "nested_body_tokens", deps = [
 ])
 
 hcp(name = "body_tokenizer", deps = [
-"//code/transcompilers/unilang/structure/sections/method/body:function_body",
+"//code/transcompilers/unilang/structure/model/sections/method/body:function_body",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/converters:lib",

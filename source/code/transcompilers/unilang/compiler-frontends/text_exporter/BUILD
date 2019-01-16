@@ -5,8 +5,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "exported_dependency_options")
 
 hcp(name = "text_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/contributor:contributor",
 "exported_dependency_options",
-"//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
 ])

@@ -12,8 +12,8 @@ hcp(name = "doxygen_block_maker", deps = [
 ])
 
 hcp(name = "doxygen_data_getter_for_data_members", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -26,8 +26,8 @@ hcp(name = "doxygen_data_getter_for_data_members", deps = [
 ])
 
 hcp(name = "doxygen_data_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -62,7 +62,7 @@ hcp(name = "grammar_adjuster", deps = [
 
 hcp(name = "value_constraint_comment_deriver", deps = [
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/data_member:value_constraints",
+"//code/transcompilers/unilang/structure/model/sections/data_member:value_constraints",
 "//code/transcompilers/unilang/constraint_exporter/interval_constraint:interval_constraint",
 "//code/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
 "//code/transcompilers/unilang/constraint_exporter:value_constraints_to_interval_constraints",

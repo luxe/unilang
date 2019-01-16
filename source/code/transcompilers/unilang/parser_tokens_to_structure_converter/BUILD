@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "stamp_expander", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/parser:token_value",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/important:sub_structure_builder",
@@ -17,7 +17,7 @@ hcp(name = "stamp_expander", deps = [
 ])
 
 hcp(name = "code_object_creator", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/parser:token_value",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/important:sub_structure_builder",
@@ -28,6 +28,6 @@ hcp(name = "code_object_creator", deps = [
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter:stamp_expander",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
-"//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/options/parser:parser_settings",
 ])

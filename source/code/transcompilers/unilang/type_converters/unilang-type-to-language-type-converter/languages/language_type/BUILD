@@ -9,7 +9,7 @@ hcp(name = "language_type", deps = [
 ])
 hcp(name = "needed_import", deps = [
 	"type_size",
-"//code/transcompilers/unilang/structure/sections/import:import_type",
+"//code/transcompilers/unilang/structure/model/sections/import:import_type",
 ])
 hcp(name = "type_size", deps = [
 ])

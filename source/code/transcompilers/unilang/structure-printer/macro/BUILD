@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "single_macro_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/macro:macro_item",
+"//code/transcompilers/unilang/structure/model/sections/macro:macro_item",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
@@ -16,7 +16,7 @@ hcp(name = "single_macro_printer", deps = [
 ])
 
 hcp(name = "macro_redefinition_message_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/macro:macro_item",
+"//code/transcompilers/unilang/structure/model/sections/macro:macro_item",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
@@ -26,7 +26,7 @@ hcp(name = "macro_redefinition_message_getter", deps = [
 
 
 hcp(name = "macro_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/macro:macro_item",
+"//code/transcompilers/unilang/structure/model/sections/macro:macro_item",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "single_macro_printer",

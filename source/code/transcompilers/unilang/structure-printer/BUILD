@@ -3,9 +3,9 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "shared_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/types/strings/transformers/appending:lib",
@@ -16,7 +16,7 @@ hcp(name = "shared_printer", deps = [
 ])
 
 hcp(name = "stream_creator", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/filesystem:general_filesystem_naming",
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/structure-printer/filename:file_name_getter",
@@ -25,8 +25,8 @@ hcp(name = "stream_creator", deps = [
 cpp_object(name = "function_declaration_location")
 
 hcp(name = "doxygen_block_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -37,10 +37,10 @@ hcp(name = "doxygen_block_printer", deps = [
 ])
 
 hcp(name = "data_member_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
 "//code/transcompilers/unilang/literal_suffix_getter/getter:literal_suffix_settings",
 "//code/transcompilers/unilang/literal_suffix_getter/getter:literal_suffix_getter",
@@ -57,8 +57,8 @@ hcp(name = "method_body_token_printer", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/in-method-printers:body_param_in_method_printer",
 "//code/transcompilers/unilang/in-method-printers:data_member_in_method_printer",
@@ -69,9 +69,9 @@ hcp(name = "method_body_token_printer", deps = [
 ])
 
 hcp(name = "namespace_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/namespace:namespace_section",
+"//code/transcompilers/unilang/structure/model/sections/namespace:namespace_section",
 "//code/transcompilers/unilang/options/sections/namespace:namespace_options",
-"//code/transcompilers/unilang/structure/sections/namespace:namespace_item",
+"//code/transcompilers/unilang/structure/model/sections/namespace:namespace_item",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_getter",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/streams/filestreams:lib",
@@ -81,7 +81,7 @@ hcp(name = "namespace_printer", deps = [
 
 hcp(name = "return_type_str_getter", deps = [
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
 "//code/transcompilers/unilang/structure-printer/derivers:type_name_deriver",
 "//code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
@@ -93,8 +93,8 @@ hcp(name = "return_type_str_getter", deps = [
 
 hcp(name = "method_block_ender", deps = [
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
 "//code/transcompilers/unilang/comment_creator:comment_creator",
 "//code/utilities/streams/filestreams:lib",
@@ -103,18 +103,18 @@ hcp(name = "method_block_ender", deps = [
 ])
 
 hcp(name = "implicit_contract_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method/contracts:method_contracts_section",
+"//code/transcompilers/unilang/structure/model/sections/method/contracts:method_contracts_section",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",
 ])
 
 hcp(name = "methods_printer", deps=[
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/tokens:token_name",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:function_declaration_location",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/in-out-design-printer:input_struct_getter",
@@ -136,11 +136,11 @@ hcp(name = "methods_printer", deps=[
 ])
 
 hcp(name = "method_signature_printer", deps=[
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/tokens:token_name",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:function_declaration_location",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/in-out-design-printer:input_struct_getter",
@@ -161,8 +161,8 @@ hcp(name = "method_signature_printer", deps=[
 ])
 
 hcp(name = "struct_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_section",
-"//code/transcompilers/unilang/structure/sections/types:type_section",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_section",
+"//code/transcompilers/unilang/structure/model/sections/types:type_section",
 "//code/transcompilers/unilang/options/sections:portion_options",
 "//code/transcompilers/unilang/options:general_options",
 "//code/transcompilers/unilang/structure-printer:data_member_printer",
@@ -174,8 +174,8 @@ hcp(name = "struct_printer", deps = [
 ])
 
 hcp(name="hidl_data_member_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_section",
-"//code/transcompilers/unilang/structure/sections/types:type_section",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_section",
+"//code/transcompilers/unilang/structure/model/sections/types:type_section",
 "//code/transcompilers/unilang/options/sections:portion_options",
 "//code/transcompilers/unilang/options:general_options",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
@@ -190,7 +190,7 @@ hcp(name="hidl_data_member_printer", deps = [
 ])
 
 hcp(name = "object_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "object_file_printer",
 "//code/utilities/streams/filestreams:lib",
@@ -199,7 +199,7 @@ hcp(name = "object_printer", deps = [
 ])
 
 hcp(name = "object_file_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
@@ -214,7 +214,7 @@ hcp(name = "object_file_printer", deps = [
 ])
 
 hcp(name = "actual_structure_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/normal-design-printer:normal_design_printer",
@@ -222,11 +222,11 @@ hcp(name = "actual_structure_printer", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib",
-"//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
 ])
 
 hcp(name = "global_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer:stream_creator",
@@ -240,7 +240,7 @@ hcp(name = "global_printer", deps = [
 "//code/transcompilers/unilang/structure-printer:methods_printer",
 "//code/transcompilers/unilang/boilerplate_printer/extern_c:extern_wrap_printer",
 "//code/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
-"//code/transcompilers/unilang/structure/sections/meta:code_type",
+"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/transcompilers/unilang/structure-printer:actual_structure_printer",
 "//code/transcompilers/unilang/structure-printer/filename:file_name_getter",
 "//code/utilities/streams/filestreams:lib",
@@ -254,7 +254,7 @@ hcp(name = "global_printer", deps = [
 ])
 
 hcp(name = "file_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer:global_printer",
 "//code/transcompilers/unilang/structure-printer:object_printer",
@@ -266,9 +266,9 @@ hcp(name = "file_printer", deps = [
 ])
 
 hcp(name = "struct_derivers", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_section",
-"//code/transcompilers/unilang/structure/sections/types:type_section",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_section",
+"//code/transcompilers/unilang/structure/model/sections/types:type_section",
 "//code/utilities/converters:lib",
-"//code/transcompilers/unilang/structure/sections/enum:enum_section",
+"//code/transcompilers/unilang/structure/model/sections/enum:enum_section",
 ])
 

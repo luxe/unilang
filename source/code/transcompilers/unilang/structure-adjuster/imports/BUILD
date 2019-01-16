@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "existing_import_adjuster", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/strings/observers/other:lib",
@@ -11,7 +11,7 @@ hcp(name = "existing_import_adjuster", deps = [
 ])
 
 hcp(name = "import_adjuster", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/transcompilers/unilang/structure-adjuster/imports:existing_import_adjuster",
 "//code/utilities/types/sets:lib",

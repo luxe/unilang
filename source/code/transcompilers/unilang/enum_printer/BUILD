@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "enum_section_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/enum/item:enum_item",
+"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/options/sections/enum:enum_options",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",

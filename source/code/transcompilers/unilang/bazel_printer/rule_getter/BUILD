@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "hidl", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/other:lib",
@@ -17,7 +17,7 @@ hcp(name = "hidl", deps = [
 ])
 
 hcp(name = "config_hidl", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/other:lib",
@@ -31,7 +31,7 @@ hcp(name = "config_hidl", deps = [
 ])
 
 hcp(name = "cc_library", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/other:lib",
@@ -45,7 +45,7 @@ hcp(name = "cc_library", deps = [
 ])
 
 hcp(name = "rule_getter", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/other:lib",
@@ -53,7 +53,7 @@ hcp(name = "rule_getter", deps = [
 "//code/utilities/types/char:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/bazel_printer:build_info_extractor",
 "//code/transcompilers/unilang/bazel_printer/rule_getter:hidl",
 "//code/transcompilers/unilang/bazel_printer/rule_getter:config_hidl",

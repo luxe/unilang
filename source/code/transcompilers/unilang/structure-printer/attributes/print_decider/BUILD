@@ -15,8 +15,8 @@ hcp(name = "attribute_placement_tester", deps = [
 ])
 
 hcp(name = "attribute_print_decider", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_argument",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_argument",
 "//code/transcompilers/unilang/structure-printer:function_declaration_location",
 "attribute_placement_tester",
 "//code/transcompilers/unilang/options/sections/method/attributes:all_method_attribute_settings",

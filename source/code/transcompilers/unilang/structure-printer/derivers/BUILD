@@ -9,12 +9,12 @@ hcp(name = "struct_name_deriver", deps = [
 ])
 
 hcp(name = "type_name_deriver", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_argument",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_result",
-"//code/transcompilers/unilang/structure/sections/typedef:typedef_argument",
-"//code/transcompilers/unilang/structure/sections/typedef:typedef_result",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_argument",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_result",
+"//code/transcompilers/unilang/structure/model/sections/typedef:typedef_argument",
+"//code/transcompilers/unilang/structure/model/sections/typedef:typedef_result",
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/language_type:language_type",
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter:unilang_type_to_language_type_converter",
 "//code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
@@ -28,10 +28,10 @@ hcp(name = "structure_typename_deriver", deps = [
 ])
 
 hcp(name = "identifier_name_deriver", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_argument",
-"//code/transcompilers/unilang/structure/sections/method/arguments/argument:function_result",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_argument",
+"//code/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_result",
 "//code/transcompilers/unilang/options/sections:notation_settings",
 "//code/utilities/types:tri_bool",
 "//code/transcompilers/unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",

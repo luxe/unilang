@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "extern_wrap_printer", deps = [
-"//code/transcompilers/unilang/structure/sections/meta:meta_section",
+"//code/transcompilers/unilang/structure/model/sections/meta:meta_section",
 "//code/transcompilers/unilang/options/sections/extern_c:extern_c_guard_options",
 "//code/transcompilers/unilang/boilerplate_printer/extern_c:macro_define_check_getter",
 "//code/transcompilers/unilang/boilerplate_printer/extern_c:macro_endif_getter",

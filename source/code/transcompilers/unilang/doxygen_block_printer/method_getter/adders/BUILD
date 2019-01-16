@@ -3,8 +3,8 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name= "units_description_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -18,8 +18,8 @@ hcp(name= "units_description_adder", deps = [
 ])
 
 hcp(name = "return_results_description_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -29,8 +29,8 @@ hcp(name = "return_results_description_adder", deps = [
 ])
 
 hcp(name = "suggested_return_identifier_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -41,8 +41,8 @@ hcp(name = "suggested_return_identifier_adder", deps = [
 ])
 
 hcp(name = "main_description_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -56,8 +56,8 @@ hcp(name = "main_description_adder", deps = [
 ])
 
 hcp(name = "contract_description_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -72,8 +72,8 @@ hcp(name = "contract_description_adder", deps = [
 ])
 
 hcp(name = "argument_description_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
@@ -92,7 +92,7 @@ hcp(name = "argument_description_adder", deps = [
 ])
 
 hcp(name = "overload_note_adder", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",

@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "method_sorter", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/sections/method/sorting/method_sort_algorithms:method_sort_algorithms",
 "//code/transcompilers/unilang/normal-design-printer/data:subgroup_sorted_methods",
 "//code/utilities/exits:lib",
@@ -22,7 +22,7 @@ hcp(name = "subgroup_tag_printer", deps = [
 ])
 
 hcp(name = "method_sorting_and_grouping_order_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/normal-design-printer/data:subgroup_sorted_methods",
 "//code/transcompilers/unilang/structure-printer:shared_printer",
@@ -37,7 +37,7 @@ hcp(name = "method_sorting_and_grouping_order_printer", deps = [
 
 hcp(name = "normal_design_printer", deps = [
 "//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/in-out-design-printer:component_struct_printer",
 "//code/transcompilers/unilang/structure-printer/forward_declares:forward_declare_printer",

@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "structure_inliner", deps = [
 "//code/transcompilers/unilang/user-frontend/command_line_arguments:dependency_paths",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/parser:parser_settings",
 "//code/transcompilers/unilang/parser:parser",
 "//code/transcompilers/unilang/user-frontend/compiler:compiler",

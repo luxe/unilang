@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "methods_adjuster", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/transcompilers/unilang/structure-adjuster/methods/creating_methods:extra_methods_creator",
 "//code/transcompilers/unilang/structure-adjuster/methods/forcers:method_chaining_enforcer",

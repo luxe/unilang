@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "parser_bindings", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_aliases",
 "//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
@@ -13,7 +13,7 @@ hcp(name = "parser_bindings", deps = [
 ])
 
 hcp(name = "sub_structure_builder", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_aliases",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",

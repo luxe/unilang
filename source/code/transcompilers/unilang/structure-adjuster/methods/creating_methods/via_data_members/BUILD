@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "data_member_utility_function_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/sections/data_member:data_member_options",
 "//code/transcompilers/unilang/structure-printer:doxygen_block_printer",
 "//code/transcompilers/unilang/structure-printer:function_declaration_location",

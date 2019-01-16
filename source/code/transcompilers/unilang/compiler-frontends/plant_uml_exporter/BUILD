@@ -3,9 +3,9 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "plant_uml_exporter", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/structure:inlined_structures",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/converters:lib",

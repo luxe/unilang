@@ -35,8 +35,8 @@ hcp(name = "build_info_extractor",deps = [
 ])
 
 hcp(name = "target_name_deriver",deps = [
-"//code/transcompilers/unilang/structure:inlined_structures",
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/other:lib",
 "//code/utilities/types/strings/transformers/appending:lib",
@@ -46,7 +46,7 @@ hcp(name = "target_name_deriver",deps = [
 ])
 
 hcp(name = "deps_printer", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/other:lib",

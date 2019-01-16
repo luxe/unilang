@@ -3,9 +3,9 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "serializable_function_getter", deps = [
-"//code/transcompilers/unilang/structure/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/transcompilers/unilang/options/sections/data_member:data_member_options",
-"//code/transcompilers/unilang/structure/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
 "//code/transcompilers/unilang/options/language-specific:c_language_version",
 "//code/transcompilers/unilang/structure-adjuster/methods/creating_methods/via_data_members/individual_getters/serialization/json:serialize_json_method_getter",

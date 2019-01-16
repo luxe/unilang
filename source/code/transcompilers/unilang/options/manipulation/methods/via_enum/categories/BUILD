@@ -5,8 +5,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "enum_utility_subgroup_affiliation_function_options")
 
 hcp(name = "function_build_settings", deps = [
-"//code/transcompilers/unilang/structure/sections/method:method_item",
-"//code/transcompilers/unilang/structure/sections:structure_enums",
+"//code/transcompilers/unilang/structure/model/sections/method:method_item",
+"//code/transcompilers/unilang/structure/model/sections:structure_enums",
 ])
 
 hcp(name = "enum_utility_conversion_function_options", deps = [

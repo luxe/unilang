@@ -58,5 +58,5 @@ hcp(name = "user_frontend", deps = [
 ])
 
 hcp(name = "language_guesser", deps = [
-"//code/transcompilers/unilang/structure:structure",
+"//code/transcompilers/unilang/structure/model:structure",
 ])
