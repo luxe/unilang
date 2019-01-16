@@ -10,6 +10,7 @@ hcp(name = "macro_resolver", deps = [
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/transcompilers/unilang/options/parser:parser_settings"
 ])
 
 hcp(name = "parser", deps = [
