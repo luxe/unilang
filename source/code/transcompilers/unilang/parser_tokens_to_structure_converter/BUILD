@@ -13,6 +13,7 @@ hcp(name = "stamp_expander", deps = [
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:special_parser_filters",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/types/strings/transformers/search_replace:lib",
+"//code/transcompilers/unilang/options/parser:parser_settings",
 ])
 
 hcp(name = "code_object_creator", deps = [

@@ -5,6 +5,7 @@ class
 ❪"code/transcompilers/unilang/parser/parser_token"❫
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_aliases"❫
 ❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
 ❪"code/transcompilers/unilang/parser/body_parser/body_token_parser"❫
@@ -19,24 +20,24 @@ class
 
 //META RELATED (DONE):
 ◀public: template <typename T>
-static auto Bind_Meta_Code_Type(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Code_Type> {
+static auto Bind_Meta_Code_Type(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Code_Type> {
     
     return {t.code_type, Token_Name::META_DATA_CODE_TYPE,
-                            {{settings.meta.global,Code_Type::GLOBAL}
-                            ,{settings.meta.sum_type,Code_Type::SUM_TYPE}
-                            ,{settings.meta.product_type,Code_Type::PRODUCT_TYPE}}
+                            {{settings.tokens.symbols.meta.global,Code_Type::GLOBAL}
+                            ,{settings.tokens.symbols.meta.sum_type,Code_Type::SUM_TYPE}
+                            ,{settings.tokens.symbols.meta.product_type,Code_Type::PRODUCT_TYPE}}
                             ,Code_Type::GLOBAL};
 }▶
 ◀public: template <typename T>
-static auto Bind_Meta_Pack_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Meta_Pack_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::META_DATA_CODE_TYPE,{{settings.meta.packed,t.packed}}}
+        {Token_Name::META_DATA_CODE_TYPE,{{settings.tokens.symbols.meta.packed,t.packed}}}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Meta_Description(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Meta_Description(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::META_DATA_BRIEF_DESCRIPTION,    t.brief_description}
@@ -46,7 +47,7 @@ static auto Bind_Meta_Description(T & t, Token_Attribute_Settings const& setting
 
 
 ◀public: template <typename T>
-static auto Bind_Meta_Subgroups(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Meta_Subgroups(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::META_SUBGROUP_NAME,               t.name}
@@ -54,7 +55,7 @@ static auto Bind_Meta_Subgroups(T & t, Token_Attribute_Settings const& settings)
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Meta_Specification_File(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Meta_Specification_File(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::META_SPECIFICATION_FILE_PATH,          t.path_to_file}
@@ -62,7 +63,7 @@ static auto Bind_Meta_Specification_File(T & t, Token_Attribute_Settings const& 
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Meta_Foreseeable_Change(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Meta_Foreseeable_Change(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::META_FORSEEABLE_CHANGE,              t.possible_change}
@@ -72,7 +73,7 @@ static auto Bind_Meta_Foreseeable_Change(T & t, Token_Attribute_Settings const& 
 }▶
 //--------------------------------------
 ◀public: template <typename T>
-static auto Function_Test_Main(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Function_Test_Main(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::FUNCTION_TEST_CASE_NAME,              t.name}
@@ -82,7 +83,7 @@ static auto Function_Test_Main(T & t, Token_Attribute_Settings const& settings) 
     };
 }▶
 ◀public: template <typename T>
-static auto Function_Test_Failure_Reason(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Function_Test_Failure_Reason(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::FUNCTION_TEST_CASE_REASON_FOR_FAILING,              t.reason}
@@ -91,7 +92,7 @@ static auto Function_Test_Failure_Reason(T & t, Token_Attribute_Settings const& 
 
 //--------------------------------------
 ◀public: template <typename T>
-static auto Benchmark_Main(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Benchmark_Main(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::FUNCTION_BENCHMARK_CASE_NAME,              t.name}
@@ -102,7 +103,7 @@ static auto Benchmark_Main(T & t, Token_Attribute_Settings const& settings) -> P
 }▶
 
 ◀public: template <typename T>
-static auto Benchmark_Arg(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Benchmark_Arg(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::FUNCTION_BENCHMARK_ARGUMENT_NAME,              t.name}
@@ -114,17 +115,17 @@ static auto Benchmark_Arg(T & t, Token_Attribute_Settings const& settings) -> Pa
 
 //typedefs
 ◀public: template <typename T>
-static auto Bind_Typedef_Specifiers_Class(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
+static auto Bind_Typedef_Specifiers_Class(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
     
     return {t.access, Token_Name::TYPEDEF_SPECIFIERS,
-                            {{settings._typedef.access._public,Class_Access::PUBLIC}
-                            ,{settings._typedef.access._protected,Class_Access::PROTECTED}
-                            ,{settings._typedef.access._private,Class_Access::PRIVATE}}
+                            {{settings.tokens.symbols._typedef.access._public,Class_Access::PUBLIC}
+                            ,{settings.tokens.symbols._typedef.access._protected,Class_Access::PROTECTED}
+                            ,{settings.tokens.symbols._typedef.access._private,Class_Access::PRIVATE}}
                             ,Class_Access::PUBLIC};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Typedef_Root_Items(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Typedef_Root_Items(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::TYPEDEF_NAME,t.name}
@@ -134,7 +135,7 @@ static auto Bind_Typedef_Root_Items(T & t, Token_Attribute_Settings const& setti
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Type_Section_Root_Items(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Type_Section_Root_Items(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::TYPE_NAME,t.name}
@@ -144,7 +145,7 @@ static auto Bind_Type_Section_Root_Items(T & t, Token_Attribute_Settings const& 
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Typedef_Argument(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Typedef_Argument(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::TYPEDEF_ARGUMENT,t.name}
@@ -153,7 +154,7 @@ static auto Bind_Typedef_Argument(T & t, Token_Attribute_Settings const& setting
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Typedef_Result(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Typedef_Result(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::TYPEDEF_RETURN,t.name}
@@ -164,7 +165,7 @@ static auto Bind_Typedef_Result(T & t, Token_Attribute_Settings const& settings)
 
 //IMPORT RELATED (DONE):
 ◀public: template <typename T>
-static auto Build_Interface_Import_Names(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Build_Interface_Import_Names(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::IMPORT_INTERFACE_NAME,t.name}
@@ -173,7 +174,7 @@ static auto Build_Interface_Import_Names(T & t, Token_Attribute_Settings const& 
 }▶
 
 ◀public: template <typename T>
-static auto Build_Implementation_Import_Names(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Build_Implementation_Import_Names(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::IMPORT_IMPLEMENTATION_NAME,t.name}
@@ -182,7 +183,7 @@ static auto Build_Implementation_Import_Names(T & t, Token_Attribute_Settings co
 }▶
 
 ◀public: template <typename T>
-static auto Build_Test_Import_Names(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Build_Test_Import_Names(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::IMPORT_TEST_NAME,t.name}
@@ -191,49 +192,49 @@ static auto Build_Test_Import_Names(T & t, Token_Attribute_Settings const& setti
 }▶
 
 ◀public: template <typename T>
-static auto Build_Import_Interface_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Build_Import_Interface_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::IMPORT_INTERFACE_SPECIFIERS ,{{settings.import._inline,t.inlined}}}
+        {Token_Name::IMPORT_INTERFACE_SPECIFIERS ,{{settings.tokens.symbols.import._inline,t.inlined}}}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Build_Import_Interface_Specifiers2(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Import_Type> {
+static auto Build_Import_Interface_Specifiers2(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Import_Type> {
     
     return {t.type, Token_Name::IMPORT_INTERFACE_SPECIFIERS,
-                            {{settings.import.system,Import_Type::SYSTEM}}
+                            {{settings.tokens.symbols.import.system,Import_Type::SYSTEM}}
                             ,Import_Type::LOCAL};
 }▶
 
 ◀public: template <typename T>
-static auto Build_Import_Implementation_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Build_Import_Implementation_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::IMPORT_IMPLEMENTATION_SPECIFIERS ,{{settings.import._inline,t.inlined}}}
+        {Token_Name::IMPORT_IMPLEMENTATION_SPECIFIERS ,{{settings.tokens.symbols.import._inline,t.inlined}}}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Build_Import_Implementation_Specifiers2(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Import_Type> {
+static auto Build_Import_Implementation_Specifiers2(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Import_Type> {
     
     return {t.type, Token_Name::IMPORT_IMPLEMENTATION_SPECIFIERS,
-                            {{settings.import.system,Import_Type::SYSTEM}}
+                            {{settings.tokens.symbols.import.system,Import_Type::SYSTEM}}
                             ,Import_Type::LOCAL};
 }▶
 ◀public: template <typename T>
-static auto Build_Import_Test_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Build_Import_Test_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::IMPORT_TEST_SPECIFIERS ,{{settings.import._inline,t.inlined}}}
+        {Token_Name::IMPORT_TEST_SPECIFIERS ,{{settings.tokens.symbols.import._inline,t.inlined}}}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Build_Import_Test_Specifiers2(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Import_Type> {
+static auto Build_Import_Test_Specifiers2(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Import_Type> {
     
     return {t.type, Token_Name::IMPORT_TEST_SPECIFIERS,
-                            {{settings.import.system,Import_Type::SYSTEM}}
+                            {{settings.tokens.symbols.import.system,Import_Type::SYSTEM}}
                             ,Import_Type::LOCAL};
 }▶
 
@@ -242,67 +243,67 @@ static auto Build_Import_Test_Specifiers2(T & t, Token_Attribute_Settings const&
 
 
 ◀public: template <typename T>
-static auto Build_Interface_Import_Relationships(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Build_Interface_Import_Relationships(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::IMPORT_INTERFACE_RELATIONSHIP,{
-          {settings.import.type_relation.association,t.relationships.association}
-          ,{settings.import.type_relation.aggregation,t.relationships.aggregation}
-          ,{settings.import.type_relation.composition,t.relationships.composition}
-          ,{settings.import.type_relation.inheritence,t.relationships.inheritence}
-          ,{settings.import.type_relation.generaliation,t.relationships.generalization}
-          ,{settings.import.type_relation.realization,t.relationships.realization}
-          ,{settings.import.type_relation.dependency,t.relationships.dependency}
+          {settings.tokens.symbols.import.type_relation.association,t.relationships.association}
+          ,{settings.tokens.symbols.import.type_relation.aggregation,t.relationships.aggregation}
+          ,{settings.tokens.symbols.import.type_relation.composition,t.relationships.composition}
+          ,{settings.tokens.symbols.import.type_relation.inheritence,t.relationships.inheritence}
+          ,{settings.tokens.symbols.import.type_relation.generaliation,t.relationships.generalization}
+          ,{settings.tokens.symbols.import.type_relation.realization,t.relationships.realization}
+          ,{settings.tokens.symbols.import.type_relation.dependency,t.relationships.dependency}
         }}
     };
 }▶
 ◀public: template <typename T>
-static auto Build_Implementation_Import_Relationships(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Build_Implementation_Import_Relationships(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::IMPORT_IMPLEMENTATION_RELATIONSHIP,{
-          {settings.import.type_relation.association,t.relationships.association}
-          ,{settings.import.type_relation.aggregation,t.relationships.aggregation}
-          ,{settings.import.type_relation.composition,t.relationships.composition}
-          ,{settings.import.type_relation.inheritence,t.relationships.inheritence}
-          ,{settings.import.type_relation.generaliation,t.relationships.generalization}
-          ,{settings.import.type_relation.realization,t.relationships.realization}
-          ,{settings.import.type_relation.dependency,t.relationships.dependency}
+          {settings.tokens.symbols.import.type_relation.association,t.relationships.association}
+          ,{settings.tokens.symbols.import.type_relation.aggregation,t.relationships.aggregation}
+          ,{settings.tokens.symbols.import.type_relation.composition,t.relationships.composition}
+          ,{settings.tokens.symbols.import.type_relation.inheritence,t.relationships.inheritence}
+          ,{settings.tokens.symbols.import.type_relation.generaliation,t.relationships.generalization}
+          ,{settings.tokens.symbols.import.type_relation.realization,t.relationships.realization}
+          ,{settings.tokens.symbols.import.type_relation.dependency,t.relationships.dependency}
         }}
     };
 }▶
 ◀public: template <typename T>
-static auto Build_Test_Import_Relationships(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Build_Test_Import_Relationships(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::IMPORT_TEST_RELATIONSHIP,{
-          {settings.import.type_relation.association,t.relationships.association}
-          ,{settings.import.type_relation.aggregation,t.relationships.aggregation}
-          ,{settings.import.type_relation.composition,t.relationships.composition}
-          ,{settings.import.type_relation.inheritence,t.relationships.inheritence}
-          ,{settings.import.type_relation.generaliation,t.relationships.generalization}
-          ,{settings.import.type_relation.realization,t.relationships.realization}
-          ,{settings.import.type_relation.dependency,t.relationships.dependency}
+          {settings.tokens.symbols.import.type_relation.association,t.relationships.association}
+          ,{settings.tokens.symbols.import.type_relation.aggregation,t.relationships.aggregation}
+          ,{settings.tokens.symbols.import.type_relation.composition,t.relationships.composition}
+          ,{settings.tokens.symbols.import.type_relation.inheritence,t.relationships.inheritence}
+          ,{settings.tokens.symbols.import.type_relation.generaliation,t.relationships.generalization}
+          ,{settings.tokens.symbols.import.type_relation.realization,t.relationships.realization}
+          ,{settings.tokens.symbols.import.type_relation.dependency,t.relationships.dependency}
         }}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Build_Interface_Import_Related(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Build_Interface_Import_Related(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::IMPORT_INTERFACE_RELATED,       t.related}
   };
 }▶
 ◀public: template <typename T>
-static auto Build_Implementation_Import_Related(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Build_Implementation_Import_Related(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::IMPORT_IMPLEMENTATION_RELATED,       t.related}
   };
 }▶
 ◀public: template <typename T>
-static auto Build_Test_Import_Related(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Build_Test_Import_Related(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::IMPORT_TEST_RELATED,       t.related}
@@ -316,7 +317,7 @@ static auto Build_Test_Import_Related(T & t, Token_Attribute_Settings const& set
 
 //MACRO RELATED (DONE):
 ◀public: template <typename T>
-static auto Bind_Macro(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Macro(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::MACRO_NAME,    t.name}
@@ -328,12 +329,12 @@ static auto Bind_Macro(T & t, Token_Attribute_Settings const& settings) -> Parse
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Macro_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
+static auto Bind_Macro_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
     
     return {t.access, Token_Name::MACRO_SPECIFIERS,
-                            {{settings.macro.access._public,Class_Access::PUBLIC}
-                            ,{settings.macro.access._protected,Class_Access::PROTECTED}
-                            ,{settings.macro.access._private,Class_Access::PRIVATE}}
+                            {{settings.tokens.symbols.macro.access._public,Class_Access::PUBLIC}
+                            ,{settings.tokens.symbols.macro.access._protected,Class_Access::PROTECTED}
+                            ,{settings.tokens.symbols.macro.access._private,Class_Access::PRIVATE}}
                             ,Class_Access::PUBLIC};
 }▶
 
@@ -341,7 +342,7 @@ static auto Bind_Macro_Specifiers(T & t, Token_Attribute_Settings const& setting
 
 //FORWARD DECLARE:
 ◀public: template <typename T>
-static auto Bind_Forward_Declare(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Forward_Declare(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::FORWARD_DECLARE_ARGUMENT,    t.name}
@@ -351,7 +352,7 @@ static auto Bind_Forward_Declare(T & t, Token_Attribute_Settings const& settings
 
 //ENUM RELATED (DONE):
 ◀public: template <typename T>
-static auto Bind_Enum(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Enum(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::ENUM_NAME,      t.name}
@@ -362,7 +363,7 @@ static auto Bind_Enum(T & t, Token_Attribute_Settings const& settings) -> Parser
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Enum_Args(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Enum_Args(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::ENUM_ARG_NAME,    t.name}
@@ -372,7 +373,7 @@ static auto Bind_Enum_Args(T & t, Token_Attribute_Settings const& settings) -> P
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Enum_Subgroup(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Enum_Subgroup(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::ENUM_SUBGROUP_NAME,    t.name}
@@ -380,7 +381,7 @@ static auto Bind_Enum_Subgroup(T & t, Token_Attribute_Settings const& settings) 
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Enum_Subscribed_Subgroup(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Enum_Subscribed_Subgroup(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::ENUM_ARG_GROUP_AFFILIATION,    t.name}
@@ -388,19 +389,19 @@ static auto Bind_Enum_Subscribed_Subgroup(T & t, Token_Attribute_Settings const&
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Enum_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Enum_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::ENUM_SPECIFIERS,{{settings.enumerated.iterable,t.is_iterable}}}
+        {Token_Name::ENUM_SPECIFIERS,{{settings.tokens.symbols.enumerated.iterable,t.is_iterable}}}
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Enum_Access_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
+static auto Bind_Enum_Access_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
     
     return {t.access, Token_Name::ENUM_SPECIFIERS,
-                            {{settings.enumerated.access._public,Class_Access::PUBLIC}
-                            ,{settings.enumerated.access._protected,Class_Access::PROTECTED}
-                            ,{settings.enumerated.access._private,Class_Access::PRIVATE}}
+                            {{settings.tokens.symbols.enumerated.access._public,Class_Access::PUBLIC}
+                            ,{settings.tokens.symbols.enumerated.access._protected,Class_Access::PROTECTED}
+                            ,{settings.tokens.symbols.enumerated.access._private,Class_Access::PRIVATE}}
                             ,Class_Access::PUBLIC};
 }▶
 //--------------------------------------
@@ -408,27 +409,27 @@ static auto Bind_Enum_Access_Specifiers(T & t, Token_Attribute_Settings const& s
 
 //INHERITENCE RELATED (DONE):
 ◀public: template <typename T>
-static auto Bind_Inheritence(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Inheritence(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::INHERITANCE_TYPE,    t.name}
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Inheritence_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Inheritence_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::INHERITANCE_SPECIFIERS,{{settings.inheritance._virtual,t.virtually}}}
+        {Token_Name::INHERITANCE_SPECIFIERS,{{settings.tokens.symbols.inheritance._virtual,t.virtually}}}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Inheritence_Specifiers2(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
+static auto Bind_Inheritence_Specifiers2(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
     
     return {t.class_access, Token_Name::INHERITANCE_SPECIFIERS,
-                            {{settings.inheritance.access._public,Class_Access::PUBLIC}
-                            ,{settings.inheritance.access._protected,Class_Access::PROTECTED}
-                            ,{settings.inheritance.access._private,Class_Access::PRIVATE}}
+                            {{settings.tokens.symbols.inheritance.access._public,Class_Access::PUBLIC}
+                            ,{settings.tokens.symbols.inheritance.access._protected,Class_Access::PROTECTED}
+                            ,{settings.tokens.symbols.inheritance.access._private,Class_Access::PRIVATE}}
                             ,Class_Access::PUBLIC};
 }▶
 //--------------------------------------
@@ -440,7 +441,7 @@ static auto Bind_Inheritence_Specifiers2(T & t, Token_Attribute_Settings const& 
 
 //NAMESPACE RELATED (DONE):
 ◀public: template <typename T>
-static auto Bind_Namespace(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Namespace(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
       {Token_Name::NAMESPACE_NAME,      t.name}
@@ -448,30 +449,30 @@ static auto Bind_Namespace(T & t, Token_Attribute_Settings const& settings) -> P
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Namespace_Specifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Namespace_Specifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::NAMESPACE_SPECIFIERS,{{settings._namespace._inline,t.inlined}}}
+        {Token_Name::NAMESPACE_SPECIFIERS,{{settings.tokens.symbols._namespace._inline,t.inlined}}}
     };
 }▶
 //--------------------------------------
 
 ◀public: template <typename T>
-static auto Bind_Library(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Library(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
       {Token_Name::LIBRARY,      t.name}
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Compile_Option(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Compile_Option(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
       {Token_Name::COPTS,      t.flag}
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Library_Option(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Library_Option(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
       {Token_Name::LINKOPTS,      t.flag}
@@ -482,7 +483,7 @@ static auto Bind_Library_Option(T & t, Token_Attribute_Settings const& settings)
 
 //PRECONDITIONS POST CONDITIONS (DONE)
 ◀public: template <typename T>
-static auto Bind_Function_Preconditions(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Function_Preconditions(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_PRECONDITION,         t.condition}
@@ -490,7 +491,7 @@ static auto Bind_Function_Preconditions(T & t, Token_Attribute_Settings const& s
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Function_Postconditions(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Function_Postconditions(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_POSTCONDITION,         t.condition}
@@ -512,14 +513,14 @@ static auto Bind_Function_Postconditions(T & t, Token_Attribute_Settings const& 
 
 //METHOD RELATED:
 ◀public: template <typename T>
-static auto Bind_Stamp_Name(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Stamp_Name(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
 
     return {
        {Token_Name::FUNCTION_STAMP_NAME,              t.name}
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Stamp_Value(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Stamp_Value(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
 
     return {
        {Token_Name::FUNCTION_STAMP_VALUE,             t.value}
@@ -528,7 +529,7 @@ static auto Bind_Stamp_Value(T & t, Token_Attribute_Settings const& settings) ->
 
 //method bindings
 ◀public: template <typename T>
-static auto Bind_Main_Function_Items(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Main_Function_Items(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
 
     return {
        {Token_Name::FUNCTION_NAME,              t.names.function_name}
@@ -543,73 +544,73 @@ static auto Bind_Main_Function_Items(T & t, Token_Attribute_Settings const& sett
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Class(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
+static auto Bind_Method_Specifiers_Class(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
     
     return {t.class_access, Token_Name::FUNCTION_CLASS_SPECIFIERS,
-                            {{settings.method.access._public,Class_Access::PUBLIC}
-                            ,{settings.method.access._protected,Class_Access::PROTECTED}
-                            ,{settings.method.access._private,Class_Access::PRIVATE}}
+                            {{settings.tokens.symbols.method.access._public,Class_Access::PUBLIC}
+                            ,{settings.tokens.symbols.method.access._protected,Class_Access::PROTECTED}
+                            ,{settings.tokens.symbols.method.access._private,Class_Access::PRIVATE}}
                             ,Class_Access::PUBLIC};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Value_Overrides(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Value_Overload> {
+static auto Bind_Method_Specifiers_Value_Overrides(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Value_Overload> {
     
     return {t.overload_specifiers.value, Token_Name::FUNCTION_CLASS_SPECIFIERS,
-                            {{settings.method.lvalue_overload,Value_Overload::LVALUE}
-                            ,{settings.method.rvalue_overload,Value_Overload::RVALUE}}
+                            {{settings.tokens.symbols.method.lvalue_overload,Value_Overload::LVALUE}
+                            ,{settings.tokens.symbols.method.rvalue_overload,Value_Overload::RVALUE}}
                             ,Value_Overload::NONE};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Storage(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Storage_Specifier> {
+static auto Bind_Method_Specifiers_Storage(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Storage_Specifier> {
     
     return {t.storage, Token_Name::FUNCTION_CLASS_SPECIFIERS,
-                            {{settings.method.static_storage,Storage_Specifier::STATIC}
-                            ,{settings.method.extern_storage,Storage_Specifier::EXTERN}}
+                            {{settings.tokens.symbols.method.static_storage,Storage_Specifier::STATIC}
+                            ,{settings.tokens.symbols.method.extern_storage,Storage_Specifier::EXTERN}}
                             ,Storage_Specifier::NONE};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Virtuality(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Method_Virtuality> {
+static auto Bind_Method_Specifiers_Virtuality(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Method_Virtuality> {
     
     return {t.inheritence.virtuality, Token_Name::FUNCTION_CLASS_SPECIFIERS,
-                            {{settings.method.inheritance._virtual,Method_Virtuality::UNPURE_VIRTUAL}
-                            ,{settings.method.inheritance.pure_virtual,Method_Virtuality::PURE_VIRTUAL}}
+                            {{settings.tokens.symbols.method.inheritance._virtual,Method_Virtuality::UNPURE_VIRTUAL}
+                            ,{settings.tokens.symbols.method.inheritance.pure_virtual,Method_Virtuality::PURE_VIRTUAL}}
                             ,Method_Virtuality::NONE};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Implicit_Method_Modifier(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Implicit_Method_Modifier> {
+static auto Bind_Method_Specifiers_Implicit_Method_Modifier(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Implicit_Method_Modifier> {
     
     return {t.implict_modifier, Token_Name::FUNCTION_CLASS_SPECIFIERS,
-                            {{settings.method._default,Implicit_Method_Modifier::DEFAULT}
-                            ,{settings.method._delete,Implicit_Method_Modifier::DELETED}}
+                            {{settings.tokens.symbols.method._default,Implicit_Method_Modifier::DEFAULT}
+                            ,{settings.tokens.symbols.method._delete,Implicit_Method_Modifier::DELETED}}
                             ,Implicit_Method_Modifier::NONE};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Event(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Method_Event_Characteristic> {
+static auto Bind_Method_Specifiers_Event(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Method_Event_Characteristic> {
     
     return {t.event, Token_Name::FUNCTION_CLASS_SPECIFIERS,
-                            {{settings.method.signal,Method_Event_Characteristic::SIGNAL}
-                            ,{settings.method.slot,Method_Event_Characteristic::SLOT}}
+                            {{settings.tokens.symbols.method.signal,Method_Event_Characteristic::SIGNAL}
+                            ,{settings.tokens.symbols.method.slot,Method_Event_Characteristic::SLOT}}
                             ,Method_Event_Characteristic::NONE};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Method_Specifiers_Other(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Method_Specifiers_Other(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::FUNCTION_CLASS_SPECIFIERS,{
-          {settings.method._friend,t.is_friend}
-          ,{settings.method.const_overload,t.overload_specifiers.is_const}
-          ,{settings.method._inline,t.is_inlined}
-          ,{settings.method.cache,t.is_cached}
-          ,{settings.method._explicit,t.is_explicit}
-          ,{settings.method.unused,t.is_unused}
-          ,{settings.method.inheritance.override,t.inheritence.is_overrided}
-          ,{settings.method.inheritance.final,t.inheritence.is_final}
+          {settings.tokens.symbols.method._friend,t.is_friend}
+          ,{settings.tokens.symbols.method.const_overload,t.overload_specifiers.is_const}
+          ,{settings.tokens.symbols.method._inline,t.is_inlined}
+          ,{settings.tokens.symbols.method.cache,t.is_cached}
+          ,{settings.tokens.symbols.method._explicit,t.is_explicit}
+          ,{settings.tokens.symbols.method.unused,t.is_unused}
+          ,{settings.tokens.symbols.method.inheritance.override,t.inheritence.is_overrided}
+          ,{settings.tokens.symbols.method.inheritance.final,t.inheritence.is_final}
         }}
     };
 }▶
@@ -617,7 +618,7 @@ static auto Bind_Method_Specifiers_Other(T & t, Token_Attribute_Settings const& 
 
 //template args
 ◀public: template <typename T>
-static auto Bind_Template_Args(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Template_Args(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_TEMPLATE_ARGUMENT_TYPE,       t.type}
@@ -627,18 +628,18 @@ static auto Bind_Template_Args(T & t, Token_Attribute_Settings const& settings) 
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Template_Arg_Qualifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Template_Arg_Qualifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS,{
-                                                        {settings.method.argument.infinitely_more,t.infinitely_more}
+                                                        {settings.tokens.symbols.method.argument.infinitely_more,t.infinitely_more}
                                                         }}
     };
 }▶
 
 //alternate expression name
 ◀public: template <typename T>
-static auto Bind_Alt_Express_Name(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Alt_Express_Name(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_ALTERNATIVE_EXPRESSION_NAME,       t.name}
@@ -648,21 +649,21 @@ static auto Bind_Alt_Express_Name(T & t, Token_Attribute_Settings const& setting
 
 //type specializations
 ◀public: template <typename T>
-static auto Bind_Data_Member_Type_Specializations(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Type_Specializations(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::DATA_MEMBER_TYPE_SPECIALIZATIONS,       t.type}
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Data_Member_Type_Module_Dependencies(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Type_Module_Dependencies(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::DATA_MEMBER_TYPE_MODULE_DEPENDENCIES,       t.name}
   };
 }▶
 ◀public: template <typename T>
-static auto Bind_Data_Member_Type_Scope_Specifier(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Type_Scope_Specifier(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::DATA_MEMBER_SCOPE,       t.name}
@@ -670,7 +671,7 @@ static auto Bind_Data_Member_Type_Scope_Specifier(T & t, Token_Attribute_Setting
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Data_Member_Type_Parent_Type(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Type_Parent_Type(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::DATA_MEMBER_PARENT_TYPE,       t.type}
@@ -678,7 +679,7 @@ static auto Bind_Data_Member_Type_Parent_Type(T & t, Token_Attribute_Settings co
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Data_Member_Type_Specializations_Scope_Specifier(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Type_Specializations_Scope_Specifier(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE,       t.name}
@@ -686,7 +687,7 @@ static auto Bind_Data_Member_Type_Specializations_Scope_Specifier(T & t, Token_A
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Data_Member_Type_Library_Dependencies(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Type_Library_Dependencies(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::DATA_MEMBER_TYPE_LIBRARY_DEPENDENCIES,       t.name}
@@ -694,7 +695,7 @@ static auto Bind_Data_Member_Type_Library_Dependencies(T & t, Token_Attribute_Se
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Function_Arg_Type_Specializations(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Function_Arg_Type_Specializations(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_ARGUMENT_TYPE_SPECIALIZATIONS,       t.type}
@@ -702,7 +703,7 @@ static auto Bind_Function_Arg_Type_Specializations(T & t, Token_Attribute_Settin
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Function_Result_Type_Specializations(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Function_Result_Type_Specializations(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_RESULT_TYPE_SPECIALIZATIONS,       t.type}
@@ -712,7 +713,7 @@ static auto Bind_Function_Result_Type_Specializations(T & t, Token_Attribute_Set
 
 //function args
 ◀public: template <typename T>
-static auto Bind_Function_Args(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Function_Args(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_ARGUMENT_TYPE,       t.type}
@@ -724,13 +725,13 @@ static auto Bind_Function_Args(T & t, Token_Attribute_Settings const& settings) 
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Function_Arg_Qualifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Function_Arg_Qualifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS,{{settings.method.argument._mutable,t.is_mutable}
-                                                        ,{settings.method.argument.reference,t.is_reference}
-                                                        ,{settings.method.argument.infinitely_more,t.infinitely_more}
-                                                        ,{settings.method.argument.optional,t.is_optional}
+        {Token_Name::FUNCTION_ARGUMENT_TYPE_QUALIFIERS,{{settings.tokens.symbols.method.argument._mutable,t.is_mutable}
+                                                        ,{settings.tokens.symbols.method.argument.reference,t.is_reference}
+                                                        ,{settings.tokens.symbols.method.argument.infinitely_more,t.infinitely_more}
+                                                        ,{settings.tokens.symbols.method.argument.optional,t.is_optional}
                                                         }}
     };
 }▶
@@ -738,7 +739,7 @@ static auto Bind_Function_Arg_Qualifiers(T & t, Token_Attribute_Settings const& 
 
 //function results
 ◀public: template <typename T>
-static auto Bind_Function_Results(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Function_Results(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_RESULT_TYPE,       t.type}
@@ -750,29 +751,29 @@ static auto Bind_Function_Results(T & t, Token_Attribute_Settings const& setting
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Function_Result_Qualifiers(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Function_Result_Qualifiers(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
-        {Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS,{{settings.method.result._mutable,t.is_mutable}
-                                                        ,{settings.method.argument.reference,t.is_reference}
-                                                        ,{settings.method.argument.infinitely_more,t.infinitely_more}
-                                                        ,{settings.method.argument.optional,t.is_optional}
+        {Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS,{{settings.tokens.symbols.method.result._mutable,t.is_mutable}
+                                                        ,{settings.tokens.symbols.method.argument.reference,t.is_reference}
+                                                        ,{settings.tokens.symbols.method.argument.infinitely_more,t.infinitely_more}
+                                                        ,{settings.tokens.symbols.method.argument.optional,t.is_optional}
                                                      }}
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Function_Result_Qualifiers2(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Usage_Requirement> {
+static auto Bind_Function_Result_Qualifiers2(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Usage_Requirement> {
     
     return {t.usage_requirement, Token_Name::FUNCTION_RESULT_TYPE_QUALIFIERS,
-                            {{settings.method.result.allowed_to_discard,Usage_Requirement::POSSIBLY_IGNORED}
-			                ,{settings.method.result.required_to_discard,Usage_Requirement::IGNORED}}
+                            {{settings.tokens.symbols.method.result.allowed_to_discard,Usage_Requirement::POSSIBLY_IGNORED}
+			                ,{settings.tokens.symbols.method.result.required_to_discard,Usage_Requirement::IGNORED}}
                             ,Usage_Requirement::NOT_IGNORED};
 }▶
 
 
 //DATA MEMBER RELATED:
 ◀public: template <typename T>
-static auto Bind_Data_Members(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Members(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::DATA_MEMBER_TYPE,                 t.type}
@@ -787,59 +788,59 @@ static auto Bind_Data_Members(T & t, Token_Attribute_Settings const& settings) -
 
 
 ◀public: template <typename T>
-static auto Bind_Data_Specifiers_Class(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
+static auto Bind_Data_Specifiers_Class(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Class_Access> {
     
     return {t.class_access, Token_Name::DATA_MEMBER_CLASS_SPECIFIERS,
-                            {{settings.data_member.access._public,Class_Access::PUBLIC}
-                            ,{settings.data_member.access._protected,Class_Access::PROTECTED}
-                            ,{settings.data_member.access._private,Class_Access::PRIVATE}}
+                            {{settings.tokens.symbols.data_member.access._public,Class_Access::PUBLIC}
+                            ,{settings.tokens.symbols.data_member.access._protected,Class_Access::PROTECTED}
+                            ,{settings.tokens.symbols.data_member.access._private,Class_Access::PRIVATE}}
                             ,Class_Access::PUBLIC};
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Data_Specifiers_Other(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Data_Specifiers_Other(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::DATA_MEMBER_CLASS_SPECIFIERS,{
-          {settings.data_member.serializable,t.reflection.serializable}
-          ,{settings.data_member.printable,t.reflection.printable}
-          ,{settings.data_member.comparable,t.reflection.comparable}
-          ,{settings.data_member.log_value_transition,t.reflection.log_value_transition}
-          ,{settings.data_member.name_of_enveloping_type,t.is_a_name_for_the_enveloping_type}
-          ,{settings.data_member.optional,t.is_optional}
+          {settings.tokens.symbols.data_member.serializable,t.reflection.serializable}
+          ,{settings.tokens.symbols.data_member.printable,t.reflection.printable}
+          ,{settings.tokens.symbols.data_member.comparable,t.reflection.comparable}
+          ,{settings.tokens.symbols.data_member.log_value_transition,t.reflection.log_value_transition}
+          ,{settings.tokens.symbols.data_member.name_of_enveloping_type,t.is_a_name_for_the_enveloping_type}
+          ,{settings.tokens.symbols.data_member.optional,t.is_optional}
         }}
     };
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Data_Qualifiers_Storage(T & t, Token_Attribute_Settings const& settings) -> Parser::Any_Value_Mapping<char,Storage_Specifier> {
+static auto Bind_Data_Qualifiers_Storage(T & t, Parser_Settings const& settings) -> Parser::Any_Value_Mapping<char,Storage_Specifier> {
     
     return {t.storage, Token_Name::DATA_MEMBER_CLASS_SPECIFIERS,
-                            {{settings.data_member.static_storage,Storage_Specifier::STATIC}
-                            ,{settings.data_member.extern_storage,Storage_Specifier::EXTERN}}
+                            {{settings.tokens.symbols.data_member.static_storage,Storage_Specifier::STATIC}
+                            ,{settings.tokens.symbols.data_member.extern_storage,Storage_Specifier::EXTERN}}
                             ,Storage_Specifier::NONE};
 }▶
 
 
 ◀public: template <typename T>
-static auto Bind_Data_Qualifiers_Other(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Data_Qualifiers_Other(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::DATA_MEMBER_TYPE_QUALIFIERS,{
-          {settings.data_member.const_qualifier,t.is_const}
+          {settings.tokens.symbols.data_member.const_qualifier,t.is_const}
         }}
     };
 }▶
 
 
 ◀public: template <typename T>
-static auto Bind_Data_State_Specifier(T & t, Token_Attribute_Settings const& settings) -> Parser::Bool_Value_Binds {
+static auto Bind_Data_State_Specifier(T & t, Parser_Settings const& settings) -> Parser::Bool_Value_Binds {
     
     return {
         {Token_Name::DATA_MEMBER_CLASS_SPECIFIERS,{
-           {settings.data_member.state.obserable,t.is_observable}  //getter
-          ,{settings.data_member.state.injectable,t.is_injectable}  //setter
-          ,{settings.data_member.state.obtainable,t.is_obtainable}  //obtain
+           {settings.tokens.symbols.data_member.state.obserable,t.is_observable}  //getter
+          ,{settings.tokens.symbols.data_member.state.injectable,t.is_injectable}  //setter
+          ,{settings.tokens.symbols.data_member.state.obtainable,t.is_obtainable}  //obtain
         }}
     };
 }▶
@@ -847,7 +848,7 @@ static auto Bind_Data_State_Specifier(T & t, Token_Attribute_Settings const& set
 
 //data member sub attributes:
 ◀public: template <typename T>
-static auto Bind_Data_Member_Key_Value_Pair(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Key_Value_Pair(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::DATA_MEMBER_PAIR_KEY,t.key}
@@ -855,7 +856,7 @@ static auto Bind_Data_Member_Key_Value_Pair(T & t, Token_Attribute_Settings cons
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Data_Member_Value_Constraints(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Value_Constraints(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::DATA_MEMBER_CONSTRAINT_OPERATION,t.operation}
@@ -865,7 +866,7 @@ static auto Bind_Data_Member_Value_Constraints(T & t, Token_Attribute_Settings c
     };
 }▶
 ◀public: template <typename T>
-static auto Bind_Data_Member_Value_Meaning(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Value_Meaning(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::DATA_MEMBER_DEFINED_VALUE,t.value}
@@ -876,7 +877,7 @@ static auto Bind_Data_Member_Value_Meaning(T & t, Token_Attribute_Settings const
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Data_Member_Value_Transition_Meaning(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Data_Member_Value_Transition_Meaning(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
         {Token_Name::DATA_MEMBER_TRANSITION_BEFORE_OPERATION,t.before.boolean_expression}
@@ -891,7 +892,7 @@ static auto Bind_Data_Member_Value_Transition_Meaning(T & t, Token_Attribute_Set
 
 
 ◀public: template <typename T>
-static auto Bind_Func_Arg_Module(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Func_Arg_Module(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_ARGUMENT_TYPE_MODULE_DEPENDENCIES,       t.name}
@@ -899,7 +900,7 @@ static auto Bind_Func_Arg_Module(T & t, Token_Attribute_Settings const& settings
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Func_Arg_Lib(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Func_Arg_Lib(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_ARGUMENT_TYPE_LIBRARY_DEPENDENCIES,       t.name}
@@ -907,7 +908,7 @@ static auto Bind_Func_Arg_Lib(T & t, Token_Attribute_Settings const& settings) -
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Func_Arg_Scope(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Func_Arg_Scope(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_ARGUMENT_TYPE_SCOPE,       t.name}
@@ -916,7 +917,7 @@ static auto Bind_Func_Arg_Scope(T & t, Token_Attribute_Settings const& settings)
 
 
 ◀public: template <typename T>
-static auto Bind_Func_Result_Module(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Func_Result_Module(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_RESULT_TYPE_MODULE_DEPENDENCIES,       t.name}
@@ -924,7 +925,7 @@ static auto Bind_Func_Result_Module(T & t, Token_Attribute_Settings const& setti
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Func_Result_Lib(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Func_Result_Lib(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_RESULT_TYPE_LIBRARY_DEPENDENCIES,       t.name}
@@ -932,7 +933,7 @@ static auto Bind_Func_Result_Lib(T & t, Token_Attribute_Settings const& settings
 }▶
 
 ◀public: template <typename T>
-static auto Bind_Func_Result_Scope(T & t, Token_Attribute_Settings const& settings) -> Parser::Token_Value_Binds{
+static auto Bind_Func_Result_Scope(T & t, Parser_Settings const& settings) -> Parser::Token_Value_Binds{
     
     return {
        {Token_Name::FUNCTION_RESULT_TYPE_SCOPE,       t.name}

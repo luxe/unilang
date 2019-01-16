@@ -14,12 +14,13 @@ class
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
 ❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/special_parser_filters"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ⚞⚟
 
 ◀
 public: template <typename T, typename Fun>
-static auto Strip_Out_Type(Token_Attribute_Settings const& settings, std::vector<Parser_Token> const& tokens,
+static auto Strip_Out_Type(Parser_Settings const& settings, std::vector<Parser_Token> const& tokens,
 Token_Group const& group, Fun const& builder_function) -> std::vector<T>{
 
     std::vector<T> items;
@@ -36,7 +37,7 @@ Token_Group const& group, Fun const& builder_function) -> std::vector<T>{
 
 ◀
 public: template <typename T, typename Fun, typename Custom_Splitter>
-static auto Strip_Out_Type(Token_Attribute_Settings const& settings, std::vector<Parser_Token> const& tokens, 
+static auto Strip_Out_Type(Parser_Settings const& settings, std::vector<Parser_Token> const& tokens, 
 Token_Group const& group, Fun const& builder_function, Custom_Splitter const& custom_splitter) -> std::vector<T>{
 
     std::vector<T> items;
@@ -53,13 +54,13 @@ Token_Group const& group, Fun const& builder_function, Custom_Splitter const& cu
 
 ◀
 public: template <typename T, typename Fun>
-static auto Strip_Out_Type_V2(Token_Attribute_Settings const& settings, std::vector<Parser_Token> const& tokens, 
+static auto Strip_Out_Type_V2(Parser_Settings const& settings, std::vector<Parser_Token> const& tokens, 
 Token_Group const& group, Fun const& builder_function) -> std::vector<T>{
 
     std::vector<T> items;
     
     auto new_tokens = Parser_Utilities::Filter_Out_Tokens_By_Group_Name(tokens,group);
-    auto split =  Special_Parser_Filters::Filter_Group(new_tokens,group);
+    auto split =  Special_Parser_Filters::Filter_Group(new_tokens,group,settings);
     for (auto it: split){
         items.push_back(builder_function(it,settings));
     }

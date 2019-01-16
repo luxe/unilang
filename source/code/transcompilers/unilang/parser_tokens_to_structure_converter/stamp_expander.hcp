@@ -6,6 +6,7 @@ class
 ❪"code/transcompilers/unilang/parser/token_value"❫
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/important/sub_structure_builder"❫
 ❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_token_stripper"❫
 ❪"code/transcompilers/unilang/parser_tokens_to_structure_converter/util/parser_utilities"❫
@@ -14,11 +15,11 @@ class
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ⚞⚟
 
-◀public: static▶ void ☀Perform_Expansion(std::vector<Parser_Token> & tokens, Token_Attribute_Settings const& settings)❰
+◀public: static▶ void ☀Perform_Expansion(std::vector<Parser_Token> & tokens, Parser_Settings const& settings)❰
     
     //strip out the function tokens
     auto new_tokens = Parser_Utilities::Filter_Out_Tokens_By_Group_Name(tokens,Token_Group::FUNCTION);
-	auto chunks = Special_Parser_Filters::Filter_Method_Chunks(new_tokens);
+	auto chunks = Special_Parser_Filters::Filter_Method_Chunks(new_tokens,settings);
 
     //remove the current function tokens
     Remove_Elements_Where_Function_Is_True(tokens,[](auto t){
@@ -31,7 +32,7 @@ class
    }
 ❱
 
-◀private: static▶ std::vector<Parser_Token> ☀Perform_Individual_Function_Stamp_Expansion(std::vector<Parser_Token> const& tokens, Token_Attribute_Settings const& settings)❰
+◀private: static▶ std::vector<Parser_Token> ☀Perform_Individual_Function_Stamp_Expansion(std::vector<Parser_Token> const& tokens, Parser_Settings const& settings)❰
 
 	//get the stamps
     auto stamps = Parser_Token_Stripper::Strip_Out_Type_V2<Method_Stamp>(settings,tokens,Token_Group::FUNCTION_STAMP,Sub_Structure_Builder::Build_Stamp_Item);

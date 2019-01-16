@@ -15,6 +15,7 @@ hcp(name = "special_parser_filters", deps = [
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/transcompilers/unilang/options/parser:parser_settings"
 ])
 
 hcp(name = "parser_utilities", deps = [
@@ -37,4 +38,5 @@ hcp(name = "parser_token_stripper", deps = [
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
 "//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
 "//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:special_parser_filters",
+"//code/transcompilers/unilang/options/parser:parser_settings",
 ])

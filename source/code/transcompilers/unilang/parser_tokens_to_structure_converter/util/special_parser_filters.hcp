@@ -4,6 +4,7 @@ class
 ❪iostream❫
 ❪"code/transcompilers/unilang/parser/parser_token"❫
 ❪"code/transcompilers/unilang/options/parser/symbols/token_attribute_settings"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/structure/structure"❫
 ❪"code/transcompilers/unilang/tokens/token_group"❫
@@ -29,14 +30,14 @@ class
 ❱
 
 
-◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens)❰
-    auto children = Find_Children_Token_Groups(Token_Group::FUNCTION);
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Method_Chunks(std::vector<Parser_Token> const& tokens,Parser_Settings const& settings)❰
+    auto children = Find_Children_Token_Groups(Token_Group::FUNCTION,settings);
     auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
 
-◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Group(std::vector<Parser_Token> const& tokens, Token_Group const& group)❰
-    auto children = Find_Children_Token_Groups(group);
+◀public: static▶ std::vector<std::vector<Parser_Token>> ☀Filter_Group(std::vector<Parser_Token> const& tokens, Token_Group const& group, Parser_Settings const& settings)❰
+    auto children = Find_Children_Token_Groups(group,settings);
     auto all = Parser_Utilities::Filter_By_Data_Member_Uniqueness(tokens,children);
     return all;
 ❱
@@ -44,10 +45,10 @@ class
 
 //THIS MIGHT BE EXPENSIVE AND WE CALL IT ALOT
 //THIS NEEDS REPLACED WITH A O(1) LOOKUP IMPL
-◀public: static▶ std::vector<Token_Group> ☀Find_Children_Token_Groups(Token_Group const& group)❰
+◀public: static▶ std::vector<Token_Group> ☀Find_Children_Token_Groups(Token_Group const& group, Parser_Settings const& settings)❰
     std::set<Token_Group> children;
     
-    auto all_tokens = Get_Tokens::Get();
+    auto all_tokens = settings.all_language_tokens;
     for (auto const& a: all_tokens.tokens){
         bool found = false;
         for (auto const& b: a.groups){
