@@ -14,6 +14,7 @@ class
 ❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/cpp_test/cpp_test_options_getter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/cpp_benchmark/cpp_benchmark_options_getter"❫
+❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ⚞⚟
 ◀public: static▶ Root_Settings ☀Get() ❰
 
@@ -24,6 +25,7 @@ class
     //get that kind of functionality though transcompilation
     Root_Settings settings;
     
+    //how to error out when there are no files
     settings.no_files_to_process.print = true;
     settings.no_files_to_process.flush = true;
     settings.no_files_to_process.exit = false;
@@ -31,11 +33,16 @@ class
     settings.no_files_to_process.color = Diagnostic_Color::REGULAR;
     settings.no_files_to_process.stream = Diagnostic_Stream::STDOUT;
     
+    //how to transfer files (often across a network)
+    settings.transfer = File_Transfer_Settings_Getter::Get();
+    
+    //how to build on the remote machine
     settings.remote_build.run = true;
     settings.remote_build.run_from_remote_git_root = true;
     settings.remote_build.program = "rops";
     settings.remote_build.flags = "build //...:all";
 
+    // how to run autofix on the generated code
     {
         Remote_Program_Settings remote_program;
         remote_program.run = true;
@@ -47,6 +54,8 @@ class
         settings.remote_programs.emplace_back(remote_program);
     }
     
+    //this was some experiment with cat?
+    //we have it off right now
     {
         Remote_Program_Settings remote_program;
         remote_program.run = false;
@@ -57,10 +66,16 @@ class
         remote_program.flags = "-s";
         settings.remote_programs.emplace_back(remote_program);
     }
-
+    
+    //related to frontend parsing
+    settings.parser.all_language_tokens = Get_Tokens::Get();
+    
+    
+    //how to export code by default (if not specified by the user)
     settings.default_exporter = "uber";
     settings.root_of_unilang_projects = "company";
     
+    //all of the language settings
     settings.compiler_settings.uber.contributors = Uber_Contributors_Getter::Get();
     settings.compiler_settings.f2si.contributors = F2si_Contributors_Getter::Get();
     //settings.compiler_settings.trevor.contributors = Trevor_Contributors_Getter::Get();
@@ -101,7 +116,7 @@ class
     settings.compiler_settings.f2si.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
     //settings.compiler_settings.trevor.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
     
-    settings.transfer = File_Transfer_Settings_Getter::Get();
-    
     return settings;
 ❱
+
+

@@ -26,4 +26,5 @@ hcp(name = "tokenizer", deps = [
 "//code/transcompilers/unilang/tokenizer:tokenizer_exception",
 "//code/transcompilers/unilang/parser/body_parser:file_range_location",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/transcompilers/unilang/options/parser:parser_settings",
 ])
