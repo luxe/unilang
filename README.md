@@ -11,7 +11,7 @@
 <summary>Introduction</summary>
 <br>  
  
-Unilang is a reconstruction on what language means for software.
+Unilang is a reconstruction on what language means for software.  
 It unifies all programming concepts without syntax.  
 Designed as a higher level language above all high level languages,   
 you can use Unilang to transcompile down to other langauges and data formats.  
