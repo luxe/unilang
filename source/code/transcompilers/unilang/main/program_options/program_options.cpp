@@ -37,7 +37,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	("input_files",value<std::vector<std::string>>()->multitoken(),"the name of the UniLang file to compile")
 	("dir",value<std::string>(),"the directory to convert all unilang files from")
 	("exporter",value<std::string>(),"the exporter front-end to use for generating the source code (often a company or interested party)")
-	("language",value<std::string>(),"the resulting language of the compiler given to the exporter")
+	("languages",value<std::vector<std::string>>(),"the resulting languages to export unilang to")
 	("style",value<std::string>(),"the style you'd like the exporter to employ. Each exporter has their own set of styles for each of the languages they support")
 	("recursive_dependency_paths",value<std::vector<std::string>>()->multitoken(),"paths to recursively search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files")
 	("dependency_paths",value<std::vector<std::string>>()->multitoken(),"paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files")
@@ -126,14 +126,15 @@ std::string Program_Options::Exporter() const{
 
 	return data;
 }
-std::string Program_Options::Language() const{
-	std::string data;
-	if (vm.count("language")){
-		data = vm["language"].as<std::string>();
+std::vector<std::string> Program_Options::Languages() const{
+	std::vector<std::string> data;
+	if (vm.count("languages")){
+		data = vm["languages"].as<std::vector<std::string>>();
 	}
 
 	return data;
 }
+
 std::string Program_Options::Style() const{
 	std::string data;
 	if (vm.count("style")){

@@ -20,18 +20,27 @@ class
     
     std::string result;
     
-    auto build_object = Build_Info_Extractor::Structure_To_Build_Object(structure);
     
-    if (build_object == Bazel_Build_Object::HIDL){
-        Append(result,Hidl::Create(structure,settings));
-        
-    }
-    else if (build_object == Bazel_Build_Object::CONFIG_HIDL){
-        Append(result,Config_Hidl::Create(structure,settings));
-        
-    }
-    else if (build_object == Bazel_Build_Object::CPP_LIBRARY){
-        Append(result,Cc_Library::Create(structure,settings));
+    //boilerplate build up
+    std::vector<Code_Graph> code_graphs;
+    Code_Graph graph;
+    graph.structure = structure;
+    code_graphs.emplace_back(graph);
+    
+    auto build_objects = Build_Info_Extractor::Get_All_Build_Objects(code_graphs);
+    
+    for (auto const& build_object: build_objects){
+        if (build_object == Bazel_Build_Object::HIDL){
+            Append(result,Hidl::Create(structure,settings));
+            
+        }
+        else if (build_object == Bazel_Build_Object::CONFIG_HIDL){
+            Append(result,Config_Hidl::Create(structure,settings));
+            
+        }
+        else if (build_object == Bazel_Build_Object::CPP_LIBRARY){
+            Append(result,Cc_Library::Create(structure,settings));
+        }
     }
     
     return result;

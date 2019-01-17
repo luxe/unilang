@@ -22,7 +22,7 @@ class Program_Options: public Program_Options_Default{
 	/*  */ std::vector<std::string> Input_Files()const; //the name of the UniLang file to compile;
            std::string Dir() const;
 	/*  */ std::string Exporter()const; //the exporter front-end to use for generating the source code (often a company or interested party);
-	/*  */ std::string Language()const; //the resulting language of the compiler given to the exporter;
+	/*  */ std::vector<std::string> Languages()const; //the resulting language of the compiler given to the exporter;
 	/*  */ std::string Style()const; //the style you'd like the exporter to employ. Each exporter has their own set of styles for each of the languages they support;
 	/*  */ std::vector<std::string> Recursive_Dependency_Paths()const; //paths to recursively search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;
 	/*  */ std::vector<std::string> Dependency_Paths()const; //paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;

@@ -71,73 +71,81 @@ class
 //So these are both styles that I can apply on the same UniLang code.
 //Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
 ◀public: static▶ std::vector<std::string> ☀Compile(Code_Graph const& code_graph, Program_Input input)❰
+    
+    std::vector<std::string> created_files;
+    for (auto const& language: input.options.user_chosen_export_settings.languages){
+        created_files += Create_Individual_Language_Artifact(code_graph,input,language);
+    }
+    return created_files;
+❱
 
-    
-	auto unit = Decide_Exporter_Settings(input);
-    
+◀private: static▶ std::vector<std::string> ☀Create_Individual_Language_Artifact(Code_Graph const& code_graph, Program_Input input, std::string const& language)❰
+
+    auto unit = Decide_Exporter_Settings(input);
     
     // "High Level Languages (GPLs)"
     // C related
     std::vector<std::string> created_files;
-    if (input.options.user_chosen_export_settings.language == "c"){
+    if (language == "c"){
     }
     
     // C++ related
-    else if(input.options.user_chosen_export_settings.language == "cpp"){
+    else if(language == "cpp"){
         created_files += Cpp_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp);
-        created_files += Cpp_Test_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_test);
-        created_files += Cpp_Benchmark_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_benchmark);
     }
-    else if(input.options.user_chosen_export_settings.language == "cpp_test"){
+    else if(language == "cpp_test"){
         created_files += Cpp_Test_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_test);
     }
-    else if(input.options.user_chosen_export_settings.language == "cpp_benchmark"){
+    else if(language == "cpp_benchmark"){
         created_files += Cpp_Benchmark_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_benchmark);
+    }
+    else if(language == "cpp_fuzz"){
+        //created_files += Cpp_Fuzz_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_fuzz);
     }
     
     
-    else if(input.options.user_chosen_export_settings.language == "csharp"){
+    else if(language == "csharp"){
     }
-    else if(input.options.user_chosen_export_settings.language == "d"){
+    else if(language == "d"){
     }
-    else if(input.options.user_chosen_export_settings.language == "rust"){
+    else if(language == "rust"){
     }
-    else if(input.options.user_chosen_export_settings.language == "processing"){
+    else if(language == "processing"){
         created_files += Processing_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.processing);
     }
     
     // IDLs
-    else if(input.options.user_chosen_export_settings.language == "hidl"){
+    else if(language == "hidl"){
         created_files += Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl);
     }
-    else if(input.options.user_chosen_export_settings.language == "protobuf"){
+    else if(language == "protobuf"){
     }
     
     // Documentation
-    else if(input.options.user_chosen_export_settings.language == "plant_uml"){
+    else if(language == "plant_uml"){
         created_files += Plant_Uml_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.plant_uml);
     }
-    else if(input.options.user_chosen_export_settings.language == "call_graph"){
+    else if(language == "call_graph"){
         //use to be dia
     }
-    else if(input.options.user_chosen_export_settings.language == "html_table"){
+    else if(language == "html_table"){
         created_files += Html_Table_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.html_table);
     }
-    else if(input.options.user_chosen_export_settings.language == "treesheets"){
+    else if(language == "treesheets"){
         //created_files += Treesheets_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.treesheets);
     }
-    else if(input.options.user_chosen_export_settings.language == "pandoc"){
+    else if(language == "pandoc"){
     }
-    else if(input.options.user_chosen_export_settings.language == "graph_easy"){
+    else if(language == "graph_easy"){
         //https://metacpan.org/pod/release/TELS/Graph-Easy-0.64/bin/graph-easy
         //created_files += Graph_Easy_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.graph_easy);
     }
-    else if (input.options.user_chosen_export_settings.language == "mermaid"){
+    else if (language == "mermaid"){
         created_files += Mermaid_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.mermaid);
     }
     
     // Meta
-    else if (input.options.user_chosen_export_settings.language == "date"){
+    else if (language == "date"){
         created_files += Date_Exporter::Export(code_graph.structure,unit.contributors);
     }
     
@@ -146,6 +154,7 @@ class
     }
     return created_files;
 ❱
+
 
 ◀public: static▶ std::vector<std::string> ☀Compile(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
     
@@ -156,7 +165,12 @@ class
     return created_files;
 ❱
 
-◀public: static▶ Compile_Unit ☀Decide_Exporter_Settings(Program_Input const& input)❰
+
+
+
+
+
+◀private: static▶ Compile_Unit ☀Decide_Exporter_Settings(Program_Input const& input)❰
 
     //TODO: lookup by data member (need reflection)
     if (input.options.user_chosen_export_settings.exporter == "uber"){

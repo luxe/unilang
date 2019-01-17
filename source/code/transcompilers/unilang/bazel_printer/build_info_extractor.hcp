@@ -10,13 +10,11 @@ class
     std::vector<Bazel_Build_Object> result;
     
     for (auto const& it: code_graphs){
-        auto build_object = Structure_To_Build_Object(it.structure);
-        result.emplace_back(build_object);
+        auto languages = Language_Guesser::Guess(it.structure);
+        for (auto const& language: languages){
+            auto build_object = Language_To_Build_Object::Convert(language);
+            result.emplace_back(build_object);
+        }
     }
     return result;
-❱
-◀public: static▶ Bazel_Build_Object ☀Structure_To_Build_Object(Structure const& structure)❰
-        auto language = Language_Guesser::Guess(structure);
-        auto build_object = Language_To_Build_Object::Convert(language);
-        return build_object;
 ❱

@@ -1,0 +1,153 @@
+class
+❪vector❫
+❪string❫
+❪"code/transcompilers/unilang/main/program_options/program_options"❫
+❪"code/transcompilers/unilang/user-frontend/command_line_arguments/dependency_paths"❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/root_settings/root_settings"❫
+❪"code/transcompilers/unilang/main/composed_program_options/composed_program_options"❫
+❪"code/transcompilers/unilang/user-frontend/graph_adjuster/code_graph_adjuster"❫
+❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
+❪"code/transcompilers/unilang/main/program_input"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚯
+❪"code/transcompilers/unilang/validators/file_name/filename_validator"❫
+❪"code/transcompilers/unilang/parser/parser"❫
+❪"code/transcompilers/unilang/user-frontend/compiler/compiler"❫
+❪"code/transcompilers/unilang/user-frontend/exception_handler"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/strings/transformers/stripping/lib"❫
+❪"code/transcompilers/unilang/structure_static_analyzer/structure_static_analyzer"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
+❪"code/transcompilers/unilang/user-frontend/workspace_adjuster"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_action_getter"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/shell/lib"❫
+❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/colors/lib"❫
+❪"code/utilities/diagnostic/diagnostic_printer"❫
+⚞⚟
+
+◀public: static▶ void ☀Do(Program_Input input, std::vector<Code_Graph> const& graphs, std::vector<std::string> const& created_files)❰
+
+    Warn_About_Any_Conflicting_Artifacts(created_files);
+
+    //run programs on local machine
+    if (input.options.user_chosen_export_settings.local_programs){
+        Run_Local_Programs_Over_Files(created_files);
+    }
+    
+    //transfer files
+    Possibly_Transfer_Files(input,created_files);
+    
+    //run programs on remote machine
+    if (input.options.user_chosen_export_settings.remote_programs){
+        Run_Remote_Programs_Over_Files(input,created_files);
+    }
+    
+    //possibly test the remote build
+    Possibly_Test_Remote_Build(input);
+❱
+
+◀private: static▶ void ☀Warn_About_Any_Conflicting_Artifacts(std::vector<std::string> const& files)❰
+    //TODO has_duplicats
+    //TODO find_duplicates
+    //TODO warn about duplicates
+❱
+◀private: static▶ void ☀Run_Local_Programs_Over_Files(std::vector<std::string> const& files)❰
+
+    for (auto const& file: files){
+        //std::string command = "clang-format -i " + file;
+        //execute(command);
+        std::string command = "cat -s " + file + " | sponge " + file;
+        execute(command);
+    }
+❱
+◀private: static▶ void ☀Possibly_Transfer_Files(Program_Input const& input, std::vector<std::string> const& created_files)❰
+    if (input.options.user_chosen_export_settings.transfer){
+        auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+        File_Transferer::Transfer(specific_user_settings,created_files);
+    }
+❱
+
+
+◀private: static▶ void ☀Possibly_Test_Remote_Build(Program_Input const& input)❰
+
+    if (input.settings.remote_build.run && input.options.user_chosen_export_settings.build){
+        std::string ssh_command = Remote_SSh_Execution_Command_Start(input);
+        
+        std::string program;
+        if (input.settings.remote_build.run_from_remote_git_root){
+            program = Program_From_Remote_Git_Repo_Root(input,input.settings.remote_build.program);
+        }
+        else{
+            program = input.settings.remote_build.program;
+        }
+        std::string full_command = ssh_command + program + " " + input.settings.remote_build.flags;
+        execute(full_command);
+    }
+❱
+◀private: static▶ void ☀Run_Remote_Programs_Over_Files(Program_Input const& input, std::vector<std::string> const& files)❰
+    
+    std::string ssh_command = Remote_SSh_Execution_Command_Start(input);
+    auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+    for (auto const& file: files){
+        auto remote = Pulse_Action_Getter::Get_Remote_Workspace(specific_user_settings);
+        std::string full_path_to_remote_file = remote + "/" + file;
+        
+        for (auto const& it: input.settings.remote_programs){
+            if (it.run){
+                Execute_Remote_Program(input,it,ssh_command,full_path_to_remote_file);
+            }
+        }
+    }
+❱
+◀private: static▶ std::string ☀Remote_SSh_Execution_Command_Start(Program_Input const& input)❰
+    auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+    std::string ssh_command = "ssh " + specific_user_settings.computer_user + "@" + specific_user_settings.computer_name + " ";
+    return ssh_command;
+❱
+◀private: static▶ void ☀Execute_Remote_Program(Program_Input const& input, Remote_Program_Settings const& settings, std::string const& ssh_command, std::string const& file)❰
+    
+    std::string path_to_program;
+    if (settings.run_from_remote_git_root){
+        path_to_program = Program_From_Remote_Git_Repo_Root(input,settings.program);
+    }
+    else{
+        path_to_program = settings.program;
+    }
+    std::string path_to_program_with_flags = path_to_program + " " + settings.flags;
+    
+    
+    std::string full_command = ssh_command + '"' + path_to_program_with_flags + " " + file;
+    if (settings.pipe_sponge){
+        full_command += " | sponge > " + file;
+    }
+    
+    if (settings.temp_file){
+        full_command += " > " + file + "_temp";
+    }
+    full_command += '"';
+    
+    Blue_Then_Regular_Message("remote ",Get_Path_After_Desktop(path_to_program) + " " + Get_Path_After_Desktop(file));
+    execute(full_command);
+    
+    if (settings.temp_file){
+        full_command = ssh_command + '"' + "mv " + file + "_temp " + file + '"';
+        execute(full_command);
+        
+    }
+❱
+◀private: static▶ std::string ☀Program_From_Remote_Git_Repo_Root(Program_Input const& input, std::string const& relative_path)❰
+    return Remote_Git_Repo_Root(input) + "/" + relative_path;
+❱
+◀private: static▶ std::string ☀Remote_Git_Repo_Root(Program_Input const& input)❰
+    auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
+    auto parts = Current_Path_In_Parts();
+    std::string remote_git_root = "/home/" + specific_user_settings.computer_user + "/Desktop/" + parts[4];
+    return remote_git_root;
+❱
