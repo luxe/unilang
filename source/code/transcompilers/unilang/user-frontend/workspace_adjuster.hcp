@@ -1,0 +1,33 @@
+class
+❪vector❫
+❪string❫
+❪"code/transcompilers/unilang/main/program_input"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+⚞⚟
+
+◀
+public: template <typename Fun>
+static auto While_Inside_Possibly_Adjusted_Scratch_Space(Program_Input const& input, Fun fun){
+
+    if (input.settings.workspace.step_into){
+        auto output_directory = Decide_Output_Directory(input.settings.workspace.root_of_unilang_projects);
+        Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,fun);
+    }
+    else
+    {
+        fun();
+    }
+}
+▶
+
+◀private: static▶ std::string ☀Decide_Output_Directory(std::string const& root_of_unilang_projects)❰
+    
+    //we want to store UniLang files in the repo, but we don't want to export their generation into the same repo
+    //(that will just make the repo dirty and I don't want to accidentally push up generated files)
+    //instead, we want to export them to a mirroring directory on the desktop before also transferring them to where they need to go
+    auto path = Full_Path_To_Desktop() + Get_Path_Of_Directory_After_Found_Folder(root_of_unilang_projects);
+    return path;
+❱

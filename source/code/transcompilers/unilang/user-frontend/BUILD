@@ -39,6 +39,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/main:program_input",
 "//code/utilities/exits:lib",
 "//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/user-frontend:workspace_adjuster",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:f2si_contributors_getter",
@@ -59,4 +60,11 @@ hcp(name = "user_frontend", deps = [
 
 hcp(name = "language_guesser", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
+])
+
+hcp(name = "workspace_adjuster", deps = [
+"//code/transcompilers/unilang/main:program_input",
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/types/general:lib",
+"//code/utilities/filesystem/files/getting:lib",
 ])
