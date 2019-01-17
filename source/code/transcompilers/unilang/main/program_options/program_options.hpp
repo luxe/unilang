@@ -28,6 +28,7 @@ class Program_Options: public Program_Options_Default{
 	/*  */ std::vector<std::string> Dependency_Paths()const; //paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files;
 	bool Skip_Transfer()const;
 	bool Skip_Remote_Programs()const;
+	bool Skip_Local_Programs()const;
 	bool Skip_Build()const;
 	bool Build_Only()const;
 

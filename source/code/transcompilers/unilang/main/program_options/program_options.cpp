@@ -43,6 +43,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	("dependency_paths",value<std::vector<std::string>>()->multitoken(),"paths to search for the dependencies of the file being compiled.  This can point to both real code, or Unilang files")
 	("no-transfer","Decide whether to skip transferring the exported file (this usually entails sending over files over a network possibly)")
 	("no-remote-programs","Dont run remote programs on transfered code")
+	("no-local-programs","Dont run local programs on exported code")
 	("no-build","Decide whether we should try to build the repo where could would be transfered to")
 	("build-only","Only do a build")
 
@@ -168,3 +169,6 @@ return vm.count("build-only");}
 
 bool Program_Options::Skip_Remote_Programs() const{
 return vm.count("no-remote-programs");}
+
+bool Program_Options::Skip_Local_Programs() const{
+return vm.count("no-local-programs");}
