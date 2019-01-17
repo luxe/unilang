@@ -2,6 +2,7 @@ class
 ❪"code/transcompilers/unilang/file_marker/file_marker"❫
 ❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
 ❪"code/transcompilers/unilang/tokenizer/tokenizer_testing_settings"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/file_marker/file_marker_adjuster"❫
 ❪"code/transcompilers/unilang/parser/global_tokens_table_utilities"❫
@@ -9,20 +10,20 @@ class
 ⚞⚟
 
 //default constructor at file beginning
-◀public:▶ ☀◈(Fully_Read_File const& file, Tokenizer_Testing_Settings const& settings)◖
+◀public:▶ ☀◈(Fully_Read_File const& file, Tokenizer_Testing_Settings const& settings, Parser_Settings const& p_settings)◖
               :file(file)
               ,settings(settings)
               ,inside_marker(false)
               ,current_index(0)
              ◗❰
-                Move_Forward();
+                Move_Forward(p_settings);
              ❱
              
              
 //transformers
-void ☀Move_Forward()❰
+void ☀Move_Forward(Parser_Settings const& p_settings)❰
 	auto c = Take_Forward_Step_Getting_The_Current_Char();
-    Adjust_Conceptual_Marking_Status(c);
+    Adjust_Conceptual_Marking_Status(p_settings,c);
 
 	//TODO: get rid of
 	stored_current_char = c;
@@ -50,18 +51,18 @@ wchar_t ☀Current_Char() const❰ return stored_current_char;❱
 ❱
 
 
-◀private:▶ void ☀Adjust_Conceptual_Marking_Status(wchar_t const& current_char)❰
+◀private:▶ void ☀Adjust_Conceptual_Marking_Status(Parser_Settings const& p_settings, wchar_t const& current_char)❰
 
     //if were not inside a token, check to see if the next chatacter is the beginning of a token
     if (!inside_marker){
-        inside_marker = settings.starter_test(current_char);
+        inside_marker = settings.starter_test(p_settings.all_language_tokens,current_char);
         if (inside_marker){
             start_symbol = current_char;
         }
 	
 	//otherwise, we are already in a token, and check to see if the next character ends the token
     }else{
-        inside_marker = !settings.matching_set_test(start_symbol,current_char);
+        inside_marker = !settings.matching_set_test(p_settings.all_language_tokens,start_symbol,current_char);
     }
     
 ❱

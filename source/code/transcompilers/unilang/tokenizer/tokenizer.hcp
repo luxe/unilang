@@ -32,15 +32,15 @@ class
     collecting_token = false;
 
 	//create token marker settings
-	Tokenizer_Testing_Settings settings;
-	settings.starter_test = Global_Tokens_Table_Utilities::Char_Is_A_Unilang_Unicode_Starter_Char;
-	settings.matching_set_test = Global_Tokens_Table_Utilities::Chars_Make_Valid_Unilang_Enclosure_Block;
+	Tokenizer_Testing_Settings t_settings;
+	t_settings.starter_test = Global_Tokens_Table_Utilities::Char_Is_A_Unilang_Unicode_Starter_Char;
+	t_settings.matching_set_test = Global_Tokens_Table_Utilities::Chars_Make_Valid_Unilang_Enclosure_Block;
     
 
-    Tokenizer_Marker tokenizer_marker(file,settings);
+    Tokenizer_Marker tokenizer_marker(file,t_settings,settings);
     while (tokenizer_marker.Current_Char() != EOF){
         Proccess_Marker(tokens,tokenizer_marker);
-        tokenizer_marker.Move_Forward();
+        tokenizer_marker.Move_Forward(settings);
     }
     
     Check_For_Unfinished_Token(tokenizer_marker);
@@ -49,8 +49,7 @@ class
 ◀private:▶ void ☀Proccess_Marker(std::vector<Parser_Token> & tokens, Tokenizer_Marker & tokenizer_marker)❰
 
 
-    auto all_tokens = settings.all_language_tokens;
-    if (tokenizer_marker.Current_Char() == all_tokens.standalone_symbols.ESCAPE_CHARACTER){
+    if (tokenizer_marker.Current_Char() == settings.all_language_tokens.standalone_symbols.ESCAPE_CHARACTER){
         Process_Escaped_Character(tokens,tokenizer_marker);
     }
     else{
@@ -89,7 +88,7 @@ class
 ❱
 ◀private:▶ void ☀Process_Escaped_Character(std::vector<Parser_Token> & tokens, Tokenizer_Marker & tokenizer_marker)❰
     if (collecting_token){
-        tokenizer_marker.Move_Forward();
+        tokenizer_marker.Move_Forward(settings);
         token_value += tokenizer_marker.Current_Char();
     }
     else{

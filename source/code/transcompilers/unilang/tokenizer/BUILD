@@ -2,7 +2,11 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "tokenizer_testing_settings")
+hcp(name = "tokenizer_testing_settings",
+    deps = [
+        "//code/transcompilers/unilang/options/parser:parser_settings",
+        "//code/transcompilers/unilang/tokens:all_language_tokens",
+    ])
 
 hcp(name = "tokenizer_exception", deps = [
 "//code/transcompilers/unilang/file_marker:file_marker"
@@ -14,6 +18,7 @@ hcp(name = "tokenizer_marker", deps = [
 "//code/transcompilers/unilang/tokenizer:tokenizer_testing_settings",
 "//code/transcompilers/unilang/file_marker:file_marker_adjuster",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
+"//code/transcompilers/unilang/options/parser:parser_settings",
 ])
 
 hcp(name = "tokenizer", deps = [
