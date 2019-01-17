@@ -9,6 +9,7 @@ hcp(name = "entire_body_parser", deps = [
 "//code/utilities/converters:lib",
 "//code/transcompilers/unilang/parser/entire_body_parser:nested_body_tokens",
 "//code/transcompilers/unilang/parser/entire_body_parser:body_tokenizer",
+"//code/transcompilers/unilang/options/parser:parser_settings",
 ])
 
 cpp_object("forward_decls")
