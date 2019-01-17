@@ -2,6 +2,7 @@ class
 ❪vector❫
 ❪"code/transcompilers/unilang/parser/body_parser/body_token_value"❫
 ❪"code/transcompilers/unilang/tokens/token_name"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/parser/global_tokens_table_utilities"❫
 ❪"code/utilities/converters/lib"❫
@@ -9,7 +10,7 @@ class
 ⚞⚟
 
 //this is a poor hand written parser
-◀public: static▶ std::vector<Body_Token_Value> ☀Parse_Method_Body_Into_Stream_Of_Tokens(std::wstring body)❰
+◀public: static▶ std::vector<Body_Token_Value> ☀Parse_Method_Body_Into_Stream_Of_Tokens(Parser_Settings const& settings, std::wstring body)❰
     
     
     //trim the body
@@ -22,7 +23,7 @@ class
     std::wstring buffer;
     bool in_token = false;
     for (auto c: body){
-        Handle_Char(result,buffer,in_token,c);
+        Handle_Char(settings,result,buffer,in_token,c);
     }
     
     if (!buffer.empty()){
@@ -36,14 +37,14 @@ class
 ❱
 
 
-◀private: static▶ void ☀Handle_Char(std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
+◀private: static▶ void ☀Handle_Char(Parser_Settings const& settings, std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
     
     //when not in a token
     if (!in_token){
         Handle_Char_When_Out_Of_Token(result,buffer,in_token,c);
     }
     else{
-        Handle_Char_When_In_Token(result,buffer,in_token,c);
+        Handle_Char_When_In_Token(settings, result,buffer,in_token,c);
     }
 ❱
 
@@ -61,13 +62,13 @@ class
         buffer += c;
     }
 ❱
-◀private: static▶ void ☀Handle_Char_When_In_Token(std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
+◀private: static▶ void ☀Handle_Char_When_In_Token(Parser_Settings const& settings, std::vector<Body_Token_Value> & result, std::wstring & buffer, bool & in_token, wchar_t const& c)❰
     
     
     if (Global_Tokens_Table_Utilities::Char_Is_A_Unilang_Unicode_Body_Ender_Char(c)){
         Body_Token_Value t;
         t.value = buffer;
-        t.name = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(c).name;
+        t.name = Global_Tokens_Table_Utilities::Get_Body_Token_Through_Character_LookUp(settings.all_language_tokens,c).name;
         result.push_back(t);
         in_token = false;
         buffer.clear();
