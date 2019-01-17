@@ -27,4 +27,5 @@ hcp(name = "body_tokenizer", deps = [
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/converters:lib",
 "//code/transcompilers/unilang/parser/entire_body_parser:nested_body_tokens",
+"//code/transcompilers/unilang/options/parser:parser_settings",
 ])

@@ -2,20 +2,21 @@ class
 ❪iostream❫
 ❪"code/transcompilers/unilang/structure/model/sections/method/body/function_body"❫
 ❪"code/transcompilers/unilang/parser/entire_body_parser/nested_body_tokens"❫
+❪"code/transcompilers/unilang/options/parser/parser_settings"❫
 ⚯
 ❪"code/transcompilers/unilang/parser/global_tokens_table_utilities"❫
 ❪"code/utilities/types/strings/transformers/trimming/lib"❫
 ❪"code/utilities/converters/lib"❫
 ⚞⚟
 
-◀public: static▶ Nested_Body_Tokens ☀Turn_Body_Into_Nested_Tokens(std::wstring const& body)❰
+◀public: static▶ Nested_Body_Tokens ☀Turn_Body_Into_Nested_Tokens(std::wstring const& body, Parser_Settings const& settings)❰
     Nested_Body_Tokens all;
     int depth = 0;
     std::wstring buffer;
     bool in_token = false;
     Body_Token_Name currently_in = Body_Token_Name::UNCAUGHT_STATEMENT;
     for (auto const& c: body){
-        Handle_Char(all,buffer,in_token,depth,currently_in,c);
+        Handle_Char(all,buffer,in_token,depth,currently_in,c,settings);
     }
     
     if (in_token){
@@ -26,23 +27,23 @@ class
     return all;
 ❱
 
-◀private: static▶ void ☀Handle_Char(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+◀private: static▶ void ☀Handle_Char(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c, Parser_Settings const& settings)❰
     
     //when not in a token
     if (!in_token){
-        Handle_Char_When_Out_Of_Token(all,buffer,in_token,depth,currently_in,c);
+        Handle_Char_When_Out_Of_Token(all,buffer,in_token,depth,currently_in,c,settings);
     }
     else{
-        Handle_Char_When_In_Token(all,buffer,in_token,depth,currently_in,c);
+        Handle_Char_When_In_Token(all,buffer,in_token,depth,currently_in,c,settings);
     }
 ❱
 
-◀private: static▶ void ☀Handle_Char_When_Out_Of_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+◀private: static▶ void ☀Handle_Char_When_Out_Of_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c, Parser_Settings const& settings)❰
 
     if (Global_Tokens_Table_Utilities::Char_Is_A_Unilang_Unicode_Body_Starter_Char(c)){
         
         //store the left over stuff when we were outside other tokens
-        Add_To_Token_Set(all,buffer,Body_Token_Name::UNCAUGHT_STATEMENT);
+        Add_To_Token_Set(all,buffer,Body_Token_Name::UNCAUGHT_STATEMENT,settings);
         
         //update state and clear buffer for analysis inside the token
         in_token = true;
@@ -55,7 +56,7 @@ class
         buffer += c;
     }
 ❱
-◀private: static▶ void ☀Handle_Char_When_In_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c)❰
+◀private: static▶ void ☀Handle_Char_When_In_Token(Nested_Body_Tokens & all, std::wstring & buffer, bool & in_token, int & depth, Body_Token_Name & currently_in, wchar_t const& c, Parser_Settings const& settings)❰
     
     
     Attempt_To_Adjust_Our_Depth(currently_in,c,depth);
@@ -64,7 +65,7 @@ class
     if (Global_Tokens_Table_Utilities::Char_Is_A_Unilang_Unicode_Body_Ender_Char(c) && depth == 0){
         
         //store the stuff we found inside the tokens
-        Add_To_Token_Set(all,buffer,currently_in);
+        Add_To_Token_Set(all,buffer,currently_in,settings);
         
         //update the state now that we are outside the found token
         in_token = false;
@@ -96,7 +97,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name)❰
+◀private: static▶ void ☀Add_To_Token_Set(Nested_Body_Tokens & all, std::wstring const& buffer, Body_Token_Name const& name, Parser_Settings const& settings)❰
     
         Body_Token_Value t;
         t.value = buffer;
@@ -106,7 +107,7 @@ class
         wrapped.single = t;
         
         //RECURSION
-        auto sub = Turn_Body_Into_Nested_Tokens(buffer);
+        auto sub = Turn_Body_Into_Nested_Tokens(buffer,settings);
         wrapped.tokens.get().emplace_back(sub);
         all.tokens.get().emplace_back(wrapped);
 ❱
