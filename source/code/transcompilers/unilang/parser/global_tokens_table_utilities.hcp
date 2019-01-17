@@ -10,13 +10,16 @@ class
 
 //analyzing parts from the global TOKENS table via character
 ◀public: static▶ bool ☀Char_Is_A_Unilang_Unicode_Char(wchar_t const& c)❰
-    return In_Vector(All_Unicode_Chars_Used(),c);
+    auto all_tokens = Get_Tokens::Get();
+    return In_Vector(All_Unicode_Chars_Used(all_tokens),c);
 ❱
 ◀public: static▶ bool ☀Char_Is_A_Unilang_Unicode_Starter_Char(wchar_t const& c)❰
-    return In_Vector(All_Unilang_Start_Markers(),c);
+    auto all_tokens = Get_Tokens::Get();
+    return In_Vector(All_Unilang_Start_Markers(all_tokens),c);
 ❱
 ◀public: static▶ bool ☀Char_Is_A_Unilang_Unicode_Ender_Char(wchar_t const& c)❰
-    return In_Vector(All_Unilang_End_Markers(),c);
+    auto all_tokens = Get_Tokens::Get();
+    return In_Vector(All_Unilang_End_Markers(all_tokens),c);
 ❱
 
 //analyzing parts from the global BODY TOKENS table via character
@@ -57,9 +60,10 @@ class
 
 
 ◀public: static▶ bool ☀Chars_Make_Valid_Unilang_Enclosure_Block(wchar_t const& start, wchar_t const& end)❰
+    auto all_tokens = Get_Tokens::Get();
     if (Char_Is_A_Unilang_Unicode_Starter_Char(start) && Char_Is_A_Unilang_Unicode_Ender_Char(end)){
-        auto starts = All_Unilang_Start_Markers();
-        auto ends = All_Unilang_End_Markers();
+        auto starts = All_Unilang_Start_Markers(all_tokens);
+        auto ends = All_Unilang_End_Markers(all_tokens);
         auto index = Get_Index_Of_Element(starts,start);
         if (end == ends[index]){
             return true;
@@ -94,15 +98,13 @@ class
 
 
 //stripping out columns of global TOKENS table
-◀private: static▶ std::vector<wchar_t> ☀All_Unicode_Chars_Used()❰
-    return All_Unilang_Start_Markers() + All_Unilang_End_Markers();
+◀private: static▶ std::vector<wchar_t> ☀All_Unicode_Chars_Used(All_Language_Tokens const& all_tokens)❰
+    return All_Unilang_Start_Markers(all_tokens) + All_Unilang_End_Markers(all_tokens);
 ❱
-◀private: static▶ std::vector<wchar_t> ☀All_Unilang_Start_Markers()❰
-    auto all_tokens = Get_Tokens::Get();
+◀private: static▶ std::vector<wchar_t> ☀All_Unilang_Start_Markers(All_Language_Tokens const& all_tokens)❰
     return Destructure_Out_Vec_Of_Data_Member(all_tokens.tokens.begin(),all_tokens.tokens.end(),&decltype(all_tokens.tokens)::value_type::start);
 ❱
-◀private: static▶ std::vector<wchar_t> ☀All_Unilang_End_Markers()❰
-    auto all_tokens = Get_Tokens::Get();
+◀private: static▶ std::vector<wchar_t> ☀All_Unilang_End_Markers(All_Language_Tokens const& all_tokens)❰
     return Destructure_Out_Vec_Of_Data_Member(all_tokens.tokens.begin(),all_tokens.tokens.end(),&decltype(all_tokens.tokens)::value_type::end);
 ❱
 
