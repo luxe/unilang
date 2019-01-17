@@ -44,3 +44,4 @@ hcp(name = "export_settings", deps = [
 
 hcp(name = "remote_build_settings")
 hcp(name = "remote_program_settings")
+hcp(name = "workspace_settings")

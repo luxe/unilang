@@ -37,15 +37,19 @@ class
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
     
-    //attempt to derive some more information if it was not provided
-    //also some validation and error handling
+    //attempt to derive some more information if it was not provided on CLI
+    //also do some validation and error handling in regards to program input.
     Enrich_Program_Input(input);
     
-    //parse all of the files into data structures
+    //parse all of the files into daunilang's conceptual model.  
+    //this is essentially the entire frontend of the transcompiler.
     auto graphs = Turn_Files_Into_Code_Graphs(input);
     
-    //run scratch space actions
-    While_Inside_Scratch_Space(input,[&](){
+    //run the backend transcompilers and possibly create some artifacts.  
+    //workspace here essentially means the compilers current working directory.  
+    //sometimes we may want to jump somewhere else before we start creating files.  
+    //other times, we will stay in the same directory where unilang was run from.
+    While_Inside_Possibly_Adjusted_Scratch_Space(input,[&](){
         Scratch_Space_Actions(input,graphs);
     });
 ❱
@@ -318,8 +322,15 @@ class
 
 ◀
 private: template <typename Fun>
-static auto While_Inside_Scratch_Space(Program_Input const& input, Fun fun){
-    auto output_directory = Decide_Output_Directory(input.settings.root_of_unilang_projects);
-    Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,fun);
+static auto While_Inside_Possibly_Adjusted_Scratch_Space(Program_Input const& input, Fun fun){
+
+    if (input.settings.workspace.step_into){
+        auto output_directory = Decide_Output_Directory(input.settings.workspace.root_of_unilang_projects);
+        Create_Path_And_Temporarily_Move_To_It_To_Call_Function(output_directory,fun);
+    }
+    else
+    {
+        fun();
+    }
 }
 ▶
