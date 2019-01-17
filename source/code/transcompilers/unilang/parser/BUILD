@@ -55,6 +55,7 @@ hcp(name = "global_tokens_table_utilities", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/transcompilers/unilang/tokens:all_language_tokens",
 ])
 
 hcp(name = "token_value", deps = [
