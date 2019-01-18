@@ -1,0 +1,51 @@
+class
+❪vector❫
+❪string❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/program_input"❫
+⚯
+❪"code/transcompilers/unilang/user-frontend/compiler/compiler"❫
+❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
+⚞⚟
+
+◀public: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
+
+    std::vector<std::string> created_files;
+    
+    //create new files from all the data structures
+    created_files += Transcompile_Each_Code_Graph(graphs,input);
+    
+    //create additional files with all of the data structures (usually build files / other meta)
+    created_files += Transcompile_Extra_Files(graphs,input);
+    
+    return created_files;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input input)❰
+
+    std::vector<std::string> created_files;
+    
+    //set default language if not chosen
+    if (input.options.user_chosen_export_settings.languages.empty()){
+        
+        //todo: derive from structure
+        //hard-coded in the structure from the user or from a prior stage
+        input.options.user_chosen_export_settings.languages.emplace_back("bazel");
+        created_files += Compiler::Compile(code_graphs,input);
+    }
+    
+    return created_files;
+❱
+◀private: static▶ std::vector<std::string> ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
+
+    std::vector<std::string> created_files;
+    for (auto const& it: graphs){
+        Program_Input artifact_input = input;
+        if (artifact_input.options.user_chosen_export_settings.languages.empty()){
+            artifact_input.options.user_chosen_export_settings.languages = Language_Guesser::Guess(it.structure);
+        }
+
+        created_files += Compiler::Compile(it,artifact_input);
+    }
+    return created_files;
+❱

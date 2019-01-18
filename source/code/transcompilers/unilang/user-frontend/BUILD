@@ -58,6 +58,7 @@ hcp(name = "user_frontend", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/user-frontend:after_artifact_actions",
 "//code/transcompilers/unilang/user-frontend:program_input_enricher",
+"//code/transcompilers/unilang/user-frontend:transcompiler",
 ])
 
 hcp(name = "program_input_enricher", deps = [
@@ -69,6 +70,13 @@ hcp(name = "program_input_enricher", deps = [
 "//code/utilities/exits:lib",
 "//code/transcompilers/unilang/user-frontend:language_guesser",
 "//code/utilities/diagnostic:diagnostic_printer",
+])
+
+hcp(name = "transcompiler", deps = [
+"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/transcompilers/unilang/main:program_input",
+"//code/transcompilers/unilang/user-frontend/compiler:compiler",
+"//code/transcompilers/unilang/user-frontend:language_guesser",
 ])
 
 hcp(name = "after_artifact_actions", deps = [

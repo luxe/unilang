@@ -32,6 +32,7 @@ class
 ❪"code/utilities/colors/lib"❫
 ❪"code/utilities/diagnostic/diagnostic_printer"❫
 ❪"code/transcompilers/unilang/user-frontend/program_input_enricher"❫
+❪"code/transcompilers/unilang/user-frontend/transcompiler"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
@@ -110,7 +111,7 @@ class
 ◀private: static▶ void ☀Scratch_Space_Actions(Program_Input input, std::vector<Code_Graph> const& graphs)❰
 
     //transcompile all of the files
-    auto created_files = Create_All_The_Files(graphs,input);
+    auto created_files = Transcompiler::Create_All_The_Files(graphs,input);
 
    //do things with the transcompiled files
    After_Artifact_Actions::Do(input,graphs,created_files);
@@ -119,54 +120,3 @@ class
 
 
 
-
-
-
-
-
-
-
-
-
-
-◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
-
-    std::vector<std::string> created_files;
-    
-    //create new files from all the data structures
-    created_files += Transcompile_Each_Code_Graph(graphs,input);
-    
-    //create additional files with all of the data structures (usually build files / other meta)
-    created_files += Transcompile_Extra_Files(graphs,input);
-    
-    return created_files;
-❱
-
-◀private: static▶ std::vector<std::string> ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input input)❰
-
-    std::vector<std::string> created_files;
-    
-    //set default language if not chosen
-    if (input.options.user_chosen_export_settings.languages.empty()){
-        
-        //todo: derive from structure
-        //hard-coded in the structure from the user or from a prior stage
-        input.options.user_chosen_export_settings.languages.emplace_back("bazel");
-        created_files += Compiler::Compile(code_graphs,input);
-    }
-    
-    return created_files;
-❱
-◀private: static▶ std::vector<std::string> ☀Transcompile_Each_Code_Graph(std::vector<Code_Graph> const& graphs, Program_Input input)❰
-
-    std::vector<std::string> created_files;
-    for (auto const& it: graphs){
-        Program_Input artifact_input = input;
-        if (artifact_input.options.user_chosen_export_settings.languages.empty()){
-            artifact_input.options.user_chosen_export_settings.languages = Language_Guesser::Guess(it.structure);
-        }
-
-        created_files += Compiler::Compile(it,artifact_input);
-    }
-    return created_files;
-❱
