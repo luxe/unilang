@@ -1,0 +1,51 @@
+class
+❪vector❫
+❪string❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/program_input"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
+❪"code/utilities/diagnostic/diagnostic_printer"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Enrich(Program_Input & input)❰
+
+    //decide all of the files we intend to transcompile
+    //update/adjust existing files provided by the user
+    input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files,input.settings.parser.input_files.expected_file_extension);
+    Ensure_We_Have_Files_To_Process(input);
+    Set_Default_Exporter_If_Not_Chosen(input);
+    
+    //if we didn't choose any languages, assume we are doing a typical workflow
+    //of generating and transforing.
+    if (input.options.user_chosen_export_settings.languages.empty()){
+        input.settings.workspace.step_into = true;
+    }
+❱
+
+◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files, std::string const& expected_file_extension)❰
+    
+    //if no files were passed, get all of the files in the directory
+    //TODO: file extension is a setting
+    if (input_files.empty()){
+        auto files = Get_Everything_At_Path_With_The_File_Extension(expected_file_extension);
+        input_files = files;
+    }
+    return input_files;
+❱
+◀private: static▶ void ☀Ensure_We_Have_Files_To_Process(Program_Input const& input)❰
+    if (input.options.input_files.empty()){
+        Diagnostic_Printer::Report(input.settings.no_files_to_process);
+    }
+❱
+
+◀private: static▶ void ☀Set_Default_Exporter_If_Not_Chosen(Program_Input & input)❰
+    if (input.options.user_chosen_export_settings.exporter.empty()){
+        input.options.user_chosen_export_settings.exporter = input.settings.default_exporter;
+    }
+❱

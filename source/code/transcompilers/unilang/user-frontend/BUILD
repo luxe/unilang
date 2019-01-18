@@ -57,6 +57,18 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_action_getter",
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/user-frontend:after_artifact_actions",
+"//code/transcompilers/unilang/user-frontend:program_input_enricher",
+])
+
+hcp(name = "program_input_enricher", deps = [
+"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/transcompilers/unilang/main:program_input",
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/types/general:lib",
+"//code/utilities/filesystem/files/getting:lib",
+"//code/utilities/exits:lib",
+"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/utilities/diagnostic:diagnostic_printer",
 ])
 
 hcp(name = "after_artifact_actions", deps = [

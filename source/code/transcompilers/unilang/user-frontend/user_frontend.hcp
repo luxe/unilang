@@ -31,13 +31,14 @@ class
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/colors/lib"❫
 ❪"code/utilities/diagnostic/diagnostic_printer"❫
+❪"code/transcompilers/unilang/user-frontend/program_input_enricher"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
     
     //attempt to derive some more information if it was not provided on CLI
     //also do some validation and error handling in regards to program input.
-    Enrich_Program_Input(input);
+    Program_Input_Enricher::Enrich(input);
     
     //parse all of the files into daunilang's conceptual model.  
     //this is essentially the entire frontend of the transcompiler.
@@ -50,71 +51,6 @@ class
     Workspace_Adjuster::While_Inside_Possibly_Adjusted_Scratch_Space(input,[&](){
         Scratch_Space_Actions(input,graphs);
     });
-❱
-
-◀private: static▶ void ☀Enrich_Program_Input(Program_Input & input)❰
-
-    //decide all of the files we intend to transcompile
-    //update/adjust existing files provided by the user
-    input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files,input.settings.parser.input_files.expected_file_extension);
-    Ensure_We_Have_Files_To_Process(input);
-    Set_Default_Exporter_If_Not_Chosen(input);
-    
-    //if we didn't choose any languages, assume we are doing a typical workflow
-    //of generating and transforing.
-    if (input.options.user_chosen_export_settings.languages.empty()){
-        input.settings.workspace.step_into = true;
-    }
-❱
-
-◀private: static▶ void ☀Scratch_Space_Actions(Program_Input input, std::vector<Code_Graph> const& graphs)❰
-
-    //transcompile all of the files
-    auto created_files = Create_All_The_Files(graphs,input);
-
-   //do things with the transcompiled files
-   After_Artifact_Actions::Do(input,graphs,created_files);
-❱
-
-
-◀private: static▶ void ☀Ensure_We_Have_Files_To_Process(Program_Input const& input)❰
-    if (input.options.input_files.empty()){
-        Diagnostic_Printer::Report(input.settings.no_files_to_process);
-    }
-❱
-
-◀private: static▶ void ☀Set_Default_Exporter_If_Not_Chosen(Program_Input & input)❰
-    if (input.options.user_chosen_export_settings.exporter.empty()){
-        input.options.user_chosen_export_settings.exporter = input.settings.default_exporter;
-    }
-❱
-
-
-
-
-
-◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
-
-    std::vector<std::string> created_files;
-    
-    //create new files from all the data structures
-    created_files += Transcompile_Each_Code_Graph(graphs,input);
-    
-    //create additional files with all of the data structures (usually build files / other meta)
-    created_files += Transcompile_Extra_Files(graphs,input);
-    
-    return created_files;
-❱
-
-◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files, std::string const& expected_file_extension)❰
-    
-    //if no files were passed, get all of the files in the directory
-    //TODO: file extension is a setting
-    if (input_files.empty()){
-        auto files = Get_Everything_At_Path_With_The_File_Extension(expected_file_extension);
-        input_files = files;
-    }
-    return input_files;
 ❱
 
 ◀private: static▶ std::vector<Code_Graph> ☀Turn_Files_Into_Code_Graphs(Program_Input const& input)❰
@@ -167,6 +103,43 @@ class
     Structure_Static_Analyzer::Print_Warnings(code_graph.structure,settings.static_analysis);
     
     return code_graph;
+❱
+
+
+
+◀private: static▶ void ☀Scratch_Space_Actions(Program_Input input, std::vector<Code_Graph> const& graphs)❰
+
+    //transcompile all of the files
+    auto created_files = Create_All_The_Files(graphs,input);
+
+   //do things with the transcompiled files
+   After_Artifact_Actions::Do(input,graphs,created_files);
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ std::vector<std::string> ☀Create_All_The_Files(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
+
+    std::vector<std::string> created_files;
+    
+    //create new files from all the data structures
+    created_files += Transcompile_Each_Code_Graph(graphs,input);
+    
+    //create additional files with all of the data structures (usually build files / other meta)
+    created_files += Transcompile_Extra_Files(graphs,input);
+    
+    return created_files;
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Transcompile_Extra_Files(std::vector<Code_Graph> const& code_graphs, Program_Input input)❰
