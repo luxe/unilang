@@ -13,7 +13,7 @@
   
 Unilang is the unification of programming concepts without syntax.
 It is a reconstructed approach on how language should be used to facilitate the creation of software.
-A conceptual model is used to help raise the abstraction of design and implementation above other high level languages.
+A conceptual model is used to raise the design and implementation abstraction above other high level languages.
 You can use Unilang to transcompile down to other langauges and data formats.
 Unilang has an abundance of interesting code transformations and static analysis techniques.
 It was built to improve the efficiency of the modern software engineer.
