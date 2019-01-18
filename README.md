@@ -176,8 +176,8 @@ TODO
 git clone git@github.com:Unilang/unilang.git unilang
 cd unilang
 ./build_everything
-pray
-leave me a ticket about how it didn't work, and we'll improve the build
+# pray
+# leave me a ticket if it didn't work, and we'll fix it
 ```
 
 #### Stand-alone binaries
