@@ -59,6 +59,18 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/user-frontend:after_artifact_actions",
 "//code/transcompilers/unilang/user-frontend:program_input_enricher",
 "//code/transcompilers/unilang/user-frontend:transcompiler",
+"//code/transcompilers/unilang/user-frontend:code_graphs_creator",
+])
+
+hcp(name = "code_graphs_creator", deps = [
+"//code/transcompilers/unilang/user-frontend:fully_read_file",
+"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/transcompilers/unilang/main:program_input",
+"//code/transcompilers/unilang/validators/file_name:filename_validator",
+"//code/transcompilers/unilang/parser:parser",
+"//code/transcompilers/unilang/user-frontend/graph_adjuster:code_graph_adjuster",
+"//code/transcompilers/unilang/structure_static_analyzer:structure_static_analyzer",
+"//code/utilities/types/strings/transformers/stripping:lib",
 ])
 
 hcp(name = "program_input_enricher", deps = [

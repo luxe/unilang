@@ -33,6 +33,7 @@ class
 ❪"code/utilities/diagnostic/diagnostic_printer"❫
 ❪"code/transcompilers/unilang/user-frontend/program_input_enricher"❫
 ❪"code/transcompilers/unilang/user-frontend/transcompiler"❫
+❪"code/transcompilers/unilang/user-frontend/code_graphs_creator"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
@@ -41,9 +42,10 @@ class
     //also do some validation and error handling in regards to program input.
     Program_Input_Enricher::Enrich(input);
     
-    //parse all of the files into daunilang's conceptual model.  
+    //parse all of the files into unilang's conceptual model.  
     //this is essentially the entire frontend of the transcompiler.
-    auto graphs = Turn_Files_Into_Code_Graphs(input);
+    //you get what is essentially a rich DAG of objects representing code files.
+    auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
     
     //run the backend transcompilers and possibly create some artifacts.  
     //workspace here essentially means the compilers current working directory.  
@@ -54,60 +56,6 @@ class
     });
 ❱
 
-◀private: static▶ std::vector<Code_Graph> ☀Turn_Files_Into_Code_Graphs(Program_Input const& input)❰
-    std::vector<Code_Graph> graphs;
-    for (auto const& it: input.options.input_files){
-        auto g = Parse_File(it,input.settings,input.options);
-        graphs.emplace_back(g);
-    }
-    return graphs;
-❱
-
-◀private: static▶ Code_Graph ☀Parse_File(std::string const& path_to_file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
-
-    //derive filename from the path
-    auto file_name = Get_File_Name_From_File_Path(path_to_file);
-    
-    //check if something is initially wrong with the path and filename sent to the compiler
-    //might throw..
-    Filename_Validator::Validate_Input_File(settings.file_validation,file_name,settings.parser.input_files.expected_file_extension);
-    
-    //read in the entire file first so that we have it in memory.
-    //This is useful for testing too, where we can pass test strings into the frontend
-    //without having to actually create files in unit tests.
-    Fully_Read_File file(file_name);
-    
-    //I would like the backend compiler to return something like 
-    //full strings for the files one day.  We would want to write to
-    //disk at the very very end.
-    auto code_graph = Front_End(file,settings,program_options);
-    
-    return code_graph;
-❱
-
-◀private: static▶ Code_Graph ☀Front_End(Fully_Read_File const& file, Root_Settings const& settings, Composed_Program_Options const& program_options)❰
-
-    //Apart from just parsing the file that needs compiled, 
-    //we will also need to compile all of the file's dependencies and store them in a graph data structure
-    //create a graph of these classes to handle the dependencies.
-    //might throw...
-    auto code_graph = Parser::Parse(file,program_options.dependency_paths,settings.parser);
-    
-    //before compiling the source file,
-    //make the necessary code graph transformations automatically
-    //this will include actions like:  
-    // - specific transformations from settings
-    // - inlining structures
-    // - deriving import relations
-    Code_Graph_Adjuster::Adjust(code_graph,settings,program_options);
-    
-    Structure_Static_Analyzer::Print_Warnings(code_graph.structure,settings.static_analysis);
-    
-    return code_graph;
-❱
-
-
-
 ◀private: static▶ void ☀Scratch_Space_Actions(Program_Input input, std::vector<Code_Graph> const& graphs)❰
 
    //transcompile all of the files
@@ -116,7 +64,3 @@ class
    //do things with the transcompiled files
    After_Artifact_Actions::Do(input,graphs,created_files);
 ❱
-
-
-
-
