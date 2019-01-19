@@ -1,65 +1,46 @@
 class
 ❪vector❫
 ❪string❫
-❪"code/transcompilers/unilang/main/program_options/program_options"❫
-❪"code/transcompilers/unilang/user-frontend/command_line_arguments/dependency_paths"❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
-❪"code/transcompilers/unilang/main/root_settings/root_settings"❫
-❪"code/transcompilers/unilang/main/composed_program_options/composed_program_options"❫
-❪"code/transcompilers/unilang/user-frontend/graph_adjuster/code_graph_adjuster"❫
-❪"code/transcompilers/unilang/user-frontend/fully_read_file"❫
 ❪"code/transcompilers/unilang/main/program_input"❫
-❪"code/utilities/filesystem/paths/lib"❫
 ⚯
-❪"code/transcompilers/unilang/validators/file_name/filename_validator"❫
-❪"code/transcompilers/unilang/parser/parser"❫
-❪"code/transcompilers/unilang/user-frontend/compiler/compiler"❫
-❪"code/transcompilers/unilang/user-frontend/exception_handler"❫
-❪"code/utilities/types/general/lib"❫
-❪"code/utilities/types/strings/transformers/stripping/lib"❫
-❪"code/transcompilers/unilang/structure_static_analyzer/structure_static_analyzer"❫
-❪"code/utilities/filesystem/files/getting/lib"❫
-❪"code/utilities/exits/lib"❫
-❪"code/transcompilers/unilang/user-frontend/language_guesser"❫
-❪"code/transcompilers/unilang/user-frontend/workspace_adjuster"❫
-❪"code/transcompilers/unilang/user-frontend/after_artifact_actions"❫
-❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
-❪"code/transcompilers/unilang/f2si_frontend_compiler/pulse/pulse_action_getter"❫
-❪"code/utilities/types/vectors/operators/lib"❫
-❪"code/utilities/shell/lib"❫
-❪"code/transcompilers/unilang/f2si_frontend_compiler/file_transferer"❫
-❪"code/utilities/types/strings/observers/splitting/lib"❫
-❪"code/utilities/colors/lib"❫
-❪"code/utilities/diagnostic/diagnostic_printer"❫
 ❪"code/transcompilers/unilang/user-frontend/program_input_enricher"❫
-❪"code/transcompilers/unilang/user-frontend/transcompiler"❫
 ❪"code/transcompilers/unilang/user-frontend/code_graphs_creator"❫
+❪"code/transcompilers/unilang/user-frontend/workspace_adjuster"❫
+❪"code/transcompilers/unilang/user-frontend/transcompiler"❫
+❪"code/transcompilers/unilang/user-frontend/after_artifact_actions"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Transcompile_Each_Of_The_Files_According_To_Program_Options(Program_Input input)❰
     
-    //attempt to derive some more information if it was not provided on CLI
-    //also do some validation and error handling in regards to program input.
+    //attempt to derive some more input information if it was not provided on the CLI.
+    //also do some validation and error handling in regards to the program input we were given.
+    //you might be thinking, why can't we just hard error or use CLI defaults instead?  
+    //why try to enrich the missing input?  It's very convenient to have unilang deduce things
+    //under certain cirumstances, and that deduction can require more sophistication than simply having default values.
     Program_Input_Enricher::Enrich(input);
     
     //parse all of the files into unilang's conceptual model.  
-    //this is essentially the entire frontend of the transcompiler.
-    //you get what is essentially a rich DAG of objects representing code files.
+    //this is the entire frontend to the transcompiler.
+    //you get back what is essentially a rich DAG of objects representing the unilang code files.
     auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
     
-    //run the backend transcompilers and possibly create some artifacts.  
+    //run the backend and possibly create some artifacts.  
     //workspace here essentially means the compilers current working directory.  
     //sometimes we may want to jump somewhere else before we start creating files.  
-    //other times, we will stay in the same directory where unilang was run from.
+    //other times, we may want to stay in the same directory where unilang was run from.
+    //Apart from artifact creation, we may also run a lot of other "after artifact tasks"
+    //This is to automate some other parts of working with unilang artifacts.
     Workspace_Adjuster::While_Inside_Possibly_Adjusted_Scratch_Space(input,[&](){
-        Scratch_Space_Actions(input,graphs);
+        Scratch_Space_Actions(graphs,input);
     });
 ❱
 
-◀private: static▶ void ☀Scratch_Space_Actions(Program_Input input, std::vector<Code_Graph> const& graphs)❰
+◀private: static▶ void ☀Scratch_Space_Actions(std::vector<Code_Graph> const& graphs, Program_Input const& input)❰
 
-   //transcompile all of the files
-   auto created_files = Transcompiler::Create_All_The_Files(graphs,input);
+   //transcompile all of the unilang files into any number of artifacts.
+   //these artifacts can be other languages, tests, benchmarks, and data formats-- to name a few.
+   auto created_files = Transcompiler::Create_All_The_Artifacts(graphs,input);
 
    //do things with the transcompiled files
    After_Artifact_Actions::Do(input,graphs,created_files);
