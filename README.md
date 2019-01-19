@@ -197,6 +197,7 @@ If they are failing,  I recomend you look back to a commit where they passed and
 | :---         | :---           | :---           |
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar/branch/master?svg=true)](https://ci.appveyor.com/project/luxe/everything/branch/master) | full build
 | Circle     | [![CircleCI](https://circleci.com/gh/Unilang/unilang.svg?style=svg)](https://circleci.com/gh/Unilang/unilang)       | bootstraps build
+| Cirrus | [![Build Status](https://api.cirrus-ci.com/github/Unilang/unilang.svg)](https://cirrus-ci.com/github/Unilang/unilang) | bootstraps build
 | Codeship | [![Codeship Status for Unilang/unilang](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/) | full build
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | full build
 | Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | full build |
