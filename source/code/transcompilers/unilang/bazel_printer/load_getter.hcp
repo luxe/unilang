@@ -3,6 +3,7 @@ class
 ❪string❫
 ❪map❫
 ❪vector❫
+❪utility❫
 ❪iostream❫
 ❪"code/transcompilers/unilang/options/bazel/bazel_build_object"❫
 ❪"code/transcompilers/unilang/options/bazel/bazel_load_db_settings"❫
@@ -70,6 +71,12 @@ class
 
 ◀private: static▶ void ☀Populate_Loads(std::map<std::string,std::vector<std::string>> & loads, Bazel_Build_Object object, Bazel_Load_Db_Settings const& settings)❰
 
+    if (!Load_Data_Exists(object,settings)){
+        return;
+
+    }
+
+
     auto load_data = Find_Load_Data(object,settings);
     
     auto search = loads.find(load_data.file);
@@ -83,6 +90,16 @@ class
     }
 ❱
 
+◀private: static▶ bool ☀Load_Data_Exists(Bazel_Build_Object object, Bazel_Load_Db_Settings const& settings)❰
+    for (auto it: settings.entries){
+        if (it.object == object){
+            return true;
+        }
+    }
+    return false;
+❱
+
+
 ◀private: static▶ Bazel_Load_Data ☀Find_Load_Data(Bazel_Build_Object object, Bazel_Load_Db_Settings const& settings)❰
     for (auto it: settings.entries){
         if (it.object == object){
@@ -93,3 +110,4 @@ class
     Bazel_Load_Data data;
     return data;
 ❱
+

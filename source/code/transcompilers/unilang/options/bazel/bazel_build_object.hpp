@@ -8,4 +8,5 @@ enum class Bazel_Build_Object
 ,XIS_TASK
 ,GTEST
 ,CPP_BINARY
+,UNKNOWN
 };
