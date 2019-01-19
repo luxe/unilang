@@ -100,6 +100,7 @@ hcp(name = "after_artifact_actions", deps = [
 
 hcp(name = "language_guesser", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
+"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 ])
 
 hcp(name = "workspace_adjuster", deps = [

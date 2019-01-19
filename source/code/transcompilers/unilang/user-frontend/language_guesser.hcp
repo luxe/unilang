@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪vector❫
 ❪"code/transcompilers/unilang/structure/model/structure"❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ⚯
 
 ⚞⚟
@@ -9,10 +10,10 @@ class
 
 //if you didn't provide which languages to go to, that's fine.
 //we'll figure out which languages based on some kind of context.
-//this way we can just relax and run a single shell command that does everything,
-//without having to worry about about complicated cli, or big config files.  
-//don't get me wrong, you can still override all the default deduction through these other methods.
-//but usually I'm not jumping around to too many repos, so I can just encode the context and allow these helpful dedications
+//this way we can run a single shell command that does everything,
+//without having to worry about about any complicated cli, or big config files.  
+//don't get me wrong, you can still override all the default deduction through those other methods.
+//but usually I'm not jumping around to too many repos, so I can just specify a context and allow these helpful deductions.
 
 //TODO(thickey): pretty much all the languages this impl chooses,
 //is based on the context of the company/repo I'm working in.
@@ -23,6 +24,7 @@ class
 //i.e. cpp,cpp_test,cpp_benchmark, etc are all in the cpp_full_pack.
 
 //TODO(thickey): these languages strings should be enums
+//same with --exporter.
 ◀public: static▶ std::vector<std::string> ☀Guess(Structure const& structure)❰
 
     std::vector<std::string> langs;
@@ -48,5 +50,19 @@ class
         langs.emplace_back("date");
     }
     
+    return langs;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Guess(std::vector<Code_Graph> const& code_graphs)❰
+
+    std::vector<std::string> langs;
+
+    //do we need to generate any files for the collective group of unilang files?
+    //we do this for the build files.
+    langs.emplace_back("bazel");
+
+    //we may also want to do this for collective documentation
+    //TODO(thickey): ...
+
     return langs;
 ❱
