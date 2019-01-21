@@ -36,6 +36,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//program_options_maker flag interface
 	("enum_values",value<std::vector<std::string>>()->multitoken(),"each value of the enum")
 	("enum_name",value<std::string>(),"the name of the enum")
+	("output-directory,o",value<std::string>(),"output path")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -105,5 +106,12 @@ std::string Program_Options::Enum_Name() const{
 		data = vm["enum_name"].as<std::string>();
 	}
 
+	return data;
+}
+std::string Program_Options::Output_Path() const{
+	std::string data;
+	if (vm.count("output-directory")){
+		data = vm["output-directory"].as<std::string>();
+	}
 	return data;
 }

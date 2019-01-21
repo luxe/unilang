@@ -14,6 +14,7 @@ class Program_Options: public Program_Options_Default{
 
 	std::string Enum_Name() const;
 	std::vector<std::string> Enum_Values()const;
+	std::string Output_Path() const;
 
 
 	private:

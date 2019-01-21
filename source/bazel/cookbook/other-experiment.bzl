@@ -10,6 +10,7 @@ def derive_deps_from_hcp(name):
     deps = []
     # ???
     # https://stackoverflow.com/questions/51165886/is-there-any-way-to-generate-the-deps-list-for-particular-rules
+    # what does gazell do?
     return deps
 
 def hcp_derive(name):
