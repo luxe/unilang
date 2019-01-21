@@ -14,9 +14,7 @@ def enum_cpp(name,values=[]):
         srcs = [],
         outs = [explicit_cpp_file,explicit_hpp_file],
         tools = ["//code/transcompilers/enum_cpp:enum_cpp"],
-        cmd = """
-    $(location //code/transcompilers/enum_cpp:enum_cpp) --enum_name name --enum_values values -o $(@D)
-        """
+        cmd = "$(location //code/transcompilers/enum_cpp:enum_cpp) --enum_name {} --enum_values {} -o $(@D)".format(name," ".join(values))
     )
 
     #compile object file
