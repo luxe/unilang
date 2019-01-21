@@ -18,8 +18,13 @@ int main(int argc, char** argv){
     std::vector<Enum> enums;
     enums.emplace_back(e);
 
+    auto path_name = po.Enum_Name();
+    if (!po.Output_Path().empty()){
+    	path_name = po.Output_Path() + "/" + path_name;
+    }
+
     //build it
-    Enum_Cpp_Maker::Create_Enums_Header(po.Enum_Name(),enums);
-    Enum_Cpp_Maker::Create_Enums_Source(po.Enum_Name(),enums);
+    Enum_Cpp_Maker::Create_Enums_Header(path_name,enums);
+    Enum_Cpp_Maker::Create_Enums_Source(path_name,enums);
 
 }
