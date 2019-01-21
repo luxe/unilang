@@ -7,3 +7,9 @@ enum_cpp(
 	name = "test_enum",
 	values = ["foo","bar","baz"]
 )
+
+cc_binary(
+    name = "enum_program",
+    srcs = ["test.cc"],
+    deps = ["//code/transcompilers/enum_cpp/example:test_enum"],
+)

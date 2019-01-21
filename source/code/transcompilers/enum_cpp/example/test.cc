@@ -4,6 +4,6 @@
 
 int main(int argc, char** argv){
 
-	Test_Enum e = Test_Enum::Foo;
+	Test_Enum e = Test_Enum::FOO;
 	std::cout << as_string(e) << std::endl;
 }

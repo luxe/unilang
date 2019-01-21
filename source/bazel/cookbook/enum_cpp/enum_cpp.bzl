@@ -6,7 +6,7 @@ def enum_cpp(name,values=[]):
     explicit_cpp_file = name + ".cpp"
     explicit_hpp_file = name + ".hpp"
     enum_target_name = name + "_enum";
-    cpp_target_name = name + "_cpp";
+    cpp_target_name = name;
 
     #converting bazel commands to c++ enum files
     native.genrule(
