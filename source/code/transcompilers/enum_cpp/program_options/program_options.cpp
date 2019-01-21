@@ -81,7 +81,7 @@ void Program_Options::Process_Immediate_Options( boost::program_options::options
 void Program_Options::Check_For_Mandatory_Flags_Not_Passed(){
 	std::vector<std::string> flags_not_passed;
 	if(!vm.count("enum_name")){flags_not_passed.push_back("enum_name");}
-	if(!vm.count("enum_valuesr")){flags_not_passed.push_back("enum_values");}
+	if(!vm.count("enum_values")){flags_not_passed.push_back("enum_values");}
 
 	if (!flags_not_passed.empty()){
 		std::cerr << "you need to pass the following flags still:\n";

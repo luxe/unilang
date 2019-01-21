@@ -5,21 +5,23 @@ def enum_cpp(name,values=[]):
     #implicit file names
     explicit_cpp_file = name + ".cpp"
     explicit_hpp_file = name + ".hpp"
+    enum_target_name = name + "_enum";
+    cpp_target_name = name + "_cpp";
 
     #converting bazel commands to c++ enum files
     native.genrule(
-        name = name,
+        name = enum_target_name,
         srcs = [],
         outs = [explicit_cpp_file,explicit_hpp_file],
         tools = ["//code/transcompilers/enum_cpp:enum_cpp"],
         cmd = """
-    $(location //code/transcompilers/enum_cpp:enum_cpp) --enum_name $name --enum_values $values -o $(@D)
+    $(location //code/transcompilers/enum_cpp:enum_cpp) --enum_name name --enum_values values -o $(@D)
         """
     )
 
     #compile object file
     native.cc_library(
-        name = name,
+        name = cpp_target_name,
         srcs = [explicit_cpp_file],
         hdrs = [explicit_hpp_file],
     )
