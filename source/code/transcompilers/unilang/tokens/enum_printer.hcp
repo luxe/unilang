@@ -2,6 +2,7 @@ class
 ❪"all_ast_markers"❫
 ❪"code/utilities/streams/filestreams/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/transcompilers/enum_cpp/enum_cpp_maker"❫
 ⚯
 
 ⚞⚟
@@ -20,24 +21,46 @@ class
 
 ◀private: static▶ void ☀Create_Token_Group_Enum_Header(Ast_Markers const& root, Ast_Markers const& body_root,std::string output_directory) ❰
     
-    std::ofstream out(output_directory + "/token_group.hpp");
-    Print_To_Stream_With_Newline(out,"#pragma once");
-    Print_To_Stream_With_Newline(out,"#include <string>");
-    Print_To_Stream_With_Newline(out,"//a conceptual category that is applied across individual tokens.");
+
+    //build up specific info for tokens
+    auto file_name = output_directory + "/token_group";
+    std::vector<Enum> enums;
+    enums.emplace_back(root.groups);
+    enums.emplace_back(body_root.groups);
     
-    Print_Enum_Decl(out,root.groups);
-    Print_Enum_Decl(out,body_root.groups);
+    //generic enum creator
+    Enum_Cpp_Maker::Create_Enums_Header(file_name,enums);
+
+
+
+    // std::ofstream out(output_directory + "/token_group.hpp");
+    // Print_To_Stream_With_Newline(out,"#pragma once");
+    // Print_To_Stream_With_Newline(out,"#include <string>");
+    // Print_To_Stream_With_Newline(out,"//a conceptual category that is applied across individual tokens.");
     
-    Print_To_Stream_With_Newline(out,"//eventually add:");
-    Print_To_Stream_With_Newline(out,"//enum class Contract_Condition_Token_Group");
+    // Print_Enum_Decl(out,root.groups);
+    // Print_Enum_Decl(out,body_root.groups);
+    
+    // Print_To_Stream_With_Newline(out,"//eventually add:");
+    // Print_To_Stream_With_Newline(out,"//enum class Contract_Condition_Token_Group");
 ❱
 
 
 ◀private: static▶ void ☀Create_Token_Group_Enum_Source(Ast_Markers const& root, Ast_Markers const& body_root,std::string output_directory) ❰
-    std::ofstream out(output_directory + "/token_group.cpp");
-    Print_To_Stream_With_Newline(out,"#include \"token_group.hpp\"");
-    Print_Enum_Def(out,root.groups);
-    Print_Enum_Def(out,body_root.groups);
+
+    //build up specific info for tokens
+    auto file_name = output_directory + "/token_group";
+    std::vector<Enum> enums;
+    enums.emplace_back(root.groups);
+    enums.emplace_back(body_root.groups);
+    
+    //generic enum creator
+    Enum_Cpp_Maker::Create_Enums_Source(file_name,enums);
+
+    // std::ofstream out(output_directory + "/token_group.cpp");
+    // Print_To_Stream_With_Newline(out,"#include \"token_group.hpp\"");
+    // Print_Enum_Def(out,root.groups);
+    // Print_Enum_Def(out,body_root.groups);
 ❱
 
 
@@ -52,7 +75,7 @@ class
     enums.emplace_back(body_root.leaves);
     
     //generic enum creator
-    Create_Enums_Header(file_name,enums);
+    Enum_Cpp_Maker::Create_Enums_Header(file_name,enums);
 ❱
 
 
@@ -65,7 +88,7 @@ class
     enums.emplace_back(body_root.leaves);
 
     //generic enum creator
-    Create_Enums_Source(file_name,enums);
+    Enum_Cpp_Maker::Create_Enums_Source(file_name,enums);
 ❱
 
 
@@ -73,46 +96,3 @@ class
 
 
 
-
-//pure enum goodness
-◀private: static▶ void ☀Create_Enums_Header(std::string const& output_filename_no_extension, std::vector<Enum> const& enums)❰
-    std::ofstream out(output_filename_no_extension + ".hpp");
-    Print_To_Stream_With_Newline(out,"#pragma once");
-    Print_To_Stream_With_Newline(out,"#include <string>");
-    for (auto const& e: enums){
-        Print_Enum_Decl(out,e);
-    }
-    out.close();
-❱
-◀private: static▶ void ☀Create_Enums_Source(std::string const& output_filename_no_extension, std::vector<Enum> const& enums)❰
-    std::ofstream out(output_filename_no_extension + ".cpp");
-    Print_To_Stream(out,"#include \"");
-    Print_To_Stream(out,output_filename_no_extension);
-    Print_To_Stream(out,".hpp");
-    Print_To_Stream_With_Newline(out,"\"");
-    
-    for (auto const& e: enums){
-        Print_Enum_Def(out,e);
-    }
-    out.close();
-❱
-◀private: static▶ void ☀Print_Enum_Decl(std::ofstream & out, Enum e)❰
-
-    Print_To_Stream_With_Newline(out,"enum class " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "{");
-    for (auto const& it: e.values){
-        Print_To_Stream_With_Newline(out,As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ",");
-    }
-    Print_To_Stream_With_Newline(out,"};");
-    Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t);");
-❱
-◀private: static▶ void ☀Print_Enum_Def(std::ofstream & out, Enum e)❰
-
-    Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t){");
-    Print_To_Stream_With_Newline(out,"switch (t){");
-    for (auto const& it: e.values){
-        Print_To_Stream_With_Newline(out,"case " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "::" + As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ": return \"" + As_All_Capital_Letters_With_Spaces_As_Underscores(it) + "\";");
-    }
-    Print_To_Stream_With_Newline(out,"}");
-    Print_To_Stream_With_Newline(out,"return \"unknown\";");
-    Print_To_Stream_With_Newline(out,"}");
-❱

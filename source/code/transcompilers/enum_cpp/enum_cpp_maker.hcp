@@ -1,0 +1,52 @@
+class
+❪string❫
+❪vector❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/transcompilers/enum_cpp/enum"❫
+⚯
+
+⚞⚟
+
+//pure enum goodness
+◀public: static▶ void ☀Create_Enums_Header(std::string const& output_filename_no_extension, std::vector<Enum> const& enums)❰
+    std::ofstream out(output_filename_no_extension + ".hpp");
+    Print_To_Stream_With_Newline(out,"#pragma once");
+    Print_To_Stream_With_Newline(out,"#include <string>");
+    for (auto const& e: enums){
+        Print_Enum_Decl(out,e);
+    }
+    out.close();
+❱
+◀public: static▶ void ☀Create_Enums_Source(std::string const& output_filename_no_extension, std::vector<Enum> const& enums)❰
+    std::ofstream out(output_filename_no_extension + ".cpp");
+    Print_To_Stream(out,"#include \"");
+    Print_To_Stream(out,output_filename_no_extension);
+    Print_To_Stream(out,".hpp");
+    Print_To_Stream_With_Newline(out,"\"");
+    
+    for (auto const& e: enums){
+        Print_Enum_Def(out,e);
+    }
+    out.close();
+❱
+◀private: static▶ void ☀Print_Enum_Decl(std::ofstream & out, Enum e)❰
+
+    Print_To_Stream_With_Newline(out,"enum class " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "{");
+    for (auto const& it: e.values){
+        Print_To_Stream_With_Newline(out,As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ",");
+    }
+    Print_To_Stream_With_Newline(out,"};");
+    Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t);");
+❱
+◀private: static▶ void ☀Print_Enum_Def(std::ofstream & out, Enum e)❰
+
+    Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t){");
+    Print_To_Stream_With_Newline(out,"switch (t){");
+    for (auto const& it: e.values){
+        Print_To_Stream_With_Newline(out,"case " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "::" + As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ": return \"" + As_All_Capital_Letters_With_Spaces_As_Underscores(it) + "\";");
+    }
+    Print_To_Stream_With_Newline(out,"}");
+    Print_To_Stream_With_Newline(out,"return \"unknown\";");
+    Print_To_Stream_With_Newline(out,"}");
+❱

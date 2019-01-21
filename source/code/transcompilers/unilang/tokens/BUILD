@@ -4,11 +4,8 @@ load("//bazel/cookbook/unilang:generate_unilang_token_files.bzl", "generate_unil
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(
-	name = "enum"
-)
-hcp(
 	name = "ast_markers",
-	deps = ["enum"]
+	deps = ["//code/transcompilers/enum_cpp:enum"]
 )
 hcp(
 	name = "all_ast_markers",
@@ -20,7 +17,11 @@ hcp(
 )
 hcp(
 	name = "enum_printer",
-	deps = ["all_ast_markers","//code/utilities/streams/filestreams:lib","//code/utilities/types/strings/transformers/casing:lib"]
+	deps = ["all_ast_markers",
+    "//code/utilities/streams/filestreams:lib",
+    "//code/utilities/types/strings/transformers/casing:lib",
+    "//code/transcompilers/enum_cpp:enum_cpp_maker",
+    ]
 )
 
 hcp(
