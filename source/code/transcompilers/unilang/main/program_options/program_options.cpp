@@ -131,10 +131,9 @@ std::vector<Artifact_Type> Program_Options::Languages() const{
 	if (vm.count("languages")){
 		data = vm["languages"].as<std::vector<std::string>>();
 	}
-
-	//TODO(thickey): CONVERT TO ENUM WITH NICE ERROR MESSAGE
-	std::vector<Artifact_Type> data2;
-
+	
+	//convert strings to enums
+	auto data2 = enum_cast_to_Artifact_Type(data);
 	return data2;
 }
 
