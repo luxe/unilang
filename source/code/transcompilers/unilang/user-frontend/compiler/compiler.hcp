@@ -5,6 +5,7 @@ class
 ❪string❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ❪"code/transcompilers/unilang/main/program_input"❫
+❪"code/transcompilers/unilang/user-frontend/artifact_type"❫
 ⚯
 ❪iostream❫
 ❪"code/transcompilers/unilang/compiler-frontends/plant_uml_exporter/plant_uml_exporter"❫
@@ -79,79 +80,98 @@ class
     return created_files;
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Create_Individual_Language_Artifact(Code_Graph const& code_graph, Program_Input input, std::string const& language)❰
+◀private: static▶ std::vector<std::string> ☀Create_Individual_Language_Artifact(Code_Graph const& code_graph, Program_Input input, Artifact_Type const& language)❰
 
     auto unit = Decide_Exporter_Settings(input);
     
     // "High Level Languages (GPLs)"
     // C related
     std::vector<std::string> created_files;
-    if (language == "c"){
-    }
-    
-    // C++ related
-    else if(language == "cpp"){
+
+    switch (language){
+
+        // C++ related
+        case Artifact_Type::C:
+        //created_files += C_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.c);
+        break;
+
+        case Artifact_Type::CPP:
         created_files += Cpp_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp);
-    }
-    else if(language == "cpp_test"){
+        break;
+
+        case Artifact_Type::CPP_TEST:
         created_files += Cpp_Test_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_test);
-    }
-    else if(language == "cpp_benchmark"){
+        break;
+
+        case Artifact_Type::CPP_BENCHMARK:
         created_files += Cpp_Benchmark_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_benchmark);
-    }
-    else if(language == "cpp_fuzz"){
+        break;
+
+        case Artifact_Type::CPP_FUZZ:
         //created_files += Cpp_Fuzz_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.cpp_fuzz);
-    }
-    
-    
-    else if(language == "csharp"){
-    }
-    else if(language == "d"){
-    }
-    else if(language == "rust"){
-    }
-    else if(language == "processing"){
+        break;
+
+        case Artifact_Type::CSHARP:
+        //created_files += CSharp_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.csharp);
+        break;
+
+        case Artifact_Type::D:
+        //created_files += D_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.d);
+        break;
+
+        case Artifact_Type::RUST:
+        //created_files += Rust_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.rust);
+        break;
+
+        case Artifact_Type::PROCESSING:
         created_files += Processing_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.processing);
-    }
-    
-    // IDLs
-    else if(language == "hidl"){
+        break;
+
+        //IDLs
+        case Artifact_Type::HIDL:
         created_files += Hidl_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.hidl);
-    }
-    else if(language == "protobuf"){
-    }
-    
-    // Documentation
-    else if(language == "plant_uml"){
+        break;
+
+        case Artifact_Type::PROTOBUF:
+        //created_files += Protobuf_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.protobug);
+        break;
+
+        //Documentations
+        case Artifact_Type::PLANT_UML:
         created_files += Plant_Uml_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.plant_uml);
-    }
-    else if(language == "call_graph"){
+        break;
+
+        case Artifact_Type::CALL_GRAPH:
         //use to be dia
-    }
-    else if(language == "html_table"){
+        break;
+
+        case Artifact_Type::HTML_TABLE:
         created_files += Html_Table_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.html_table);
-    }
-    else if(language == "treesheets"){
+        break;
+
+        case Artifact_Type::TREESHEETS:
         //created_files += Treesheets_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.treesheets);
-    }
-    else if(language == "pandoc"){
-    }
-    else if(language == "graph_easy"){
+        break;
+
+        case Artifact_Type::GRAPH_EASY:
         //https://metacpan.org/pod/release/TELS/Graph-Easy-0.64/bin/graph-easy
         //created_files += Graph_Easy_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.graph_easy);
-    }
-    else if (language == "mermaid"){
+        break;
+
+        case Artifact_Type::MERMAID:
         created_files += Mermaid_Exporter::Export(code_graph.structure,unit.contributors,unit.settings.foreign_language.mermaid);
-    }
-    
-    // Meta
-    else if (language == "date"){
+        break;
+
+        //Meta
+        case Artifact_Type::DATE:
         created_files += Date_Exporter::Export(code_graph.structure,unit.contributors);
-    }
-    
-    else {
+        break;
+
+        default:
         std::cerr << "unknown export language" << std::endl;
     }
+
+
     return created_files;
 ❱
 

@@ -126,13 +126,16 @@ std::string Program_Options::Exporter() const{
 
 	return data;
 }
-std::vector<std::string> Program_Options::Languages() const{
+std::vector<Artifact_Type> Program_Options::Languages() const{
 	std::vector<std::string> data;
 	if (vm.count("languages")){
 		data = vm["languages"].as<std::vector<std::string>>();
 	}
 
-	return data;
+	//TODO(thickey): CONVERT TO ENUM WITH NICE ERROR MESSAGE
+	std::vector<Artifact_Type> data2;
+
+	return data2;
 }
 
 std::string Program_Options::Style() const{

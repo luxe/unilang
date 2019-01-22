@@ -3,6 +3,7 @@ class
 ❪vector❫
 ❪"code/transcompilers/unilang/structure/model/structure"❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/user-frontend/artifact_type"❫
 ⚯
 
 ⚞⚟
@@ -25,41 +26,41 @@ class
 
 //TODO(thickey): these languages strings should be enums
 //same with --exporter.
-◀public: static▶ std::vector<std::string> ☀Guess(Structure const& structure)❰
+◀public: static▶ std::vector<Artifact_Type> ☀Guess(Structure const& structure)❰
 
-    std::vector<std::string> langs;
+    std::vector<Artifact_Type> langs;
     
     //eh, its just data.
     //do you want to do something a bit more language agnostic?
     //some kind of IDL?
     if (structure.methods.methods.empty()){
         
-        langs.emplace_back("hidl");
+        langs.emplace_back(Artifact_Type::HIDL);
     }
     
     //its got methods?  ok, its probably like actual code then.
     //what language do I use these days?  let's transcompile to that.
     else {
-        langs.emplace_back("cpp");
-        langs.emplace_back("cpp_test");
-        langs.emplace_back("cpp_benchmark");
+        langs.emplace_back(Artifact_Type::CPP);
+        langs.emplace_back(Artifact_Type::CPP_TEST);
+        langs.emplace_back(Artifact_Type::CPP_BENCHMARK);
         
         // we may want to export temporal data so the generation remains deterministic
         // yeah, I woke up the day after new years and saw that unilang was generating different code.
         // sure enough this had to do with the date in a copyright comment.
-        langs.emplace_back("date");
+        langs.emplace_back(Artifact_Type::DATE);
     }
     
     return langs;
 ❱
 
-◀public: static▶ std::vector<std::string> ☀Guess(std::vector<Code_Graph> const& code_graphs)❰
+◀public: static▶ std::vector<Artifact_Type> ☀Guess(std::vector<Code_Graph> const& code_graphs)❰
 
-    std::vector<std::string> langs;
+    std::vector<Artifact_Type> langs;
 
     //do we need to generate any files for the collective group of unilang files?
     //we do this for the build files.
-    langs.emplace_back("bazel");
+    langs.emplace_back(Artifact_Type::BAZEL);
 
     //we may also want to do this for collective documentation
     //TODO(thickey): ...
