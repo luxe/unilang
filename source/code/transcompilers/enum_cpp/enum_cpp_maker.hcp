@@ -13,6 +13,7 @@ class
     std::ofstream out(output_filename_no_extension + ".hpp");
     Print_To_Stream_With_Newline(out,"#pragma once");
     Print_To_Stream_With_Newline(out,"#include <string>");
+    Print_To_Stream_With_Newline(out,"#include <iostream>");
     for (auto const& e: enums){
         Print_Enum_Decl(out,e);
     }
@@ -32,15 +33,80 @@ class
 ❱
 ◀private: static▶ void ☀Print_Enum_Decl(std::ofstream & out, Enum e)❰
 
+    Output_Enumerated_Decleration(out,e);
+    
+    Output_Insertion_Operator_Decleration(out,e);
+    
+    Output_As_String_Decleration(out,e);
+    
+    Output_Enum_Cast_Decleration(out,e);
+    
+❱
+◀private: static▶ void ☀Print_Enum_Def(std::ofstream & out, Enum e)❰
+
+    Output_Enumerated_Definition(out,e);
+    
+    Output_Insertion_Operator_Definition(out,e);
+
+    Output_As_String_Definition(out,e);
+    
+    Output_Enum_Cast_Definition(out,e);
+❱
+
+
+//decl and def for enum
+◀private: static▶ void ☀Output_Enumerated_Decleration(std::ofstream & out, Enum const& e)❰
     Print_To_Stream_With_Newline(out,"enum class " + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "{");
     for (auto const& it: e.values){
         Print_To_Stream_With_Newline(out,As_All_Capital_Letters_With_Spaces_As_Underscores(it) + ",");
     }
     Print_To_Stream_With_Newline(out,"};");
+❱
+◀private: static▶ void ☀Output_Enumerated_Definition(std::ofstream & out, Enum const& e)❰
+//not needed
+❱
+
+
+//decl and def for enum_cast
+◀private: static▶ void ☀Output_Enum_Cast_Decleration(std::ofstream & out, Enum const& e)❰
+
+
+    Print_To_Stream(out,"template <");
+    Print_To_Stream(out,Make_Capital_And_Underscored_In_User_Type_Format(e.name));
+    Print_To_Stream(out,"> ");
+    Print_To_Stream(out,Make_Capital_And_Underscored_In_User_Type_Format(e.name));
+    Print_To_Stream(out," enum_cast(std::string const& s){");
+    for (auto const& it: e.values){
+        Print_To_Stream(out,"if (s == ");
+        Print_To_Stream(out,"\"");
+        Print_To_Stream(out,As_All_Capital_Letters_With_Spaces_As_Underscores(it));
+        Print_To_Stream(out,"\"");
+        Print_To_Stream(out,"){");
+            Print_To_Stream(out,"return ");
+            Print_To_Stream(out,Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "::" + As_All_Capital_Letters_With_Spaces_As_Underscores(it));
+            Print_To_Stream(out,";");
+        Print_To_Stream(out,"}");
+    }
+    
+    if (!e.values.empty()){
+        Print_To_Stream(out,"return ");
+        Print_To_Stream(out,Make_Capital_And_Underscored_In_User_Type_Format(e.name) + "::" + As_All_Capital_Letters_With_Spaces_As_Underscores(e.values[0]));
+        Print_To_Stream(out,";");
+    }
+    
+    Print_To_Stream(out,"}");
+    
+❱
+◀private: static▶ void ☀Output_Enum_Cast_Definition(std::ofstream & out, Enum const& e)❰
+//not needed
+❱
+
+
+//decl and def for as_string
+◀private: static▶ void ☀Output_As_String_Decleration(std::ofstream & out, Enum const& e)❰
     Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t);");
 ❱
-◀private: static▶ void ☀Print_Enum_Def(std::ofstream & out, Enum e)❰
-
+◀private: static▶ void ☀Output_As_String_Definition(std::ofstream & out, Enum const& e)❰
     Print_To_Stream_With_Newline(out,"std::string as_string(" + Make_Capital_And_Underscored_In_User_Type_Format(e.name) + " t){");
     Print_To_Stream_With_Newline(out,"switch (t){");
     for (auto const& it: e.values){
@@ -49,4 +115,17 @@ class
     Print_To_Stream_With_Newline(out,"}");
     Print_To_Stream_With_Newline(out,"return \"unknown\";");
     Print_To_Stream_With_Newline(out,"}");
+❱
+
+//decl and def for <<
+◀private: static▶ void ☀Output_Insertion_Operator_Decleration(std::ofstream & out, Enum const& e)❰
+    out << "std::ostream& operator << (std::ostream &out, " << Make_Capital_And_Underscored_In_User_Type_Format(e.name) << " const& e);\n";
+    return;
+❱
+◀private: static▶ void ☀Output_Insertion_Operator_Definition(std::ofstream & out, Enum const& e)❰
+    out << "std::ostream& operator << (std::ostream &out, " << Make_Capital_And_Underscored_In_User_Type_Format(e.name) << " const& e){\n";
+        out << "\tout << as_string(e);\n";
+        out << "\treturn out;\n";
+    out << "}\n";
+    return;
 ❱
