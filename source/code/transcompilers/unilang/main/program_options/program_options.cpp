@@ -118,13 +118,17 @@ std::string Program_Options::Dir() const{
 
 	return data;
 }
-std::string Program_Options::Exporter() const{
+Chosen_Exporter Program_Options::Exporter() const{
 	std::string data;
 	if (vm.count("exporter")){
 		data = vm["exporter"].as<std::string>();
 	}
+	else
+	{
+		return Chosen_Exporter::NONE;
+	}
 
-	return data;
+	return enum_cast_to_Chosen_Exporter(data);
 }
 std::vector<Artifact_Type> Program_Options::Languages() const{
 	std::vector<std::string> data;

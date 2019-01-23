@@ -24,7 +24,6 @@ values =
 ,"treesheets"
 ,"graph_easy"
 ,"mermaid"
-
 ])
 
 hcp(name = "fully_read_file", deps = [

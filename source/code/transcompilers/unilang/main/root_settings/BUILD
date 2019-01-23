@@ -12,6 +12,7 @@ hcp(name = "root_settings", deps = [
 "//code/transcompilers/unilang/options:remote_build_settings",
 "//code/transcompilers/unilang/options:remote_program_settings",
 "//code/transcompilers/unilang/options:workspace_settings",
+"//code/transcompilers/unilang/options/compiler:chosen_exporter",
 ])
 
 hcp(name = "root_settings_getter", deps = [
