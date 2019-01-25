@@ -4,6 +4,7 @@ class
 ❪"code/transcompilers/unilang/structure/model/structure"❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ❪"code/transcompilers/unilang/user-frontend/artifact_actions/artifact_type"❫
+❪"code/transcompilers/unilang/user-frontend/artifact_actions/artifact_actions"❫
 ⚯
 
 ⚞⚟
@@ -25,14 +26,14 @@ class
 //i.e. cpp,cpp_test,cpp_benchmark, etc are all in the cpp_full_pack.
 //eh, right now I don't see that as a very big deal
 
-◀public: static▶ std::vector<Artifact_Type> ☀Guess(Structure const& structure)❰
+◀public: static▶ Artifact_Actions ☀Guess(Structure const& structure)❰
 
     //todo(thickey): dispatch for other exporters
     return Uber_Guess(structure);
 ❱
 
 
-◀public: static▶ std::vector<Artifact_Type> ☀Guess(std::vector<Code_Graph> const& code_graphs)❰
+◀public: static▶ Artifact_Actions ☀Guess(std::vector<Code_Graph> const& code_graphs)❰
 
     //todo(thickey): dispatch for other exporters
     return Uber_Guess(code_graphs);
@@ -46,14 +47,15 @@ class
 
 
 
-◀public: static▶ std::vector<Artifact_Type> ☀Uber_Guess(Structure const& structure)❰
-    std::vector<Artifact_Type> langs;
+◀public: static▶ Artifact_Actions ☀Uber_Guess(Structure const& structure)❰
+    
+    Artifact_Actions x;
     
     //eh, its just data-- no methods.
     //do you want to do something a bit more language agnostic?
     //some kind of IDL? Uber might switch to protobuf in the future.
     if (structure.methods.methods.empty() && !structure.data_members.data_members.empty()){
-        langs.emplace_back(Artifact_Type::HIDL);
+        x.artifacts.emplace_back(Artifact_Type::HIDL);
     }
     
 
@@ -61,29 +63,29 @@ class
     //what language do we use these days?  let's transcompile to that.
     if (!structure.methods.methods.empty()){
 
-        langs.emplace_back(Artifact_Type::CPP);
-        langs.emplace_back(Artifact_Type::CPP_TEST);
-        langs.emplace_back(Artifact_Type::CPP_BENCHMARK);
+        x.artifacts.emplace_back(Artifact_Type::CPP);
+        x.artifacts.emplace_back(Artifact_Type::CPP_TEST);
+        x.artifacts.emplace_back(Artifact_Type::CPP_BENCHMARK);
         
         // we may want to export temporal data so the generation remains deterministic
         // yeah, I woke up the day after new years and saw that unilang was generating different code.
         // sure enough this had to do with the date in a copyright comment.
-        langs.emplace_back(Artifact_Type::DATE);
+        x.artifacts.emplace_back(Artifact_Type::DATE);
     }
     
-    return langs;
+    return x;
 ❱
 
-◀public: static▶ std::vector<Artifact_Type> ☀Uber_Guess(std::vector<Code_Graph> const& code_graphs)❰
+◀public: static▶ Artifact_Actions ☀Uber_Guess(std::vector<Code_Graph> const& code_graphs)❰
 
-    std::vector<Artifact_Type> langs;
+    Artifact_Actions x;
 
     //do we need to generate any files for the collective group of unilang files?
     //we do this for the build files.
-    langs.emplace_back(Artifact_Type::BAZEL);
+    x.artifacts.emplace_back(Artifact_Type::BAZEL);
 
     //we may also want to do this for collective documentation
     //TODO(thickey): ...
 
-    return langs;
+    return x;
 ❱
