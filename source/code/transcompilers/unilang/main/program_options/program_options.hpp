@@ -1,7 +1,7 @@
 
 #pragma once
 #include "program_options_default.hpp"
-#include "code/transcompilers/unilang/user-frontend/artifact_type.hpp"
+#include "code/transcompilers/unilang/user-frontend/artifact_actions/artifact_type.hpp"
 #include "code/transcompilers/unilang/options/compiler/chosen_exporter.hpp"
 
 //Boost Libraries

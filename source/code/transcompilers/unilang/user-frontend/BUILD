@@ -73,7 +73,7 @@ hcp(name = "program_input_enricher", deps = [
 "//code/utilities/types/general:lib",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/exits:lib",
-"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/utilities/diagnostic:diagnostic_printer",
 ])
 
@@ -81,7 +81,7 @@ hcp(name = "transcompiler", deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 "//code/transcompilers/unilang/main:program_input",
 "//code/transcompilers/unilang/user-frontend/compiler:compiler",
-"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 ])
 
 hcp(name = "after_artifact_actions", deps = [
@@ -102,7 +102,7 @@ hcp(name = "after_artifact_actions", deps = [
 "//code/utilities/filesystem/files/getting:lib",
 "//code/transcompilers/unilang/main:program_input",
 "//code/utilities/exits:lib",
-"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/transcompilers/unilang/user-frontend:workspace_adjuster",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/transcompilers/unilang/f2si_frontend_compiler:bazel_options_getter",
@@ -125,7 +125,7 @@ hcp(name = "after_artifact_actions", deps = [
 hcp(name = "language_guesser", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
-"//code/transcompilers/unilang/user-frontend:artifact_type",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
 ])
 
 hcp(name = "workspace_adjuster", deps = [

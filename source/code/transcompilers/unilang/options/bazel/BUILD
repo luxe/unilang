@@ -19,5 +19,5 @@ hcp(name = "build_rule_settings", deps = [
 
 hcp(name = "language_to_build_object", deps = [
 "//code/transcompilers/unilang/options/bazel:bazel_build_object",
-"//code/transcompilers/unilang/user-frontend:artifact_type",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
 ])

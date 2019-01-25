@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "bazel_rule_exporter", deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 "//code/transcompilers/unilang/options/bazel:language_to_build_object",
-"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 "//code/transcompilers/unilang/bazel_printer:package_getter",
 "//code/transcompilers/unilang/bazel_printer:top_comment_getter",

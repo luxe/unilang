@@ -30,7 +30,7 @@ hcp(name = "top_comment_getter", deps = [
 hcp(name = "build_info_extractor",deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 "//code/transcompilers/unilang/options/bazel:language_to_build_object",
-"//code/transcompilers/unilang/user-frontend:language_guesser",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
 ])
 
