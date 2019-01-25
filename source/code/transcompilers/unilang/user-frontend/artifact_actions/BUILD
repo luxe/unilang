@@ -31,9 +31,14 @@ hcp(name = "artifact_guesser", deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guess_settings",
 ])
 
 
 hcp(name = "artifact_actions", deps = [
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
+])
+
+hcp(name = "artifact_guess_settings", deps = [
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
 ])
