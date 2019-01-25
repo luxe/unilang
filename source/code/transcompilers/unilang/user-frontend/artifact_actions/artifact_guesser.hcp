@@ -7,6 +7,7 @@ class
 ❪"code/transcompilers/unilang/user-frontend/artifact_actions/artifact_actions"❫
 ❪"code/transcompilers/unilang/user-frontend/artifact_actions/artifact_guess_settings"❫
 ⚯
+❪"code/utilities/types/vectors/operators/lib"❫
 
 ⚞⚟
 
@@ -30,63 +31,93 @@ class
 ◀public: static▶ Artifact_Actions ☀Guess(Structure const& structure)❰
 
     //todo(thickey): dispatch for other exporters
-    return Uber_Guess(structure);
+    auto settings = Uber_Guess_Settings();
+    return Perform_Guess(structure,settings);
 ❱
 
 
 ◀public: static▶ Artifact_Actions ☀Guess(std::vector<Code_Graph> const& code_graphs)❰
 
     //todo(thickey): dispatch for other exporters
-    return Uber_Guess(code_graphs);
+    auto settings = Uber_Guess_Settings();
+    return Perform_Guess(code_graphs,settings);
 ❱
 
 
 
 
-
-
-
-
-
-◀public: static▶ Artifact_Actions ☀Uber_Guess(Structure const& structure)❰
+◀private: static▶ Artifact_Guess_Settings ☀Uber_Guess_Settings()❰
     
-    Artifact_Actions x;
+    Artifact_Guess_Settings settings;
     
-    //eh, its just data-- no methods.
+    //eh, its just data and no methods?
     //do you want to do something a bit more language agnostic?
     //some kind of IDL? Uber might switch to protobuf in the future.
-    if (structure.methods.methods.empty() && !structure.data_members.data_members.empty()){
-        x.artifacts.emplace_back(Artifact_Type::HIDL);
-    }
+    settings.has_data_members_and_no_methods.emplace_back(Artifact_Type::HIDL);
     
-
     //its got methods?  ok, its probably actual code then.
     //what language do we use these days?  let's transcompile to that.
-    if (!structure.methods.methods.empty()){
-
-        x.artifacts.emplace_back(Artifact_Type::CPP);
-        x.artifacts.emplace_back(Artifact_Type::CPP_TEST);
-        x.artifacts.emplace_back(Artifact_Type::CPP_BENCHMARK);
-        
-        // we may want to export temporal data so the generation remains deterministic
-        // yeah, I woke up the day after new years and saw that unilang was generating different code.
-        // sure enough this had to do with the date in a copyright comment.
-        x.artifacts.emplace_back(Artifact_Type::DATE);
-    }
+    settings.has_data_members_and_no_methods.emplace_back(Artifact_Type::CPP);
+    settings.has_data_members_and_no_methods.emplace_back(Artifact_Type::CPP_TEST);
+    settings.has_data_members_and_no_methods.emplace_back(Artifact_Type::CPP_BENCHMARK);
     
-    return x;
-❱
-
-◀public: static▶ Artifact_Actions ☀Uber_Guess(std::vector<Code_Graph> const& code_graphs)❰
-
-    Artifact_Actions x;
-
+    // we may want to export temporal data so the generation remains deterministic
+    // I woke up the day after new years and saw that unilang was generating different code.
+    // sure enough this had to do with the date in a copyright comment.
+    settings.always.emplace_back(Artifact_Type::DATE);
+    
     //do we need to generate any files for the collective group of unilang files?
     //we do this for the build files.
-    x.artifacts.emplace_back(Artifact_Type::BAZEL);
+    settings.group.emplace_back(Artifact_Type::BAZEL);
 
     //we may also want to do this for collective documentation
     //TODO(thickey): ...
+    
+    return settings;
+❱
 
+
+
+
+◀private: static▶ Artifact_Actions ☀Perform_Guess(Structure const& structure, Artifact_Guess_Settings const& settings)❰
+    
+    Artifact_Actions x;
+    
+    //get some properties about the structure
+    bool has_data_members = !structure.data_members.data_members.empty();
+    bool has_methods = !structure.methods.methods.empty();
+    
+    //decide which artifact actions to apply to it
+    x.artifacts += settings.always;
+    
+    if (has_data_members){
+        x.artifacts += settings.has_data_members;
+    }
+    
+    if (has_data_members && !has_methods){
+        x.artifacts += settings.has_data_members_and_no_methods;
+    }
+    
+    if (has_methods){
+        x.artifacts += settings.has_methods;
+    }
+    
+    if (has_methods && !has_data_members){
+        x.artifacts += settings.has_methods_and_no_data_members;
+    }
+    
     return x;
 ❱
+
+◀private: static▶ Artifact_Actions ☀Perform_Guess(std::vector<Code_Graph> const& code_graphs, Artifact_Guess_Settings const& settings)❰
+
+    Artifact_Actions x;
+    x.artifacts += settings.group;
+    return x;
+❱
+
+
+
+
+
+

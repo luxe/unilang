@@ -32,6 +32,7 @@ hcp(name = "artifact_guesser", deps = [
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guess_settings",
+"//code/utilities/types/vectors/operators:lib",
 ])
 
 
