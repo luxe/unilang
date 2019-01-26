@@ -17,7 +17,9 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/compiler-frontends/html_table:html_table_exporter",
 "//code/transcompilers/unilang/compiler-frontends/processing:processing_exporter",
 "//code/transcompilers/unilang/compiler-frontends/cpp_test:cpp_test_exporter",
+"//code/transcompilers/unilang/compiler-frontends/cpp_fuzz:cpp_fuzz_exporter",
 "//code/transcompilers/unilang/compiler-frontends/cpp_benchmark:cpp_benchmark_exporter",
 "//code/transcompilers/unilang/compiler-frontends/mermaid:mermaid_exporter",
 "//code/transcompilers/unilang/compiler-frontends/date:date_exporter",
+"//code/transcompilers/unilang/compiler-frontends/c:c_exporter"
 ])

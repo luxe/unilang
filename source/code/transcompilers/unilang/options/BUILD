@@ -22,6 +22,7 @@ hcp(name = "foreign_language_export_settings", deps = [
 "//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/transcompilers/unilang/options/language-specific:cpp_test_export_settings",
 "//code/transcompilers/unilang/options/language-specific:cpp_benchmark_export_settings",
+"//code/transcompilers/unilang/options/language-specific:cpp_fuzz_export_settings",
 "//code/transcompilers/unilang/options/language-specific:d_export_settings",
 "//code/transcompilers/unilang/options/language-specific:rust_export_settings",
 "//code/transcompilers/unilang/options/language-specific:csharp_export_settings",
