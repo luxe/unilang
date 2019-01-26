@@ -12,6 +12,10 @@ class
 ⚞⚟
 
 ◀public: static▶ All_Language_Tokens ☀Get() ❰
+
+    //might want to do something cleaner to enforce the depth.
+    //doesn't matter that much though, because other tools can just
+    //export this and show the depth that way.
     All_Language_Tokens all;
     all.tokens.emplace_back(Meta_Code_Type());
     all.tokens.emplace_back(Meta_Brief_Comment());
@@ -183,34 +187,23 @@ class
     all.tokens.emplace_back(Test_Case_Name());
     all.tokens.emplace_back(Test_Case_Tag());
     all.tokens.emplace_back(Test_Case_Body());
-
-
     
-//symbols / bg/fg / could be doxygen / documentation related / usable in global / usable in object / groups / description
-const std::vector<Body_Token> BODY_TOKENS
-{{Body_Token_Name::REGULAR_COMMENT               ,L'􏶲',L'􏶱',"#5C5C5C","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY},""}
-,{Body_Token_Name::TODO_COMMENT             ,L'􏲙',L'􏲚',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY},""}
-,{Body_Token_Name::WARNING_COMMENT             ,L'􏲗',L'􏲘',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY},""}
-
-,{Body_Token_Name::REGULAR_STATEMENT             ,L'􏲕',L'􏲖',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY},""}
-,{Body_Token_Name::RETURN_STATEMENT             ,L'􏲓',L'􏲔',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY},""}
-,{Body_Token_Name::UNCAUGHT_STATEMENT             ,L'􏲑',L'􏲒',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY},""}
-
-
-,{Body_Token_Name::STATEMENT             ,L'􏴕',L'􏴖',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::STATEMENT},"a statement inside of a function"}
-//control structures ..?
-
-
-//TODO: shift into STATEMENT
-,{Body_Token_Name::BODY_PARAMETER        ,L'􏵶',L'􏵷',"#EF53EF","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::BODY_PARAMETER},"the use of a function parameter inside a function"}
-,{Body_Token_Name::SELF_DATA_MEMBER         ,L'􏵴',L'􏵵',"#D69125","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::SELF_DATA_MEMBER},"the use of a local data member inside a function"}
-,{Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ  ,L'􏳉',L'􏳊',"#D69125","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::SELF_DATA_MEMBER_WITHOUT_OBJ},"the use of a local data member inside a function"}
-,{Body_Token_Name::LOCAL_DATA_MEMBER     ,L'􏵈',L'􏵉',"#2529DB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::LOCAL_DATA_MEMBER},"a variable instantiated in the scope of the method"}
-,{Body_Token_Name::SUB_MEMBER            ,L'􏵆',L'􏵇',"#5F00A3","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::SUB_MEMBER},"a child member of a particular member"}
-,{Body_Token_Name::SELF_FUNCTION_CALL    ,L'􏵲',L'􏵳',"#C35A00","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::SELF_FUNCTION_CALL},"the call to another local function inside a function"}
-,{Body_Token_Name::FOREIGN_FUNCTION_CALL ,L'􏵄',L'􏵅',"#DB252B","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::FOREIGN_FUNCTION_CALL},"a function call that exists outside outside the structure"}
-,{Body_Token_Name::RETURN                ,L'􏵢',L'􏵣',"#5BAEAB","#051726",1,0,0,0,1,1,1,1, {Body_Token_Group::METHOD_BODY,Body_Token_Group::RETURN},"the return statement inside of a function"}
-};
+    
+all.body_tokens.emplace_back(Regular_Comment());
+all.body_tokens.emplace_back(Todo_Comment());
+all.body_tokens.emplace_back(Warning_Comment());
+all.body_tokens.emplace_back(Regular_Statement());
+all.body_tokens.emplace_back(Return_Statement());
+all.body_tokens.emplace_back(Uncaught_Statement());
+all.body_tokens.emplace_back(Statement());
+all.body_tokens.emplace_back(Body_Parameter());
+all.body_tokens.emplace_back(Self_Data_Member());
+all.body_tokens.emplace_back(Self_Data_Member_Without_Obj());
+all.body_tokens.emplace_back(Local_Data_Member());
+all.body_tokens.emplace_back(Sub_Member());
+all.body_tokens.emplace_back(Self_Function_Call());
+all.body_tokens.emplace_back(Foreign_Function_Call());
+all.body_tokens.emplace_back(Return());
 
 
 //additional depreciations
@@ -279,10 +272,6 @@ const std::vector<Body_Token> BODY_TOKENS
 
 
 
-
-//future tokens:
-
-all.body_tokens = BODY_TOKENS;
 
 all.standalone_symbols.CLASS_NAME_CODE_FORM_MACRO = L'􏶐';
 all.standalone_symbols.CLASS_NAME_PRINT_FORM_MACRO = L'􏶏';
@@ -2358,3 +2347,185 @@ all.standalone_symbols.FALSE_MACRO = L'􏵰';
     t.description = "the body of a test case";
     return t;
 ❱
+
+
+◀private: static▶ Body_Token ☀Regular_Comment() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::REGULAR_COMMENT;
+    t.start = L'􏶲';
+    t.end = L'􏶱';
+    t.fg_color = "#5C5C5C";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.description = "";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Todo_Comment() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::TODO_COMMENT;
+    t.start = L'􏲙';
+    t.end = L'􏲚';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.description = "";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Warning_Comment() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::WARNING_COMMENT;
+    t.start = L'􏲗';
+    t.end = L'􏲘';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.description = "";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Regular_Statement() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::REGULAR_STATEMENT;
+    t.start = L'􏲕';
+    t.end = L'􏲖';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.description = "";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Return_Statement() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::RETURN_STATEMENT;
+    t.start = L'􏲓';
+    t.end = L'􏲔';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.description = "";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Uncaught_Statement() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::UNCAUGHT_STATEMENT;
+    t.start = L'􏲑';
+    t.end = L'􏲒';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.description = "";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Statement() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::STATEMENT;
+    t.start = L'􏴕';
+    t.end = L'􏴖';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::STATEMENT);
+    t.description = "a statement inside of a function";
+    return t;
+❱
+
+//TODO(thickey): shift into statement
+◀private: static▶ Body_Token ☀Body_Parameter() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.start = L'􏵶';
+    t.end = L'􏵷';
+    t.fg_color = "#EF53EF";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::BODY_PARAMETER);
+    t.description = "the use of a function parameter inside a function";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Self_Data_Member() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::SELF_DATA_MEMBER;
+    t.start = L'􏵴';
+    t.end = L'􏵵';
+    t.fg_color = "#D69125";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::SELF_DATA_MEMBER);
+    t.description = "the use of a local data member inside a function";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Self_Data_Member_Without_Obj() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::SELF_DATA_MEMBER_WITHOUT_OBJ;
+    t.start = L'􏳉';
+    t.end = L'􏳊';
+    t.fg_color = "#D69125";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::SELF_DATA_MEMBER_WITHOUT_OBJ);
+    t.description = "the use of a local data member inside a function";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Local_Data_Member() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::LOCAL_DATA_MEMBER;
+    t.start = L'􏵈';
+    t.end = L'􏵉';
+    t.fg_color = "#2529DB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::LOCAL_DATA_MEMBER);
+    t.description = "a variable instantiated in the scope of the method";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Sub_Member() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::SUB_MEMBER;
+    t.start = L'􏵆';
+    t.end = L'􏵇';
+    t.fg_color = "#5F00A3";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::SUB_MEMBER);
+    t.description = "a child member of a particular member";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Self_Function_Call() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::SELF_FUNCTION_CALL;
+    t.start = L'􏵲';
+    t.end = L'􏵳';
+    t.fg_color = "#C35A00";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::SELF_FUNCTION_CALL);
+    t.description = "the call to another local function inside a function";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Foreign_Function_Call() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::FOREIGN_FUNCTION_CALL;
+    t.start = L'􏵄';
+    t.end = L'􏵅';
+    t.fg_color = "#DB252B";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::FOREIGN_FUNCTION_CALL);
+    t.description = "a function call that exists outside outside the structure";
+    return t;
+❱
+◀private: static▶ Body_Token ☀Return() ❰
+    Body_Token t;
+    t.name = Body_Token_Name::RETURN;
+    t.start = L'􏵢';
+    t.end = L'􏵣';
+    t.fg_color = "#5BAEAB";
+    t.bg_color = "#051726";
+    t.groups.emplace_back(Body_Token_Group::METHOD_BODY);
+    t.groups.emplace_back(Body_Token_Group::RETURN);
+    t.description = "the return statement inside of a function";
+    return t;
+❱
+
+
+
+
