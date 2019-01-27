@@ -2,6 +2,8 @@ class
 ❪string❫
 ❪set❫
 ❪vector❫
+❪unordered_map❫
+❪utility❫
 ❪"code/utilities/bdf/settings/xlfd_parts"❫
 ⚯
 
@@ -13,21 +15,79 @@ public:
 	// X Window System Standard
 	// X Version 11, Release 6.7
 	// https://www.x.org/docs/BDF/bdf.pdf
+	//See also: http://ftp.xfree86.org/pub/XFree86/4.5.0/doc/xlfd.txt
 
 	//The Bitmap Distribution Format (BDF), Version 2.1, is an X Consortium standard for font interchange,
 	//intended to be easily understood by both humans and computers.
 
 	//1. The word STARTFONT followed by a version number indicating the exact file format used. The version
 	//described here is 2.1.
+	std::string start_font_keyword = "STARTFONT";
 	std::string version = "2.1";
 
 	//2. Lines beginning with the word COMMENT may appear anywhere between the STARTFONT line
 	//and the ENDFONT line. These lines are ignored by font compilers.
 	std::string comment_keyword = "COMMENT";
+	std::string main_font_comment = "Generated as part of Unilang project";
 
 	//3. The word FONT followed by either the XLFD font name (as specified in part III) or some private
 	//font name. Creators of private font name syntaxes are encouraged to register unique font name prefixes
 	//with the X Consortium to prevent naming conflicts. Note that the name continues all the way to
 	//the end of the line and may contain spaces.
 	std::string font_keyword = "FONT";
+	Xlfd_Parts xlfd;
+
+	//4. The word SIZE followed by the point size of the characters, the x resolution, and the y resolution of
+	//the device for which these characters were intended.
+	std::string size_keyword = "SIZE";
+	int point_size = 8;
+	int x_resolution = 100;
+	int y_resolution = 100;
+
+	//5. The word FONTBOUNDINGBOX followed by the width in x, height in y, and the x and y displacement
+	//of the lower left corner from the origin. (See the examples in the next section.)
+	std::string font_bounding_box_keyword = "FONTBOUNDINGBOX";
+	int width = 17;
+	int height = 11;
+	int x_displacement = -6;
+	int y_displacement = -2;
+
+	//6. Optionally, the word STARTPROPERTIES followed by the number of properties (p) that follow.
+	std::string start_properties_keyword = "STARTPROPERTIES";
+	//derive property count based on populated properties
+
+	//7. Then come p lines consisting of a word for the property name followed by either an integer or string
+	//surrounded by double-quote (octal 042). Internal double-quote characters are indicated by using two
+	//in a row. Properties named FONT_ASCENT, FONT_DESCENT, and DEFAULT_CHAR should be provided
+	//to define the logical font-ascent and font-descent and the default-char for the font. These properties
+	//will be removed from the actual font properties in the binary form produced by a compiler. If these
+	//properties are not provided, a compiler may reject the font or may compute (arbitrary) values for
+	//these properties
+	std::vector<std::pair<std::string,std::string>> attributes
+	{{"CAP_HEIGHT","9"}
+	,{"POINT_SIZE","80"}
+	,{"WEIGHT","10"}
+	,{"RESOLUTION_X","100"}
+	,{"RESOLUTION_Y","100"}
+	,{"X_HEIGHT","5"}
+	,{"QUAD_WIDTH","6"}
+	,{"FAMILY_NAME","\"Unilang\""}
+	,{"WEIGHT_NAME","\"Medium\""}
+	,{"SLANT","\"R\""}
+	,{"CHARSET_REGISTRY","\"ISO10646\""}
+	,{"CHARSET_ENCODING","\"1\""}
+	,{"RESOLUTION","99"}
+	};
+
+	//8. The property section, if it exists, is terminated by ENDPROPERTIES.
+	std::string end_properties_keyword = "ENDPROPERTIES";
+
+	//9. The word CHARS followed by the number of character segments (c) that follow
+	std::string chars_keyword = "CHARS";
+	//derive property count based on number of character segments
+
+	//10. Then come c character segments of the form:
+
+	//11. The file is terminated with the word ENDFONT
+	std::string end_font_keyword = "ENDFONT";
 
