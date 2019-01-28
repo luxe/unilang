@@ -1,6 +1,8 @@
 #!/usr/bin/env zsh
 
-#this is what I must do on Ubuntu to refresh the font
+#this is what I must do on Ubuntu to refresh the font.
+
+#delete existing font
 echo "deleting font..."
 rm -rf ~/.local/share/fonts/*
 rm -rf ~/.fonts/*
@@ -9,6 +11,7 @@ rm -rf ~/.fonts/*
 #font change to a fallback, before I load in the new font file
 #echo "waiting 10 seconds..."
 #sleep 10;
+#(seeing the fallback does not happen anymore)
 
 # normally I double click the font file, and it has a button to install.
 # as far as I can tell, that just copies the font into a particular directory
@@ -17,7 +20,7 @@ rm -rf ~/.fonts/*
 #on my old machine it was ~/.local/share/fonts/;
 #on my new machine, its apparently ~/.fonts
 #It's apparently set via /etc/fonts/fonts.conf
-#not sure why it changed... we'll just both places for now
+#not sure why it changed... we'll just put it in both places for now
 echo "loading new font file..."
 mkdir -p ~/.local/share/fonts/;
 mkdir -p ~/.fonts/;
