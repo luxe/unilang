@@ -9,7 +9,7 @@ hcp(name = "structure_static_analyzer", deps = [
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/sets:lib",
-"//code/transcompilers/unilang/structure-query:closed_box_function_checker",
+"//code/transcompilers/unilang/structure/query:closed_box_function_checker",
 ":error_message",
 ])
 

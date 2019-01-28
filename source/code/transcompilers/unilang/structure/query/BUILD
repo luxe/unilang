@@ -20,7 +20,7 @@ hcp(name = "closed_box_function_checker", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/transcompilers/unilang/structure-query:argument_direction_decider",
+"//code/transcompilers/unilang/structure/query:argument_direction_decider",
 ])
 
 hcp(name = "is_overload_decider", deps = [

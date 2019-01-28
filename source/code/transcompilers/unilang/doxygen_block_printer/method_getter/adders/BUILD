@@ -88,7 +88,7 @@ hcp(name = "argument_description_adder", deps = [
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/transcompilers/unilang/options/comment/doxygen:doxygen_parameter_direction",
-"//code/transcompilers/unilang/structure-query:argument_direction_decider",
+"//code/transcompilers/unilang/structure/query:argument_direction_decider",
 ])
 
 hcp(name = "overload_note_adder", deps = [
@@ -97,5 +97,5 @@ hcp(name = "overload_note_adder", deps = [
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
-"//code/transcompilers/unilang/structure-query:is_overload_decider",
+"//code/transcompilers/unilang/structure/query:is_overload_decider",
 ])

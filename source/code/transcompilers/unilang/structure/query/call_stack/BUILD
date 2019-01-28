@@ -9,8 +9,8 @@ hcp(name = "direct_methods_called_by_methods_getter", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/transcompilers/unilang/structure-query:argument_direction_decider",
-"//code/transcompilers/unilang/structure-query/call_stack:direct_method_call_and_count",
+"//code/transcompilers/unilang/structure/query:argument_direction_decider",
+"//code/transcompilers/unilang/structure/query/call_stack:direct_method_call_and_count",
 "//code/utilities/types/variant:lib",
 ])
 
