@@ -12,6 +12,7 @@ hcp(name = "inlined_structures", deps = [
 hcp(name = "structure", deps = [
 "//code/transcompilers/unilang/structure/model:forward_decls",
 "//code/transcompilers/unilang/structure/model/sections/meta:meta_section",
+"//code/transcompilers/unilang/structure/model/sections/literature:literature_section",
 "//code/transcompilers/unilang/structure/model/sections/types:type_section",
 "//code/transcompilers/unilang/structure/model/sections/import:import_section",
 "//code/transcompilers/unilang/structure/model/sections/library:library_section",

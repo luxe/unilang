@@ -1,0 +1,17 @@
+package(default_visibility = ["//visibility:public"])
+load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+
+hcp(name = "literature_section", deps = [
+"//code/transcompilers/unilang/parser:token_value",
+"//code/transcompilers/unilang/structure/model/sections/literature:paragraph"
+])
+
+hcp(name = "paragraph", deps = [
+"//code/transcompilers/unilang/parser:token_value",
+"//code/transcompilers/unilang/structure/model/sections/literature:sentence",
+])
+
+hcp(name = "sentence", deps = [
+"//code/transcompilers/unilang/parser:token_value",
+])
