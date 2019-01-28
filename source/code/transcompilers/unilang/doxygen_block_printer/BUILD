@@ -49,7 +49,7 @@ hcp(name = "doxygen_data_shared", deps = [
 
 hcp(name = "grammar_adjuster", deps = [
 "//code/transcompilers/unilang/options/comment:comment_grammar_settings",
-"//code/transcompilers/unilang/structure-adjuster:words_deriver",
+"//code/transcompilers/unilang/structure/adjust:words_deriver",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/observers/other:lib",

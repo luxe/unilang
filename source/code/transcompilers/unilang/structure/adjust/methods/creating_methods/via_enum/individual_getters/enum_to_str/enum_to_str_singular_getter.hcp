@@ -1,0 +1,131 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+❪"code/transcompilers/unilang/structure/model/sections/method/method_item"❫
+❪"code/transcompilers/unilang/options/manipulation/methods/via_enum/categories/enum_utility_conversion_function_options"❫
+⚯
+❪"code/transcompilers/unilang/structure/model/structure"❫
+❪"code/transcompilers/unilang/enum_printer/core/enum_value_creator"❫
+❪"code/utilities/types/strings/transformers/inflection/settings/inflection_settings"❫
+❪"code/utilities/types/strings/transformers/inflection/inflection_converter"❫
+❪"code/utilities/types/strings/transformers/inflection/getters/inflection_settings_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/enum_utility_function_shared"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<Method_Item> ☀Get(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings)❰
+    std::vector<Method_Item> items;
+    
+    auto amount = enum_items.size();
+    for (auto enum_item: enum_items){
+        items.push_back(Create_Method(enum_item,options,sub_settings,amount));
+    }
+    
+    return items;
+❱
+
+◀private: static▶ Method_Item ☀Create_Method(Enum_Item const& item,  Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings, int amount)❰
+    Method_Item m;
+    
+    //property related
+    m.class_access = sub_settings.enum_to_string_singular.access;
+    m.storage = Storage_Specifier::NONE;
+    
+    //doesn't matter
+    m.overload_specifiers.is_const = false;
+    m.overload_specifiers.value = Value_Overload::NONE;
+    
+    //documentation related
+    auto str_enum_name = as_string(item.name.value);
+    auto generated_function_name = Enum_Utility_Function_Shared::Decide_Function_Name_Based_On_Visibility(item,m.class_access,sub_settings.enum_to_string_singular.function_name,amount);
+    m.names.function_name.value = as_wstring(generated_function_name);
+	m.names.original_function_name.value = as_wstring(generated_function_name);    
+	m.brief_description.value = L"converts " + as_wstring(str_enum_name) + L" to a string in its singular form";
+    m.detailed_description.value = L"converts enum to string";
+    
+    //arguments
+    auto arg = Enum_Argument(item,options);
+    m.function_arguments.push_back(arg);
+    
+    //return value
+    auto result = Result(item,options);
+    m.return_results.push_back(result);
+    
+    Add_Body(m,item,options);
+    
+    return m;
+❱
+
+◀private: static▶ Function_Argument ☀Enum_Argument(Enum_Item const& item,  Enum_Options const& options)❰
+    Function_Argument arg;
+    arg.is_mutable = false;
+    arg.is_reference = false;
+    arg.usage_requirement = Usage_Requirement::NOT_IGNORED;
+    arg.type.value = as_wstring(As_Capital_And_Pushed_Together(as_string(item.name.value) + "E"));
+    arg.identifier.value = item.name.value;
+    arg.comment.value = L"the " + item.name.value + L" to convert to a string in singular form";
+    
+    return arg;
+❱
+
+◀private: static▶ Function_Result ☀Result(Enum_Item const& item,  Enum_Options const& options)❰
+    Function_Result arg;
+    arg.is_mutable = false;
+    arg.is_reference = false;
+    arg.type.value = L"ascii_string";
+    arg.identifier.value = L"string in singular form";
+    arg.comment.value = L"a string representing the enumerated value";
+    
+    return arg;
+❱
+
+◀private: static▶ void ☀Add_Body(Method_Item & m, Enum_Item const& item,  Enum_Options const& options)❰
+
+    //the body of the function
+    std::vector<Body_Token_Value> body;
+    Body_Token_Value t;
+    
+    t.name = Body_Token_Name::COMMENT;
+    t.value = as_wstring("convert enum to a string\n"); 
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"\nswitch(";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::BODY_PARAMETER;
+    t.value =  item.name.value;
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"){\n";
+    body.push_back(t);
+    
+    for (auto it: item.args){
+        t.name = Body_Token_Name::REGULAR;
+        auto identifier = as_string(item.name.value);
+        auto inflection_settings = Inflection_Settings_Getter::Get();
+        auto as_singular = Inflection_Converter::As_Singular(as_string(it.name.value),inflection_settings);
+        t.value =  L"case " + as_wstring(Enum_Value_Creator::Create(identifier,it,options)) + L": return \""
+        + as_wstring(as_singular) + L"\"; break;\n";
+        body.push_back(t);
+    }
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"}\n";
+    body.push_back(t);
+    
+    t.name = Body_Token_Name::REGULAR;
+    t.value =  L"return \"unknown\";\n";
+    body.push_back(t);
+    
+    //assign
+    m.body = body;
+❱
+
+
+

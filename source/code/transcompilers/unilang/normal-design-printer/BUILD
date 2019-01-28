@@ -45,7 +45,7 @@ hcp(name = "normal_design_printer", deps = [
 "//code/transcompilers/unilang/structure-printer/macro:macro_printer",
 "//code/transcompilers/unilang/enum_printer:enum_section_printer",
 "//code/transcompilers/unilang/normal-design-printer:method_sorting_and_grouping_order_printer",
-"//code/transcompilers/unilang/structure-adjuster/methods/api_and_lifetime:api_and_lifetime_creator",
+"//code/transcompilers/unilang/structure/adjust/methods/api_and_lifetime:api_and_lifetime_creator",
 "//code/utilities/exits:lib",
 "//code/utilities/converters:lib",
 ])

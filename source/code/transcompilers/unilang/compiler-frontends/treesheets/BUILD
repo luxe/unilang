@@ -15,7 +15,7 @@ hcp(name = "treesheets_exporter", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/options/manipulation:case_adjustment_settings",
-"//code/transcompilers/unilang/structure-adjuster:casing_adjuster",
+"//code/transcompilers/unilang/structure/adjust:casing_adjuster",
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/compiler-frontends/xml:xml_exporter",
 ])

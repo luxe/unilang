@@ -16,8 +16,8 @@ hcp(name = "plant_uml_exporter", deps = [
 "//code/utilities/shell:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/options/manipulation:case_adjustment_settings",
-"//code/transcompilers/unilang/structure-adjuster:casing_adjuster",
-"//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
+"//code/transcompilers/unilang/structure/adjust:casing_adjuster",
+"//code/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib"
 ])
 

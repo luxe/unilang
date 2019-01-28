@@ -1,0 +1,109 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/enum/item/enum_item"❫
+❪"code/transcompilers/unilang/options/sections/enum/enum_options"❫
+❪"code/transcompilers/unilang/structure-printer/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/structure-printer/function_declaration_location"❫
+⚯
+❪"code/transcompilers/unilang/structure-printer/methods_printer"❫
+❪"code/transcompilers/unilang/structure/model/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure/model/sections/data_member/data_member_item"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/converters/lib"❫
+
+
+//value functions
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/value/enum_first_function_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/value/enum_last_function_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/value/enum_total_function_getter"❫
+
+//iteration functions
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/iteration/enum_next_function_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/iteration/enum_previous_function_getter"❫
+
+//conversion functions
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str/enum_to_str_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str/enum_to_str_singular_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str/enum_to_str_plural_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str/enum_to_str_inflection_count_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/str_to_enum/str_to_enum_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/str_to_enum/str_singular_to_enum_getter"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/str_to_enum/str_plural_to_enum_getter"❫
+
+//group affiliation
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/subgroup_affiliation/enum_subgroup_affiliation_function_getter"❫
+⚞⚟
+
+◀public: static▶ std::vector<Method_Item> ☀Get(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Function_Options const& manipulations)❰
+    
+    std::vector<Method_Item> all_methods;
+    
+    if (manipulations.add){
+      all_methods += Print_Value_Functions               (enum_items,options,manipulations.values);
+      all_methods += Print_Iteration_Functions           (enum_items,options,manipulations.iteration);
+      all_methods += Print_Conversion_Functions          (enum_items,options,manipulations.conversion);
+	  all_methods += Print_Subgroup_Affiliation_Functions(enum_items,options,manipulations.subgroup_affiliation);
+    }
+    
+    return all_methods;
+❱
+
+
+
+◀private: static▶ std::vector<Method_Item> ☀Print_Value_Functions(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Special_Value_Function_Options const& sub_settings)❰
+  
+  std::vector<Method_Item> all_methods;
+  
+  if (sub_settings.add){
+    if (sub_settings.first.print){ all_methods += Enum_First_Function_Getter::Get(enum_items,options);}
+    if (sub_settings.last.print) { all_methods += Enum_Last_Function_Getter::Get(enum_items,options);}
+    if (sub_settings.total.print){ all_methods += Enum_Total_Function_Getter::Get(enum_items,options);}
+  }
+  
+  return all_methods;
+❱
+◀private: static▶ std::vector<Method_Item> ☀Print_Iteration_Functions(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Iteration_Function_Options const& sub_settings)❰
+  
+  std::vector<Method_Item> all_methods;
+
+  if (sub_settings.add){
+    if (sub_settings.next.print){all_methods += Enum_Next_Function_Getter::Get(enum_items,options);}
+    if (sub_settings.previous.print){all_methods += Enum_Previous_Function_Getter::Get(enum_items,options);}
+  }
+  
+  return all_methods;
+❱
+◀private: static▶ std::vector<Method_Item> ☀Print_Conversion_Functions(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Conversion_Function_Options const& sub_settings)❰
+  
+  std::vector<Method_Item> all_methods;
+  
+  if (sub_settings.add){
+    
+    //enum to string
+    if (sub_settings.enum_to_string.print){all_methods += Enum_To_Str_Getter::Get(enum_items,options,sub_settings);}
+    if (sub_settings.enum_to_string_inflection_count.print){all_methods += Enum_To_Str_Inflection_Count_Getter::Get(enum_items,options,sub_settings);}
+    if (sub_settings.enum_to_string_singular.print){all_methods += Enum_To_Str_Singular_Getter::Get(enum_items,options,sub_settings);}
+    if (sub_settings.enum_to_string_plural.print){all_methods += Enum_To_Str_Plural_Getter::Get(enum_items,options,sub_settings);}
+    
+    //string to enum
+    if (sub_settings.string_to_enum.print){all_methods += Str_To_Enum_Getter::Get(enum_items,options,sub_settings);}
+    if (sub_settings.string_to_enum_singular.print){all_methods += Str_Singular_To_Enum_Getter::Get(enum_items,options,sub_settings);}
+    if (sub_settings.string_to_enum_plural.print){all_methods += Str_Plural_To_Enum_Getter::Get(enum_items,options,sub_settings);}
+  }
+  
+  return all_methods;
+❱
+◀private: static▶ std::vector<Method_Item> ☀Print_Subgroup_Affiliation_Functions(std::vector<Enum_Item> const& enum_items, Enum_Options const& options, Enum_Utility_Subgroup_Affiliation_Function_Options const& sub_settings)❰
+  
+  std::vector<Method_Item> all_methods;
+  
+  if (sub_settings.add){
+		for (auto const& it: enum_items){
+			all_methods += Enum_Subgroup_Affiliation_Function_Getter::Get(it,options,sub_settings);		
+		}
+  }
+  
+  return all_methods;
+❱

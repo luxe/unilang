@@ -1,0 +1,89 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/structure"❫
+❪"code/transcompilers/unilang/options/manipulation/struct_manipulation_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure/adjust/methods/creating_methods/extra_methods_creator"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/forcers/method_chaining_enforcer"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/forcers/return_statement_enforcer"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/forcers/immutable_value_to_immutable_ref_adjuster"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/forcers/instantiate_and_return_injector_for_return_type"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/forcers/method_overload_adjuster"❫
+❪"code/transcompilers/unilang/structure-printer/derivers/structure_typename_deriver"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/api_and_lifetime/api_and_lifetime_creator"❫
+❪"code/transcompilers/unilang/structure/adjust/methods/forcers/function_unit_test_name_defaulter"❫
+❪"code/transcompilers/unilang/structure/adjust/comment_adjuster"❫
+⚞⚟
+
+◀public: static▶ void ☀Adjust(Structure & structure, Struct_Manipulation_Settings const& settings)❰
+    
+    bool create_extra_methods = false; //like reflection related only.. or?
+    bool transform_and_add_lifetime_methods = false; //seems specific to C RAII
+    bool adjust_functions_for_method_chaining = true;
+    bool force_return_statements_on_void_functions = true;
+    bool make_heavy_immutable_values_passed_by_ref = true;
+    bool adjust_functions_to_avoid_overloads = false; //basically languages that dont have function overloading
+    bool force_default_create_and_return_for_non_void_functions = true;
+    bool add_default_test_name = true;
+    bool comment_adjust_brief = true;
+    bool comment_adjust_detail = true;
+    
+    
+    //add new methods based on settings and existing structure properties
+    if (create_extra_methods){
+        //Extra_Methods_Creator::Add_New_Methods(structure,settings);
+    }
+
+    //adjust unilang lifetime methods to C lifetime methods (possibly adding additional methods for support)
+    //also adjust method properties based on unilang properties
+    //for example, unilang has access specifiers (public,protected,private).  C does not.  
+    //therefore we take private as meaning static source declared functions. We make those adjustments
+    if (transform_and_add_lifetime_methods){
+        //Transform_And_Add_Lifetime_Methods(structure,settings);
+    }
+
+    //force void functions to allow method chaining
+    if (adjust_functions_for_method_chaining){
+        Method_Chaining_Enforcer::Adjust_Functions_To_Allow_Message_Chaining(structure,settings);
+    }
+
+    //force void functions to have a frivolous return statement
+    if (force_return_statements_on_void_functions){
+	   Return_Statement_Enforcer::Force_Return_On_Void_Functions(structure.methods.methods,settings);
+    }
+    
+    //force "heavy" objects to be a reference instead of a copy where appropriate
+    if (make_heavy_immutable_values_passed_by_ref){
+        Immutable_Value_To_Immutable_Ref_Adjuster::Adjust(structure.methods.methods,settings);
+    }
+
+    //languages like C don't have function overloading
+    //resolve overloading after we have all the functions we intend to print
+    if (adjust_functions_to_avoid_overloads){
+        Method_Overload_Adjuster::Resolve_Overloads_By_Adjusting_Function_Names(structure,settings);
+    }
+    
+    //this is going to be tricky for types that aren't default constructible
+    if (force_default_create_and_return_for_non_void_functions){
+        Instantiate_And_Return_Injector_For_Return_Type::Inject_Into_Body(structure.methods.methods,settings);
+    }
+    
+    if (add_default_test_name){
+        Function_Unit_Test_Name_Defaulter::Default_Missing_Test_Names(structure,settings);
+    }
+
+    if (comment_adjust_brief){
+        for (auto & it: structure.methods.methods){
+            Comment_Adjuster::Adjust(it.brief_description,settings.methods.brief_comment.grammar,settings.methods.brief_comment.reflow);
+        }
+    }
+    if (comment_adjust_detail){
+        for (auto & it: structure.methods.methods){
+            Comment_Adjuster::Adjust(it.detailed_description,settings.methods.detail_comment.grammar,settings.methods.detail_comment.reflow);
+        }
+    }
+❱
+◀public: static▶ void ☀Transform_And_Add_Lifetime_Methods(Structure & structure, Struct_Manipulation_Settings const& settings)❰
+	//structure.methods = Api_And_Lifetime_Creator::Get_All_Methods_After_Necessary_Transformation(structure,settings);
+❱

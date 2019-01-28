@@ -10,7 +10,7 @@ hcp(name = "hidl_exporter", deps = [
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
 "//code/transcompilers/unilang/structure-printer:file_printer",
-"//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
+"//code/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/transcompilers/unilang/structure/model/sections/meta:code_type",

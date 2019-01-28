@@ -15,9 +15,9 @@ hcp(name = "mermaid_exporter", deps = [
 "//code/utilities/shell:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/options/manipulation:case_adjustment_settings",
-"//code/transcompilers/unilang/structure-adjuster:casing_adjuster",
+"//code/transcompilers/unilang/structure/adjust:casing_adjuster",
 "//code/utilities/types/vectors/observers:lib",
-"//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
+"//code/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/types/char:lib",
 ])

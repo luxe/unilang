@@ -15,9 +15,9 @@ hcp(name = "date_exporter", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/options/manipulation:case_adjustment_settings",
-"//code/transcompilers/unilang/structure-adjuster:casing_adjuster",
+"//code/transcompilers/unilang/structure/adjust:casing_adjuster",
 "//code/utilities/types/vectors/observers:lib",
-"//code/transcompilers/unilang/structure-adjuster:structure_adjuster",
+"//code/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/transcompilers/unilang/options/language-specific:processing_options",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 "//code/utilities/time/calendar/tm_wrappers:lib"
