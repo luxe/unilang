@@ -38,6 +38,14 @@ std::string name;
 //(although hardlinks/symlinks may be an issue, we could possibly carry an inode later)
 std::string full_file_path;
 
+//interface and implementation structures that have been inlined into this structure
+//1. inlined headers are removed and replaced with inlined structures
+//2. inlined structures CANNOT be removed with data concatenated into the corresponding sections
+//(because multiple structures can't be represented in a structure-- except through these inlines)
+//*These inline structs may or may not be moved outside of this object.
+//recursive wrapper used because we can't compose recursive incomplete types (not even with forward decelerations)
+boost::recursive_wrapper<Inlined_Structures> inlined_structures;
+
 //collection of data.  All of the sections that make up a code file
 //I'd like to put this into a separate section called Structure_Sections eventually
 //CODE SECTIONS:
@@ -58,16 +66,8 @@ Typedef_Section typedefs;
 Forward_Declare_Section forwards;
 Data_Member_Section data_members;
 
-//interface and implementation structures that have been inlined into this structure
-//1. inlined headers are removed and replaced with inlined structures
-//2. inlined structures CANNOT be removed with data concatenated into the corresponding sections
-//(because multiple structures can't be represented in a structure-- except through these inlines)
-//*These inline structs may or may not be moved outside of this object.
-//recursive wrapper used because we can't compose recursive incomplete types (not even with forward decelerations)
-boost::recursive_wrapper<Inlined_Structures> inlined_structures;
-
-
-//the other function-like bodies
+//the other function-like bodies, but they aren't a part of
+//any specific method.  They are global, and can apply to any function(s).
 Unit_Tests unit_tests;
 Benchmarks benchmarks;
 

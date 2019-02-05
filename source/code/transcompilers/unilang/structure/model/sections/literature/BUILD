@@ -14,4 +14,9 @@ hcp(name = "paragraph", deps = [
 
 hcp(name = "sentence", deps = [
 "//code/transcompilers/unilang/parser:token_value",
+"//code/transcompilers/unilang/structure/model/sections/literature:sentence_image",
+])
+
+hcp(name = "sentence_image", deps = [
+"//code/transcompilers/unilang/parser:token_value"
 ])
