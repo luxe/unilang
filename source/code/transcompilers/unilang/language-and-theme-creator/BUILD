@@ -34,7 +34,9 @@ hcp(name = "reference_file_creator", deps = [
 "//code/utilities/filesystem/paths:lib",
 ])
 
-hcp(name = "shared")
+hcp(name = "shared", deps = [
+    "//code/utilities/filesystem/paths:lib"
+])
 
 hcp(name = "stylized_reference_file_creator", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
