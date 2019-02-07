@@ -30,7 +30,8 @@ hcp(name = "reference_file_creator", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/transcompilers/unilang/tokens:get_tokens"
+"//code/transcompilers/unilang/tokens:get_tokens",
+"//code/utilities/filesystem/paths:lib",
 ])
 
 hcp(name = "shared")
@@ -39,6 +40,7 @@ hcp(name = "stylized_reference_file_creator", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/transcompilers/unilang/language-and-theme-creator:global",
 "//code/transcompilers/unilang/language-and-theme-creator:shared",
+"//code/utilities/filesystem/paths:lib",
 ])
 
 hcp(name = "task_executer", deps = [
