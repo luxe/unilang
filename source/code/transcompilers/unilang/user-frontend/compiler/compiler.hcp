@@ -81,6 +81,14 @@ class
     }
     return created_files;
 ❱
+◀public: static▶ std::vector<std::string> ☀Compile(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
+    
+    std::vector<std::string> created_files;
+    for (auto const& language: input.options.user_chosen_export_settings.languages){
+        created_files += Create_Group_Language_Artifact(code_graphs,input,language);
+    }
+    return created_files;
+❱
 
 ◀private: static▶ std::vector<std::string> ☀Create_Individual_Language_Artifact(Code_Graph const& code_graph, Program_Input input, Artifact_Type const& language)❰
 
@@ -185,23 +193,23 @@ class
         default:
         std::cerr << "unknown export language" << std::endl;
     }
-
-
     return created_files;
 ❱
 
 
-◀public: static▶ std::vector<std::string> ☀Compile(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
-    
+◀private: static▶ std::vector<std::string> ☀Create_Group_Language_Artifact(std::vector<Code_Graph> const& code_graphs, Program_Input input, Artifact_Type const& language)❰
+
     auto unit = Decide_Exporter_Settings(input);
-    
     std::vector<std::string> created_files;
-    created_files += Bazel_Rule_Exporter::Export(code_graphs,unit.contributors,unit.settings.foreign_language.bazel_build);
+
+    switch (language){
+        case Artifact_Type::BAZEL:
+        created_files += Bazel_Rule_Exporter::Export(code_graphs,unit.contributors,unit.settings.foreign_language.bazel_build);
+        break;
+        default:;
+    }
     return created_files;
 ❱
-
-
-
 
 
 
