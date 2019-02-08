@@ -285,6 +285,7 @@ class
 ◀private: static▶ std::string ☀Get_Plant_Uml_Class(Type_Item const& t, std::vector<Data_Member_Item> const& mems, Plant_Uml_Settings const& settings)❰
   std::string s;
   s += Get_Class_Starter(t,settings);
+  s += Possibly_Add_A_Description_Section(t,mems,settings);
   
   //TODO: loop over methods (don't derive right now)
   //for (auto it: structure.methods.methods){
@@ -300,6 +301,30 @@ class
   
   return s;
 ❱
+
+◀private: static▶ std::string ☀Possibly_Add_A_Description_Section(Type_Item const& t, std::vector<Data_Member_Item> const& mems, Plant_Uml_Settings const& settings)❰
+  std::string s;
+  if (settings.description_section.add_description_section){
+    if (settings.description_section.show_brief){
+      Append_With_Newline(s,as_string(t.brief.value));
+    }
+    if (settings.description_section.show_detail){
+      Append_With_Newline(s,as_string(t.detail.value));
+    }
+    Append_With_Newline(s,Divider_Line(settings,settings.description_section.divider));
+  }
+  return s;
+❱
+
+◀private: static▶ std::string ☀Divider_Line(Plant_Uml_Settings const& settings, Class_Divider_Type const& divider)❰
+  switch (divider){
+    case Class_Divider_Type::DOTTED: return settings.class_divider_dotted;
+    case Class_Divider_Type::DOUBLE: return settings.class_divider_double;
+    case Class_Divider_Type::SOLID: return settings.class_divider_solid;
+  }
+  return "";
+❱
+
 
 ◀private: static▶ std::string ☀Get_Enum_Starter(Enum_Item const& e, Plant_Uml_Settings const& settings)❰
   std::string s;
