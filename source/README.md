@@ -1,7 +1,7 @@
 bazel:  
 - bazel build rules  
-- getting outside dependencies
-- getting other tools related to the build
+- library dependencies
+- toolchain dependencies
 
 code:
 - the root of most projects
