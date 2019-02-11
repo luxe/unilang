@@ -2,7 +2,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file"
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 def protobuf():
-
     # # proto_library, cc_proto_library, and java_proto_library rules implicitly
     # # depend on @com_google_protobuf for protoc and proto runtimes.
     # # This statement defines the @com_google_protobuf repo.
