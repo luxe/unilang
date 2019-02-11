@@ -15,3 +15,9 @@ cc_proto_library(
     name = "hello_cc_proto",
     deps = [":hello_proto"],
 )
+
+cc_binary(
+    name = "main",
+    srcs = ["main.cpp"],
+    deps = [":hello_cc_proto"]
+)
