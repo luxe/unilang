@@ -5,6 +5,7 @@ load("//bazel/deps/get:abseil.bzl", "abseil")
 load("//bazel/deps/get:gtest.bzl", "gtest")
 load("//bazel/deps/get:lcov.bzl", "lcov")
 load("//bazel/deps/get:google_benchmark.bzl", "google_benchmark")
+load("//bazel/deps/get:gperf.bzl", "gperf")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -28,16 +29,7 @@ def third_party_libraries():
     
     # Benchmarking
     google_benchmark()
-
-    http_archive(
-        name = "gperftools",
-        build_file = "//bazel/deps/build_files:gperftools.BUILD",
-        sha256 = "1ee8c8699a0eff6b6a203e59b43330536b22bbcbe6448f54c7091e5efb0763c9",
-        strip_prefix = "gperftools-2.7",
-        urls = [
-            "https://github.com/gperftools/gperftools/releases/download/gperftools-2.7/gperftools-2.7.tar.gz",
-        ],
-    )
+    gperf()
     
     # Logging
     http_archive(
