@@ -6,6 +6,11 @@ load("//bazel/deps/get:gtest.bzl", "gtest")
 load("//bazel/deps/get:lcov.bzl", "lcov")
 load("//bazel/deps/get:google_benchmark.bzl", "google_benchmark")
 load("//bazel/deps/get:gperf.bzl", "gperf")
+load("//bazel/deps/get:spdlog.bzl", "spdlog")
+load("//bazel/deps/get:rapidjson.bzl", "rapid_json")
+load("//bazel/deps/get:nlohmann_json.bzl", "nlohmann_json")
+load("//bazel/deps/get:yaml_cpp.bzl", "yaml_cpp")
+load("//bazel/deps/get:protobuf.bzl", "protobuf")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -32,52 +37,14 @@ def third_party_libraries():
     gperf()
     
     # Logging
-    http_archive(
-        name = "spdlog",
-        build_file = "//bazel/deps/build_files:spdlog.BUILD",
-        sha256 = "867a4b7cedf9805e6f76d3ca41889679054f7e5a3b67722fe6d0eae41852a767",
-        strip_prefix = "spdlog-1.2.1",
-        urls = [
-            "https://github.com/gabime/spdlog/releases/tag/v1.2.1",
-        ],
-    )
+    spdlog()
     
     # Serialization
-    http_archive(
-        name = "com_github_tencent_rapidjson",
-        build_file = "//bazel/deps/build_files:rapidjson.BUILD",
-        sha256 = "bf7ced29704a1e696fbccf2a2b4ea068e7774fa37f6d7dd4039d0787f8bed98e",
-        strip_prefix = "rapidjson-1.1.0",
-        urls = [
-            "https://github.com/Tencent/rapidjson/archive/v1.1.0.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "nlohmann_json",
-        build_file = "//bazel/deps/build_files:nlohmann_json.BUILD",
-        sha256 = "e0b1fc6cc6ca05706cce99118a87aca5248bd9db3113e703023d23f044995c1d",
-        strip_prefix = "json-3.5.0",
-        urls = [
-            "https://github.com/nlohmann/json/archive/v3.5.0.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "yaml-cpp",
-        build_file = "//bazel/deps/build_files:yaml-cpp.BUILD",
-        sha256 = "e4d8560e163c3d875fd5d9e5542b5fd5bec810febdcba61481fe5fc4e6b1fd05",
-        strip_prefix = "yaml-cpp-yaml-cpp-0.6.2",
-        urls = [
-            "https://github.com/jbeder/yaml-cpp/archive/yaml-cpp-0.6.2.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "com_google_protobuf",
-        sha256 = "fd65488e618032ac924879a3a94fa68550b3b5bcb445b93b7ddf3c925b1a351f",
-        strip_prefix = "protobuf-3.6.1",
-        urls = [
-            "https://github.com/google/protobuf/releases/download/v3.6.1/protobuf-all-3.6.1.tar.gz",
-        ],
-    )
+    rapid_json()
+    nlohmann_json()
+    yaml_cpp()
+    protobuf()
+
     http_archive(
         name = "org_apache_thrift",
         build_file = "//bazel/deps/build_files:thrift.BUILD",
