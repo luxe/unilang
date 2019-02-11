@@ -1,6 +1,10 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("//bazel/deps/get:boost.bzl", "boost")
+load("//bazel/deps/get:abseil.bzl", "abseil")
+load("//bazel/deps/get:gtest.bzl", "gtest")
+load("//bazel/deps/get:lcov.bzl", "lcov")
+load("//bazel/deps/get:google_benchmark.bzl", "google_benchmark")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -16,45 +20,15 @@ def third_party_libraries():
     # C++
     # General Libraries
     boost()
-    
-    # Other google-like standard library
-    http_archive(
-        name = "com_google_absl",
-        sha256 = "57b7817ad91856399a77300349eda39d2edae2c3c037d453fee0a16b85e92a4d",
-        strip_prefix = "abseil-cpp-48cd2c3f351ff188bc85684b84a91b6e6d17d896",
-        urls = [
-            "https://github.com/abseil/abseil-cpp/archive/48cd2c3f351ff188bc85684b84a91b6e6d17d896.zip",
-        ],
-    )
+    abseil()
     
     # Testing
-    http_archive(
-        name = "com_google_googletest",
-        sha256 = "3efbb860886c6018d707f1b5ee3e84d4ef63517ee85744aa2a8cb12b2feef57b",
-        strip_prefix = "googletest-e5e2ef7cd27cc089c1d8302a11970ef870554294",
-        urls = [
-            "https://github.com/google/googletest/archive/e5e2ef7cd27cc089c1d8302a11970ef870554294.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "lcov",
-        build_file = "//bazel/deps/build_files:lcov.BUILD",
-        sha256 = "97615b9cbb3fae1d1c655c7201b9aa61d59dd8c18eae2a4f94dcea747aa6ecf4",
-        strip_prefix = "lcov-a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3",
-        urls = [
-            "https://github.com/linux-test-project/lcov/archive/a5dd9529f9232b8d901a4d6eb9ae54cae179e5b3.tar.gz",
-        ],
-    )
+    gtest()
+    lcov()
     
     # Benchmarking
-    http_archive(
-        name = "com_github_google_benchmark",
-        sha256 = "5bcaca7bcb700c84ea1282d3dfe0d2af1c9c2c8783e592744ae33605c133478a",
-        strip_prefix = "benchmark-d939634b8ce7e0741a79c1c1f22205fae54b375d",
-        urls = [
-            "https://github.com/google/benchmark/archive/d939634b8ce7e0741a79c1c1f22205fae54b375d.tar.gz",
-        ],
-    )
+    google_benchmark()
+
     http_archive(
         name = "gperftools",
         build_file = "//bazel/deps/build_files:gperftools.BUILD",
