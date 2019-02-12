@@ -6,7 +6,7 @@ hcp(name = "markdown_exporter", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
-"//code/transcompilers/unilang/options/language-specific:markdown_settings",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
@@ -23,5 +23,5 @@ hcp(name = "markdown_exporter", deps = [
 ])
 
 hcp(name = "markdown_settings_getter", deps = [
-"//code/transcompilers/unilang/options/language-specific:markdown_settings",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 ])

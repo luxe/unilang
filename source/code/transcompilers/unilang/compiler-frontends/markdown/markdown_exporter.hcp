@@ -5,7 +5,7 @@ class
 ❪"code/transcompilers/unilang/structure/model/structure"❫
 ❪"code/transcompilers/unilang/contributor/contributor"❫
 ❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
-❪"code/transcompilers/unilang/options/language-specific/markdown_settings"❫
+❪"code/transcompilers/unilang/options/language-specific/markdown/markdown_settings"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/converters/lib"❫
@@ -38,8 +38,73 @@ class
   return created;
 ❱
 
-◀private: static▶ std::string ☀Build_Markdown_Text(Structure structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+◀private: static▶ std::string ☀Build_Markdown_Text(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
     
+    for (auto const& it: structure.literature.paragraphs){
+        
+        Append(text,Possibly_Get_Title(it,contributors,settings));
+        Append(text,Possibly_Get_Sentences(it,contributors,settings));
+    }
+    
     return text;
+❱
+
+◀private: static▶ std::string ☀Possibly_Get_Title(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string title;
+    if (!p.title.value.empty()){
+        
+        //add the title marker
+        Append(title,Depth_To_Header_Marker(0,settings));
+        Append(title," ");
+        
+        //add the possible numbered
+        //in markdown you can just mark everything
+        //as 1., and it will be rendered with the correct numbers
+        if (p.is_numbered){
+            Append(title,"1. ");
+        }
+        
+        //add the actual title
+        Append_With_Newline(title,p.title.value);
+    }
+    return title;
+❱
+
+◀private: static▶ std::string ☀Possibly_Get_Sentences(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (!p.sentences.empty()){
+        
+        //print each sentence
+        for (auto const& it: p.sentences){
+        }
+        
+        //add extra line since we printed sentences under the title
+        Append(text,"\n");
+    }
+    return text;
+❱
+
+◀private: static▶ std::string ☀Depth_To_Header_Marker(int depth, Markdown_Settings const& settings)❰
+    if (depth == 0){
+        return settings.headers.h1;
+    }
+    if (depth == 1){
+        return settings.headers.h2;
+    }
+    if (depth == 2){
+        return settings.headers.h3;
+    }
+    if (depth == 3){
+        return settings.headers.h4;
+    }
+    if (depth == 4){
+        return settings.headers.h5;
+    }
+    if (depth == 5){
+        return settings.headers.h6;
+    }
+    
+    //higher than 6? just use 6.
+    return settings.headers.h6;
 ❱
