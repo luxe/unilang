@@ -20,6 +20,7 @@ hcp(name = "markdown_exporter", deps = [
 "//code/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/types/char:lib",
+"//code/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
 ])
 
 hcp(name = "markdown_settings_getter", deps = [

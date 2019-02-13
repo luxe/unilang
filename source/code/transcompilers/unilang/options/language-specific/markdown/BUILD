@@ -7,6 +7,7 @@ hcp("markdown_settings",deps = [
 "//code/transcompilers/unilang/options/language-specific/markdown:header_settings",
 "//code/transcompilers/unilang/options/sections:portion_options",
 "//code/transcompilers/unilang/options:general_options",
+"//code/transcompilers/unilang/options/comment:comment_grammar_settings"
 ])
 
 hcp("header_settings",deps = [

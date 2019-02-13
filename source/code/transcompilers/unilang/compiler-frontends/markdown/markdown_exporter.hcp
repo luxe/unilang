@@ -20,6 +20,7 @@ class
 ❪"code/transcompilers/unilang/structure/adjust/structure_adjuster"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/char/lib"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
@@ -32,6 +33,7 @@ class
   std::string source_code_filename = structure.name + settings.file_extension;
   std::ofstream outfile(source_code_filename);
   std::string str = Build_Markdown_Text(structure,contributors,settings);
+  outfile << str <<'\n';
   outfile.close();
   
   created.emplace_back(source_code_filename);
@@ -77,10 +79,43 @@ class
         
         //print each sentence
         for (auto const& it: p.sentences){
+            Append(text,Possibly_Get_Sentence(it,contributors,settings));
         }
         
         //add extra line since we printed sentences under the title
         Append(text,"\n");
+    }
+    return text;
+❱
+
+◀private: static▶ std::string ☀Possibly_Get_Sentence(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (!s.text.value.empty()){
+        Append(text,Grammar_Adjuster::Get_Adjusted(as_string(s.text.value),settings.grammar));
+        Append(text,"  ");
+        if (!s.images.empty() || !s.tables.empty()){
+            Append(text,"\n");
+            Append(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
+        }
+    }
+    return text;
+❱
+◀private: static▶ std::string ☀Possibly_Get_Sentence_Suplementary(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    
+    //print images
+    for (auto const& it: s.images){
+        Append(text,"![");
+        Append(text,as_string(it.alternative_text.value));
+        Append(text,"](");
+        Append(text,as_string(it.image_path.value));
+        Append(text," \"");
+        Append(text,as_string(it.hover_text.value));
+        Append(text,"\")");
+    }
+    
+    //print tables
+    for (auto const& it: s.tables){
     }
     return text;
 ❱
