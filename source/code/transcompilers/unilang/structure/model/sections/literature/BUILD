@@ -20,6 +20,11 @@ hcp(name = "sentence", deps = [
 ])
 
 hcp(name = "sentence_image", deps = [
+"//code/transcompilers/unilang/parser:token_value",
+"//code/transcompilers/unilang/structure/model/sections/literature:sentence_image_size"
+])
+
+hcp(name = "sentence_image_size", deps = [
 "//code/transcompilers/unilang/parser:token_value"
 ])
 
