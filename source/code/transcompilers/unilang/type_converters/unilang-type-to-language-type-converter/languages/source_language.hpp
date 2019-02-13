@@ -39,5 +39,6 @@ Ada
 ,PlantUml
 ,HtmlTable
 ,Mermaid
+,Markdown
 
 };
