@@ -21,6 +21,24 @@ std::string& Append_N_Times(std::string & str, std::string const& part, unsigned
         }
         return str;
 }
+std::string& Append_A_Newline(std::string & str){
+        str += "\n";
+        return str;
+}
+std::string& Append_A_Space(std::string & str){
+        str += " ";
+        return str;
+}
+std::string& Append_N_Newlines(std::string & str, int number_of_times)
+{
+        return Append_N_Times(str,"\n",number_of_times);
+}
+std::string& Append_N_Spaces(std::string & str, int number_of_times)
+{
+        return Append_N_Times(str," ",number_of_times);
+}
+
+
 std::string& Append_With_Newline(std::string & str_to_append_to, std::wstring const& append){
         str_to_append_to += as_string(append) + "\n";
         return str_to_append_to;
