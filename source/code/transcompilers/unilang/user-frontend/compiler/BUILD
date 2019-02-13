@@ -21,5 +21,6 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/compiler-frontends/cpp_benchmark:cpp_benchmark_exporter",
 "//code/transcompilers/unilang/compiler-frontends/mermaid:mermaid_exporter",
 "//code/transcompilers/unilang/compiler-frontends/date:date_exporter",
-"//code/transcompilers/unilang/compiler-frontends/c:c_exporter"
+"//code/transcompilers/unilang/compiler-frontends/c:c_exporter",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_exporter",
 ])

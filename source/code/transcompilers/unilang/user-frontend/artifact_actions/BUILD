@@ -24,6 +24,7 @@ values =
 ,"treesheets"
 ,"graph_easy"
 ,"mermaid"
+,"markdown"
 ])
 
 hcp(name = "artifact_guesser", deps = [

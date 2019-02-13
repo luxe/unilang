@@ -29,6 +29,10 @@ std::string& Append_A_Space(std::string & str){
         str += " ";
         return str;
 }
+std::string& Append_A_Tab(std::string & str){
+        str += "\t";
+        return str;
+}
 std::string& Append_N_Newlines(std::string & str, int number_of_times)
 {
         return Append_N_Times(str,"\n",number_of_times);

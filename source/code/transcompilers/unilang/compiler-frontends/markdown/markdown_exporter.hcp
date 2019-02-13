@@ -33,10 +33,11 @@ class
   std::string source_code_filename = structure.name + settings.file_extension;
   std::ofstream outfile(source_code_filename);
   std::string str = Build_Markdown_Text(structure,contributors,settings);
-  outfile << str <<'\n';
-  outfile.close();
+  std::cout << str << std::endl;
+  //outfile << str <<'\n';
+  //outfile.close();
   
-  created.emplace_back(source_code_filename);
+  //created.emplace_back(source_code_filename);
   return created;
 ❱
 
@@ -45,12 +46,41 @@ class
     
     for (auto const& it: structure.literature.paragraphs){
         
-        Append(text,Possibly_Get_Title(it,contributors,settings));
-        Append(text,Possibly_Get_Sentences(it,contributors,settings));
+        if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
+            Append(text,Labeled_Image_Title_Display(it,contributors,settings));
+        }
+        else{
+            Append(text,Possibly_Get_Title(it,contributors,settings));
+            Append(text,Possibly_Get_Sentences(it,contributors,settings));
+        }
     }
     
     return text;
 ❱
+
+◀private: static▶ bool ☀More_Of_A_Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    if (!p.title.value.empty()){
+        for (auto const& s: p.sentences){
+            if (!s.text.value.empty()){
+                return false;
+            }
+        }
+    }
+    return true;
+❱
+
+◀private: static▶ std::string ☀Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    for (auto const& s: p.sentences){
+        Append_With_Newline(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
+        Append(text,"**");
+        Append(text,as_string(p.title.value));
+        Append_With_Newline(text,"**");
+    }
+    return text;
+❱
+
+
 
 ◀private: static▶ std::string ☀Possibly_Get_Title(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string title;
@@ -93,10 +123,10 @@ class
     if (!s.text.value.empty()){
         Append(text,Grammar_Adjuster::Get_Adjusted(as_string(s.text.value),settings.grammar));
         Append_N_Spaces(text,2);
-        if (!s.images.empty() || !s.tables.empty()){
-            Append_A_Newline(text);
-            Append(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
-        }
+    }
+    if (!s.images.empty() || !s.tables.empty()){
+        Append_A_Newline(text);
+        Append(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
     }
     return text;
 ❱
@@ -105,7 +135,16 @@ class
     
     //print images
     for (auto const& it: s.images){
-        Append(text,Classic_Markdown_Image(it,contributors,settings));
+        
+        // decide how to print the image.
+        // we can do the traditional markdown format,
+        // or we can do the more html-oriented format.
+        if (it.size.width.value.empty() && it.size.height.value.empty()){
+            Append(text,Classic_Markdown_Image(it,contributors,settings));
+        }
+        else {
+            Append(text,Html_Markdown_Image(it,contributors,settings));
+        }
     }
     
     //print tables
@@ -128,6 +167,24 @@ class
     Append(text,settings.image.image_path_end_marker);
     return text;
 ❱
+◀private: static▶ std::string ☀Html_Markdown_Image(Sentence_Image const& i, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    Append_With_Newline(text,"<p align=\"left\">");
+        Append_A_Tab(text);
+        Append(text,"<img ");
+        Append(text,"width=\"");
+        Append(text,as_string(i.size.width.value));
+        Append(text,"\" ");
+        Append(text,"height=\"");
+        Append(text,as_string(i.size.height.value));
+        Append(text,"\" ");
+        Append(text,"src=\"");
+        Append(text,as_string(i.image_path.value));
+        Append_With_Newline(text,"\">");
+    Append_With_Newline(text,"</p>");
+    return text;
+❱
+
 ◀private: static▶ std::string ☀Depth_To_Header_Marker(int depth, Markdown_Settings const& settings)❰
     if (depth == 0){
         return settings.headers.h1;
