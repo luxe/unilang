@@ -42,10 +42,10 @@ hcp(name = "benchmark_coverage_summary_getter", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/char:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/transcompilers/unilang/normal-design-printer:method_sorter",
+"//code/transcompilers/unilang/design/normal:method_sorter",
 "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
 "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
-"//code/transcompilers/unilang/normal-design-printer/data:subgroup_methods",
+"//code/transcompilers/unilang/design/normal/data:subgroup_methods",
 "//code/utilities/types/vectors/observers:lib",
 ])

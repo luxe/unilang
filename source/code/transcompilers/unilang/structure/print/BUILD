@@ -203,7 +203,7 @@ hcp(name = "object_file_printer", deps = [
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
-"//code/transcompilers/unilang/normal-design-printer:normal_design_printer",
+"//code/transcompilers/unilang/design/normal:normal_design_printer",
 "//code/transcompilers/unilang/in-out-design-printer:in_out_design_printer",
 "//code/transcompilers/unilang/structure/print:stream_creator",
 "//code/transcompilers/unilang/structure/print:actual_structure_printer",
@@ -217,7 +217,7 @@ hcp(name = "actual_structure_printer", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
-"//code/transcompilers/unilang/normal-design-printer:normal_design_printer",
+"//code/transcompilers/unilang/design/normal:normal_design_printer",
 "//code/transcompilers/unilang/in-out-design-printer:in_out_design_printer",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/converters:lib",
@@ -249,7 +249,7 @@ hcp(name = "global_printer", deps = [
 "//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/structure/print:namespace_printer",
-"//code/transcompilers/unilang/normal-design-printer:method_sorting_and_grouping_order_printer",
+"//code/transcompilers/unilang/design/normal:method_sorting_and_grouping_order_printer",
 "//code/transcompilers/unilang/structure/print/table_of_contents:function_table_of_contents_printer",
 ])
 
