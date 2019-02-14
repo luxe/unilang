@@ -1,0 +1,185 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/transcompilers/unilang/structure/model/structure"❫
+❪"code/transcompilers/unilang/contributor/contributor"❫
+❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
+❪"code/transcompilers/unilang/options/language-specific/markdown/markdown_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/transcompilers/unilang/structure/print/struct_derivers"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/transcompilers/unilang/options/manipulation/case_adjustment_settings"❫
+❪"code/transcompilers/unilang/structure/adjust/casing_adjuster"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/transcompilers/unilang/structure/adjust/structure_adjuster"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    
+    for (auto const& it: structure.literature.paragraphs){
+        
+        if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
+            Append(text,Labeled_Image_Title_Display(it,contributors,settings));
+        }
+        else{
+            Append(text,Possibly_Get_Title(it,contributors,settings));
+            Append(text,Possibly_Get_Sentences(it,contributors,settings));
+        }
+    }
+    
+    return text;
+❱
+
+◀private: static▶ bool ☀More_Of_A_Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    if (!p.title.value.empty()){
+        for (auto const& s: p.sentences){
+            if (!s.text.value.empty()){
+                return false;
+            }
+        }
+    }
+    return true;
+❱
+
+◀private: static▶ std::string ☀Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    for (auto const& s: p.sentences){
+        Append_With_Newline(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
+        Append(text,"**");
+        Append(text,as_string(p.title.value));
+        Append_With_Newline(text,"**");
+    }
+    return text;
+❱
+◀private: static▶ std::string ☀Possibly_Get_Title(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string title;
+    if (!p.title.value.empty()){
+        
+        //add the title marker
+        Append(title,Depth_To_Header_Marker(0,settings));
+        Append_A_Space(title);
+        
+        //add the possible numbered
+        //in markdown you can just mark everything
+        //as 1., and it will be rendered with the correct numbers
+        if (p.is_numbered){
+            Append(title,settings.standard_number_list);
+        }
+        
+        //add the actual title
+        Append_With_Newline(title,p.title.value);
+    }
+    return title;
+❱
+◀private: static▶ std::string ☀Possibly_Get_Sentences(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (!p.sentences.empty()){
+        
+        //print each sentence
+        for (auto const& it: p.sentences){
+            Append(text,Possibly_Get_Sentence(it,contributors,settings));
+        }
+        
+        //add extra line since we printed sentences under the title
+        Append_A_Newline(text);
+    }
+    return text;
+❱
+◀private: static▶ std::string ☀Possibly_Get_Sentence(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (!s.text.value.empty()){
+        Append(text,Grammar_Adjuster::Get_Adjusted(as_string(s.text.value),settings.grammar));
+        Append_N_Spaces(text,2);
+    }
+    if (!s.images.empty() || !s.tables.empty()){
+        Append_A_Newline(text);
+        Append(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
+    }
+    return text;
+❱
+◀private: static▶ std::string ☀Possibly_Get_Sentence_Suplementary(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    
+    //print images
+    for (auto const& it: s.images){
+        
+        // decide how to print the image.
+        // we can do the traditional markdown format,
+        // or we can do the more html-oriented format.
+        if (it.size.width.value.empty() && it.size.height.value.empty()){
+            Append(text,Classic_Markdown_Image(it,contributors,settings));
+        }
+        else {
+            Append(text,Html_Markdown_Image(it,contributors,settings));
+        }
+    }
+    
+    //print tables
+    for (auto const& it: s.tables){
+    }
+    return text;
+❱
+◀private: static▶ std::string ☀Classic_Markdown_Image(Sentence_Image const& i, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    Append(text,settings.image.alternative_text_start_marker);
+    Append(text,as_string(i.alternative_text.value));
+    Append(text,settings.image.alternative_text_end_marker);
+    Append(text,settings.image.image_path_start_marker);
+    Append(text,as_string(i.image_path.value));
+    Append_A_Space(text);
+    Append(text,settings.image.hover_text_start_marker);
+    Append(text,as_string(i.hover_text.value));
+    Append(text,settings.image.hover_text_end_marker);
+    Append(text,settings.image.image_path_end_marker);
+    return text;
+❱
+◀private: static▶ std::string ☀Html_Markdown_Image(Sentence_Image const& i, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    Append_With_Newline(text,"<p align=\"left\">");
+        Append_A_Tab(text);
+        Append(text,"<img ");
+        Append(text,"width=\"");
+        Append(text,as_string(i.size.width.value));
+        Append(text,"\" ");
+        Append(text,"height=\"");
+        Append(text,as_string(i.size.height.value));
+        Append(text,"\" ");
+        Append(text,"src=\"");
+        Append(text,as_string(i.image_path.value));
+        Append_With_Newline(text,"\">");
+    Append_With_Newline(text,"</p>");
+    return text;
+❱
+◀private: static▶ std::string ☀Depth_To_Header_Marker(int depth, Markdown_Settings const& settings)❰
+    if (depth == 0){
+        return settings.headers.h1;
+    }
+    if (depth == 1){
+        return settings.headers.h2;
+    }
+    if (depth == 2){
+        return settings.headers.h3;
+    }
+    if (depth == 3){
+        return settings.headers.h4;
+    }
+    if (depth == 4){
+        return settings.headers.h5;
+    }
+    if (depth == 5){
+        return settings.headers.h6;
+    }
+    
+    //higher than 6? just use 6.
+    return settings.headers.h6;
+❱

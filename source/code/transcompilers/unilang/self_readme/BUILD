@@ -11,6 +11,9 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/tokens:get_tokens",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/filesystem/paths:lib",
+"//code/transcompilers/unilang/user-frontend:code_graphs_creator",
+"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/transcompilers/unilang/structure/model:inlined_structures"
 ])
 
 cc_binary(
