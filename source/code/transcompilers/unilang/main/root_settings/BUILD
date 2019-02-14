@@ -30,5 +30,6 @@ hcp(name = "root_settings_getter", deps = [
 "//code/transcompilers/unilang/compiler-frontends/cpp_test:cpp_test_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/cpp_benchmark:cpp_benchmark_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/mermaid:mermaid_settings_getter",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_settings_getter",
 "//code/transcompilers/unilang/tokens:get_tokens",
 ])
