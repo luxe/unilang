@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 bool Its_January();
 bool Its_February();
@@ -12,6 +13,8 @@ bool Its_September();
 bool Its_October();
 bool Its_November();
 bool Its_December();
+
+std::string Month_As_Full_Name();
 
 bool Its_Not_January();
 bool Its_Not_February();

@@ -14,6 +14,27 @@ bool Its_October(){ return Current_Month() == 10;}
 bool Its_November(){ return Current_Month() == 11;}
 bool Its_December(){ return Current_Month() == 12;}
 
+std::string Month_As_Full_Name()
+{
+	std::string month = "Unknown";
+	switch(Current_Month()){
+		case 1: month = "January"; break;
+		case 2: month = "February"; break;
+		case 3: month = "March"; break;
+		case 4: month = "April"; break;
+		case 5: month = "May"; break;
+		case 6: month = "June"; break;
+		case 7: month = "July"; break;
+		case 8: month = "August"; break;
+		case 9: month = "September"; break;
+		case 10: month = "October"; break;
+		case 11: month = "November"; break;
+		case 12: month = "December"; break;
+		default:;
+	}
+	return month;
+}
+
 bool Its_Not_January(){ return Current_Month() != 1;}
 bool Its_Not_February(){ return Current_Month() != 2;}
 bool Its_Not_March(){ return Current_Month() != 3;}

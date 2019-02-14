@@ -43,6 +43,7 @@ hcp(name = "markdown_str_getter", deps = [
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/types/char:lib",
 "//code/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
+"//code/utilities/time/date:lib",
 ])
 
 hcp(name = "markdown_settings_getter", deps = [

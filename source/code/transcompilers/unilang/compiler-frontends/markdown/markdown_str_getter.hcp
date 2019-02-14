@@ -21,13 +21,20 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
+❪"code/utilities/time/date/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
     for (auto const& it: structure.literature.paragraphs){
         if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
-            Append(text,Labeled_Image_Title_Display(it,contributors,settings));
+            
+            if (settings.headers.allow_labeled_image_titles){
+                Append(text,Labeled_Image_Title_Display(it,contributors,settings));
+            }
+            else{
+                Append(text,Labeled_NonImage_Title_Display(it,contributors,settings));
+            }
         }
         else{
             Append(text,Possibly_Get_Title(it,contributors,settings));
@@ -60,6 +67,21 @@ class
     }
     return text;
 ❱
+◀private: static▶ std::string ☀Labeled_NonImage_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    for (auto const& s: p.sentences){
+        for (auto const& it: s.images){
+            Append(text,"% ");
+            Append_With_Newline(text,as_string(it.alternative_text.value));
+        }
+        Append(text,"% ");
+        Append_With_Newline(text,as_string(p.title.value));
+        Append(text,"% ");
+        Append_With_Newline(text,Date_As_Full_Month_Day_Year());
+    }
+    return text;
+❱
+
 ◀private: static▶ std::string ☀Possibly_Get_Title(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string title;
     if (!p.title.value.empty()){
