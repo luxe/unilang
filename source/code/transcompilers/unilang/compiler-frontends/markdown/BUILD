@@ -10,7 +10,7 @@ hcp(name = "markdown_exporter", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/transcompilers/unilang/structure-printer:struct_derivers",
+"//code/transcompilers/unilang/structure/print:struct_derivers",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/shell:lib",
 "//code/utilities/filesystem/paths:lib",

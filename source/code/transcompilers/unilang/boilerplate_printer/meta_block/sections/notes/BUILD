@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "meta_notes_getter", deps = [
 "//code/transcompilers/unilang/structure/model/sections/meta:meta_section",
 "//code/transcompilers/unilang/options/sections/meta:meta_options",
-"//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
+"//code/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "meta_note_creator",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/transformers/other:lib",
@@ -14,7 +14,7 @@ hcp(name = "meta_notes_getter", deps = [
 
 hcp(name = "meta_note_creator", deps = [
 "//code/transcompilers/unilang/options/sections/meta:meta_generic_note_options",
-"//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
+"//code/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/transformers/other:lib",

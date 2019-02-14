@@ -6,7 +6,7 @@ hcp(name = "argument_direction_decider", deps = [
 "//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/options/comment/doxygen:doxygen_parameter_direction",
-"//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
+"//code/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",

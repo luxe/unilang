@@ -20,7 +20,7 @@ hcp(name = "doxygen_data_getter_for_data_members", deps = [
 "//code/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
 "//code/transcompilers/unilang/doxygen_block_printer:value_constraint_comment_deriver",
 "//code/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
-"//code/transcompilers/unilang/structure-printer/derivers:identifier_name_deriver",
+"//code/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/utilities/converters:lib",
 "//code/utilities/types/general:lib"
 ])

@@ -17,7 +17,7 @@ hcp(name = "code_wrap_printer", deps = [
 
 hcp(name = "boilerplate_printer", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
-"//code/transcompilers/unilang/structure-printer/export_file_settings:export_file_settings",
+"//code/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/boilerplate_printer/meta_block:meta_block_printer",
 "//code/transcompilers/unilang/boilerplate_printer:code_wrap_printer",

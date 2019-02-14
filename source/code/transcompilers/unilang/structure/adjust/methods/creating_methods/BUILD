@@ -11,5 +11,5 @@ hcp(name = "extra_methods_creator", deps = [
 "//code/transcompilers/unilang/structure/adjust/methods/forcers:method_chaining_enforcer",
 "//code/transcompilers/unilang/structure/adjust/methods/forcers:return_statement_enforcer",
 "//code/transcompilers/unilang/structure/adjust/methods/forcers:method_overload_adjuster",
-"//code/transcompilers/unilang/structure-printer/derivers:structure_typename_deriver",
+"//code/transcompilers/unilang/structure/print/derivers:structure_typename_deriver",
 ])

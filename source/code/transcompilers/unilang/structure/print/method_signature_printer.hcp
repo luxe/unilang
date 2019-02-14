@@ -1,0 +1,216 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/method/method_item"❫
+❪"code/transcompilers/unilang/tokens/token_name"❫
+❪"code/transcompilers/unilang/structure/model/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/model/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure/print/function_declaration_location"❫
+⚯
+❪"code/transcompilers/unilang/structure/print/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/in-out-design-printer/input_struct_getter"❫
+❪"code/transcompilers/unilang/structure/print/method_body_token_printer"❫
+❪"code/transcompilers/unilang/structure/print/shared_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_utilities"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/structure/print/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/structure/print/attributes/method_attributes_getter"❫
+❪"code/transcompilers/unilang/structure/print/derivers/type_name_deriver"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/type_qualifier_dresser"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/type_qualifier_stripper"❫
+❪"code/transcompilers/unilang/structure/print/return_type_str_getter"❫
+❪"code/transcompilers/unilang/structure/print/method_block_ender"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+
+⚞⚟
+
+◀public: static▶ void ☀Print(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  
+  
+    //[attributes]
+    auto attributes1 = Method_Attributes_Getter::Get_Method_Section_1(method,options,location);
+    Print_To_Stream_Unless_Empty(out,attributes1);
+
+     //template params
+     Print_Template_Argument_List(out,method.template_arguments,options,location);
+
+    //[attributes]
+    auto attributes2 = Method_Attributes_Getter::Get_Method_Section_2(method,options,location);
+    Print_To_Stream_Unless_Empty(out,attributes2);
+
+     Possibly_Print_Static_Keyword(out,method,options);
+
+    //[attributes]
+    auto attributes3 = Method_Attributes_Getter::Get_Method_Section_3(method,options,location);
+    Print_To_Stream_Unless_Empty(out,attributes3);
+     
+    //print the return type
+    Print_To_Stream(out,Return_Type_Str_Getter::Get_C(file_name,method,options));
+
+    //[attributes]
+    auto attributes4 = Method_Attributes_Getter::Get_Method_Section_4(method,options,location);
+    Print_To_Stream_Unless_Empty(out,attributes4);
+    
+    Print_To_Stream(out,Shared_Printer::Derive_Function_Name(file_name,code_type,method,options));
+    Print_Function_Argument_List(out,method.function_arguments,options,location);
+❱
+
+◀private: static▶ void ☀Possibly_Print_Static_Keyword(std::wofstream & out, Method_Item const& method, C_Export_Settings const& options)❰
+      
+    //TODO: MOVE OUT
+    std::string static_keyword = "static";
+    std::string static_keyword_spacer = " ";
+     
+     //static qualifier
+     if (method.storage == Storage_Specifier::STATIC){
+        if (!options.portion.namespace_options.use_anonymous){
+            Print_To_Stream(out,static_keyword);
+            Print_To_Stream(out,static_keyword_spacer);
+        }
+     }
+❱
+
+◀public: static▶ void ☀Print_Template_Argument_List(std::wofstream & out, std::vector<Template_Argument> const& arguments, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  if (!arguments.empty()){
+      Print_To_Stream(out,"template <");
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
+         ,[&](Template_Argument arg){
+            
+           Print_To_Stream(out,Get_Printable_Template_Argument(arg,options,location));
+           Print_To_Stream(out,", ");
+         }
+         ,[&](Template_Argument arg){
+           Print_To_Stream(out,Get_Printable_Template_Argument(arg,options,location));
+         });
+      Print_To_Stream(out,">");
+  }
+❱
+◀public: static▶ void ☀Print_Function_Argument_List(std::wofstream & out, std::vector<Function_Argument> const& arguments, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+    Print_To_Stream(out,"(");
+    
+    
+    
+    
+    if (arguments.empty()){
+        auto str = Empty_Parameters_Filler(options);
+        Print_To_Stream(out,str);
+    }else{
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
+         ,[&](Function_Argument arg){
+            
+           Print_To_Stream(out,Get_Printable_Argument(arg,options,location));
+           Print_To_Stream(out,", ");
+         }
+         ,[&](Function_Argument arg){
+           Print_To_Stream(out,Get_Printable_Argument(arg,options,location));
+         });
+    }
+    Print_To_Stream(out,")");
+❱
+
+◀private: static▶ std::string ☀Empty_Parameters_Filler(C_Export_Settings const& options)❰
+  
+  //TODO: move to settings
+  bool print_void = false;
+  
+  std::string str;
+  if (print_void){
+    str += Get_The_Void_Type(options);
+  }
+  return str;
+  
+❱
+
+◀private: static▶ std::string ☀Get_The_Void_Type(C_Export_Settings const& options)❰
+  Function_Result result;
+  result.type.value = as_wstring("void");
+  auto real_type = Type_Name_Deriver::Derive_Name(result,Source_Language::CPP);
+  return real_type;
+❱
+◀public: static▶ std::string ☀Get_Printable_Argument(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  
+    if (arg.infinitely_more){
+        return "...";
+    }
+    return Get_Printable_Single_Argument(arg,options,location);
+❱
+◀private: static▶ std::string ☀Get_Printable_Template_Argument(Template_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  std::string str;
+  str += "typename ";
+  str += as_string(arg.identifier.value);
+  return str;
+❱
+
+
+
+◀public: static▶ std::string ☀Get_Printable_Single_Argument(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+  std::string str;
+  
+    //[attributes]
+    auto attributes1 = Method_Attributes_Getter::Get_Argument_Section_1(arg,options,location);
+    Append(str,attributes1);
+
+   //whether to put 'const' in front
+   if (!arg.is_mutable){Append(str,"const ");}
+
+    //[attributes]
+    auto attributes2 = Method_Attributes_Getter::Get_Argument_Section_2(arg,options,location);
+    Append(str,attributes2);
+   
+   //handling the array as part of the type
+   auto type = as_string(arg.type.value);
+   
+   //append type and type name
+   auto real_type = Type_Name_Deriver::Derive_Name(arg,Source_Language::CPP);
+   Append(str,real_type);
+   Append(str," ");
+   Append(str,Decide_How_To_Print_After_Type_Specifier(arg,options));
+   Possibly_Append_Default_Value(str,arg,options,location);
+
+    //[attributes]
+    auto attributes3 = Method_Attributes_Getter::Get_Argument_Section_3(arg,options,location);
+    Append(str,attributes3);
+  
+  return str;
+❱
+
+◀private: static▶ void ☀Possibly_Append_Default_Value(std::string & str, Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+
+  //we only put default values on decelerations
+  if (location == Function_Declaration_Location::DECLARATION){
+    
+    //check if the value exists
+    if (Has_Default_Value(arg)){
+      str += Default_Argument_Being_Set(arg);
+    }
+  }
+❱
+
+◀private: static▶ bool ☀Has_Default_Value(Function_Argument const& arg)❰
+  return !arg.default_value.value.empty();
+❱
+
+◀private: static▶ std::string ☀Default_Argument_Being_Set(Function_Argument const& arg)❰
+  std::string str;
+  str += " = ";
+  std::string default_value = as_string(arg.default_value.value);
+  str += default_value;
+  return str;
+❱
+
+
+◀public: static▶ std::string ☀Decide_How_To_Print_After_Type_Specifier(Function_Argument const& arg, C_Export_Settings const& options)❰
+   
+   auto stripped_type_detail = Type_Qualifier_Stripper::Strip_To_Base_Unilang_Type(as_string(arg.type.value),arg.is_reference);
+   auto derived_name = Identifier_Name_Deriver::Derive_Name(arg,options);
+   return Type_Qualifier_Dresser::Add_Qualifers_Back_To_Derived_Language_Argument_Type(stripped_type_detail, derived_name, options);
+❱
+
+◀private: static▶ void ☀Print_To_Stream_Unless_Empty(std::wofstream & out, std::string const& str)❰
+  if (!str.empty()){
+    Print_To_Stream(out,str);
+  }
+❱

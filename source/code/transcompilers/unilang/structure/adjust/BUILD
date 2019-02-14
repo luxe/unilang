@@ -26,7 +26,7 @@ hcp(name = "words_deriver", deps = [
 hcp(name = "module_dependency_resolver", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
-"//code/transcompilers/unilang/structure-printer/export_file_settings:file_type",
+"//code/transcompilers/unilang/structure/print/export_file_settings:file_type",
 ])
 
 hcp(name = "structure_adjuster", deps = [
@@ -56,7 +56,7 @@ hcp(name = "casing_adjuster", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/transcompilers/unilang/structure-printer:struct_derivers",
+"//code/transcompilers/unilang/structure/print:struct_derivers",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/shell:lib",
 "//code/utilities/filesystem/paths:lib",

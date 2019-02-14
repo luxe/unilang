@@ -6,7 +6,7 @@ hcp(name = "f2si_c_exporter", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/structure-printer:file_printer",
+"//code/transcompilers/unilang/structure/print:file_printer",
 "//code/transcompilers/unilang/test-wrapper-printer:test_wrapper_printer",
 "//code/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/transcompilers/unilang/f2si_frontend_compiler:f2si_c_options_getter",

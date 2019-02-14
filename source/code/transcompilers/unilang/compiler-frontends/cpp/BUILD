@@ -8,7 +8,7 @@ hcp(name = "cpp_exporter", deps = [
 "//code/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/structure/adjust:structure_adjuster",
-"//code/transcompilers/unilang/structure-printer:file_printer",
+"//code/transcompilers/unilang/structure/print:file_printer",
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
 

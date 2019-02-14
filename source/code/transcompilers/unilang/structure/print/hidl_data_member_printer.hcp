@@ -1,0 +1,115 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/data_member/data_member_section"❫
+❪"code/transcompilers/unilang/structure/model/sections/types/type_section"❫
+❪"code/transcompilers/unilang/options/sections/portion_options"❫
+❪"code/transcompilers/unilang/options/general_options"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+⚯
+❪"code/transcompilers/unilang/structure/print/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/unilang_type_to_language_type_converter"❫
+❪"code/transcompilers/unilang/structure/print/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/literal_suffix_getter/adjuster/literal_adjuster"❫
+❪"code/transcompilers/unilang/structure/print/derivers/type_name_deriver"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Print(std::wofstream & out, std::vector<Data_Member_Item> const& mems, General_Options const& general, Portion_Options const& portion)❰
+
+		//TODO: FIX THIS.  DONT DO THIS:
+        //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
+        //THIS IS A TEMP HACK/FIX.
+        C_Export_Settings bad_temp;
+		bad_temp.portion = portion;
+		bad_temp.general = general;
+
+	for (size_t i = 0; i < mems.size(); ++i){
+		//Doxygen_Block_Printer::Print_Doxygen_Member_Item_Comment(out,m,portion.data_member_options.comment.doxygen,4); //eventually
+        Doxygen_Block_Printer::Print_Doxygen_Member_Item_Comment(out,mems[i],bad_temp,4);
+		Print_To_Stream(out,"    ");
+
+		//decide if optional
+        Possibly_Print_Optional_Tag(out,mems[i],portion);
+
+		Print_Base_Type(out, mems[i],portion);
+
+		//print specializations
+		if (!mems[i].type_specializations.empty()){
+			Print_Specializations(out,mems[i],portion);
+		}
+
+		//identifier
+        Print_To_Stream(out,portion.data_member_options.after_type_delim);
+		auto derived_name = Identifier_Name_Deriver::Derive_Name(mems[i],bad_temp,false,true);
+		Print_To_Stream(out,derived_name);
+
+        //maybe add default value
+         Print_The_Default_Value(out,mems[i],bad_temp);
+
+		//delim
+		Print_To_Stream(out,portion.data_member_options.identifier_decl_delim);
+
+       if (i == mems.size()-1){
+			Print_To_Stream_With_Newline(out,"");
+	   }else{
+			Print_To_Stream_With_Newline(out,"");
+			Print_To_Stream_With_Newline(out,"");
+		}
+	}
+❱
+
+◀private: static▶ void ☀Possibly_Print_Optional_Tag(std::wofstream & out, Data_Member_Item const& mem, Portion_Options const& portion)❰
+
+        //decide if optional
+        if (mem.is_optional){
+            Print_To_Stream(out,portion.data_member_options.optional_tag);
+            Print_To_Stream(out,portion.data_member_options.after_optional_delim);
+        }
+❱
+
+//TODO: THIS WAS COPY AND PASTED FROM THE C DATA MEMBER EXPORTER
+◀private: static▶ void ☀Print_The_Default_Value(std::wofstream & out, Data_Member_Item const& it,C_Export_Settings const& options)❰
+
+    //decide whether to print the default value
+    std::string default_seperator = " = ";
+    if (!it.default_value.value.empty()){
+        Print_To_Stream(out,default_seperator);
+        auto language_type_name = Type_Name_Deriver::Derive_Name(it,Source_Language::CPP);
+        std::string literal = Literal_Adjuster::Get_Adjusted(language_type_name,as_string(it.default_value.value));
+        Print_To_Stream(out,literal);
+    }
+❱
+
+◀private: static▶ void ☀Print_Base_Type(std::wofstream & out, Data_Member_Item mem, Portion_Options const& portion)❰
+		//print base type
+        Print_Scoping(out,mem.scope_specifiers,portion);
+		auto type       = as_string(mem.type.value);
+		auto real_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(type, Source_Language::HIDL).name;
+		Print_To_Stream(out,real_type);
+❱
+◀private: static▶ void ☀Print_Specializations(std::wofstream & out, Data_Member_Item mem, Portion_Options const& portion)❰
+	//print specializations
+		Print_To_Stream(out,portion.data_member_options.template_start);
+        bool did_first_one = false;
+		for (auto const& s: mem.type_specializations){
+
+             if (did_first_one){
+					Print_To_Stream(out,",");		 
+			}
+            Print_Scoping(out,s.scope_specifiers,portion);
+			auto special = as_string(s.type.value);
+            Print_To_Stream(out,special);
+            did_first_one = true;
+		}
+		Print_To_Stream(out,portion.data_member_options.template_end);
+❱
+
+◀private: static▶ void ☀Print_Scoping(std::wofstream & out, std::vector<Scope_Specifier> const& scopes, Portion_Options const& portion)❰
+	for (auto it: scopes){
+		Print_To_Stream(out,as_string(it.name.value));
+		Print_To_Stream(out,portion.data_member_options.scope_delim);
+	}
+❱

@@ -10,7 +10,7 @@ hcp(name = "plant_uml_exporter", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/transcompilers/unilang/structure-printer:struct_derivers",
+"//code/transcompilers/unilang/structure/print:struct_derivers",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/transcompilers/unilang/compiler-frontends/plant_uml_exporter:composition_relationship",
 "//code/utilities/shell:lib",

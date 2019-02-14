@@ -1,0 +1,44 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/structure"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/print/export_file_settings/export_file_settings"❫
+❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
+⚯
+❪"code/transcompilers/unilang/normal-design-printer/normal_design_printer"❫
+❪"code/transcompilers/unilang/in-out-design-printer/in_out_design_printer"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+⚞⚟
+
+
+
+
+
+◀public: static▶ void ☀Write_To_File(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+
+    Handle_Inlined_Structures(out,file_settings,structure,options);
+    Print_Object_According_To_A_Certain_Export_Method(out,file_settings,structure,options);
+❱
+
+//recursive
+◀public: static▶ void ☀Handle_Inlined_Structures(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+    
+    for (auto const& it: structure.inlined_structures.get().inlined_interfaces){
+        Print_Object_According_To_A_Certain_Export_Method(out,file_settings,it,options);
+    }
+    for (auto const& it: structure.inlined_structures.get().inlined_implementations){
+        Print_Object_According_To_A_Certain_Export_Method(out,file_settings,it,options);
+    }
+❱
+
+
+
+◀private: static▶ void ☀Print_Object_According_To_A_Certain_Export_Method(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+    switch (options.general.object_export_method){
+        case Object_Export_Method::NORMAL:       Normal_Design_Printer::Print(out,file_settings,structure,options); break;
+        case Object_Export_Method::INPUT_OUTPUT: In_Out_Design_Printer::Print(out,file_settings,structure,options); break;
+    }
+❱

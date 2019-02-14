@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "api_and_lifetime_creator", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/transcompilers/unilang/structure-printer:shared_printer",
+"//code/transcompilers/unilang/structure/print:shared_printer",
 "//code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors:shortcut_constructor_creator",
 "//code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors:shortcut_copy_constructor_creator",
 "//code/transcompilers/unilang/in-out-design-printer/derived_method_creators/c/constructors:initialize_creator",

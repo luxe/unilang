@@ -1,0 +1,105 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/model/sections/method/arguments/argument/function_argument"❫
+❪"code/transcompilers/unilang/structure/print/function_declaration_location"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/model/sections/meta/code_type"❫
+⚯
+❪"code/transcompilers/unilang/structure/print/attributes/print_decider/attribute_print_decider"❫
+❪"code/transcompilers/unilang/structure/print/attributes/string_creator/attribute_style_to_string_converter"❫
+❪"code/transcompilers/unilang/structure/print/attributes/print_decider/attribute_section_newline_getter"❫
+
+⚞⚟
+
+//base method calls
+◀public: static▶  std::string ☀Get_Method_Section_1(Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Method_Attributes_For_Section(method,options.portion.method_options.attributes,location,1);
+❱
+◀public: static▶  std::string ☀Get_Method_Section_2(Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Method_Attributes_For_Section(method,options.portion.method_options.attributes,location,2);
+❱
+◀public: static▶  std::string ☀Get_Method_Section_3(Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Method_Attributes_For_Section(method,options.portion.method_options.attributes,location,3);
+❱
+◀public: static▶  std::string ☀Get_Method_Section_4(Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Method_Attributes_For_Section(method,options.portion.method_options.attributes,location,4);
+❱
+◀public: static▶  std::string ☀Get_Method_Section_5(Method_Item const& method, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Method_Attributes_For_Section(method,options.portion.method_options.attributes,location,5);
+❱
+
+//base argument calls
+◀public: static▶  std::string ☀Get_Argument_Section_1(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Argument_Attributes_For_Section(arg,options.portion.method_options.attributes,location,1);
+❱
+◀public: static▶  std::string ☀Get_Argument_Section_2(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Argument_Attributes_For_Section(arg,options.portion.method_options.attributes,location,2);
+❱
+◀public: static▶  std::string ☀Get_Argument_Section_3(Function_Argument const& arg, C_Export_Settings const& options, Function_Declaration_Location const& location)❰
+	return Get_Argument_Attributes_For_Section(arg,options.portion.method_options.attributes,location,3);
+❱
+
+//dispatch on attributes
+◀private: static▶  std::string ☀Get_Method_Attributes_For_Section(Method_Item const& method, All_Method_Attribute_Settings const& settings, Function_Declaration_Location const& location, int const& section)❰
+
+	std::string attributes;
+
+	//unused method
+	if (Attribute_Print_Decider::Print_Unused_Method_Attribute(method,settings,location,section)){
+		attributes += Attribute_Style_To_String_Converter::Convert(settings.method.unused.style) + " ";
+	}
+    
+	//return argument should be used
+	if (Attribute_Print_Decider::Print_That_The_Return_Argument_Should_Be_Used_Attribute(method,settings,location,section)){
+		attributes += Attribute_Style_To_String_Converter::Convert(settings.arguments.used_return.style) + " ";
+	}
+    
+    //if we have attributes in the section, we will consider newline buffering them
+    if (!attributes.empty()){
+
+		//possible newline before section
+    	attributes = Attribute_Section_Newline_Getter::Possibly_Get_Newline_Before_Section(settings.method,location,section) + attributes;
+
+		//possible newline after section
+		attributes += Attribute_Section_Newline_Getter::Possibly_Get_Newline_After_Section(settings.method,location,section);
+	}
+
+	return attributes;
+❱
+◀private: static▶  std::string ☀Get_Argument_Attributes_For_Section(Function_Argument const& arg, All_Method_Attribute_Settings const& settings, Function_Declaration_Location const& location, int const& section)❰
+	
+	std::string attributes;
+
+	//unused argument
+	if (Attribute_Print_Decider::Print_Unused_Argument_Attribute(arg,settings,location,section)){
+		attributes += Attribute_Style_To_String_Converter::Convert(settings.arguments.unused_arg.style) + " ";
+	}
+
+	//non_null argument
+	if (Attribute_Print_Decider::Print_Unused_Non_Null_Attribute(arg,settings,location,section)){
+		attributes += Attribute_Style_To_String_Converter::Convert(settings.arguments.non_null.style) + " ";
+	}
+
+    //if we have attributes in the section, we will consider newline buffering them
+    if (!attributes.empty()){
+
+		//possible newline before section
+    	attributes = Attribute_Section_Newline_Getter::Possibly_Get_Newline_Before_Section(settings.arguments,location,section) + attributes;
+
+		//possible newline after section
+		attributes += Attribute_Section_Newline_Getter::Possibly_Get_Newline_After_Section(settings.arguments,location,section);
+	}
+
+	return attributes;
+❱
+
+
+
+
+
+
+
+
+

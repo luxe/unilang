@@ -1,0 +1,302 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/method/method_item"❫
+❪"code/transcompilers/unilang/tokens/token_name"❫
+❪"code/transcompilers/unilang/structure/model/sections/data_member/data_member_item"❫
+❪"code/transcompilers/unilang/options/language-specific/c_export_settings"❫
+❪"code/transcompilers/unilang/structure/model/sections/meta/code_type"❫
+❪"code/transcompilers/unilang/structure/print/function_declaration_location"❫
+⚯
+❪"code/transcompilers/unilang/structure/print/doxygen_block_printer"❫
+❪"code/transcompilers/unilang/in-out-design-printer/input_struct_getter"❫
+❪"code/transcompilers/unilang/structure/print/method_body_token_printer"❫
+❪"code/transcompilers/unilang/structure/print/shared_printer"❫
+❪"code/transcompilers/unilang/test-wrapper-printer/test_wrapper_utilities"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/transcompilers/unilang/structure/print/derivers/identifier_name_deriver"❫
+❪"code/transcompilers/unilang/structure/print/attributes/method_attributes_getter"❫
+❪"code/transcompilers/unilang/structure/print/derivers/type_name_deriver"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/type_qualifier_dresser"❫
+❪"code/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper/type_qualifier_stripper"❫
+❪"code/transcompilers/unilang/structure/print/return_type_str_getter"❫
+❪"code/transcompilers/unilang/structure/print/method_block_ender"❫
+❪"code/utilities/streams/filestreams/lib"❫
+❪"code/utilities/converters/lib"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/transcompilers/unilang/structure/print/method_signature_printer"❫
+
+⚞⚟
+
+//non-wrapped methods
+◀public: static▶ void ☀Print_Global_Implementation_Methods(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+    for (auto it: methods){
+        Print_Method_Implementation(out,file_name,code_type,it,members,methods,false,options,"",export_method);
+    }
+❱
+◀public: static▶ void ☀Print_Object_Implementation_Methods(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, Object_Export_Method const& export_method, std::string const& implicit_name)❰
+    for (auto it: methods){
+        Print_Method_Implementation(out,file_name,code_type,it,members,methods,true,options,implicit_name,export_method);
+    }
+❱
+
+◀public: static▶ void ☀Print_Method_Interface(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, std::vector<Method_Item> const& methods, C_Export_Settings const& options)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,methods,options);
+    Print_Method_Deceleration(out,file_name,code_type,method,options);
+❱
+◀public: static▶ void ☀Print_Method_Implementation(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, std::vector<Data_Member_Item> const& members, std::vector<Method_Item> const& methods, bool const& object_method, C_Export_Settings const& options, std::string implicit_name, Object_Export_Method const& export_method)❰
+    Doxygen_Block_Printer::Print_Doxygen_Method_Comment(out,method,methods,options);
+    Print_Method_Definition(out,file_name,code_type,method,members,methods,object_method,options,implicit_name,export_method);
+❱
+
+
+
+
+//these exist to make the private global functions static in the source
+//instead of non-static in the header
+//it was a mistake to make this function, and was done as a quick hack.
+//refactor when you can
+//basically, we can convert private functions to have static, and call one of the other functions automatically
+◀public: static▶ void ☀Print_Global_Interface_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, C_Export_Settings const& options)❰
+
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,methods,options);
+        }
+    }
+❱
+◀public: static▶ void ☀Print_Global_Implementation_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members, C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+    //print the statics at the top of the source
+
+
+    bool non_public_methods_exist = false;
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            non_public_methods_exist = true;
+            break;
+        }
+    }
+
+    if (non_public_methods_exist){
+        Print_Anon_Namespace_Start(out,options);
+    }
+    
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_decl));
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,methods,options);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
+        }
+    }
+    
+    if (non_public_methods_exist){
+        Print_Anon_Namespace_End(out,options);
+    }
+    
+    //print the public implementations
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
+            Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
+        }
+    }
+    
+    //print the private/static implementations
+    if (non_public_methods_exist){
+        Print_Anon_Namespace_Start(out,options);
+    }
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
+            Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
+        }
+    }
+    if (non_public_methods_exist){
+            Print_Anon_Namespace_End(out,options);
+        }
+❱
+
+◀public: static▶ void ☀Print_Anon_Namespace_Start(std::wofstream & out, C_Export_Settings const& options)❰
+  if (options.portion.namespace_options.use_anonymous){
+    Print_To_Stream(out,options.portion.namespace_options.namespace_identifier);
+    Print_To_Stream(out,options.portion.namespace_options.before_start_namespace_grouping_token);
+    Print_To_Stream(out,options.portion.namespace_options.start_namespace_grouping_token);
+    Print_To_Stream(out,options.portion.namespace_options.after_start_namespace_grouping_token);
+    
+  }
+❱
+◀public: static▶ void ☀Print_Anon_Namespace_End(std::wofstream & out, C_Export_Settings const& options)❰
+  if (options.portion.namespace_options.use_anonymous){
+    Print_To_Stream(out,options.portion.namespace_options.before_end_namespace_grouping_token);
+    Print_To_Stream(out,options.portion.namespace_options.end_namespace_grouping_token);
+    Print_To_Stream(out,options.portion.namespace_options.after_end_namespace_grouping_token);
+  }
+❱
+
+
+
+
+
+//THESE TWO FRONTENDS EXIST BECAUSE OF THE GROUP PRINTER.  
+//WE ARE ITERATING OVER GROUPS OF METHODS AND NOT JUST METHODS
+//SO WE NEED TO MAKE SURE WE PRINT ALL OF THE DECLS IN THE IMPLEMENTATION FIRST
+◀public: static▶ void ☀Print_Global_Implementation_DECL_ONLY_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                                      C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+
+
+    Print_Anon_Namespace_Start(out,options);
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            it.storage = Storage_Specifier::STATIC;
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_decl));
+            Print_Method_Interface(out,file_name,Code_Type::GLOBAL,it,methods,options);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_decl));
+        }
+    }
+    Print_Anon_Namespace_End(out,options);
+❱
+◀public: static▶ bool ☀Print_Global_Implementation_DECL_ONLY_Methods2_is_any(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                                      C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+      for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+          return true;
+        }
+      }
+      return false;
+❱
+
+
+//all_methods needed for function lookup when printing individual subgroups of methods
+◀public: static▶ void ☀Print_Global_Implementation_IMPL_ONLY_Methods2(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Method_Item> const& all_methods, std::vector<Data_Member_Item> const& members,
+                                                            C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+
+
+    
+    //print the public implementations
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
+            Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,all_methods,false,options,"",export_method);
+            out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
+        }
+    }
+    
+    
+    
+    //decide whether private/static implementations exist
+    bool private_exist = false;
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            private_exist = true;
+            break;
+        }
+    }
+    
+    //print the private/static implementations
+    if (private_exist){
+        Print_Anon_Namespace_Start(out,options);
+        for (auto it: methods){
+            if (it.class_access != Class_Access::PUBLIC){
+                it.storage = Storage_Specifier::STATIC;
+                out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.before_impl));
+                Print_Method_Implementation(out,file_name,Code_Type::GLOBAL,it,members,all_methods,false,options,"",export_method);
+                out << as_wstring(Maybe_Divider(options.portion.method_options.dividers.after_impl));
+            }
+        }
+        Print_Anon_Namespace_End(out,options);
+    }
+❱
+◀public: static▶ bool ☀Print_Global_Implementation_IMPL_ONLY_Methods2_is_any(std::wofstream & out, std::string const& file_name, std::vector<Method_Item> const& methods, std::vector<Data_Member_Item> const& members,
+                                                            C_Export_Settings const& options, Object_Export_Method const& export_method)❰
+    //print the public implementations
+    for (auto it: methods){
+        if (it.class_access == Class_Access::PUBLIC){
+            return true;
+        }
+    }
+    
+    //print the private/static implementations
+    for (auto it: methods){
+        if (it.class_access != Class_Access::PUBLIC){
+            return true;
+        }
+    }
+    return false;
+  
+❱
+//---------------------
+
+
+◀private: static▶ std::string ☀Maybe_Divider(const Divider_Settings & settings)❰
+  std::string str;
+  if (settings.print){
+    str += "\n\n";
+    str += settings.divider;
+    str += "\n\n";
+  }
+  
+  return str;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ void ☀Print_Method_Deceleration(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, C_Export_Settings const& options)❰
+    
+    Method_Signature_Printer::Print(out,file_name,code_type,method,options,Function_Declaration_Location::DECLARATION);
+    
+	//[attributes]
+    auto attributes5 = Method_Attributes_Getter::Get_Method_Section_5(method,options,Function_Declaration_Location::DECLARATION);
+    Print_To_Stream(out,attributes5);
+
+    Print_To_Stream_With_Newline(out,";");
+    Print_To_Stream_With_Newline(out,"");
+❱
+◀private: static▶ void ☀Print_Method_Definition(std::wofstream & out, std::string const& file_name, Code_Type const& code_type, Method_Item const& method, std::vector<Data_Member_Item> const& members, std::vector<Method_Item> const& methods, bool const& object_method, C_Export_Settings const& options, std::string implicit_name, Object_Export_Method const& export_method)❰
+
+    Method_Signature_Printer::Print(out,file_name,code_type,method,options,Function_Declaration_Location::DEFINITION);
+    Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out,"{");
+    
+    Method_Body_Token_Printer::Print(out,file_name,method,members,methods,object_method,options,implicit_name,export_method);
+    
+    Print_To_Stream_With_Newline(out,"");
+	auto possible_end_comment = Method_Block_Ender::Possibly_Get_End_Of_Method_Comment(file_name,code_type,method,options);
+    Print_To_Stream_With_Newline(out,"} " + possible_end_comment);
+    Print_To_Stream_With_Newline(out,"");
+❱
+
+
+
+
+
+//other goodies
+
+
+
+◀public: static▶ void ☀Print_Function_Argument_Call(std::wofstream & out, std::vector<Function_Argument> const& arguments, C_Export_Settings const& options)❰
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(arguments
+             ,[&](Function_Argument arg){
+               Print_To_Stream(out,Identifier_Name_Deriver::Derive_Name(arg,options));
+               Print_To_Stream(out,", ");
+             }
+             ,[&](Function_Argument arg){
+               Print_To_Stream(out,Identifier_Name_Deriver::Derive_Name(arg,options));
+             });
+❱
+
+
+

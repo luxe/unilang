@@ -1,0 +1,54 @@
+class
+
+
+❪"code/transcompilers/unilang/structure/model/sections/method/method_item"❫
+❪"code/transcompilers/unilang/structure/model/sections/method/arguments/argument/function_argument"❫
+❪"code/transcompilers/unilang/structure/print/function_declaration_location"❫
+❪"attribute_placement_tester"❫
+❪"code/transcompilers/unilang/options/sections/method/attributes/all_method_attribute_settings"❫
+⚯
+
+⚞⚟
+
+//individual calls
+◀public: static▶ bool ☀Print_Unused_Method_Attribute(Method_Item const& method, All_Method_Attribute_Settings const& settings, Function_Declaration_Location const& location, int const& section)❰
+	return Method_Is_Unused(method) 
+	&& Attribute_Placement_Tester::Can_Be_Placed(settings.method.unused.placement,location,section);
+❱
+◀public: static▶ bool ☀Print_That_The_Return_Argument_Should_Be_Used_Attribute(Method_Item const& method, All_Method_Attribute_Settings const& settings, Function_Declaration_Location const& location, int const& section)❰
+	return Return_Value_Needs_Attribute(method)
+	&& Attribute_Placement_Tester::Can_Be_Placed(settings.arguments.used_return.placement,location,section);
+❱
+◀public: static▶ bool ☀Print_Unused_Argument_Attribute(Function_Argument const& arg, All_Method_Attribute_Settings const& settings, Function_Declaration_Location const& location, int const& section)❰
+	return Argument_Is_Intentially_Being_Ignored(arg)
+	&& Attribute_Placement_Tester::Can_Be_Placed(settings.arguments.unused_arg.placement,location,section);
+❱
+◀public: static▶ bool ☀Print_Unused_Non_Null_Attribute(Function_Argument const& arg, All_Method_Attribute_Settings const& settings, Function_Declaration_Location const& location, int const& section)❰
+	return Argument_Cant_Be_Null(arg)
+	&& Attribute_Placement_Tester::Can_Be_Placed(settings.arguments.non_null.placement,location,section);
+❱
+
+◀private: static▶ bool ☀Argument_Cant_Be_Null(Function_Argument const& arg)❰
+  return arg.is_reference;
+❱
+◀private: static▶ bool ☀Argument_Is_Intentially_Being_Ignored(Function_Argument const& arg)❰
+
+   if (arg.usage_requirement != Usage_Requirement::NOT_IGNORED){
+     return true;
+   }
+  return false;
+❱
+
+//"are they tagged in the code structure?" checks
+◀private: static▶ bool ☀Return_Value_Needs_Attribute(Method_Item const& method)❰
+
+  for (auto it: method.return_results){
+    if (it.usage_requirement == Usage_Requirement::NOT_IGNORED){
+      return true;
+     }
+  }
+  return false;
+❱
+◀private: static▶ bool ☀Method_Is_Unused(Method_Item const& method)❰
+  return method.is_unused;
+❱
