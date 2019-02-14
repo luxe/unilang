@@ -9,6 +9,7 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/transcompilers/unilang/user-frontend/code_graphs_creator"❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
@@ -17,9 +18,15 @@ class
 ⚞⚟
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
 
-    //the unilang file we are converting into the repo's readme
+    //Unicode please
+    std::locale::global(std::locale("en_US.UTF-8"));
+    std::cout.imbue(std::locale("en_US.utf8"));
+
+    //move to the right place in the repository
     auto build_from = Full_Path_To_Desktop() + "unilang/source/code/company/self/";
     Set_Path(build_from);
+    
+    //the files we are reading/building
     auto from = "unilang_docs.UniLang";
     auto to = Full_Path_To_Desktop() + "unilang/README.md";
     
@@ -28,15 +35,21 @@ class
     input.settings = Root_Settings_Getter::Get();
     input.options.input_files.emplace_back(from);
     auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
+    
+    //ensure the parse was good
     if (graphs.size() != 1){
         Exit_With_Error("we should have parsed out a single code graph");
     }
     
+    //get the things we need to build a markdown file
     auto structure = graphs[0].structure;
     auto contributors = input.settings.compiler_settings.trevor.contributors;
     auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
     auto result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
+    
+    
     std::cout << result << std::endl;
+    Write_To_File(to,result);
     
 
 ❱
