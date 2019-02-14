@@ -12,7 +12,7 @@ hcp(name = "special_parser_filters", deps = [
 "//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/tokens:token_group",
-"//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
+"//code/transcompilers/unilang/parser/structure_mapper/util:parser_utilities",
 "//code/utilities/types/vectors/observers:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
 "//code/transcompilers/unilang/options/parser:parser_settings"
@@ -35,8 +35,8 @@ hcp(name = "parser_token_stripper", deps = [
 "//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:parser_utilities",
+"//code/transcompilers/unilang/parser/structure_mapper/util:parser_utilities",
 "//code/transcompilers/unilang/options/parser/symbols:token_attribute_settings",
-"//code/transcompilers/unilang/parser_tokens_to_structure_converter/util:special_parser_filters",
+"//code/transcompilers/unilang/parser/structure_mapper/util:special_parser_filters",
 "//code/transcompilers/unilang/options/parser:parser_settings",
 ])
