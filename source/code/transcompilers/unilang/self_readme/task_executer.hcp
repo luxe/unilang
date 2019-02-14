@@ -12,16 +12,24 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/transcompilers/unilang/user-frontend/code_graphs_creator"❫
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/root_settings/root_settings_getter"❫
 ⚞⚟
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
 
     //the unilang file we are converting into the repo's readme
-    auto from = Full_Path_To_Desktop() + "unilang/source/code/company/self/unilang_docs.UniLang";
+    auto build_from = Full_Path_To_Desktop() + "unilang/source/code/company/self/";
+    Set_Path(build_from);
+    auto from = "unilang_docs.UniLang";
     auto to = Full_Path_To_Desktop() + "unilang/README.md";
     
     //parse it
     Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
     input.options.input_files.emplace_back(from);
     auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
+    if (graphs.size() != 1){
+        Exit_With_Error("we should have parsed out a single code graph");
+    }
+    
 
 ❱

@@ -2,6 +2,7 @@ class
 ❪"code/transcompilers/unilang/validators/file_name/filename_validation_settings"❫
 ❪vector❫
 ❪string❫
+❪iostream❫
 ⚯
 ❪"code/transcompilers/unilang/validators/file_name/filename_exception"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
@@ -13,10 +14,18 @@ class
 ⚞⚟
 ◀public: static▶ void ☀Validate_Input_File(Filename_Validation_Settings const& settings, std::string const& path_to_file, std::string const& expected_extension)❰
 
+    //get all the problems
     std::vector<std::string> problems;
     problems += Make_Sure_File_Has_The_Proper_File_Extension(settings,path_to_file,expected_extension);
     problems += Make_Sure_File_Exists(settings,path_to_file);
     problems += Make_Sure_File_Contains_Valid_Chars(settings,path_to_file);
+    
+    //show all the problems
+    if (settings.show_warnings){
+        for (auto const& it: problems){
+            std::cout << it << std::endl;
+        }
+    }
     
     //throw if we found any problems
     if (!problems.empty()){
