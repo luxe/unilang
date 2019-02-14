@@ -31,7 +31,7 @@ hcp(name = "structure_creator", deps = [
 "//code/transcompilers/unilang/options/parser:parser_settings",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
 "//code/transcompilers/unilang/validators/stream:token_stream_validator",
-"//code/transcompilers/unilang/tokenizer:tokenizer",
+"//code/transcompilers/unilang/parser/tokenizer:tokenizer",
 "//code/transcompilers/unilang/parser:macro_warner",
 "//code/transcompilers/unilang/parser:macro_resolver",
 "//code/transcompilers/unilang/parser/structure_mapper:code_object_creator",

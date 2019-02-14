@@ -15,7 +15,7 @@ hcp(name = "tokenizer_exception", deps = [
 hcp(name = "tokenizer_marker", deps = [
 "//code/transcompilers/unilang/file_marker:file_marker",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
-"//code/transcompilers/unilang/tokenizer:tokenizer_testing_settings",
+"//code/transcompilers/unilang/parser/tokenizer:tokenizer_testing_settings",
 "//code/transcompilers/unilang/file_marker:file_marker_adjuster",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
 "//code/transcompilers/unilang/options/parser:parser_settings",
@@ -24,11 +24,11 @@ hcp(name = "tokenizer_marker", deps = [
 hcp(name = "tokenizer", deps = [
 "//code/transcompilers/unilang/parser:parser_token",
 "//code/transcompilers/unilang/file_marker:file_marker",
-"//code/transcompilers/unilang/tokenizer:tokenizer_marker",
-"//code/transcompilers/unilang/tokenizer:tokenizer_testing_settings",
+"//code/transcompilers/unilang/parser/tokenizer:tokenizer_marker",
+"//code/transcompilers/unilang/parser/tokenizer:tokenizer_testing_settings",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
-"//code/transcompilers/unilang/tokenizer:tokenizer_exception",
+"//code/transcompilers/unilang/parser/tokenizer:tokenizer_exception",
 "//code/transcompilers/unilang/parser/body_parser:file_range_location",
 "//code/transcompilers/unilang/tokens:get_tokens",
 "//code/transcompilers/unilang/options/parser:parser_settings",
