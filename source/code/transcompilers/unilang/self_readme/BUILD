@@ -9,6 +9,8 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/utilities/filesystem/files/getting:lib",
+"//code/utilities/filesystem/paths:lib",
 ])
 
 cc_binary(
