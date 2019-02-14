@@ -62,7 +62,7 @@ hcp(name = "code_graphs_creator", deps = [
 "//code/transcompilers/unilang/validators/file_name:filename_validator",
 "//code/transcompilers/unilang/parser:parser",
 "//code/transcompilers/unilang/user-frontend/graph_adjuster:code_graph_adjuster",
-"//code/transcompilers/unilang/structure_static_analyzer:structure_static_analyzer",
+"//code/transcompilers/unilang/structure/analyze:structure_static_analyzer",
 "//code/utilities/types/strings/transformers/stripping:lib",
 ])
 
@@ -98,7 +98,7 @@ hcp(name = "after_artifact_actions", deps = [
 "//code/transcompilers/unilang/user-frontend:exception_handler",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
-"//code/transcompilers/unilang/structure_static_analyzer:structure_static_analyzer",
+"//code/transcompilers/unilang/structure/analyze:structure_static_analyzer",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/transcompilers/unilang/main:program_input",
 "//code/utilities/exits:lib",
