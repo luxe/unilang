@@ -31,6 +31,7 @@ class
     auto to_readme = Full_Path_To_Desktop() + "unilang/README.md";
     auto to_raw_pdf = Full_Path_To_Desktop() + "unilang/README-pdf.md";
     auto to_manual_pdf = Full_Path_To_Desktop() + "unilang/README.pdf";
+    auto to_latex_template = Full_Path_To_Desktop() + "unilang/README.tx";
     
     //parse it
     Program_Input input;
@@ -43,20 +44,26 @@ class
         Exit_With_Error("we should have parsed out a single code graph");
     }
     
-    //get the things we need to build a markdown file
-    std::cout << "build readme" << std::endl;
+    //build markdown documentation
     auto structure = graphs[0].structure;
     auto contributors = input.settings.compiler_settings.trevor.contributors;
     auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
     auto result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
     Write_To_File(to_readme,result);
     
+    
+    //build pdf documentation
     Set_Path(Full_Path_To_Desktop() + "unilang/");
-    std::cout << "build pdf" << std::endl;
+    Write_To_File(to_latex_template,Latex_Template());
+    
+    
     md_settings.headers.allow_labeled_image_titles = false;
     result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
     Write_To_File(to_raw_pdf,result);
     std::string command = "pandoc --toc -V -s ";
+    command += "--template=";
+    command += to_latex_template;
+    command += " ";
     command += "--variable mainfont='Palatino' ";
     command += "--variable sansfont='Helvetica' ";
     command += "--variable monofont='Menlo' ";
