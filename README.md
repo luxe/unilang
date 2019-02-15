@@ -8,19 +8,19 @@
 # Introduction
 
 ## Overview
-Welcome to the world of Unilang.  We'll start by getting you acquainted with the big picture.  Unilang is a tool for writing software.  And like all tools in software, it takes an input and produces an output.  The scope of unilang's throughput is ambitious yet necessary.  Everything a software engineer can express around a problem domain must be encoded in the same ontology.  The output of that ontology is every chosen artifact that facilitates desired tasks in that domain.  From a programming perspective, we unify all of the formal and informal languages involved in software development.  This information forms a single abstract model which is used to create various artifacts.  
+Welcome to the world of Unilang.  We'll start by getting you acquainted with the big picture.  Unilang is a tool for writing software.  And like all tools in software, it takes an input and produces an output.  The scope of unilang's throughput is ambitious.  Everything a software engineer can express around a problem domain must be encoded in the same ontology.  We find this to be necessary in maximizing our current understanding of the problem domain, and adapting to its change over time.  The output of this ontology is every chosen artifact that facilitates desired tasks in that domain.  From a programming perspective, we unify all formal and informal languages involved in software development.  This information is encoded as a single abstract model which is used to create various artifacts.  
 ![very high level overview of unilang](.readme/unilang_overview.png "")
 
-This explanation may appear imprecise.  Consider the transformation process of source code to other languages.  The scope of these other languages often do not entail all of the work that needs to be done for software in a real-world context.  
+The diagram above is intentionally vague.  We can use it to compate the transformation process from source code to other languages.  The scope of these other languages often do not entail all of the work that needs to be done in a real-world software engineering context.  
 ![high level overview of a GPL](.readme/typical_gpl_overview.png "")
 
-Much like other general purpose programming languages (GPLs), Unilang can be used to generate programs for any domain.  A key feature of unilang is that it can target source code of other languages.  In this regard, Unilang will act as a transcompiler to other programming languages.  
+The scope of general purpose programming languages (GPLs), are also realized within Unilang.  Unilang can be used to generate programs for any domain.  A key feature of unilang is that it can even target the source code of all other GPLs.  This means that unilang can be easily adopted in current systems as a transcompiler to other programming languages.  
 ![unilang as a transcompiler](.readme/unilang_as_a_transcompiler.png "")
 
 There are many other types of artifacts that should be created alongside software.  Unilang facilitates the creation of all related artifacts.  
 ![unilang to many artifacts](.readme/unilang_to_many_artifacts.png "")
 
-What you are reading right now was generated from Unilang.  
+In fact, what you are reading right now was generated from Unilang.  
 
 ## Motivation
 TODO.  
