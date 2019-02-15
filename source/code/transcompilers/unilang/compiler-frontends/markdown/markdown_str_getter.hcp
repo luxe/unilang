@@ -22,6 +22,7 @@ class
 ❪"code/utilities/types/char/lib"❫
 ❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
 ❪"code/utilities/time/date/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
@@ -48,12 +49,12 @@ class
 ◀private: static▶ bool ☀More_Of_A_Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     if (!p.title.value.empty()){
         for (auto const& s: p.sentences){
-            if (!s.text.value.empty()){
-                return false;
+            if (s.text.value.empty()){
+                return true;
             }
         }
     }
-    return true;
+    return false;
 ❱
 
 ◀private: static▶ std::string ☀Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
@@ -87,7 +88,8 @@ class
     if (!p.title.value.empty()){
         
         //add the title marker
-        Append(title,Depth_To_Header_Marker(0,settings));
+        Append_A_Newline(title);
+        Append(title,Depth_To_Header_Marker(as_signed(as_string(p.depth.value)),settings));
         Append_A_Space(title);
         
         //add the possible numbered
@@ -162,6 +164,7 @@ class
     Append(text,as_string(i.hover_text.value));
     Append(text,settings.image.hover_text_end_marker);
     Append_With_Newline(text,settings.image.image_path_end_marker);
+    Append_A_Newline(text);
     return text;
 ❱
 ◀private: static▶ std::string ☀Html_Markdown_Image(Sentence_Image const& i, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
