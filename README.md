@@ -8,22 +8,24 @@
 # Introduction
 
 ## Overview
-Welcome to the world of Unilang.  In this section we'll provide a high level overview on what unilang does.  You will gain an understanding of how unilang compares to other programming languages, and through this comparison, how it is fundamentally different.  We'll start by getting you acquainted with the big picture.  Unilang is a tool for writing software.  And like all tools in software, it takes an input and produces an output.  The scope of unilang's throughput however is ambitious.  Everything a software engineer can express around a problem domain must be encoded in the same ontology.  We find this necessary in maximizing our current understanding of the problem domain, and adapting to its change over time.  The output of this ontology is every chosen artifact that facilitates desired tasks in that domain.  From a programming perspective, we unify all formal and informal languages involved around software.  This information is encoded as a single abstract data model which is used to create various artifacts.  
-![very high level overview of unilang](.readme/unilang_overview.png "")
+Welcome to the world of Unilang; the self proclaimed universal programming language.  Unilang is a reconstructed approach on how language should be used to facilitate the creation of software.  In this introductory section we will give an overview on how Unilang is used in the context of software engineering.  We also compare Unilang with other programming languages to show the similarities and key differences between them.  The key take-away from this, is that Unilang is not competing with other programming languages.  It embraces them in its own implementation.  A primary focus when first introducing Unilang is a discussion around encoded information and software-related artifacts.  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations and scope of individual tools.  The effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  How this is achieved from a practical perspective is explored later.  
+
+So let's start by getting you acquainted with the big picture.  Unilang is a tool for writing software.  And like all tools in software, it takes an input and produces an output.  The scope of Unilang's throughput however is ambitious.  Everything a software engineer can express around a problem domain must be encoded in the same ontology.  We find this necessary in maximizing our current understanding of the problem domain, and adapting to its change over time.  The output of this ontology is every chosen artifact that facilitates desired tasks in that domain.  From a programming perspective, we unify all formal and informal languages involved around software.  This information is encoded as a single abstract data model which is used to create various artifacts.  
+![very high level overview of Unilang](.readme/unilang_overview.png "")
 
 The diagram above is intentionally vague.  However, we can use it to compare the transformation process of source code in other programing languages.  The scope of these other languages do not entail all of the work that needs to be done in a real-world software engineering context.  
 ![high level overview of a GPL](.readme/typical_gpl_overview.png "")
 
-The goals of general purpose programming languages (GPLs) shwon above, are also realized within Unilang.  Unilang can be used to generate programs for any domain.  A key feature of unilang is that it can even target the source code of all other GPLs.  This means that unilang can be easily adopted in current systems as a transcompiler to other programming languages.  
-![unilang as a transcompiler](.readme/unilang_as_a_transcompiler.png "")
+The goals of general purpose programming languages (GPLs) shown above, are also realized within Unilang.  Unilang can be used to generate programs for any domain.  A key feature of Unilang is that it can even target the source code of all other GPLs.  This means that Unilang can be easily adopted in current systems as a transcompiler to other programming languages.  
+![Unilang as a transcompiler](.readme/unilang_as_a_transcompiler.png "")
 
 There are many other types of artifacts that should be created alongside software.  Unilang facilitates the creation of these artifacts as well.  
-![unilang to many artifacts](.readme/unilang_to_many_artifacts.png "")
+![Unilang to many artifacts](.readme/unilang_to_many_artifacts.png "")
 
 In fact, what you are reading now was generated from Unilang.  
 
 ## Motivation
-TODO.  
+The motivation behind Unilang has grown organically while working as a software engineer.  It serves a purpose both practical and personal from working in the industry.  In this section we will cover the specific motivations around Unilang.  
 
 ### Practical
 TODO.  
@@ -32,28 +34,36 @@ TODO.
 TODO.  
 
 # Language Design
-In this section, we will discuss the theory of what a programming language should be.  We show how these ideas are applied in shaping the design of unilang.  
+In this section, we will discuss the theory of what a programming language should be.  We show how these ideas are applied in shaping the design of Unilang.  
 
 ## The hierarchy of language
 Consider the current language abstractions within the software engineering domain.  Unilang and its conceptual model are placed above these high level languages.  
-![software engineering language abstraction with unilang placed at the top](.readme/language-abstraction.png "")
+![software engineering language abstraction with Unilang placed at the top](.readme/language-abstraction.png "")
 
 Unilang can transcompile down to other languages.  
 
 ## The structure of language
-Many programming languages represent their syntactic structure as an abstract syntax tree.  Other languages like Lisp and its derivations choose nested lists.  The structure of unilang is a composed set of algebraic data types.  
-![choosing the unilang structure](.readme/choosing-structure.png "")
+Many programming languages represent their syntactic structure as an abstract syntax tree.  Other languages like Lisp and its derivations choose nested lists.  The structure of Unilang is a composed set of algebraic data types.  
+![choosing the Unilang structure](.readme/choosing-structure.png "")
 
 This is a subtle but important distinction.  An ADT models the concise structure and shape of programming concepts.  This allows us to work backwards and enable programmers to efficiently populate this structure.  Trying to contort a variety of programming concepts syntactically, and then extracting them out with regular expressions and grammars into generic data structures such as trees and lists has proven insufficient for semantic analysis.  Its the reason that parsing errors are often confusing and unhelpful.  Its the reason that community tooling on code transformation is often limited.  Most importantly, its the reason a language's evolution tends to stagnate as more abstract concepts are squeezed into an existing syntax and grammar.  
 
-## The look of language
-TODO. this is where we talk about discrete infinity.  
+## Reading and writing ergonomics
+TODO. this is where we talk about discrete infinity.  TODO. this is where we talk about projectional editors.  
 
-## The touch of language
-TODO. this is where we talk about projectional editors.  
+## Guiding Principles
+
+### Syntax
+Syntax doesn't matter. It never has, and it never will.  We eliminate syntax complexity through unique symbolic tokens.  Unilang pulls from Unicode's Private Use Area (PUA).  As a result, no matter how many tokens get added the the language, the lexical and syntactical analysis remains trivial.  Unilang comes with its own font, but users can choose their own glyphs to represent individual code points.  Although Unilang could equally be represented in a markup format such as json or yaml, we provide the unicode textual frontend as it tends to look simpler, allow for custom glyphs, and is easy to colorize in editors.  User's can choose to write directly in this unicode format, or use the graphical system built on top of it.  
+![Unilang's frontend perspectives vs developer experience](.readme/unilang-look.png "")
+
+
+
+### Grammar
+You can express anything in any order assuming that it makes sense conceptually.  Semantic analysis builds an ADT nearly identical to the tokens you write.  You can leave many token out, and based on various configurations, you will get default values, automated enrichments, or descriptive errors.  So many languages have bad compiler errors.  You will not find this in Unilang due to the rich token set and easy to understand grammar.  
 
 # Developing Unilang
-TODO. here we talk about information for anyone who wants to contribute to the unilang project.  
+TODO. here we talk about information for anyone who wants to contribute to the Unilang project.  
 
 ## Build System
 TODO.  
@@ -63,3 +73,6 @@ The project is designed to be hermetic.  This means that all external dependenci
 ![diagram of the build system](.readme/build-system.png "")
 
 
+
+## Contribute
+There are no rules.  Make a ticket about anything.  We'll figure it out together.  
