@@ -17,6 +17,7 @@ hcp(name = "sentence", deps = [
 "//code/transcompilers/unilang/parser:token_value",
 "//code/transcompilers/unilang/structure/model/sections/literature:sentence_tag",
 "//code/transcompilers/unilang/structure/model/sections/literature:sentence_image",
+"//code/transcompilers/unilang/structure/model/sections/literature:code_line",
 "//code/transcompilers/unilang/structure/model/sections/literature/table:sentence_table",
 ])
 
@@ -34,5 +35,9 @@ hcp(name = "sentence_tag", deps = [
 ])
 
 hcp(name = "outline_point", deps = [
+"//code/transcompilers/unilang/parser:token_value"
+])
+
+hcp(name = "code_line", deps = [
 "//code/transcompilers/unilang/parser:token_value"
 ])
