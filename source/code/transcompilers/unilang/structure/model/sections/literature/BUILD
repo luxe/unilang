@@ -10,6 +10,7 @@ hcp(name = "literature_section", deps = [
 hcp(name = "paragraph", deps = [
 "//code/transcompilers/unilang/parser:token_value",
 "//code/transcompilers/unilang/structure/model/sections/literature:sentence",
+"//code/transcompilers/unilang/structure/model/sections/literature:outline_point",
 ])
 
 hcp(name = "sentence", deps = [
@@ -29,5 +30,9 @@ hcp(name = "sentence_image_size", deps = [
 ])
 
 hcp(name = "sentence_tag", deps = [
+"//code/transcompilers/unilang/parser:token_value"
+])
+
+hcp(name = "outline_point", deps = [
 "//code/transcompilers/unilang/parser:token_value"
 ])
