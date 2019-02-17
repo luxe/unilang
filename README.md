@@ -82,6 +82,29 @@ TODO. talk about how to use unilang.
 
 ## Installation
 Ready to get started?  Unilang can be built from source in the following way.  
+```
+git clone git@github.com:Unilang/unilang.git unilang
+cd unilang
+./build_everything
+LITERARY_SENTENCE_CODE_LINE
+```
+Unilang can be built from source in thssssse following way.  Various CIs are also building from source and can be used as reference.  
+| Continuous Integration | 
+| ... | 
+| 
+| Status | 
+| ... | 
+| 
+| Notes | 
+| ... | 
+| App Veyor | 
+| 
+| 
+| [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar/branch/master?svg=true)](https://ci.appveyor.com/project/luxe/everything/branch/master) | 
+| 
+| 
+| Full Build | 
+
 
 # Developer Guide
 TODO. here we talk about information for anyone who wants to contribute to the Unilang project.  
