@@ -7,6 +7,7 @@ class
 ❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/transcompilers/unilang/options/language-specific/markdown/markdown_settings"❫
 ⚯
+❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_header_getter"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
@@ -64,7 +65,7 @@ class
         }
     }
     else{
-        Append(text,Possibly_Get_Title(it,contributors,settings));
+        Append(text,Markdown_Header_Getter::Get(it,contributors,settings));
     }
     Append(text,Possibly_Get_Outline(it,contributors,settings));
     return text;
@@ -106,27 +107,6 @@ class
         Append_With_Newline(text,Date_As_Full_Month_Day_Year());
     }
     return text;
-❱
-
-◀private: static▶ std::string ☀Possibly_Get_Title(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    std::string title;
-    if (!p.title.value.empty()){
-        
-        //add the title marker
-        Append_A_Newline(title);
-        Append(title,Depth_To_Header_Marker(as_signed(as_string(p.depth.value)),settings));
-        Append_A_Space(title);
-        
-        //add the possible numbered
-        //in markdown you can just mark everything
-        //as 1., and it will be rendered with the correct numbers
-        if (p.is_numbered){
-            Append(title,settings.standard_number_list);
-        }
-    }
-            //add the actual title
-        Append_With_Newline(title,p.title.value);
-    return title;
 ❱
 ◀private: static▶ std::string ☀Possibly_Get_Sentences(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
@@ -207,27 +187,4 @@ class
         Append_With_Newline(text,"\">");
     Append_With_Newline(text,"</p>");
     return text;
-❱
-◀private: static▶ std::string ☀Depth_To_Header_Marker(int depth, Markdown_Settings const& settings)❰
-    if (depth == 0){
-        return settings.headers.h1;
-    }
-    if (depth == 1){
-        return settings.headers.h2;
-    }
-    if (depth == 2){
-        return settings.headers.h3;
-    }
-    if (depth == 3){
-        return settings.headers.h4;
-    }
-    if (depth == 4){
-        return settings.headers.h5;
-    }
-    if (depth == 5){
-        return settings.headers.h6;
-    }
-    
-    //higher than 6? just use 6.
-    return settings.headers.h6;
 ❱
