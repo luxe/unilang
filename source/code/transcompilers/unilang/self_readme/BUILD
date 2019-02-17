@@ -6,6 +6,7 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
 "//code/utilities/exits:lib",
+"//code/utilities/locale:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/filesystem/files/creating:lib",
