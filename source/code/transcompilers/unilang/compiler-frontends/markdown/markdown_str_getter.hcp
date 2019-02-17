@@ -28,23 +28,45 @@ class
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
     for (auto const& it: structure.literature.paragraphs){
-        if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
-            
-            if (settings.headers.allow_labeled_image_titles){
-                Append(text,Labeled_Image_Title_Display(it,contributors,settings));
-            }
-            else{
-                Append(text,Labeled_NonImage_Title_Display(it,contributors,settings));
-            }
-        }
-        else{
-            Append(text,Possibly_Get_Title(it,contributors,settings));
-            Append(text,Possibly_Get_Sentences(it,contributors,settings));
+        Append(text,Get_Title(it,contributors,settings));
+        Append(text,Possibly_Get_Outline(it,contributors,settings));
+        Append(text,Possibly_Get_Sentences(it,contributors,settings));
+    }
+    
+    return text;
+❱
+
+◀private: static▶ std::string ☀Possibly_Get_Outline(Paragraph const& it, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (settings.outlines.print){
+        Append_A_Newline(text);
+        for (auto const& it: it.outline_points){
+            Append(text,settings.outlines.prefix_marker);
+            Append_With_Newline(text,as_string(it.point.value));
         }
     }
     
     return text;
 ❱
+
+◀private: static▶ std::string ☀Get_Title(Paragraph const& it, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string text;
+    if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
+        
+        if (settings.headers.allow_labeled_image_titles){
+            Append(text,Labeled_Image_Title_Display(it,contributors,settings));
+        }
+        else{
+            Append(text,Labeled_NonImage_Title_Display(it,contributors,settings));
+        }
+    }
+    else{
+        Append(text,Possibly_Get_Title(it,contributors,settings));
+        Append(text,Possibly_Get_Sentences(it,contributors,settings));
+    }
+    return text;
+❱
+
 
 ◀private: static▶ bool ☀More_Of_A_Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     if (!p.title.value.empty()){

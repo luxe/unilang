@@ -16,7 +16,11 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/main/root_settings:root_settings_getter",
-"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter"
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
+"//code/transcompilers/unilang/self_readme:latex_template_getter",
+])
+
+hcp(name = "latex_template_getter", deps = [
 ])
 
 cc_binary(
