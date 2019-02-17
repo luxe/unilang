@@ -9,6 +9,8 @@ class
 ⚯
 ❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_header_getter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_image_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_title_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_sentence_extra_getter"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
@@ -30,10 +32,14 @@ class
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
     for (auto const& it: structure.literature.paragraphs){
-        Append(text,Get_Possible_Image_Title(it,contributors,settings));
+        Append(text,Markdown_Title_Getter::Get_Possible_Image_Title(it,contributors,settings));
         Append(text,Possibly_Get_Outline(it,contributors,settings));
         
-        if (!More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
+        //if the title was a special image title, then
+        //we don't want to print any of the sentences and supplementary info that's there
+        //we technically already printed some of this sentence information as part of the title, and are skipping the rest
+        //and avoiding doing it twice.
+        if (!Markdown_Title_Getter::More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
             Append(text,Possibly_Get_Sentences(it,contributors,settings));
         }
     }
@@ -51,62 +57,6 @@ class
         }
     }
     
-    return text;
-❱
-
-◀private: static▶ std::string ☀Get_Possible_Image_Title(Paragraph const& it, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    std::string text;
-    if (More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
-        
-        if (settings.headers.allow_labeled_image_titles){
-            Append(text,Labeled_Image_Title_Display(it,contributors,settings));
-        }
-        else{
-            Append(text,Labeled_NonImage_Title_Display(it,contributors,settings));
-        }
-    }
-    else{
-        Append(text,Markdown_Header_Getter::Get(it,contributors,settings));
-    }
-    Append(text,Possibly_Get_Outline(it,contributors,settings));
-    return text;
-❱
-
-
-◀private: static▶ bool ☀More_Of_A_Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    if (!p.title.value.empty()){
-        for (auto const& s: p.sentences){
-            if (s.text.value.empty()){
-                return true;
-            }
-        }
-    }
-    return false;
-❱
-
-◀private: static▶ std::string ☀Labeled_Image_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    std::string text;
-    for (auto const& s: p.sentences){
-        Append_With_Newline(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
-        Append(text,"**");
-        Append(text,as_string(p.title.value));
-        Append_With_Newline(text,"**");
-        Append_A_Newline(text);
-    }
-    return text;
-❱
-◀private: static▶ std::string ☀Labeled_NonImage_Title_Display(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    std::string text;
-    for (auto const& s: p.sentences){
-        for (auto const& it: s.images){
-            Append(text,"% ");
-            Append_With_Newline(text,as_string(it.alternative_text.value));
-        }
-        Append(text,"% ");
-        Append_With_Newline(text,as_string(p.title.value));
-        Append(text,"% ");
-        Append_With_Newline(text,Date_As_Full_Month_Day_Year());
-    }
     return text;
 ❱
 ◀private: static▶ std::string ☀Possibly_Get_Sentences(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
@@ -131,17 +81,7 @@ class
     }
     if (!s.images.empty() || !s.tables.empty()){
         Append_A_Newline(text);
-        Append(text,Possibly_Get_Sentence_Suplementary(s,contributors,settings));
-    }
-    return text;
-❱
-◀private: static▶ std::string ☀Possibly_Get_Sentence_Suplementary(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    std::string text;
-    
-    Append(text,Markdown_Image_Getter::Get(s,contributors,settings));
-    
-    //print tables
-    for (auto const& it: s.tables){
+        Append(text,Markdown_Sentence_Extra_Getter::Get(s,contributors,settings));
     }
     return text;
 ❱
