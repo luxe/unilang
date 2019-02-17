@@ -33,6 +33,8 @@ class
     auto to_raw_pdf = Full_Path_To_Desktop() + "unilang/README-pdf.md";
     auto to_manual_pdf = Full_Path_To_Desktop() + "unilang/README.pdf";
     auto to_latex_template = Full_Path_To_Desktop() + "unilang/README.tx";
+    auto to_slide_md = Full_Path_To_Desktop() + "unilang/README-slides.md";
+    auto to_dzslides_html = Full_Path_To_Desktop() + "unilang/README-slides.html";
     
     //parse it
     Program_Input input;
@@ -56,8 +58,6 @@ class
     //build pdf documentation
     Set_Path(Full_Path_To_Desktop() + "unilang/");
     Write_To_File(to_latex_template,Latex_Template_Getter::Get());
-    
-    
     md_settings.headers.allow_labeled_image_titles = false;
     result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
     Write_To_File(to_raw_pdf,result);
@@ -74,8 +74,20 @@ class
     command += to_manual_pdf;
     command += " ";
     command += to_raw_pdf;
-    std::cout << command << std::endl;
     if (Unsuccessful_Run_Of_Command(command)){
         Exit_With_Error("failed to create pdf");
+    }
+    
+    //build html slides documentation
+    md_settings.outlines.print = true;
+    md_settings.sentences.print = false;
+    result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
+    Write_To_File(to_slide_md,result);
+    command = "pandoc -s --mathml -i -t dzslides ";
+    command += to_slide_md;
+    command += " -o ";
+    command += to_dzslides_html;
+    if (Unsuccessful_Run_Of_Command(command)){
+        Exit_With_Error("failed to create html slides");
     }
 ❱
