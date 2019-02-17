@@ -46,6 +46,7 @@ hcp(name = "markdown_str_getter", deps = [
 "//code/utilities/time/date:lib",
 "//code/utilities/types/strings/observers/converting:lib",
 "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_header_getter",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",
 ])
 
 hcp(name = "markdown_settings_getter", deps = [
@@ -55,6 +56,20 @@ hcp(name = "markdown_settings_getter", deps = [
 
 
 hcp(name = "markdown_header_getter", deps = [
+"//code/transcompilers/unilang/structure/model:structure",
+"//code/transcompilers/unilang/contributor:contributor",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
+"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/converters:lib",
+"//code/utilities/types/strings/observers/other:lib",
+"//code/utilities/types/vectors/observers:lib",
+"//code/utilities/types/vectors/operators:lib",
+"//code/utilities/types/char:lib",
+"//code/utilities/types/strings/observers/converting:lib",
+])
+
+hcp(name = "markdown_image_getter", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/contributor:contributor",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
