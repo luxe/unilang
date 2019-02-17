@@ -7,6 +7,8 @@ hcp("markdown_settings",deps = [
 "//code/transcompilers/unilang/options/language-specific/markdown:header_settings",
 "//code/transcompilers/unilang/options/language-specific/markdown:outline_settings",
 "//code/transcompilers/unilang/options/language-specific/markdown:markdown_image_settings",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_table_settings",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_code_settings",
 "//code/transcompilers/unilang/options/language-specific/markdown:sentence_settings",
 "//code/transcompilers/unilang/options/sections:portion_options",
 "//code/transcompilers/unilang/options:general_options",
@@ -20,6 +22,12 @@ hcp("outline_settings",deps = [
 ])
 
 hcp("markdown_image_settings",deps = [
+])
+
+hcp("markdown_code_settings",deps = [
+])
+
+hcp("markdown_table_settings",deps = [
 ])
 
 hcp("sentence_settings",deps = [

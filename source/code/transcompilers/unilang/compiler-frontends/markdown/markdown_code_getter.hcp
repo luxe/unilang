@@ -7,16 +7,28 @@ class
 ❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/transcompilers/unilang/options/language-specific/markdown/markdown_settings"❫
 ⚯
-❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_image_getter"❫
-❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_table_getter"❫
-❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_code_getter"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
-    Append(text,Markdown_Image_Getter::Get(s,contributors,settings));
-    Append(text,Markdown_Table_Getter::Get(s,contributors,settings));
-    Append(text,Markdown_Code_Getter::Get(s,contributors,settings));
+    
+    //stop early if we don't want to print the code block
+    if (!settings.code.print){
+        return text;
+    }
+    
+    //stop early if we don't have any code lines
+    if (s.codes.empty()){
+        return text;
+    }
+    
+    //print code block
+    Append_With_Newline(text,settings.code.start_code_block);
+    for (auto const& it: s.codes){
+        Append_With_Newline(text,as_string(it.line.value));
+    }
+    Append_With_Newline(text,settings.code.end_code_block);
+    
     return text;
 ❱

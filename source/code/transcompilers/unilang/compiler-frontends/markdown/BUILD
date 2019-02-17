@@ -118,4 +118,24 @@ hcp(name = "markdown_sentence_extra_getter", deps = [
 "//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",
 "//code/utilities/types/strings/transformers/appending:lib",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_table_getter",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_code_getter",
+])
+
+hcp(name = "markdown_table_getter", deps = [
+"//code/transcompilers/unilang/structure/model:structure",
+"//code/transcompilers/unilang/contributor:contributor",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",
+"//code/utilities/types/strings/transformers/appending:lib",
+])
+
+hcp(name = "markdown_code_getter", deps = [
+"//code/transcompilers/unilang/structure/model:structure",
+"//code/transcompilers/unilang/contributor:contributor",
+"//code/transcompilers/unilang/structure/model:inlined_structures",
+"//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
+"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",
+"//code/utilities/types/strings/transformers/appending:lib",
 ])
