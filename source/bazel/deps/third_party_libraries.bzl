@@ -11,6 +11,8 @@ load("//bazel/deps/get:rapidjson.bzl", "rapid_json")
 load("//bazel/deps/get:nlohmann_json.bzl", "nlohmann_json")
 load("//bazel/deps/get:yaml_cpp.bzl", "yaml_cpp")
 load("//bazel/deps/get:protobuf.bzl", "protobuf")
+load("//bazel/deps/get:apache_thrift.bzl", "apache_thrift")
+load("//bazel/deps/get:sdl2.bzl", "sdl2")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -44,16 +46,7 @@ def third_party_libraries():
     nlohmann_json()
     yaml_cpp()
     protobuf()
-
-    http_archive(
-        name = "org_apache_thrift",
-        build_file = "//bazel/deps/build_files:thrift.BUILD",
-        sha256 = "0e324569321a1b626381baabbb98000c8dd3a59697292dbcc71e67135af0fefd",
-        strip_prefix = "thrift-0.11.0",
-        urls = [
-            "https://github.com/apache/thrift/archive/0.11.0.tar.gz",
-        ],
-    )
+    apache_thrift()
     
     # Data Structures
     http_archive(
@@ -83,6 +76,7 @@ def third_party_libraries():
     )
     
     # Graphics
+    sdl2()
     http_archive(
         name = "cairo",
         build_file = "//bazel/deps/build_files:cairo.BUILD",
