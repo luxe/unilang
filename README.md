@@ -8,6 +8,8 @@
 <details>
 
 <summary>Introduction</summary>
+
+
 ## Overview
 Unilang is self proclaimed universal programming language.  It is a reconstructed approach on how language should be used to facilitate the creation of software.  In this introduction we will describe how Unilang is used in the context of software engineering.  We will compare it to other programming languages to show the similarities and key differences between them.  The important take-away is that Unilang is not competing with other programming languages.  It embraces all of them in its own implementation.  A primary focus when first introducing Unilang is a discussion around **encoded information** and **software-related artifacts**.  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations and scope of individual tools.  The effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  How this is achieved from a practical perspective is explored later.  
 So let's start by getting you acquainted with the big picture.  Unilang is a tool for writing software.  And like all tools in software, it takes an input and produces an output.  The scope of Unilang's throughput however is ambitious.  Everything a software engineer can express around a problem domain must be encoded in the same ontology.  We find this necessary in maximizing our current understanding of the problem domain, and adapting to its change over time.  The output of this ontology is every chosen artifact that facilitates desired tasks in that domain.  From a programming perspective, we unify all formal and informal languages involved around software.  This information is encoded as a single abstract data model which is used to create various artifacts.  
@@ -35,7 +37,9 @@ TODO.
 </details>
 <details>
 
-<summary>Features</summary>TODO. also consider a language matrix of tests/features that we have working across languages.  
+<summary>Features</summary>
+
+TODO. also consider a language matrix of tests/features that we have working across languages.  
 
 ## IDL support
 TODO.  
@@ -48,7 +52,9 @@ TODO.
 </details>
 <details>
 
-<summary>Language Design</summary>In this section, we will discuss the theory of what a programming language should be.  We show how these ideas are applied in shaping the design of Unilang.  
+<summary>Language Design</summary>
+
+In this section, we will discuss the theory of what a programming language should be.  We show how these ideas are applied in shaping the design of Unilang.  
 
 ## Hierarchy
 In this section we discuss the hierarchy of language.  Consider the current language abstractions within the software engineering domain.  Unilang and its conceptual model are placed above these high level languages.  
@@ -81,7 +87,9 @@ Unilang could target LLVM, output byte code for the JVM, or operate under its ow
 </details>
 <details>
 
-<summary>User Guide</summary>TODO. talk about how to use unilang.  
+<summary>User Guide</summary>
+
+TODO. talk about how to use unilang.  
 
 ## Installation
 Ready to get started?  Unilang can be built from source in the following way.  
@@ -108,7 +116,9 @@ Travis | [![Build Status](https://travis-ci.com/unilang/unilang.svg?branch=maste
 </details>
 <details>
 
-<summary>Developer Guide</summary>TODO. here we talk about information for anyone who wants to contribute to the Unilang project.  
+<summary>Developer Guide</summary>
+
+TODO. here we talk about information for anyone who wants to contribute to the Unilang project.  
 
 ## Build System
 TODO.  
