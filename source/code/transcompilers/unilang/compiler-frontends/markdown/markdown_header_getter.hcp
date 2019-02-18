@@ -21,7 +21,24 @@ class
         
         //add the title marker
         Append_A_Newline(title);
-        Append(title,Depth_To_Header_Marker(as_signed(as_string(p.depth.value)),settings));
+        const auto depth = as_signed(as_string(p.depth.value));
+        
+        //decide what kind of header we want to build
+        if (Should_Do_Summary_Tags(depth,settings)){
+            Append(title,Summary_Tagged_Header(p,contributors,settings));
+        }
+        else{
+            Append(title,Regular_Header(p,contributors,settings));
+        }
+    }
+    return title;
+❱
+
+
+◀private: static▶ std::string ☀Regular_Header(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+        std::string title;
+        const auto depth = as_signed(as_string(p.depth.value));
+        Append(title,Depth_To_Header_Marker(depth,settings));
         Append_A_Space(title);
         
         //add the possible numbered
@@ -30,10 +47,39 @@ class
         if (p.is_numbered){
             Append(title,settings.headers.standard_number_list);
         }
-    }
-            //add the actual title
+        
+        //add the actual title
         Append_With_Newline(title,p.title.value);
+        return title;
+❱
+
+◀private: static▶ std::string ☀Summary_Tagged_Header(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+    std::string title;
+    
+    Append(title,settings.headers.summary_start_tag);
+    //add the possible numbered
+    //in markdown you can just mark everything
+    //as 1., and it will be rendered with the correct numbers
+    if (p.is_numbered){
+        Append(title,settings.headers.standard_number_list);
+    }
+    
+    //add the actual title
+    Append(title,p.title.value);
+    Append(title,settings.headers.summary_end_tag);
+        
     return title;
+❱
+
+
+◀private: static▶ bool ☀Should_Do_Summary_Tags(int depth, Markdown_Settings const& settings)❰
+
+    if (depth == 0){
+        if (settings.headers.h1_as_summary_tags){
+            return true;
+        }
+    }
+    return false;
 ❱
 
 ◀private: static▶ std::string ☀Depth_To_Header_Marker(int depth, Markdown_Settings const& settings)❰

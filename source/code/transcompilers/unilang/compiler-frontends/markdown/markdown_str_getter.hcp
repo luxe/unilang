@@ -32,6 +32,15 @@ class
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
     for (auto const& it: structure.literature.paragraphs){
+        
+        const auto depth = as_signed(as_string(it.depth.value));
+        if (!Markdown_Title_Getter::More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
+            if (depth == 0 && settings.headers.h1_as_details_tags){
+                Append_With_Newline(text,settings.headers.details_end_tag);
+                Append_With_Newline(text,settings.headers.details_start_tag);
+            }
+        }
+        
         Append(text,Markdown_Title_Getter::Get_Possible_Image_Title(it,contributors,settings));
         Append(text,Possibly_Get_Outline(it,contributors,settings));
         
@@ -41,11 +50,16 @@ class
         //and avoiding doing it twice.
         if (!Markdown_Title_Getter::More_Of_A_Labeled_Image_Title_Display(it,contributors,settings)){
             Append(text,Possibly_Get_Sentences(it,contributors,settings));
+            // if (depth == 0 && settings.headers.h1_as_details_tags){
+            //     Append_With_Newline(text,settings.headers.details_end_tag);
+            // }
         }
     }
     
     return text;
 ❱
+
+
 
 ◀private: static▶ std::string ☀Possibly_Get_Outline(Paragraph const& it, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
