@@ -12,7 +12,12 @@ load("//bazel/deps/get:nlohmann_json.bzl", "nlohmann_json")
 load("//bazel/deps/get:yaml_cpp.bzl", "yaml_cpp")
 load("//bazel/deps/get:protobuf.bzl", "protobuf")
 load("//bazel/deps/get:apache_thrift.bzl", "apache_thrift")
+load("//bazel/deps/get:andres_graph.bzl", "andres_graph")
+load("//bazel/deps/get:gmp.bzl", "gmp")
+load("//bazel/deps/get:tbb.bzl", "tbb")
+load("//bazel/deps/get:cpp_taskflow.bzl", "cpp_taskflow")
 load("//bazel/deps/get:sdl2.bzl", "sdl2")
+load("//bazel/deps/get:imgui.bzl", "imgui")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -49,34 +54,14 @@ def third_party_libraries():
     apache_thrift()
     
     # Data Structures
-    http_archive(
-        name = "andres_graph",
-        build_file = "//bazel/deps/build_files:andres_graph.BUILD",
-        sha256 = "00432f3007b4cb2a8d6f2e021fd5625a79e307d6532971719ca6ab81dd0ae752",
-        strip_prefix = "graph-1.11",
-        urls = [
-            "https://github.com/bjoern-andres/graph/archive/v1.11.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "tbb",
-        build_file = "//bazel/deps/build_files:tbb.BUILD",
-        sha256 = "4d149895826cea785cd3b9a14f4aa743b6ef0df520eca7ee27d438fdc3d73399",
-        strip_prefix = "tbb-2019",
-        urls = [
-            "https://github.com/01org/tbb/archive/2019.tar.gz",
-        ],
-    )
+    andres_graph()
     
     # Math
-    git_repository(
-        name = "bazelify_gmp",
-        remote = "https://github.com/robin-thomas/bazelify-gmp",
-        commit = "bb4881b35e6864c90493980d035e1d984cafd093",
-    )
+    gmp()
     
     # Graphics
     sdl2()
+    imgui()
     http_archive(
         name = "cairo",
         build_file = "//bazel/deps/build_files:cairo.BUILD",
@@ -204,15 +189,8 @@ def third_party_libraries():
     )
     
     # Threading / Workflow
-    http_archive(
-        name = "cpptaskflow",
-        build_file = "//bazel/deps/build_files:cpptaskflow.BUILD",
-        sha256 = "d68ccaf99903cd148946ef3b78ceeb0278962ec7192d0cc739554bb1e1c5a697",
-        strip_prefix = "cpp-taskflow-67fc5c1cab8b8f72729ca5b0a97f7adb466c9f8a",
-        urls = [
-            "https://github.com/cpp-taskflow/cpp-taskflow/archive/67fc5c1cab8b8f72729ca5b0a97f7adb466c9f8a.tar.gz",
-        ],
-    )
+    cpp_taskflow()
+    tbb()
     
     # Other
     http_archive(
@@ -238,24 +216,12 @@ def third_party_libraries():
     #other dependencies needed:
 
     #other things to add
-    #gmp
-    #json (ttps://github.com/nlohmann/json)
+    #gmp (this was hard)
     #pretty_printers
     #curl
     #pstreams
-    #add-range-v3 library (Eric Neibler)
+    #add-range-v3 library
     #add klmr-cpp11-range
-
-    #need to make hermetic
-    #sudo apt-get install libsdl2-dev
-    #sudo apt-get install libsdl1.2-dev
-    #sudo apt install libjpeg9-dev libwebp-dev libtiff5-dev libsdl2-image-dev libsdl2-image-2.0-0
-    http_archive(
-          name = "imgui",
-          urls = ['https://github.com/ocornut/imgui/archive/v1.62.tar.gz'],
-          build_file = "//bazel/deps/build_files:imgui.BUILD",
-          strip_prefix = 'imgui-1.62',
-    )
 
     #need to make hermetic
     #sudo apt-get install xdotool
