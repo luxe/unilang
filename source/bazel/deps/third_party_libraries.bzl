@@ -19,7 +19,7 @@ load("//bazel/deps/get:sdl2.bzl", "sdl2")
 # for the urls.  the first url can be where we host it.
 
 # TODO(thickey): as a rule of thumb, we do not want patch files.  
-# when a patch file is created, we need to work the original author to merge it back.
+# when a patch file is created, we need to work with the original author to merge it back.
 # In the worst case scenarios where an agreement cannot be made with the author, or
 # the original author is unresponsive, we can fork the project.
 
