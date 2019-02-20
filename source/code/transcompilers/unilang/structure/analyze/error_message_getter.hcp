@@ -43,9 +43,8 @@ class
     //I've been accidentally new lining comments after a comma
     //unilang expects each sentence to be a line.
     //i might change that later, but here is a warning I might want regardless
-    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.brief_description.value),settings.warn_about_empty_brief_description,error_messages,structure,"brief line ends with a comma");
-    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.detailed_description.value),settings.warn_about_empty_detailed_description,error_messages,structure,"detail line ends with a comma");
-    
+    Token_Ends_With_Comma_Error(structure.meta.brief_description,settings.warn_about_empty_brief_description,error_messages,structure);
+    Token_Ends_With_Comma_Error(structure.meta.detailed_description,settings.warn_about_empty_detailed_description,error_messages,structure);
     
 ❱
 
@@ -99,10 +98,10 @@ class
 ◀private: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Brief_Import_Comment();
     for (auto it: structure.imports.interface_dependencies){
-        Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_interface_import_comment,error_messages,structure,"Missing interface import comment");
+        Empty_Token_Value_Error(it.comment,settings.warn_about_no_interface_import_comment,error_messages,structure);
     }
     for (auto it: structure.imports.implementation_dependencies){
-        Add_Error_Based_On_Expression_And_Desire(it.comment.value.empty(),settings.warn_about_no_implementation_import_comment,error_messages,structure,"Missing implementation import comment");
+        Empty_Token_Value_Error(it.comment,settings.warn_about_no_implementation_import_comment,error_messages,structure);
     }
 ❱
 ◀private: static▶ void ☀Print_Warnings_About_Method_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
@@ -164,6 +163,20 @@ class
     message += " is empty";
     Add_Error(error_messages,t.location,structure,message);
 ❱
+
+◀private: static▶ void ☀Token_Ends_With_Comma_Error(Token_Value const& t, bool desire, std::vector<Error_Message> & error_messages, Structure const& structure)❰
+    if (!desire){
+        return;
+    }
+    if (!A_Line_Ends_With_A_Comma(t.value)){
+        return;
+    }
+    
+    std::string message = as_string(t.name);
+    message += " has a line that ends with a comma";
+    Add_Error(error_messages,t.location,structure,message);
+❱
+
 
 //the expression needs to be true and we need to have a desire to print the error, else dont
 ◀private: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<Error_Message> & error_messages, Structure const& structure, std::string const& error)❰
