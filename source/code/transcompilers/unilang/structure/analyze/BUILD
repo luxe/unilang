@@ -11,8 +11,14 @@ hcp(name = "structure_static_analyzer", deps = [
 "//code/utilities/types/sets:lib",
 "//code/transcompilers/unilang/structure/query:closed_box_function_checker",
 ":error_message",
+"//code/transcompilers/unilang/structure/analyze:error_message_printer",
 ])
 
 hcp(name = "error_message", deps = [
 "//code/transcompilers/unilang/parser/body_parser:file_range_location",
+])
+
+hcp(name = "error_message_printer", deps = [
+"//code/transcompilers/unilang/options/static_analysis:static_analysis_settings",
+"//code/transcompilers/unilang/structure/analyze:error_message",
 ])
