@@ -27,6 +27,28 @@ class
     return error_messages;
 ❱
 
+◀private: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
+    //Spell_Check_Brief_Description();
+    //Spell_Check_Detailed_Description();
+    //Spell_Check_Group_Names();
+    //Check_For_Valid_Author_Name();
+    //Spell_Check_Bugs();
+    //Spell_Check_Warnings();
+
+    //make certain token values be mandatory
+    Empty_Token_Value_Error(structure.meta.brief_description,settings.warn_about_empty_brief_description,error_messages,structure);
+    Empty_Token_Value_Error(structure.meta.detailed_description,settings.warn_about_empty_detailed_description,error_messages,structure);
+    Add_Error_Based_On_Expression_And_Desire(structure.meta.group_names.empty(),settings.warn_about_no_group_names,error_messages,structure,"No group names provided");
+    
+    //I've been accidentally new lining comments after a comma
+    //unilang expects each sentence to be a line.
+    //i might change that later, but here is a warning I might want regardless
+    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.brief_description.value),settings.warn_about_empty_brief_description,error_messages,structure,"brief line ends with a comma");
+    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.detailed_description.value),settings.warn_about_empty_detailed_description,error_messages,structure,"detail line ends with a comma");
+    
+    
+❱
+
 ◀private: static▶ void ☀Get_Warnings_About_Measurements(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     
     Warn_About_Missing_Measurements(error_messages,structure,settings);
@@ -34,6 +56,7 @@ class
 
 ◀private: static▶ void ☀Warn_About_Missing_Measurements(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     
+    //check data members
     for (auto const& it: structure.data_members.data_members){
         auto identifier = as_string(it.name.value);
         auto units = as_string(it.units.value);
@@ -41,6 +64,7 @@ class
         Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,location,structure,settings,identifier,units);
     }
     
+    //check method related things
     for (auto const& it: structure.methods.methods){
         for (auto const& j: it.template_arguments){
             auto identifier = as_string(j.identifier.value);
@@ -61,7 +85,6 @@ class
             Add_Warning_If_Relevant_Identifier_Is_Missing_Units(error_messages,location,structure,settings,identifier,units);
         }
     }
-    
 ❱
 
 ◀private: static▶ void ☀Add_Warning_If_Relevant_Identifier_Is_Missing_Units(std::vector<Error_Message> & error_messages, File_Range_Location const& location, Structure const& structure, Static_Analysis_Settings const& settings, std::string const& identifier, std::string const& units)❰
@@ -72,28 +95,6 @@ class
                 Add_Error(error_messages,location,structure,error_message);
             }
         }
-❱
-
-◀private: static▶ void ☀Print_Warnings_About_Meta_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
-    //Spell_Check_Brief_Description();
-    //Spell_Check_Detailed_Description();
-    //Spell_Check_Group_Names();
-    //Check_For_Valid_Author_Name();
-    //Spell_Check_Bugs();
-    //Spell_Check_Warnings();
-
-    //make certain token values be mandatory
-    Add_Error_Based_On_Expression_And_Desire(structure.meta.brief_description.value.empty(),settings.warn_about_empty_brief_description,error_messages,structure,"Missing brief description");
-    Add_Error_Based_On_Expression_And_Desire(structure.meta.detailed_description.value.empty(),settings.warn_about_empty_detailed_description,error_messages,structure,"Missing detailed description");
-    Add_Error_Based_On_Expression_And_Desire(structure.meta.group_names.empty(),settings.warn_about_no_group_names,error_messages,structure,"No group names provided");
-    
-    //I've been accidentally new lining comments after a comma
-    //unilang expects each sentence to be a line.
-    //i might change that later, but here is a warning I might want regardless
-    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.brief_description.value),settings.warn_about_empty_brief_description,error_messages,structure,"brief line ends with a comma");
-    Add_Error_Based_On_Expression_And_Desire(A_Line_Ends_With_A_Comma(structure.meta.detailed_description.value),settings.warn_about_empty_detailed_description,error_messages,structure,"detail line ends with a comma");
-    
-    
 ❱
 ◀private: static▶ void ☀Print_Warnings_About_Import_Section(std::vector<Error_Message> & error_messages, Structure const& structure, Static_Analysis_Settings const& settings)❰
     //Spell_Check_Brief_Import_Comment();
@@ -149,6 +150,19 @@ class
         }
     }
     return false;
+❱
+
+◀private: static▶ void ☀Empty_Token_Value_Error(Token_Value const& t, bool desire, std::vector<Error_Message> & error_messages, Structure const& structure)❰
+    if (!desire){
+        return;
+    }
+    
+    if (!t.value.empty()){
+        return;
+    }
+    std::string message = as_string(t.name);
+    message += " is empty";
+    Add_Error(error_messages,t.location,structure,message);
 ❱
 
 //the expression needs to be true and we need to have a desire to print the error, else dont
