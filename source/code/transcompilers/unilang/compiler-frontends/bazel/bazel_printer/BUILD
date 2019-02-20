@@ -9,7 +9,7 @@ hcp(name = "load_getter", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/char:lib",
 "//code/utilities/types/sets:lib",
-"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:path_to_bazel_path",
 ])
 
 hcp(name = "path_to_bazel_path", deps = [
@@ -54,7 +54,7 @@ hcp(name = "deps_printer", deps = [
 "//code/utilities/types/char:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:path_to_bazel_path",
 ])
 
 hcp(name = "package_getter", deps = [

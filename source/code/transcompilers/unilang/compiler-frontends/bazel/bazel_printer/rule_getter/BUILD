@@ -11,9 +11,9 @@ hcp(name = "hidl", deps = [
 "//code/utilities/types/char:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
-"//code/transcompilers/unilang/bazel_printer:target_name_deriver",
-"//code/transcompilers/unilang/bazel_printer:deps_printer",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:path_to_bazel_path",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:target_name_deriver",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:deps_printer",
 ])
 
 hcp(name = "config_hidl", deps = [
@@ -25,9 +25,9 @@ hcp(name = "config_hidl", deps = [
 "//code/utilities/types/char:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
-"//code/transcompilers/unilang/bazel_printer:target_name_deriver",
-"//code/transcompilers/unilang/bazel_printer:deps_printer",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:path_to_bazel_path",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:target_name_deriver",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:deps_printer",
 ])
 
 hcp(name = "cc_library", deps = [
@@ -39,9 +39,9 @@ hcp(name = "cc_library", deps = [
 "//code/utilities/types/char:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/transcompilers/unilang/bazel_printer:path_to_bazel_path",
-"//code/transcompilers/unilang/bazel_printer:target_name_deriver",
-"//code/transcompilers/unilang/bazel_printer:deps_printer",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:path_to_bazel_path",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:target_name_deriver",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:deps_printer",
 ])
 
 hcp(name = "rule_getter", deps = [
@@ -54,8 +54,8 @@ hcp(name = "rule_getter", deps = [
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
-"//code/transcompilers/unilang/bazel_printer:build_info_extractor",
-"//code/transcompilers/unilang/bazel_printer/rule_getter:hidl",
-"//code/transcompilers/unilang/bazel_printer/rule_getter:config_hidl",
-"//code/transcompilers/unilang/bazel_printer/rule_getter:cc_library",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:build_info_extractor",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer/rule_getter:hidl",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer/rule_getter:config_hidl",
+"//code/transcompilers/unilang/compiler-frontends/bazel/bazel_printer/rule_getter:cc_library",
 ])
