@@ -26,5 +26,6 @@ cc_library(
     hdrs = glob(["include/**/*.h"]),
     includes = sdl_includes,
     srcs = sdl_srcs,
+    #linkopts = ["-lSDL2"],
     visibility = ["//visibility:public"],
 )
