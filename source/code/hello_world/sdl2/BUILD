@@ -3,7 +3,8 @@ package(
 )
 
 #cc_binary(
-#    name = "main",
-#    srcs = ["main.cpp"],
-#    deps = ["@SDL2//:SDL2"],
+    #name = "main",
+    #srcs = ["main.cpp"],
+    #linkopts = ["-lSDL2"],
+    #deps = ["@SDL2//:SDL2"],
 #)
