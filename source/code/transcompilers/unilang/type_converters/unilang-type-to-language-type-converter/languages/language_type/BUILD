@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "language_type", deps = [
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/language_type:type_size",
@@ -13,4 +14,11 @@ hcp(name = "needed_import", deps = [
 ])
 hcp(name = "type_size", deps = [
 ])
-cpp_object(name = "language_type_category")
+
+enum_cpp(name = "language_type_category",
+values = 
+["fundamental"
+,"abstract"
+])
+
+
