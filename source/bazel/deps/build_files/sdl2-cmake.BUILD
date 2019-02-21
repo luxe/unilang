@@ -1,41 +1,30 @@
 package(default_visibility = ["//visibility:public"])
 load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
-#cmake_external(
-#   name = "SDL2",
-#   lib_source = "src",
-#)
+# Common include paths
+sdl_includes = [
+    "include",
+    "src/video/khronos",
+]
 
-cc_import(
-    name="main_lib",
-    #hdrs = glob(["include/**/*.h"]),
-    #srcs = ["lib/x64/SDL2.dll"],
-    shared_library = "lib/x64/SDL2.lib",
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
-    name="other_lib",
-    #srcs = ["lib/x84/SDL2.lib"],
-    visibility = ["//visibility:public"],
-)
-
-cc_library(
-    name="all_lib",
-    visibility = ["//visibility:public"],
-    deps = [":main_lib", ":other_lib"]
-)
-
-cc_library(
-    name="all_test",
-    visibility = ["//visibility:public"],
-    srcs= ["@SDL2//:lib/x84/SDL2.lib", "@SDL2//:lib/x84/SDL2main.lib"]
+sdl_srcs = glob(
+    include = [
+        "src/**/*.c",
+        "src/**/*.h",
+    ],
+    exclude = [
+        "src/video/qnx/**",
+        "src/haptic/windows/**",
+        "src/test/*.c",
+        "src/thread/generic/*.c",
+        "src/core/linux/*.c",
+    ],
 )
 
 cc_library(
     name = "SDL2",
     hdrs = glob(["include/**/*.h"]),
-    strip_include_prefix = "include",
+    includes = sdl_includes,
+    srcs = sdl_srcs,
     visibility = ["//visibility:public"],
-    #deps = [":main_lib"]
 )
