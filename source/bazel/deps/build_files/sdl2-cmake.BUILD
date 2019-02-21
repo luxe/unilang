@@ -4,7 +4,7 @@ load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 # Common include paths
 sdl_includes = [
     "include",
-    "src/video/khronos",
+    "src/video/x11",
 ]
 
 sdl_srcs = glob(
@@ -16,8 +16,6 @@ sdl_srcs = glob(
         "src/video/qnx/**",
         "src/haptic/windows/**",
         "src/test/*.c",
-        "src/thread/generic/*.c",
-        "src/core/linux/*.c",
     ],
 )
 
