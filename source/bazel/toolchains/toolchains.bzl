@@ -18,8 +18,17 @@ def toolchains():
         ],
     )
 
-    git_repository(
+    #git_repository(
+    #    name = "io_bazel_rules_m4",
+    #    remote = "https://github.com/jmillikin/rules_m4",
+    #    commit = "2bf69df77dfb6b3ba6b7fc95c304b0dc279375bc",
+    #)
+    http_archive(
         name = "io_bazel_rules_m4",
-        remote = "https://github.com/jmillikin/rules_m4",
-        commit = "2bf69df77dfb6b3ba6b7fc95c304b0dc279375bc",
+        sha256 = "7860c2465427860129efd90093fcc1c7d837739f44ff8f586597f1b4a7c52e7d",
+        strip_prefix = "rules_m4-2bf69df77dfb6b3ba6b7fc95c304b0dc279375bc",
+        urls = [
+            "https://github.com/unilang/rules_m4/archive/2bf69df77dfb6b3ba6b7fc95c304b0dc279375bc.tar.gz",
+            "https://github.com/jmillikin/rules_m4/archive/2bf69df77dfb6b3ba6b7fc95c304b0dc279375bc.tar.gz",
+        ],
     )
