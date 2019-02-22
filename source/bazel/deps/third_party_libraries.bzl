@@ -21,6 +21,7 @@ load("//bazel/deps/get:imgui.bzl", "imgui")
 load("//bazel/deps/get:cairo.bzl", "cairo")
 load("//bazel/deps/get:gd.bzl", "gd")
 load("//bazel/deps/get:open_cv.bzl", "open_cv")
+load("//bazel/deps/get:open_cv_testdata.bzl", "open_cv_testdata")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -68,15 +69,7 @@ def third_party_libraries():
     cairo()
     gd()
     open_cv()
-    http_archive(
-        name = "opencv_testdata",
-        build_file = "//bazel/deps/build_files:opencv_testdata.BUILD",
-        sha256 = "dbdab9548b6365ca63f5d4d3a2b27cecd03644a6898cc98c05f3b129a46b416c",
-        strip_prefix = "opencv_extra-3.4.3",
-        urls = [
-            "https://github.com/opencv/opencv_extra/archive/3.4.3.tar.gz",
-        ],
-    )
+    open_cv_testdata()
     http_archive(
         name = "pixman",
         build_file = "//bazel/deps/build_files:pixman.BUILD",
