@@ -30,6 +30,9 @@ load("//bazel/deps/get:zlib.bzl", "zlib")
 load("//bazel/deps/get:openssl.bzl", "openssl")
 load("//bazel/deps/get:curl.bzl", "curl")
 load("//bazel/deps/get:cli11.bzl", "cli11")
+load("//bazel/deps/get:pybind11.bzl", "pybind11")
+load("//bazel/deps/get:grpc.bzl", "grpc")
+load("//bazel/deps/get:fmt.bzl", "fmt")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -94,46 +97,21 @@ def third_party_libraries():
     cli11()
     
     # Language Interop
-    http_archive(
-        name = "pybind11",
-        build_file = "//bazel/deps/build_files:pybind11.BUILD",
-        sha256 = "b69e83658513215b8d1443544d0549b7d231b9f201f6fc787a2b2218b408181e",
-        urls = [
-            "https://github.com/pybind/pybind11/archive/v2.2.4.tar.gz",
-        ],
-    )
+    pybind11()
     
     # Threading / Workflow
     cpp_taskflow()
     tbb()
     
     # Other
-    http_archive(
-        name = "com_github_grpc_grpc",
-        sha256 = "d99db0b39b490d2469a8ef74197d5f211fa740fc9581dccecbb76c56d080fce1",
-        strip_prefix = "grpc-1.16.0",
-        urls = [
-            "https://github.com/grpc/grpc/archive/v1.16.0.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "fmt",
-        build_file = "//bazel/deps/build_files:fmt.BUILD",
-        sha256 = "3c812a18e9f72a88631ab4732a97ce9ef5bcbefb3235e9fd465f059ba204359b",
-        strip_prefix = "fmt-5.2.1",
-        urls = [
-            "https://github.com/fmtlib/fmt/archive/5.2.1.tar.gz",
-        ],
-    )
-
-
+    grpc()
+    fmt()
 
     #other dependencies needed:
 
     #other things to add
     #gmp (this was hard)
     #pretty_printers
-    #curl
     #pstreams
     #add-range-v3 library
     #add klmr-cpp11-range
