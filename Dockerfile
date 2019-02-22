@@ -1,8 +1,9 @@
 FROM ubuntu:14.04
 
-# I'd like to build all of these from source, but its hard to do in bazel.
-# Ideally we want to turn this list into dpenencies built from source in bazel.
-# Realistically, we'll do this and manage compadibility/build problems the best we can.
+# I'd like to build all of these from source, but that's not always easy to do in bazel.
+# From Cmake to autotools; we live in a world of exotic builds and difficult to pin dependencies.
+# So this docker container is a fact of life.
+# As an aspiration, we want to migrate as many package manager-related actions into build rules.
 RUN apt-get update
 RUN apt-get install -y git
 RUN apt-get install -y patch
