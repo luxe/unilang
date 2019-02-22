@@ -3,11 +3,6 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 def toolchains():
 
-    #git_repository(
-    #    name = 'co_vsco_bazel_toolchains',
-    #    remote = 'https://github.com/vsco/bazel-toolchains',
-    #    tag = 'v64.0.3282.167',
-    #)
     http_archive(
         name = "co_vsco_bazel_toolchains",
         strip_prefix = "bazel-toolchains-519efd0b3275e4cf1ffa03f3c3fb80c7d8f7c60d",
