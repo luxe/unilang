@@ -137,9 +137,8 @@ Ready to get started?  Unilang can be built from source in the following way.
 git clone git@github.com:Unilang/unilang.git unilang
 cd unilang
 ./build_everything
-LITERARY_SENTENCE_CODE_LINE
 ```
-Unilang can be built from source in thssssse following way.  Various CIs are also building from source and can be used as reference.  
+Various CIs are also building from source and can be used as reference.  
 
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
@@ -150,7 +149,7 @@ Codeship | [![Codeship Status for Unilang/unilang](https://app.codeship.com/proj
 Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/unilang/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/unilang/unilang/build-status/master) | Full Build | 
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | Full Build | 
 Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Full Build | 
-Travis | [![Build Status](https://travis-ci.com/unilang/unilang.svg?branch=master)](https://travis-ci.com/unilang/unilang) | Full Build | 
+Travis | [![Build Status](https://travis-ci.com/Unilang/unilang.svg?branch=master)](https://travis-ci.com/Unilang/unilang) | Full Build | 
 
 
 
