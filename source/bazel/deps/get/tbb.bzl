@@ -8,6 +8,7 @@ def tbb():
         sha256 = "4d149895826cea785cd3b9a14f4aa743b6ef0df520eca7ee27d438fdc3d73399",
         strip_prefix = "tbb-2019",
         urls = [
+            "https://github.com/unilang/tbb/archive/2019.tar.gz",
             "https://github.com/01org/tbb/archive/2019.tar.gz",
         ],
     )

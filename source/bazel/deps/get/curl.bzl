@@ -9,6 +9,7 @@ def curl():
         sha256 = "55ccd5b5209f8cc53d4250e2a9fd87e6f67dd323ae8bd7d06b072cfcbb7836cb",
         strip_prefix = "curl-7.62.0",
         urls = [
+            "https://github.com/unilang/curl/releases/download/curl-7_62_0/curl-7.62.0.tar.gz",
             "https://github.com/curl/curl/releases/download/curl-7_62_0/curl-7.62.0.tar.gz",
         ],
     )

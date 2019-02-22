@@ -8,7 +8,10 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 def imgui():
     http_archive(
           name = "imgui",
-          urls = ['https://github.com/ocornut/imgui/archive/v1.62.tar.gz'],
           build_file = "//bazel/deps/build_files:imgui.BUILD",
           strip_prefix = 'imgui-1.62',
+          urls = [
+            'https://github.com/unilang/imgui/archive/v1.62.tar.gz',
+            'https://github.com/ocornut/imgui/archive/v1.62.tar.gz',
+          ],
     )

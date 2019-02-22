@@ -8,6 +8,7 @@ def fmt():
         sha256 = "3c812a18e9f72a88631ab4732a97ce9ef5bcbefb3235e9fd465f059ba204359b",
         strip_prefix = "fmt-5.2.1",
         urls = [
+            "https://github.com/unilang/fmt/archive/5.2.1.tar.gz",
             "https://github.com/fmtlib/fmt/archive/5.2.1.tar.gz",
         ],
     )

@@ -8,6 +8,7 @@ def open_cv():
         sha256 = "4eef85759d5450b183459ff216b4c0fa43e87a4f6aa92c8af649f89336f002ec",
         strip_prefix = "opencv-3.4.3",
         urls = [
+            "https://github.com/unilang/opencv/archive/3.4.3.tar.gz",
             "https://github.com/opencv/opencv/archive/3.4.3.tar.gz",
         ],
     )
