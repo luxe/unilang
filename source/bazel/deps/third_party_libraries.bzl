@@ -43,6 +43,24 @@ load("//bazel/deps/get:fmt.bzl", "fmt")
 # In the worst case scenarios where an agreement cannot be made with the author, or
 # the original author is unresponsive, we can fork the project.
 
+#other dependencies needed:
+#gmp (this was hard)
+#pretty_printers
+#pstreams
+#add-range-v3 library
+#add klmr-cpp11-range
+
+#need to make hermetic
+#sudo apt-get install xdotool
+#sudo apt-get install libxdo-dev
+#sudo apt-get install libxtst-dev
+# http_archive(
+#     name = "xdo",
+#     build_file = "//bazel/deps/build_files/xdo:xdo.BUILD",
+#     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
+#     remote = "https://github.com/jordansissel/xdotool.git",
+# )
+
 def third_party_libraries():
     
     # C++
@@ -106,23 +124,3 @@ def third_party_libraries():
     # Other
     grpc()
     fmt()
-
-    #other dependencies needed:
-
-    #other things to add
-    #gmp (this was hard)
-    #pretty_printers
-    #pstreams
-    #add-range-v3 library
-    #add klmr-cpp11-range
-
-    #need to make hermetic
-    #sudo apt-get install xdotool
-    #sudo apt-get install libxdo-dev
-    #sudo apt-get install libxtst-dev
-    # http_archive(
-    #     name = "xdo",
-    #     build_file = "//bazel/deps/build_files/xdo:xdo.BUILD",
-    #     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
-    #     remote = "https://github.com/jordansissel/xdotool.git",
-    # )
