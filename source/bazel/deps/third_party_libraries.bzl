@@ -22,6 +22,9 @@ load("//bazel/deps/get:cairo.bzl", "cairo")
 load("//bazel/deps/get:gd.bzl", "gd")
 load("//bazel/deps/get:open_cv.bzl", "open_cv")
 load("//bazel/deps/get:open_cv_testdata.bzl", "open_cv_testdata")
+load("//bazel/deps/get:pixman.bzl", "pixman")
+load("//bazel/deps/get:plant_uml.bzl", "plant_uml")
+load("//bazel/deps/get:sqlite3.bzl", "sqlite3")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -70,34 +73,11 @@ def third_party_libraries():
     gd()
     open_cv()
     open_cv_testdata()
-    http_archive(
-        name = "pixman",
-        build_file = "//bazel/deps/build_files:pixman.BUILD",
-        sha256 = "21b6b249b51c6800dc9553b65106e1e37d0e25df942c90531d4c3997aa20a88e",
-        strip_prefix = "pixman-0.34.0",
-        urls = [
-            "https://www.cairographics.org/releases/pixman-0.34.0.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "plantuml",
-        build_file = "//bazel/deps/build_files:plantuml.BUILD",
-        sha256 = "53eecf601da9e3f495e1861f064b76e337346f51aa6069e750f1b8ec78b89a55",
-        urls = [
-            "https://downloads.sourceforge.net/project/plantuml/1.2018.12/plantuml-jar-asl-1.2018.12.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fplantuml%2Ffiles%2Fplantuml-jar-asl-1.2018.12.zip%2Fdownload&ts=1542658651",
-        ],
-    )
+    pixman()
+    plant_uml()
     
     # Database
-    http_archive(
-        name = "sqlite3",
-        build_file = "//bazel/deps/build_files:sqlite3.BUILD",
-        sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
-        strip_prefix = "sqlite-amalgamation-3240000",
-        urls = [
-            "https://www.sqlite.org/2018/sqlite-amalgamation-3240000.zip",
-        ],
-    )
+    sqlite3()
     
     # Web Query
     http_archive(
