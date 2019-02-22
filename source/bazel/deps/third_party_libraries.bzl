@@ -25,6 +25,9 @@ load("//bazel/deps/get:open_cv_testdata.bzl", "open_cv_testdata")
 load("//bazel/deps/get:pixman.bzl", "pixman")
 load("//bazel/deps/get:plant_uml.bzl", "plant_uml")
 load("//bazel/deps/get:sqlite3.bzl", "sqlite3")
+load("//bazel/deps/get:cpr.bzl", "cpr")
+load("//bazel/deps/get:zlib.bzl", "zlib")
+load("//bazel/deps/get:openssl.bzl", "openssl")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -80,34 +83,9 @@ def third_party_libraries():
     sqlite3()
     
     # Web Query
-    http_archive(
-        name = "cpr",
-        build_file = "//bazel/deps/build_files:cpr.BUILD",
-        sha256 = "82597627e8b2aef1f0482631c9b11595c63a7565bb462a5995d126da4419ac99",
-        strip_prefix = "cpr-1.3.0",
-        urls = [
-            "https://github.com/whoshuu/cpr/archive/1.3.0.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "net_zlib_zlib",
-        build_file = "//bazel/deps/build_files:zlib.BUILD",
-        sha256 = "c3e5e9fdd5004dcb542feda5ee4f0ff0744628baf8ed2dd5d66f8ca1197cb1a1",
-        strip_prefix = "zlib-1.2.11",
-        urls = [
-            "https://zlib.net/zlib-1.2.11.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "openssl",
-        build_file = "//bazel/deps/build_files:openssl.BUILD",
-        patches = ["//bazel/deps/build_files:openssl.patch"],
-        sha256 = "fb6b5de486f1739dc34f2854a0c8f94d13c130eb9c4876cad73b3d40996f8ba6",
-        strip_prefix = "openssl-OpenSSL_1_1_1",
-        urls = [
-            "https://github.com/openssl/openssl/archive/OpenSSL_1_1_1.tar.gz",
-        ],
-    )
+    cpr()
+    zlib()
+    openssl()
     http_archive(
         name = "curl",
         build_file = "//bazel/deps/build_files:curl.BUILD",
