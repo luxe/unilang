@@ -28,6 +28,8 @@ load("//bazel/deps/get:sqlite3.bzl", "sqlite3")
 load("//bazel/deps/get:cpr.bzl", "cpr")
 load("//bazel/deps/get:zlib.bzl", "zlib")
 load("//bazel/deps/get:openssl.bzl", "openssl")
+load("//bazel/deps/get:curl.bzl", "curl")
+load("//bazel/deps/get:cli11.bzl", "cli11")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -86,27 +88,10 @@ def third_party_libraries():
     cpr()
     zlib()
     openssl()
-    http_archive(
-        name = "curl",
-        build_file = "//bazel/deps/build_files:curl.BUILD",
-        patches = ["//bazel/deps/build_files:curl.patch"],
-        sha256 = "55ccd5b5209f8cc53d4250e2a9fd87e6f67dd323ae8bd7d06b072cfcbb7836cb",
-        strip_prefix = "curl-7.62.0",
-        urls = [
-            "https://github.com/curl/curl/releases/download/curl-7_62_0/curl-7.62.0.tar.gz",
-        ],
-    )
+    curl()
     
     # CLI
-    http_archive(
-        name = "CLI11",
-        build_file = "//bazel/deps/build_files:CLI11.BUILD",
-        sha256 = "5ce138794b28b48717101cd57aea70382cb14b8d9859c403fbca1dc5ada0101e",
-        strip_prefix = "CLI11-1.6.2",
-        urls = [
-            "https://github.com/CLIUtils/CLI11/archive/v1.6.2.tar.gz",
-        ],
-    )
+    cli11()
     
     # Language Interop
     http_archive(
