@@ -22,6 +22,7 @@ def boost():
         ],
         strip_prefix = "rules_boost-c1d618315fa152958baef8ea0d77043eebf7f573",
         urls = [
+            "https://github.com/unilang/rules_boost/archive/c1d618315fa152958baef8ea0d77043eebf7f573.zip",
             "https://github.com/nelhage/rules_boost/archive/c1d618315fa152958baef8ea0d77043eebf7f573.zip",
         ],
     )

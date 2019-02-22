@@ -8,6 +8,7 @@ def andres_graph():
         sha256 = "00432f3007b4cb2a8d6f2e021fd5625a79e307d6532971719ca6ab81dd0ae752",
         strip_prefix = "graph-1.11",
         urls = [
+            "https://github.com/unilang/graph/archive/v1.11.tar.gz",
             "https://github.com/bjoern-andres/graph/archive/v1.11.tar.gz",
         ],
     )

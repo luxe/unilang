@@ -8,6 +8,7 @@ def cli11():
         sha256 = "5ce138794b28b48717101cd57aea70382cb14b8d9859c403fbca1dc5ada0101e",
         strip_prefix = "CLI11-1.6.2",
         urls = [
+            "https://github.com/unilang/CLI11/archive/v1.6.2.tar.gz",
             "https://github.com/CLIUtils/CLI11/archive/v1.6.2.tar.gz",
         ],
     )
