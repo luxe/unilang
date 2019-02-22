@@ -18,6 +18,9 @@ load("//bazel/deps/get:tbb.bzl", "tbb")
 load("//bazel/deps/get:cpp_taskflow.bzl", "cpp_taskflow")
 load("//bazel/deps/get:sdl2.bzl", "sdl2")
 load("//bazel/deps/get:imgui.bzl", "imgui")
+load("//bazel/deps/get:cairo.bzl", "cairo")
+load("//bazel/deps/get:gd.bzl", "gd")
+load("//bazel/deps/get:open_cv.bzl", "open_cv")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -62,33 +65,9 @@ def third_party_libraries():
     # Graphics
     sdl2()
     imgui()
-    http_archive(
-        name = "cairo",
-        build_file = "//bazel/deps/build_files:cairo.BUILD",
-        sha256 = "8c90f00c500b2299c0a323dd9beead2a00353752b2092ead558139bd67f7bf16",
-        strip_prefix = "cairo-1.14.12",
-        urls = [
-            "https://www.cairographics.org/releases/cairo-1.14.12.tar.xz",
-        ],
-    )
-    http_archive(
-        name = "gd",
-        build_file = "//bazel/deps/build_files:gd.BUILD",
-        sha256 = "a66111c9b4a04e818e9e2a37d7ae8d4aae0939a100a36b0ffb52c706a09074b5",
-        strip_prefix = "libgd-2.2.5",
-        urls = [
-            "https://github.com/libgd/libgd/releases/download/gd-2.2.5/libgd-2.2.5.tar.gz",
-        ],
-    )
-    http_archive(
-        name = "opencv",
-        build_file = "//bazel/deps/build_files:opencv.BUILD",
-        sha256 = "4eef85759d5450b183459ff216b4c0fa43e87a4f6aa92c8af649f89336f002ec",
-        strip_prefix = "opencv-3.4.3",
-        urls = [
-            "https://github.com/opencv/opencv/archive/3.4.3.tar.gz",
-        ],
-    )
+    cairo()
+    gd()
+    open_cv()
     http_archive(
         name = "opencv_testdata",
         build_file = "//bazel/deps/build_files:opencv_testdata.BUILD",
