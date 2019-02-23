@@ -10,6 +10,7 @@ RUN apt-get install -y patch
 RUN apt-get install -y python
 RUN apt-get install -y wget
 RUN apt-get install -y m4
+RUN apt-get install -y libgmp-dev
 RUN apt-get install -y libgmp3-dev
 RUN apt-get install -y xorg
 RUN apt-get install -y libsdl2-dev
