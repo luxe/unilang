@@ -143,7 +143,7 @@ Various CIs are also building from source and can be used as reference.
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar/branch/master?svg=true)](https://ci.appveyor.com/project/luxe/everything/branch/master) | Full Build | 
-Circle | [![CircleCI](https://circleci.com/gh/unilang/unilang.svg?style=svg)](https://circleci.com/gh/unilang/unilang) | Bootstraps Build | 
+| Circle | [![CircleCI](https://circleci.com/gh/Unilang/unilang.svg?style=svg)](https://circleci.com/gh/unilang/unilang) | Bootstraps Build | 
 Cirrus | [![Build Status](https://api.cirrus-ci.com/github/unilang/unilang.svg)](https://cirrus-ci.com/github/unilang/unilang) | Bootstraps Build | 
 Codeship | [![Codeship Status for Unilang/unilang](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/) | Full Build | 
 Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/unilang/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/unilang/unilang/build-status/master) | Full Build | 
