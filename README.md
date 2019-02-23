@@ -13,7 +13,7 @@
 
 
 ## Overview
-Unilang is a self proclaimed **universal programming language**.  It takes a novel approach to language's role in facilitating software.  The design and implementation of Unilang is built with particular language philosophies in mind.  This overview will discuss some of these ideas first in order to build the foundation for the rest of Unilang.  Unilang will then be described in the context of software engineering.  
+Welcome to Unilang; the self proclaimed **universal programming language**.  Unilang takes a novel approach to a language's role in facilitating software.  The design and implementation of Unilang is built with particular language philosophies in mind.  This overview will discuss some of these ideas first in order to build the foundation for the rest of Unilang.  Unilang will then be described in the context of software engineering.  
 
 A primary focus when first introducing Unilang is a discussion around **encoded information** and **software-related artifacts**.  What do we encode for software and what is the resulting software artifacts?  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations, scope, and enforced structure of individual tools.  The effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  The technical aspects of this are discussed later.  We will compare it to other programming languages to show the similarities and key differences between them.  The take-away from this comparison is that Unilang is not competing with other programming languages.  It embraces all of them in its own implementation.  
 
@@ -33,7 +33,7 @@ In fact, what you are reading now was generated from Unilang.
 
 
 ## Motivation
-The motivation behind Unilang has grown organically while working as a software engineer.  It serves a purpose both practical and personal from working in the industry.  In this section we will cover the specific motivations around Unilang.  
+The motivation behind Unilang has grown organically while working as a software engineer.  It serves a purpose both practical and personal from working in the industry.  Some of it has been designed to help within a professional context.  Other parts have been designed around the personal/hobby context.  In this section we will cover the specific motivations around Unilang.  
 
 
 ### Practical
@@ -143,7 +143,7 @@ Various CIs are also building from source and can be used as reference.
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/mubmrg7wis4vubar/branch/master?svg=true)](https://ci.appveyor.com/project/luxe/everything/branch/master) | Full Build | 
-| Circle | [![CircleCI](https://circleci.com/gh/Unilang/unilang.svg?style=svg)](https://circleci.com/gh/unilang/unilang) | Bootstraps Build | 
+Circle | [![CircleCI](https://circleci.com/gh/Unilang/unilang.svg?style=svg)](https://circleci.com/gh/Unilang/unilang) | Bootstraps Build | 
 Cirrus | [![Build Status](https://api.cirrus-ci.com/github/unilang/unilang.svg)](https://cirrus-ci.com/github/unilang/unilang) | Bootstraps Build | 
 Codeship | [![Codeship Status for Unilang/unilang](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/) | Full Build | 
 Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/unilang/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/unilang/unilang/build-status/master) | Full Build | 
