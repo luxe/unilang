@@ -14,6 +14,7 @@ RUN apt-get install -y libgmp-dev
 RUN apt-get install -y libgmp3-dev
 RUN apt-get install -y xorg
 RUN apt-get install -y libsdl2-dev
+RUN apt-get install -y libsfml-dev
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
 RUN env LANG=en_US.UTF-8
