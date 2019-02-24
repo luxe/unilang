@@ -15,9 +15,6 @@ RUN apt-get install -y libgmp3-dev
 RUN apt-get install -y xorg
 RUN apt-get install -y libsdl2-dev
 RUN apt-get install -y libsfml-dev
-RUN apt-get install -y libjpeg9-dev 
-RUN apt-get install -y libwebp-dev
-RUN apt-get install -y libtiff5-dev
 RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
 RUN locale-gen en_US en_US.UTF-8
