@@ -13,7 +13,7 @@
 
 
 ## Overview
-Welcome to Unilang; the self proclaimed **universal programming language**.  Unilang takes a novel approach to a language's role in facilitating software.  The design and implementation of Unilang is built with particular language philosophies in mind.  This overview will discuss some of these ideas first in order to build the foundation for the rest of Unilang.  Unilang will then be described in the context of software engineering.  
+Unilang is a self proclaimed **universal programming language**.  It takes a novel approach to a language's role in facilitating software.  The design and implementation of Unilang is built with particular language philosophies in mind.  This overview will discuss some of these ideas first in order to build the foundation for the rest of Unilang.  Unilang will then be described in the context of software engineering.  
 
 A primary focus when first introducing Unilang is a discussion around **encoded information** and **software-related artifacts**.  What do we encode for software and what is the resulting software artifacts?  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations, scope, and enforced structure of individual tools.  The effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  The technical aspects of this are discussed later.  We will compare it to other programming languages to show the similarities and key differences between them.  The take-away from this comparison is that Unilang is not competing with other programming languages.  It embraces all of them in its own implementation.  
 
@@ -40,14 +40,29 @@ The motivation behind Unilang has grown organically while working as a software 
 TODO.  
 
 
+#### File Bloat
+Unilang avoids having to create multiple files if undesirable.  
+
+
+#### Code Bloat
+Unilang avoids code bloat by not needing things repeated.  
+
+
+#### Concept Locality
+Unilang allows you to describe information local to the data and functions it belongs to.  For example, unit tests, benchmarks, examples, documentation can all be specified right next to the function they are operating on.  This makes maintenance easier, and improves static analysis given the extra context.  
+
+
 ### Personal
-I often find myself frustrated when working with other people.  Quite often others will advocate misguided opinions that slow me down and lead to worse software.  Compromising with and teaching others is a social undertaking that wastes a lot of my time and ultimately stresses me out.  I have found it better to write software correctly without compromise, and then transform it into a shared development space.  This lets me keep my integrity as an engineer and not break any of my engineering values while working with others.  This process also helps me get along with other people because they think they are helping, even though my true interests are not in anything they contribute to.  
+Sometimes it is frustrating working with other people.  Quite often others will advocate misguided opinions that slow me down and lead to worse software.  Compromising with and teaching others is a social undertaking that wastes a lot of my time and can often lead to higher tension.  I have found it better to write software correctly without compromise, and then transform it into a shared development space.  This lets me keep my integrity as an engineer and not break any of my engineering values while still working with others.  This process also helps me get along with other people because they think they are helping, even though my true interests are not in anything they contribute to.  
 ![an overview of how unilang is used for personal reasons](.readme/unilang-personal-overview.png "")
 
-We attribute labels on which parts of the development cycle we care about.  This reveals a "don't care" cycle which we use unilang to optimize the iteration of as fast as possible.  What we do care about remains streamlined and isolated from other people.  
+We attribute labels on which parts of the development cycle we care about.  This reveals a "don't care" cycle which we use unilang to optimize the iteration of as fast as possible.  The improved iteration speed of the "don't care" cycle also helps unilang grow to be more conceptually pure, and applicable in more domains.  What we do care about remains streamlined and isolated from other people.  
 ![an overview of how unilang is used for personal reasons](.readme/unilang-personal-annotated.png "")
 
-This shows that even if the project being worked on is meaningless, we measure our success from a personal space outside.  
+This shows that even if the project being worked on is meaningless, we measure our success from a personal space outside.  Summarized this shows us that Unilang supplies a fork that we can care about, and a less desired original path that we can still contribute to through automation.  
+![summarized workflow with unilang](.readme/unilang-personal-annotated2.png "")
+
+
 
 </details>
 <details>
@@ -128,7 +143,7 @@ Typical programming languages are designed around trade-offs.  Unilang refuses t
 
 <summary>User Guide</summary>
 
-TODO. talk about how to use unilang.  
+Here we talk about how to use Unilang.  
 
 
 ## Installation
@@ -152,6 +167,15 @@ Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700
 Travis | [![Build Status](https://travis-ci.com/Unilang/unilang.svg?branch=master)](https://travis-ci.com/Unilang/unilang) | Full Build | 
 
 
+
+
+## Textual Frontend
+
+
+## Graphical Frontend
+
+
+## Bazel Rule Examples
 
 </details>
 <details>
