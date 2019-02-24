@@ -33,6 +33,7 @@ load("//bazel/deps/get:cli11.bzl", "cli11")
 load("//bazel/deps/get:pybind11.bzl", "pybind11")
 load("//bazel/deps/get:grpc.bzl", "grpc")
 load("//bazel/deps/get:fmt.bzl", "fmt")
+load("//bazel/deps/get:glfw.bzl", "glfw")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -94,6 +95,7 @@ def third_party_libraries():
     
     # Graphics
     sdl2()
+    glfw()
     imgui()
     cairo()
     gd()
