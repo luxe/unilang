@@ -2,17 +2,18 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
   name = "main",
-  linkopts = ["-lm", "-lGL", "-lSDL"],
+  linkopts = [],
   srcs = glob(['*.cpp']),
   hdrs = glob(['*.h']),
+  deps = ["@SDL2//:SDL2"],
 )
 
 
 cc_library(
  name = "imgui_sdl_opengl3",
- linkopts = ["-ldl", "-lGL", "-L/usr/lib/x86_64-linux-gnu", "-lSDL2", "-lSDL"],
- copts = ["-I/usr/include/SDL2", "-I/usr/include/SDL", "-Iexamples/", "-D_REENTRANT"],
- includes = [".","examples/libs/gl3w"],
+ linkopts = ["-lGL"],
+ copts = [],
+ includes = [".","examples/libs/gl3w","examples/libs"],
  hdrs = [
      "examples/imgui_impl_opengl3.h",
      "examples/libs/gl3w/GL/gl3w.h",
