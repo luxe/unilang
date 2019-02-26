@@ -1,21 +1,24 @@
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+#load("//bazel/cookbook/protobuf:cpp.bzl", "cpp_proto_object")
 package(
     default_visibility = ["//visibility:public"],
 )
-# Conventions:
-# 1. One proto_library rule per .proto file.
-# 2. A file named foo.proto will be in a rule named foo_proto.
+
+#cpp_proto_object(
+#  name = "hello"
+#)
+
 proto_library(
     name = "hello_proto",
     srcs = ["hello.proto"],
 )
 
 cc_proto_library(
-    name = "hello_cc_proto",
+    name = "hello_cpp_proto",
     deps = [":hello_proto"],
 )
 
-cc_binary(
+cpp_main(
     name = "main",
-    srcs = ["main.cpp"],
-    deps = [":hello_cc_proto"]
+    deps = [":hello_cpp_proto"]
 )

@@ -1,9 +1,9 @@
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 package(
     default_visibility = ["//visibility:public"],
 )
 
-cc_binary(
+cpp_main(
     name = "main",
-    srcs = ["main.cpp"],
     deps = ["@SDL2//:SDL2"],
 )
