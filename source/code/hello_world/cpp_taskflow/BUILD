@@ -1,9 +1,9 @@
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 package(
     default_visibility = ["//visibility:public"],
 )
 
-cc_binary(
+cpp_main(
     name = "simple",
-    srcs = ["simple.cpp"],
     deps = ["@cpptaskflow//:cpptaskflow"],
 )
