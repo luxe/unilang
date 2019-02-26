@@ -1,4 +1,6 @@
-
+package(
+    default_visibility = ["//visibility:public"],
+)
 
 def cpp_proto_object(name,deps=[]):
 
