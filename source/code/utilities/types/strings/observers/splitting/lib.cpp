@@ -24,6 +24,9 @@ std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str){
  std::vector<std::string> Get_Path_In_Parts(std::string const& str){
  	return Split_Into_Parts_From_Delimiter(str,'/');
 }
+std::vector<std::string> Split_By_Spaces(std::string const& str){
+ 	return Split_Into_Parts_From_Delimiter(str,' ');
+}
 std::string Get_Path_After_Desktop(std::string const& str)
 {
 	auto parts = Get_Path_In_Parts(str);

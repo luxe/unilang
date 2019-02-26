@@ -28,3 +28,13 @@ hcp(name = "is_overload_decider", deps = [
 "//code/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/converters:lib",
 ])
+
+hcp(name = "duplicated_type_information_with_parent_checker", deps = [
+"//code/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
+"//code/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/utilities/converters:lib",
+"//code/utilities/types/strings/transformers/stripping:lib",
+"//code/utilities/types/strings/observers/other:lib",
+"//code/utilities/types/strings/observers/splitting:lib",
+"//code/utilities/types/vectors/observers:lib",
+])

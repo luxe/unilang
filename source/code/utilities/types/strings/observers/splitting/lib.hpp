@@ -5,6 +5,7 @@
 
 std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& str, char const& delimiter);
 std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str);
+std::vector<std::string> Split_By_Spaces(std::string const& str);
 std::vector<std::string> Get_Path_In_Parts(std::string const& str);
 std::string Get_Path_After_Desktop(std::string const& str);
 std::pair<std::string,std::string> Split_On_First_Instance_Of_Char(std::string const& str, char const& c);
