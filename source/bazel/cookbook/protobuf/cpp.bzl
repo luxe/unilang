@@ -1,18 +1,20 @@
+load("@build_stack_rules_proto//cpp:cpp_proto_library.bzl", "cpp_proto_library")
+
 def cpp_proto_object(name,deps=[]):
 
     #implicit file names
     pfile = name + ".proto"
     ptarget = name + "_proto"
-    pobject = name + "cpp_proto"
+    pobject = name + "_cpp_proto"
 
     #compile protobuf file
-    proto_library(
+    native.proto_library(
         name = ptarget,
         srcs = [pfile],
     )
 
     #compile cpp file
-    cc_proto_library(
+    native.cc_proto_library(
         name = pobject,
         deps = [":" + ptarget],
     )
