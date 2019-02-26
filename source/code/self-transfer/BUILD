@@ -15,5 +15,4 @@ cc_binary(
     name = "transfer-self-repo",
     srcs = ["main.cc"],
     deps = ["//code/self-transfer:repo_transferer"],
-    linkopts = [],
 )
