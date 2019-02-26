@@ -8,6 +8,8 @@ class
 ❪"code/utilities/converters/lib"❫
 ❪"code/utilities/types/sets/lib"❫
 ❪"code/transcompilers/unilang/structure/query/closed_box_function_checker"❫
+❪"code/transcompilers/unilang/structure/query/duplicated_type_information_with_parent_checker"❫
+❪"code/transcompilers/unilang/structure/query/duplicated_identifier_information_with_parent_checker"❫
 ⚞⚟
 
 
@@ -136,6 +138,21 @@ class
     for (auto const& it: structure.data_members.data_members){
         Empty_Token_Value_Error(it.brief,settings.sections.data_member.warn_empty_brief,error_messages,structure);
         Empty_Token_Value_Error(it.detail,settings.sections.data_member.warn_empty_detail,error_messages,structure);
+        
+        if(settings.sections.data_member.warn_about_duplicated_identifier_information_with_parent_type){
+                if (Duplicated_Identifier_Information_With_Parent_Checker::Has_Duplicated_Information(it)){
+                    std::string error = "duplicate identifier information detected in parent type: " + as_string(it.name.value);
+                    File_Range_Location location = it.name.location;
+                    Add_Error(error_messages,location,structure,error);
+                }
+        }
+        if(settings.sections.data_member.warn_about_duplicated_type_information_with_parent_type){
+                if (Duplicated_Type_Information_With_Parent_Checker::Has_Duplicated_Information(it)){
+                    std::string error = "duplicate type information detected in parent type: " + as_string(it.type.value);
+                    File_Range_Location location = it.type.location;
+                    Add_Error(error_messages,location,structure,error);
+                }
+        }
     }
 ❱
 
@@ -181,7 +198,7 @@ class
 ❱
 
 
-//the expression needs to be true and we need to have a desire to print the error, else dont
+//in order for the error to be recorded, the expression must be true.  Otherwise, we do not record the error whether a violation occurred or not
 ◀private: static▶ void ☀Add_Error_Based_On_Expression_And_Desire(bool expression, bool desire, std::vector<Error_Message> & error_messages, Structure const& structure, std::string const& error)❰
     if (expression && desire){
         

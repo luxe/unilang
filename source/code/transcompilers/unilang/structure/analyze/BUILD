@@ -33,4 +33,6 @@ hcp(name = "error_message_getter", deps = [
 "//code/utilities/converters:lib",
 "//code/utilities/types/sets:lib",
 "//code/transcompilers/unilang/structure/query:closed_box_function_checker",
+"//code/transcompilers/unilang/structure/query:duplicated_type_information_with_parent_checker",
+"//code/transcompilers/unilang/structure/query:duplicated_identifier_information_with_parent_checker",
 ])
