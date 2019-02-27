@@ -8,13 +8,13 @@
 #include <iostream>
 #include "code/utilities/graphics/imgui/mechanics.hpp"
 
-int main()
+template <typename T, typename U>
+int render_each_frame(std::string const &window_name, T before, U during)
 {
-
     // set up GL and SDL
     Mechanics::setup_sdl();
     auto          glsl_version = Mechanics::decide_sdl_glsl_version();
-    auto          window       = Mechanics::create_main_window("hello world");
+    auto          window       = Mechanics::create_main_window(window_name);
     SDL_GLContext gl_context   = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1); // Enable vsync
     gl3wInit();
@@ -39,6 +39,8 @@ int main()
     style.PopupBorderSize  = 1;
     style.WindowBorderSize = 1;
 
+    before();
+
     // render each frame until we decide to exit
     while (!Mechanics::poll_for_events(window))
     {
@@ -47,9 +49,20 @@ int main()
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
+        // our custom frame logic
+        during();
+
         Mechanics::render_frame(window, gl_context, io, clear_color);
     }
 
     Mechanics::clean_up_resources(gl_context, window);
     return EXIT_SUCCESS;
+}
+
+int main()
+{
+
+    auto before = [](){};
+    auto during = [](){};
+    return render_each_frame("hello world",before,during);
 }
