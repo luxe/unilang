@@ -8,39 +8,6 @@
 #include <iostream>
 #include "code/utilities/graphics/imgui/mechanics.hpp"
 
-bool user_asked_to_quit(SDL_Window *window, SDL_Event event)
-{
-    if (event.type == SDL_QUIT)
-    {
-        return true;
-    }
-    if (event.type == SDL_WINDOWEVENT && event.window.event == SDL_WINDOWEVENT_CLOSE
-        && event.window.windowID == SDL_GetWindowID(window))
-    {
-        return true;
-    }
-    return false;
-}
-
-bool poll_for_events(SDL_Window *window)
-{
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your
-    // inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
-    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those
-    // two flags.
-    SDL_Event event;
-    bool      done = false;
-    while (SDL_PollEvent(&event))
-    {
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        done = user_asked_to_quit(window, event);
-    }
-    return done;
-}
-
 void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
 {
     // Rendering
@@ -97,7 +64,7 @@ int main()
     style.WindowBorderSize = 1;
 
     // render each frame until we decide to exit
-    while (!poll_for_events(window))
+    while (!Mechanics::poll_for_events(window))
     {
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
