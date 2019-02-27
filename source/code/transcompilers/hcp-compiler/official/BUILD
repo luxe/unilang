@@ -67,7 +67,8 @@ bootstrap_hcp(
     "//code/utilities/types/wstrings/transformers/other:lib",
     "//code/utilities/types/strings/observers/path:lib",
 	"//code/utilities/converters:lib",
-	"class_structure"
+	"class_structure",
+    "include_file_printer"
 	]
 )
 
@@ -81,7 +82,8 @@ bootstrap_hcp(
     "//code/utilities/types/wstrings/transformers/other:lib",
     "//code/utilities/types/strings/observers/path:lib",
 	"//code/utilities/converters:lib",
-	"class_structure"
+	"class_structure",
+    "include_file_printer"
 	]
 )
 
@@ -117,3 +119,16 @@ cc_binary(
     deps = ["//code/transcompilers/hcp-compiler/official/program_options:lib",
             "task_executer"],
 )
+
+bootstrap_hcp(
+name = "include_file_printer",
+deps = [
+":class_structure",
+"//code/utilities/types/strings/observers/other:lib",
+"//code/utilities/types/strings/observers/path:lib",
+"//code/utilities/types/strings/transformers/removing:lib",
+"//code/utilities/types/strings/transformers/casing:lib",
+"//code/utilities/types/wstrings/transformers/trimming:lib",
+"//code/utilities/types/wstrings/transformers/other:lib",
+"//code/utilities/converters:lib"
+])

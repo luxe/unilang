@@ -11,6 +11,7 @@ class
 ❪"code/utilities/types/wstrings/transformers/trimming/lib"❫
 ❪"code/utilities/types/wstrings/transformers/other/lib"❫
 ❪"code/utilities/converters/lib"❫
+❪"include_file_printer"❫
 ⚞⚟
 
 ◀public:▶
@@ -36,8 +37,8 @@ class
     std::wstring wstr(str.begin(),str.end());
     cpp_stream << "#include " << '"' << wstr << ".hpp" << '"' << '\n';
     hpp_stream << "#pragma once\n";
-    Print_Include_Files(hpp_stream,structure.Header_Includes());
-    Print_Include_Files(cpp_stream,structure.Source_Includes());
+   Include_File_Printer::Print(hpp_stream,structure.Header_Includes());
+   Include_File_Printer::Print(cpp_stream,structure.Source_Includes());
     hpp_stream << '\n';
     cpp_stream << '\n';
 
@@ -46,21 +47,6 @@ class
 
     //dump cpp
     cpp_stream << structure.CPP_Code();
-❱
-
-◀static▶ void ☀Print_Include_Files(std::wofstream & outfile, std::vector<std::pair<std::wstring,bool>> const& includes)❰
-
-    for (auto it: includes){
-        if (it.second){
-            outfile << "#include ";
-            if (Begins_And_Ends_With(it.first,L'"')){
-                outfile << As_Last_Char_Removed(it.first) << ".hpp\"";
-            }else{
-                outfile << "<" << it.first << ">";
-            }
-            outfile << '\n';
-        }
-    }
 ❱
 
 ◀static▶ void ☀Dump_HPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file)❰
