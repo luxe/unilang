@@ -8,18 +8,6 @@
 #include <iostream>
 #include "code/utilities/graphics/imgui/mechanics.hpp"
 
-void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
-{
-    // Rendering
-    ImGui::Render();
-    SDL_GL_MakeCurrent(window, gl_context);
-    glViewport(0, 0, (int) io.DisplaySize.x, (int) io.DisplaySize.y);
-    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-    glClear(GL_COLOR_BUFFER_BIT);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SDL_GL_SwapWindow(window);
-}
-
 int main()
 {
 
@@ -59,7 +47,7 @@ int main()
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        render_frame(window, gl_context, io, clear_color);
+        Mechanics::render_frame(window, gl_context, io, clear_color);
     }
 
     Mechanics::clean_up_resources(gl_context, window);
