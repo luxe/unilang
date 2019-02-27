@@ -2,4 +2,4 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-#hcp(name="mechanics",deps = ["@imgui//:imgui_sdl_opengl3"])
+hcp(name="mechanics",deps = ["@imgui//:imgui_sdl_opengl3"])

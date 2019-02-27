@@ -6,58 +6,7 @@
 #include "SDL.h"
 #include <cstdlib>
 #include <iostream>
-
-void setup_sdl()
-{
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-    {
-        std::cerr << "We weren't able to initialize SDL.\n";
-        std::cerr << "Something is incompatible with your display.\n";
-        std::cerr << "Here is the SDL error:\n";
-        std::cerr << SDL_GetError() << '\n';
-        exit(EXIT_FAILURE);
-    }
-}
-
-std::string decide_sdl_glsl_version()
-{
-    std::string version;
-
-#if __APPLE__
-    // GL 3.2 Core + GLSL 150
-    version = "#version 150";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-#else
-    // GL 3.0 + GLSL 130
-    version = "#version 130";
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
-#endif
-
-    return version;
-}
-
-SDL_Window *create_main_window(std::string const &window_name)
-{
-    // Setup window
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_DisplayMode current;
-    SDL_GetCurrentDisplayMode(0, &current);
-    SDL_Window *window = SDL_CreateWindow(window_name.c_str(),
-                                          SDL_WINDOWPOS_CENTERED,
-                                          SDL_WINDOWPOS_CENTERED,
-                                          1280,
-                                          720,
-                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    return window;
-}
+#include "code/utilities/graphics/imgui/mechanics.hpp"
 
 bool user_asked_to_quit(SDL_Window *window, SDL_Event event)
 {
@@ -120,9 +69,9 @@ int main()
 {
 
     // set up GL and SDL
-    setup_sdl();
-    auto          glsl_version = decide_sdl_glsl_version();
-    auto          window       = create_main_window("hello world");
+    Mechanics::setup_sdl();
+    auto          glsl_version = Mechanics::decide_sdl_glsl_version();
+    auto          window       = Mechanics::create_main_window("hello world");
     SDL_GLContext gl_context   = SDL_GL_CreateContext(window);
     SDL_GL_SetSwapInterval(1); // Enable vsync
     gl3wInit();

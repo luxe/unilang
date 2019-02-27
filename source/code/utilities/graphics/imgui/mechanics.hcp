@@ -4,7 +4,6 @@ class
 ❪"imgui.h"❫
 ❪"imgui_internal.h"❫
 ❪"examples/imgui_impl_sdl.h"❫
-❪"examples/imgui_impl_opengl3.h"❫
 ❪GL/gl3w.h❫
 ❪"SDL.h"❫
 ❪cstdlib❫
@@ -23,4 +22,47 @@ class
         std::cerr << SDL_GetError() << '\n';
         exit(EXIT_FAILURE);
     }
+❱
+
+◀public: static▶ std::string ☀decide_sdl_glsl_version()❰
+    std::string version;
+
+#if __APPLE__
+    // GL 3.2 Core + GLSL 150
+    version = "#version 150";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG); // Always required on Mac
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+#else
+    // GL 3.0 + GLSL 130
+    version = "#version 130";
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+#endif
+
+    return version;
+❱
+
+◀public: static▶ SDL_Window *☀create_main_window(std::string const &window_name)❰
+    int double_buffer_num = 1;
+    int depth_size = 24;
+    int stencil_size = 8;
+    int display_mode = 0;
+    
+    // Setup window
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, double_buffer_num);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, depth_size);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, stencil_size);
+    SDL_DisplayMode current;
+    SDL_GetCurrentDisplayMode(display_mode, &current);
+    SDL_Window *window = SDL_CreateWindow(window_name.c_str(),
+                                          SDL_WINDOWPOS_CENTERED,
+                                          SDL_WINDOWPOS_CENTERED,
+                                          1280,
+                                          720,
+                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+    return window;
 ❱
