@@ -1,7 +1,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "examples/imgui_impl_sdl.h"
-#include "examples/imgui_impl_opengl3.h"
+//#include "examples/imgui_impl_opengl3.h"
 #include <GL/gl3w.h>
 #include "SDL.h"
 #include <cstdlib>
@@ -18,18 +18,6 @@ void render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, Im
     glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(window);
-}
-
-void clean_up_resources(SDL_GLContext &gl_context, SDL_Window *window)
-{
-    // Cleanup
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();
-
-    SDL_GL_DeleteContext(gl_context);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
 }
 
 int main()
@@ -74,6 +62,6 @@ int main()
         render_frame(window, gl_context, io, clear_color);
     }
 
-    clean_up_resources(gl_context, window);
+    Mechanics::clean_up_resources(gl_context, window);
     return EXIT_SUCCESS;
 }
