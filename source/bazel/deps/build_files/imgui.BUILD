@@ -5,13 +5,12 @@ cc_library(
   linkopts = [],
   srcs = glob(['*.cpp']),
   hdrs = glob(['*.h']),
-  deps = ["@SDL2//:SDL2"],
+  deps = ["@SDL2//:SDL2", "@opengl//:opengl"],
 )
 
 
 cc_library(
  name = "imgui_sdl_opengl3",
- linkopts = ["-lGL"],
  copts = [],
  includes = [".","examples/libs/gl3w","examples/libs"],
  hdrs = [
