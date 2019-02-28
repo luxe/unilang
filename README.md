@@ -164,7 +164,7 @@ Codeship | [![Codeship Status for Unilang/unilang](https://app.codeship.com/proj
 Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/unilang/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/unilang/unilang/build-status/master) | Full Build | 
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | Full Build | 
 Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Full Build | 
-Travis | [![Build Status](https://travis-ci.com/Unilang/unilang.svg?branch=master)](https://travis-ci.com/Unilang/unilang) | Full Build | 
+Travis | [![Build status](https://travis-ci.com/Unilang/unilang.svg?branch=master)](https://travis-ci.com/Unilang/unilang) | Full Build | 
 
 
 
@@ -172,7 +172,16 @@ Travis | [![Build Status](https://travis-ci.com/Unilang/unilang.svg?branch=maste
 ## Textual Frontend
 
 
+### YAML
+Unilang code can be stored in YAML format and changed directly.  
+
+
+#### JSON
+Unilang code can be stored in JSON format and changed directly.  
+
+
 ## Graphical Frontend
+Unilang has its own graphical IDE which makes working in the language easier.  This is the recommended way of using Unilang.  
 
 
 ## Bazel Rule Examples
