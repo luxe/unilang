@@ -67,7 +67,7 @@ static int render_each_frame(std::string const &window_name, T before, U during)
 ▶
 
 
-◀public: static▶ void ☀setup_sdl() ❰
+◀private: static▶ void ☀setup_sdl() ❰
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
     {
         std::cerr << "We weren't able to initialize SDL.\n";
@@ -78,7 +78,7 @@ static int render_each_frame(std::string const &window_name, T before, U during)
     }
 ❱
 
-◀public: static▶ std::string ☀decide_sdl_glsl_version()❰
+◀private: static▶ std::string ☀decide_sdl_glsl_version()❰
     std::string version;
 
 #if __APPLE__
@@ -100,7 +100,7 @@ static int render_each_frame(std::string const &window_name, T before, U during)
     return version;
 ❱
 
-◀public: static▶ SDL_Window *☀create_main_window(std::string const &window_name)❰
+◀private: static▶ SDL_Window *☀create_main_window(std::string const &window_name)❰
     int double_buffer_num = 1;
     int depth_size = 24;
     int stencil_size = 8;
@@ -112,16 +112,33 @@ static int render_each_frame(std::string const &window_name, T before, U during)
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, stencil_size);
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(display_mode, &current);
+    
+
+/*
+SDL_WINDOW_FULLSCREEN       fullscreen window
+SDL_WINDOW_FULLSCREEN_DESKTOP   fullscreen window at the current desktop resolution
+SDL_WINDOW_OPENGL window usable with OpenGL context
+SDL_WINDOW_VULKAN window usable with a Vulkan instance
+SDL_WINDOW_HIDDEN window is not visible
+SDL_WINDOW_BORDERLESS no window decoration
+SDL_WINDOW_RESIZABLE window can be resized
+SDL_WINDOW_MINIMIZED window is minimized
+SDL_WINDOW_MAXIMIZED window is maximized
+SDL_WINDOW_INPUT_GRABBED window has grabbed input focus
+SDL_WINDOW_ALLOW_HIGHDPI window should be created in high-DPI mode if supported (>= SDL 2.0.1)
+*/
+
+
     SDL_Window *window = SDL_CreateWindow(window_name.c_str(),
                                           SDL_WINDOWPOS_CENTERED,
                                           SDL_WINDOWPOS_CENTERED,
                                           1280,
                                           720,
-                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
     return window;
 ❱
 
-◀public: static▶ bool ☀poll_for_events(SDL_Window *window)
+◀private: static▶ bool ☀poll_for_events(SDL_Window *window)
 ❰
     // Poll and handle events (inputs, window resize, etc.)
     // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your
@@ -140,7 +157,7 @@ static int render_each_frame(std::string const &window_name, T before, U during)
     return done;
 ❱
 
-◀public: static▶ void ☀clean_up_resources(SDL_GLContext &gl_context, SDL_Window *window)
+◀private: static▶ void ☀clean_up_resources(SDL_GLContext &gl_context, SDL_Window *window)
 ❰
     // Cleanup
     ImGui_ImplOpenGL3_Shutdown();
@@ -166,7 +183,7 @@ static int render_each_frame(std::string const &window_name, T before, U during)
     return false;
 ❱
 
-◀public: static▶ void ☀render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
+◀private: static▶ void ☀render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
 ❰
     // Rendering
     ImGui::Render();
