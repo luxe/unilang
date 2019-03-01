@@ -2,6 +2,9 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 #include "code/utilities/std_hackery/lib.hpp"
 
 //add static casts to and from different string types
@@ -49,4 +52,12 @@ std::string Get_Each_Element_Of_Vector_As_A_Line_In_A_String(C const& c){
   }
   str.pop_back();;
   return str;
+}
+
+template <typename T>
+std::string as_string_with_precision(const T a_value, const int n = 6)
+{
+    std::ostringstream out;
+    out << std::fixed << std::setprecision(n) << a_value;
+    return out.str();
 }
