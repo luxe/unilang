@@ -26,6 +26,10 @@ mkdir -p ~/.local/share/fonts/;
 mkdir -p ~/.fonts/;
 cp -f font-files/ProFontMedium-11.bdf ~/.local/share/fonts/;
 cp -f font-files/ProFontMedium-11.bdf ~/.fonts/;
+cp -f font-files/ProFontPowerline.ttf ~/.local/share/fonts/;
+cp -f font-files/ProFontPowerline.ttf ~/.fonts/;
+cp -f font-files/ProFontPowerlineBold.ttf ~/.local/share/fonts/;
+cp -f font-files/ProFontPowerlineBold.ttf ~/.fonts/;
 
 #I've had it get stuck on the fallback font...
 #hmm.. I dunno.  run the script again.  worked for me.
