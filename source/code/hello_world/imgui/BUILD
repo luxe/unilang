@@ -6,6 +6,7 @@ package(
 cpp_main(
     name = "main",
     deps = ["@imgui//:imgui_sdl_opengl3",
-    "//code/utilities/graphics/imgui:mechanics"
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/graphics/imgui:sdl_init_settings"
     ],
 )
