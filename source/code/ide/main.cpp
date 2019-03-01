@@ -5,10 +5,17 @@
 void during_func(){
     
     Ui_Renders::render_main_menu_bar([](){
-        if (ImGui::MenuItem("hello world", "test"))
+        if (ImGui::MenuItem("hello world", "T"))
         {
         }
     });
+    
+    // for testing
+    bool show_demo_window = true;
+    ImGui::ShowDemoWindow(&show_demo_window);
+    
+    
+    
 }
 int main()
 {
