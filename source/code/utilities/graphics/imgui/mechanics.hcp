@@ -9,6 +9,7 @@ class
 ❪"SDL.h"❫
 ❪cstdlib❫
 ❪iostream❫
+❪"code/utilities/graphics/imgui/sdl_init_settings"❫
 ⚯
 ⚞⚟
 
@@ -17,12 +18,14 @@ class
 template <typename T, typename U>
 static int render_each_frame(std::string const &window_name, T before, U during)
 {
+    Sdl_Init_Settings s;
+    
     // set up GL and SDL
     Mechanics::setup_sdl();
     auto          glsl_version = Mechanics::decide_sdl_glsl_version();
-    auto          window       = Mechanics::create_main_window(window_name);
+    auto          window       = Mechanics::create_main_window(s.main_window);
     SDL_GLContext gl_context   = SDL_GL_CreateContext(window);
-    SDL_GL_SetSwapInterval(1); // Enable vsync
+    set_swap_interval(s.interval);
     gl3wInit();
 
     // Setup Dear ImGui binding
@@ -67,15 +70,35 @@ static int render_each_frame(std::string const &window_name, T before, U during)
 ▶
 
 
+◀private: static▶ void ☀set_swap_interval(Sdl_Swap_Interval const& interval) ❰
+    if (interval == Sdl_Swap_Interval::IMMEDIATE){
+        SDL_GL_SetSwapInterval(0);
+    }
+    else if (interval == Sdl_Swap_Interval::SYNCHRONIZED_VERTICAL_RETRACE){
+        SDL_GL_SetSwapInterval(1);
+    }
+    else if (interval == Sdl_Swap_Interval::ADAPTIVE_VSYNC){
+        SDL_GL_SetSwapInterval(-1);
+    }
+❱
+
 ◀private: static▶ void ☀setup_sdl() ❰
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
     {
-        std::cerr << "We weren't able to initialize SDL.\n";
-        std::cerr << "Something is incompatible with your display.\n";
-        std::cerr << "Here is the SDL error:\n";
-        std::cerr << SDL_GetError() << '\n';
+        std::cerr << sdl_failed_to_init_error();
         exit(EXIT_FAILURE);
     }
+❱
+
+◀private: static▶ std::string ☀sdl_failed_to_init_error() ❰
+    
+    std::string error;
+    error += "We weren't able to initialize SDL.\n";
+    error += "Something is incompatible with your display.\n";
+    error += "Here is the SDL error:\n";
+    error += SDL_GetError();
+    error += "\n";
+    return error;
 ❱
 
 ◀private: static▶ std::string ☀decide_sdl_glsl_version()❰
@@ -100,41 +123,74 @@ static int render_each_frame(std::string const &window_name, T before, U during)
     return version;
 ❱
 
-◀private: static▶ SDL_Window *☀create_main_window(std::string const &window_name)❰
-    int double_buffer_num = 1;
-    int depth_size = 24;
-    int stencil_size = 8;
-    int display_mode = 0;
+◀private: static▶ SDL_Window *☀create_main_window(Sdl_Window_Settings const& settings)❰
     
     // Setup window
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, double_buffer_num);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, depth_size);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, stencil_size);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, settings.double_buffer_num);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, settings.depth_size);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, settings.stencil_size);
     SDL_DisplayMode current;
-    SDL_GetCurrentDisplayMode(display_mode, &current);
+    SDL_GetCurrentDisplayMode(settings.display_mode, &current);
+
+
+    //decide x/y window starting position
+    int x_pos = settings.x_pos;
+    int y_pos = settings.y_pos;
+    if (settings.x_pos_centered){
+        x_pos = SDL_WINDOWPOS_CENTERED;
+    }
+    if (settings.x_pos_undefined){
+        x_pos = SDL_WINDOWPOS_UNDEFINED;
+    }
+    if (settings.y_pos_centered){
+        y_pos = SDL_WINDOWPOS_CENTERED;
+    }
+    if (settings.y_pos_undefined){
+        y_pos = SDL_WINDOWPOS_UNDEFINED;
+    }
     
+    //decide flags
+    int flags = 0;
+    if (settings.fullscreen){
+        flags |= SDL_WINDOW_FULLSCREEN;
+    }
+    if (settings.fullscreen_desktop){
+        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    }
+    if (settings.use_opengl){
+        flags |= SDL_WINDOW_OPENGL;
+    }
+    if (settings.use_vulkan){
+        flags |= SDL_WINDOW_VULKAN;
+    }
+    if (settings.hidden){
+        flags |= SDL_WINDOW_HIDDEN;
+    }
+    if (settings.borderless){
+        flags |= SDL_WINDOW_BORDERLESS;
+    }
+    if (settings.resizeable){
+        flags |= SDL_WINDOW_RESIZABLE;
+    }
+    if (settings.minimized){
+        flags |= SDL_WINDOW_MINIMIZED;
+    }
+    if (settings.maximized){
+        flags |= SDL_WINDOW_MAXIMIZED;
+    }
+    if (settings.input_grabbed){
+        flags |= SDL_WINDOW_INPUT_GRABBED;
+    }
+    if (settings.allow_high_dpi){
+        flags |= SDL_WINDOW_ALLOW_HIGHDPI;
+    }
 
-/*
-SDL_WINDOW_FULLSCREEN       fullscreen window
-SDL_WINDOW_FULLSCREEN_DESKTOP   fullscreen window at the current desktop resolution
-SDL_WINDOW_OPENGL window usable with OpenGL context
-SDL_WINDOW_VULKAN window usable with a Vulkan instance
-SDL_WINDOW_HIDDEN window is not visible
-SDL_WINDOW_BORDERLESS no window decoration
-SDL_WINDOW_RESIZABLE window can be resized
-SDL_WINDOW_MINIMIZED window is minimized
-SDL_WINDOW_MAXIMIZED window is maximized
-SDL_WINDOW_INPUT_GRABBED window has grabbed input focus
-SDL_WINDOW_ALLOW_HIGHDPI window should be created in high-DPI mode if supported (>= SDL 2.0.1)
-*/
-
-
-    SDL_Window *window = SDL_CreateWindow(window_name.c_str(),
-                                          SDL_WINDOWPOS_CENTERED,
-                                          SDL_WINDOWPOS_CENTERED,
-                                          1280,
-                                          720,
-                                          SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED);
+    SDL_Window *window = SDL_CreateWindow(settings.title.c_str(),
+                                          x_pos,
+                                          y_pos,
+                                          settings.width,
+                                          settings.height,
+                                          flags);
     
     if (window == NULL) {
         std::cerr << "could not create window" << std::endl;
