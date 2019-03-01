@@ -5,6 +5,9 @@
 void during_func(){
     
     Ui_Renders::render_main_menu_bar([](){
+        if (ImGui::MenuItem("hello world", "test"))
+        {
+        }
     });
 }
 int main()
