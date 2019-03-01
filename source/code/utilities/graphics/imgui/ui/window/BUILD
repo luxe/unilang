@@ -20,3 +20,8 @@ hcp(name="window_position",deps = [
 hcp(name="window_size",deps = [
 "@imgui//:imgui_sdl_opengl3"
 ])
+
+hcp(name="window_renderer",deps = [
+"@imgui//:imgui_sdl_opengl3",
+"//code/utilities/graphics/imgui/ui/window:window_settings"
+])

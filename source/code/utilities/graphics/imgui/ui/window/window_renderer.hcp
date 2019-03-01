@@ -1,0 +1,98 @@
+class
+❪string❫
+❪iostream❫
+❪"imgui.h"❫
+❪cstdlib❫
+❪iostream❫
+❪"code/utilities/graphics/imgui/ui/window/window_settings"❫
+⚯
+⚞⚟
+
+◀private: static▶ bool ☀begin_window(Window_Settings &properties)
+❰
+
+    ImGuiWindowFlags window_flags = 0;
+    bool *           p_open       = nullptr;
+    if (!properties.titlebar)
+    {
+        window_flags |= ImGuiWindowFlags_NoTitleBar;
+    }
+    if (!properties.scrollbar)
+    {
+        window_flags |= ImGuiWindowFlags_NoScrollbar;
+    }
+    if (properties.has_menu)
+    {
+        window_flags |= ImGuiWindowFlags_MenuBar;
+    }
+    if (!properties.move)
+    {
+        window_flags |= ImGuiWindowFlags_NoMove;
+    }
+    if (!properties.resize)
+    {
+        window_flags |= ImGuiWindowFlags_NoResize;
+    }
+    if (!properties.collapse)
+    {
+        window_flags |= ImGuiWindowFlags_NoCollapse;
+    }
+    if (!properties.nav)
+    {
+        window_flags |= ImGuiWindowFlags_NoNav;
+    }
+    if (!properties.scroll_with_mouse)
+    {
+        window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
+    }
+    if (properties.allow_horizontal_scrollbar)
+    {
+        window_flags |= ImGuiWindowFlags_HorizontalScrollbar;
+    }
+    if (!properties.refocus_on_use)
+    {
+        window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus;
+    }
+    if (!properties.close)
+    {
+        p_open = nullptr;
+    }
+
+    if (properties.position.force)
+    {
+        ImGui::SetNextWindowPos(ImVec2(properties.position.x, properties.position.y), properties.position.condition);
+        properties.position.force = false;
+    }
+
+    if (properties.size.force)
+    {
+        ImGui::SetNextWindowSize(ImVec2(properties.size.width, properties.size.height), properties.size.condition);
+        properties.size.force = false;
+    }
+
+    ImGui::SetNextWindowBgAlpha(properties.bg_alpha);
+    if (properties.focus)
+    {
+        ImGui::SetNextWindowFocus();
+        properties.focus = false;
+    }
+
+    return ImGui::Begin(properties.title.c_str(), &properties.is_open, window_flags);
+❱
+
+◀public:
+template <typename T>
+static void render(Window_Settings &properties, T fun)
+{
+    bool was_rendered = begin_window(properties);
+    if (was_rendered)
+    {
+        fun();
+    }
+    ImGui::End();
+}
+▶
+
+
+
+
