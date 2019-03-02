@@ -17,5 +17,5 @@ hcp(name = "body_token_value", deps = [
 ])
 
 hcp(name = "file_range_location", deps = [
-"//code/transcompilers/unilang/file_marker:file_marker"
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker"
 ])

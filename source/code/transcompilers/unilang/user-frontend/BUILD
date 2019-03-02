@@ -31,7 +31,7 @@ hcp(name = "fully_read_file", deps = [
 ])
 
 hcp(name = "exception_handler", deps = [
-"//code/transcompilers/unilang/file_marker:file_marker",
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker",
 "//code/transcompilers/unilang/validators/file_name:filename_exception",
 "//code/transcompilers/unilang/parser/tokenizer:tokenizer_exception",
 "//code/transcompilers/unilang/validators/stream:token_stream_validation_exception",

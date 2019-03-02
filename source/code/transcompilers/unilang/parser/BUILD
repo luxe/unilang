@@ -46,7 +46,7 @@ hcp(name = "macro_warner", deps = ["parser_token"])
 
 hcp(name = "parser_token", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
-"//code/transcompilers/unilang/file_marker:file_marker",
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker",
 "//code/transcompilers/unilang/parser/body_parser:file_range_location",
 ])
 

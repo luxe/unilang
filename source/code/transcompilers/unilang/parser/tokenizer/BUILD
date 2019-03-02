@@ -9,21 +9,21 @@ hcp(name = "tokenizer_testing_settings",
     ])
 
 hcp(name = "tokenizer_exception", deps = [
-"//code/transcompilers/unilang/file_marker:file_marker"
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker"
 ])
 
 hcp(name = "tokenizer_marker", deps = [
-"//code/transcompilers/unilang/file_marker:file_marker",
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
 "//code/transcompilers/unilang/parser/tokenizer:tokenizer_testing_settings",
-"//code/transcompilers/unilang/file_marker:file_marker_adjuster",
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker_adjuster",
 "//code/transcompilers/unilang/parser:global_tokens_table_utilities",
 "//code/transcompilers/unilang/options/parser:parser_settings",
 ])
 
 hcp(name = "tokenizer", deps = [
 "//code/transcompilers/unilang/parser:parser_token",
-"//code/transcompilers/unilang/file_marker:file_marker",
+"//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker",
 "//code/transcompilers/unilang/parser/tokenizer:tokenizer_marker",
 "//code/transcompilers/unilang/parser/tokenizer:tokenizer_testing_settings",
 "//code/transcompilers/unilang/user-frontend:fully_read_file",
