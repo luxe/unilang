@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 EXPECTED="Hello, World!"
-OUTPUT=$(./source/code/hello_world/sh/hello_world)
+OUTPUT=$(./code/hello_world/sh/hello_world.sh)
 
 if [ "$OUTPUT" != "$EXPECTED" ]; then
     echo "$OUTPUT != $EXPECTED"
