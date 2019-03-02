@@ -12,8 +12,8 @@ void each_frame(Window_Settings & f){
     });
     
     // for testing
-    bool show_demo_window = true;
-    ImGui::ShowDemoWindow(&show_demo_window);
+    //bool show_demo_window = true;
+    //ImGui::ShowDemoWindow(&show_demo_window);
     
     Window_Renderer::render(f,[&](){
         
@@ -51,7 +51,13 @@ int main()
     f.refocus_on_use     = false;
     f.bg_alpha           = 1;
     
-    auto before = [](){};
+    auto before = [](){
+        
+            ImGuiStyle& style = ImGui::GetStyle();
+    style.WindowBorderSize = 0;
+    style.WindowRounding = 0;
+        
+    };
     return Mechanics::render_each_frame(s,before,[&](){
         each_frame(f);
     });
