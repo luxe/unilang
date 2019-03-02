@@ -53,7 +53,7 @@ int main()
     
     auto before = [](){
         
-            ImGuiStyle& style = ImGui::GetStyle();
+    ImGuiStyle& style = ImGui::GetStyle();
     style.WindowBorderSize = 0;
     style.WindowRounding = 0;
         
