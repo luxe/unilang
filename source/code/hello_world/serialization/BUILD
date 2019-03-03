@@ -3,7 +3,7 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-gtest(name = "boost_int",
+gtest(name = "boost_non_class_int",
       deps = ["@boost//:serialization",]
 )
 
