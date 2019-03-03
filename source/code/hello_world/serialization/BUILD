@@ -3,4 +3,4 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-gtest(name = "int")
+gtest(name = "int", deps = ["@cereal//:main"])
