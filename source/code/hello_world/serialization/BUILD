@@ -7,7 +7,7 @@ gtest(name = "boost_non_class_int",
       deps = ["@boost//:serialization",]
 )
 
-gtest(name = "cereal_int",
+gtest(name = "cereal_non_class_int",
       deps = ["@cereal//:main"]
 )
 
