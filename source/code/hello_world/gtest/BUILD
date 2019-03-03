@@ -1,7 +1,6 @@
-cc_test(
-    name = "main",
-    srcs = ["main.cpp"],
-    deps = [
-        "@gtest//:gtest_main",
-    ],
+load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
+package(
+    default_visibility = ["//visibility:public"],
 )
+
+gtest(name = "main")
