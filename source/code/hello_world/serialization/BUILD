@@ -11,6 +11,9 @@ gtest(name = "cereal_int",
       deps = ["@cereal//:main"]
 )
 
-gtest(name = "boost_class_int",
+gtest(name = "boost_class_int_intrusive",
+      deps = ["@boost//:serialization",]
+)
+gtest(name = "boost_class_int_nonintrusive",
       deps = ["@boost//:serialization",]
 )
