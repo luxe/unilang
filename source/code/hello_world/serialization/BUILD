@@ -3,4 +3,10 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-gtest(name = "int", deps = ["@cereal//:main","@boost//:serialization",])
+gtest(name = "boost_int",
+      deps = ["@boost//:serialization",]
+)
+
+gtest(name = "cereal_int",
+      deps = ["@cereal//:main"]
+)
