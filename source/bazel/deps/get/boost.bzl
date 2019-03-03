@@ -3,6 +3,16 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 def boost():
     # Boost 1 (the boost code)
+    #http_archive(
+   #     name = "boost",
+   #     build_file = "@com_github_nelhage_rules_boost//:BUILD.boost",
+   #     sha256 = "9a2c2819310839ea373f42d69e733c339b4e9a19deab6bfec448281554aa4dbb",
+   #     strip_prefix = "boost_1_69_0",
+   #     urls = [
+    #        "https://sourceforge.net/projects/boost/files/boost/1.69.0/boost_1_69_0.tar.gz",
+    #    ],
+    #)
+    # Boost 1 (the boost code)
     http_archive(
         name = "boost",
         build_file = "@com_github_nelhage_rules_boost//:BUILD.boost",
