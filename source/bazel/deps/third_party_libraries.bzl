@@ -34,6 +34,7 @@ load("//bazel/deps/get:pybind11.bzl", "pybind11")
 load("//bazel/deps/get:grpc.bzl", "grpc")
 load("//bazel/deps/get:fmt.bzl", "fmt")
 load("//bazel/deps/get:glfw.bzl", "glfw")
+load("//bazel/deps/get:cereal.bzl", "cereal")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -86,6 +87,7 @@ def third_party_libraries():
     yaml_cpp()
     protobuf()
     apache_thrift()
+    cereal()
     
     # Data Structures
     andres_graph()
