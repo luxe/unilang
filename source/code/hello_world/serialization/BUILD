@@ -10,3 +10,7 @@ gtest(name = "boost_int",
 gtest(name = "cereal_int",
       deps = ["@cereal//:main"]
 )
+
+gtest(name = "boost_class_int",
+      deps = ["@boost//:serialization",]
+)
