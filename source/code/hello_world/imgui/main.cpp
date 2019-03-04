@@ -4,9 +4,11 @@
 int main()
 {
 
+    //how to init the SDL window
     Sdl_Init_Settings s;
     s.main_window.title = "hello world";
     
+    //bind and run ImGui with SDL
     auto before = [](){};
     auto during = [](){};
     return Mechanics::render_each_frame(s,before,during);
