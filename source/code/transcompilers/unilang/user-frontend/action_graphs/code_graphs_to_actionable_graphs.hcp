@@ -16,20 +16,27 @@ class
     }
     
     //enrich the graph with artifact information
-    all.actions = Artifact_Guesser::Guess(code_graphs);
+    
+    if (input.options.user_chosen_export_settings.languages.empty()){
+        all.actions = Artifact_Guesser::Guess(code_graphs);
+    }
+    else{
+        //TODO?
+    }
     return all;
 ❱
 
 ◀private: static▶ Actionable_Code_Graph ☀To_Actionable_Graph(Code_Graph const& graph, Program_Input const& input)❰
     
     //enrich the structure with artifact information
-    Actionable_Structure s;
-    s.structure = graph.structure;
-    s.actions = Artifact_Guesser::Guess(graph.structure);
-    
     Actionable_Code_Graph x;
-    x.structure = s;
-    x.interface_deps = graph.interface_deps;
-    x.source_deps = graph.source_deps;
+    x.graph = graph;
+    
+    if (input.options.user_chosen_export_settings.languages.empty()){
+        x.actions = Artifact_Guesser::Guess(graph.structure);
+    }
+    else{
+        x.actions.artifacts = input.options.user_chosen_export_settings.languages;
+    }
     return x;
 ❱

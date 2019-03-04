@@ -9,11 +9,8 @@ hcp(name = "actionable_code_graphs", deps = [
 ])
 hcp(name = "actionable_code_graph", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
-    "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_structure",
+    "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
     "//code/utilities/data_structures/unique_vertex_graph:lib",
-])
-hcp(name = "actionable_structure", deps = [
-    "//code/transcompilers/unilang/structure/model:structure",
     "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
 ])
 hcp(name = "code_graphs_to_actionable_graphs", deps = [

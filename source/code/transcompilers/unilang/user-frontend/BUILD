@@ -54,6 +54,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/user-frontend:transcompiler",
 "//code/transcompilers/unilang/user-frontend:after_artifact_actions",
 "//code/transcompilers/unilang/user-frontend/action_graphs:code_graphs_to_actionable_graphs",
+"//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
 ])
 
 hcp(name = "code_graphs_creator", deps = [
@@ -83,6 +84,7 @@ hcp(name = "transcompiler", deps = [
 "//code/transcompilers/unilang/main:program_input",
 "//code/transcompilers/unilang/user-frontend/compiler:compiler",
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
+"//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
 ])
 
 hcp(name = "after_artifact_actions", deps = [

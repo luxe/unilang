@@ -6,6 +6,8 @@ class
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ❪"code/transcompilers/unilang/main/program_input"❫
 ❪"code/transcompilers/unilang/user-frontend/artifact_actions/artifact_type"❫
+❪"code/transcompilers/unilang/user-frontend/action_graphs/actionable_code_graph"❫
+❪"code/transcompilers/unilang/user-frontend/action_graphs/actionable_code_graphs"❫
 ⚯
 ❪iostream❫
 ❪"code/transcompilers/unilang/compiler-frontends/plant_uml_exporter/plant_uml_exporter"❫
@@ -75,18 +77,20 @@ class
 //code into our "data structure design".  (Data structure design is bad name for it, but it is normal OO C design).  
 //So these are both styles that I can apply on the same UniLang code.
 //Hopefully I can start transitioning the code from the bad design to the good design assuming we stay in business.
-◀public: static▶ std::vector<std::string> ☀Compile(Code_Graph const& code_graph, Program_Input input)❰
+◀public: static▶ std::vector<std::string> ☀Compile(Actionable_Code_Graph const& code_graph, Program_Input input)❰
     
     std::vector<std::string> created_files;
-    for (auto const& language: input.options.user_chosen_export_settings.languages){
-        created_files += Create_Individual_Language_Artifact(code_graph,input,language);
+    
+    for (auto const& language: code_graph.actions.artifacts){
+        created_files += Create_Individual_Language_Artifact(code_graph.graph,input,language);
     }
+    
     return created_files;
 ❱
-◀public: static▶ std::vector<std::string> ☀Compile(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
+◀public: static▶ std::vector<std::string> ☀Compile(Actionable_Code_Graphs const& code_graphs, Program_Input const& input)❰
     
     std::vector<std::string> created_files;
-    for (auto const& language: input.options.user_chosen_export_settings.languages){
+    for (auto const& language: code_graphs.actions.artifacts){
         created_files += Create_Group_Language_Artifact(code_graphs,input,language);
     }
     return created_files;
@@ -442,14 +446,20 @@ class
 ❱
 
 
-◀private: static▶ std::vector<std::string> ☀Create_Group_Language_Artifact(std::vector<Code_Graph> const& code_graphs, Program_Input input, Artifact_Type const& language)❰
+◀private: static▶ std::vector<std::string> ☀Create_Group_Language_Artifact(Actionable_Code_Graphs const& code_graphs, Program_Input input, Artifact_Type const& language)❰
 
     auto unit = Decide_Exporter_Settings(input);
     std::vector<std::string> created_files;
+    
+    //TODO(thickey): we should fix APIs so we aren't converting back
+    std::vector<Code_Graph> code_graphs2;
+    for (auto const& it: code_graphs.graphs){
+        code_graphs2.emplace_back(it.graph);
+    }
 
     switch (language){
         case Artifact_Type::BAZEL:
-        created_files += Bazel_Rule_Exporter::Export(code_graphs,unit.contributors,unit.settings.foreign_language.bazel_build);
+        created_files += Bazel_Rule_Exporter::Export(code_graphs2,unit.contributors,unit.settings.foreign_language.bazel_build);
         break;
         default:;
     }

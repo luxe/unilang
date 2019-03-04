@@ -4,6 +4,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graph",
+"//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
 "//code/transcompilers/unilang/main:program_input",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/transcompilers/unilang/compiler-frontends/hidl:hidl_exporter",
