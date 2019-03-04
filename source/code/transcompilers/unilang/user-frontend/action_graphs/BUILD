@@ -21,5 +21,6 @@ hcp(name = "code_graphs_to_actionable_graphs", deps = [
     "//code/transcompilers/unilang/main:program_input",
     "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
     "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
     
 ])

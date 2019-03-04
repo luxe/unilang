@@ -6,6 +6,7 @@ class
 ❪"code/transcompilers/unilang/main/program_input"❫
 ❪"code/transcompilers/unilang/user-frontend/action_graphs/actionable_code_graphs"❫
 ⚯
+❪"code/transcompilers/unilang/user-frontend/artifact_actions/artifact_guesser"❫
 ⚞⚟
 
 ◀public: static▶ Actionable_Code_Graphs ☀Convert(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
@@ -13,15 +14,18 @@ class
     for (auto const& it: code_graphs){
         all.graphs.emplace_back(To_Actionable_Graph(it,input));
     }
-    //all.actions = 
+    
+    //enrich the graph with artifact information
+    all.actions = Artifact_Guesser::Guess(code_graphs);
     return all;
 ❱
 
 ◀private: static▶ Actionable_Code_Graph ☀To_Actionable_Graph(Code_Graph const& graph, Program_Input const& input)❰
     
+    //enrich the structure with artifact information
     Actionable_Structure s;
     s.structure = graph.structure;
-    //s.actions = 
+    s.actions = Artifact_Guesser::Guess(graph.structure);
     
     Actionable_Code_Graph x;
     x.structure = s;
