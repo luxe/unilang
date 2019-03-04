@@ -4,7 +4,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "actionable_code_graphs", deps = [
-    "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graph"
+    "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graph",
+    "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
 ])
 hcp(name = "actionable_code_graph", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
