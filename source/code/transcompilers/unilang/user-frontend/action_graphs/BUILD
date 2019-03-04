@@ -5,3 +5,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "actionable_code_graphs", deps = [
 ])
+hcp(name = "actionable_code_graph", deps = [
+])
+hcp(name = "actionable_structure", deps = [
+])
