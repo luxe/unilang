@@ -53,6 +53,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/user-frontend:workspace_adjuster",
 "//code/transcompilers/unilang/user-frontend:transcompiler",
 "//code/transcompilers/unilang/user-frontend:after_artifact_actions",
+"//code/transcompilers/unilang/user-frontend/action_graphs:code_graphs_to_actionable_graphs",
 ])
 
 hcp(name = "code_graphs_creator", deps = [

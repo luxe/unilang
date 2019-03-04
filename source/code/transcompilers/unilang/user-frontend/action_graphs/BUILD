@@ -9,3 +9,10 @@ hcp(name = "actionable_code_graph", deps = [
 ])
 hcp(name = "actionable_structure", deps = [
 ])
+hcp(name = "code_graphs_to_actionable_graphs", deps = [
+    "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
+    "//code/transcompilers/unilang/main:program_input",
+    "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    
+])
