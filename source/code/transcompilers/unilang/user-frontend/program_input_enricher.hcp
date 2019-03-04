@@ -25,10 +25,9 @@ class
     bool attempt_to_derive_exporter_if_none_was_specified = true;
     bool attempt_to_adjust_workspace = true;
 
-    
     //Attempt to enrich empty settings
     if (derive_inputs_if_none_were_specified){
-        input.options.input_files = Decide_What_Files_To_Transcompile(input.options.input_files,input.settings.parser.input_files.expected_file_extension);
+        Decide_What_Files_To_Transcompile(input,input.settings.parser.input_files.expected_file_extension);
     }
     if (attempt_to_derive_exporter_if_none_was_specified){
         Decide_What_Exporter_To_Use(input);
@@ -43,14 +42,12 @@ class
     Ensure_We_Have_Files_To_Process(input);
     Ensure_We_Have_An_Exporter_Chosen(input);
 ❱
-◀private: static▶ std::vector<std::string> ☀Decide_What_Files_To_Transcompile(std::vector<std::string> input_files, std::string const& expected_file_extension)❰
+◀private: static▶ void ☀Decide_What_Files_To_Transcompile(Program_Input & input, std::string const& expected_file_extension)❰
     
     //if no files were passed, get all of the files in the directory
-    if (input_files.empty()){
-        auto files = Get_Everything_At_Path_With_The_File_Extension(expected_file_extension);
-        input_files = files;
+    if (input.options.input_files.empty()){
+        input.options.input_files = Get_Everything_At_Path_With_The_File_Extension(expected_file_extension);
     }
-    return input_files;
 ❱
 ◀private: static▶ void ☀Decide_What_Exporter_To_Use(Program_Input & input)❰
     if (input.options.user_chosen_export_settings.exporter == Chosen_Exporter::NONE){
