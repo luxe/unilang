@@ -4,10 +4,15 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "actionable_code_graphs", deps = [
+    "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graph"
 ])
 hcp(name = "actionable_code_graph", deps = [
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_structure",
+    "//code/utilities/data_structures/unique_vertex_graph:lib",
 ])
 hcp(name = "actionable_structure", deps = [
+    "//code/transcompilers/unilang/structure/model:structure",
 ])
 hcp(name = "code_graphs_to_actionable_graphs", deps = [
     "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
