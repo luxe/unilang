@@ -13,6 +13,7 @@ hcp(name = "actionable_code_graph", deps = [
 ])
 hcp(name = "actionable_structure", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
+    "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
 ])
 hcp(name = "code_graphs_to_actionable_graphs", deps = [
     "//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
