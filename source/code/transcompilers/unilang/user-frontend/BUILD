@@ -30,6 +30,13 @@ hcp(name = "fully_read_file", deps = [
 "//code/utilities/streams/filestreams/read_all:lib"
 ])
 
+hcp(name = "actionable_code_graphs_creator", deps = [
+"//code/transcompilers/unilang/main:program_input",
+"//code/transcompilers/unilang/user-frontend/action_graphs:actionable_code_graphs",
+"//code/transcompilers/unilang/user-frontend:code_graphs_creator",
+"//code/transcompilers/unilang/user-frontend/action_graphs:code_graphs_to_actionable_graphs",
+])
+
 hcp(name = "exception_handler", deps = [
 "//code/transcompilers/unilang/parser/tokenizer/file_marker:file_marker",
 "//code/transcompilers/unilang/validators/file_name:filename_exception",
@@ -49,7 +56,7 @@ hcp(name = "user_frontend", deps = [
 "//code/transcompilers/unilang/dependency_graph_creator:code_graph",
 "//code/transcompilers/unilang/main:program_input",
 "//code/transcompilers/unilang/user-frontend:program_input_enricher",
-"//code/transcompilers/unilang/user-frontend:code_graphs_creator",
+"//code/transcompilers/unilang/user-frontend:actionable_code_graphs_creator",
 "//code/transcompilers/unilang/user-frontend:workspace_adjuster",
 "//code/transcompilers/unilang/user-frontend:transcompiler",
 "//code/transcompilers/unilang/user-frontend:after_artifact_actions",
