@@ -12,11 +12,20 @@ void each_frame(Window_Settings & f){
     });
     
     // for testing
-    //bool show_demo_window = true;
-    //ImGui::ShowDemoWindow(&show_demo_window);
+    bool show_demo_window = true;
+    ImGui::ShowDemoWindow(&show_demo_window);
     
     Window_Renderer::render(f,[&](){
-        
+        ImGuiTreeNodeFlags flags = 0;
+        if (ImGui::CollapsingHeader("Implementations", flags)){
+            ImGui::Text("%s", "test");
+        }
+        if (ImGui::CollapsingHeader("Unit Tests", flags)){
+            ImGui::Text("%s", "test");
+        }
+        if (ImGui::CollapsingHeader("Benchmarks", flags)){
+            ImGui::Text("%s", "test");
+        }
     });
     
     
