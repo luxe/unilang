@@ -16,7 +16,7 @@ struct foo{
   }
 };
 
-TEST(HelloTest, BoostInt) {
+TEST(Serialization, BoostClassIntIntrusive) {
     
     std::stringstream ss;
     {

@@ -22,3 +22,6 @@ gtest(name = "boost_class_int_nonintrusive",
 gtest(name = "cereal_class_int_intrusive",
       deps = ["@cereal//:main"]
 )
+gtest(name = "cereal_class_int_nonintrusive",
+      deps = ["@cereal//:main"]
+)

@@ -5,15 +5,16 @@
 
 struct foo{
     int i;
-    
-  template <class Archive>
-  void serialize( Archive & ar)
-  {
-    ar & i;
-  }
 };
+namespace cereal {
+    template <class Archive>
+    void serialize( Archive & ar, foo & f)
+    {
+    ar & f.i;
+    }
+}
 
-TEST(Serialization, CerealClassIntIntrusive) {
+TEST(Serialization, CerealClassIntNonIntrusive) {
     
     std::stringstream ss;
     {

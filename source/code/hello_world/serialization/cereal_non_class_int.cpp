@@ -5,7 +5,7 @@
 #include <utility>
 #include "cereal/archives/binary.hpp"
 
-TEST(HelloTest, CerealInt) {
+TEST(Serialization, CerealInt) {
 	
 	std::stringstream ss;
 	{

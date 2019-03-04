@@ -20,7 +20,7 @@ namespace serialization {
 }
 }
 
-TEST(HelloTest, BoostInt) {
+TEST(Serialization, BoostClassIntNonIntrusive) {
     
     std::stringstream ss;
     {

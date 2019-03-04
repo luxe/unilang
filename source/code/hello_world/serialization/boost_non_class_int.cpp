@@ -6,7 +6,7 @@
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 
-TEST(HelloTest, BoostInt) {
+TEST(Serialization, BoostInt) {
     
     std::stringstream ss;
     {
