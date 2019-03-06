@@ -2,6 +2,7 @@
 #include "code/utilities/graphics/imgui/sdl_init_settings.hpp"
 #include "code/utilities/graphics/imgui/ui/ui_renders.hpp"
 #include "code/utilities/graphics/imgui/ui/window/window_renderer.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/rectangle_settings.hpp"
 
 
 
@@ -12,31 +13,20 @@ struct position
     int y = 0;
 };
 
-struct color
-{
-    int r     = 0;
-    int g     = 0;
-    int b     = 0;
-    int alpha = 255;
-    color()   = default;
-    color(int r, int g, int b, int alpha) : r(r), g(g), b(b), alpha(alpha) {}
-};
-
-struct rectangle_settings
-{
-    std::string label;
-    int         width     = 50;
-    int         height    = 50;
-    int         thickness = 1;
-    float       rounding  = 0.0;
-    color       color_border;
-    color       color_fill;
-};
-
 struct mouse_events
 {
     bool hovered = false;
     bool clicked = false;
+};
+struct pixel_settings
+{
+    position pos;
+    Color color_fill;
+};
+struct full_color_bitmap_settings
+{
+    Color color_fill;
+    std::vector<position> pixels;
 };
 
 
@@ -48,7 +38,7 @@ struct ide_settings
     Window_Settings method_item;
 };
 
-ImU32 to_imgui_color(const color &c)
+ImU32 to_imgui_color(const Color &c)
 {
     return IM_COL32(c.r, c.g, c.b, c.alpha);
 }
@@ -62,7 +52,7 @@ position window_adjusted_position(position pos)
     return p;
 }
 
-bool mouse_clicked_area(position pos, rectangle_settings const &settings)
+bool mouse_clicked_area(position pos, Rectangle_Settings const &settings)
 {
     if (ImGui::IsMouseClicked(0))
     {
@@ -78,7 +68,32 @@ bool mouse_clicked_area(position pos, rectangle_settings const &settings)
     return false;
 }
 
-mouse_events draw_rectangle(ImDrawList *draw_list, position pos, rectangle_settings const &settings)
+bool mouse_is_hovering_area(position pos, Rectangle_Settings const &settings){
+    if (ImGui::IsMouseHoveringRect(
+            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.width - 1, pos.y + settings.height), false))
+    {
+        return true;
+    }
+    return false;
+}
+
+mouse_events search_for_mouse_events_in_rectangle(position pos, Rectangle_Settings const &settings)
+{
+    //find if any mouse events have happened on the rectangle
+    mouse_events events;
+    if (mouse_clicked_area(pos, settings))
+    {
+        events.clicked = true;
+    }
+    if (mouse_is_hovering_area(pos, settings))
+    {
+        events.hovered = true;
+    }
+    
+    return events;
+}
+
+mouse_events draw_rectangle(ImDrawList *draw_list, position pos, Rectangle_Settings const &settings)
 {
     // draw it
     draw_list->AddRectFilled(ImVec2(pos.x, pos.y),
@@ -95,19 +110,8 @@ mouse_events draw_rectangle(ImDrawList *draw_list, position pos, rectangle_setti
                        ImDrawCornerFlags_All,
                        settings.thickness);
 
-    // look for any events
-    mouse_events events;
-    if (mouse_clicked_area(pos, settings))
-    {
-        events.clicked = true;
-    }
-    if (ImGui::IsMouseHoveringRect(
-            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.width - 1, pos.y + settings.height), false))
-    {
-        events.hovered = true;
-    }
-    
-    return events;
+    // observe user interaction
+    return search_for_mouse_events_in_rectangle(pos,settings);
 }
 
 
@@ -134,7 +138,7 @@ void each_frame(ide_settings & settings){
         ImDrawList *draw_list = ImGui::GetWindowDrawList();
         auto pos = window_adjusted_position(temp);
         
-        rectangle_settings rec;
+        Rectangle_Settings rec;
         rec.width     = 1;
         rec.height    = 1;
         rec.thickness = 1;
