@@ -45,6 +45,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/transcompilers/unilang/tokens:unique_tokens_checker",
 ])
 
 hcp(name = "unilang_file_creator", deps = [

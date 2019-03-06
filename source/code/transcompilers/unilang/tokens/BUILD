@@ -45,6 +45,20 @@ hcp(
 )
 
 hcp(
+    name = "unique_tokens_checker",
+    deps = [
+        "//code/transcompilers/unilang/tokens:generic_token",
+        "//code/transcompilers/unilang/tokens:get_tokens",
+        "//code/transcompilers/unilang/language-and-theme-creator:global",
+        "//code/transcompilers/unilang/language-and-theme-creator:unilang_file_creator",
+        "//code/utilities/types/general:lib",
+        "//code/utilities/exits:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/operators:lib",
+        ]
+)
+
+hcp(
     name = "get_tokens",
 deps = [
     "//code/transcompilers/unilang/tokens:all_ast_markers",
