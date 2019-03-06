@@ -2,15 +2,6 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-cpp_object(name = "token", deps = [
-"//code/transcompilers/unilang/tokens:token_name",
-"//code/transcompilers/unilang/tokens:token_group",
-])
-
-cpp_object(name = "body_token", deps = [
-"//code/transcompilers/unilang/tokens:token_name",
-"//code/transcompilers/unilang/tokens:token_group",
-])
 
 cpp_object(name = "global")
 

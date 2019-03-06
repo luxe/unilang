@@ -135,8 +135,8 @@ void each_frame(ide_settings & settings){
         auto pos = window_adjusted_position(temp);
         
         rectangle_settings rec;
-        rec.width     = 6;
-        rec.height    = 6;
+        rec.width     = 1;
+        rec.height    = 1;
         rec.thickness = 1;
         rec.rounding  = 0.0;
         rec.color_border.r = 0;
