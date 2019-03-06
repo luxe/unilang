@@ -39,15 +39,20 @@ hcp(name = "stylized_reference_file_creator", deps = [
 hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/transcompilers/unilang/language-and-theme-creator:global",
-"//code/transcompilers/unilang/language-and-theme-creator:reference_file_creator",
-"//code/transcompilers/unilang/language-and-theme-creator:stylized_reference_file_creator",
-"//code/transcompilers/unilang/language-and-theme-creator:language_file_creator",
-"//code/transcompilers/unilang/language-and-theme-creator:theme_file_creator",
+"//code/transcompilers/unilang/language-and-theme-creator:unilang_file_creator",
 "//code/utilities/types/general:lib",
 "//code/utilities/exits:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
+])
+
+hcp(name = "unilang_file_creator", deps = [
+"//code/transcompilers/unilang/language-and-theme-creator:reference_file_creator",
+"//code/transcompilers/unilang/language-and-theme-creator:stylized_reference_file_creator",
+"//code/transcompilers/unilang/language-and-theme-creator:language_file_creator",
+"//code/transcompilers/unilang/language-and-theme-creator:theme_file_creator",
+"//code/transcompilers/unilang/language-and-theme-creator:global",
 ])
 
 hcp(name = "theme_file_creator", deps = [
