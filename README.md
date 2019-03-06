@@ -13,7 +13,7 @@
 
 
 ## Overview
-Welcome to Unilang.  Unilang is a **universal programming language (UPL)**.  A UPL can be thought of as a language abstraction over **general-purpose programming languages (GPLs)**.  Most GPLs are not general enough to be used across all domains in programming.  That's not to say they couldn't be used since anything that's Turing complete is said to be computationally universal.  Its not about whether something can be used to solve a problem, it's about whether something is the best choice.  GPLs tend to carve out specific niches across different programming domains.  Engineers evaluate language trade-offs and choose the right language for that particular domain.  A cross-domain problem may then be solved with a polyglot of languages.  Unilang's stance is that a polyglot of languages should be an implementation detail below a more conceptually pure representation of the full problem ontology.  Unilang takes a novel approach to language's role in facilitating software.  Since the design and implementation of Unilang is built with particular language philosophies, this overview will discuss these ideas first.  Unilang will then be described in the context of software engineering.  
+Welcome to Unilang.  Unilang is a **universal programming language (UPL)**.  A UPL can be thought of as a language abstraction over **general-purpose programming languages (GPLs)**.  GPLs are not general enough to be used across all domains in programming.  Which is not to say they couldn't.  Anything that's Turing complete is computationally universal.  Its not about whether something can be used to solve a problem, it's about whether its the best choice.  GPLs tend to carve out specific niches across different programming domains.  Engineers evaluate language trade-offs and choose the right language for that particular domain.  A cross-domain problem may then be solved with a polyglot of languages.  Unilang's stance is that a polyglot of languages should be an implementation detail below a more conceptually pure representation of the full problem ontology.  Unilang takes a novel approach to language's role in facilitating software.  Since the design and implementation of Unilang is built with particular language philosophies, this overview will discuss these ideas first.  Unilang will then be described in the context of software engineering.  
 
 A primary focus when first introducing Unilang is a discussion around **encoded information** and **software-related artifacts**.  What do we encode for software and what are the resulting software artifacts?  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations, scope, and enforced structure of individual tools.  The effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  The technical aspects of this are discussed later.  We will compare it to other programming languages to show the similarities and key differences between them.  The take-away from this comparison is that Unilang is not competing with other programming languages.  It embraces all of them in its own implementation.  By supporting more and more languages as an output, unilang can extract out paradigms and concepts universal to programing.  
 
@@ -185,6 +185,22 @@ Unilang has its own graphical IDE which makes working in the language easier.  T
 
 
 ## Bazel Rule Examples
+
+
+## Tutorials
+These are learning-oriented tutorials to get you antiquated with concepts.  
+
+
+## How To Guides
+These are goal-oriented to show you how to solve particular problems.  
+
+
+## Explanations
+These are understanding-oriented to provide you with background and context.  
+
+
+## Reference
+These is information-oriented to provide you with complete and accurate details.  
 
 </details>
 <details>
