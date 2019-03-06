@@ -3,6 +3,7 @@
 #include "code/utilities/graphics/imgui/ui/ui_renders.hpp"
 #include "code/utilities/graphics/imgui/ui/window/window_renderer.hpp"
 #include "code/utilities/graphics/imgui/ui/draw/rectangle_settings.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/mouse_events.hpp"
 
 
 
@@ -13,11 +14,6 @@ struct position
     int y = 0;
 };
 
-struct mouse_events
-{
-    bool hovered = false;
-    bool clicked = false;
-};
 struct pixel_settings
 {
     position pos;
@@ -77,10 +73,10 @@ bool mouse_is_hovering_area(position pos, Rectangle_Settings const &settings){
     return false;
 }
 
-mouse_events search_for_mouse_events_in_rectangle(position pos, Rectangle_Settings const &settings)
+Mouse_Events search_for_Mouse_Events_in_rectangle(position pos, Rectangle_Settings const &settings)
 {
     //find if any mouse events have happened on the rectangle
-    mouse_events events;
+    Mouse_Events events;
     if (mouse_clicked_area(pos, settings))
     {
         events.clicked = true;
@@ -93,7 +89,7 @@ mouse_events search_for_mouse_events_in_rectangle(position pos, Rectangle_Settin
     return events;
 }
 
-mouse_events draw_rectangle(ImDrawList *draw_list, position pos, Rectangle_Settings const &settings)
+void draw_rectangle(ImDrawList *draw_list, position pos, Rectangle_Settings const &settings)
 {
     // draw it
     draw_list->AddRectFilled(ImVec2(pos.x, pos.y),
@@ -109,9 +105,15 @@ mouse_events draw_rectangle(ImDrawList *draw_list, position pos, Rectangle_Setti
                        settings.rounding,
                        ImDrawCornerFlags_All,
                        settings.thickness);
+}
+
+Mouse_Events draw_interactive_rectangle(ImDrawList *draw_list, position pos, Rectangle_Settings const &settings)
+{
+    // draw it
+    draw_rectangle(draw_list,pos,settings);
 
     // observe user interaction
-    return search_for_mouse_events_in_rectangle(pos,settings);
+    return search_for_Mouse_Events_in_rectangle(pos,settings);
 }
 
 

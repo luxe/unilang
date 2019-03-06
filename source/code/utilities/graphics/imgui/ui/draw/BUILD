@@ -6,3 +6,4 @@ hcp(name="color",deps = [])
 hcp(name="rectangle_settings",deps = [
     "//code/utilities/graphics/imgui/ui/draw:color"
 ])
+hcp(name="mouse_events",deps = [])
