@@ -49,8 +49,8 @@ hcp(
     deps = [
         "//code/transcompilers/unilang/tokens:generic_token",
         "//code/transcompilers/unilang/tokens:get_tokens",
-        "//code/transcompilers/unilang/language-and-theme-creator:global",
-        "//code/transcompilers/unilang/language-and-theme-creator:unilang_file_creator",
+        "//code/transcompilers/unilang/language-and-theme-creator/sublime:global",
+        "//code/transcompilers/unilang/language-and-theme-creator/sublime:unilang_file_creator",
         "//code/utilities/types/general:lib",
         "//code/utilities/exits:lib",
         "//code/utilities/types/vectors/observers:lib",
