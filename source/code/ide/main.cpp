@@ -4,26 +4,9 @@
 #include "code/utilities/graphics/imgui/ui/window/window_renderer.hpp"
 #include "code/utilities/graphics/imgui/ui/draw/rectangle_settings.hpp"
 #include "code/utilities/graphics/imgui/ui/draw/mouse_events.hpp"
-
-
-
-
-struct position
-{
-    int x = 0;
-    int y = 0;
-};
-
-struct pixel_settings
-{
-    position pos;
-    Color color_fill;
-};
-struct full_color_bitmap_settings
-{
-    Color color_fill;
-    std::vector<position> pixels;
-};
+#include "code/utilities/graphics/imgui/ui/draw/mouse_events_checker.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/position.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/rectangle_drawer.hpp"
 
 
 
@@ -34,88 +17,27 @@ struct ide_settings
     Window_Settings method_item;
 };
 
-ImU32 to_imgui_color(const Color &c)
+//other utilities
+Position window_adjusted_position(Position pos)
 {
-    return IM_COL32(c.r, c.g, c.b, c.alpha);
-}
-
-position window_adjusted_position(position pos)
-{
-    const ImVec2 screen_position = ImGui::GetCursorScreenPos();
-    position     p;
-    p.x = pos.x + screen_position.x;
-    p.y = pos.y + screen_position.y;
+    const ImVec2 screen_Position = ImGui::GetCursorScreenPos();
+    Position     p;
+    p.x = pos.x + screen_Position.x;
+    p.y = pos.y + screen_Position.y;
     return p;
 }
 
-bool mouse_clicked_area(position pos, Rectangle_Settings const &settings)
+//pixel related
+struct pixel_settings
 {
-    if (ImGui::IsMouseClicked(0))
-    {
-        auto mouse_pos = ImGui::GetMousePos();
-        if (mouse_pos.x > pos.x && mouse_pos.x < pos.x + settings.width)
-        {
-            if (mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + settings.height)
-            {
-                return true;
-            }
-        }
-    }
-    return false;
-}
-
-bool mouse_is_hovering_area(position pos, Rectangle_Settings const &settings){
-    if (ImGui::IsMouseHoveringRect(
-            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.width - 1, pos.y + settings.height), false))
-    {
-        return true;
-    }
-    return false;
-}
-
-Mouse_Events search_for_Mouse_Events_in_rectangle(position pos, Rectangle_Settings const &settings)
+    Position pos;
+    Color color_fill;
+};
+struct full_color_bitmap_settings
 {
-    //find if any mouse events have happened on the rectangle
-    Mouse_Events events;
-    if (mouse_clicked_area(pos, settings))
-    {
-        events.clicked = true;
-    }
-    if (mouse_is_hovering_area(pos, settings))
-    {
-        events.hovered = true;
-    }
-    
-    return events;
-}
-
-void draw_rectangle(ImDrawList *draw_list, position pos, Rectangle_Settings const &settings)
-{
-    // draw it
-    draw_list->AddRectFilled(ImVec2(pos.x, pos.y),
-                             ImVec2(pos.x + settings.width, pos.y + settings.height),
-                             to_imgui_color(settings.color_fill),
-                             settings.rounding,
-                             ImDrawCornerFlags_All);
-
-
-    draw_list->AddRect(ImVec2(pos.x, pos.y),
-                       ImVec2(pos.x + settings.width, pos.y + settings.height),
-                       to_imgui_color(settings.color_border),
-                       settings.rounding,
-                       ImDrawCornerFlags_All,
-                       settings.thickness);
-}
-
-Mouse_Events draw_interactive_rectangle(ImDrawList *draw_list, position pos, Rectangle_Settings const &settings)
-{
-    // draw it
-    draw_rectangle(draw_list,pos,settings);
-
-    // observe user interaction
-    return search_for_Mouse_Events_in_rectangle(pos,settings);
-}
-
+    Color color_fill;
+    std::vector<Position> pixels;
+};
 
 
 
@@ -134,7 +56,7 @@ void each_frame(ide_settings & settings){
     
     Window_Renderer::render(settings.method_item,[&](){
         
-        position temp;
+        Position temp;
         temp.x = -4;
         temp.y = -5;
         ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -152,7 +74,7 @@ void each_frame(ide_settings & settings){
         rec.color_fill.g = 205;
         rec.color_fill.b = 50;
         
-        draw_rectangle(draw_list,pos,rec);
+        Rectangle_Drawer::draw_rectangle(draw_list,pos,rec);
         
         /*
         ImGuiTreeNodeFlags flags = 0;

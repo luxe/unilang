@@ -10,6 +10,9 @@ cpp_main(
     "//code/utilities/graphics/imgui:sdl_init_settings",
     "//code/utilities/graphics/imgui/ui:ui_renders",
     "//code/utilities/graphics/imgui/ui/window:window_renderer",
-    "//code/utilities/graphics/imgui/ui/draw:mouse_events"
+    "//code/utilities/graphics/imgui/ui/draw:mouse_events",
+    "//code/utilities/graphics/imgui/ui/draw:mouse_events_checker",
+    "//code/utilities/graphics/imgui/ui/draw:position",
+    "//code/utilities/graphics/imgui/ui/draw:rectangle_drawer",
     ],
 )
