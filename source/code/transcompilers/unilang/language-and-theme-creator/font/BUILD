@@ -12,4 +12,5 @@ hcp(name = "unilang_font_creator", deps = [
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
 "//code/transcompilers/unilang/tokens:unique_tokens_checker",
+"//code/utilities/filesystem/paths:lib",
 ])
