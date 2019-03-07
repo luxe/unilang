@@ -13,4 +13,7 @@ hcp(name = "unilang_font_creator", deps = [
 "//code/transcompilers/unilang/tokens:get_tokens",
 "//code/transcompilers/unilang/tokens:unique_tokens_checker",
 "//code/utilities/filesystem/paths:lib",
+"//code/utilities/bdf/settings:bdf_settings",
+"//code/utilities/bdf/exporter:bdf_settings_to_format",
+"//code/utilities/bdf/glyph:glyphs",
 ])
