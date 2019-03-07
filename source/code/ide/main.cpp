@@ -56,10 +56,11 @@ void each_frame(ide_settings & settings){
     
     Window_Renderer::render(settings.method_item,[&](){
         
-        Position temp;
-        temp.x = -4;
-        temp.y = -5;
         ImDrawList *draw_list = ImGui::GetWindowDrawList();
+        
+        Position temp;
+        temp.x = 0;
+        temp.y = 0;
         auto pos = window_adjusted_position(temp);
         
         Rectangle_Settings rec;
