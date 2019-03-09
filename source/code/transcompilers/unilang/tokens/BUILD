@@ -92,6 +92,11 @@ cc_binary(
     deps = ["as_vertex_graph"]
 )
 
-cpp_object(name="generic_token",deps=["//code/transcompilers/unilang/tokens:token_name","//code/transcompilers/unilang/tokens:token_group"])
+cpp_object(name="generic_token",deps=[
+    "//code/transcompilers/unilang/tokens:token_name",
+    "//code/transcompilers/unilang/tokens:token_group",
+    //code/transcompilers/unilang/tokens:token_bdf_settings",
+    ]
+)
 
 generate_unilang_token_files()
