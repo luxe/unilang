@@ -299,18 +299,36 @@ class
     x.emplace_back(Predefined_Characters::ydieresis());
     
     
-    //unilang tokens
+    //turn all of the unilang tokens into character segments
     std::vector<Character_Segment> unilang_segments;
     auto all_tokens = Get_Tokens::Get();
     
     for (auto const& it: all_tokens.tokens){
-        unilang_segments.emplace_back(it.bdf.begin);
-        unilang_segments.emplace_back(it.bdf.end);
+        
+        auto begin_char = it.bdf.begin;
+        auto end_char = it.bdf.end;
+        begin_char.glyph_index = static_cast<int>(it.start);
+        end_char.glyph_index = static_cast<int>(it.end);
+        unilang_segments.emplace_back(begin_char);
+        unilang_segments.emplace_back(end_char);
     }
     for (auto const& it: all_tokens.body_tokens){
-        unilang_segments.emplace_back(it.bdf.begin);
-        unilang_segments.emplace_back(it.bdf.end);
+        
+        auto begin_char = it.bdf.begin;
+        auto end_char = it.bdf.end;
+        begin_char.glyph_index = static_cast<int>(it.start);
+        end_char.glyph_index = static_cast<int>(it.end);
+        unilang_segments.emplace_back(begin_char);
+        unilang_segments.emplace_back(end_char);
     }
+    
+    //sort them by their glyph index
+    std::sort(unilang_segments.begin(),unilang_segments.end(),[&](Character_Segment const& a, Character_Segment const& b){
+        return a.glyph_index < b.glyph_index;
+    });
+    
+    //add them the main
+    
     
     /*
     x.emplace_back(Empty_Character_Segment(1113169));
