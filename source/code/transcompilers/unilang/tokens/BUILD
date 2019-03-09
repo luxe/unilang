@@ -95,7 +95,7 @@ cc_binary(
 cpp_object(name="generic_token",deps=[
     "//code/transcompilers/unilang/tokens:token_name",
     "//code/transcompilers/unilang/tokens:token_group",
-    //code/transcompilers/unilang/tokens:token_bdf_settings",
+    "//code/transcompilers/unilang/tokens:token_bdf_settings",
     ]
 )
 
