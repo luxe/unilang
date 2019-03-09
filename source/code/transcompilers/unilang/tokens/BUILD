@@ -16,6 +16,15 @@ hcp(
 	deps = ["all_ast_markers"]
 )
 hcp(
+    name = "token_bdf_settings",
+    deps = ["//code/utilities/bdf/settings:bdf_settings"]
+)
+hcp(
+    name = "token_bdf_settings_getter",
+    deps = ["//code/transcompilers/unilang/tokens:token_bdf_settings"]
+)
+
+hcp(
 	name = "enum_printer",
 	deps = ["all_ast_markers",
     "//code/utilities/streams/filestreams:lib",
