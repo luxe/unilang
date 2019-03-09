@@ -77,6 +77,7 @@ deps = [
     "//code/transcompilers/unilang/tokens:token_name",
     "//code/transcompilers/unilang/tokens:token_group",
     "//code/transcompilers/unilang/tokens:all_language_tokens",
+    "//code/transcompilers/unilang/tokens:token_bdf_settings_getter",
 ]
 )
 
