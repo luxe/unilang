@@ -23,7 +23,4 @@ hcp(name = "unilang_font_creator", deps = [
 hcp(name = "predefined_characters", deps = [
 "//code/utilities/bdf/settings:bdf_settings",
 "//code/utilities/bdf/glyph:glyphs",
-"//code/transcompilers/unilang/language-and-theme-creator/sublime:global",
-"//code/utilities/bdf/exporter:bdf_settings_to_format",
-"//code/transcompilers/unilang/tokens:get_tokens",
 ])
