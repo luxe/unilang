@@ -63,17 +63,6 @@ std::string& Add_Prefix_To_All_Lines_Except_First(std::string & str, std::string
         str = new_str;
         return str;
 }
-
-std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c){
-        std::string new_str;
-        for (auto it: str){
-                if (it != c){
-                        new_str += it;
-                }
-        }
-        str = new_str;
-        return str;
-}
 //--
 
 
