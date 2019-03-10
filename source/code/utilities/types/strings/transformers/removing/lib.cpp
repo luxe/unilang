@@ -5,10 +5,18 @@
 #include "code/utilities/types/strings/observers/char/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
 #include <algorithm>
+#include <iostream>
 
 
-
-
+std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c)
+{
+	str.erase(std::remove(str.begin(), str.end(), c), str.end());
+	return str;
+}
+std::string& Remove_Commas(std::string & str)
+{
+	return Remove_All_Instances_Of_Char(str,',');
+}
 std::string& Remove_Match_If_It_Is_Found_At_Beginning_Or_End(std::string & str, std::string const& match){
         if (Begins_Or_Ends_With(str,match)){
                 Remove_Match_Found_At_Beginning_Or_End(str,match);

@@ -9,5 +9,7 @@ hcp(name = "bdf_settings_to_format", deps = [
 ])
 
 hcp(name = "bdf_character_name_deriver", deps = [
-   "//code/utilities/bdf/settings:bdf_settings"
+   "//code/utilities/bdf/settings:bdf_settings",
+   "//code/utilities/types/strings/transformers/casing:lib",
+   "//code/utilities/types/strings/transformers/removing:lib",
 ])
