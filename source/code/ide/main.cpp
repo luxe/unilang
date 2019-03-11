@@ -90,14 +90,18 @@ Full_Color_Bitmap bdf_segments_to_bitmap(std::vector<Character_Segment> const& s
     }
     
     int total_x_offset = 0;
-    for (auto const& it: relative_pos){
-        for (auto const& x: it){
+    for (size_t i = 0; i < segments.size(); ++i){
+        for (auto const& x: relative_pos[i]){
             Position pos;
             pos.x = x.x + total_x_offset;
             pos.y = x.y;
+            
+            pos.y -= segments[i].bb_h;
+            pos.x -= segments[i].bbx_w;
             bitmap.pixels.emplace_back(pos);
         }
-        total_x_offset += 10;
+        total_x_offset += segments[i].d_width_x;
+        //total_y_offset += segments[i].d_width_y; seems to always be 0
     }
     
     return bitmap;
@@ -123,6 +127,7 @@ void each_frame(ide_settings & settings){
         ImDrawList *draw_list = ImGui::GetWindowDrawList();
         
         auto pos = window_adjusted_position_top_left_corner();
+        pos.x += 10;
         
         Rectangle_Settings rec;
         rec.width     = 1;
@@ -139,8 +144,8 @@ void each_frame(ide_settings & settings){
         //Rectangle_Drawer::draw_rectangle(draw_list,pos,rec);
         
         Pixel_Settings pix;
-        pix.pos.x = 5;
-        pix.pos.y = 5;
+        pix.pos.x = 30;
+        pix.pos.y = 20;
         pix.color_fill.r = 0;
         pix.color_fill.g = 0;
         pix.color_fill.b = 0;
