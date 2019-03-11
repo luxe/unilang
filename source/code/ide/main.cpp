@@ -96,22 +96,19 @@ Full_Color_Bitmap bdf_segments_to_bitmap(std::vector<Character_Segment> const& s
         for (auto const& x: relative_pos[i]){
             Position pos;
             
-            //start with the character box offset
+            //start with the character's offset relative the other characters already typed
             pos.x = x.x + total_x_offset;
             pos.y = x.y + total_y_offset;
             
-            //pos.x -= (/*segments[i].bbx_w + */segments[i].bbo_x);
+            //shift character based on bdf segment information
             pos.x += segments[i].bbo_x;
             pos.y -= segments[i].bb_h;
-            
-            //pos.x += segments[i].bbo_x;
             pos.y -= segments[i].bbo_y;
             
             bitmap.pixels.emplace_back(pos);
         }
         
-        //each character is a constrained character box
-        //increment the space to place the next character box
+        //increment a soace offset for the next consecutive character box
         total_x_offset += segments[i].d_width_x;
         total_y_offset += segments[i].d_width_y;
     }
@@ -140,6 +137,7 @@ void each_frame(ide_settings & settings){
         
         auto pos = window_adjusted_position_top_left_corner();
         pos.x += 10;
+        pos.y += 10;
         
         Rectangle_Settings rec;
         rec.width     = 1;
