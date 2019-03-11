@@ -90,18 +90,30 @@ Full_Color_Bitmap bdf_segments_to_bitmap(std::vector<Character_Segment> const& s
     }
     
     int total_x_offset = 0;
+    int total_y_offset = 0;
     for (size_t i = 0; i < segments.size(); ++i){
+        
         for (auto const& x: relative_pos[i]){
             Position pos;
-            pos.x = x.x + total_x_offset;
-            pos.y = x.y;
             
+            //start with the character box offset
+            pos.x = x.x + total_x_offset;
+            pos.y = x.y + total_y_offset;
+            
+            //pos.x -= (/*segments[i].bbx_w + */segments[i].bbo_x);
+            pos.x += segments[i].bbo_x;
             pos.y -= segments[i].bb_h;
-            pos.x -= segments[i].bbx_w;
+            
+            //pos.x += segments[i].bbo_x;
+            pos.y -= segments[i].bbo_y;
+            
             bitmap.pixels.emplace_back(pos);
         }
+        
+        //each character is a constrained character box
+        //increment the space to place the next character box
         total_x_offset += segments[i].d_width_x;
-        //total_y_offset += segments[i].d_width_y; seems to always be 0
+        total_y_offset += segments[i].d_width_y;
     }
     
     return bitmap;
@@ -167,11 +179,11 @@ void each_frame(ide_settings & settings){
         
         
         
-        auto message = str_to_bdf_segment(settings.unilang_font_lookup,"hello world");
+        auto message = str_to_bdf_segment(settings.unilang_font_lookup,"abcdefghijklmnopqrstuvwxyz1234567890-iiiijijijijijijijij");
         auto bitmap = bdf_segments_to_bitmap(message);
         Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
         //exit(0);
-        
+
     });
 }
 
