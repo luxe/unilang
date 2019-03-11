@@ -180,6 +180,19 @@ void each_frame(ide_settings & settings){
         auto message = str_to_bdf_segment(settings.unilang_font_lookup,"abcdefghijklmnopqrstuvwxyz1234567890-iiiijijijijijijijij");
         auto bitmap = bdf_segments_to_bitmap(message);
         Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
+        
+        Rectangle_Settings rec2;
+        rec2.width     = 1;
+        rec2.height    = 1;
+        rec2.thickness = 1;
+        rec2.rounding  = 0.0;
+        rec2.color_border.r = 0;
+        rec2.color_border.g = 0;
+        rec2.color_border.b = 0;
+        rec2.color_fill.r = 50;
+        rec2.color_fill.g = 205;
+        rec2.color_fill.b = 50;
+        
         //exit(0);
 
     });
