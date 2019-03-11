@@ -16,11 +16,19 @@ hcp(name = "unilang_font_creator", deps = [
 "//code/utilities/bdf/settings:bdf_settings",
 "//code/utilities/bdf/exporter:bdf_settings_to_format",
 "//code/utilities/bdf/glyph:glyphs",
-"//code/transcompilers/unilang/language-and-theme-creator/font:predefined_characters",
+"//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font",
 ])
-
 
 hcp(name = "predefined_characters", deps = [
 "//code/utilities/bdf/settings:bdf_settings",
 "//code/utilities/bdf/glyph:glyphs",
+])
+
+hcp(name = "unilang_font", deps = [
+"//code/transcompilers/unilang/tokens:generic_token",
+"//code/transcompilers/unilang/tokens:get_tokens",
+"//code/utilities/bdf/settings:bdf_settings",
+"//code/utilities/bdf/glyph:glyphs",
+"//code/transcompilers/unilang/tokens:unique_tokens_checker",
+"//code/utilities/bdf/exporter:bdf_settings_to_format",
 ])

@@ -34,6 +34,8 @@ wchar_t Zero_Width_Joiner();
 wchar_t Zero_Width_Non_Joiner();
 
 //converters
+std::string As_4_Bit_Binary(const char c);
+std::string Hex_To_4_Bit_Binary_Segments(std::string const& s);
 std::string As_Binary(const char c);
 char From_Binary(std::string const& str);
 
