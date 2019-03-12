@@ -146,9 +146,15 @@ void each_frame(ide_settings & settings){
         auto message = str_to_bdf_segment(settings.unilang_font_lookup,message_str);
         auto bitmap = bdf_segments_to_bitmap(message);
         
+        
+        //some pixel guessing
+        const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
+        const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
+        const auto SOME_BUFFER_SPACE = 3;
+        
         Rectangle_Settings rec2;
-        rec2.width     = (message_str.size() * 6) + 3;
-        rec2.height    = 15;
+        rec2.width     = (message_str.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+        rec2.height    = EXPECTED_MONOSPACE_FITTING_HEIGHT;
         rec2.thickness = 1;
         rec2.rounding  = 0.0;
         rec2.color_border.r = 0;
