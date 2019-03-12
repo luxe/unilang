@@ -139,27 +139,33 @@ void each_frame(ide_settings & settings){
         pos.x += 10;
         pos.y += 10;
         
-        Rectangle_Settings rec;
-        rec.width     = 1;
-        rec.height    = 1;
-        rec.thickness = 1;
-        rec.rounding  = 0.0;
-        rec.color_border.r = 0;
-        rec.color_border.g = 0;
-        rec.color_border.b = 0;
-        rec.color_fill.r = 50;
-        rec.color_fill.g = 205;
-        rec.color_fill.b = 50;
         
-        //Rectangle_Drawer::draw_rectangle(draw_list,pos,rec);
         
-        Pixel_Settings pix;
-        pix.pos.x = 30;
-        pix.pos.y = 20;
-        pix.color_fill.r = 0;
-        pix.color_fill.g = 0;
-        pix.color_fill.b = 0;
-        //Pixel_Drawer::Draw(draw_list,pos,pix);
+        
+        std::string message_str = "abcdefghijklmnopqrstuvwxyz(){}[]!@#$%^&*1234567890-iiiijijijijijijijij";
+        auto message = str_to_bdf_segment(settings.unilang_font_lookup,message_str);
+        auto bitmap = bdf_segments_to_bitmap(message);
+        
+        Rectangle_Settings rec2;
+        rec2.width     = (message_str.size() * 6) + 3;
+        rec2.height    = 15;
+        rec2.thickness = 1;
+        rec2.rounding  = 0.0;
+        rec2.color_border.r = 0;
+        rec2.color_border.g = 0;
+        rec2.color_border.b = 0;
+        rec2.color_fill.r = 50;
+        rec2.color_fill.g = 205;
+        rec2.color_fill.b = 50;
+        
+        pos.y -= 10;
+        pos.x -= 2;
+        Rectangle_Drawer::draw_rectangle(draw_list,pos,rec2);
+        pos.y += 10;
+        pos.x += 2;
+        Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
+        
+        
         
         /*
         ImGuiTreeNodeFlags flags = 0;
@@ -173,27 +179,6 @@ void each_frame(ide_settings & settings){
             ImGui::Text("%s", "test");
         }
         */
-        
-        
-        
-        
-        auto message = str_to_bdf_segment(settings.unilang_font_lookup,"abcdefghijklmnopqrstuvwxyz1234567890-iiiijijijijijijijij");
-        auto bitmap = bdf_segments_to_bitmap(message);
-        Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
-        
-        Rectangle_Settings rec2;
-        rec2.width     = 1;
-        rec2.height    = 1;
-        rec2.thickness = 1;
-        rec2.rounding  = 0.0;
-        rec2.color_border.r = 0;
-        rec2.color_border.g = 0;
-        rec2.color_border.b = 0;
-        rec2.color_fill.r = 50;
-        rec2.color_fill.g = 205;
-        rec2.color_fill.b = 50;
-        
-        //exit(0);
 
     });
 }
