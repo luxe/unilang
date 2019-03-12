@@ -5,6 +5,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/window/window_renderer"❫
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_drawer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀each_frame(Ide_Settings & settings)❰
@@ -24,15 +25,30 @@ class
     //create a giant window
     auto window_start_position = ImVec2(-4,0);
     auto window_size = ImGui::GetIO().DisplaySize;
-    window_size.x += 4;
+    window_size.x += 8;
     ImGui::SetNextWindowPos(window_start_position);
     ImGui::SetNextWindowSize(window_size);
     Window_Renderer::render(settings.method_item,[&](){
         
-        ImDrawList *draw_list = ImGui::GetWindowDrawList();
         
-        //the closest to the corner we can get
-        auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
+    //object for drawing everything
+    ImDrawList *draw_list = ImGui::GetWindowDrawList();
+    
+    //the closest to the corner we can get
+    auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
+        
+    Rectangle_Settings backdrop;
+    backdrop.width     = window_size.x;
+    backdrop.height    = window_size.y;
+    backdrop.thickness = 1;
+    backdrop.rounding  = 0.0;
+    backdrop.color_border = settings.main_window_backdrop;
+    backdrop.color_fill = settings.main_window_backdrop;
+    Position temp;
+    temp.x = window_start_position.x;
+    temp.y = window_start_position.y;
+    Rectangle_Drawer::draw_rectangle(draw_list,temp,backdrop);
+        
         
         Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
 
