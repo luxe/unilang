@@ -25,3 +25,8 @@ hcp(name="window_renderer",deps = [
 "@imgui//:imgui_sdl_opengl3",
 "//code/utilities/graphics/imgui/ui/window:window_settings"
 ])
+
+hcp(name="window_position_finder",deps = [
+"//code/utilities/graphics/imgui/ui/draw:position",
+"@imgui//:imgui_sdl_opengl3",
+])

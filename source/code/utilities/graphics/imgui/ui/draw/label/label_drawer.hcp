@@ -1,0 +1,54 @@
+class
+❪string❫
+❪unordered_map❫
+❪"code/utilities/graphics/imgui/ui/draw/full_color_bitmap/full_color_bitmap"❫
+❪"code/utilities/bdf/settings/character_segment"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/label_settings"❫
+❪"code/utilities/graphics/imgui/ui/draw/mouse_events/mouse_events_checker"❫
+❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/full_color_bitmap/full_color_bitmap_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/text/text_to_bitmap"❫
+❪"code/utilities/graphics/imgui/ui/ui_renders"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
+    
+    //convert strings to bitmap representations
+    auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
+    
+    //some pixel fudging
+    const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
+    const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
+    const auto SOME_BUFFER_SPACE = 3;
+    label.box_regular.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.box_regular.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    label.box_highlighted.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.box_highlighted.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+
+    //adjust for label backdrop
+    pos.y -= 10;
+    pos.x -= 2;
+
+    //draw and handle backdrop
+    auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.box_regular);
+    if (events.hovered){
+        label.is_hovered = true;
+        bitmap.color_fill = label.text_highlighted;
+    }
+    else{
+        label.is_hovered = false;
+        bitmap.color_fill = label.text_regular;
+    }
+    
+    if (label.is_hovered){
+        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.box_highlighted);
+    }else{
+        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.box_regular);
+    }
+    
+    //adjust for message bitmap and print it
+    pos.y += 10;
+    pos.x += 2;
+    Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
+❱
