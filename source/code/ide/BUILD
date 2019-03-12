@@ -17,8 +17,11 @@ cpp_main(
     "//code/utilities/graphics/imgui/ui/draw/pixel:pixel_settings",
     "//code/utilities/graphics/imgui/ui/draw/pixel:pixel_drawer",
     "//code/utilities/graphics/imgui/ui/draw/full_color_bitmap:full_color_bitmap_drawer",
+    "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
+    "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/transcompilers/unilang/tokens:get_tokens",
     "//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font",
-    "//code/utilities/types/char:lib"
+    "//code/utilities/types/char:lib",
+    "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility"
     ],
 )

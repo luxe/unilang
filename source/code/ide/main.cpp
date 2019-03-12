@@ -10,12 +10,12 @@
 #include "code/utilities/graphics/imgui/ui/draw/pixel/pixel_settings.hpp"
 #include "code/utilities/graphics/imgui/ui/draw/pixel/pixel_drawer.hpp"
 #include "code/utilities/graphics/imgui/ui/draw/full_color_bitmap/full_color_bitmap_drawer.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/text/text_to_bitmap.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/label/label_settings.hpp"
+#include "code/utilities/graphics/imgui/ui/draw/imgui_type_utility.hpp"
 #include "code/transcompilers/unilang/tokens/get_tokens.hpp"
 #include "code/transcompilers/unilang/language-and-theme-creator/font/unilang_font.hpp"
 #include "code/utilities/types/char/lib.hpp"
-
-
-
 
 struct ide_settings
 {
@@ -25,6 +25,7 @@ struct ide_settings
     std::unordered_map<int,Character_Segment> unilang_font_lookup;
     Window_Settings method_item;
     
+    Label_Settings test_label;
 };
 
 //other utilities
@@ -39,83 +40,16 @@ Position window_adjusted_position(Position pos)
 
 Position window_adjusted_position_top_left_corner()
 {
-        Position temp;
-        temp.x = 0;
-        temp.y = 0;
-        auto pos = window_adjusted_position(temp);
-        return pos;
-}
-
-
-std::vector<Character_Segment> str_to_bdf_segment(std::unordered_map<int,Character_Segment> const& c, std::string const& str){
-    std::vector<Character_Segment> segments;
-    for (auto const& it: str){
-        auto lookup_char = static_cast<int>(it);
-        segments.emplace_back(c.at(lookup_char));
-    }
-    return segments;
-}
-
-
-std::vector<Position> relative_positions_of_segment(Character_Segment const& segment){
-    std::vector<Position> pos;
-    
-    Position p;
-    p.x = 0;
-    p.y = 0;
-    for (auto const& it: segment.hex_encoded_bitmap){
-            auto binary = Hex_To_4_Bit_Binary_Segments(it);
-            for (auto const& b: binary){
-                if (b == '1'){
-                    pos.emplace_back(p);
-                }
-                p.x+= 1;
-            }
-            p.x=0;
-            p.y+= 1;
-    }
+    Position temp;
+    temp.x = 0;
+    temp.y = 0;
+    auto pos = window_adjusted_position(temp);
     return pos;
 }
 
-Full_Color_Bitmap bdf_segments_to_bitmap(std::vector<Character_Segment> const& segments){
-    
-    Full_Color_Bitmap bitmap;
-    bitmap.color_fill.r = 0;
-    bitmap.color_fill.g = 0;
-    bitmap.color_fill.b = 0;
-        
-    std::vector<std::vector<Position>> relative_pos;
-    for (auto const& it: segments){
-        relative_pos.emplace_back(relative_positions_of_segment(it));
-    }
-    
-    int total_x_offset = 0;
-    int total_y_offset = 0;
-    for (size_t i = 0; i < segments.size(); ++i){
-        
-        for (auto const& x: relative_pos[i]){
-            Position pos;
-            
-            //start with the character's offset relative the other characters already typed
-            pos.x = x.x + total_x_offset;
-            pos.y = x.y + total_y_offset;
-            
-            //shift character based on bdf segment information
-            pos.x += segments[i].bbo_x;
-            pos.y -= segments[i].bb_h;
-            pos.y -= segments[i].bbo_y;
-            
-            bitmap.pixels.emplace_back(pos);
-        }
-        
-        //increment a soace offset for the next consecutive character box
-        total_x_offset += segments[i].d_width_x;
-        total_y_offset += segments[i].d_width_y;
-    }
-    
-    return bitmap;
-}
 
+void draw_structured_label(){
+}
 
 
 void each_frame(ide_settings & settings){
@@ -130,7 +64,6 @@ void each_frame(ide_settings & settings){
     bool show_demo_window = true;
     ImGui::ShowDemoWindow(&show_demo_window);
     
-    
     Window_Renderer::render(settings.method_item,[&](){
         
         ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -139,34 +72,41 @@ void each_frame(ide_settings & settings){
         pos.x += 10;
         pos.y += 10;
         
-        
-        
-        
-        std::string message_str = "abcdefghijklmnopqrstuvwxyz(){}[]!@#$%^&*1234567890-iiiijijijijijijijij";
-        auto message = str_to_bdf_segment(settings.unilang_font_lookup,message_str);
-        auto bitmap = bdf_segments_to_bitmap(message);
-        
+        auto bitmap = Text_To_Bitmap::Convert(settings.unilang_font_lookup,settings.test_label.message);
         
         //some pixel guessing
         const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
         const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
         const auto SOME_BUFFER_SPACE = 3;
+
+        settings.test_label.box_regular.width     = (settings.test_label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+        settings.test_label.box_regular.height    = EXPECTED_MONOSPACE_FITTING_HEIGHT;
         
-        Rectangle_Settings rec2;
-        rec2.width     = (message_str.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-        rec2.height    = EXPECTED_MONOSPACE_FITTING_HEIGHT;
-        rec2.thickness = 1;
-        rec2.rounding  = 0.0;
-        rec2.color_border.r = 0;
-        rec2.color_border.g = 0;
-        rec2.color_border.b = 0;
-        rec2.color_fill.r = 50;
-        rec2.color_fill.g = 205;
-        rec2.color_fill.b = 50;
+        settings.test_label.box_highlighted.width     = (settings.test_label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+        settings.test_label.box_highlighted.height    = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+        
+        
+        
+        
         
         pos.y -= 10;
         pos.x -= 2;
-        Rectangle_Drawer::draw_rectangle(draw_list,pos,rec2);
+        
+        auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,settings.test_label.box_regular);
+        if (events.hovered){
+            settings.test_label.is_hovered = true;
+            bitmap.color_fill = settings.test_label.text_highlighted;
+        }
+        else{
+            settings.test_label.is_hovered = false;
+            bitmap.color_fill = settings.test_label.text_regular;
+        }
+        
+        if (settings.test_label.is_hovered){
+            Rectangle_Drawer::draw_rectangle(draw_list,pos,settings.test_label.box_highlighted);
+        }else{
+            Rectangle_Drawer::draw_rectangle(draw_list,pos,settings.test_label.box_regular);
+        }
         pos.y += 10;
         pos.x += 2;
         Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
@@ -185,7 +125,6 @@ void each_frame(ide_settings & settings){
             ImGui::Text("%s", "test");
         }
         */
-
     });
 }
 
@@ -194,6 +133,7 @@ ide_settings get_ide_settings(){
 
     ide_settings settings;
     settings.init.main_window.title = "Unilang IDE";
+    settings.init.main_window.maximized = false;
     
     settings.tokens = Get_Tokens::Get();
     settings.unilang_font = Unilang_Font::Get();
@@ -223,6 +163,23 @@ ide_settings get_ide_settings(){
     settings.method_item.focus              = false;
     settings.method_item.refocus_on_use     = false;
     settings.method_item.bg_alpha           = 1;
+    
+    
+    settings.test_label.message = "abcdefghijklmnopqrstuvwxyz(){}[]!@#$%^&*1234567890-iiiijijijijijijijij";
+    
+    settings.test_label.box_regular.thickness = 1;
+    settings.test_label.box_regular.rounding  = 0.0;
+    settings.test_label.box_regular.color_border = Imgui_Type_Utility::Black();
+    settings.test_label.box_regular.color_fill = Imgui_Type_Utility::White();
+    
+    settings.test_label.box_highlighted.thickness = 1;
+    settings.test_label.box_highlighted.rounding  = 0.0;
+    settings.test_label.box_highlighted.color_border = Imgui_Type_Utility::Black();
+    settings.test_label.box_highlighted.color_fill = Imgui_Type_Utility::Black();
+        
+
+    settings.test_label.text_regular = Imgui_Type_Utility::Black();
+    settings.test_label.text_highlighted = Imgui_Type_Utility::White();
     
     return settings;
 }
