@@ -6,6 +6,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
 ⚞⚟
 
 ◀public: static▶ void ☀each_frame(Ide_Settings & settings)❰
@@ -22,35 +23,42 @@ class
     //ImGui::ShowDemoWindow(&show_demo_window);
     
     
-    //create a giant window
-    auto window_start_position = ImVec2(-4,0);
-    auto window_size = ImGui::GetIO().DisplaySize;
-    window_size.x += 8;
-    ImGui::SetNextWindowPos(window_start_position);
-    ImGui::SetNextWindowSize(window_size);
+    //create a giant window that spans the entire application
+    //since we are using imgui, we have found it better to draw bitmaps on what imgui considers a window.  
+    //it does not seem possible to draw directly on the background.  Additionally, an imgui window has some extra frills
+    //that also prevent it from being colored everywhere.  We grow the window larger than the application window,
+    //so that we have an entire drawable surface.
+    Position window_start_position;
+    window_start_position.x = -4;
+    window_start_position.y = 0;
+    
+    Position window_end_position = Imgui_Type_Utility::Display_Size_Position();
+    window_end_position.x += 8;
+
+
+
+
+    ImGui::SetNextWindowPos(Imgui_Type_Utility::To_ImVec2(window_start_position));
+    ImGui::SetNextWindowSize(Imgui_Type_Utility::To_ImVec2(window_end_position));
+    
+    
     Window_Renderer::render(settings.method_item,[&](){
         
         
     //object for drawing everything
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
     
+    Draw_Background(draw_list,settings,window_start_position,window_end_position);
+    
     //the closest to the corner we can get
     auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
         
-    Rectangle_Settings backdrop;
-    backdrop.width     = window_size.x;
-    backdrop.height    = window_size.y;
-    backdrop.thickness = 1;
-    backdrop.rounding  = 0.0;
-    backdrop.color_border = settings.main_window_backdrop;
-    backdrop.color_fill = settings.main_window_backdrop;
-    Position temp;
-    temp.x = window_start_position.x;
-    temp.y = window_start_position.y;
-    Rectangle_Drawer::draw_rectangle(draw_list,temp,backdrop);
         
-        
+        //auto time = ImGui::GetTime();
+        //auto time = ImGui::GetFrameCount();
+        //settings.test_label.message = std::to_string(time);
         Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
+        
 
         /*
         ImGuiTreeNodeFlags flags = 0;
@@ -65,4 +73,15 @@ class
         }
         */
     });
+❱
+
+◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings, Position const& window_start_position, Position const& window_end_position)❰
+    Rectangle_Settings backdrop;
+    backdrop.width = window_end_position.x;
+    backdrop.height = window_end_position.y;
+    backdrop.thickness = 1;
+    backdrop.rounding  = 0.0;
+    backdrop.color_border = settings.main_window_backdrop;
+    backdrop.color_fill = settings.main_window_backdrop;
+    Rectangle_Drawer::draw_rectangle(draw_list,window_start_position,backdrop);
 ❱

@@ -6,5 +6,6 @@ hcp(name="color",deps = [])
 hcp(name="position",deps = [])
 hcp(name="imgui_type_utility", deps = [
 "//code/utilities/graphics/imgui/ui/draw:color",
+"//code/utilities/graphics/imgui/ui/draw:position",
 "//code/utilities/graphics/imgui:mechanics",
 ])

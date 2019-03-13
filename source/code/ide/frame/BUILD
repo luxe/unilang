@@ -11,5 +11,6 @@ hcp(
         "//code/utilities/graphics/imgui/ui/window:window_renderer",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
+        "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
     ],
 )
