@@ -9,79 +9,52 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
 ⚞⚟
 
+
+
 ◀public: static▶ void ☀each_frame(Ide_Settings & settings)❰
-    
-    //Ui_Renders::render_main_menu_bar([](){
-    //    if (ImGui::MenuItem("hello world", "T"))
-    //    {
-    //     
-    //    }
-    //});
-    
-    // for testing
-    //bool show_demo_window = true;
-    //ImGui::ShowDemoWindow(&show_demo_window);
-    
     
     //create a giant window that spans the entire application
     //since we are using imgui, we have found it better to draw bitmaps on what imgui considers a window.  
     //it does not seem possible to draw directly on the background.  Additionally, an imgui window has some extra frills
     //that also prevent it from being colored everywhere.  We grow the window larger than the application window,
     //so that we have an entire drawable surface.
-    Position window_start_position;
-    window_start_position.x = -4;
-    window_start_position.y = 0;
-    
     Position window_end_position = Imgui_Type_Utility::Display_Size_Position();
     window_end_position.x += 8;
-
-
-
-
-    ImGui::SetNextWindowPos(Imgui_Type_Utility::To_ImVec2(window_start_position));
+    Update_Background_For_Window_Size(settings,window_end_position);
+    ImGui::SetNextWindowPos(Imgui_Type_Utility::To_ImVec2(settings.main_window_backdrop_starting_position));
     ImGui::SetNextWindowSize(Imgui_Type_Utility::To_ImVec2(window_end_position));
     
+    //Draw the main window and render everything inside of it
+    Draw_Everything(settings);
     
-    Window_Renderer::render(settings.method_item,[&](){
+❱
+
+◀public: static▶ void ☀Update_Background_For_Window_Size(Ide_Settings & settings, Position const& window_end_position)❰
+    settings.main_window_backdrop.width = window_end_position.x;
+    settings.main_window_backdrop.height = window_end_position.y;
+❱
+◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings)❰
+    Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);
+❱
+◀private: static▶ void ☀Draw_Everything(Ide_Settings & settings)❰
+    Window_Renderer::render(settings.main_window,[&](){
         
         
     //object for drawing everything
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
     
-    Draw_Background(draw_list,settings,window_start_position,window_end_position);
+    //draw the background for the entire application
+    Draw_Background(draw_list,settings);
     
     //the closest to the corner we can get
+    //this is basically used as our pseudo (0,0) for drawing anything in our application
     auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
         
         
-        //auto time = ImGui::GetTime();
-        //auto time = ImGui::GetFrameCount();
-        //settings.test_label.message = std::to_string(time);
-        Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
-        
-
-        /*
-        ImGuiTreeNodeFlags flags = 0;
-        if (ImGui::CollapsingHeader("Implementations", flags)){
-            ImGui::Text("%s", "test");
-        }
-        if (ImGui::CollapsingHeader("Unit Tests", flags)){
-            ImGui::Text("%s", "test");
-        }
-        if (ImGui::CollapsingHeader("Benchmarks", flags)){
-            ImGui::Text("%s", "test");
-        }
-        */
+    //auto time = ImGui::GetTime();
+    //auto time = ImGui::GetFrameCount();
+    //settings.test_label.message = std::to_string(time);
+    Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
+    
     });
-❱
-
-◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings, Position const& window_start_position, Position const& window_end_position)❰
-    Rectangle_Settings backdrop;
-    backdrop.width = window_end_position.x;
-    backdrop.height = window_end_position.y;
-    backdrop.thickness = 1;
-    backdrop.rounding  = 0.0;
-    backdrop.color_border = settings.main_window_backdrop;
-    backdrop.color_fill = settings.main_window_backdrop;
-    Rectangle_Drawer::draw_rectangle(draw_list,window_start_position,backdrop);
 ❱
