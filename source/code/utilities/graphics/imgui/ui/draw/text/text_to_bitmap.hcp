@@ -6,22 +6,13 @@ class
 ⚯
 ❪"code/utilities/graphics/imgui/ui/draw/full_color_bitmap/full_color_bitmap_drawer"❫
 ❪"code/utilities/types/char/lib"❫
+❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ⚞⚟
 
 ◀public: static▶ Full_Color_Bitmap ☀Convert(std::unordered_map<int,Character_Segment> const& font_chars, std::string const& str)❰
-    auto message = str_to_bdf_segment(font_chars,str);
+    auto message = Str_To_Bdf_Segments::Convert(font_chars,str);
     auto bitmap = bdf_segments_to_bitmap(message);
     return bitmap;
-❱
-
-
-◀private: static▶ std::vector<Character_Segment> ☀str_to_bdf_segment(std::unordered_map<int,Character_Segment> const& c, std::string const& str)❰
-    std::vector<Character_Segment> segments;
-    for (auto const& it: str){
-        auto lookup_char = static_cast<int>(it);
-        segments.emplace_back(c.at(lookup_char));
-    }
-    return segments;
 ❱
 
 ◀private: static▶ std::vector<Position> ☀relative_positions_of_segment(Character_Segment const& segment)❰
@@ -43,6 +34,14 @@ class
     }
     return pos;
 ❱
+
+◀private: static▶ std::vector<std::vector<Position>> ☀relative_positions_of_segments(std::vector<Character_Segment> const& segments)❰
+    std::vector<std::vector<Position>> relative_pos;
+    for (auto const& it: segments){
+        relative_pos.emplace_back(relative_positions_of_segment(it));
+    }
+    return relative_pos;
+❱
 ◀private: static▶ Full_Color_Bitmap ☀bdf_segments_to_bitmap(std::vector<Character_Segment> const& segments)❰
     
     Full_Color_Bitmap bitmap;
@@ -50,10 +49,7 @@ class
     bitmap.color_fill.g = 0;
     bitmap.color_fill.b = 0;
         
-    std::vector<std::vector<Position>> relative_pos;
-    for (auto const& it: segments){
-        relative_pos.emplace_back(relative_positions_of_segment(it));
-    }
+    auto  relative_pos = relative_positions_of_segments(segments);
     
     int total_x_offset = 0;
     int total_y_offset = 0;

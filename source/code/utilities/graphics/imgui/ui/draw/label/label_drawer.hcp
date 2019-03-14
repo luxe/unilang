@@ -17,18 +17,14 @@ class
     //convert strings to bitmap representations
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
     
-    //some pixel fudging
-    const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
-    const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
-    const auto SOME_BUFFER_SPACE = 3;
-    label.box_regular.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.box_regular.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
-    label.box_highlighted.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.box_highlighted.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    Decide_Label_Box_Dimensions(font_chars,label);
+    
+    int x_adjusted_label_draw = -2;
+    int y_adjusted_label_draw = -10;
 
     //adjust for label backdrop
-    pos.y -= 10;
-    pos.x -= 2;
+    pos.y += y_adjusted_label_draw;
+    pos.x += x_adjusted_label_draw;
 
     //draw and handle backdrop
     auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.box_regular);
@@ -48,7 +44,24 @@ class
     }
     
     //adjust for message bitmap and print it
-    pos.y += 10;
-    pos.x += 2;
+    pos.y -= y_adjusted_label_draw;
+    pos.x -= x_adjusted_label_draw;
     Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
+    
+    //decide where the cursor should be
+    if (events.clicked){
+        
+    }
+❱
+
+◀public: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
+
+    //some pixel fudging
+    const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
+    const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
+    const auto SOME_BUFFER_SPACE = 3;
+    label.box_regular.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.box_regular.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    label.box_highlighted.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.box_highlighted.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
 ❱

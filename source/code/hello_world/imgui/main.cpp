@@ -10,6 +10,9 @@ int main()
     
     //bind and run ImGui with SDL
     auto before = [](){};
-    auto during = [](){};
+    auto during = [](SDL_Window* window){
+       bool flag = true;
+       ImGui::ShowDemoWindow(&flag);
+    };
     return Mechanics::render_each_frame(s,before,during);
 }

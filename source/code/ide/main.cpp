@@ -16,7 +16,7 @@ int main()
         style.WindowBorderSize = 0;
         style.WindowRounding = 0;
     };
-    return Mechanics::render_each_frame(s.init,before,[&](){
-        Frame_Renderer::each_frame(s);
+    return Mechanics::render_each_frame(s.init,before,[&](SDL_Window* window){
+        Frame_Renderer::each_frame(s,window);
     });
 }

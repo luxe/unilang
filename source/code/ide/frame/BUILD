@@ -13,6 +13,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/ide/frame:cursor_mover",
+        "//code/utilities/graphics/imgui:mechanics",
     ],
 )
 

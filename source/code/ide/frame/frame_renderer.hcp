@@ -1,5 +1,7 @@
 class
 ❪"code/ide/settings/ide_settings"❫
+❪"code/utilities/graphics/imgui/mechanics"❫
+❪"SDL.h"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
 ❪"code/utilities/graphics/imgui/ui/window/window_renderer"❫
@@ -12,7 +14,9 @@ class
 
 
 
-◀public: static▶ void ☀each_frame(Ide_Settings & settings)❰
+◀public: static▶ void ☀each_frame(Ide_Settings & settings,SDL_Window* window)❰
+
+    Possibly_Fullscreen(settings,window);
     
     //create a giant window that spans the entire application
     //since we are using imgui, we have found it better to draw bitmaps on what imgui considers a window.  
@@ -50,6 +54,8 @@ class
     //the closest to the corner we can get
     //this is basically used as our pseudo (0,0) for drawing anything in our application
     auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
+    pos.x += 10;
+    pos.y += 10;
         
     //auto time = ImGui::GetTime();
     //auto time = ImGui::GetFrameCount();
@@ -64,4 +70,24 @@ class
     //Cursor_Drawer::Draw(draw_list,pos,settings.cursor);
     
     });
+❱
+◀private: static▶ void ☀Possibly_Fullscreen(Ide_Settings & settings, SDL_Window* window)❰
+
+    if (F5_Pressed()){
+        if (settings.init.main_window.fullscreen){
+            SDL_SetWindowFullscreen(window,SDL_WINDOW_FULLSCREEN);
+            settings.init.main_window.fullscreen = false;
+        }
+        else{
+            SDL_SetWindowFullscreen(window,0);
+            settings.init.main_window.fullscreen = true;
+        }
+    }
+❱
+
+◀private: static▶ bool ☀F5_Pressed()❰
+    if (ImGui::IsKeyPressed(62,true)){
+        return true;
+    }
+    return false;
 ❱
