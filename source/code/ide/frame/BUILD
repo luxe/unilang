@@ -12,5 +12,14 @@ hcp(
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
+        "//code/ide/frame:cursor_mover",
+    ],
+)
+
+hcp(
+    name = "cursor_mover",
+    deps = ["@imgui//:imgui_sdl_opengl3",
+        "//code/ide/settings:ide_settings",
+        "//code/utilities/graphics/imgui/ui:ui_renders",
     ],
 )
