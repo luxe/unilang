@@ -19,6 +19,20 @@ class
 
     Fullscreener::Possibly_Fullscreen(settings,window);
     
+    Prepare_Window_Drawing_Surface(settings);
+    
+    //Draw the main window and render everything inside of it
+    Window_Renderer::render(settings.main_window,[&](){
+        Draw_Everything(settings);
+    });
+        
+       //bool flag = true;
+       //ImGui::ShowDemoWindow(&flag);
+    
+❱
+
+◀public: static▶ void ☀Prepare_Window_Drawing_Surface(Ide_Settings & settings)❰
+
     //create a giant window that spans the entire application
     //since we are using imgui, we have found it better to draw bitmaps on what imgui considers a window.  
     //it does not seem possible to draw directly on the background.  Additionally, an imgui window has some extra frills
@@ -31,23 +45,11 @@ class
     Update_Background_For_Window_Size(settings,window_end_position);
     ImGui::SetNextWindowPos(Imgui_Type_Utility::To_ImVec2(settings.main_window_backdrop_starting_position));
     ImGui::SetNextWindowSize(Imgui_Type_Utility::To_ImVec2(window_end_position));
-    
-    //Draw the main window and render everything inside of it
-    Window_Renderer::render(settings.main_window,[&](){
-        Draw_Everything(settings);
-    });
-        
-       //bool flag = true;
-       //ImGui::ShowDemoWindow(&flag);
-    
 ❱
 
-◀public: static▶ void ☀Update_Background_For_Window_Size(Ide_Settings & settings, Position const& window_end_position)❰
+◀private: static▶ void ☀Update_Background_For_Window_Size(Ide_Settings & settings, Position const& window_end_position)❰
     settings.main_window_backdrop.width = window_end_position.x;
     settings.main_window_backdrop.height = window_end_position.y;
-❱
-◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings)❰
-    Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);
 ❱
 ◀private: static▶ void ☀Draw_Everything(Ide_Settings & settings)❰
         
@@ -77,4 +79,8 @@ class
     
     
     //Cursor_Drawer::Draw(draw_list,pos,settings.cursor);
+❱
+
+◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings)❰
+    Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);
 ❱
