@@ -25,8 +25,8 @@ class
         Draw_Everything(settings);
     });
         
-       //bool flag = true;
-       //ImGui::ShowDemoWindow(&flag);
+   //bool flag = true;
+   //ImGui::ShowDemoWindow(&flag);
     
 ❱
 
@@ -55,6 +55,7 @@ class
     //object for drawing everything
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
     
+    
     //draw the background for the entire application
     Draw_Background(draw_list,settings);
     
@@ -72,14 +73,46 @@ class
         settings.cursor_position = sel->recommended_cursor_pos;
     }
     
+    if (settings.test_label.is_active){
+        if (Backspace_Pressed()){
+            settings.test_label.message.erase(0,1);
+        }
+        
+    }
+    else{
+    }
+    
     
     Cursor_Mover::Move_As_Needed(settings);
     Rectangle_Drawer::draw_rectangle(draw_list,settings.cursor_position,settings.cursor.shape);
     
-    
     //Cursor_Drawer::Draw(draw_list,pos,settings.cursor);
+    
+    
+    //draw custom mouse
+    /*
+    auto mouse_pos = ImGui::GetMousePos();
+    Position pop;
+    pop.x = mouse_pos.x;
+    pop.y = mouse_pos.y;
+    std::cout << pop.x << " " << pop.y << std::endl;
+    auto s2 = settings.cursor.shape;
+    s2.width = 100;
+    ImGui::SetMouseCursor(ImGuiMouseCursor_None); 
+    Rectangle_Drawer::draw_rectangle(draw_list,pop,s2);
+    */
+    
 ❱
 
 ◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings)❰
     Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);
+❱
+
+
+◀private: static▶ bool ☀Backspace_Pressed()❰
+    auto key_index = ImGui::GetKeyIndex(ImGuiKey_Backspace);
+    if (ImGui::IsKeyPressed(key_index,true)){
+        return true;
+    }
+    return false;
 ❱

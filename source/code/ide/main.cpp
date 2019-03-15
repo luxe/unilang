@@ -15,6 +15,13 @@ int main()
         ImGuiStyle& style = ImGui::GetStyle();
         style.WindowBorderSize = 0;
         style.WindowRounding = 0;
+        
+        //Initial ImGui Mouse settings
+        ImGuiIO& io = ImGui::GetIO();
+        io.MouseDrawCursor = true;
+        
+        ImGui::SetMouseCursor(ImGuiMouseCursor_None); 
+    
     };
     return Mechanics::render_each_frame(s.init,before,[&](SDL_Window* window){
         Frame_Renderer::each_frame(s,window);
