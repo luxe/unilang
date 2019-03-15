@@ -8,7 +8,7 @@ FROM ubuntu:14.04
 # But if it's too hard, they can stay here.
 RUN apt-get update
 RUN apt-get install -y git
-RUN apt-get install -y openjdk-8-jdk
+#RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y patch
 RUN apt-get install -y python
 RUN apt-get install -y wget
