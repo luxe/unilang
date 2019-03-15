@@ -1,18 +1,22 @@
 class
 ❪string❫
 ❪unordered_map❫
+❪utility❫
+❪cstdlib❫
 ❪"code/utilities/graphics/imgui/ui/draw/full_color_bitmap/full_color_bitmap"❫
 ❪"code/utilities/bdf/settings/character_segment"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_settings"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/label_cursor_selection"❫
 ❪"code/utilities/graphics/imgui/ui/draw/mouse_events/mouse_events_checker"❫
 ❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/full_color_bitmap/full_color_bitmap_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/text/text_to_bitmap"❫
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
 ⚯
+❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ⚞⚟
 
-◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
+◀public: static▶ std::optional<Label_Cursor_Selection> ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
     
     //convert strings to bitmap representations
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
@@ -50,11 +54,13 @@ class
     
     //decide where the cursor should be
     if (events.clicked){
-        
+        auto s = get_cursor_selection(font_chars,events.pos,pos,label);
+        return s;
     }
+    return {};
 ❱
 
-◀public: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
+◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
 
     //some pixel fudging
     const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
@@ -64,4 +70,36 @@ class
     label.box_regular.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
     label.box_highlighted.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
     label.box_highlighted.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+❱
+
+◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
+    
+    
+    Label_Cursor_Selection s;
+    int width_covered = 0;
+    auto segments = Str_To_Bdf_Segments::Convert(font_chars,label.message);
+    for (size_t i = 0; i < segments.size(); ++i){
+        pos.x += segments[i].d_width_x;
+        width_covered = segments[i].d_width_x;
+        if (pos.x > click_pos.x){
+            s.label_index = i;
+            break;
+        }
+    }
+    
+    //std::cout << "width: " << width_covered;
+    //std::cout << " pos: " << pos.x << " cpos: " << click_pos.x;
+    //std::cout << " diff: " << std::abs(pos.x - click_pos.x);
+    //std::cout << std::endl;
+    
+    //get difference
+    int diff = std::abs(pos.x - click_pos.x);
+    if (diff < width_covered/2){
+        s.recommended_cursor_pos.x = pos.x;
+    }
+    else{
+        s.recommended_cursor_pos.x = pos.x - width_covered;
+    }
+    s.recommended_cursor_pos.y = pos.y - 9;
+    return s;
 ❱
