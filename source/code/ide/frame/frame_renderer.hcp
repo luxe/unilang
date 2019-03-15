@@ -22,7 +22,9 @@ class
     //since we are using imgui, we have found it better to draw bitmaps on what imgui considers a window.  
     //it does not seem possible to draw directly on the background.  Additionally, an imgui window has some extra frills
     //that also prevent it from being colored everywhere.  We grow the window larger than the application window,
-    //so that we have an entire drawable surface.
+    //so that we have an entire drawable surface. You might be asking, "why even use imgui, if you are just going to be drawing pixels on a blank surface?"
+    //that's a good question, imgui may not be strictly necessary.  For the time being, I like the "immediate-modeness" of it,
+    //and seems to have a nice drawing abstraction over direct libraries like sdl and opengl, etc.
     Position window_end_position = Imgui_Type_Utility::Display_Size_Position();
     window_end_position.x += 8;
     Update_Background_For_Window_Size(settings,window_end_position);
@@ -30,10 +32,12 @@ class
     ImGui::SetNextWindowSize(Imgui_Type_Utility::To_ImVec2(window_end_position));
     
     //Draw the main window and render everything inside of it
-    Draw_Everything(settings);
+    Window_Renderer::render(settings.main_window,[&](){
+        Draw_Everything(settings);
+    });
         
-       bool flag = true;
-       ImGui::ShowDemoWindow(&flag);
+       //bool flag = true;
+       //ImGui::ShowDemoWindow(&flag);
     
 ❱
 
@@ -45,8 +49,6 @@ class
     Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);
 ❱
 ◀private: static▶ void ☀Draw_Everything(Ide_Settings & settings)❰
-    Window_Renderer::render(settings.main_window,[&](){
-        
         
     //object for drawing everything
     ImDrawList *draw_list = ImGui::GetWindowDrawList();
@@ -74,8 +76,6 @@ class
     
     
     //Cursor_Drawer::Draw(draw_list,pos,settings.cursor);
-    
-    });
 ❱
 ◀private: static▶ void ☀Possibly_Fullscreen(Ide_Settings & settings, SDL_Window* window)❰
 
