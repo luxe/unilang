@@ -13,6 +13,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/ide/frame:cursor_mover",
+        "//code/ide/frame:fullscreener",
         "//code/utilities/graphics/imgui:mechanics",
     ],
 )
@@ -24,3 +25,10 @@ hcp(
         "//code/utilities/graphics/imgui/ui:ui_renders",
     ],
 )
+
+
+hcp(name = "fullscreener", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+])
