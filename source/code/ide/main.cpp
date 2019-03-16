@@ -19,6 +19,7 @@ int main()
         //Initial ImGui Mouse settings
         ImGuiIO& io = ImGui::GetIO();
         io.MouseDrawCursor = true;
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         
         ImGui::SetMouseCursor(ImGuiMouseCursor_None); 
     

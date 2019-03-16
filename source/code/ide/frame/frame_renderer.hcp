@@ -17,6 +17,11 @@ class
 
 ◀public: static▶ void ☀each_frame(Ide_Settings & settings,SDL_Window* window)❰
 
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.WantCaptureKeyboard = true;
+        io.WantTextInput = true;
+
     Fullscreener::Possibly_Fullscreen(settings,window);
     
     //Draw the main window and render everything inside of it
@@ -25,8 +30,8 @@ class
         Draw_Everything(settings);
     });
         
-   //bool flag = true;
-   //ImGui::ShowDemoWindow(&flag);
+   bool flag = true;
+    ImGui::ShowDemoWindow(&flag);
     
 ❱
 
@@ -68,25 +73,13 @@ class
     //auto time = ImGui::GetTime();
     //auto time = ImGui::GetFrameCount();
     //settings.test_label.message = std::to_string(time);
-    auto sel = Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
-    if (sel){
-        settings.cursor_position = sel->recommended_cursor_pos;
-    }
-    
-    if (settings.test_label.is_active){
-        if (Backspace_Pressed()){
-            settings.test_label.message.erase(sel->label_index,1);
-        }
-        if (ImGui::IsKeyPressed('a',true)){
-            settings.test_label.message.insert(sel->label_index,1,'a');
-        }
-        
-    }
-    else{
+    Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
+    for (auto & it: settings.test_label.cursors){
+        Handle_Cursor_Selections(draw_list,settings,settings.test_label,it);
     }
     
     
-    Cursor_Mover::Move_As_Needed(settings);
+    //Cursor_Mover::Move_As_Needed(settings);
     Rectangle_Drawer::draw_rectangle(draw_list,settings.cursor_position,settings.cursor.shape);
     
     //Cursor_Drawer::Draw(draw_list,pos,settings.cursor);
@@ -104,8 +97,46 @@ class
     ImGui::SetMouseCursor(ImGuiMouseCursor_None); 
     Rectangle_Drawer::draw_rectangle(draw_list,pop,s2);
     */
-    
 ❱
+
+◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings const& settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    
+    if (label.is_active){
+        if (Backspace_Pressed()){
+            label.message.erase(selection.label_index-1,1);
+            selection.recommended_cursor_pos.x -= 6;
+            selection.label_index -= 1;
+        }
+        
+        ImGuiIO& io = ImGui::GetIO();
+        IM_ARRAYSIZE(io.InputCharacters);
+        for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++)
+        {
+            auto c = (unsigned char)io.InputCharacters[i];
+            if (c != 0){
+                if (isprint(c) || isspace(c))
+                {
+                    label.message.insert(selection.label_index,1,c);
+                    selection.recommended_cursor_pos.x += 6;
+                    selection.label_index += 1;
+                }
+            }
+        }
+        
+        
+        
+        // if (ImGui::IsKeyPressed('A')){
+        //     std::cout << "aaaa" << std::endl;
+        //     label.message.insert(selection.label_index,1,'a');
+        // }
+        
+        auto cursor_draw_pos = selection.recommended_cursor_pos;
+        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
+    }
+    else{
+    }
+❱
+
 
 ◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings)❰
     Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);

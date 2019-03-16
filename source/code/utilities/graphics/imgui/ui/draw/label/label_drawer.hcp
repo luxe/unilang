@@ -16,7 +16,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ⚞⚟
 
-◀public: static▶ std::optional<Label_Cursor_Selection> ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
+◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
     
     //convert strings to bitmap representations
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
@@ -62,12 +62,19 @@ class
     pos.x -= x_adjusted_label_draw;
     Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
     
-    //decide where the cursor should be
-    if (events.clicked){
-        auto s = get_cursor_selection(font_chars,events.pos,pos,label);
-        return s;
+    
+    //set active properties on the label
+    if (ImGui::IsMouseClicked(0)){
+        if (events.clicked){
+            label.cursors.clear();
+            auto s = get_cursor_selection(font_chars,events.pos,pos,label);
+            label.cursors.emplace_back(s);
+        }
+        else{
+            label.cursors.clear();
+        }
     }
-    return {};
+    
 ❱
 
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
