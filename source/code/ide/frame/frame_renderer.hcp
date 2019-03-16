@@ -11,6 +11,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
 ❪"code/ide/frame/cursor_mover"❫
 ❪"code/ide/frame/fullscreener"❫
+❪"code/ide/frame/background_drawer"❫
 ⚞⚟
 
 
@@ -62,7 +63,7 @@ class
     
     
     //draw the background for the entire application
-    Draw_Background(draw_list,settings);
+    Background_Drawer::Draw_Background(draw_list,settings);
     
     //the closest to the corner we can get
     //this is basically used as our pseudo (0,0) for drawing anything in our application
@@ -102,17 +103,22 @@ class
 ◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings const& settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
     
     if (label.is_active){
-        if (Backspace_Pressed()){
-            if (!label.message.empty()){
-                
-                if (selection.label_index > -1){
-                    label.message.erase(selection.label_index,1);
-                    selection.recommended_cursor_pos.x -= 6;
-                    selection.label_index -= 1;
-                }
-            }
-        }
+        Handle_Backwards_Deletion(label,selection);
+        Handle_Fowards_Insertion(label,selection);
         
+        
+        
+        // if (ImGui::IsKeyPressed('A')){
+        //     std::cout << "aaaa" << std::endl;
+        //     label.message.insert(selection.label_index,1,'a');
+        // }
+        
+        auto cursor_draw_pos = selection.recommended_cursor_pos;
+        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
+    }
+❱
+
+◀private: static▶ void ☀Handle_Fowards_Insertion(Label_Settings & label, Label_Cursor_Selection & selection)❰
         ImGuiIO& io = ImGui::GetIO();
         IM_ARRAYSIZE(io.InputCharacters);
         for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++)
@@ -127,24 +133,19 @@ class
                 }
             }
         }
-        
-        
-        
-        // if (ImGui::IsKeyPressed('A')){
-        //     std::cout << "aaaa" << std::endl;
-        //     label.message.insert(selection.label_index,1,'a');
-        // }
-        
-        auto cursor_draw_pos = selection.recommended_cursor_pos;
-        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
-    }
-    else{
-    }
 ❱
 
-
-◀private: static▶ void ☀Draw_Background(ImDrawList *draw_list, Ide_Settings const& settings)❰
-    Rectangle_Drawer::draw_rectangle(draw_list,settings.main_window_backdrop_starting_position,settings.main_window_backdrop);
+◀private: static▶ void ☀Handle_Backwards_Deletion(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (Backspace_Pressed()){
+        if (!label.message.empty()){
+            
+            if (selection.label_index > -1){
+                label.message.erase(selection.label_index,1);
+                selection.recommended_cursor_pos.x -= 6;
+                selection.label_index -= 1;
+            }
+        }
+    }
 ❱
 
 

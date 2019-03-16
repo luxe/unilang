@@ -14,6 +14,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/ide/frame:cursor_mover",
         "//code/ide/frame:fullscreener",
+        "//code/ide/frame:background_drawer",
         "//code/utilities/graphics/imgui:mechanics",
     ],
 )
@@ -31,4 +32,12 @@ hcp(name = "fullscreener", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
+])
+
+
+hcp(name = "background_drawer", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
 ])
