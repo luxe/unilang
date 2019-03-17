@@ -94,20 +94,21 @@ class
     
     Label_Cursor_Selection s;
     int width_covered = 0;
+    bool found = false;
     auto segments = Str_To_Bdf_Segments::Convert(font_chars,label.message);
     for (size_t i = 0; i < segments.size(); ++i){
         pos.x += segments[i].d_width_x;
         width_covered = segments[i].d_width_x;
         if (pos.x > click_pos.x){
             s.label_index = i;
+            found = true;
             break;
         }
     }
     
-    //std::cout << "width: " << width_covered;
-    //std::cout << " pos: " << pos.x << " cpos: " << click_pos.x;
-    //std::cout << " diff: " << std::abs(pos.x - click_pos.x);
-    //std::cout << std::endl;
+    if (!found){
+        s.label_index = segments.size()-1;
+    }
     
     //get difference
     int diff = std::abs(pos.x - click_pos.x);

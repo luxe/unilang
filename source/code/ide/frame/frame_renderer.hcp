@@ -102,6 +102,7 @@ class
 
 ◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings const& settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
     
+    std::cout << selection.label_index << " " << selection.recommended_cursor_pos.x << " " << selection.recommended_cursor_pos.y << std::endl;
     if (label.is_active){
         Handle_Backwards_Deletion(label,selection);
         Handle_Fowards_Insertion(label,selection);
@@ -119,26 +120,32 @@ class
 ❱
 
 ◀private: static▶ void ☀Handle_Fowards_Insertion(Label_Settings & label, Label_Cursor_Selection & selection)❰
-        ImGuiIO& io = ImGui::GetIO();
-        IM_ARRAYSIZE(io.InputCharacters);
-        for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++)
-        {
-            auto c = (unsigned char)io.InputCharacters[i];
-            if (c != 0){
-                if (isprint(c) || isspace(c))
-                {
-                    label.message.insert(selection.label_index+1,1,c);
-                    selection.recommended_cursor_pos.x += 6;
-                    selection.label_index += 1;
-                }
+
+    for (auto const& c: Currently_Buffered_User_Input_Chars()){
+        if (c != 0){
+            if (isprint(c) || isspace(c))
+            {
+                label.message.insert(selection.label_index+1,1,c);
+                selection.recommended_cursor_pos.x += 6;
+                selection.label_index += 1;
             }
         }
+    }
+❱
+
+◀private: static▶ std::vector<char> ☀Currently_Buffered_User_Input_Chars()❰
+    std::vector<char> x;
+    ImGuiIO& io = ImGui::GetIO();
+    IM_ARRAYSIZE(io.InputCharacters);
+    for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++){
+        x.emplace_back((unsigned char)io.InputCharacters[i]);
+    }
+    return x;
 ❱
 
 ◀private: static▶ void ☀Handle_Backwards_Deletion(Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (Backspace_Pressed()){
         if (!label.message.empty()){
-            
             if (selection.label_index > -1){
                 label.message.erase(selection.label_index,1);
                 selection.recommended_cursor_pos.x -= 6;
