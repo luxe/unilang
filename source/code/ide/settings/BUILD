@@ -6,6 +6,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw:color",
     "//code/utilities/graphics/imgui/ui/draw:position",
     "//code/utilities/graphics/imgui/ui/draw:cursor",
+    "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
     "//code/utilities/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui:sdl_init_settings",
     "//code/transcompilers/unilang/tokens:get_tokens",

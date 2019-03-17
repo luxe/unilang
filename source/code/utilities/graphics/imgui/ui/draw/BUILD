@@ -15,3 +15,7 @@ hcp(name="imgui_type_utility", deps = [
 hcp(name="cursor",deps = [
 "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
 ])
+
+hcp(name="mouse_selection",deps = [
+"//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
+])

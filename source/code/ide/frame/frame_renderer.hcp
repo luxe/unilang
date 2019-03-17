@@ -85,6 +85,23 @@ class
     
     //Cursor_Drawer::Draw(draw_list,pos,settings.cursor);
     
+    if (ImGui::IsMouseClicked(0)){
+        auto mouse_pos = ImGui::GetMousePos();
+        settings.mouse_selection_position.x = mouse_pos.x;
+        settings.mouse_selection_position.y = mouse_pos.y;
+    }
+    
+    if (ImGui::IsMouseDown(0)){
+        auto mouse_pos = ImGui::GetMousePos();
+        settings.mouse_selection.shape.width = mouse_pos.x - settings.mouse_selection_position.x;
+        settings.mouse_selection.shape.height = mouse_pos.y - settings.mouse_selection_position.y;
+        
+        Rectangle_Drawer::draw_rectangle(draw_list,settings.mouse_selection_position,settings.mouse_selection.shape);
+    }
+    
+    
+    
+    
     
     //draw custom mouse
     /*
@@ -102,17 +119,12 @@ class
 
 ◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings const& settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
     
-    std::cout << selection.label_index << " " << selection.recommended_cursor_pos.x << " " << selection.recommended_cursor_pos.y << std::endl;
+    //std::cout << selection.label_index << " " << selection.recommended_cursor_pos.x << " " << selection.recommended_cursor_pos.y << std::endl;
     if (label.is_active){
         Handle_Backwards_Deletion(label,selection);
         Handle_Fowards_Insertion(label,selection);
+        //TODO: more
         
-        
-        
-        // if (ImGui::IsKeyPressed('A')){
-        //     std::cout << "aaaa" << std::endl;
-        //     label.message.insert(selection.label_index,1,'a');
-        // }
         
         auto cursor_draw_pos = selection.recommended_cursor_pos;
         Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
