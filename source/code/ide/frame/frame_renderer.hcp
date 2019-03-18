@@ -9,7 +9,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
-❪"code/ide/frame/cursor_mover"❫
+❪"code/utilities/keyboard/key_detector"❫
 ❪"code/ide/frame/fullscreener"❫
 ❪"code/ide/frame/background_drawer"❫
 ❪"code/ide/frame/mouse_selection_drawer"❫
@@ -105,11 +105,31 @@ class
     if (label.is_active){
         Handle_Backwards_Deletion(label,selection);
         Handle_Fowards_Insertion(label,selection);
+        Handle_Backwards_Navigation(label,selection);
+        Handle_Forwards_Navigation(label,selection);
         //TODO: more
         
         
         auto cursor_draw_pos = selection.recommended_cursor_pos;
         Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
+    }
+❱
+
+◀private: static▶ void ☀Handle_Backwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
+
+    if (Key_Detector::Left_Key_Pressed()){
+        if (selection.label_index >= 0){
+            Move_Selector_Backward(label,selection);
+        }
+    }
+❱
+◀private: static▶ void ☀Handle_Forwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
+
+    if (Key_Detector::Right_Key_Pressed()){
+        if (selection.label_index < static_cast<int>(label.message.size())-1){
+            std::cout << "forward" << std::endl;
+            Move_Selector_Forward(label,selection);
+        }
     }
 ❱
 
@@ -120,8 +140,7 @@ class
             if (isprint(c) || isspace(c))
             {
                 label.message.insert(selection.label_index+1,1,c);
-                selection.recommended_cursor_pos.x += 6;
-                selection.label_index += 1;
+                Move_Selector_Forward(label,selection);
             }
         }
     }
@@ -142,11 +161,19 @@ class
         if (!label.message.empty()){
             if (selection.label_index > -1){
                 label.message.erase(selection.label_index,1);
-                selection.recommended_cursor_pos.x -= 6;
-                selection.label_index -= 1;
+                Move_Selector_Backward(label,selection);
             }
         }
     }
+❱
+
+◀private: static▶ void ☀Move_Selector_Backward(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    selection.recommended_cursor_pos.x -= 6;
+    selection.label_index -= 1;
+❱
+◀private: static▶ void ☀Move_Selector_Forward(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    selection.recommended_cursor_pos.x += 6;
+    selection.label_index += 1;
 ❱
 
 
