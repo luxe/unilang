@@ -17,6 +17,7 @@ hcp(
         "//code/utilities/graphics/imgui:mechanics",
         "//code/ide/frame:mouse_selection_drawer",
         "//code/utilities/keyboard:key_detector",
+        "//code/ide/frame:label_cursor_action_doer",
     ],
 )
 
@@ -41,3 +42,15 @@ hcp(name = "mouse_selection_drawer", deps = [
     "//code/utilities/graphics/imgui:mechanics",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
 ])
+
+hcp(name = "label_cursor_action_doer", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/graphics/imgui/ui:ui_renders",
+    "//code/utilities/graphics/imgui/ui/window:window_renderer",
+    "//code/utilities/graphics/imgui/ui/window:window_position_finder",
+    "//code/utilities/keyboard:key_detector",
+])
+
+

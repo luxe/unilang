@@ -13,6 +13,7 @@ class
 ❪"code/ide/frame/fullscreener"❫
 ❪"code/ide/frame/background_drawer"❫
 ❪"code/ide/frame/mouse_selection_drawer"❫
+❪"code/ide/frame/label_cursor_action_doer"❫
 ⚞⚟
 
 
@@ -103,83 +104,10 @@ class
     
     //std::cout << selection.label_index << " " << selection.recommended_cursor_pos.x << " " << selection.recommended_cursor_pos.y << std::endl;
     if (label.is_active){
-        Handle_Backwards_Deletion(label,selection);
-        Handle_Fowards_Insertion(label,selection);
-        Handle_Backwards_Navigation(label,selection);
-        Handle_Forwards_Navigation(label,selection);
-        //TODO: more
+        Label_Cursor_Action_Doer::Handle_Actions(label,selection);
         
         
         auto cursor_draw_pos = selection.recommended_cursor_pos;
         Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
     }
-❱
-
-◀private: static▶ void ☀Handle_Backwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
-
-    if (Key_Detector::Left_Key_Pressed()){
-        if (selection.label_index >= 0){
-            Move_Selector_Backward(label,selection);
-        }
-    }
-❱
-◀private: static▶ void ☀Handle_Forwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
-
-    if (Key_Detector::Right_Key_Pressed()){
-        if (selection.label_index < static_cast<int>(label.message.size())-1){
-            Move_Selector_Forward(label,selection);
-        }
-    }
-❱
-
-◀private: static▶ void ☀Handle_Fowards_Insertion(Label_Settings & label, Label_Cursor_Selection & selection)❰
-
-    for (auto const& c: Currently_Buffered_User_Input_Chars()){
-        if (c != 0){
-            if (isprint(c) || isspace(c))
-            {
-                label.message.insert(selection.label_index+1,1,c);
-                Move_Selector_Forward(label,selection);
-            }
-        }
-    }
-❱
-
-◀private: static▶ std::vector<char> ☀Currently_Buffered_User_Input_Chars()❰
-    std::vector<char> x;
-    ImGuiIO& io = ImGui::GetIO();
-    IM_ARRAYSIZE(io.InputCharacters);
-    for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++){
-        x.emplace_back((unsigned char)io.InputCharacters[i]);
-    }
-    return x;
-❱
-
-◀private: static▶ void ☀Handle_Backwards_Deletion(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (Backspace_Pressed()){
-        if (!label.message.empty()){
-            if (selection.label_index > -1){
-                label.message.erase(selection.label_index,1);
-                Move_Selector_Backward(label,selection);
-            }
-        }
-    }
-❱
-
-◀private: static▶ void ☀Move_Selector_Backward(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    selection.recommended_cursor_pos.x -= 6;
-    selection.label_index -= 1;
-❱
-◀private: static▶ void ☀Move_Selector_Forward(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    selection.recommended_cursor_pos.x += 6;
-    selection.label_index += 1;
-❱
-
-
-◀private: static▶ bool ☀Backspace_Pressed()❰
-    auto key_index = ImGui::GetKeyIndex(ImGuiKey_Backspace);
-    if (ImGui::IsKeyPressed(key_index,true)){
-        return true;
-    }
-    return false;
 ❱
