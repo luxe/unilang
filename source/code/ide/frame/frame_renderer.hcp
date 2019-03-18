@@ -81,8 +81,14 @@ class
     Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
     for (auto & it: settings.test_label.cursors){
         Handle_Cursor_Selections(draw_list,settings,settings.test_label,it);
+        Draw_Mouse_Cursor_Connector(draw_list,settings,it);
         
         
+    }
+    Mouse_Selection_Drawer::Draw(draw_list,settings);
+❱
+
+◀private: static▶ void ☀Draw_Mouse_Cursor_Connector(ImDrawList *draw_list, Ide_Settings & settings, Label_Cursor_Selection & it)❰
         //draw cursor to mouse connector
         if (settings.cursor_mouse_connector.draw){
             settings.cursor_mouse_connector.line.pos = Mouse_Position_Getter::Get();
@@ -93,12 +99,9 @@ class
             start_pos.y += settings.cursor.shape.height;
             Line_Drawer::Draw(draw_list,start_pos,settings.cursor_mouse_connector.line);
         }
-        
-    }
-    Mouse_Selection_Drawer::Draw(draw_list,settings);
 ❱
 
-◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings const& settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings & settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
     
     if (label.is_active){
         Label_Cursor_Action_Doer::Handle_Actions(label,selection);
@@ -110,6 +113,8 @@ class
         Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
         
         
+        settings.cursor_selection.shape.width = selection.additional_chars_selected * 6;
+        settings.cursor_selection.shape.height = 13;
         Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor_selection.shape);
     }
 ❱
