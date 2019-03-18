@@ -21,7 +21,7 @@ int main()
         io.MouseDrawCursor = true;
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         
-        ImGui::SetMouseCursor(ImGuiMouseCursor_None); 
+        ImGui::SetMouseCursor(ImGuiMouseCursor_None); //put inside main loop
     
     };
     return Mechanics::render_each_frame(s.init,before,[&](SDL_Window* window){
