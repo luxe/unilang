@@ -82,10 +82,15 @@ class
     for (auto & it: settings.test_label.cursors){
         Handle_Cursor_Selections(draw_list,settings,settings.test_label,it);
         
-        settings.cursor_mouse_connector.line.pos = Mouse_Position_Getter::Get();
-        settings.cursor_mouse_connector.line.pos.x -= it.recommended_cursor_pos.x;
-        settings.cursor_mouse_connector.line.pos.y -= it.recommended_cursor_pos.y;
-        Line_Drawer::Draw(draw_list,it.recommended_cursor_pos,settings.cursor_mouse_connector.line);
+        if (settings.cursor_mouse_connector.draw){
+            settings.cursor_mouse_connector.line.pos = Mouse_Position_Getter::Get();
+            settings.cursor_mouse_connector.line.pos.x -= it.recommended_cursor_pos.x;
+            settings.cursor_mouse_connector.line.pos.y -= it.recommended_cursor_pos.y + settings.cursor.shape.height;
+            
+            auto start_pos = it.recommended_cursor_pos;
+            start_pos.y += settings.cursor.shape.height;
+            Line_Drawer::Draw(draw_list,start_pos,settings.cursor_mouse_connector.line);
+        }
         
     }
     Mouse_Selection_Drawer::Draw(draw_list,settings);
