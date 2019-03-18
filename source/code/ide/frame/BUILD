@@ -18,6 +18,8 @@ hcp(
         "//code/ide/frame:mouse_selection_drawer",
         "//code/utilities/keyboard:key_detector",
         "//code/ide/frame:label_cursor_action_doer",
+        "//code/utilities/graphics/imgui/ui/draw/line:line_drawer",
+        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
     ],
 )
 
