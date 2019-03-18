@@ -33,14 +33,8 @@ class
 ❰
     if (ImGui::IsMouseClicked(0))
     {
-        auto mouse_pos = ImGui::GetMousePos();
-        if (mouse_pos.x > pos.x && mouse_pos.x < pos.x + settings.width)
-        {
-            if (mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + settings.height)
-            {
-                return true;
-            }
-        }
+        auto mouse_pos = Get_Mouse_Position();
+        return position_inside_rectangle(mouse_pos,pos,settings);
     }
     return false;
 ❱
@@ -55,9 +49,28 @@ class
     return false;
 ❱
 
+◀private: static▶ bool ☀position_inside_rectangle(Position const& pos, Position const& rect_pos, Rectangle_Settings const &settings)
+❰
+    if (pos.x > rect_pos.x && pos.x < rect_pos.x + settings.width)
+    {
+        if (pos.y >= rect_pos.y && pos.y <= rect_pos.y + settings.height)
+        {
+            return true;
+        }
+    }
+    return false;
+❱
+
 ◀private: static▶ void ☀Set_Mouse_Position(Mouse_Events & events)
 ❰
+    events.pos = Get_Mouse_Position();
+❱
+
+◀private: static▶ Position ☀Get_Mouse_Position()
+❰
     auto mouse_pos = ImGui::GetMousePos();
-    events.pos.x = mouse_pos.x;
-    events.pos.y = mouse_pos.y;
+    Position p;
+    p.x = mouse_pos.x;
+    p.y = mouse_pos.y;
+    return p;
 ❱
