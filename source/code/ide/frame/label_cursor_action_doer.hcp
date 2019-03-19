@@ -17,24 +17,70 @@ class
     Handle_All_Selection(label,selection);
     //TODO: more?
 ❱
+
+
 ◀private: static▶ void ☀Handle_Backwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     if (Key_Detector::Left_Key_Pressed()){
-        if (selection.label_index >= 0){
-            Move_Selector_Backward(label,selection);
-            Adjust_For_Backwards_Selection(label,selection);
+        if (Key_Detector::Shift_Down()){
+            Selection_Backwards(label,selection);
+        }
+        else{
+            NonSelection_Backwards(label,selection);
         }
     }
 ❱
 ◀private: static▶ void ☀Handle_Forwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     if (Key_Detector::Right_Key_Pressed()){
-        if (selection.label_index < static_cast<int>(label.message.size())-1){
-            Move_Selector_Forward(label,selection);
-            Adjust_For_Forwards_Selection(label,selection);
+        if (Key_Detector::Shift_Down()){
+            Selection_Forwards(label,selection);
+        }
+        else{
+            NonSelection_Forwards(label,selection);
         }
     }
 ❱
+
+◀private: static▶ void ☀Selection_Backwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (selection.label_index >= 0){
+        Move_Selector_Backward(label,selection);
+        Adjust_For_Backwards_Selection(label,selection);
+    }
+❱
+◀private: static▶ void ☀NonSelection_Backwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (selection.label_index >= 0){
+        
+        if (selection.additional_chars_selected == 0){
+            Move_Selector_Backward(label,selection);
+        }
+    }
+    selection.additional_chars_selected = 0;
+❱
+◀private: static▶ void ☀Selection_Forwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (selection.label_index < static_cast<int>(label.message.size())-1){
+        Move_Selector_Forward(label,selection);
+        Adjust_For_Forwards_Selection(label,selection);
+    }
+❱
+◀private: static▶ void ☀NonSelection_Forwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+
+    if (selection.label_index < static_cast<int>(label.message.size())-1){
+        if (selection.additional_chars_selected == 0){
+            Move_Selector_Forward(label,selection);
+        }
+    }
+    selection.additional_chars_selected = 0;
+❱
+
+
+
+
+
+
+
+
+
 
 ◀private: static▶ void ☀Handle_Fowards_Insertion(Label_Settings & label, Label_Cursor_Selection & selection)❰
 
