@@ -78,17 +78,6 @@ class
     selection.additional_chars_selected = 0;
 ❱
 
-◀private: static▶ bool ☀Cursor_At_Beginning(Label_Cursor_Selection const& selection)❰
-    return (selection.label_index == -1);
-❱
-◀private: static▶ bool ☀Cursor_At_End(Label_Settings const& label, Label_Cursor_Selection const& selection)❰
-    return (selection.label_index == static_cast<int>(label.message.size())-1);
-❱
-
-◀private: static▶ bool ☀Highlighted_Chars_Exist(Label_Cursor_Selection const& selection)❰
-    return (selection.additional_chars_selected != 0);
-❱
-
 
 
 
@@ -175,6 +164,8 @@ class
 
 ◀private: static▶ void ☀Handle_All_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (Key_Detector::CtrlA_Pressed()){
+        Set_Cursor_At_End(label,selection);
+        selection.additional_chars_selected = label.message.size() * -1;
         //selection.recommended_cursor_pos.x = label.message.size()+1 * 6;
         //selection.label_index -= label.message.size()-1;
     }
@@ -188,10 +179,22 @@ class
 
 
 
-
-
-
-
+//state checking / settings
+◀private: static▶ bool ☀Cursor_At_Beginning(Label_Cursor_Selection const& selection)❰
+    return (selection.label_index == -1);
+❱
+◀private: static▶ bool ☀Cursor_At_End(Label_Settings const& label, Label_Cursor_Selection const& selection)❰
+    return (selection.label_index == static_cast<int>(label.message.size())-1);
+❱
+◀private: static▶ bool ☀Highlighted_Chars_Exist(Label_Cursor_Selection const& selection)❰
+    return (selection.additional_chars_selected != 0);
+❱
+◀private: static▶ void ☀Set_Cursor_At_End(Label_Settings const& label, Label_Cursor_Selection & selection)❰
+    selection.label_index = static_cast<int>(label.message.size())-1;
+❱
+◀private: static▶ void ☀Set_Cursor_At_Beginning(Label_Cursor_Selection & selection)❰
+    selection.label_index = -1;
+❱
 
 
 //selection movement
