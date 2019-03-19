@@ -10,14 +10,17 @@ class
 ⚞⚟
 
 ◀public: static▶ void ☀Handle_Actions(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Arrow_Cursor_Movement(label,selection);
     Handle_Backwards_Deletion(label,selection);
     Handle_Fowards_Insertion(label,selection);
-    Handle_Backwards_Navigation(label,selection);
-    Handle_Forwards_Navigation(label,selection);
     Handle_All_Selection(label,selection);
     //TODO: more?
 ❱
 
+◀private: static▶ void ☀Arrow_Cursor_Movement(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Handle_Forwards_Navigation(label,selection);
+    Handle_Backwards_Navigation(label,selection);
+❱
 
 ◀private: static▶ void ☀Handle_Backwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
 
@@ -95,12 +98,20 @@ class
 ◀private: static▶ void ☀Handle_Fowards_Insertion(Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     for (auto const& c: Currently_Buffered_User_Input_Chars()){
-        if (c != 0){
-            if (isprint(c) || isspace(c))
-            {
-                label.message.insert(selection.label_index+1,1,c);
-                Move_Selector_Forward(label,selection);
-            }
+        if (Char_Is_Valid(c)){
+            label.message.insert(selection.label_index+1,1,c);
+            Move_Selector_Forward(label,selection);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Handle_Backwards_Deletion(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (Key_Detector::Backspace_Pressed()){
+        if (Highlighted_Chars_Exist(selection)){
+            Backspace_On_Selection(label,selection);
+        }
+        else{
+            Backspace_On_NonSelection(label,selection);
         }
     }
 ❱
@@ -115,16 +126,49 @@ class
     return x;
 ❱
 
-◀private: static▶ void ☀Handle_Backwards_Deletion(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (Key_Detector::Backspace_Pressed()){
-        if (!label.message.empty()){
-            if (selection.label_index > -1){
-                label.message.erase(selection.label_index,1);
-                Move_Selector_Backward(label,selection);
-            }
+◀private: static▶ bool ☀Char_Is_Valid(char c)❰
+    if (c != 0){
+        if (isprint(c) || isspace(c))
+        {
+            return true;
         }
     }
+    return false;
 ❱
+
+
+
+◀private: static▶ void ☀Backspace_On_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Clear_Selection(label,selection);
+    selection.additional_chars_selected = 0;
+❱
+◀private: static▶ void ☀Backspace_On_NonSelection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (selection.label_index > -1){
+        label.message.erase(selection.label_index,1);
+        Move_Selector_Backward(label,selection);
+    }
+❱
+
+
+◀private: static▶ void ☀Clear_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (selection.additional_chars_selected < 0){
+        label.message.erase(selection.label_index+selection.additional_chars_selected+1,std::abs(selection.additional_chars_selected));
+        for (size_t i = 0; i < std::abs(selection.additional_chars_selected); ++i){
+            Move_Selector_Backward(label,selection);
+        }
+    }
+    else{
+        label.message.erase(selection.label_index+1,selection.additional_chars_selected);
+    }
+❱
+
+
+
+
+
+
+
+
 
 ◀private: static▶ void ☀Handle_All_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (Key_Detector::CtrlA_Pressed()){
