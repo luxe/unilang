@@ -43,33 +43,44 @@ class
 ❱
 
 ◀private: static▶ void ☀Selection_Backwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (selection.label_index >= 0){
+    if (!Cursor_At_Beginning(selection)){
         Move_Selector_Backward(label,selection);
         Adjust_For_Backwards_Selection(label,selection);
     }
 ❱
 ◀private: static▶ void ☀NonSelection_Backwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (selection.label_index >= 0){
-        if (selection.additional_chars_selected == 0){
+    if (!Cursor_At_Beginning(selection)){
+        if (!Highlighted_Chars_Exist(selection)){
             Move_Selector_Backward(label,selection);
         }
     }
     selection.additional_chars_selected = 0;
 ❱
 ◀private: static▶ void ☀Selection_Forwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (selection.label_index < static_cast<int>(label.message.size())-1){
+    if (!Cursor_At_End(label,selection)){
         Move_Selector_Forward(label,selection);
         Adjust_For_Forwards_Selection(label,selection);
     }
 ❱
 ◀private: static▶ void ☀NonSelection_Forwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
 
-    if (selection.label_index < static_cast<int>(label.message.size())-1){
-        if (selection.additional_chars_selected == 0){
+    if (!Cursor_At_End(label,selection)){
+       if (!Highlighted_Chars_Exist(selection)){
             Move_Selector_Forward(label,selection);
         }
     }
     selection.additional_chars_selected = 0;
+❱
+
+◀private: static▶ bool ☀Cursor_At_Beginning(Label_Cursor_Selection const& selection)❰
+    return (selection.label_index == -1);
+❱
+◀private: static▶ bool ☀Cursor_At_End(Label_Settings const& label, Label_Cursor_Selection const& selection)❰
+    return (selection.label_index == static_cast<int>(label.message.size())-1);
+❱
+
+◀private: static▶ bool ☀Highlighted_Chars_Exist(Label_Cursor_Selection const& selection)❰
+    return (selection.additional_chars_selected != 0);
 ❱
 
 
