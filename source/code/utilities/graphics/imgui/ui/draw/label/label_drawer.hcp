@@ -32,6 +32,7 @@ class
 
     //draw and handle backdrop
     auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.box_regular);
+    Set_Label_Properties_Based_On_Events(label,events);
     
     
     //set hover properties on the label
@@ -47,15 +48,7 @@ class
         }
     }
     
-    
-    if (label.is_hovered){
-        bitmap.color_fill = label.text_highlighted;
-        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.box_highlighted);
-    }
-    else{
-        bitmap.color_fill = label.text_regular;
-        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.box_regular);
-    }
+    Draw_Rectangle_Portion(draw_list,bitmap,pos,label);
     
     //adjust for message bitmap and print it
     pos.y -= y_adjusted_label_draw;
@@ -67,14 +60,40 @@ class
     if (ImGui::IsMouseClicked(0)){
         if (events.clicked){
             label.cursors.clear();
-            auto s = get_cursor_selection(font_chars,events.pos,pos,label);
+            auto s = get_cursor_selection_based_on_click(font_chars,events.pos,pos,label);
             label.cursors.emplace_back(s);
         }
         else{
             label.cursors.clear();
         }
     }
+❱
+
+◀private: static▶ void ☀Set_Label_Properties_Based_On_Events(Label_Settings & label, Mouse_Events const& events)❰
+
+    //set hover properties on the label
+    label.is_hovered = events.hovered;
     
+    //set active properties on the label
+    if (ImGui::IsMouseClicked(0)){
+        if (events.clicked){
+            label.is_active = true;
+        }
+        else{
+            label.is_active = false;
+        }
+    }
+❱
+
+◀private: static▶ void ☀Draw_Rectangle_Portion(ImDrawList *draw_list, Full_Color_Bitmap bitmap, Position pos, Label_Settings const& label)❰
+    if (label.is_hovered){
+        bitmap.color_fill = label.text_highlighted;
+        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.box_highlighted);
+    }
+    else{
+        bitmap.color_fill = label.text_regular;
+        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.box_regular);
+    }
 ❱
 
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
@@ -89,7 +108,7 @@ class
     label.box_highlighted.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
 ❱
 
-◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
+◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
     
     
     Label_Cursor_Selection s;
