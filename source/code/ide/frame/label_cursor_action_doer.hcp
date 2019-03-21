@@ -7,72 +7,73 @@ class
 ❪"code/utilities/graphics/imgui/ui/window/window_renderer"❫
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/keyboard/key_detector"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
 ⚞⚟
 
-◀public: static▶ void ☀Handle_Actions(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    Arrow_Cursor_Movement(label,selection);
-    Character_Edition(label,selection);
-    Handle_All_Selection(label,selection);
+◀public: static▶ void ☀Handle_Actions(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Arrow_Cursor_Movement(font_chars,pos,label,selection);
+    Character_Edition(font_chars,pos,label,selection);
+    Handle_All_Selection(font_chars,pos,label,selection);
     //TODO: more?
 ❱
 
-◀private: static▶ void ☀Arrow_Cursor_Movement(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    Handle_Forwards_Navigation(label,selection);
-    Handle_Backwards_Navigation(label,selection);
+◀private: static▶ void ☀Arrow_Cursor_Movement(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Handle_Forwards_Navigation(font_chars,pos,label,selection);
+    Handle_Backwards_Navigation(font_chars,pos,label,selection);
 ❱
-◀private: static▶ void ☀Character_Edition(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    Handle_Fowards_Insertion(label,selection);
-    Handle_Backwards_Deletion(label,selection);
+◀private: static▶ void ☀Character_Edition(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Handle_Fowards_Insertion(font_chars,pos,label,selection);
+    Handle_Backwards_Deletion(font_chars,pos,label,selection);
 ❱
 
-◀private: static▶ void ☀Handle_Backwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Backwards_Navigation(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     if (Key_Detector::Left_Key_Pressed()){
         if (Key_Detector::Shift_Down()){
-            Selection_Backwards(label,selection);
+            Selection_Backwards(font_chars,pos,label,selection);
         }
         else{
-            NonSelection_Backwards(label,selection);
+            NonSelection_Backwards(font_chars,pos,label,selection);
         }
     }
 ❱
-◀private: static▶ void ☀Handle_Forwards_Navigation(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Forwards_Navigation(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     if (Key_Detector::Right_Key_Pressed()){
         if (Key_Detector::Shift_Down()){
-            Selection_Forwards(label,selection);
+            Selection_Forwards(font_chars,pos,label,selection);
         }
         else{
-            NonSelection_Forwards(label,selection);
+            NonSelection_Forwards(font_chars,pos,label,selection);
         }
     }
 ❱
 
-◀private: static▶ void ☀Selection_Backwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Selection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
-        Move_Selector_Backward(label,selection);
+        Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
         Adjust_For_Backwards_Selection(label,selection);
     }
 ❱
-◀private: static▶ void ☀NonSelection_Backwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀NonSelection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
         if (!Highlighted_Chars_Exist(selection)){
-            Move_Selector_Backward(label,selection);
+            Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
         }
     }
     selection.additional_chars_selected = 0;
 ❱
-◀private: static▶ void ☀Selection_Forwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Selection_Forwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_End(label,selection)){
-        Move_Selector_Forward(label,selection);
+        Label_Drawer::Move_Cursor_Forward(font_chars,pos,label,selection);
         Adjust_For_Forwards_Selection(label,selection);
     }
 ❱
-◀private: static▶ void ☀NonSelection_Forwards(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀NonSelection_Forwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     if (!Cursor_At_End(label,selection)){
        if (!Highlighted_Chars_Exist(selection)){
-            Move_Selector_Forward(label,selection);
+            Label_Drawer::Move_Cursor_Forward(font_chars,pos,label,selection);
         }
     }
     selection.additional_chars_selected = 0;
@@ -87,23 +88,23 @@ class
 
 
 
-◀private: static▶ void ☀Handle_Fowards_Insertion(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Fowards_Insertion(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     for (auto const& c: Currently_Buffered_User_Input_Chars()){
         if (Char_Is_Valid(c)){
             label.message.insert(selection.label_index+1,1,c);
-            Move_Selector_Forward(label,selection);
+            Label_Drawer::Move_Cursor_Forward(font_chars,pos,label,selection);
         }
     }
 ❱
 
-◀private: static▶ void ☀Handle_Backwards_Deletion(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Backwards_Deletion(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (Key_Detector::Backspace_Pressed()){
         if (Highlighted_Chars_Exist(selection)){
-            Backspace_On_Selection(label,selection);
+            Backspace_On_Selection(font_chars,pos,label,selection);
         }
         else{
-            Backspace_On_NonSelection(label,selection);
+            Backspace_On_NonSelection(font_chars,pos,label,selection);
         }
     }
 ❱
@@ -130,23 +131,23 @@ class
 
 
 
-◀private: static▶ void ☀Backspace_On_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    Clear_Selection(label,selection);
+◀private: static▶ void ☀Backspace_On_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Clear_Selection(font_chars,pos,label,selection);
     selection.additional_chars_selected = 0;
 ❱
-◀private: static▶ void ☀Backspace_On_NonSelection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Backspace_On_NonSelection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (selection.label_index > -1){
         label.message.erase(selection.label_index,1);
-        Move_Selector_Backward(label,selection);
+        Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
     }
 ❱
 
 
-◀private: static▶ void ☀Clear_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Clear_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (selection.additional_chars_selected < 0){
         label.message.erase(selection.label_index+selection.additional_chars_selected+1,std::abs(selection.additional_chars_selected));
         for (size_t i = 0; i < std::abs(selection.additional_chars_selected); ++i){
-            Move_Selector_Backward(label,selection);
+            Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
         }
     }
     else{
@@ -162,7 +163,7 @@ class
 
 
 
-◀private: static▶ void ☀Handle_All_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_All_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (Key_Detector::CtrlA_Pressed()){
         Set_Cursor_At_End(label,selection);
         selection.additional_chars_selected = label.message.size() * -1;
@@ -213,14 +214,4 @@ class
     else{
         selection.additional_chars_selected = 0;
     }
-❱
-
-//cursor movement
-◀private: static▶ void ☀Move_Selector_Backward(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    selection.recommended_cursor_pos.x -= 6;
-    selection.label_index -= 1;
-❱
-◀private: static▶ void ☀Move_Selector_Forward(Label_Settings & label, Label_Cursor_Selection & selection)❰
-    selection.recommended_cursor_pos.x += 6;
-    selection.label_index += 1;
 ❱
