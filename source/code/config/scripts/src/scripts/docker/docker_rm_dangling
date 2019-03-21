@@ -1,0 +1,15 @@
+docker_rm_dangling ()  
+{ 
+  DOCKER=docker
+  [ docker ps >/dev/null 2>&1 ] || DOCKER="sudo docker"
+
+  echo "Docker: ${DOCKER}"
+
+  ${DOCKER} images -f dangling=true 2>&1 > /dev/null && YES=$?;                                                                                                                  
+  if [ $YES -eq 1 ]; then
+    read -t 30 -p "Press ENTER to remove, or CTRL-C to quit.";
+    ${DOCKER} rmi $(${DOCKER} images -f dangling=true -q);
+  else
+    echo "Nothing to do... all groovy!";
+  fi  
+}
