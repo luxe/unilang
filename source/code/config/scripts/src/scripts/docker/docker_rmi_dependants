@@ -1,15 +1,14 @@
-docker_rmi_dependants ()                                                                                                                                                         
-{ 
-  DOCKER=docker
-  [ docker ps >/dev/null 2>&1 ] || DOCKER="sudo docker"
+#!/usr/bin/env zsh
 
-  echo "Docker: ${DOCKER}"
+DOCKER=docker
+[ docker ps >/dev/null 2>&1 ] || DOCKER="sudo docker"
 
-  for n in $(${DOCKER} images | awk '$2 == "<none>" {print $3}');
-  do  
-    echo "ImageID: $n";
-    ${DOCKER} inspect --format='{{.Id}} {{.Parent}}' $(${DOCKER} images --filter since=$n -q);
-  done;
+echo "Docker: ${DOCKER}"
 
-  ${DOCKER} rmi $(${DOCKER} images | awk '$2 == "<none>" {print $3}')
-}
+for n in $(${DOCKER} images | awk '$2 == "<none>" {print $3}');
+do  
+echo "ImageID: $n";
+${DOCKER} inspect --format='{{.Id}} {{.Parent}}' $(${DOCKER} images --filter since=$n -q);
+done;
+
+${DOCKER} rmi $(${DOCKER} images | awk '$2 == "<none>" {print $3}')
