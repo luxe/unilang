@@ -16,12 +16,12 @@ hcp(name="ide_settings", deps = [
 ])
 
 hcp(name="ide_settings_getter", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/full_color_bitmap:full_color_bitmap",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
-    "//code/utilities/graphics/imgui/ui/draw/full_color_bitmap:full_color_bitmap_drawer",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap_drawer",
     "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
     "//code/utilities/graphics/imgui/ui:ui_renders",
     "//code/transcompilers/unilang/tokens:get_tokens",
