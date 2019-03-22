@@ -28,6 +28,7 @@ hcp(name = "fullscreener", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/keyboard:key_detector",
 ])
 
 
@@ -53,7 +54,7 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/utilities/graphics/imgui/ui/window:window_renderer",
     "//code/utilities/graphics/imgui/ui/window:window_position_finder",
     "//code/utilities/keyboard:key_detector",
-    "//code/utilities/graphics/imgui/ui/draw/label:label_drawer"
+    "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
 ])
 
 
