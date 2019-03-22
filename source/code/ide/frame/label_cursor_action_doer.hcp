@@ -22,6 +22,8 @@ class
         case Text_Box_Action::NAVIGATE_BACKWARD: NonSelection_Backwards(font_chars,pos,label,selection);    break;
         case Text_Box_Action::BACKSPACE:         Handle_Backwards_Deletion(font_chars,pos,label,selection); break;
         case Text_Box_Action::SELECT_ALL:        Handle_All_Selection(font_chars,pos,label,selection);      break;
+        case Text_Box_Action::COPY:              Copy(font_chars,pos,label,selection);                      break;
+        case Text_Box_Action::PASTE:             Paste(font_chars,pos,label,selection);                     break;
         
         case Text_Box_Action::ADD_CHARS:
         case Text_Box_Action::NONE:
@@ -35,6 +37,30 @@ class
     Handle_Fowards_Insertion(font_chars,pos,label,selection);
 ❱
 
+
+◀private: static▶ void ☀Copy(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+
+    auto message = Message_Portion_Currently_Selected(label,selection);
+    std::cout << message << std::endl;
+❱
+◀private: static▶ void ☀Paste(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+❱
+
+
+
+
+
+
+◀private: static▶ std::string ☀Message_Portion_Currently_Selected(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    
+    auto start = selection.label_index;
+    auto end = start + selection.additional_chars_selected;
+    if (start > end){
+        std::swap(start,end);
+    }
+    auto message = label.message.substr(start+1,end-start);
+    return message;
+❱
 
 ◀private: static▶ void ☀Selection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
@@ -142,9 +168,6 @@ class
         label.message.erase(for_deletion+1,selection.additional_chars_selected);
     }
 ❱
-
-
-
 
 
 
