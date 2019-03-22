@@ -76,6 +76,8 @@ enum_cpp(
     "add_chars",
     "backspace",
     "select_all",
+    "copy",
+    "paste",
     "none",
     ]
 )
