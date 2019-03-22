@@ -55,6 +55,27 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/utilities/graphics/imgui/ui/window:window_position_finder",
     "//code/utilities/keyboard:key_detector",
     "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
+    "//code/ide/frame:text_box_action_decider",
 ])
 
+hcp(name = "text_box_action_decider", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/ide/frame:text_box_action",
+    "//code/utilities/keyboard:key_detector",
+])
 
+enum_cpp(
+    name = "text_box_action",
+    values = [
+    "navigate_forward",
+    "navigate_backward",
+    "select_forward",
+    "select_backward",
+    "add_chars",
+    "backspace",
+    "select_all",
+    "none",
+    ]
+)

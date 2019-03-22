@@ -8,46 +8,33 @@ class
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/keyboard/key_detector"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
+❪"code/ide/frame/text_box_action_decider"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Handle_Actions(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-    Arrow_Cursor_Movement(font_chars,pos,label,selection);
-    Character_Edition(font_chars,pos,label,selection);
-    Handle_All_Selection(font_chars,pos,label,selection);
-    //TODO: more?
-❱
 
-◀private: static▶ void ☀Arrow_Cursor_Movement(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-    Handle_Forwards_Navigation(font_chars,pos,label,selection);
-    Handle_Backwards_Navigation(font_chars,pos,label,selection);
-❱
-◀private: static▶ void ☀Character_Edition(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    //we assume the textbox is already active
+    auto action = Text_Box_Action_Decider::Decide();
+    switch (action){
+        case Text_Box_Action::SELECT_FORWARD:    Selection_Forwards(font_chars,pos,label,selection);        break;
+        case Text_Box_Action::NAVIGATE_FORWARD:  NonSelection_Forwards(font_chars,pos,label,selection);     break;
+        case Text_Box_Action::SELECT_BACKWARD:   Selection_Backwards(font_chars,pos,label,selection);       break;
+        case Text_Box_Action::NAVIGATE_BACKWARD: NonSelection_Backwards(font_chars,pos,label,selection);    break;
+        case Text_Box_Action::BACKSPACE:         Handle_Backwards_Deletion(font_chars,pos,label,selection); break;
+        case Text_Box_Action::SELECT_ALL:        Handle_All_Selection(font_chars,pos,label,selection);      break;
+        
+        case Text_Box_Action::ADD_CHARS:
+        case Text_Box_Action::NONE:
+        break;
+        
+        //TODO: more?
+    }
+    
+    
+    //currently outside detection
     Handle_Fowards_Insertion(font_chars,pos,label,selection);
-    Handle_Backwards_Deletion(font_chars,pos,label,selection);
 ❱
 
-◀private: static▶ void ☀Handle_Backwards_Navigation(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-
-    if (Key_Detector::Left_Key_Pressed()){
-        if (Key_Detector::Shift_Down()){
-            Selection_Backwards(font_chars,pos,label,selection);
-        }
-        else{
-            NonSelection_Backwards(font_chars,pos,label,selection);
-        }
-    }
-❱
-◀private: static▶ void ☀Handle_Forwards_Navigation(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-
-    if (Key_Detector::Right_Key_Pressed()){
-        if (Key_Detector::Shift_Down()){
-            Selection_Forwards(font_chars,pos,label,selection);
-        }
-        else{
-            NonSelection_Forwards(font_chars,pos,label,selection);
-        }
-    }
-❱
 
 ◀private: static▶ void ☀Selection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
@@ -99,13 +86,11 @@ class
 ❱
 
 ◀private: static▶ void ☀Handle_Backwards_Deletion(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (Key_Detector::Backspace_Pressed()){
-        if (Highlighted_Chars_Exist(selection)){
-            Backspace_On_Selection(font_chars,pos,label,selection);
-        }
-        else{
-            Backspace_On_NonSelection(font_chars,pos,label,selection);
-        }
+    if (Highlighted_Chars_Exist(selection)){
+        Backspace_On_Selection(font_chars,pos,label,selection);
+    }
+    else{
+        Backspace_On_NonSelection(font_chars,pos,label,selection);
     }
 ❱
 
@@ -167,10 +152,8 @@ class
 
 
 ◀private: static▶ void ☀Handle_All_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-    if (Key_Detector::CtrlA_Pressed()){
         selection.additional_chars_selected = label.message.size() * -1;
         Label_Drawer::Move_Cursor_To_The_End(font_chars,pos,label,selection);
-    }
 ❱
 
 
