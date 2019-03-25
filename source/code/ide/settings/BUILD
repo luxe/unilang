@@ -13,6 +13,7 @@ hcp(name="ide_settings", deps = [
     "//code/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/window:window_settings",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
 ])
 
 hcp(name="ide_settings_getter", deps = [
@@ -27,4 +28,9 @@ hcp(name="ide_settings_getter", deps = [
     "//code/transcompilers/unilang/tokens:get_tokens",
     "//code/ide/settings:ide_settings",
     "//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font",
+    "//code/ide/settings:standard_bitmap_cursor",
+])
+
+hcp(name="standard_bitmap_cursor", deps = [
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
 ])

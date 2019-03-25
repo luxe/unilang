@@ -42,8 +42,6 @@ int main()
         
         
         //io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
-        
-        ImGui::SetMouseCursor(ImGuiMouseCursor_None); //put inside main loop
     
     };
     return Mechanics::render_each_frame(s.init,before,[&](SDL_Window* window){
