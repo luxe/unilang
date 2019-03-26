@@ -24,6 +24,6 @@
 while inotifywait -qqr -e modify ~/Desktop/av/source; do
 	clear;
 	cd ~/Desktop/b;
-	./rops build //...:all;
+	./bops build //...:all;
 	echo "DONE!";
 done

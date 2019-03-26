@@ -21,10 +21,10 @@ fix-build-cache-server
 #rebuild a repo
 cd ~/Desktop/1/;
 git stash;
-./rops build clean;
+./bops build clean;
 git clean -xfd
 git gc --aggressive;
-./rops build //...:all;
+./bops build //...:all;
 
 #File Access
 mount-all-uber-drives
@@ -41,11 +41,11 @@ export LINT_TIMEOUT=0
 
 #make sure the code base is up to date
 git pull;
-./rops build //...:all;
+./bops build //...:all;
 
 #get rolling and quit
 
-./rops data_collection start
+./bops data_collection start
 
 #see changes
 ./bin/xlogdump  /mnt/logs/YELLOW/av/2017.09/2017.09.07/KRYPTON0089/15.39.54_trevor_lossless2/TransmissionTimeIndex00000.hlog  -c /hdcam/10_port_front_roof_wide/image   | grep last_
@@ -60,13 +60,13 @@ git pull;
 
 #in case you want to deploy a car.
 #ssh keys expire after a few days. Might as well auto-refresh
-./rops setup_ssh
+./bops setup_ssh
 
 #in case you need to re-sync a context
 #you have to remember to rebuild any changes, otherwise the cluster won't see it
 #then you need to do the resync.  To avoid forgetting one of these steps, we
 #would want to run them together:
-./rops build //...:all;                    
+./bops build //...:all;                    
 ./cops --cluster CORNDOG mount_context thickey_17_212_0                      
 ./cops --cluster HAMBURGER sync_context_in_parallel thickey_17_212_0 &;
 ./cops --cluster CORNDOG sync_context_in_parallel thickey_17_212_0 &;
