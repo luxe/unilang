@@ -79,6 +79,7 @@ enum_cpp(
     "select_all",
     "copy",
     "paste",
+    "delete",
     "none",
     ]
 )
