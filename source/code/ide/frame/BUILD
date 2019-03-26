@@ -21,6 +21,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/line:line_drawer",
         "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap_drawer",
+        "//code/ide/frame/draw:everything_drawer",
     ],
 )
 

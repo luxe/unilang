@@ -17,6 +17,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/line/line_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/mouse_position_getter"❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/multi_color_bitmap_drawer"❫
+❪"code/ide/frame/draw/everything_drawer"❫
 ⚞⚟
 
 
@@ -29,7 +30,7 @@ class
     //Draw the main window and render everything inside of it
     Prepare_Window_Drawing_Surface(settings);
     Window_Renderer::render(settings.main_window,[&](){
-        Draw_Everything(settings);
+        Everything_Drawer::Draw(settings);
     });
         
     //bool flag = true;
@@ -65,73 +66,4 @@ class
 ◀private: static▶ void ☀Update_Background_For_Window_Size(Ide_Settings & settings, Position const& window_end_position)❰
     settings.main_window_backdrop.width = window_end_position.x;
     settings.main_window_backdrop.height = window_end_position.y;
-❱
-◀private: static▶ void ☀Draw_Everything(Ide_Settings & settings)❰
-        
-    //object for drawing everything
-    ImDrawList *draw_list = ImGui::GetWindowDrawList();
-    
-    
-    //draw the background for the entire application
-    Background_Drawer::Draw_Background(draw_list,settings);
-    
-    //the closest to the corner we can get
-    //this is basically used as our pseudo (0,0) for drawing anything in our application
-    auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
-    pos.x += 10;
-    pos.y += 10;
-        
-    //auto time = ImGui::GetTime();
-    //auto time = ImGui::GetFrameCount();
-    //settings.test_label.message = std::to_string(time);
-    Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
-    for (auto & it: settings.test_label.cursors){
-        Handle_Cursor_Selections(draw_list,settings,pos,settings.test_label,it);
-        Draw_Mouse_Cursor_Connector(draw_list,settings,it);
-        
-        
-    }
-    Mouse_Selection_Drawer::Draw(draw_list,settings);
-    
-    auto mouse_pos = Mouse_Events_Checker::Get_Mouse_Position();
-    Multi_Color_Bitmap_Drawer::Draw(draw_list,mouse_pos,settings.cursor_bitmap);
-❱
-
-◀private: static▶ void ☀Draw_Mouse_Cursor_Connector(ImDrawList *draw_list, Ide_Settings & settings, Label_Cursor_Selection & it)❰
-        //draw cursor to mouse connector
-        if (settings.cursor_mouse_connector.draw){
-            settings.cursor_mouse_connector.line.pos = Mouse_Position_Getter::Get();
-            settings.cursor_mouse_connector.line.pos.x -= it.recommended_cursor_pos.x;
-            settings.cursor_mouse_connector.line.pos.y -= it.recommended_cursor_pos.y + settings.cursor.shape.height;
-            
-            auto start_pos = it.recommended_cursor_pos;
-            start_pos.y += settings.cursor.shape.height;
-            Line_Drawer::Draw(draw_list,start_pos,settings.cursor_mouse_connector.line);
-        }
-❱
-
-◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings & settings, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
-    
-    if (label.is_active){
-        Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,pos,label,selection);
-        
-        Adjust_Based_On_Mouse_Selection(settings,label,selection);
-        
-        
-        auto cursor_draw_pos = selection.recommended_cursor_pos;
-        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
-        
-        
-        settings.cursor_selection.shape.width = selection.additional_chars_selected * 6;
-        settings.cursor_selection.shape.height = 13;
-        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor_selection.shape);
-    }
-❱
-
-◀private: static▶ void ☀Adjust_Based_On_Mouse_Selection(Ide_Settings const& settings, Label_Settings & label, Label_Cursor_Selection & selection)❰
-    
-    
-    if (selection.additional_chars_selected != 0){
-        //std::cout << selection.additional_chars_selected << std::endl;
-    }
 ❱
