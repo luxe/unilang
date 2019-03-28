@@ -10,9 +10,8 @@ int main()
 {
     auto s = Ide_Settings_Getter::Get();
     auto before = [&](){
-    
-    
     };
+    
     return Mechanics::render_each_frame(s.init,before,[&](SDL_Window* window){
         Frame_Renderer::each_frame(s,window);
     });
