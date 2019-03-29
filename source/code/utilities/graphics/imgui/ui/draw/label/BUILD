@@ -7,6 +7,7 @@ hcp(name="label_settings", deps = [
 "//code/utilities/graphics/imgui/ui/draw:position",
 "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
 "//code/utilities/graphics/imgui/ui/draw/label:label_cursor_selection",
+"//code/utilities/graphics/imgui/ui/draw/label:label_style",
 ])
 
 hcp(name="label_drawer", deps = [
@@ -24,4 +25,9 @@ hcp(name="label_drawer", deps = [
 
 hcp(name="label_cursor_selection", deps = [
 "//code/utilities/graphics/imgui/ui/draw:position",
+])
+
+hcp(name="label_style", deps = [
+    "//code/utilities/graphics/imgui/ui/draw:color",
+    "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
 ])
