@@ -31,7 +31,7 @@ class
     pos.x += x_adjusted_label_draw;
 
     //draw and handle backdrop
-    auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.regular.box);
+    auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.styles.regular_active.box);
     Set_Label_Properties_Based_On_Events(label,events);
     Draw_Rectangle_Portion(draw_list,bitmap,pos,label);
     
@@ -163,17 +163,34 @@ class
 ❱
 
 ◀private: static▶ void ☀Draw_Rectangle_Portion(ImDrawList *draw_list, Full_Color_Bitmap & bitmap, Position pos, Label_Settings const& label)❰
-    if (label.is_hovered){
-        bitmap.color_fill = label.highlighted.text;
-        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.highlighted.box);
-    }
-    else if (label.is_active){
-        //TODO (group into styles and use here)
+    
+    
+    auto style = Get_Style_To_Use(label);
+    
+    bitmap.color_fill = style.text;
+    Rectangle_Drawer::draw_rectangle(draw_list,pos,style.box);
+❱
+
+◀private: static▶ Label_Style ☀Get_Style_To_Use(Label_Settings const& label)❰
+
+    if (label.is_active){
+        if (label.is_hovered){
+            return label.styles.hovered_active;
+        }
+        else{
+            return label.styles.regular_active;
+        }
     }
     else{
-        bitmap.color_fill = label.regular.text;
-        Rectangle_Drawer::draw_rectangle(draw_list,pos,label.regular.box);
+        if (label.is_hovered){
+            return label.styles.hovered_nonactive;
+        }
+        else{
+            return label.styles.regular_nonactive;
+        }
     }
+    
+    return label.styles.regular_nonactive;
 ❱
 
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
@@ -182,10 +199,15 @@ class
     const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
     const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
     const auto SOME_BUFFER_SPACE = 3;
-    label.regular.box.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.regular.box.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
-    label.highlighted.box.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.highlighted.box.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    label.styles.regular_nonactive.box.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.styles.regular_nonactive.box.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    label.styles.hovered_active.box.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.styles.hovered_active.box.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    
+    label.styles.regular_active.box.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.styles.regular_active.box.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    label.styles.hovered_nonactive.box.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+    label.styles.hovered_nonactive.box.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
 ❱
 
 ◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
