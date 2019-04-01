@@ -14,12 +14,16 @@ class
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
     
     //convert strings to bitmap representations
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
+    if (!label.styles.width.grow_width){
+        Remove_Pixels_Past_A_Width(bitmap,label.styles.width.fixed_width);
+    }
     
     Decide_Label_Box_Dimensions(font_chars,label);
     
@@ -56,8 +60,16 @@ class
 
 
 
+◀private: static▶ void ☀Remove_Pixels_Past_A_Width(Full_Color_Bitmap & bitmap, const int width)❰
 
-
+    Remove_If(bitmap.pixels,[&](Position const& position){
+        
+        if (position.x+5 > width){
+            return true;
+        }
+        return false;
+    });
+❱
 
 
 

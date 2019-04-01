@@ -22,6 +22,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap_drawer",
     "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
     "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
+    "//code/utilities/types/vectors/transformers:lib",
 ])
 
 hcp(name="label_cursor_selection", deps = [

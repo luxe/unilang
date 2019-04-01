@@ -172,6 +172,11 @@ std::vector<T>& Remove_Elements_Where_Function_Is_False( std::vector<T> & v, Fun
     v.erase( std::remove_if(std::begin(v), std::end(v), !f), std::end(v) );
     return v;
 }
+template <typename T, typename Function>
+std::vector<T>& Remove_If( std::vector<T> & v, Function const& f){
+    v.erase( std::remove_if(std::begin(v), std::end(v), f), std::end(v) );
+    return v;
+}
 
 //void Remove_Empty_Strings(std::vector<std::string> & vec);
 //void Remove_Any_Strings_That_Are_Whitespace(std::vector<std::string> & vec);
