@@ -35,7 +35,11 @@ hcp(name="label_style", deps = [
 
 hcp(name="label_styles", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label:label_style",
+    "//code/utilities/graphics/imgui/ui/draw/label:label_width_style",
 ])
 
 hcp(name="label_user_state", deps = [
+])
+
+hcp(name="label_width_style", deps = [
 ])
