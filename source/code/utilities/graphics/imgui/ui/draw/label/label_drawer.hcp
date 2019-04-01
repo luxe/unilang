@@ -196,18 +196,37 @@ class
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
 
     //some pixel fudging
-    const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
     const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
-    const auto SOME_BUFFER_SPACE = 3;
-    label.styles.regular_nonactive.box.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.styles.regular_nonactive.box.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
-    label.styles.hovered_active.box.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.styles.hovered_active.box.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
     
-    label.styles.regular_active.box.width      = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.styles.regular_active.box.height     = EXPECTED_MONOSPACE_FITTING_HEIGHT;
-    label.styles.hovered_nonactive.box.width  = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
-    label.styles.hovered_nonactive.box.height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    auto box_width = Decide_Textbox_Width(label);
+    auto box_height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    
+    
+    //set these box dimensions for all state styles of the label
+    label.styles.regular_nonactive.box.width      = box_width;
+    label.styles.regular_nonactive.box.height     = box_height;
+    label.styles.hovered_active.box.width  = box_width;
+    label.styles.hovered_active.box.height = box_height;
+    label.styles.regular_active.box.width      = box_width;
+    label.styles.regular_active.box.height     = box_height;
+    label.styles.hovered_nonactive.box.width  = box_width;
+    label.styles.hovered_nonactive.box.height = box_height;
+❱
+
+◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label)❰
+
+    //derive the width based on the characters of the label
+    if (label.styles.width.grow_width){
+        const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
+        const auto SOME_BUFFER_SPACE = 3;
+        auto box_width = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
+        return box_width;
+    }
+    
+    //derive the width based on a fixed settings
+    return label.styles.width.fixed_width;
+    
+    
 ❱
 
 ◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
