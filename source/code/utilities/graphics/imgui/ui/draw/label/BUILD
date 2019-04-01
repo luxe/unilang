@@ -32,11 +32,11 @@ hcp(name="label_cursor_selection", deps = [
 hcp(name="label_style", deps = [
     "//code/utilities/graphics/imgui/ui/draw:color",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label:label_width_style",
 ])
 
 hcp(name="label_styles", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label:label_style",
-    "//code/utilities/graphics/imgui/ui/draw/label:label_width_style",
 ])
 
 hcp(name="label_user_state", deps = [

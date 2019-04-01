@@ -21,11 +21,15 @@ class
     
     //convert strings to bitmap representations
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
-    if (!label.styles.width.grow_width){
-        Remove_Pixels_Past_A_Width(bitmap,label.styles.width.fixed_width);
+    auto style = Get_Style_To_Use(label);
+    
+    //decide text styling
+    if (!style.width.grow_width){
+        Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
     }
     
-    Decide_Label_Box_Dimensions(font_chars,label);
+    //decide box dimensions
+    Decide_Label_Box_Dimensions(font_chars,label,style);
     
     int x_adjusted_label_draw = -2;
     int y_adjusted_label_draw = -10;
@@ -124,12 +128,12 @@ class
     return label.styles.regular_nonactive;
 ❱
 
-◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
+◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label, Label_Style const& style)❰
 
     //some pixel fudging
     const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
     
-    auto box_width = Decide_Textbox_Width(label);
+    auto box_width = Decide_Textbox_Width(label,style);
     auto box_height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
     
     
@@ -144,10 +148,10 @@ class
     label.styles.hovered_nonactive.box.height = box_height;
 ❱
 
-◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label)❰
+◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
 
     //derive the width based on the characters of the label
-    if (label.styles.width.grow_width){
+    if (style.width.grow_width){
         const auto EXPECTED_MONOSPACE_CHAR_WIDTH = 6;
         const auto SOME_BUFFER_SPACE = 3;
         auto box_width = (label.message.size() * EXPECTED_MONOSPACE_CHAR_WIDTH) + SOME_BUFFER_SPACE;
@@ -155,7 +159,7 @@ class
     }
     
     //derive the width based on a fixed settings
-    return label.styles.width.fixed_width;
+    return style.width.fixed_width;
     
     
 ❱
