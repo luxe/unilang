@@ -8,6 +8,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/keyboard/key_detector"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/label_cursor_mover"❫
 ❪"code/ide/frame/text_box_action_decider"❫
 ⚞⚟
 
@@ -65,24 +66,24 @@ class
 
 ◀private: static▶ void ☀Selection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
-        Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
+        Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
         Adjust_For_Backwards_Selection(label,selection);
     }
 ❱
 ◀private: static▶ void ☀NonSelection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
         if (!Highlighted_Chars_Exist(selection)){
-            Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
+            Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
         }
         else{
-            Label_Drawer::Move_Cursor_To_Start_Of_Selection(font_chars,pos,label,selection);
+            Label_Cursor_Mover::Move_Cursor_To_Start_Of_Selection(font_chars,pos,label,selection);
         }
     }
     selection.additional_chars_selected = 0;
 ❱
 ◀private: static▶ void ☀Selection_Forwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_End(label,selection)){
-        Label_Drawer::Move_Cursor_Forward(font_chars,pos,label,selection);
+        Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
         Adjust_For_Forwards_Selection(label,selection);
     }
 ❱
@@ -90,10 +91,10 @@ class
 
     if (!Cursor_At_End(label,selection)){
        if (!Highlighted_Chars_Exist(selection)){
-            Label_Drawer::Move_Cursor_Forward(font_chars,pos,label,selection);
+            Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
         }
         else{
-            Label_Drawer::Move_Cursor_To_End_Of_Selection(font_chars,pos,label,selection);
+            Label_Cursor_Mover::Move_Cursor_To_End_Of_Selection(font_chars,pos,label,selection);
         }
     }
     selection.additional_chars_selected = 0;
@@ -113,7 +114,7 @@ class
     for (auto const& c: Currently_Buffered_User_Input_Chars()){
         if (Char_Is_Valid(c)){
             label.message.insert(selection.label_index+1,1,c);
-            Label_Drawer::Move_Cursor_Forward(font_chars,pos,label,selection);
+            Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
         }
     }
 ❱
@@ -156,7 +157,7 @@ class
 ◀private: static▶ void ☀Backspace_On_NonSelection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (selection.label_index > -1){
         auto for_deletion = selection.label_index;
-        Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
+        Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
         label.message.erase(for_deletion,1);
     }
 ❱
@@ -167,7 +168,7 @@ class
    auto for_deletion = selection.label_index;
    if (selection.additional_chars_selected < 0){
         for (size_t i = 0; i < std::abs(selection.additional_chars_selected); ++i){
-            Label_Drawer::Move_Cursor_Backward(font_chars,pos,label,selection);
+            Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
         }
         label.message.erase(for_deletion+selection.additional_chars_selected+1,std::abs(selection.additional_chars_selected));
     }
@@ -183,7 +184,7 @@ class
 
 ◀private: static▶ void ☀Handle_All_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
         selection.additional_chars_selected = label.message.size() * -1;
-        Label_Drawer::Move_Cursor_To_The_End(font_chars,pos,label,selection);
+        Label_Cursor_Mover::Move_Cursor_To_The_End(font_chars,pos,label,selection);
 ❱
 
 

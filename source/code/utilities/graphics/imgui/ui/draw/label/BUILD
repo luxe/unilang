@@ -43,3 +43,10 @@ hcp(name="label_user_state", deps = [
 
 hcp(name="label_width_style", deps = [
 ])
+
+hcp(name="label_cursor_mover", deps = [
+"//code/utilities/bdf/settings:character_segment",
+"//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+"//code/utilities/graphics/imgui/ui/draw/label:label_cursor_selection",
+"//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
+])

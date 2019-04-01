@@ -58,6 +58,7 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/utilities/keyboard:key_detector",
     "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
     "//code/ide/frame:text_box_action_decider",
+    "//code/utilities/graphics/imgui/ui/draw/label:label_cursor_mover",
 ])
 
 hcp(name = "text_box_action_decider", deps = [
