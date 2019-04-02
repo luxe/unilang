@@ -9,9 +9,6 @@
 <details>
 
 <summary>Introduction</summary>
-
-
-
 ## Overview
 Welcome to Unilang.  Unilang is a **universal programming language (UPL)**.  A UPL can be thought of as a language abstraction over **general-purpose programming languages (GPLs)**.  GPLs are not general enough to be used across all domains in programming.  Which is not to say they couldn't.  Anything that's Turing complete is computationally universal.  Its not about whether something can be used to solve a problem, it's about whether its the best choice.  GPLs tend to carve out specific niches across different programming domains.  Engineers evaluate language trade-offs and choose the right language for that particular domain.  A cross-domain problem may then be solved with a polyglot of languages.  Unilang's stance is that a polyglot of languages should be an implementation detail below a more conceptually pure representation of the full problem ontology.  Unilang takes a novel approach to language's role in facilitating software.  Since the design and implementation of Unilang is built with particular language philosophies, this overview will discuss these ideas first.  Unilang will then be described in the context of software engineering.  
 
@@ -68,7 +65,6 @@ This shows that even if the project being worked on is meaningless, we measure o
 <details>
 
 <summary>Features</summary>
-
 TODO. also consider a language matrix of tests/features that we have working across languages.  
 
 
@@ -87,7 +83,6 @@ TODO.
 <details>
 
 <summary>Language Design</summary>
-
 In this section, we will discuss the theory of what a programming language should be.  We show how these ideas are applied in shaping the design of Unilang.  
 
 
@@ -206,7 +201,6 @@ These is information-oriented to provide you with complete and accurate details.
 <details>
 
 <summary>Developer Guide</summary>
-
 TODO. here we talk about information for anyone who wants to contribute to the Unilang project.  
 
 
