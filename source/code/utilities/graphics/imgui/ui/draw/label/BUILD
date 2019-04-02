@@ -23,6 +23,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
     "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
     "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/graphics/imgui/time:cycle_clock_checker",
 ])
 
 hcp(name="label_cursor_selection", deps = [
@@ -43,6 +44,7 @@ hcp(name="label_user_state", deps = [
 ])
 
 hcp(name="label_width_style", deps = [
+"//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
 ])
 
 hcp(name="label_cursor_mover", deps = [

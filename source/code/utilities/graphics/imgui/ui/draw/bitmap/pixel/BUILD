@@ -15,3 +15,7 @@ hcp(name="pixel_drawer", deps = [
 "//code/utilities/graphics/imgui/ui/draw:position",
 "//code/utilities/graphics/imgui:mechanics",
 ])
+
+hcp(name="pixel_slider", deps = [
+"//code/utilities/graphics/imgui/time:cycle_clock",
+])

@@ -11,6 +11,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/text/text_to_bitmap"❫
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
+❪"code/utilities/graphics/imgui/ui/draw/bitmap/pixel/pixel_slider"❫
 ⚯
 ❪"code/transcompilers/unilang/language-and-theme-creator/font/unilang_font"❫
 ❪"code/ide/settings/standard_bitmap_cursor"❫
@@ -34,10 +35,7 @@ class
     settings.main_window_backdrop_starting_position.y = 0;
     
     //font related settings
-    auto unilang_font = Unilang_Font::Get();
-    for (auto const& it: unilang_font){
-        settings.unilang_font_lookup[static_cast<int>(it.glyph_index)] = it;
-    }
+    settings.unilang_font_lookup = Get_Character_Lookup_Table();
     
     
     //main cursor
@@ -92,7 +90,7 @@ class
     return settings;
 ❱
 
-◀public: static▶ Sdl_Init_Settings ☀Initialization_Settings()❰
+◀private: static▶ Sdl_Init_Settings ☀Initialization_Settings()❰
     Sdl_Init_Settings x;
     x.main_window.title = "Unilang IDE";
     x.main_window.maximized = false;
@@ -111,7 +109,7 @@ class
     return x;
 ❱
 
-◀public: static▶ Window_Settings ☀Main_Window_Settings()❰
+◀private: static▶ Window_Settings ☀Main_Window_Settings()❰
 
     //the main imgui window used for drawing
     Window_Settings x;
@@ -139,7 +137,7 @@ class
     return x;
 ❱
 
-◀public: static▶ Label_Styles ☀Label_Styles_Settings()❰
+◀private: static▶ Label_Styles ☀Label_Styles_Settings()❰
     Label_Styles x;
     
     x.regular_nonactive.box.thickness = 1;
@@ -149,8 +147,7 @@ class
     x.regular_nonactive.text = Imgui_Type_Utility::Black();
     x.regular_nonactive.width.grow_width = false;
     x.regular_nonactive.width.fixed_width = 100;
-    x.regular_nonactive.width.cycle_offset = 0;
-    x.regular_nonactive.width.cycle_offset_pixel_jump = 1;
+    x.regular_nonactive.width.pixel_slide = Create_Normal_Pixel_Slider();
 
     x.hovered_nonactive.box.thickness = 1;
     x.hovered_nonactive.box.rounding  = 0.0;
@@ -159,8 +156,7 @@ class
     x.hovered_nonactive.text = Imgui_Type_Utility::White();
     x.hovered_nonactive.width.grow_width = false;
     x.hovered_nonactive.width.fixed_width = 100;
-    x.hovered_nonactive.width.cycle_offset = 0;
-    x.hovered_nonactive.width.cycle_offset_pixel_jump = 1;
+    x.hovered_nonactive.width.pixel_slide = Create_Normal_Pixel_Slider();
     
     x.hovered_active.box.thickness = 1;
     x.hovered_active.box.rounding  = 0.0;
@@ -169,8 +165,7 @@ class
     x.hovered_active.text = Imgui_Type_Utility::White();
     x.hovered_active.width.grow_width = true;
     x.hovered_active.width.fixed_width = 100;
-    x.hovered_active.width.cycle_offset = 0;
-    x.hovered_active.width.cycle_offset_pixel_jump = 1;
+    x.hovered_active.width.pixel_slide = Create_Normal_Pixel_Slider();
     
     x.regular_active.box.thickness = 1;
     x.regular_active.box.rounding  = 0.0;
@@ -179,12 +174,26 @@ class
     x.regular_active.text = Imgui_Type_Utility::Black();
     x.regular_active.width.grow_width = true;
     x.regular_active.width.fixed_width = 100;
-    x.regular_active.width.cycle_offset = 0;
-    x.regular_active.width.cycle_offset_pixel_jump = 1;
-    
-    
+    x.regular_active.width.pixel_slide = Create_Normal_Pixel_Slider();
     
     return x;
+❱
+
+◀private: static▶ Pixel_Slider ☀Create_Normal_Pixel_Slider()❰
+    Pixel_Slider slider;
+    slider.cycle_offset = 0;
+    slider.cycle_offset_pixel_jump = 1;
+    slider.slide_clock.rate = .05;
+    return slider;
+❱
+
+◀private: static▶ std::unordered_map<int,Character_Segment> ☀Get_Character_Lookup_Table()❰
+    auto unilang_font = Unilang_Font::Get();
+    std::unordered_map<int,Character_Segment> unilang_font_lookup;
+    for (auto const& it: unilang_font){
+        unilang_font_lookup[static_cast<int>(it.glyph_index)] = it;
+    }
+    return unilang_font_lookup;
 ❱
 
 

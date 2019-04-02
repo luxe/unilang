@@ -15,6 +15,7 @@ class
 ⚯
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/graphics/imgui/time/cycle_clock_checker"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
@@ -25,6 +26,7 @@ class
     
     //decide text styling
     if (!style.width.grow_width){
+        
         Text_Cycle(bitmap,style.width);
         Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
     }
@@ -68,12 +70,16 @@ class
     new_bitmap.color_fill = bitmap.color_fill;
     
     for (auto & it: bitmap.pixels){
-        it.x -= width.cycle_offset;
+        it.x -= width.pixel_slide.cycle_offset;
         new_bitmap.pixels.emplace_back(it);
     }
-    width.cycle_offset += width.cycle_offset_pixel_jump;
-    if (width.cycle_offset > 200){
-        width.cycle_offset = 0;
+    
+    if (Cycle_Clock_Checker::Check(width.pixel_slide.slide_clock)){
+        width.pixel_slide.cycle_offset += width.pixel_slide.cycle_offset_pixel_jump;
+    }
+    
+    if (width.pixel_slide.cycle_offset > 200){
+        width.pixel_slide.cycle_offset = 0;
     }
     bitmap = new_bitmap;
 ❱
