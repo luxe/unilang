@@ -1,9 +1,4 @@
-The world of UniLang is a beautiful place.  
-The reality of life however, is not UniLang.  
-Nonetheless, I refuse to stoop down to the poor languages of our current industry.  
-I also realize its untenable to get an entire company or community to adopt my language.  
-Its not worth the social effort.  I also don't think I have the skills to convince people right now.
-So its clear that I must join the two worlds together.  
+This is where we write Unilang for external projects that do not have unilang tooling as part of their own build system.
 We write a mirrored version of a repository here in UniLang, and then there is a transfer process.  
 It converts UniLang to the company/community's repository.  
 
