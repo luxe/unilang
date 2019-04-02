@@ -21,10 +21,11 @@ class
     
     //convert strings to bitmap representations
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
-    auto style = Get_Style_To_Use(label);
+    auto& style = Get_Style_To_Use(label);
     
     //decide text styling
     if (!style.width.grow_width){
+        Text_Cycle(bitmap,style.width);
         Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
     }
     
@@ -62,13 +63,25 @@ class
     }
 ❱
 
-
+◀private: static▶ void ☀Text_Cycle(Full_Color_Bitmap & bitmap, Label_Width_Style & width)❰
+    Full_Color_Bitmap new_bitmap;
+    new_bitmap.color_fill = bitmap.color_fill;
+    
+    for (auto & it: bitmap.pixels){
+        it.x -= width.cycle_offset;
+        new_bitmap.pixels.emplace_back(it);
+    }
+    width.cycle_offset++;
+    if (width.cycle_offset > 200){
+        width.cycle_offset = 0;
+    }
+    bitmap = new_bitmap;
+❱
 
 ◀private: static▶ void ☀Remove_Pixels_Past_A_Width(Full_Color_Bitmap & bitmap, const int width)❰
 
     Remove_If(bitmap.pixels,[&](Position const& position){
-        
-        if (position.x+5 > width){
+        if (position.x+5 > width || position.x < 0){
             return true;
         }
         return false;
@@ -97,7 +110,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Draw_Rectangle_Portion(ImDrawList *draw_list, Full_Color_Bitmap & bitmap, Position pos, Label_Settings const& label)❰
+◀private: static▶ void ☀Draw_Rectangle_Portion(ImDrawList *draw_list, Full_Color_Bitmap & bitmap, Position pos, Label_Settings & label)❰
     
     
     auto style = Get_Style_To_Use(label);
@@ -106,7 +119,7 @@ class
     Rectangle_Drawer::draw_rectangle(draw_list,pos,style.box);
 ❱
 
-◀private: static▶ Label_Style ☀Get_Style_To_Use(Label_Settings const& label)❰
+◀private: static▶ Label_Style& ☀Get_Style_To_Use(Label_Settings & label)❰
 
     if (label.user_state.is_active){
         if (label.user_state.is_hovered){
