@@ -20,7 +20,7 @@ Unilang is a **universal programming language (UPL)**.  A UPL was not formally d
 Despite their name, GPLs become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations lead to different languages being chosen under the domain of operation.  A cross-domain problem is commonly solved through a mixture of languages.  Simply put, GPLs have not proven general enough as the solution to all problems.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology less productive for establishing insight and enabling change over time.  
 
 
-## Skepticism Awareness
+## Skepticism
 Creating a language that could properly be the right choice for every programming domain sounds impractical.  Domains can have opposite requirements.  Trying to encode everything necessary for all domains would result in something so complicated, contradictory, and convoluted that it would defeat the purpose it set out to accomplish.  It would become too difficult to use in any domain.  
 
 If Unilang were designed in the traditional way that GPLs are, this would be true.  We instead take different approaches toward a language's role in facilitating software.  These concerns are critically important, and we acknowledge them here as they have been influential in Unilang's design and development.  
