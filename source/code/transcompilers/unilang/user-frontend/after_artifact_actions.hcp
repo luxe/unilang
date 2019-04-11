@@ -144,7 +144,14 @@ class
     std::string path_to_program_with_flags = path_to_program + " " + settings.flags;
     
     
-    std::string full_command = ssh_command + '"' + path_to_program_with_flags + " " + file;
+    std::string full_command = "";
+    if (ssh_command.empty()){
+        full_command += path_to_program_with_flags + " " + file;
+    }
+    else{
+        full_command += ssh_command + '"' + path_to_program_with_flags + " " + file;
+    }
+    
     if (settings.pipe_sponge){
         full_command += " | sponge > " + file;
     }
@@ -152,9 +159,13 @@ class
     if (settings.temp_file){
         full_command += " > " + file + "_temp";
     }
-    full_command += '"';
+    
+    if (!ssh_command.empty()){
+        full_command += '"';
+    }
     
     Blue_Then_Regular_Message("remote ",Get_Path_After_Desktop(path_to_program) + " " + Get_Path_After_Desktop(file));
+    std::cout << full_command << std::endl;
     execute(full_command);
     
     if (settings.temp_file){
