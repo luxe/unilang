@@ -8,7 +8,7 @@ hcp(name = "root_settings", deps = [
 "//code/transcompilers/unilang/options/static_analysis:static_analysis_settings",
 "//code/transcompilers/unilang/options/compiler:compile_units",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:transfer_account_settings",
-"//code/utilities/diagnostic:diagnostic_settings",
+"//code/transcompilers/unilang/main/root_settings:initial_diagnostics",
 "//code/transcompilers/unilang/options:remote_build_settings",
 "//code/transcompilers/unilang/options:remote_program_settings",
 "//code/transcompilers/unilang/options:workspace_settings",
@@ -32,4 +32,9 @@ hcp(name = "root_settings_getter", deps = [
 "//code/transcompilers/unilang/compiler-frontends/mermaid:mermaid_settings_getter",
 "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_settings_getter",
 "//code/transcompilers/unilang/tokens:get_tokens",
+"//code/transcompilers/unilang/main/root_settings:initial_diagnostics",
+])
+
+hcp(name = "initial_diagnostics", deps = [
+"//code/utilities/diagnostic:diagnostic_settings",
 ])

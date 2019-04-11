@@ -27,20 +27,7 @@ class
     Root_Settings settings;
     
     //how to error out when there are no files
-    settings.no_files_to_process.print = true;
-    settings.no_files_to_process.flush = true;
-    settings.no_files_to_process.exit = false;
-    settings.no_files_to_process.message = "no files to process";
-    settings.no_files_to_process.color = Diagnostic_Color::REGULAR;
-    settings.no_files_to_process.stream = Diagnostic_Stream::STDOUT;
-    
-    //how to error out if no exporter was chosen
-    settings.no_exporter_chosen.print = true;
-    settings.no_exporter_chosen.flush = true;
-    settings.no_exporter_chosen.exit = false;
-    settings.no_exporter_chosen.message = "no exporter chosen";
-    settings.no_exporter_chosen.color = Diagnostic_Color::REGULAR;
-    settings.no_exporter_chosen.stream = Diagnostic_Stream::STDOUT;
+    settings.initial_diags = Get_Initial_Diagnostics_Settings();
     
     //how to transfer files (often across a network)
     settings.transfer = File_Transfer_Settings_Getter::Get();
@@ -87,51 +74,81 @@ class
     settings.workspace.root_of_unilang_projects = "external_projects";
     
     //all of the language settings
-    settings.compiler_settings.uber.contributors = Uber_Contributors_Getter::Get();
-    settings.compiler_settings.f2si.contributors = F2si_Contributors_Getter::Get();
-    //settings.compiler_settings.trevor.contributors = Trevor_Contributors_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
-
-    settings.compiler_settings.uber.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.html_table = Html_Table_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.processing = Processing_Options_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.processing = Processing_Options_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.processing = Processing_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
-    //settings.compiler_settings.trevor.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
-    
-    settings.compiler_settings.uber.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
-    settings.compiler_settings.f2si.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
-    settings.compiler_settings.trevor.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    settings.compiler_settings = Language_Transcompilation_Settings();
     
     return settings;
 ❱
 
+◀private: static▶ Initial_Diagnostics ☀Get_Initial_Diagnostics_Settings() ❰
+    Initial_Diagnostics diags;
+    
+    //how to error out when there are no files
+    diags.no_files_to_process.print = true;
+    diags.no_files_to_process.flush = true;
+    diags.no_files_to_process.exit = false;
+    diags.no_files_to_process.message = "no files to process";
+    diags.no_files_to_process.color = Diagnostic_Color::REGULAR;
+    diags.no_files_to_process.stream = Diagnostic_Stream::STDOUT;
+    
+    //how to error out if no exporter was chosen
+    diags.no_exporter_chosen.print = true;
+    diags.no_exporter_chosen.flush = true;
+    diags.no_exporter_chosen.exit = false;
+    diags.no_exporter_chosen.message = "no exporter chosen";
+    diags.no_exporter_chosen.color = Diagnostic_Color::REGULAR;
+    diags.no_exporter_chosen.stream = Diagnostic_Stream::STDOUT;
+    
+    return diags;
+❱
 
+
+◀private: static▶ Compile_Units ☀Language_Transcompilation_Settings() ❰
+    
+    Compile_Units compiler_settings;
+    
+    compiler_settings.uber.contributors = Uber_Contributors_Getter::Get();
+    compiler_settings.f2si.contributors = F2si_Contributors_Getter::Get();
+    //compiler_settings.trevor.contributors = Trevor_Contributors_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+
+    compiler_settings.uber.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.html_table = Html_Table_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.processing = Processing_Options_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.processing = Processing_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.processing = Processing_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    compiler_settings.f2si.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    compiler_settings.trevor.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    
+    return compiler_settings;
+❱
