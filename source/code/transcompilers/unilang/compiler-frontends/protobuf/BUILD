@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "protobuf_exporter", deps = [
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/transcompilers/unilang/contributor:contributor",
-"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_settings",
+"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
 "//code/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
 "//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
@@ -30,7 +30,7 @@ hcp(name = "protobuf_exporter", deps = [
 ])
 
 hcp(name = "protobuf_options_getter", deps = [
-"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_settings",
+"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
 "//code/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/utilities/exits:lib",

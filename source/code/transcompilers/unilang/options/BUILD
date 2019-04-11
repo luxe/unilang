@@ -29,7 +29,7 @@ hcp(name = "foreign_language_export_settings", deps = [
 "//code/transcompilers/unilang/options/language-agnostic:language_agnostic_export_settings",
 "//code/transcompilers/unilang/options/language-specific:hidl_export_settings",
 "//code/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
-"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_settings",
+"//code/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
 "//code/transcompilers/unilang/options/language-specific:call_graph_options",
 "//code/transcompilers/unilang/options/language-specific:html_table_options",
 "//code/transcompilers/unilang/options/language-specific:treesheets_options",

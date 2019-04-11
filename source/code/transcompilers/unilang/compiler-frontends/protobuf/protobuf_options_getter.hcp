@@ -1,7 +1,7 @@
 class
 
 
-❪"code/transcompilers/unilang/options/language-specific/protocol_buffer_settings/protocol_buffer_settings"❫
+❪"code/transcompilers/unilang/options/language-specific/protocol_buffer_settings/protocol_buffer_export_settings"❫
 ❪"code/transcompilers/unilang/options/sections/meta/organizations/organization"❫
 ❪"code/transcompilers/unilang/structure/model/structure"❫
 ❪"code/utilities/exits/lib"❫
@@ -9,15 +9,491 @@ class
 
 ⚞⚟
 
-◀public: static▶ Protocol_Buffer_Settings ☀Get()❰
+◀public: static▶ Protocol_Buffer_Export_Settings ☀Get()❰
 
     auto settings = Get_Shared_Style_Options_Config();
     return settings;
 ❱
 
 
-◀private: static▶ Protocol_Buffer_Settings ☀Get_Shared_Style_Options_Config()❰
-	Protocol_Buffer_Settings settings;
+◀private: static▶ Protocol_Buffer_Export_Settings ☀Get_Shared_Style_Options_Config()❰
+	Protocol_Buffer_Export_Settings settings;
+    
+
+    //how files should be split up for objects and globals
+    settings.general.object_partition = Object_Code_Partition_Method::THREE;
+    settings.general.global_partition = Global_Code_Partition_Method::TWO;
+    
+    
+    
+    settings.manipulations.imports.header_renames = 
+    {{"stdioLib","Defs"}
+    };
+    
+    //header files that we should force to be systems eventhough we didn't write them that way in the code.
+    //TODO: allow picking directories!
+    settings.manipulations.imports.force_to_be_system_imports =
+    {"sysLib"
+    ,"stdioLib"
+    ,"inetLib"
+    ,"math"
+    ,"stddef"
+    ,"stdio"
+    ,"tickLib"
+    ,"taskLib"
+    ,"StrLib"
+    ,"strLib"
+    ,"stdlib"
+    };
+    
+    //regardless of what is specified, make the header local
+    settings.manipulations.imports.force_to_be_local_imports = 
+    {"Defs"
+    };
+    
+    //TODO:
+    //allow a warning when someone asks for a system header but we can't find it in our system header specified paths
+    
+    settings.manipulations.imports.force_header_to_have_a_dot_h = 
+    settings.manipulations.imports.force_to_be_system_imports;
+    
+    //wrap the headers in the extern guards
+    settings.portion.extern_c_guard_options.do_extern_c_guards = true;
+    
+    //temp to test that it was coded right
+    settings.portion.method_options.prefix_object_api_methods_with_object_name = true;
+    
+    //what to print in the meta block
+    settings.portion.meta.section_order.clear();
+    
+//settings.portion.meta.section_order.emplace_back(Meta_Section_Name::FILE_TAG);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::COPYRIGHT);
+//settings.portion.meta.section_order.emplace_back(Meta_Section_Name::BLANK_LINE);
+//settings.portion.meta.section_order.emplace_back(Meta_Section_Name::GENERIC_NOTE);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::BLANK_LINE);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::BRIEF);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::DETAILS);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::BUG);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::WARNING);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::EXTERNAL_LINKS);
+settings.portion.meta.section_order.emplace_back(Meta_Section_Name::GROUP_NAMES);
+    
+    //prints in meta block
+    settings.portion.meta.project_name = "";
+    settings.portion.meta.contract_number = "";
+    settings.portion.meta.task_order = "";
+    settings.portion.meta.contract_statement = "";
+    settings.portion.meta.copyright_statement = "Uber, Inc. (c)";
+    settings.portion.meta.copyright.use_tag = false;
+    settings.portion.meta.copyright.print_method = Meta_Copyright_Print_Method::DERIVED_START_DATE_ONLY;
+    settings.portion.meta.copyright.copyright_date_prefix_statement = "(c)";
+    settings.portion.meta.copyright.show_company_before = true;
+    settings.portion.meta.classification = "";
+    settings.portion.meta.distribution_statement = "";
+    
+    //organization name also shows up in meta block
+    Organization org;
+    org.company_phone_number = "";
+    org.company_abbreviation = "";
+    org.company_name = "Uber, Inc.";
+    org.address.number = "";
+    org.address.street = "";
+    org.address.city = "";
+    org.address.state = "";
+    org.address.zip = "";
+    settings.portion.meta.organizations.push_back(org);
+    
+    //doxygen block meta settings
+    settings.portion.meta.comment_settings.doxygen.style = Block_Style::TRIPLE_SLASH;
+    settings.portion.meta.comment_settings.doxygen.intermediate_stars = false;
+    settings.portion.meta.comment_settings.doxygen.column_align = true;
+    
+    //doxygen block general settings
+    settings.general.comment.doxygen.style = Block_Style::TRIPLE_SLASH;
+    settings.general.comment.doxygen.intermediate_stars = false;
+    settings.general.comment.doxygen.column_align = true;
+    settings.general.comment.doxygen.spaces_between_doxygen_border_and_tag = 1;
+    
+    
+    
+    //import style
+    settings.portion.import_options.include_keyword = "include";
+    settings.portion.import_options.after_include_keyword = " ";
+    settings.portion.import_options.system_start = "\"";
+    settings.portion.import_options.system_end = "\"";
+    settings.portion.import_options.local_start = "\"";
+    settings.portion.import_options.local_end = "\"";
+    settings.portion.import_options.import_statement_delim = ";";
+    settings.portion.import_options.add_comment_after_delim_statement = false;
+    
+    //puncuating comments
+    //TODO: maybe move to a manipulation?
+    const bool all_grammar_set = true;
+    settings.portion.import_options.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.import_options.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.typedef_options.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.typedef_options.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.macro_options.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.macro_options.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.enum_options.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.enum_options.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.method_options.brief_grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.method_options.brief_grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.method_options.details_grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.method_options.details_grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.method_options.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.method_options.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.portion.data_member_options.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.portion.data_member_options.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    settings.general.comment.grammar.puncuation.auto_capitalize_comments = all_grammar_set;
+    settings.general.comment.grammar.puncuation.auto_puncuate_comments = all_grammar_set;
+    
+    //casing settings
+    settings.portion.namespace_options.casing = Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.casing.casing = Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.use_hungarian_prefix = false;
+    settings.portion.data_member_options.notation.unit_casing.casing= Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.unit_casing.const_casing= Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.unit_casing.global_non_const_casing= Case_Format_Style::SNAKE_CASE;
+    settings.portion.data_member_options.notation.unit_casing.global_const_casing= Case_Format_Style::SNAKE_CASE;
+    
+
+
+    settings.portion.data_member_options.notation.extra_type_settings.remove_existing_plurality_indicator = true;
+    settings.portion.data_member_options.notation.extra_type_settings.enforce_singularity_on_plural_appended_words = true;
+    settings.portion.data_member_options.notation.extra_type_settings.words.optional.yes = "maybe";
+    settings.portion.data_member_options.notation.extra_type_settings.words.optional.no = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.optional.unknown = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.serializable.yes = "serializable";
+    settings.portion.data_member_options.notation.extra_type_settings.words.serializable.no = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.serializable.unknown = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.collection.yes = "collection";
+    settings.portion.data_member_options.notation.extra_type_settings.words.collection.no = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.collection.unknown = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.sequence.yes = "sequence";
+    settings.portion.data_member_options.notation.extra_type_settings.words.sequence.no = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.sequence.unknown = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.state.yes = "state";
+    settings.portion.data_member_options.notation.extra_type_settings.words.state.no = "";
+    settings.portion.data_member_options.notation.extra_type_settings.words.state.unknown = "";
+
+    //the weights we apply for each word
+    //this affects the ordering, and which subset of words are chosen from the valid set
+    settings.portion.data_member_options.notation.extra_type_settings.words.optional_weight = 1;
+    settings.portion.data_member_options.notation.extra_type_settings.words.serializable_weight = 5;
+    settings.portion.data_member_options.notation.extra_type_settings.words.collection_weight = 3;
+    settings.portion.data_member_options.notation.extra_type_settings.words.sequence_weight = 2;
+    settings.portion.data_member_options.notation.extra_type_settings.words.state_weight = 4;
+    
+    //enum settings
+    settings.portion.enum_options.allow_empty_comments = false;
+    settings.portion.enum_options.when_show_empty_comment = When_To_Show_Empty_Enum_Comment::ALWAYS;
+    settings.portion.enum_options.comment.comment_category = Comment_Style_Category::LANGUAGE;
+    settings.portion.enum_options.comment.language.style = Comment_Style::LINE;
+    settings.portion.enum_options.comment.doxygen.spaces_between_doxygen_border_and_tag = 3;
+    settings.portion.enum_options.comment.doxygen.style = Block_Style::TRIPLE_SLASH;
+    settings.portion.enum_options.utility_values.first.name = "FIRST";
+    settings.portion.enum_options.utility_values.last.name = "LAST";
+    settings.portion.enum_options.utility_values.num.name = "NUM";
+    settings.portion.enum_options.base_type_casing = Case_Format_Style::SNAKE_CASE;
+    settings.portion.enum_options.identifier_casing = Case_Format_Style::SNAKE_CASE;
+    settings.portion.enum_options.utility_values.casing = Case_Format_Style::SNAKE_CASE;
+    
+    
+    //HOW TO NAME FILES:
+    //normal
+    settings.general.filesystem_naming.file_casing = Case_Format_Style::SNAKE_CASE;
+    settings.general.filesystem_naming.folder_casing = Case_Format_Style::SNAKE_CASE;
+    settings.general.filesystem_naming.suffix.global.normal.interface                    = "";
+    settings.general.filesystem_naming.suffix.global.normal.implementation               = "";
+    settings.general.filesystem_naming.suffix.global.normal.data                         = "";
+    settings.general.filesystem_naming.suffix.global.normal.data_and_interface           = "";
+    settings.general.filesystem_naming.suffix.global.normal.interface_and_implementation = "";
+    settings.general.filesystem_naming.suffix.global.normal.all                          = "";
+
+    settings.general.filesystem_naming.suffix.sum.normal.interface                    = "";
+    settings.general.filesystem_naming.suffix.sum.normal.implementation               = "";
+    settings.general.filesystem_naming.suffix.sum.normal.data                         = "";
+    settings.general.filesystem_naming.suffix.sum.normal.data_and_interface           = "";
+    settings.general.filesystem_naming.suffix.sum.normal.interface_and_implementation = "";
+    settings.general.filesystem_naming.suffix.sum.normal.all                          = "";
+
+    settings.general.filesystem_naming.suffix.product.normal.interface                    = "";
+    settings.general.filesystem_naming.suffix.product.normal.implementation               = "";
+    settings.general.filesystem_naming.suffix.product.normal.data                         = "";
+    settings.general.filesystem_naming.suffix.product.normal.data_and_interface           = "";
+    settings.general.filesystem_naming.suffix.product.normal.interface_and_implementation = "";
+    settings.general.filesystem_naming.suffix.product.normal.all                          = "";
+
+    //test
+    settings.general.filesystem_naming.suffix.global.test.interface                    = "wrapper";
+    settings.general.filesystem_naming.suffix.global.test.implementation               = "wrapper";
+    settings.general.filesystem_naming.suffix.global.test.data                         = "wrapper";
+    settings.general.filesystem_naming.suffix.global.test.data_and_interface           = "wrapper";
+    settings.general.filesystem_naming.suffix.global.test.interface_and_implementation = "wrapper";
+    settings.general.filesystem_naming.suffix.global.test.all                          = "wrapper";
+
+    settings.general.filesystem_naming.suffix.sum.test.interface                    = "wrapper";
+    settings.general.filesystem_naming.suffix.sum.test.implementation               = "wrapper";
+    settings.general.filesystem_naming.suffix.sum.test.data                         = "wrapper";
+    settings.general.filesystem_naming.suffix.sum.test.data_and_interface           = "wrapper";
+    settings.general.filesystem_naming.suffix.sum.test.interface_and_implementation = "wrapper";
+    settings.general.filesystem_naming.suffix.sum.test.all                          = "wrapper";
+
+    settings.general.filesystem_naming.suffix.product.test.interface                    = "wrapper";
+    settings.general.filesystem_naming.suffix.product.test.implementation               = "wrapper";
+    settings.general.filesystem_naming.suffix.product.test.data                         = "wrapper";
+    settings.general.filesystem_naming.suffix.product.test.data_and_interface           = "wrapper";
+    settings.general.filesystem_naming.suffix.product.test.interface_and_implementation = "wrapper";
+    settings.general.filesystem_naming.suffix.product.test.all                          = "wrapper";
+
+    //constraint
+    settings.general.filesystem_naming.suffix.global.constraint.interface                    = "constraints";
+    settings.general.filesystem_naming.suffix.global.constraint.implementation               = "constraints";
+    settings.general.filesystem_naming.suffix.global.constraint.data                         = "constraints";
+    settings.general.filesystem_naming.suffix.global.constraint.data_and_interface           = "constraints";
+    settings.general.filesystem_naming.suffix.global.constraint.interface_and_implementation = "constraints";
+    settings.general.filesystem_naming.suffix.global.constraint.all                          = "constraints";
+
+    settings.general.filesystem_naming.suffix.sum.constraint.interface                    = "constraints";
+    settings.general.filesystem_naming.suffix.sum.constraint.implementation               = "constraints";
+    settings.general.filesystem_naming.suffix.sum.constraint.data                         = "constraints";
+    settings.general.filesystem_naming.suffix.sum.constraint.data_and_interface           = "constraints";
+    settings.general.filesystem_naming.suffix.sum.constraint.interface_and_implementation = "constraints";
+    settings.general.filesystem_naming.suffix.sum.constraint.all                          = "constraints";
+
+    settings.general.filesystem_naming.suffix.product.constraint.interface                    = "constraints";
+    settings.general.filesystem_naming.suffix.product.constraint.implementation               = "constraints";
+    settings.general.filesystem_naming.suffix.product.constraint.data                         = "constraints";
+    settings.general.filesystem_naming.suffix.product.constraint.data_and_interface           = "constraints";
+    settings.general.filesystem_naming.suffix.product.constraint.interface_and_implementation = "constraints";
+    settings.general.filesystem_naming.suffix.product.constraint.all                          = "constraints";
+
+    //serialize
+    settings.general.filesystem_naming.suffix.global.serialize.interface                    = "serialize";
+    settings.general.filesystem_naming.suffix.global.serialize.implementation               = "serialize";
+    settings.general.filesystem_naming.suffix.global.serialize.data                         = "serialize";
+    settings.general.filesystem_naming.suffix.global.serialize.data_and_interface           = "serialize";
+    settings.general.filesystem_naming.suffix.global.serialize.interface_and_implementation = "serialize";
+    settings.general.filesystem_naming.suffix.global.serialize.all                          = "serialize";
+
+    settings.general.filesystem_naming.suffix.sum.serialize.interface                    = "serialize";
+    settings.general.filesystem_naming.suffix.sum.serialize.implementation               = "serialize";
+    settings.general.filesystem_naming.suffix.sum.serialize.data                         = "serialize";
+    settings.general.filesystem_naming.suffix.sum.serialize.data_and_interface           = "serialize";
+    settings.general.filesystem_naming.suffix.sum.serialize.interface_and_implementation = "serialize";
+    settings.general.filesystem_naming.suffix.sum.serialize.all                          = "serialize";
+
+    settings.general.filesystem_naming.suffix.product.serialize.interface                    = "serialize";
+    settings.general.filesystem_naming.suffix.product.serialize.implementation               = "serialize";
+    settings.general.filesystem_naming.suffix.product.serialize.data                         = "serialize";
+    settings.general.filesystem_naming.suffix.product.serialize.data_and_interface           = "serialize";
+    settings.general.filesystem_naming.suffix.product.serialize.interface_and_implementation = "serialize";
+    settings.general.filesystem_naming.suffix.product.serialize.all                          = "serialize";
+    
+    //meta block settings
+    settings.portion.meta.comment_settings.doxygen.intermediate_stars = true;
+    settings.portion.meta.comment_settings.doxygen.pretty_align_tag_text_on_newlines = false;
+    settings.portion.meta.comment_settings.doxygen.column_align = false;
+    settings.portion.meta.comment_settings.doxygen.tag_symbol = "";
+    settings.portion.meta.comment_settings.doxygen.text_between_tag_and_tag_value  = "";
+    
+    //enum utility function settings
+      
+      //values
+      settings.manipulations.methods.enum_utility_functions.values.first.print = false;
+      settings.manipulations.methods.enum_utility_functions.values.last.print = false;
+      settings.manipulations.methods.enum_utility_functions.values.total.print = false;
+      settings.manipulations.methods.enum_utility_functions.values.first.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.values.last.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.values.total.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.values.first.function_name = "first";
+      settings.manipulations.methods.enum_utility_functions.values.last.function_name = "last";
+      settings.manipulations.methods.enum_utility_functions.values.total.function_name = "total";
+      
+      //iteration
+      settings.manipulations.methods.enum_utility_functions.iteration.next.print = false;
+      settings.manipulations.methods.enum_utility_functions.iteration.previous.print = false;
+      settings.manipulations.methods.enum_utility_functions.iteration.next.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.iteration.previous.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.iteration.next.function_name = "next";
+      settings.manipulations.methods.enum_utility_functions.iteration.previous.function_name = "previous";
+    
+      //enum to string
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string.print = true;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_inflection_count.print = true;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_singular.print = true;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_plural.print = true;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_inflection_count.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_singular.access = Class_Access::PRIVATE;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_plural.access = Class_Access::PRIVATE;
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string.function_name = "to str";
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_inflection_count.function_name = "to inflected str";
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_singular.function_name = "to singular str";
+      settings.manipulations.methods.enum_utility_functions.conversion.enum_to_string_plural.function_name = "to plural str";
+      
+      //string to enum
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum.print = true;
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum_singular.print = false;
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum_plural.print = false;
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum_singular.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum_plural.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum.function_name = "str to enum";
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum_singular.function_name = "singular str to enum";
+      settings.manipulations.methods.enum_utility_functions.conversion.string_to_enum_plural.function_name = "plural str to enum";
+      
+      //data member utility function settings
+      settings.manipulations.methods.data_member_utility_functions.printable.print = true;
+      settings.manipulations.methods.data_member_utility_functions.serializable_json.print = true;
+      settings.manipulations.methods.data_member_utility_functions.to_json.print = true;
+      settings.manipulations.methods.data_member_utility_functions.json_print.print = true;
+      settings.manipulations.methods.data_member_utility_functions.transition.print = true;
+      settings.manipulations.methods.data_member_utility_functions.comparison.print = true;
+      settings.manipulations.methods.data_member_utility_functions.printable.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.serializable_json.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.to_json.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.json_print.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.transition.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.comparison.equals.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.comparison.not_equals.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.comparison.less.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.comparison.less_equals.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.comparison.greater.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.comparison.greater_equals.access = Class_Access::PUBLIC;
+      settings.manipulations.methods.data_member_utility_functions.printable.function_name = "print";
+      settings.manipulations.methods.data_member_utility_functions.serializable_json.function_name = "serialize json";
+      settings.manipulations.methods.data_member_utility_functions.to_json.function_name = "to json";
+      settings.manipulations.methods.data_member_utility_functions.json_print.function_name = "print json";
+      settings.manipulations.methods.data_member_utility_functions.transition.function_name = "print transition changes";
+      settings.manipulations.methods.data_member_utility_functions.comparison.equals.function_name = "equal to";
+      settings.manipulations.methods.data_member_utility_functions.comparison.not_equals.function_name = "not equal to";
+      settings.manipulations.methods.data_member_utility_functions.comparison.less.function_name = "less";
+      settings.manipulations.methods.data_member_utility_functions.comparison.less_equals.function_name = "less equal";
+      settings.manipulations.methods.data_member_utility_functions.comparison.greater.function_name = "greater";
+      settings.manipulations.methods.data_member_utility_functions.comparison.greater_equals.function_name = "greater equal";
+      
+      //enums
+      settings.manipulations.enums.force_explicit_values = true;
+      settings.manipulations.enums.strategy = Enum_Explicit_Value_Strategy::VALUE_INSERTER;
+      
+      //subgroups
+      settings.portion.method_options.sorting.interface.tag.comment.doxygen.intermediate_stars = true;
+      settings.portion.method_options.sorting.interface.tag.comment.doxygen.pretty_align_tag_text_on_newlines = false;
+      settings.portion.method_options.sorting.interface.tag.comment.doxygen.column_align = false;
+      settings.portion.method_options.sorting.interface.tag.comment.doxygen.tag_symbol = "";
+      settings.portion.method_options.sorting.interface.tag.comment.doxygen.text_between_tag_and_tag_value  = "";
+      //---
+      settings.portion.method_options.sorting.implementation.tag.comment.doxygen.intermediate_stars = true;
+      settings.portion.method_options.sorting.implementation.tag.comment.doxygen.pretty_align_tag_text_on_newlines = false;
+      settings.portion.method_options.sorting.implementation.tag.comment.doxygen.column_align = false;
+      settings.portion.method_options.sorting.implementation.tag.comment.doxygen.tag_symbol = "";
+      settings.portion.method_options.sorting.implementation.tag.comment.doxygen.text_between_tag_and_tag_value  = "";
+      
+      //attributes
+
+      //for arguments
+      settings.portion.method_options.attributes.arguments.non_null.is_null_note.show              = false;
+      settings.portion.method_options.attributes.arguments.non_null.is_not_null_note.show          = false;
+      settings.portion.method_options.attributes.arguments.non_null.is_null_note.note              = "";
+      settings.portion.method_options.attributes.arguments.non_null.is_not_null_note.note          = "";
+      settings.portion.method_options.attributes.arguments.non_null.style.technique                = Attribute_Technique::GCC;
+      settings.portion.method_options.attributes.arguments.non_null.style.custom                   = "NONNULL";
+      settings.portion.method_options.attributes.arguments.non_null.style.gcc                      = "__attribute__((nonnull))";
+      settings.portion.method_options.attributes.arguments.non_null.style.clang                    = "__attribute__((nonnull))";
+      settings.portion.method_options.attributes.arguments.non_null.style.microsoft                = "[ref]";
+      settings.portion.method_options.attributes.arguments.non_null.style.splint                   = "";
+      settings.portion.method_options.attributes.arguments.non_null.style.std                      = "__attribute__((nonnull))";
+      settings.portion.method_options.attributes.arguments.non_null.placement.decl.section_1       = false;
+      settings.portion.method_options.attributes.arguments.non_null.placement.decl.section_2       = false;
+      settings.portion.method_options.attributes.arguments.non_null.placement.decl.section_3       = false;
+      settings.portion.method_options.attributes.arguments.non_null.placement.def.section_1        = false;
+      settings.portion.method_options.attributes.arguments.non_null.placement.def.section_2        = false;
+      settings.portion.method_options.attributes.arguments.non_null.placement.def.section_3        = false;
+
+      settings.portion.method_options.attributes.arguments.unused_arg.used_note.show               = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.maybe_unused_note.show       = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.definitely_unused_note.show  = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.used_note.note               = "";
+      settings.portion.method_options.attributes.arguments.unused_arg.maybe_unused_note.note       = "";
+      settings.portion.method_options.attributes.arguments.unused_arg.definitely_unused_note.note  = "";
+      settings.portion.method_options.attributes.arguments.unused_arg.style.technique              = Attribute_Technique::GCC;
+      settings.portion.method_options.attributes.arguments.unused_arg.style.custom                 = "UNUSED";
+      settings.portion.method_options.attributes.arguments.unused_arg.style.gcc                    = "__attribute__((unused))";
+      settings.portion.method_options.attributes.arguments.unused_arg.style.clang                  = "__attribute__((unused))";
+      settings.portion.method_options.attributes.arguments.unused_arg.style.microsoft              = "";
+      settings.portion.method_options.attributes.arguments.unused_arg.style.splint                 = "/*@unused@*/";
+      settings.portion.method_options.attributes.arguments.unused_arg.style.std                    = "[[maybe_unused]]";
+      settings.portion.method_options.attributes.arguments.unused_arg.placement.decl.section_1     = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.placement.decl.section_2     = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.placement.decl.section_3     = true;
+      settings.portion.method_options.attributes.arguments.unused_arg.placement.def.section_1      = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.placement.def.section_2      = false;
+      settings.portion.method_options.attributes.arguments.unused_arg.placement.def.section_3      = true;
+
+      //not supported by diab compiler
+      settings.portion.method_options.attributes.arguments.used_return.used_note.show              = false;
+      settings.portion.method_options.attributes.arguments.used_return.maybe_unused_note.show      = false;
+      settings.portion.method_options.attributes.arguments.used_return.definitely_unused_note.show = false;
+      settings.portion.method_options.attributes.arguments.used_return.used_note.note              = "";
+      settings.portion.method_options.attributes.arguments.used_return.maybe_unused_note.note      = "";
+      settings.portion.method_options.attributes.arguments.used_return.definitely_unused_note.note = "";
+      settings.portion.method_options.attributes.arguments.used_return.style.technique             = Attribute_Technique::GCC;
+      settings.portion.method_options.attributes.arguments.used_return.style.custom                = "NODISCARD";
+      settings.portion.method_options.attributes.arguments.used_return.style.gcc                   = "__attribute__((warn_unused_result))";
+      settings.portion.method_options.attributes.arguments.used_return.style.clang                 = "__attribute__((warn_unused_result))";
+      settings.portion.method_options.attributes.arguments.used_return.style.microsoft             = "_Check_return_";
+      settings.portion.method_options.attributes.arguments.used_return.style.splint                = "";
+      settings.portion.method_options.attributes.arguments.used_return.style.std                   = "[[nodiscard]]";
+      settings.portion.method_options.attributes.arguments.used_return.placement.decl.section_1    = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.decl.section_2    = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.decl.section_3    = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.decl.section_4    = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.decl.section_5    = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.def.section_1     = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.def.section_2     = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.def.section_3     = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.def.section_4     = false;
+      settings.portion.method_options.attributes.arguments.used_return.placement.def.section_5     = false;
+
+      //for methods
+      settings.portion.method_options.attributes.method.unused.used_note.show                      = false;
+      settings.portion.method_options.attributes.method.unused.maybe_unused_note.show              = false;
+      settings.portion.method_options.attributes.method.unused.definitely_unused_note.show         = false;
+      settings.portion.method_options.attributes.method.unused.used_note.note                      = "";
+      settings.portion.method_options.attributes.method.unused.maybe_unused_note.note              = "";
+      settings.portion.method_options.attributes.method.unused.definitely_unused_note.note         = "";
+      settings.portion.method_options.attributes.method.unused.style.technique                     = Attribute_Technique::GCC;
+      settings.portion.method_options.attributes.method.unused.style.custom                        = "UNUSED";
+      settings.portion.method_options.attributes.method.unused.style.gcc                           = "__attribute__((unused))";
+      settings.portion.method_options.attributes.method.unused.style.clang                         = "__attribute__((unused))";
+      settings.portion.method_options.attributes.method.unused.style.microsoft                     = "";
+      settings.portion.method_options.attributes.method.unused.style.splint                        = "/*@unused@*/";
+      settings.portion.method_options.attributes.method.unused.style.std                           = "[[maybe_unused]]";
+      settings.portion.method_options.attributes.method.unused.placement.decl.section_1            = true;
+      settings.portion.method_options.attributes.method.unused.placement.decl.section_2            = false;
+      settings.portion.method_options.attributes.method.unused.placement.decl.section_3            = false;
+      settings.portion.method_options.attributes.method.unused.placement.decl.section_4            = false;
+      settings.portion.method_options.attributes.method.unused.placement.decl.section_5            = false;
+      settings.portion.method_options.attributes.method.unused.placement.def.section_1             = true;
+      settings.portion.method_options.attributes.method.unused.placement.def.section_2             = false;
+      settings.portion.method_options.attributes.method.unused.placement.def.section_3             = false;
+      settings.portion.method_options.attributes.method.unused.placement.def.section_4             = false;
+      settings.portion.method_options.attributes.method.unused.placement.def.section_5             = false;
+
+      //dumb comment at the end of functions
+      settings.portion.method_options.outside_body_comment.print = true;
+      settings.portion.method_options.outside_body_comment.comment.comment_category = Comment_Style_Category::LANGUAGE;
+      settings.portion.method_options.outside_body_comment.comment.language.style = Comment_Style::BLOCK;
+
+    //newline adjustments on attributes
+    //TODO: fix. clang-format is broken and adding a newline after the return type.  So I can't set these to true.
+    settings.portion.method_options.attributes.method.decl_newlines.after_section_1 = false;
+    settings.portion.method_options.attributes.method.def_newlines.after_section_1 = false;
+    
+    settings.portion.type_options.print_mocks = false;
+    
 	return settings;
 ❱
 
