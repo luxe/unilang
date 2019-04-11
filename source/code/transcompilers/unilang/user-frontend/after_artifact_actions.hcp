@@ -79,8 +79,8 @@ class
     for (auto const& file: files){
         //std::string command = "clang-format -i " + file;
         //execute(command);
-        std::string command = "cat -s " + file + " | sponge " + file;
-        execute(command);
+        //std::string command = "cat -s " + file + " | sponge " + file;
+        //execute(command);
     }
 ❱
 ◀private: static▶ void ☀Possibly_Transfer_Files(Program_Input const& input, std::vector<std::string> const& created_files)❰
@@ -124,8 +124,13 @@ class
 ❱
 ◀private: static▶ std::string ☀Remote_SSh_Execution_Command_Start(Program_Input const& input)❰
     auto specific_user_settings = File_Transfer_Settings_Getter::Get_Pulse_Settings(input.settings.transfer);
-    std::string ssh_command = "ssh " + specific_user_settings.computer_user + "@" + specific_user_settings.computer_name + " ";
-    return ssh_command;
+    
+    //we only ssh if we aren't on the same machine
+    if (!specific_user_settings.same_machine){
+        std::string ssh_command = "ssh " + specific_user_settings.computer_user + "@" + specific_user_settings.computer_name + " ";
+        return ssh_command;
+    }
+    return "";
 ❱
 ◀private: static▶ void ☀Execute_Remote_Program(Program_Input const& input, Remote_Program_Settings const& settings, std::string const& ssh_command, std::string const& file)❰
     

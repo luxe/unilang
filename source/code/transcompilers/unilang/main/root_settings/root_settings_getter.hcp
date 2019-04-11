@@ -40,31 +40,7 @@ class
     //TODO(thickey): customize this after we've derived the target(s).  
     //then we can just build the target(s) instead of the whole repo.
     settings.remote_build.flags = "build //...:all";
-
-    // how to run autofix on the generated code
-    {
-        Remote_Program_Settings remote_program;
-        remote_program.run = true;
-        remote_program.pipe_sponge = false;
-        remote_program.temp_file = false;
-        remote_program.run_from_remote_git_root = true;
-        remote_program.program = "bin/autofix";
-        remote_program.flags = "";
-        settings.remote_programs.emplace_back(remote_program);
-    }
-    
-    //this was some experiment with cat (and sponge)?
-    //we have it off right now
-    {
-        Remote_Program_Settings remote_program;
-        remote_program.run = false;
-        remote_program.pipe_sponge = false;
-        remote_program.temp_file = true;
-        remote_program.run_from_remote_git_root = false;
-        remote_program.program = "cat";
-        remote_program.flags = "-s";
-        settings.remote_programs.emplace_back(remote_program);
-    }
+    settings.remote_programs = Get_Remote_Programs();
     
     //related to frontend parsing
     settings.parser.all_language_tokens = Get_Tokens::Get();
@@ -78,6 +54,38 @@ class
     
     return settings;
 ❱
+
+◀private: static▶ std::vector<Remote_Program_Settings> ☀Get_Remote_Programs() ❰
+    std::vector<Remote_Program_Settings> programs;
+    
+    // how to run autofix on the generated code
+    {
+        Remote_Program_Settings remote_program;
+        remote_program.run = true;
+        remote_program.pipe_sponge = false;
+        remote_program.temp_file = false;
+        remote_program.run_from_remote_git_root = true;
+        remote_program.program = "bin/autofix";
+        remote_program.flags = "";
+        programs.emplace_back(remote_program);
+    }
+    
+    //this was some experiment with cat (and sponge)?
+    //we have it off right now
+    {
+        Remote_Program_Settings remote_program;
+        remote_program.run = false;
+        remote_program.pipe_sponge = false;
+        remote_program.temp_file = true;
+        remote_program.run_from_remote_git_root = false;
+        remote_program.program = "cat";
+        remote_program.flags = "-s";
+        programs.emplace_back(remote_program);
+    }
+    
+    return programs;
+❱
+
 
 ◀private: static▶ Initial_Diagnostics ☀Get_Initial_Diagnostics_Settings() ❰
     Initial_Diagnostics diags;
