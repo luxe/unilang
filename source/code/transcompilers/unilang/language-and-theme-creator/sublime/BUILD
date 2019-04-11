@@ -25,6 +25,15 @@ hcp(name = "reference_file_creator", deps = [
 "//code/utilities/filesystem/paths:lib",
 ])
 
+hcp(name = "settings_file_creator", deps = [
+"//code/transcompilers/unilang/tokens:generic_token",
+"//code/transcompilers/unilang/language-and-theme-creator/sublime:global",
+"//code/transcompilers/unilang/language-and-theme-creator/sublime:shared",
+"//code/utilities/converters:lib",
+"//code/utilities/filesystem/paths:lib",
+"//code/transcompilers/unilang/tokens:get_tokens",
+])
+
 hcp(name = "shared", deps = [
     "//code/utilities/filesystem/paths:lib"
 ])
@@ -41,6 +50,7 @@ hcp(name = "unilang_file_creator", deps = [
 "//code/transcompilers/unilang/language-and-theme-creator/sublime:stylized_reference_file_creator",
 "//code/transcompilers/unilang/language-and-theme-creator/sublime:language_file_creator",
 "//code/transcompilers/unilang/language-and-theme-creator/sublime:theme_file_creator",
+"//code/transcompilers/unilang/language-and-theme-creator/sublime:settings_file_creator",
 "//code/transcompilers/unilang/language-and-theme-creator/sublime:global",
 ])
 

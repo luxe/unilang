@@ -19,6 +19,7 @@ static const std::string INVISIBLE_COLORS = "#FFFFFF";
 //file name paths
 static const std::string THEME_FILE = LANGUAGE_NAME + "/default.tmTheme";
 static const std::string LANGUAGE_FILE = "User/" + LANGUAGE_NAME + ".tmLanguage";
+static const std::string SETTINGS_FILE = "User/" + LANGUAGE_NAME + ".sublime-settings";
 
 //uuid
 static const std::string THEME_UUID = "D8D5E82E-3D5B-46B5-B38E-8C841C21347D";
