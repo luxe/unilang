@@ -13,11 +13,11 @@
 
 
 ## The Next Layer
-Unilang is a **universal programming language (UPL)**.  A UPL was not formally defined prior to the creation of this document.  As an informal definition, envision a UPL as a language abstraction over **general-purpose programming languages (GPLs)**.  The reason this is necessary will become evident upon our analysis of GPLs.  
+Unilang is a **universal programming language (UPL)**.  A UPL was not formally defined prior to the creation of this document.  As an informal definition, envision a UPL as a language abstraction over **general-purpose programming languages (GPLs)**.  The reason this is necessary will become evident upon our analysis of GPLs.  UPLs are a universal encoding for developing software.  
 
 
 ## GPLs Fall Short
-Despite their name, GPLs become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations lead to different languages being chosen under the domain of operation.  A cross-domain problem is commonly solved through a mixture of languages.  Simply put, GPLs have not proven general enough as the solution to all problems.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology less productive for establishing insight and enabling change over time.  
+Despite their name, GPLs become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations lead to different languages being chosen for the domain of operation.  A cross-domain problem is commonly solved through a mixture of languages.  Simply put, GPLs have not proven general enough as the solution to all problems.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology less productive for establishing insight and enabling change over time.  
 
 
 ## Skepticism
@@ -27,7 +27,7 @@ If Unilang were designed in the traditional way that GPLs are, this would be tru
 
 
 ## Greater Scope
-The design and implementation of Unilang is built with particular language philosophies in mind.  This overview will discuss some of these main ideas first in order to build the foundation for the rest of Unilang.  Unilang will also described in the context of software engineering.  
+The design and implementation of Unilang is built with particular language philosophies in mind.  This overview will discuss some of these main ideas first in order to build the foundation for the rest of Unilang.  Unilang will also be described in the context of software engineering.  
 
 A primary focus when first introducing Unilang is a discussion around **encoded information** and **software-related artifacts**.  What do we encode for software and what are the resulting software artifacts?  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations, scope, and enforced structure of individual tools.  Additionally, the effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  The technical aspects of making this feasible are discussed later.  We will compare it to other programming languages to show the similarities and key differences between them.  The key take-away from this comparison is that Unilang is not competing with other programming languages.  It embraces all of them in its own implementation.  By supporting more and more languages as an output, unilang can extract out paradigms and concepts universal to programing, and prove its genericness through other language toolchains.  
 

@@ -33,8 +33,59 @@ class
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Protocol_Buffer_Export_Settings const& settings)❰
     
-    std::vector<std::string> files;
+    return Create_Output_Folder_With_All_The_Generated_Data(structure,settings);
+❱
+
+◀private: static▶ std::vector<std::string> ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, Protocol_Buffer_Export_Settings const& settings)❰
     
-    return files;
+    //force structure changes
+    //TODO: we need to store adjustment phases.  Different tools might want the structure
+    //at different phases in its transition.  For now, and this is a hack, I'll make a copy
+    //for the test wrapper
+    Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::PROTOCOLBUFFERS);
+    
+    return Create_Source_Files(structure,settings);
+❱
+
+◀private: static▶ std::vector<std::string> ☀Create_Source_Files(Structure structure, Protocol_Buffer_Export_Settings const& settings)❰
+
+    std::vector<std::string> created_files;
+    created_files.emplace_back(Create_File(structure,settings));
+    return created_files;
+❱
+
+◀private: static▶ std::string ☀Create_File(Structure structure, Protocol_Buffer_Export_Settings const& settings)❰
+
+    //create file settings for PROTOCOLBUFFERS data file
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::PROTOCOLBUFFERS;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::DATA;
+    
+    //create stream of PROTOCOLBUFFERS file
+    //ASSUMES THE UNILANG AND REGULAR REPO ARE MIRRORED IN DIRCTORY STRUCTURE ACROSS MACHINES
+    auto out = Create_Stream_And_Print_Everything(structure,settings,file_settings);
+    out.close();
+    
+    return File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
+❱
+
+◀private: static▶ std::wofstream ☀Create_Stream_And_Print_Everything(Structure const& structure, Protocol_Buffer_Export_Settings const& options,Export_File_Settings const& file_settings)❰
+
+    auto out = Stream_Creator::Get_Stream(file_settings,structure,options.general.filesystem_naming);
+    
+    //create the final file name that the stream is set to (possible used by boilerplate comments)
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,options.general.filesystem_naming);
+    
+    //print the giant meta block
+    Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,options.portion.meta,final_file_name);
+    Print_To_Stream_With_Newline(out,"");
+    //Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get(),Source_Language::PROTOCOLBUFFERS);
+    Namespace_Printer::Print_Namespace(out,structure.namespaces,options.portion.namespace_options);
+    Enum_Section_Printer::Print_Interface_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options.general,options.portion);
+    Struct_Printer::Print_Structs(out,structure.data_members,structure.types,options.general,options.portion);
+    Code_Wrap_Printer::Print_Doxygen_Group_End_Markers(out,structure.meta,options.portion.meta);
+    return out;
 ❱
 
