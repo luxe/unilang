@@ -20,13 +20,13 @@ class
     out << as_wstring(Get_Top_Comment(structure,file_settings,options.portion.meta,final_file_name));
     
     //include guards
-    Print_Include_Guard_Begin_If_Type_Allows(out,file_settings,structure,options);
+    out << as_wstring(Print_Include_Guard_Begin_If_Type_Allows(file_settings,structure,options));
     
     //headers
     Print_Headers_Based_On_Type(out,structure,options,file_settings);
     
     //start extern guard
-    Print_Extern_Guard_Begin_If_Type_Allows(out,file_settings,options);
+    //out << as_wstring(Print_Extern_Guard_Begin_If_Type_Allows(file_settings,options));
 ❱
 
 ◀public: static▶ std::string ☀Get_Top_Comment(Structure const& structure, Export_File_Settings const& file_settings, Meta_Options const& meta, std::string const& final_file_name)❰
@@ -44,7 +44,7 @@ class
     Print_Extern_Guard_End_If_Type_Allows(out,file_settings,options);
     
     //include guard
-    Print_Include_Guard_End_If_Type_Allows(out,file_settings,structure,options);
+    out << as_wstring(Print_Include_Guard_End_If_Type_Allows(file_settings,structure,options));
     
     //doxygen group end comment marker
     Code_Wrap_Printer::Print_Doxygen_Group_End_Markers(out,structure.meta,options.portion.meta);
@@ -53,18 +53,20 @@ class
 ❱
 
 
-◀private: static▶ void ☀Print_Include_Guard_Begin_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+◀private: static▶ std::string ☀Print_Include_Guard_Begin_If_Type_Allows(Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
     if (Can_Print_Include_Guard_Based_On_Type(file_settings)){
         auto file_append = Get_File_Append_From_Type(file_settings);
-        Include_Guard_Wrap_Printer::Print_Beginning_Of_Header_Include_Guard(structure.name+file_append,out,options.portion.guard_options);
+        return Include_Guard_Wrap_Printer::Print_Beginning_Of_Header_Include_Guard(structure.name+file_append,options.portion.guard_options);
     }
+    return "";
 ❱
 
-◀private: static▶ void ☀Print_Include_Guard_End_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
+◀private: static▶ std::string ☀Print_Include_Guard_End_If_Type_Allows(Export_File_Settings const& file_settings, Structure const& structure, C_Export_Settings const& options)❰
     if (Can_Print_Include_Guard_Based_On_Type(file_settings)){
         auto file_append = Get_File_Append_From_Type(file_settings);
-        Include_Guard_Wrap_Printer::Print_End_Of_Header_Include_Guard(structure.name+file_append,out,options.portion.guard_options);
+        return Include_Guard_Wrap_Printer::Print_End_Of_Header_Include_Guard(structure.name+file_append,options.portion.guard_options);
     }
+    return "";
 ❱
 
 ◀private: static▶ void ☀Print_Extern_Guard_Begin_If_Type_Allows(std::wofstream & out, Export_File_Settings const& file_settings, C_Export_Settings const& options)❰
