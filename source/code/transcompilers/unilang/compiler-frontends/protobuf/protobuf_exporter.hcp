@@ -81,6 +81,8 @@ class
     //print the giant meta block
     Boilerplate_Printer::Print_Top_Comment(out,structure,file_settings,options.portion.meta,final_file_name);
     Print_To_Stream_With_Newline(out,"");
+    Print_To_Stream_With_Newline(out,Get_Protobuf_Syntax(options));
+    
     //Header_Printer::Print_Object_Data_Headers(structure.name,out,structure.imports.interface_dependencies,options,structure.inlined_structures.get(),Source_Language::PROTOCOLBUFFERS);
     Namespace_Printer::Print_Namespace(out,structure.namespaces,options.portion.namespace_options);
     Enum_Section_Printer::Print_Interface_Enums(out,structure.enums.enumerated_types,options.portion.enum_options,options.general,options.portion);
@@ -88,4 +90,23 @@ class
     Code_Wrap_Printer::Print_Doxygen_Group_End_Markers(out,structure.meta,options.portion.meta);
     return out;
 ❱
+
+◀private: static▶ std::string ☀Get_Protobuf_Syntax(Protocol_Buffer_Export_Settings const& settings)❰
+    std::string syntax_str;
+    
+    syntax_str += settings.language.version.syntax_keyword;
+    syntax_str += settings.language.version.assignment;
+
+
+    if (settings.language.version.number == Protocol_Buffer_Version_Number::PROTO2){
+        syntax_str += settings.language.version.proto2_syntax_name;
+    }
+    else if (settings.language.version.number == Protocol_Buffer_Version_Number::PROTO3){
+        syntax_str += settings.language.version.proto3_syntax_name;
+    }
+    syntax_str += settings.language.version.delmin;
+    
+    return syntax_str;
+❱
+
 
