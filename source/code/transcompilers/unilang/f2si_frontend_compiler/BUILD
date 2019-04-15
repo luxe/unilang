@@ -35,6 +35,7 @@ hcp(name = "uber_contributors_getter", deps = [
 
 hcp(name = "bazel_options_getter", deps = [
     "//code/transcompilers/unilang/options/bazel:build_rule_settings",
+    "//code/utilities/life:company_getter"
 ])
 
 hcp(name = "file_transferer", deps = [
