@@ -27,6 +27,8 @@ hcp(name = "protobuf_exporter", deps = [
 "//code/utilities/types/vectors/transformers:lib",
 "//code/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
 "//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/types/strings/transformers/other:lib",
+"//code/utilities/types/char:lib",
 ])
 
 hcp(name = "protobuf_options_getter", deps = [
