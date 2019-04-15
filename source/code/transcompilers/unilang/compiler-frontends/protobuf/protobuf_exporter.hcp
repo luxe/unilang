@@ -33,12 +33,12 @@ class
 ❪"code/utilities/types/char/lib"❫
 ⚞⚟
 
-◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Protocol_Buffer_Export_Settings const& settings)❰
+◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Protocol_Buffer_Export_Settings const& settings, std::string const& dir)❰
     
-    return Create_Output_Folder_With_All_The_Generated_Data(structure,settings);
+    return Create_Output_Folder_With_All_The_Generated_Data(structure,settings,dir);
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, Protocol_Buffer_Export_Settings const& settings)❰
+◀private: static▶ std::vector<std::string> ☀Create_Output_Folder_With_All_The_Generated_Data(Structure structure, Protocol_Buffer_Export_Settings const& settings, std::string const& dir)❰
     
     //force structure changes
     //TODO: we need to store adjustment phases.  Different tools might want the structure
@@ -46,17 +46,17 @@ class
     //for the test wrapper
     Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::PROTOCOLBUFFERS);
     
-    return Create_Source_Files(structure,settings);
+    return Create_Source_Files(structure,settings,dir);
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Create_Source_Files(Structure structure, Protocol_Buffer_Export_Settings const& settings)❰
+◀private: static▶ std::vector<std::string> ☀Create_Source_Files(Structure structure, Protocol_Buffer_Export_Settings const& settings, std::string const& dir)❰
 
     std::vector<std::string> created_files;
-    created_files.emplace_back(Create_File(structure,settings));
+    created_files.emplace_back(Create_File(structure,settings,dir));
     return created_files;
 ❱
 
-◀private: static▶ std::string ☀Create_File(Structure structure, Protocol_Buffer_Export_Settings const& settings)❰
+◀private: static▶ std::string ☀Create_File(Structure structure, Protocol_Buffer_Export_Settings const& settings, std::string const& dir)❰
 
     //create file settings for PROTOCOLBUFFERS data file
     Export_File_Settings file_settings;
@@ -64,6 +64,8 @@ class
     file_settings.code = Code_Type::GLOBAL;
     file_settings.special = Special_File_Type::NORMAL;
     file_settings.file = File_Type::DATA;
+    file_settings.path.preappend_path = true;
+    file_settings.path.preappended_path = dir;
     
     //create stream of PROTOCOLBUFFERS file
     //ASSUMES THE UNILANG AND REGULAR REPO ARE MIRRORED IN DIRCTORY STRUCTURE ACROSS MACHINES
