@@ -36,4 +36,5 @@ hcp(name = "protobuf_options_getter", deps = [
 "//code/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/transcompilers/unilang/structure/model:structure",
 "//code/utilities/exits:lib",
+"//code/utilities/life:company_getter",
 ])

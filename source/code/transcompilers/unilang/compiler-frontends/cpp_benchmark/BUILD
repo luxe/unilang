@@ -30,6 +30,7 @@ hcp(name = "cpp_benchmark_options_getter", deps = [
 "//code/utilities/exits:lib",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/structure/print/filename:file_name_getter",
+"//code/utilities/life:company_getter",
 ])
 
 hcp(name = "benchmark_coverage_summary_getter", deps = [
