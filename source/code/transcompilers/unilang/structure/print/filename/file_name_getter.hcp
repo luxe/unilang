@@ -14,13 +14,17 @@ class
 
 ◀public: static▶ std::string ☀Get(Export_File_Settings const& file_settings, std::string const& raw_file_name, General_Filesystem_Naming const& naming_settings)❰
 
+    std::string file_name = "code";
     switch (file_settings.code){
-        case Code_Type::GLOBAL:        return Get_From_Code_Type(file_settings,raw_file_name,naming_settings,naming_settings.suffix.global);
-        case Code_Type::SUM_TYPE:      return Get_From_Code_Type(file_settings,raw_file_name,naming_settings,naming_settings.suffix.sum);
-        case Code_Type::PRODUCT_TYPE:  return Get_From_Code_Type(file_settings,raw_file_name,naming_settings,naming_settings.suffix.product);
+        case Code_Type::GLOBAL:        file_name = Get_From_Code_Type(file_settings,raw_file_name,naming_settings,naming_settings.suffix.global); break;
+        case Code_Type::SUM_TYPE:      file_name = Get_From_Code_Type(file_settings,raw_file_name,naming_settings,naming_settings.suffix.sum); break;
+        case Code_Type::PRODUCT_TYPE:  file_name = Get_From_Code_Type(file_settings,raw_file_name,naming_settings,naming_settings.suffix.product); break;
+        default: Print_Error_Message_And_Return_Nothing("invalid code type");
     }
     
-    return Print_Error_Message_And_Return_Nothing("invalid code type");
+    Possibly_Append_A_Path(file_name,file_settings);
+    
+    return file_name;
 ❱
 
 ◀private: static▶ std::string ☀Get_From_Code_Type(Export_File_Settings const& file_settings, std::string const& raw_file_name, General_Filesystem_Naming const& naming_settings, Filetype_Suffix_Settings const& suffix_settings)❰
@@ -54,4 +58,11 @@ class
 ◀private: static▶ std::string ☀Print_Error_Message_And_Return_Nothing(std::string const& error_message)❰
     std::cerr << error_message << std::endl;
     return "";
+❱
+
+◀private: static▶ void ☀Possibly_Append_A_Path(std::string & file_path, Export_File_Settings const& file_settings)❰
+
+    if (file_settings.path.preappend_path){
+        file_path = file_settings.path.preappended_path + "/" + file_path;
+    }
 ❱
