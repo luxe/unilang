@@ -17,7 +17,7 @@ class
 ◀public: static▶ void ☀Print_Begin(std::wofstream & out, Structure const& structure, Export_File_Settings const& file_settings, C_Export_Settings const& options, std::string const& final_file_name)❰
     
     //top comment
-    Print_Top_Comment(out,structure,file_settings,options.portion.meta,final_file_name);
+    out << as_wstring(Get_Top_Comment(structure,file_settings,options.portion.meta,final_file_name));
     
     //include guards
     Print_Include_Guard_Begin_If_Type_Allows(out,file_settings,structure,options);
@@ -29,12 +29,13 @@ class
     Print_Extern_Guard_Begin_If_Type_Allows(out,file_settings,options);
 ❱
 
-◀public: static▶ void ☀Print_Top_Comment(std::wofstream & out, Structure const& structure, Export_File_Settings const& file_settings, Meta_Options const& meta, std::string const& final_file_name)❰
+◀public: static▶ std::string ☀Get_Top_Comment(Structure const& structure, Export_File_Settings const& file_settings, Meta_Options const& meta, std::string const& final_file_name)❰
     
-//top comment
+    //top comment
     auto contains_data = !structure.data_members.data_members.empty();
     auto contains_methods = !structure.methods.methods.empty();
-    Meta_Block_Printer::Print(structure.name,out,file_settings,structure.meta,meta,contains_data,contains_methods,final_file_name);
+    auto top_comment = Meta_Block_Printer::Get(structure.name,file_settings,structure.meta,meta,contains_data,contains_methods,final_file_name);
+    return top_comment;
 ❱
 
 ◀public: static▶ void ☀Print_End(std::wofstream & out, Structure const& structure, Export_File_Settings const& file_settings, C_Export_Settings const& options)❰
