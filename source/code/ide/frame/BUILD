@@ -3,6 +3,23 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
+enum_cpp(
+    name = "text_box_action",
+    values = [
+    "navigate_forward",
+    "navigate_backward",
+    "select_forward",
+    "select_backward",
+    "add_chars",
+    "backspace",
+    "select_all",
+    "copy",
+    "paste",
+    "delete",
+    "none",
+    ]
+)
+
 hcp(
     name = "frame_renderer",
     deps = ["@imgui//:imgui_sdl_opengl3",
@@ -68,20 +85,3 @@ hcp(name = "text_box_action_decider", deps = [
     "//code/ide/frame:text_box_action",
     "//code/utilities/keyboard:key_detector",
 ])
-
-enum_cpp(
-    name = "text_box_action",
-    values = [
-    "navigate_forward",
-    "navigate_backward",
-    "select_forward",
-    "select_backward",
-    "add_chars",
-    "backspace",
-    "select_all",
-    "copy",
-    "paste",
-    "delete",
-    "none",
-    ]
-)
