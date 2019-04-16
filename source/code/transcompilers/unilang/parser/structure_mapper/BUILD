@@ -31,4 +31,5 @@ hcp(name = "code_object_creator", deps = [
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/transcompilers/unilang/structure/model:inlined_structures",
 "//code/transcompilers/unilang/options/parser:parser_settings",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
