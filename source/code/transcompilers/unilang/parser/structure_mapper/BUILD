@@ -14,6 +14,7 @@ hcp(name = "stamp_expander", deps = [
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/types/strings/transformers/search_replace:lib",
 "//code/transcompilers/unilang/options/parser:parser_settings",
+"//code/utilities/types/vectors/observers:lib",
 ])
 
 hcp(name = "code_object_creator", deps = [

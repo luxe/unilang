@@ -1,4 +1,5 @@
 #include <locale>
+#include <iostream>
 #include "code/transcompilers/unilang/main/program_options/program_options_creator.hpp"
 #include "code/transcompilers/unilang/main/root_exception_handler.hpp"
 #include "code/transcompilers/unilang/main/composed_program_options/composed_program_options.hpp"
@@ -28,7 +29,6 @@ int main(int const argc, char** const argv) {
     
     //sets up, runs program, and directs all uncaught exceptions to a generated root exception handler
     Setup_And_Run_Program_Wrapped_In_Generated_Exception_Catcher(argc,argv);
-    
     //exit successfully (assuming we didn't bail out)
     return EXIT_SUCCESS;
 }
