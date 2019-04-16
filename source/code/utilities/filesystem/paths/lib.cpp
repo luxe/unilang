@@ -139,8 +139,11 @@ std::string Get_Path_Of_Directory_After_Desktop()
 	return Get_Path_Of_Directory_After_Found_Folder("Desktop");
 }
 std::string Full_Path_To_Home(){
-	std::string dir = getenv("HOME");
-	return dir;
+	auto home = getenv("HOME");
+	if (home){
+		return home;
+	}
+	return "";
 }
 std::string Full_Path_To_Desktop(){
 	auto dir = Full_Path_To_Home();
