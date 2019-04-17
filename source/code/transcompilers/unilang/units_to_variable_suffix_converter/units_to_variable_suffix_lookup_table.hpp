@@ -3,6 +3,7 @@
 #include <string>
 #include <unordered_map>
 
+//TODO: include measurement information LENGTH,VELOCITY, etc
 static const std::unordered_map<std::string,std::string> UNITS_TO_VARIABLE_SUFFIX_LOOKUP_TABLE
 
   //length
