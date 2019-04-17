@@ -9,3 +9,6 @@ hcp(name = "bazel_conversion_test", deps = [
 hcp(name = "bazel_conversion_tests", deps = [
 "//code/bazel_refresh/conversion_test:bazel_conversion_test",
 ])
+
+hcp(name = "bazel_conversion_test_file_contents", deps = [
+])
