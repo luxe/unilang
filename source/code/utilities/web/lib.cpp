@@ -55,3 +55,27 @@ void Send_Email(std::string const& message, std::string const& email)
 {
 	execute("echo \"" + message + "\" | mail \"" + email + "\"");
 }
+
+
+int Website_Response_Code(std::string const& url){
+  CURL *curl = curl_easy_init();
+  long response_code = 0;
+  if(curl) {
+    CURLcode res;
+    curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+    res = curl_easy_perform(curl);
+    if(res == CURLE_OK) {
+      curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &response_code);
+    }
+    curl_easy_cleanup(curl);
+  }
+  
+  return response_code;
+}
+
+bool Is_Url_Reponse_200(std::string const& url){
+  if (Website_Response_Code(url) == 200){
+    return true;
+  }
+  return false;
+}
