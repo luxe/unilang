@@ -28,6 +28,9 @@ values =
 ,"protobuf"
 ,"thrift"
 
+#DSLs
+#...
+
 #Documentation
 ,"markdown"
 ,"plant_uml"
