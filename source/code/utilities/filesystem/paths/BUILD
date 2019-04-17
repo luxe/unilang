@@ -26,3 +26,15 @@ cc_binary(
   srcs = ["current_path.cpp"],
   deps = ["//code/utilities/filesystem/paths:lib"]
 )
+
+cc_binary(
+  name = "bazel_workspace_directory",
+  srcs = ["bazel_workspace_directory.cpp"],
+  deps = ["//code/utilities/filesystem/paths:lib"]
+)
+
+cc_binary(
+  name = "bazel_derived_root",
+  srcs = ["bazel_derived_root.cpp"],
+  deps = ["//code/utilities/filesystem/paths:lib"]
+)

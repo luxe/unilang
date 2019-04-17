@@ -9,6 +9,32 @@
 #include <pwd.h>
 #include "boost/range/adaptor/reversed.hpp"
 
+// bazel derived
+std::string Bazel_Working_Directory(){
+	auto x = getenv("BUILD_WORKING_DIRECTORY");
+	if (x){
+		return x;
+	}
+	return "";
+}
+std::string Bazel_Workspace_Directory(){
+	auto x = getenv("BUILD_WORKSPACE_DIRECTORY");
+	if (x){
+		return x;
+	}
+	return "";
+}
+
+std::string Bazel_Derived_Root_Of_Repo(){
+	auto x = Bazel_Workspace_Directory();
+	x.erase(x.length()-std::string("source").size());
+	return x;
+}
+std::string Bazel_Derived_Path_To_Self_Unilang(){
+	auto x = Bazel_Workspace_Directory();
+	return x + "/code/external_projects/self/";
+}
+
 //+---------------------------------------+
 //| changing path / traversing filesystem |
 //+---------------------------------------+

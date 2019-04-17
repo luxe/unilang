@@ -6,6 +6,13 @@
 
 //filesystem stuff
 
+
+// bazel derived
+std::string Bazel_Working_Directory();
+std::string Bazel_Workspace_Directory();
+std::string Bazel_Derived_Root_Of_Repo();
+std::string Bazel_Derived_Path_To_Self_Unilang();
+
 //+---------------------------------------+
 //| changing path / traversing filesystem |
 //+---------------------------------------+
