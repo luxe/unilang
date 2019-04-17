@@ -13,10 +13,10 @@
 
 
 ## GPLs Fall Short
-Despite their name, **general-purpose programming languages (GPLs)** become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations of the problem space lead to different languages being chosen.  A cross-domain problem is commonly solved through a mixture of languages.  Under such circumstances, individual GPLs have not proven general enough as the solution to all problems.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology to be less productive for establishing insight and enabling change over time.  It is better to have the entire problem space of software encoded from in same unifying model.  A unifying language can operate as a transcompiler to other existing GPLs.  
+Despite their name, **general-purpose programming languages (GPLs)** have become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations of the problem space lead to different languages being chosen.  A cross-domain problem is commonly solved through a mixture of languages.  Under such circumstances, individual GPLs have not proven general enough as the solution to all problems.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology to be less productive for establishing insight and enabling change over time.  It is better to have the entire problem space of software encoded from in same unifying model.  A unifying language can operate as a transcompiler to other existing GPLs.  
 
 
-## The Next Abstraction
+## The Next Layer
 Unilang is a **universal programming language (UPL)**.  A UPL has not been formally defined prior to the creation of this document.  As an informal definition, envision a UPL as a language abstraction over GPLs.  UPLs are a universal encoding for developing software.  
 
 
