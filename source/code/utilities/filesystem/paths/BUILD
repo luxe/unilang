@@ -20,3 +20,9 @@ cc_binary(
   srcs = ["path_to_desktop.cpp"],
   deps = ["//code/utilities/filesystem/paths:lib"]
 )
+
+cc_binary(
+  name = "current_path",
+  srcs = ["current_path.cpp"],
+  deps = ["//code/utilities/filesystem/paths:lib"]
+)

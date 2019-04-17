@@ -7,3 +7,6 @@ std::string whoami(){
 std::string hostname(){
     return execute("hostname");
 }
+std::string env(){
+    return execute("env");
+}

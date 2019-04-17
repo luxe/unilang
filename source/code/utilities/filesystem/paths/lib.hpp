@@ -4,7 +4,6 @@
 #include "boost/filesystem.hpp"
 #include "code/utilities/shell/lib.hpp"
 
-
 //filesystem stuff
 
 //+---------------------------------------+

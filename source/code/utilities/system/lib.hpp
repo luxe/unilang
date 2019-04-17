@@ -3,3 +3,4 @@
 
 std::string whoami();
 std::string hostname();
+std::string env();

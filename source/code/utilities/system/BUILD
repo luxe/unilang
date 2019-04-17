@@ -8,3 +8,9 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = ["//code/utilities/shell:lib"]
 )
+
+cc_binary(
+  name = "env",
+  srcs = ["env.cpp"],
+  deps = ["//code/utilities/system:lib"]
+)
