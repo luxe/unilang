@@ -13,11 +13,7 @@
 
 
 ## GPLs Fall Short
-<<<<<<< HEAD
-Despite their name, **general-purpose programming languages (GPLs)** have become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations of the problem space lead to different languages being chosen.  A cross-domain problem is commonly solved through a mixture of languages.  Under such circumstances, individual GPLs have not proven general enough as the solution to all problems.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology to be less productive for establishing insight and enabling change over time.  It is better to have the entire problem space of software encoded from in same unifying model.  A unifying language can operate as a transcompiler to other existing GPLs.  
-=======
 Despite their name, **general-purpose programming languages (GPLs)** have become commonly associated with specific niches across different programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations of the problem space lead to different languages being chosen.  A cross-domain problem is commonly solved through a mixture of languages.  Under such circumstances, individual GPLs have not proven general enough as the solution to the entire problem space.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology to be less productive for establishing insight and enabling change over time.  It is better to have the entire problem space of software encoded from the same unifying model.  A unifying language can operate as a transcompiler to other existing GPLs.  
->>>>>>>  updates
 
 
 ## The Next Layer
@@ -32,7 +28,7 @@ Creating a language that could properly be the right choice for every programmin
 A primary focus when first introducing Unilang is a discussion around **encoded information** and **software-related artifacts**.  What do we encode for software and what are the resulting software artifacts?  We discuss what engineers need to encode while working in a problem domain, and what products should come from such an encoding.  A conclusion is made that engineers are not encoding everything necessary due to the limitations, scope, and enforced structure of individual tools.  Additionally, the effect of not having a universal encoding results in multiple encodings across different languages which makes maintenance less feasible over time.  An argument is made that more concepts related to software must be semantically encoded at the language level.  The technical aspects of making this feasible are discussed later.  We will compare it to other programming languages to show the similarities and key differences between them.  The key take-away from this comparison is that Unilang is not competing with other programming languages.  It embraces all of them in its own implementation.  By supporting more and more languages as an output, unilang can extract out paradigms and concepts universal to programing, and prove its genericness through other language toolchains.  
 
 
-## Scope
+## Full Scope
 Let's start by getting you acquainted with the big picture.  Unilang is a tool for writing software.  And like all tools in software, it takes an input and produces an output.  The scope of Unilang's throughput however is ambitious.  Everything a software engineer can express around a problem domain must be encoded in the same ontology.  We find this necessary in maximizing our current understanding of the problem domain, and adapting to its change over time.  The output of this ontology is every chosen artifact that facilitates desired tasks in that domain.  From a programming perspective, we unify all formal and informal languages involved around software.  This information is then encoded as a single abstract data model which is used to create various artifacts.  
 ![very high level overview of Unilang](.readme/unilang_overview.png "")
 
@@ -48,7 +44,7 @@ There are many other types of artifacts that should be created alongside softwar
 In fact, what you are reading now was generated from Unilang.  
 
 
-## Continued Motivation
+## Motivation
 The motivation behind Unilang has grown organically while working as a software engineer.  It serves a purpose both practical and personal while working in the industry.  Some of it has been designed to help within a professional context.  Other parts have been designed around the personal/hobby context.  In this section we will cover the specific motivations around Unilang.  
 
 
