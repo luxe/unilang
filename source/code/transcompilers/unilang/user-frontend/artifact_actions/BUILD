@@ -5,7 +5,13 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 enum_cpp(name = "artifact_type",
 values = 
-["c"
+[
+
+#UPLs
+"unilang"
+
+#GPLs
+,"c"
 ,"cpp"
 ,"cpp_test"
 ,"cpp_benchmark"
@@ -16,15 +22,20 @@ values =
 ,"processing"
 ,"date"
 ,"bazel"
+
+#IDLs
 ,"hidl"
 ,"protobuf"
+,"thrift"
+
+#Documentation
+,"markdown"
 ,"plant_uml"
 ,"call_graph"
 ,"html_table"
 ,"treesheets"
 ,"graph_easy"
 ,"mermaid"
-,"markdown"
 ])
 
 hcp(name = "artifact_guesser", deps = [

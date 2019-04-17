@@ -3,29 +3,6 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-enum_cpp(name = "artifact_type",
-values = 
-["c"
-,"cpp"
-,"cpp_test"
-,"cpp_benchmark"
-,"cpp_fuzz"
-,"csharp"
-,"d"
-,"rust"
-,"processing"
-,"date"
-,"bazel"
-,"hidl"
-,"protobuf"
-,"plant_uml"
-,"call_graph"
-,"html_table"
-,"treesheets"
-,"graph_easy"
-,"mermaid"
-])
-
 hcp(name = "fully_read_file", deps = [
 "//code/utilities/streams/filestreams/read_all:lib"
 ])

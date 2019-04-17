@@ -26,4 +26,5 @@ hcp(name = "compiler", deps = [
 "//code/transcompilers/unilang/compiler-frontends/date:date_exporter",
 "//code/transcompilers/unilang/compiler-frontends/c:c_exporter",
 "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_exporter",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
 ])
