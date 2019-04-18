@@ -12,7 +12,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/transcompilers/unilang/tokens:get_tokens",
-"//code/transcompilers/unilang/tokens:unique_tokens_checker",
+"//code/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker",
 "//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font_creator"
 ])
 
