@@ -22,5 +22,5 @@ hcp(name = "readme_creator", deps = [
 cc_binary(
     name = "bazel_refresh",
     srcs = ["main.cc"],
-    deps = ["//code/bazel_refresh:bazel_refresher"],
+    deps = ["//code/bazel_refresh:bazel_refresher","//code/utilities/locale:lib"],
 )
