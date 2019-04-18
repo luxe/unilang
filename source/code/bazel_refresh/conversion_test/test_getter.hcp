@@ -2,29 +2,33 @@ class
 ❪string❫
 ❪vector❫
 ❪"code/bazel_refresh/conversion_test/bazel_conversion_tests"❫
+❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ⚯
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/transcompilers/unilang/tokens/builder/token_builder"❫
 ⚞⚟
 
 
 ◀public: static▶ Bazel_Conversion_Tests ☀Create_All_Bazel_Tests()❰
     Bazel_Conversion_Tests x;
-    x.tests.emplace_back(Empty_File_Unilang_To_Protobuf());
-    x.tests.emplace_back(Empty_File_Unilang_To_Protobuf_To_Cpp_Object());
-    x.tests.emplace_back(Empty_Global_Unilang_To_Protobuf());
-    x.tests.emplace_back(Empty_Global_Unilang_To_Protobuf_To_Cpp_Object());
-    x.tests.emplace_back(Empty_Product_Unilang_To_Protobuf());
-    x.tests.emplace_back(Empty_Product_Unilang_To_Protobuf_To_Cpp_Object());
-    x.tests.emplace_back(Empty_Sum_Unilang_To_Protobuf());
-    x.tests.emplace_back(Empty_Sum_Unilang_To_Protobuf_To_Cpp_Object());
+    
+    auto tokens = Get_Tokens::Get();
+    
+    x.tests.emplace_back(Empty_File_Unilang_To_Protobuf(tokens));
+    x.tests.emplace_back(Empty_File_Unilang_To_Protobuf_To_Cpp_Object(tokens));
+    x.tests.emplace_back(Empty_Global_Unilang_To_Protobuf(tokens));
+    x.tests.emplace_back(Empty_Global_Unilang_To_Protobuf_To_Cpp_Object(tokens));
+    x.tests.emplace_back(Empty_Product_Unilang_To_Protobuf(tokens));
+    x.tests.emplace_back(Empty_Product_Unilang_To_Protobuf_To_Cpp_Object(tokens));
+    x.tests.emplace_back(Empty_Sum_Unilang_To_Protobuf(tokens));
+    x.tests.emplace_back(Empty_Sum_Unilang_To_Protobuf_To_Cpp_Object(tokens));
     return x;
 ❱
-◀private: static▶ Bazel_Conversion_Test ☀Empty_File_Unilang_To_Protobuf()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_File_Unilang_To_Protobuf(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("file");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -37,11 +41,9 @@ unilang_to_protobuf(
 )RAW_LITERAL";
     return test;
 ❱
-◀private: static▶ Bazel_Conversion_Test ☀Empty_File_Unilang_To_Protobuf_To_Cpp_Object()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_File_Unilang_To_Protobuf_To_Cpp_Object(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
-    test.transcompilation_chain.emplace_back(Artifact_Type::CPP);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("file");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -55,10 +57,9 @@ unilang_to_protobuf_to_cpp(
     return test;
 ❱
 
-◀private: static▶ Bazel_Conversion_Test ☀Empty_Global_Unilang_To_Protobuf()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Global_Unilang_To_Protobuf(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("global");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -71,11 +72,9 @@ unilang_to_protobuf(
 )RAW_LITERAL";
     return test;
 ❱
-◀private: static▶ Bazel_Conversion_Test ☀Empty_Global_Unilang_To_Protobuf_To_Cpp_Object()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Global_Unilang_To_Protobuf_To_Cpp_Object(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
-    test.transcompilation_chain.emplace_back(Artifact_Type::CPP);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("global");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -90,10 +89,9 @@ unilang_to_protobuf_to_cpp(
 ❱
 
 
-◀private: static▶ Bazel_Conversion_Test ☀Empty_Product_Unilang_To_Protobuf()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Product_Unilang_To_Protobuf(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("product");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -106,11 +104,9 @@ unilang_to_protobuf(
 )RAW_LITERAL";
     return test;
 ❱
-◀private: static▶ Bazel_Conversion_Test ☀Empty_Product_Unilang_To_Protobuf_To_Cpp_Object()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Product_Unilang_To_Protobuf_To_Cpp_Object(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
-    test.transcompilation_chain.emplace_back(Artifact_Type::CPP);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("product");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -124,10 +120,9 @@ unilang_to_protobuf_to_cpp(
     return test;
 ❱
 
-◀private: static▶ Bazel_Conversion_Test ☀Empty_Sum_Unilang_To_Protobuf()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Sum_Unilang_To_Protobuf(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("sum");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -140,11 +135,9 @@ unilang_to_protobuf(
 )RAW_LITERAL";
     return test;
 ❱
-◀private: static▶ Bazel_Conversion_Test ☀Empty_Sum_Unilang_To_Protobuf_To_Cpp_Object()❰
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Sum_Unilang_To_Protobuf_To_Cpp_Object(All_Language_Tokens const& all_tokens)❰
     Bazel_Conversion_Test test;
-    test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
-    test.transcompilation_chain.emplace_back(Artifact_Type::PROTOBUF);
-    test.transcompilation_chain.emplace_back(Artifact_Type::CPP);
+    test.transcompilation_chain = Transcompilation_Chain_Unilang_Protobuf_Cpp();
     test.feature_categorization.emplace_back("empty");
     test.feature_categorization.emplace_back("sum");
     test.contents.source_contents = LR"RAW_LITERAL()RAW_LITERAL";
@@ -159,4 +152,37 @@ unilang_to_protobuf_to_cpp(
 ❱
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//utility
+◀private: static▶ std::vector<Artifact_Type> ☀Transcompilation_Chain_Unilang_Protobuf()❰
+    std::vector<Artifact_Type> artifacts;
+    artifacts.emplace_back(Artifact_Type::UNILANG);
+    artifacts.emplace_back(Artifact_Type::PROTOBUF);
+    return artifacts;
+❱
+◀private: static▶ std::vector<Artifact_Type> ☀Transcompilation_Chain_Unilang_Protobuf_Cpp()❰
+    std::vector<Artifact_Type> artifacts;
+    artifacts.emplace_back(Artifact_Type::UNILANG);
+    artifacts.emplace_back(Artifact_Type::PROTOBUF);
+    artifacts.emplace_back(Artifact_Type::CPP);
+    return artifacts;
+❱
 

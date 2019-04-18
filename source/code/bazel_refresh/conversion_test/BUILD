@@ -19,4 +19,6 @@ hcp(name = "test_getter", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/filesystem/files/creating:lib",
 "//code/utilities/types/strings/transformers/appending:lib",
+"//code/transcompilers/unilang/tokens/builder:token_builder",
+"//code/transcompilers/unilang/tokens:get_tokens",
 ])
