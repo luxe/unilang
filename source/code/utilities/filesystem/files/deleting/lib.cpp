@@ -79,7 +79,6 @@ void Delete_Files_That_Exist_In_Second_Dir_But_Not_In_First_Based_On_Basename(st
     for (auto const& it: differences){
             std::string file_to_delete = delete_from + "/" + it;
             if (!Recursive_Path_Contains_File_With_Same_Basename_As_File(it,based_on)){
-                std::cout << "deleted: " << file_to_delete << std::endl;
                 std::string command = std::string("rm -rf ") + file_to_delete;
                 execute_quietly(command);
             }
@@ -88,4 +87,15 @@ void Delete_Files_That_Exist_In_Second_Dir_But_Not_In_First_Based_On_Basename(st
                 //std::cout << "skipped: " << it << std::endl;
             }
     }
+}
+
+void Empty_Out_Folder_But_Keep_Folder(std::string path){
+    
+    
+    if (path[path.length()-1] != '/'){
+        path += "/";
+    }
+    
+    std::string command = std::string("rm -rf ") + path + "*";
+    execute_quietly(command);
 }
