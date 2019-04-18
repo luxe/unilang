@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/unilang:generate_unilang_token_files.bzl", "generate_unilang_token_files")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
 
 hcp(
     name = "unique_tokens_checker",
@@ -15,4 +16,8 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         ]
+)
+gtest(name = "uniqueness_test",
+      deps = ["//code/transcompilers/unilang/tokens:get_tokens",
+      "//code/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker"]
 )
