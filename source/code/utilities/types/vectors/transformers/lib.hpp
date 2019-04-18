@@ -12,6 +12,30 @@ bool Exists_In_Set(std::set<T> const& s, T const& item);
 template <typename T>
 bool In_Vector(std::vector<T> const& vec, T const& item);
 
+
+
+
+
+
+//insert an element between all the elements
+template <typename T>
+std::vector<T>& intersperse(std::vector<T> & vec, T const& item){
+	std::vector<T> new_vec;
+	for (size_t i = 0; i < vec.size(); ++i){
+		
+		new_vec.emplace_back(vec[i]);
+
+		//if its not the last element
+		if (i != vec.size()-1){
+			new_vec.emplace_back(item);
+		}
+	}
+}
+
+
+
+
+
 template <typename T>
 void Add_To_Back(std::vector<T> & vec, T const& item){
 	vec.push_back(item);

@@ -18,6 +18,9 @@ std::string Get_As_String_With_CommaSpace_In_Between_Each_Element(std::vector<st
 std::string Get_As_String_With_Comma_In_Between_Each_Element(std::vector<std::string> v){
     return Get_As_String_With_Delim_In_Between_Each_Element(v,",");
 }
+std::string Get_As_String_With_Forward_Slash_In_Between_Each_Element(std::vector<std::string> v){
+   return Get_As_String_With_Delim_In_Between_Each_Element(v,"/");
+}
 std::string Get_As_String_With_Delim_In_Between_Each_Element(std::vector<std::string> v, std::string const& delim){
     std::string str;
     for (auto it = v.cbegin(); it != v.cend(); ++it){

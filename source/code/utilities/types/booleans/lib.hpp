@@ -9,7 +9,7 @@ bool& No(bool & b);
 bool& Off(bool & b);
 
 
-//*consider using fold expressions now
+//TODO: consider using fold expressions now
 
 //returning true amount
 template<typename T>

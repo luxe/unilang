@@ -7,6 +7,7 @@ std::string Get_As_String_With_Element_On_Each_Line(std::vector<std::string> con
 std::string Get_As_String_With_Space_In_Between_Each_Element(std::vector<std::string> v);
 std::string Get_As_String_With_CommaSpace_In_Between_Each_Element(std::vector<std::string> v);
 std::string Get_As_String_With_Comma_In_Between_Each_Element(std::vector<std::string> v);
+std::string Get_As_String_With_Forward_Slash_In_Between_Each_Element(std::vector<std::string> v);
 std::string Get_As_String_With_Delim_In_Between_Each_Element(std::vector<std::string> v, std::string const& delim);
 std::vector<std::pair<char,int>> Get_As_Each_Element_A_Char_And_Int(std::vector<std::string> const& v);
 std::vector<std::vector<int>> VecVecStringToVecVecInt(std::vector<std::vector<std::string>> const& lists);

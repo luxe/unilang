@@ -6,8 +6,9 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
 ❪"code/utilities/filesystem/files/deleting/lib"❫
-
+❪"code/utilities/types/strings/transformers/casing/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Refresh()❰
@@ -15,16 +16,31 @@ class
     //Clear out directory before re-populating
     Empty_Out_Folder_But_Keep_Folder(Unilang_Bazel_Test_Directory());
     
-    //Move to directory and place readme file
+    //Move to the directory and place a readme file inside
     Move_To_Unilang_Bazel_Test_Directory();
     Write_To_File("README.md",Readme_Text());
     
     
+    auto all = Create_All_Bazel_Tests();
+    for (auto const& it: all.tests){
+        Create_Files_For_A_Bazel_Test(it);
+    }
+❱
+
+◀private: static▶ void ☀Create_Files_For_A_Bazel_Test(Bazel_Conversion_Test const& test)❰
+
+    //decide the subdirectory
+    auto sub_path = enum_vec_into_file_path(test.transcompilation_chain);
+    std::cout << sub_path << std::endl;
+    
+❱
+
+◀private: static▶ Bazel_Conversion_Tests ☀Create_All_Bazel_Tests()❰
     Bazel_Conversion_Tests x;
     x.tests.emplace_back(Empty_Unilang_To_Protobuf());
     x.tests.emplace_back(Empty_Unilang_To_Protobuf_To_Cpp_Object());
+    return x;
 ❱
-
 ◀private: static▶ Bazel_Conversion_Test ☀Empty_Unilang_To_Protobuf()❰
     Bazel_Conversion_Test test;
     test.transcompilation_chain.emplace_back(Artifact_Type::UNILANG);
@@ -69,6 +85,21 @@ unilang_to_protobuf_to_cpp(
     return message;
 ❱
 
+
+
+//other utility stuff
+◀private: static▶ std::string ☀enum_vec_into_file_path(std::vector<Artifact_Type> const& artifacts)❰
+    std::vector<std::string> strs;
+    for (auto const& it: artifacts){
+        strs.emplace_back(As_All_Lowercase_Letters_With_Spaces_As_Underscores(as_string(it)));
+    }
+    
+    return Get_As_String_With_Delim_In_Between_Each_Element(strs,"_to_");
+❱
+
+
+
+//path stuff
 ◀private: static▶ std::string ☀Unilang_Bazel_Test_Directory()❰
     return Bazel_Workspace_Directory() + "/code/hello_world/unilang/";
 ❱
