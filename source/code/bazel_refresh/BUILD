@@ -10,6 +10,13 @@ hcp(name = "bazel_refresher", deps = [
 "//code/utilities/types/vectors/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/bazel_refresh/conversion_test:test_getter",
+"//code/bazel_refresh:readme_creator",
+])
+
+hcp(name = "readme_creator", deps = [
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/filesystem/files/creating:lib",
 ])
 
 cc_binary(
