@@ -2,10 +2,6 @@
 #include <string>
 #include <cstdlib>
 
-// An alphabet is a collection of characters.
-// Here, a generic alphabet class will provide an interface over any container that holds letters. (probably a string type).
-// You don't actually create an alphabet though, because you're not going to change it. So it provides a bit of a safety guarantee.
-// In summary, the alphabet namespace is simply a lot of static templated object oriented classes built around a constant string type;
 namespace alphabet{
 
 	// base class for an alphabet
