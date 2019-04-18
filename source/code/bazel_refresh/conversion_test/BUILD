@@ -13,3 +13,10 @@ hcp(name = "bazel_conversion_tests", deps = [
 
 hcp(name = "bazel_conversion_test_file_contents", deps = [
 ])
+
+hcp(name = "test_getter", deps = [
+"//code/bazel_refresh/conversion_test:bazel_conversion_tests",
+"//code/utilities/filesystem/paths:lib",
+"//code/utilities/filesystem/files/creating:lib",
+"//code/utilities/types/strings/transformers/appending:lib",
+])
