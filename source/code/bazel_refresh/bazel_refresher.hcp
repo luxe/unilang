@@ -33,7 +33,8 @@ class
 
     //decide the subdirectory
     auto sub_path = enum_vec_into_file_path(test.transcompilation_chain);
-    auto full_path_of_test = Unilang_Bazel_Test_Directory() + sub_path + "/";
+    auto sub_path2 = string_vec_into_file_path(test.feature_categorization);
+    auto full_path_of_test = Unilang_Bazel_Test_Directory() + sub_path + "/" + sub_path2 + "/";
     Create_Path_If_It_Doesnt_Already_Exist(full_path_of_test);
     Write_To_File(full_path_of_test + "example.unilang",test.contents.source_contents);
     Write_To_File(full_path_of_test + "BUILD",test.contents.build_contents);
@@ -44,6 +45,10 @@ class
 
 
 //other utility stuff
+◀private: static▶ std::string ☀string_vec_into_file_path(std::vector<std::string> const& strs)❰
+    return Get_As_String_With_Delim_In_Between_Each_Element(strs,"/");
+❱
+
 ◀private: static▶ std::string ☀enum_vec_into_file_path(std::vector<Artifact_Type> const& artifacts)❰
     std::vector<std::string> strs;
     for (auto const& it: artifacts){
@@ -59,7 +64,6 @@ class
 ◀private: static▶ std::string ☀Unilang_Bazel_Test_Directory()❰
     return Bazel_Workspace_Directory() + "/code/hello_world/unilang/";
 ❱
-
 ◀private: static▶ void ☀Move_To_Unilang_Bazel_Test_Directory() ❰
     auto build_from = Unilang_Bazel_Test_Directory();
     Set_Path(build_from);
