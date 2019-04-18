@@ -42,11 +42,6 @@ hcp(
 )
 
 hcp(
-    name = "as_vertex_graph",
-    deps = ["//code/utilities/data_structures/unique_str_vertex_graph:lib"]
-)
-
-hcp(
     name = "all_language_tokens",
     deps = ["//code/transcompilers/unilang/tokens:generic_token",
     "//code/transcompilers/unilang/tokens:standalone_symbols",]
@@ -88,12 +83,6 @@ cc_binary(
     name = "unilang_token_file_generator",
     srcs = ["main.cpp"],
     deps = ["task_executer","//code/utilities/types/strings/transformers/removing:lib"]
-)
-
-cc_binary(
-    name = "print_token_tree",
-    srcs = ["print_token_tree.cpp"],
-    deps = ["as_vertex_graph"]
 )
 
 cpp_object(name="generic_token",deps=[
