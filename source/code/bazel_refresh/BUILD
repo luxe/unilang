@@ -5,6 +5,7 @@ hcp(name = "bazel_refresher", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/bazel_refresh/conversion_test:bazel_conversion_tests",
 "//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/filesystem/files/creating:lib",
 ])
 
 cc_binary(
