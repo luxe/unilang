@@ -177,6 +177,14 @@ cc_library(
     includes = [".","c++/src/"],
 )
 
+cc_library(
+    name = "kj_test_compat_headers",
+    hdrs = [
+        "c++/src/kj/compat/gtest.h",
+    ],
+    deps = [":kj_headers"],
+    includes = ["."],
+)
 
 
 cc_library(
@@ -194,6 +202,34 @@ cc_library(
         ":kj_sources_heavy",
         ":kj_http_headers",
         ":kj_http_sources",
+        ":kj_gzip_headers",
+        ":kj_gzip_sources",
+        ":kj_test_compat_headers"
     ],
     includes = ["."],
-) 
+)
+
+
+
+cc_binary(
+    name = "kj_tests",
+    srcs = [
+        "c++/src/kj/common-test.c++",
+        "c++/src/kj/memory-test.c++",
+        "c++/src/kj/array-test.c++",
+        "c++/src/kj/string-test.c++",
+        "c++/src/kj/table-test.c++",
+        "c++/src/kj/map-test.c++",
+        "c++/src/kj/exception-test.c++",
+        "c++/src/kj/debug-test.c++",
+        "c++/src/kj/io-test.c++",
+        "c++/src/kj/mutex-test.c++",
+        "c++/src/kj/threadlocal-test.c++",
+        "c++/src/kj/test-test.c++",
+        "c++/src/kj/std/iostream-test.c++",
+    ],
+    deps = [":kj"],
+    includes = ["."],
+)
+
+
