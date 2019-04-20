@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
 
+#Everything under c++/src/kj
 cc_library(
     name = "kj_headers",
     hdrs = [
@@ -97,8 +98,6 @@ cc_library(
     includes = ["."],
 )
 
-
-
 cc_library(
     name = "kj_sources_lite",
     srcs = [
@@ -137,7 +136,6 @@ cc_library(
     deps = [":kj_headers",":kj_parse_headers"],
     includes = ["."],
 )
-
 
 cc_library(
     name = "kj_http_headers",
@@ -187,7 +185,6 @@ cc_library(
     includes = ["."],
 )
 
-
 cc_library(
     name = "kj",
     srcs = [],
@@ -209,8 +206,6 @@ cc_library(
     ],
     includes = ["."],
 )
-
-
 
 cc_binary(
     name = "kj_tests",
@@ -261,4 +256,54 @@ cc_binary(
     includes = [".","c++/src/"],
 )
 
+#Everything under c++/src/capnp
+cc_library(
+    name = "capnp_headers",
+    hdrs = [
+      "c++/src/capnp/c++.capnp.h",
+      "c++/src/capnp/common.h",
+      "c++/src/capnp/blob.h",
+      "c++/src/capnp/endian.h",
+      "c++/src/capnp/layout.h",
+      "c++/src/capnp/orphan.h",
+      "c++/src/capnp/list.h",
+      "c++/src/capnp/any.h",
+      "c++/src/capnp/message.h",
+      "c++/src/capnp/capability.h",
+      "c++/src/capnp/membrane.h",
+      "c++/src/capnp/dynamic.h",
+      "c++/src/capnp/schema.h",
+      "c++/src/capnp/schema.capnp.h",
+      "c++/src/capnp/schema-lite.h",
+      "c++/src/capnp/schema-loader.h",
+      "c++/src/capnp/schema-parser.h",
+      "c++/src/capnp/pretty-print.h",
+      "c++/src/capnp/serialize.h",
+      "c++/src/capnp/serialize-async.h",
+      "c++/src/capnp/serialize-packed.h",
+      "c++/src/capnp/serialize-text.h",
+      "c++/src/capnp/pointer-helpers.h",
+      "c++/src/capnp/generated-header-support.h",
+      "c++/src/capnp/raw-schema.h",
+      "c++/src/capnp/arena.h",
+    ]
+)
+
+cc_library(
+    name = "capnp_sources_lite",
+    srcs = [
+      "c++/src/capnp/c++.capnp.c++",
+      "c++/src/capnp/blob.c++",
+      "c++/src/capnp/arena.c++",
+      "c++/src/capnp/layout.c++",
+      "c++/src/capnp/list.c++",
+      "c++/src/capnp/any.c++",
+      "c++/src/capnp/message.c++",
+      "c++/src/capnp/schema.capnp.c++",
+      "c++/src/capnp/serialize.c++",
+      "c++/src/capnp/serialize-packed.c++",
+    ],
+    deps = [":capnp_headers",":kj"],
+    includes = [".", "c++/src/"]
+)
 
