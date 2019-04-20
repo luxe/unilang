@@ -81,11 +81,19 @@ cc_library(
 )
 
 cc_library(
+    name = "kj_test_headers",
+    srcs = [
+        "c++/src/kj/test.h",
+    ],
+    includes = ["."],
+)
+
+cc_library(
     name = "kj_test_sources",
     srcs = [
         "c++/src/kj/test.c++",
     ],
-    deps = [":kj_headers"],
+    deps = [":kj_headers",":kj_test_headers"],
     includes = ["."],
 )
 
@@ -128,6 +136,47 @@ cc_library(
     ],
     deps = [":kj_headers",":kj_parse_headers"],
     includes = ["."],
+)
+
+
+cc_library(
+    name = "kj_http_headers",
+    hdrs = [
+        "c++/src/kj/compat/url.h",
+        "c++/src/kj/compat/http.h",
+    ],
+    deps = [":kj_headers"],
+    includes = ["."],
+)
+
+cc_library(
+    name = "kj_http_sources",
+    srcs = [
+        "c++/src/kj/compat/url.c++",
+        "c++/src/kj/compat/http.c++",
+    ],
+    deps = [":kj_headers",":kj_http_headers",":kj_async_headers",":kj_parse_headers"],
+    includes = [".","c++/src/"],
+)
+
+
+
+
+cc_library(
+    name = "kj",
+    srcs = [],
+    deps = [
+        ":kj_headers",
+        ":kj_parse_headers",
+        ":kj_std_headers",
+        ":kj_async_sources",
+        ":kj_async_headers",
+        ":kj_test_headers",
+        ":kj_test_sources",
+        ":kj_sources_lite",
+        ":kj_sources_heavy",
+        ":kj_http_headers",
+        ":kj_http_sources",
+    ],
+    includes = ["."],
 ) 
-
-
