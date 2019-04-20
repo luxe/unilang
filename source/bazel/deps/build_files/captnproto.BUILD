@@ -159,6 +159,23 @@ cc_library(
     includes = [".","c++/src/"],
 )
 
+cc_library(
+    name = "kj_gzip_headers",
+    hdrs = [
+        "c++/src/kj/compat/gzip.h",
+    ],
+    deps = [":kj_headers",":kj_http_headers",":kj_async_headers",":kj_parse_headers"],
+    includes = [".","c++/src/"],
+)
+
+cc_library(
+    name = "kj_gzip_sources",
+    srcs = [
+        "c++/src/kj/compat/gzip.c++",
+    ],
+    deps = [":kj_headers",":kj_gzip_headers",":kj_async_headers",":kj_parse_headers"],
+    includes = [".","c++/src/"],
+)
 
 
 
