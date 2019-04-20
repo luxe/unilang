@@ -51,6 +51,45 @@ cc_library(
     ]
 )
 
+cc_library(
+    name = "kj_async_headers",
+    hdrs = [
+        "c++/src/kj/async-prelude.h",
+        "c++/src/kj/async.h",
+        "c++/src/kj/async-inl.h",
+        "c++/src/kj/async-unix.h",
+        "c++/src/kj/async-win32.h",
+        "c++/src/kj/async-io.h",
+        "c++/src/kj/timer.h",
+        "c++/src/kj/async-io-internal.h",
+    ]
+)
+
+cc_library(
+    name = "kj_async_sources",
+    srcs = [
+      "c++/src/kj/async.c++",
+      "c++/src/kj/async-unix.c++",
+      "c++/src/kj/async-win32.c++",
+      "c++/src/kj/async-io-win32.c++",
+      "c++/src/kj/async-io.c++",
+      "c++/src/kj/async-io-unix.c++",
+      "c++/src/kj/timer.c++",
+    ],
+    deps = [":kj_headers",":kj_async_headers"],
+    includes = ["."],
+)
+
+cc_library(
+    name = "kj_test_sources",
+    srcs = [
+        "c++/src/kj/test.c++",
+    ],
+    deps = [":kj_headers"],
+    includes = ["."],
+)
+
+
 
 cc_library(
     name = "kj_sources_lite",
