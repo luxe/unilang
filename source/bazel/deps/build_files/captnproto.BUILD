@@ -181,6 +181,7 @@ cc_library(
     name = "kj_test_compat_headers",
     hdrs = [
         "c++/src/kj/compat/gtest.h",
+        "c++/src/kj/threadlocal-test.c++",
     ],
     deps = [":kj_headers"],
     includes = ["."],
@@ -230,6 +231,34 @@ cc_binary(
     ],
     deps = [":kj"],
     includes = ["."],
+)
+
+cc_binary(
+    name = "kj_heavy_tests",
+    srcs = [
+        "c++/src/kj/async-test.c++",
+        "c++/src/kj/async-unix-test.c++",
+        "c++/src/kj/async-win32-test.c++",
+        "c++/src/kj/async-io-test.c++",
+        "c++/src/kj/refcount-test.c++",
+        "c++/src/kj/string-tree-test.c++",
+        "c++/src/kj/encoding-test.c++",
+        "c++/src/kj/arena-test.c++",
+        "c++/src/kj/units-test.c++",
+        "c++/src/kj/tuple-test.c++",
+        "c++/src/kj/one-of-test.c++",
+        "c++/src/kj/function-test.c++",
+        "c++/src/kj/threadlocal-pthread-test.c++",
+        "c++/src/kj/filesystem-test.c++",
+        "c++/src/kj/filesystem-disk-test.c++",
+        "c++/src/kj/parse/common-test.c++",
+        "c++/src/kj/parse/char-test.c++",
+        "c++/src/kj/compat/url-test.c++",
+        "c++/src/kj/compat/http-test.c++",
+        "c++/src/kj/compat/gzip-test.c++",
+    ],
+    deps = [":kj"],
+    includes = [".","c++/src/"],
 )
 
 
