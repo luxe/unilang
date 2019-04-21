@@ -378,7 +378,8 @@ cc_library(
         "c++/src/capnp/compiler/lexer.capnp.h", 
         "c++/src/capnp/compiler/lexer.h", 
         "c++/src/capnp/compiler/type-id.h", 
-        "c++/src/capnp/compiler/error-reporter.h", 
+        "c++/src/capnp/compiler/error-reporter.h",
+        "c++/src/capnp/compiler/module-loader.h"
     ],
     deps = [":capnp_headers",":kj"],
     includes = [".", "c++/src/","c++/src/capnp/compiler"]
@@ -402,9 +403,6 @@ cc_library(
     includes = [".", "c++/src/","c++/src/capnp/compiler"]
 )
 
-
-
-
 cc_library(
     name = "capnp",
     deps = [
@@ -420,4 +418,62 @@ cc_library(
     ]
 )
 
+cc_binary(
+    name = "capnp_tool",
+    srcs = [
+    "c++/src/capnp/compiler/module-loader.c++",
+    "c++/src/capnp/compiler/capnp.c++",
+    ],
+    deps = [":capnp"]
+)
+
+cc_binary(
+    name = "capnpc_cpp",
+    srcs = [
+    "c++/src/capnp/compiler/capnpc-c++.c++"
+    ],
+    deps = [":capnp"]
+)
+
+cc_binary(
+    name = "capnpc_capnp",
+    srcs = [
+    "c++/src/capnp/compiler/capnpc-capnp.c++"
+    ],
+    deps = [":capnp"]
+)
+
+# cc_library(
+#    name = "capnp_test_headers",
+#    hdrs = [
+#     "c++/src/capnp/test-util.h",
+#     "c++/src/capnp/layout-test.c++",
+#     "c++/src/capnp/endian-test.c++",
+#     "c++/src/capnp/test_capnp/capnp/test-import.capnp.h",
+#    ],
+#     deps = [":capnp_headers",":kj"],
+#     includes = [".","c++/src/capnp/test_capnp","c++/src/capnp/compiler"]
+# )
+
+# cc_binary(
+#     name = "capnp_tests",
+#     srcs = [
+#     "c++/src/capnp/common-test.c++",
+#     "c++/src/capnp/blob-test.c++",
+#     "c++/src/capnp/endian-test.c++",
+#     "c++/src/capnp/endian-fallback-test.c++",
+#     "c++/src/capnp/layout-test.c++",
+#     "c++/src/capnp/any-test.c++",
+#     "c++/src/capnp/message-test.c++",
+#     "c++/src/capnp/encoding-test.c++",
+#     "c++/src/capnp/orphan-test.c++",
+#     "c++/src/capnp/serialize-test.c++",
+#     "c++/src/capnp/serialize-packed-test.c++",
+#     "c++/src/capnp/canonicalize-test.c++",
+#     "c++/src/capnp/fuzz-test.c++",
+#     "c++/src/capnp/test-util.c++",
+#     ],
+#     deps = [":capnp",":capnp_test_headers"],
+#     includes = [".","c++/src/capnp/test_capnp","c++/src/capnp/test_capnp/capnp","c++/src/capnp/compiler"]
+# )
 
