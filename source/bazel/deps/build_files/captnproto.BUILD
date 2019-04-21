@@ -443,6 +443,8 @@ cc_binary(
     deps = [":capnp"]
 )
 
+# Tests require generated code
+# This is not relevant to build right now
 # cc_library(
 #    name = "capnp_test_headers",
 #    hdrs = [
