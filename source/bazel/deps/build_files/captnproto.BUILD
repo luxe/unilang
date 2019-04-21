@@ -368,7 +368,39 @@ cc_library(
     includes = [".", "c++/src/"]
 )
 
+cc_library(
+    name = "capnc_headers",
+    hdrs = [
+        "c++/src/capnp/compiler/grammar.capnp.h",
+        "c++/src/capnp/compiler/compiler.h", 
+        "c++/src/capnp/compiler/node-translator.h", 
+        "c++/src/capnp/compiler/parser.h", 
+        "c++/src/capnp/compiler/lexer.capnp.h", 
+        "c++/src/capnp/compiler/lexer.h", 
+        "c++/src/capnp/compiler/type-id.h", 
+        "c++/src/capnp/compiler/error-reporter.h", 
+    ],
+    deps = [":capnp_headers",":kj"],
+    includes = [".", "c++/src/","c++/src/capnp/compiler"]
+)
 
+cc_library(
+    name = "capnc_sources",
+    srcs = [
+        "c++/src/capnp/compiler/type-id.c++",
+        "c++/src/capnp/compiler/error-reporter.c++",
+        "c++/src/capnp/compiler/lexer.capnp.c++",
+        "c++/src/capnp/compiler/lexer.c++",
+        "c++/src/capnp/compiler/grammar.capnp.c++",
+        "c++/src/capnp/compiler/parser.c++",
+        "c++/src/capnp/compiler/node-translator.c++",
+        "c++/src/capnp/compiler/compiler.c++",
+        "c++/src/capnp/schema-parser.c++",
+        "c++/src/capnp/serialize-text.c++",
+    ],
+    deps = [":capnp_headers",":kj",":capnc_headers"],
+    includes = [".", "c++/src/","c++/src/capnp/compiler"]
+)
 
 
 
@@ -383,6 +415,8 @@ cc_library(
         ":capnp_rpc_sources",
         ":capnp_json_headers",
         ":capnp_json_sources",
+        ":capnc_headers",
+        ":capnc_sources",
     ]
 )
 
