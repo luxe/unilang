@@ -307,3 +307,83 @@ cc_library(
     includes = [".", "c++/src/"]
 )
 
+cc_library(
+    name = "capnp_sources_heavy",
+    srcs = [
+      "c++/src/capnp/schema.c++",
+      "c++/src/capnp/schema-loader.c++",
+      "c++/src/capnp/dynamic.c++",
+      "c++/src/capnp/stringify.c++",
+    ],
+    deps = [":capnp_headers",":kj"],
+    includes = [".", "c++/src/"]
+)
+
+cc_library(
+    name = "capnp_rpc_headers",
+    hdrs = [
+      "c++/src/capnp/rpc-prelude.h",
+      "c++/src/capnp/rpc.h",
+      "c++/src/capnp/rpc-twoparty.h",
+      "c++/src/capnp/rpc.capnp.h",
+      "c++/src/capnp/rpc-twoparty.capnp.h",
+      "c++/src/capnp/persistent.capnp.h",
+      "c++/src/capnp/ez-rpc.h",
+    ]
+)
+
+cc_library(
+    name = "capnp_rpc_sources",
+    srcs = [
+      "c++/src/capnp/serialize-async.c++",
+      "c++/src/capnp/capability.c++",
+      "c++/src/capnp/membrane.c++",
+      "c++/src/capnp/dynamic-capability.c++",
+      "c++/src/capnp/rpc.c++",
+      "c++/src/capnp/rpc.capnp.c++",
+      "c++/src/capnp/rpc-twoparty.c++",
+      "c++/src/capnp/rpc-twoparty.capnp.c++",
+      "c++/src/capnp/persistent.capnp.c++",
+      "c++/src/capnp/ez-rpc.c++",
+    ],
+    deps = [":capnp_headers",":kj",":capnp_rpc_headers"],
+    includes = [".", "c++/src/"]
+)
+
+cc_library(
+    name = "capnp_json_headers",
+    hdrs = [
+        "c++/src/capnp/compat/json.h",
+        "c++/src/capnp/compat/json.capnp.h",
+    ]
+)
+
+cc_library(
+    name = "capnp_json_sources",
+    srcs = [
+        "c++/src/capnp/compat/json.c++",
+        "c++/src/capnp/compat/json.capnp.c++",
+    ],
+    deps = [":capnp_headers",":kj",":capnp_json_headers"],
+    includes = [".", "c++/src/"]
+)
+
+
+
+
+
+
+cc_library(
+    name = "capnp",
+    deps = [
+        ":capnp_headers",
+        ":capnp_sources_lite",
+        ":capnp_sources_heavy",
+        ":capnp_rpc_headers",
+        ":capnp_rpc_sources",
+        ":capnp_json_headers",
+        ":capnp_json_sources",
+    ]
+)
+
+
