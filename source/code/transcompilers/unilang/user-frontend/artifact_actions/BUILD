@@ -27,6 +27,7 @@ values =
 ,"hidl"
 ,"protobuf"
 ,"thrift"
+,"captn_proto"
 
 #DSLs
 #...
