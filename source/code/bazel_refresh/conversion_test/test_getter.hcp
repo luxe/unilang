@@ -15,6 +15,8 @@ class
     Bazel_Conversion_Tests x;
     
     auto tokens = Get_Tokens::Get();
+    
+    //unilang to x
     x.tests.emplace_back(Empty_File_Unilang_To_Protobuf(tokens));
     x.tests.emplace_back(Empty_File_Unilang_To_Protobuf_To_Cpp_Object(tokens));
     x.tests.emplace_back(Empty_Global_Unilang_To_Protobuf(tokens));
@@ -23,6 +25,10 @@ class
     x.tests.emplace_back(Empty_Product_Unilang_To_Protobuf_To_Cpp_Object(tokens));
     x.tests.emplace_back(Empty_Sum_Unilang_To_Protobuf(tokens));
     x.tests.emplace_back(Empty_Sum_Unilang_To_Protobuf_To_Cpp_Object(tokens));
+    
+    //protobuf to x
+    
+    
     return x;
 ❱
 ◀private: static▶ Bazel_Conversion_Test ☀Empty_File_Unilang_To_Protobuf(All_Language_Tokens const& all_tokens)❰
@@ -149,6 +155,39 @@ unilang_to_protobuf_to_cpp(
 )RAW_LITERAL";
     return test;
 ❱
+◀private: static▶ Bazel_Conversion_Test ☀Empty_Protobuf_To_Cpp_Object(All_Language_Tokens const& all_tokens)❰
+    Bazel_Conversion_Test test;
+    test.transcompilation_chain = Transcompilation_Chain_Protobuf_Cpp();
+    test.feature_categorization.emplace_back("empty");
+    test.contents.source_contents = LR"RAW_LITERAL(
+syntax = "proto3";
+)RAW_LITERAL";
+    test.contents.test_contents = LR"RAW_LITERAL(
+#include <iostream>
+#include "code/hello_world/protobuf/empty/example.pb.h"
+int main(){
+    GOOGLE_PROTOBUF_VERIFY_VERSION;
+        return 0;
+}
+)RAW_LITERAL";
+    test.contents.build_contents = LR"RAW_LITERAL(
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("//bazel/cookbook/protobuf:cpp.bzl", "cpp_proto_object")
+package(
+    default_visibility = ["//visibility:public"],
+)
+
+cpp_proto_object(
+  name = "hello"
+)
+
+cpp_main(
+    name = "main",
+    deps = [":hello_cpp_proto"]
+)
+)RAW_LITERAL";
+    return test;
+❱
 
 
 
@@ -180,6 +219,12 @@ unilang_to_protobuf_to_cpp(
 ◀private: static▶ std::vector<Artifact_Type> ☀Transcompilation_Chain_Unilang_Protobuf_Cpp()❰
     std::vector<Artifact_Type> artifacts;
     artifacts.emplace_back(Artifact_Type::UNILANG);
+    artifacts.emplace_back(Artifact_Type::PROTOBUF);
+    artifacts.emplace_back(Artifact_Type::CPP);
+    return artifacts;
+❱
+◀private: static▶ std::vector<Artifact_Type> ☀Transcompilation_Chain_Protobuf_Cpp()❰
+    std::vector<Artifact_Type> artifacts;
     artifacts.emplace_back(Artifact_Type::PROTOBUF);
     artifacts.emplace_back(Artifact_Type::CPP);
     return artifacts;
