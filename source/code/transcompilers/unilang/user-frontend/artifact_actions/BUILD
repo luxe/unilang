@@ -22,6 +22,25 @@ values =
 ,"processing"
 ,"date"
 ,"bazel"
+,"Ada"
+,"BrainFuck"
+,"Cobol"
+,"Elm"
+,"Fortran"
+,"Fsharp"
+,"Go"
+,"Haskell"
+,"Java"
+,"Kotlin"
+,"Ml"
+,"Nim"
+,"Pascal"
+,"Python"
+,"Racket"
+,"Scala"
+,"Scheme"
+,"Swift"
+,"HolyC"
 
 #IDLs
 ,"hidl"
@@ -58,4 +77,11 @@ hcp(name = "artifact_actions", deps = [
 
 hcp(name = "artifact_guess_settings", deps = [
 "//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
+])
+
+
+hcp(name = "to_source_language", deps = [
+"//code/utilities/types/vectors/operators:lib",
+"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])
