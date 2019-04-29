@@ -11,6 +11,7 @@ hcp(name = "bazel_refresher", deps = [
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/bazel_refresh/conversion_test:test_getter",
 "//code/bazel_refresh:readme_creator",
+"//code/transcompilers/unilang/file_extension_getter:file_extension_getter",
 ])
 
 hcp(name = "readme_creator", deps = [
