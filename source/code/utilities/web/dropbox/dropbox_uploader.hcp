@@ -1,0 +1,58 @@
+class
+❪string❫
+❪stdio.h❫
+❪curl/curl.h❫
+⚯
+⚞⚟
+
+
+◀public: static▶ void ☀Upload(std::string const& local_file_path, std::string const& docker_file_path, std::string const& access_token)❰
+
+    //derived from dropbox site documentation
+      CURL *curl;
+      CURLcode res;
+
+      /* In windows, this will init the winsock stuff */
+      curl_global_init(CURL_GLOBAL_ALL);
+
+      /* get a curl handle */
+      curl = curl_easy_init();
+      if(curl) {
+
+            printf ("Running curl test.\n");
+
+            struct curl_slist *headers=NULL; /* init to NULL is important */
+            
+            std::string auth_str = "Authorization: Bearer ";
+            auth_str += access_token;
+            headers = curl_slist_append(headers, auth_str.c_str());
+            headers = curl_slist_append(headers, "Content-Type: application/octet-stream");
+            
+            std::string dropbox_apis_str = "Dropbox-API-Arg: {\"path\":\"/";
+            dropbox_apis_str += docker_file_path;
+            dropbox_apis_str += "\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false}";
+            headers = curl_slist_append(headers, dropbox_apis_str.c_str());
+            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+
+            curl_easy_setopt(curl, CURLOPT_URL, "https://content.dropboxapi.com/2/files/upload");
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, local_file_path.c_str());
+
+            /* Perform the request, res will get the return code */
+            res = curl_easy_perform(curl);
+            /* Check for errors */
+            if(res != CURLE_OK)
+                  fprintf(stderr, "curl_easy_perform() failed: %s\n",
+                    curl_easy_strerror(res));
+
+            /* always cleanup */
+              curl_easy_cleanup(curl);
+
+              printf ("\nFinished curl test.\n");
+
+      }
+      curl_global_cleanup();
+
+      printf ("Done!\n");
+      
+      
+❱
