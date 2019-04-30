@@ -3,6 +3,8 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="dropbox_uploader", deps = [
+	"//code/utilities/types/char:lib",
+	"//code/utilities/shell:lib",
         "@curl",
 ])
 

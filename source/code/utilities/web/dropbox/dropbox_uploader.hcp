@@ -3,6 +3,8 @@ class
 ❪stdio.h❫
 ❪curl/curl.h❫
 ⚯
+❪"code/utilities/types/char/lib.hpp"❫
+❪"code/utilities/shell/lib.hpp"❫
 ⚞⚟
 
 
@@ -34,7 +36,7 @@ class
             headers = curl_slist_append(headers, dropbox_apis_str.c_str());
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 
-            curl_easy_setopt(curl, CURLOPT_URL, "https://content.dropboxapi.com/2/files/upload");
+            curl_easy_setopt(curl, CURLOPT_URL, upload_url().c_str());
             
             std::string file_path_str = local_file_path;
             curl_easy_setopt(curl, CURLOPT_POSTFIELDS, file_path_str.c_str());
@@ -57,4 +59,31 @@ class
       printf ("Done!\n");
       
       
+❱
+
+◀public: static▶ void ☀Upload_With_Curl_Command(std::string const& local_file_path, std::string const& docker_file_path, std::string const& access_token)❰
+	std::string command;
+	command += "curl -X POST " + upload_url() + " ";
+	command += "--header ";
+	command += Get_Double_Quote();
+	command += "Authorization: Bearer ";
+	command += access_token;
+	command += Get_Double_Quote();
+	command += " ";
+	command += "--header ";
+	command += Get_Double_Quote();
+        command += "Dropbox-API-Arg: {\"path\":\"/";
+	command += docker_file_path;
+        command += "\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false}";
+	command += Get_Double_Quote();
+	command += " ";
+	command += "--data-binary @";
+	command += local_file_path;
+
+	execute(command);
+
+❱
+
+◀private: static▶ std::string ☀upload_url()❰
+	return "https://content.dropboxapi.com/2/files/upload";
 ❱
