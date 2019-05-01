@@ -3,7 +3,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 def immediate_to_cpp(name,deps=[]):
 
     #the file names to use
-    derive_path = "code/hello_world/capnproto/"
     target_name = name + "_capnp"
     explicit_input_file = name + ".capnp_intermediate"
     explicit_result_h_file = name + ".capnp.h"
@@ -18,14 +17,6 @@ def immediate_to_cpp(name,deps=[]):
         output_to_bindir = False,
         cmd = """
     $(location @captnproto//:capnpc_cpp) < $(SRCS);
-
-
-    echo $(SRCS);
-    echo $(OUTS);
     cp -r code $(GENDIR)
-    #echo $(GENDIR);
-    
-    #cd code/hello_world/capnproto/;
-    #pwd;
         """
     )
