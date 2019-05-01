@@ -55,12 +55,17 @@ class
             
             //send raw text
             std::string file_path_str = local_file_path;
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, Read_Entire_File_Into_String(file_path_str).c_str());
+            auto all_data = Read_Entire_Binary_File_Into_String(file_path_str);
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, all_data.size());
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, all_data.c_str());
             
             //upload a file
+            //Dropbox does not support this method
             //curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
             //curl_easy_setopt(curl, CURLOPT_POST, 1L);
             //curl_easy_setopt(curl, CURLOPT_READDATA, fd);
+            //curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE,
+            //                 (curl_off_t)file_info.st_size);
 
             /* Perform the request, res will get the return code */
             res = curl_easy_perform(curl);
@@ -75,13 +80,15 @@ class
       }
       curl_global_cleanup();
 
-      printf ("Done!\n");
       fclose(fd);
       
       
 ❱
 
 ◀public: static▶ void ☀Upload_With_Curl_Command(std::string const& local_file_path, std::string const& docker_file_path, std::string const& access_token)❰
+
+
+  //I don't want to upload to dropbox with the command spawn, but I was having difficulty with libcurl directly
 	std::string command;
 	command += "curl -X POST " + upload_url() + " ";
 	command += "--header ";
@@ -104,8 +111,6 @@ class
   command += " ";
 	command += "--data-binary @";
 	command += local_file_path;
-  
-  std::cout << command << std::endl;
 
 	execute(command);
 

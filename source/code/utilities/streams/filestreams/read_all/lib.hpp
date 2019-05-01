@@ -5,6 +5,7 @@
 
 //handling the whole file at once
 std::string Read_Entire_File_Into_String(std::string const& file);
+std::string Read_Entire_Binary_File_Into_String(std::string const& file);
 std::wstring Read_Entire_File_Into_WString(std::string const& file);
 std::vector<std::string> Read_Each_Line_Of_File_Into_Vector(std::string const& file);
 std::vector<std::vector<std::string>> Read_Each_Line_Of_File_Into_Vector_Split_Chunks_By_Empty_Line(std::string const& file);

@@ -19,12 +19,31 @@ std::vector<std::string> Get_Comma_Seperated_Values_From_File(std::string const&
 }
 
 std::string Read_Entire_File_Into_String(std::string const& file){
-std::ifstream t(file);
-return std::string((std::istreambuf_iterator<char>(t)),std::istreambuf_iterator<char>());
+	std::ifstream t(file);
+	return std::string((std::istreambuf_iterator<char>(t)),std::istreambuf_iterator<char>());
 }
+std::string Read_Entire_Binary_File_Into_String(std::string const& file){
+	std::ifstream t(file, std::ios::in | std::ios::binary);
+	return std::string((std::istreambuf_iterator<char>(t)),std::istreambuf_iterator<char>());
+}
+
+std::vector<char> ReadAllBytes(std::string const& file)
+{
+    std::ifstream ifs(file, std::ios::binary|std::ios::ate);
+    std::ifstream::pos_type pos = ifs.tellg();
+
+    std::vector<char>  result(pos);
+
+    ifs.seekg(0, std::ios::beg);
+    ifs.read(&result[0], pos);
+
+    return result;
+}
+
+
 std::wstring Read_Entire_File_Into_WString(std::string const& file){
-std::wifstream t(file);
-return std::wstring((std::istreambuf_iterator<wchar_t>(t)),std::istreambuf_iterator<wchar_t>());
+	std::wifstream t(file);
+	return std::wstring((std::istreambuf_iterator<wchar_t>(t)),std::istreambuf_iterator<wchar_t>());
 }
 std::vector<std::string> Read_Each_Line_Of_File_Into_Vector(std::string const& file){
 	std::ifstream infile(file);
