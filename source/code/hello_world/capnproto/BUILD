@@ -1,8 +1,8 @@
-load("//bazel/cookbook/capnproto:capnp_to_immediate.bzl", "capnp_to_immediate")
-load("//bazel/cookbook/capnproto:immediate_to_cpp.bzl", "immediate_to_cpp")
+load("//bazel/cookbook/capnproto:capnp_to_intermediate.bzl", "capnp_to_intermediate")
+load("//bazel/cookbook/capnproto:intermediate_to_cpp.bzl", "intermediate_to_cpp")
 package(
     default_visibility = ["//visibility:public"],
 )
 
-capnp_to_immediate(name = "main")
-immediate_to_cpp(name = "main")
+capnp_to_intermediate(name = "main")
+intermediate_to_cpp(name = "main")

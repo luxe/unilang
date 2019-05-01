@@ -1,6 +1,6 @@
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-def capnp_to_immediate(name,deps=[]):
+def capnp_to_intermediate(name,deps=[]):
 
     #the file names to use
     target_name = name + "_capnp_intermediate"

@@ -1,6 +1,6 @@
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-def immediate_to_cpp(name,deps=[]):
+def intermediate_to_cpp(name,deps=[]):
 
     #the file names to use
     target_name = name + "_capnp"
