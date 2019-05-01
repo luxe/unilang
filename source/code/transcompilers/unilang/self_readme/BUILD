@@ -19,6 +19,8 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/main/root_settings:root_settings_getter",
 "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
 "//code/transcompilers/unilang/self_readme:latex_template_getter",
+"//code/utilities/web/dropbox:dropbox_uploader",
+"//code/utilities/secret:secret_getter",
 ])
 
 hcp(name = "latex_template_getter", deps = [
