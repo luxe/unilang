@@ -5,6 +5,9 @@ class
 ⚯
 ❪"code/utilities/types/char/lib.hpp"❫
 ❪"code/utilities/shell/lib.hpp"❫
+❪"code/utilities/streams/filestreams/read_all/lib.hpp"❫
+❪sys/stat.h❫
+❪iostream❫
 ⚞⚟
 
 
@@ -13,6 +16,20 @@ class
     //derived from dropbox site documentation
       CURL *curl;
       CURLcode res;
+      struct stat file_info;
+      FILE *fd;
+      fd = fopen(local_file_path.c_str(), "rb"); /* open file to upload */
+      
+      if(!fd){
+        std::cout << "file not found" << std::endl;
+        return;
+      }
+     
+      /* to get the file size */ 
+      if(fstat(fileno(fd), &file_info) != 0){
+        std::cout << "can't get file info" << std::endl;
+        return;
+      }
 
       /* In windows, this will init the winsock stuff */
       curl_global_init(CURL_GLOBAL_ALL);
@@ -21,25 +38,29 @@ class
       curl = curl_easy_init();
       if(curl) {
 
-            printf ("Running curl test.\n");
 
             struct curl_slist *headers=NULL; /* init to NULL is important */
             
             std::string auth_str = "Authorization: Bearer ";
             auth_str += access_token;
             headers = curl_slist_append(headers, auth_str.c_str());
-            //headers = curl_slist_append(headers, "Content-Type: application/octet-stream");
+            headers = curl_slist_append(headers, "Content-Type: application/octet-stream");
             
             std::string dropbox_apis_str = "Dropbox-API-Arg: {\"path\":\"/";
             dropbox_apis_str += docker_file_path;
             dropbox_apis_str += "\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false}";
             headers = curl_slist_append(headers, dropbox_apis_str.c_str());
             curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
             curl_easy_setopt(curl, CURLOPT_URL, upload_url().c_str());
             
+            //send raw text
             std::string file_path_str = local_file_path;
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, file_path_str.c_str());
+            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, Read_Entire_File_Into_String(file_path_str).c_str());
+            
+            //upload a file
+            //curl_easy_setopt(curl, CURLOPT_UPLOAD, 1L);
+            //curl_easy_setopt(curl, CURLOPT_POST, 1L);
+            //curl_easy_setopt(curl, CURLOPT_READDATA, fd);
 
             /* Perform the request, res will get the return code */
             res = curl_easy_perform(curl);
@@ -51,12 +72,11 @@ class
             /* always cleanup */
               curl_easy_cleanup(curl);
 
-              printf ("\nFinished curl test.\n");
-
       }
       curl_global_cleanup();
 
       printf ("Done!\n");
+      fclose(fd);
       
       
 ❱
@@ -72,13 +92,20 @@ class
 	command += " ";
 	command += "--header ";
 	command += Get_Double_Quote();
-        command += "Dropbox-API-Arg: {\"path\":\"/";
+  command += "Dropbox-API-Arg: {\\\"path\\\":\\\"/";
 	command += docker_file_path;
-        command += "\",\"mode\": \"overwrite\",\"autorename\": true,\"mute\": false}";
+  command += "\\\",\\\"mode\\\": \\\"overwrite\\\",\\\"autorename\\\": true,\\\"mute\\\": false}";
 	command += Get_Double_Quote();
 	command += " ";
+  command += "--header ";
+  command += Get_Double_Quote();
+  command += "Content-Type: application/octet-stream";
+  command += Get_Double_Quote();
+  command += " ";
 	command += "--data-binary @";
 	command += local_file_path;
+  
+  std::cout << command << std::endl;
 
 	execute(command);
 

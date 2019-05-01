@@ -6,5 +6,5 @@ int main(){
     
     auto secret = Secret_Getter::Unilang_Dropbox_Access_Key();
     std::cout << secret << std::endl;
-    Dropbox_Uploader::Upload("/home/laptop/Desktop/hello.txt","folder/test.txt",secret);
+    Dropbox_Uploader::Upload_With_Curl_Command("/home/laptop/Desktop/pic.png","folder/pic.png",secret);
 }
