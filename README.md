@@ -2,11 +2,7 @@
 	<img width="395" height="112" src=".readme/unilang-trimmed.png">
 </p>
 
-**A universal programming language**
-<p align="left">
-	<img width="60" height="60" data-canonical-src="https://www.dropbox.com/s/1qde65ekii8nyb9/unilang.pdf?dl=1" src=".readme/pdf_download.png">
-</p>
-
+**A universal programming language** [<img width="60" height="60" src=".readme/pdf_download.png">](https://www.dropbox.com/s/1qde65ekii8nyb9/unilang.pdf?dl=1)
 
 </details>
 <details>
