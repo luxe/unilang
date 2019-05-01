@@ -1,10 +1,9 @@
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-#using the boot-strapped hcp compiler built from hcp files
-def capnp(name,deps=[]):
+def capnp_to_immediate(name,deps=[]):
 
     #the file names to use
-    target_name = name + "_capnp"
+    target_name = name + "_capnp_intermediate"
     explicit_input_file = name + ".capnp"
     explicit_result_file = name + ".capnp_intermediate"
     
@@ -15,6 +14,6 @@ def capnp(name,deps=[]):
         outs = [explicit_result_file],
         tools = ["@captnproto//:capnp_tool"],
         cmd = """
-    $(location @captnproto//:capnp_tool) compile -o- $(SRCS) > $(@D)/$(OUTS)
+    $(location @captnproto//:capnp_tool) compile -o- $(SRCS) > $(OUTS)
         """
     )
