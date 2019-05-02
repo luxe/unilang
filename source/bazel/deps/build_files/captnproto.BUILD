@@ -404,9 +404,19 @@ cc_library(
 )
 
 cc_library(
+    name = "capnp_generated_header_support",
+    hdrs = [
+      "c++/src/capnp/generated-header-support.h",
+    ]
+)
+
+
+
+cc_library(
     name = "capnp",
     deps = [
         ":capnp_headers",
+        ":capnp_generated_header_support",
         ":capnp_sources_lite",
         ":capnp_sources_heavy",
         ":capnp_rpc_headers",
