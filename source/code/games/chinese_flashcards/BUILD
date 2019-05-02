@@ -24,6 +24,7 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/utilities/chinese:chinese_translations",
 "//code/utilities/git-related:github_uploader",
+"//code/utilities/time/date:lib",
 ])
 
 cc_binary(
