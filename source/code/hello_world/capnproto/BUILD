@@ -5,4 +5,4 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-capnp_to_cpp_object(name = "main")
+capnp_to_cpp_object(name = "example")
