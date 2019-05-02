@@ -8,6 +8,7 @@
 
 <summary>Introduction</summary>
 
+This document is the official unilang guide.  It contains all of the documentation with links to supplementary information.  
 
 
 ## GPLs Fall Short
