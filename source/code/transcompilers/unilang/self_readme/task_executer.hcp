@@ -16,6 +16,7 @@ class
 ❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
 ❪"code/transcompilers/unilang/main/root_settings/root_settings_getter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/dzslides/dzslides_exporter"❫
 ❪"code/transcompilers/unilang/self_readme/latex_template_getter"❫
 ❪"code/utilities/web/dropbox/dropbox_uploader"❫
 ❪"code/utilities/secret/secret_getter"❫
@@ -34,8 +35,7 @@ class
     auto to_raw_pdf = Bazel_Derived_Root_Of_Repo() + "README-pdf.md";
     auto to_manual_pdf = Bazel_Derived_Root_Of_Repo() + "README.pdf";
     auto to_latex_template = Bazel_Derived_Root_Of_Repo() + "README.tx";
-    auto to_slide_md = Bazel_Derived_Root_Of_Repo() + "README-slides.md";
-    auto to_dzslides_html = Bazel_Derived_Root_Of_Repo() + "README-slides.html";
+    auto slides_base_name = Bazel_Derived_Root_Of_Repo() + "README-slides";
     bool upload_to_dropbox = true;
     
     
@@ -93,18 +93,8 @@ class
     }
     
     //build html slides documentation
-    md_settings.outlines.print = true;
-    md_settings.sentences.print = false;
-    result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
-    Write_To_File(to_slide_md,result);
-    command = "pandoc -s --mathml -i -t dzslides ";
-    command += to_slide_md;
-    command += " -o ";
-    command += to_dzslides_html;
-    std::cout << command << std::endl;
-    if (Unsuccessful_Run_Of_Command(command)){
-        Exit_With_Error("failed to create html slides");
-    }
+    auto dz_settings = input.settings.compiler_settings.trevor.settings.foreign_language.dzslides;
+    Dzslides_Exporter::Create_Markdown_And_Slides(graphs[0].structure,contributors,dz_settings,slides_base_name);
     
     //upload pdf to dropbox
     if (upload_to_dropbox){
