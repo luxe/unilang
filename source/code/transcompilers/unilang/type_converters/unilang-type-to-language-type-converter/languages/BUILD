@@ -65,6 +65,11 @@ values =
 ,"HTML"
 ,"XML"
 
+#Stlying
+,"CSS"
+,"SASS"
+,"LESS"
+
 
 ])
 

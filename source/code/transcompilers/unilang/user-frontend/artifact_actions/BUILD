@@ -53,6 +53,7 @@ values =
 
 #Documentation
 ,"markdown"
+,"dzslides"
 ,"plant_uml"
 ,"call_graph"
 ,"html_table"
