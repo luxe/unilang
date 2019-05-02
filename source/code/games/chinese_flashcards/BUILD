@@ -22,10 +22,11 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/web/dropbox:dropbox_uploader",
 "//code/utilities/secret:secret_getter",
 "//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
+"//code/utilities/chinese:chinese_translations"
 ])
 
 cc_binary(
-    name = "create_chinese_flashcards",
+    name = "main",
     srcs = ["main.cpp"],
     deps = ["//code/games/chinese_flashcards:task_executer"]
 )
