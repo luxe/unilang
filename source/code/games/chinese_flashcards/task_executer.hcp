@@ -1,0 +1,57 @@
+class
+
+❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
+❪"code/transcompilers/unilang/tokens/generic_token"❫
+❪"code/transcompilers/unilang/tokens/get_tokens"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/locale/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/transcompilers/unilang/user-frontend/code_graphs_creator"❫
+❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/transcompilers/unilang/main/root_settings/root_settings_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/dzslides/dzslides_exporter"❫
+❪"code/transcompilers/unilang/self_readme/latex_template_getter"❫
+❪"code/utilities/web/dropbox/dropbox_uploader"❫
+❪"code/utilities/secret/secret_getter"❫
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks() ❰
+
+    //Unicode please
+    Set_English_UTF8_Locale();
+    
+    //the files we are reading/building
+    auto slides_base_name = Full_Path_To_Desktop() + "chinese_exercise";
+    auto slides_full = slides_base_name + ".html";
+    bool upload_to_dropbox = true;
+    
+    
+    //settings
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+    auto dz_settings = input.settings.compiler_settings.trevor.settings.foreign_language.dzslides;
+    auto contributors = input.settings.compiler_settings.trevor.contributors;
+    
+    //convert to unilang structure
+    auto structure = Chinese_Data_As_Unilang_Structure();
+    
+    //build html slides documentation
+    Dzslides_Exporter::Create_Markdown_And_Slides(structure,contributors,dz_settings,slides_base_name);
+    
+    //upload pdf to dropbox
+    if (upload_to_dropbox){
+        auto secret = Secret_Getter::Unilang_Dropbox_Access_Key();
+        Dropbox_Uploader::Upload(slides_full,"chinese_exercise.html",secret);
+    }
+❱
+
+◀private: static▶ Structure ☀Chinese_Data_As_Unilang_Structure() ❰
+    Structure s;
+    return s;
+❱
