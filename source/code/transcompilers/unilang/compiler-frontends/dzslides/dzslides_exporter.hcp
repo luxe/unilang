@@ -23,22 +23,46 @@ class
 ❪"code/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
 ❪"code/transcompilers/unilang/file_extension_getter/file_extension_getter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
 ⚞⚟
 
-◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Dzslides_Settings const& settings)❰
+◀public: static▶ std::vector<std::string> ☀Export(Structure const& structure, std::vector<Contributor> const& contributors, Dzslides_Settings const& settings)❰
    
    //Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::Markdown);
    
   //created files
   std::vector<std::string> created;
   
+  Create_Markdown_And_Slides(structure,contributors,settings,structure.name);
   
-  std::string source_code_filename = structure.name + File_Extension_Getter::Get_For_Interface(Source_Language::MARKDOWN);
-  std::ofstream outfile(source_code_filename);
-  std::string str = Markdown_Str_Getter::Get(structure,contributors,settings.markdown);
-  
-  outfile.close();
-  created.emplace_back(source_code_filename);
+  //store files for reference
+  std::string source_code_filename_md = structure.name + File_Extension_Getter::Get_For_Interface(Source_Language::MARKDOWN);
+  std::string source_code_filename_html = structure.name + File_Extension_Getter::Get_For_Interface(Source_Language::HTML);
+  created.emplace_back(source_code_filename_md);
+  created.emplace_back(source_code_filename_html);
   
   return created;
+❱
+
+◀public: static▶ void ☀Create_Markdown_And_Slides(Structure const& structure, std::vector<Contributor> const& contributors, Dzslides_Settings const& settings, std::string const& base_name)❰
+
+  std::string source_code_filename_md = base_name + File_Extension_Getter::Get_For_Interface(Source_Language::MARKDOWN);
+  std::string source_code_filename_html = base_name + File_Extension_Getter::Get_For_Interface(Source_Language::HTML);
+  
+  //create the markdown
+  std::ofstream outfile(source_code_filename_md);
+  std::string str = Markdown_Str_Getter::Get(structure,contributors,settings.markdown);
+  Write_To_File(source_code_filename_md,str);
+  outfile.close();
+  
+  //create the slides
+  std::string command = "pandoc -s --mathml -i -t dzslides ";
+  command += source_code_filename_md;
+  command += " -o ";
+  command += source_code_filename_html;
+  if (Unsuccessful_Run_Of_Command(command)){
+      Exit_With_Error("failed to create html slides");
+  }
+  
 ❱
