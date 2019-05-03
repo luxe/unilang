@@ -2,12 +2,45 @@
 #include <random>
 #include <string>
 
+
+template<typename T>
+auto Get_Random_Index(T const& container) -> std::size_t {
+  std::random_device random_device;
+  std::mt19937 engine{random_device()};
+  std::uniform_int_distribution<int> dist(0, container.size() - 1);
+  return dist(engine);
+}
+
 template<typename T>
 auto Get_Random_Element(T const& container) -> const typename T::value_type&{
-	std::random_device random_device;
-	std::mt19937 engine{random_device()};
-	std::uniform_int_distribution<int> dist(0, container.size() - 1);
-	return container[dist(engine)];
+	return container[Get_Random_Index(container)];
+}
+
+
+template<typename T>
+auto Get_N_Random_Indexes_With_No_Immediate_Duplicates(T const& container, int count) -> std::vector<size_t> {
+  std::vector<size_t> indexes;
+  
+  auto prev_index = Get_Random_Index(container);
+  for (size_t i = 0; i < count; ++i){
+    
+      //keep generating a random until its new
+      auto rando = Get_Random_Index(container);
+      while (rando == prev_index){
+        rando = Get_Random_Index(container);
+      }
+      
+      indexes.emplace_back(rando);
+      prev_index = rando;
+  }
+  
+  return indexes;
+}
+
+template<typename T>
+auto Get_N_Random_Elements_With_No_Immediate_Duplicates(T const& container, int count) -> std::vector<typename T::value_type> {
+  T elements;
+  return elements;
 }
 
 template <typename T>
