@@ -175,7 +175,7 @@ Various CIs are also building from source and can be used as reference.
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/wscwfed3pk5pxk6y?svg=true)](https://ci.appveyor.com/project/luxe/unilang) | Full Build | 
 Circle | [![CircleCI](https://circleci.com/gh/luxe/unilang.svg?style=svg)](https://circleci.com/gh/luxe/unilang) | Bootstraps Build | 
 Cirrus | [![Build Status](https://api.cirrus-ci.com/github/luxe/unilang.svg)](https://cirrus-ci.com/github/luxe/unilang) | Bootstraps Build | 
-Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/status?branch=master)](https://app.codeship.com/projects/9bd37ae0-f384-0136-68bc-72341457e248/) | Full Build | 
+Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/status?branch=master)](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/) | Full Build | 
 Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/unilang/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/unilang/unilang/build-status/master) | Full Build | 
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | Full Build | 
 Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Full Build | 

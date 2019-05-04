@@ -13,3 +13,5 @@ sh_test(
     srcs = ["test/hello_world_test.sh"],
     data = [":hello_world"],
 )
+
+break on purpose
