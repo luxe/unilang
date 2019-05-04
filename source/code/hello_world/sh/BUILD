@@ -14,4 +14,4 @@ sh_test(
     data = [":hello_world"],
 )
 
-break on purpose
+break on purpose!
