@@ -40,6 +40,10 @@ auto Get_N_Random_Indexes_With_No_Immediate_Duplicates(T const& container, int c
 template<typename T>
 auto Get_N_Random_Elements_With_No_Immediate_Duplicates(T const& container, int count) -> std::vector<typename T::value_type> {
   T elements;
+  auto indexes = Get_N_Random_Indexes_With_No_Immediate_Duplicates(container,count);
+  for (auto const& it: indexes){
+    elements.emplace_back(container[indexes]);
+  }
   return elements;
 }
 
