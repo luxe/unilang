@@ -19,9 +19,7 @@ class
 ❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
 ❪"code/transcompilers/unilang/compiler-frontends/dzslides/dzslides_exporter"❫
 ❪"code/transcompilers/unilang/self_readme/latex_template_getter"❫
-❪"code/utilities/web/dropbox/dropbox_uploader"❫
-❪"code/utilities/secret/secret_getter"❫
-❪"code/utilities/git-related/github_uploader"❫
+❪"code/utilities/upload/file_uploader"❫
 ❪"code/utilities/time/date/lib"❫
 ⚞⚟
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -32,8 +30,6 @@ class
     //the files we are reading/building
     auto slides_base_name = Full_Path_To_Desktop() + "chinese_exercise";
     auto slides_full = slides_base_name + ".html";
-    bool upload_to_dropbox = false;
-    bool upload_to_github = true;
     std::string uploaded_filename = "chinese_exercise.html";
     
     
@@ -49,15 +45,12 @@ class
     //build html slides documentation
     Dzslides_Exporter::Create_Markdown_And_Slides(structure,contributors,dz_settings,slides_base_name);
     
-    //upload pdf to dropbox
-    if (upload_to_dropbox){
-        auto secret = Secret_Getter::Unilang_Dropbox_Access_Key();
-        Dropbox_Uploader::Upload(slides_full,uploaded_filename,secret);
-    }
-    
-    if (upload_to_github){
-        Github_Uploader::Upload(slides_full,uploaded_filename);
-    }
+    //upload slides somewhere
+    File_Upload_Settings settings;
+    settings.upload_to_github = true;
+    settings.local_file_name = slides_full;
+    settings.remote_file_name = uploaded_filename;
+    File_Uploader::Upload(settings);
 ❱
 
 ◀private: static▶ Structure ☀Chinese_Data_As_Unilang_Structure() ❰

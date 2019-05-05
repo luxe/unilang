@@ -19,11 +19,9 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/main/root_settings:root_settings_getter",
 "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
 "//code/transcompilers/unilang/self_readme:latex_template_getter",
-"//code/utilities/web/dropbox:dropbox_uploader",
-"//code/utilities/secret:secret_getter",
+"//code/utilities/upload:file_uploader",
 "//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/utilities/chinese:chinese_translations",
-"//code/utilities/git-related:github_uploader",
 "//code/utilities/time/date:lib",
 ])
 
