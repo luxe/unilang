@@ -1,6 +1,7 @@
 #pragma once
 #include <random>
 #include <string>
+#include <set>
 
 
 template<typename T>
@@ -41,6 +42,34 @@ template<typename T>
 auto Get_N_Random_Elements_With_No_Immediate_Duplicates(T const& container, int count) -> std::vector<typename T::value_type> {
   T elements;
   auto indexes = Get_N_Random_Indexes_With_No_Immediate_Duplicates(container,count);
+  for (auto const& it: indexes){
+    elements.emplace_back(container[indexes]);
+  }
+  return elements;
+}
+
+
+template<typename T>
+auto Get_N_Random_Indexes_With_No_Duplicates(T const& container, int count) -> std::vector<size_t> {
+  std::vector<size_t> indexes;
+  std::set<size_t> seen;
+  for (size_t i = 0; i < count; ++i){
+    auto rando = Get_Random_Index(container);
+    auto found = seen.find(rando);
+    while (found != container.end()){
+          rando = Get_Random_Index(container);
+          found = seen.find(rando);
+    }
+    seen.insert(rando);
+    indexes.emplace_back(rando);
+  }
+  return indexes;
+}
+
+template<typename T>
+auto Get_N_Random_Elements_With_No_Duplicates(T const& container, int count) -> std::vector<typename T::value_type> {
+  T elements;
+  auto indexes = Get_N_Random_Indexes_With_No_Duplicates(container,count);
   for (auto const& it: indexes){
     elements.emplace_back(container[indexes]);
   }
