@@ -35,6 +35,7 @@ hcp(name = "foreign_language_export_settings", deps = [
 "//code/transcompilers/unilang/options/language-specific:treesheets_options",
 "//code/transcompilers/unilang/options/language-specific:mermaid_settings",
 "//code/transcompilers/unilang/options/language-specific/dzslides:dzslides_settings",
+"//code/transcompilers/unilang/options/language-specific/slidy:slidy_settings",
 "//code/transcompilers/unilang/options/language-specific:processing_options",
 "//code/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/transcompilers/unilang/options/bazel:build_rule_settings",
