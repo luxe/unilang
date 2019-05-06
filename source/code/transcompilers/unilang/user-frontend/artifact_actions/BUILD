@@ -54,6 +54,7 @@ values =
 #Documentation
 ,"markdown"
 ,"dzslides"
+,"slidy"
 ,"plant_uml"
 ,"call_graph"
 ,"html_table"

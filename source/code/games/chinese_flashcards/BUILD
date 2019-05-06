@@ -21,6 +21,7 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/self_readme:latex_template_getter",
 "//code/utilities/upload:file_uploader",
 "//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
+"//code/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
 "//code/utilities/chinese:chinese_translations",
 "//code/utilities/time/date:lib",
 ])
