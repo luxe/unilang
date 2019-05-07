@@ -1,5 +1,6 @@
 #include "code/utilities/shell/lib.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
+#include <iostream>
 
 //general system stuff
 
@@ -27,6 +28,12 @@ std::string execute(std::string const& cmd) {
 }
 std::string execute(const char* cmd) {
 	return exec(cmd);
+}
+
+std::string print_and_execute(std::string const& cmd)
+{
+	std::cout << cmd << std::endl;
+	return execute(cmd);
 }
 
 std::vector<std::string> Get_Each_Line_Of_Shell_Command(std::string const& command){

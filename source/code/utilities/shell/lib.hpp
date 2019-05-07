@@ -12,6 +12,8 @@ std::string exec(const char* cmd);
 std::string execute(std::string const& cmd);
 std::string execute(const char* cmd);
 
+std::string print_and_execute(std::string const& cmd);
+
 //runs in the shell and gives you back one of the streams (stdout or stderr)
 std::string execute_and_get_back_stdout_only(std::string const& cmd);
 std::string execute_and_get_back_stdout_only(const char* cmd);
