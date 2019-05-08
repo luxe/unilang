@@ -1,1 +1,0 @@
-tools to automatically customize code editors
