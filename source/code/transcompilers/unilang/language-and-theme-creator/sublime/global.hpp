@@ -24,3 +24,10 @@ static const std::string SETTINGS_FILE = "User/" + LANGUAGE_NAME + ".sublime-set
 //uuid
 static const std::string THEME_UUID = "D8D5E82E-3D5B-46B5-B38E-8C841C21347D";
 static const std::string LANGUAGE_UUID = "112dad9d-558e-4ab2-a4cc-c5f1ffa80ee6";
+
+
+//extra supporting theme files
+//these are not technically related to unilang but I include them here to further configure sublime
+static const std::string CPP_SETTINGS_FILE = "User/C++.sublime-settings";
+static const std::string PLAIN_SETTINGS_FILE = "User/Plain text.sublime-settings";
+static const std::string PREFERENCES_FILE = "User/Preferences.sublime-settings";
