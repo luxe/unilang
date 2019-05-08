@@ -2,6 +2,9 @@ class
 
 ❪"code/transcompilers/unilang/tokens/generic_token"❫
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
+❪vector❫
+❪map❫
+❪utility❫
 ⚯
 ❪"code/transcompilers/unilang/language-and-theme-creator/sublime/global"❫
 ❪"code/transcompilers/unilang/language-and-theme-creator/sublime/unilang_file_creator"❫
@@ -15,7 +18,10 @@ class
 ◀public: static▶ void ☀Ensure_All_Token_Values_Are_Unique(All_Language_Tokens const& all_tokens) ❰
     
     //and then testing that they are indeed unique
-    if (All_Token_Characters_Are_Unique(all_tokens)){
+    if (!All_Token_Characters_Are_Unique(all_tokens)){
+
+        auto all_chars = Get_All_UniLang_Token_Characters(all_tokens);
+        Print_Duplicates(all_chars);
         Exit_With_Error("not using unique " + LANGUAGE_NAME + " markers");
     }
 ❱
@@ -59,4 +65,34 @@ class
     all_chars.push_back(all_tokens.standalone_symbols.NULL_MACRO);
     
     return all_chars;
+❱
+
+◀private: static▶ void ☀Find_Duplicates(std::vector<wchar_t> const& vecOfElements, std::map<wchar_t, int> & countMap) ❰
+
+    // Iterate over the vector and store the frequency of each element in map
+    for (auto & elem : vecOfElements)
+    {
+        auto result = countMap.insert(std::pair<wchar_t, int>(elem, 1));
+        if (result.second == false)
+            result.first->second++;
+    }
+ 
+    // Remove the elements from Map which has 1 frequency count
+    for (auto it = countMap.begin() ; it != countMap.end() ;)
+    {
+        if (it->second == 1)
+            it = countMap.erase(it);
+        else
+            it++;
+    }
+    std::cout << countMap.size() << std::endl;
+❱
+
+◀private: static▶ void ☀Print_Duplicates(std::vector<wchar_t> const& vec) ❰
+
+    std::map<wchar_t, int> duplicateElements;
+    Find_Duplicates(vec, duplicateElements);
+
+    for (auto & elem : duplicateElements)
+        std::cout << static_cast<int>(elem.first) << " :: " << elem.second << std::endl;
 ❱
