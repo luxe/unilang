@@ -13,6 +13,7 @@ values =
 #GPLs
 ,"c"
 ,"cpp"
+,"cpp_boost_program_options"
 ,"cpp_test"
 ,"cpp_benchmark"
 ,"cpp_fuzz"
