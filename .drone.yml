@@ -1,11 +1,14 @@
-kind: pipeline
-name: default
+pipeline:
+  ping:
+    image: docker
+    environment:
+      - DOCKER_HOST=unix:///drone/docker.sock
+    commands:
+      - sleep 10 # give docker enough time to initialize
+      - docker ps -a
 
-steps:
-- name: default
-  image: docker
-  environment:
-    - DOCKER_HOST=unix:///drone/docker.sock
-  commands:
-    - echo docker build -t unilang .
-    - echo docker run unilang ./ci_scripts/drone
+services:
+  docker:
+    image: docker:dind
+    privileged: true
+    command: [ '-H', 'unix:///drone/docker.sock' ]
