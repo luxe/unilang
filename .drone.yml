@@ -2,9 +2,16 @@ kind: pipeline
 name: default
 
 steps:
-- name: build
-  image: docker
+- name: test
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
   commands:
-  - dockerd &
   - docker build -t unilang .
-  - docker run unilang ./ci_scripts/appveyor
+  - docker run unilang ./ci_scripts/drone
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
