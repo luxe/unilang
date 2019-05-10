@@ -24,6 +24,10 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
 "//code/utilities/chinese:chinese_translations",
 "//code/utilities/time/date:lib",
+"//code/utilities/time/sleeping:lib",
+"//code/utilities/types/strings/observers/splitting:lib",
+"//code/utilities/types/strings/transformers/squeeze:lib",
+"//code/utilities/screen:screen_tint_setter",
 ])
 
 cc_binary(
