@@ -21,17 +21,10 @@ class
 ◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
     
     //convert strings to bitmap representations
-    auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
-    auto& style = Get_Style_To_Use(label);
-    
-    //decide text styling
-    if (!style.width.grow_width){
-        
-        Text_Cycle(bitmap,style.width);
-        Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
-    }
+    auto bitmap = Get_Width_Adjusted_Text_Bitmap(font_chars,label);
     
     //decide box dimensions
+    auto& style = Get_Style_To_Use(label);
     Decide_Label_Box_Dimensions(font_chars,label,style);
     
     int x_adjusted_label_draw = -2;
@@ -65,6 +58,37 @@ class
     }
 ❱
 
+◀private: static▶ Full_Color_Bitmap ☀Get_Width_Adjusted_Text_Bitmap(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
+
+    Readjust_Width_Based_On_Slide_Animation(label.styles.hovered_active.width);
+    Readjust_Width_Based_On_Slide_Animation(label.styles.regular_active.width);
+    Readjust_Width_Based_On_Slide_Animation(label.styles.hovered_nonactive.width);
+    Readjust_Width_Based_On_Slide_Animation(label.styles.regular_nonactive.width);
+    
+    auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
+    auto& style = Get_Style_To_Use(label);
+    if (!style.width.grow_width){
+        Text_Cycle(bitmap,style.width);
+        Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
+    }
+    
+    return bitmap;
+❱
+
+
+◀private: static▶ void ☀Readjust_Width_Based_On_Slide_Animation(Label_Width_Style & width)❰
+
+    if (!width.grow_width){
+        if (Cycle_Clock_Checker::Check(width.pixel_slide.slide_clock)){
+            width.pixel_slide.cycle_offset += width.pixel_slide.cycle_offset_pixel_jump;
+        }
+        
+        if (width.pixel_slide.cycle_offset > 200){
+            width.pixel_slide.cycle_offset = 0;
+        }
+    }
+❱
+
 ◀private: static▶ void ☀Text_Cycle(Full_Color_Bitmap & bitmap, Label_Width_Style & width)❰
     Full_Color_Bitmap new_bitmap;
     new_bitmap.color_fill = bitmap.color_fill;
@@ -72,14 +96,6 @@ class
     for (auto & it: bitmap.pixels){
         it.x -= width.pixel_slide.cycle_offset;
         new_bitmap.pixels.emplace_back(it);
-    }
-    
-    if (Cycle_Clock_Checker::Check(width.pixel_slide.slide_clock)){
-        width.pixel_slide.cycle_offset += width.pixel_slide.cycle_offset_pixel_jump;
-    }
-    
-    if (width.pixel_slide.cycle_offset > 200){
-        width.pixel_slide.cycle_offset = 0;
     }
     bitmap = new_bitmap;
 ❱
