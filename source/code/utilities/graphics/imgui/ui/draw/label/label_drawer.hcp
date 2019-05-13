@@ -16,15 +16,17 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/graphics/imgui/time/cycle_clock_checker"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/label_text_bitmap_getter"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/style/label_style_chooser"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Draw(ImDrawList *draw_list, std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
     
     //convert strings to bitmap representations
-    auto bitmap = Get_Width_Adjusted_Text_Bitmap(font_chars,label);
+    auto bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,label);
     
     //decide box dimensions
-    auto& style = Get_Style_To_Use(label);
+    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
     Decide_Label_Box_Dimensions(font_chars,label,style);
     
     int x_adjusted_label_draw = -2;
@@ -37,7 +39,7 @@ class
     //draw and handle backdrop
     auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.styles.regular_active.box);
     Set_Label_Properties_Based_On_Events(label,events);
-    Draw_Rectangle_Portion(draw_list,bitmap,pos,label);
+    Draw_Rectangle_Portion(draw_list,bitmap,pos,style);
     
     //adjust for message bitmap and print it
     pos.y -= y_adjusted_label_draw;
@@ -56,58 +58,6 @@ class
             label.cursors.clear();
         }
     }
-❱
-
-◀private: static▶ Full_Color_Bitmap ☀Get_Width_Adjusted_Text_Bitmap(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label)❰
-
-    Readjust_Width_Based_On_Slide_Animation(label.styles.hovered_active.width);
-    Readjust_Width_Based_On_Slide_Animation(label.styles.regular_active.width);
-    Readjust_Width_Based_On_Slide_Animation(label.styles.hovered_nonactive.width);
-    Readjust_Width_Based_On_Slide_Animation(label.styles.regular_nonactive.width);
-    
-    auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
-    auto& style = Get_Style_To_Use(label);
-    if (!style.width.grow_width){
-        Text_Cycle(bitmap,style.width);
-        Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
-    }
-    
-    return bitmap;
-❱
-
-
-◀private: static▶ void ☀Readjust_Width_Based_On_Slide_Animation(Label_Width_Style & width)❰
-
-    if (!width.grow_width){
-        if (Cycle_Clock_Checker::Check(width.pixel_slide.slide_clock)){
-            width.pixel_slide.cycle_offset += width.pixel_slide.cycle_offset_pixel_jump;
-        }
-        
-        if (width.pixel_slide.cycle_offset > 200){
-            width.pixel_slide.cycle_offset = 0;
-        }
-    }
-❱
-
-◀private: static▶ void ☀Text_Cycle(Full_Color_Bitmap & bitmap, Label_Width_Style & width)❰
-    Full_Color_Bitmap new_bitmap;
-    new_bitmap.color_fill = bitmap.color_fill;
-    
-    for (auto & it: bitmap.pixels){
-        it.x -= width.pixel_slide.cycle_offset;
-        new_bitmap.pixels.emplace_back(it);
-    }
-    bitmap = new_bitmap;
-❱
-
-◀private: static▶ void ☀Remove_Pixels_Past_A_Width(Full_Color_Bitmap & bitmap, const int width)❰
-
-    Remove_If(bitmap.pixels,[&](Position const& position){
-        if (position.x+5 > width || position.x < 0){
-            return true;
-        }
-        return false;
-    });
 ❱
 
 
@@ -132,35 +82,10 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Draw_Rectangle_Portion(ImDrawList *draw_list, Full_Color_Bitmap & bitmap, Position pos, Label_Settings & label)❰
-    
-    
-    auto style = Get_Style_To_Use(label);
+◀private: static▶ void ☀Draw_Rectangle_Portion(ImDrawList *draw_list, Full_Color_Bitmap & bitmap, Position pos, Label_Style const& style)❰
     
     bitmap.color_fill = style.text;
     Rectangle_Drawer::draw_rectangle(draw_list,pos,style.box);
-❱
-
-◀private: static▶ Label_Style& ☀Get_Style_To_Use(Label_Settings & label)❰
-
-    if (label.user_state.is_active){
-        if (label.user_state.is_hovered){
-            return label.styles.hovered_active;
-        }
-        else{
-            return label.styles.regular_active;
-        }
-    }
-    else{
-        if (label.user_state.is_hovered){
-            return label.styles.hovered_nonactive;
-        }
-        else{
-            return label.styles.regular_nonactive;
-        }
-    }
-    
-    return label.styles.regular_nonactive;
 ❱
 
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label, Label_Style const& style)❰

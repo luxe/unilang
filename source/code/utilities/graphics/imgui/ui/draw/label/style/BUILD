@@ -15,3 +15,8 @@ hcp(name="label_styles", deps = [
 hcp(name="label_width_style", deps = [
 "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
 ])
+
+
+hcp(name="label_style_chooser", deps = [
+"//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+])
