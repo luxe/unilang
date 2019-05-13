@@ -1,5 +1,7 @@
 class
 ❪string❫
+❪"code/utilities/screen/rgb_section.hpp"❫
+❪"code/utilities/screen/good_bad_screen_tint_settings.hpp"❫
 ⚯
 ❪"code/utilities/streams/filestreams/lib.hpp"❫
 ❪"code/utilities/filesystem/paths/lib.hpp"❫
@@ -14,7 +16,16 @@ class
     no_hup_execute_quietly_in_background(command);
 ❱
 
-◀public: static▶ void ☀Set_Redness(float red_percentage)❰
+◀public: static▶ void ☀Set_Rgb_Section(Rgb_Section const& section, float percentage)❰
+    switch (section){
+        case Rgb_Section::RED: Set_Redness(percentage); break;
+        case Rgb_Section::GREEN: Set_Greeness(percentage); break;
+        case Rgb_Section::BLUE: Set_Blueness(percentage); break;
+        default:;
+    }
+❱
+
+◀private: static▶ void ☀Set_Redness(float red_percentage)❰
     std::string command = "redshift -o -g ";
     float r_value = 1;
     float g_value = 1;
@@ -32,7 +43,7 @@ class
     command += std::to_string(b_value);
     no_hup_execute_quietly_in_background(command);
 ❱
-◀public: static▶ void ☀Set_Greeness(float green_percentage)❰
+◀private: static▶ void ☀Set_Greeness(float green_percentage)❰
     std::string command = "redshift -o -g ";
     float r_value = 1;
     float g_value = 1;
@@ -49,4 +60,50 @@ class
     command += ":";
     command += std::to_string(b_value);
     no_hup_execute_quietly_in_background(command);
+❱
+◀private: static▶ void ☀Set_Blueness(float blue_percentage)❰
+    std::string command = "redshift -o -g ";
+    float r_value = 1;
+    float g_value = 1;
+    float b_value = 1;
+    
+    //adjust for redness
+    float as_decimal = blue_percentage;
+    r_value -= as_decimal;
+    g_value -= as_decimal;
+    
+    command += std::to_string(r_value);
+    command += ":";
+    command += std::to_string(g_value);
+    command += ":";
+    command += std::to_string(b_value);
+    no_hup_execute_quietly_in_background(command);
+❱
+
+
+
+
+//use case
+◀public: static▶ void ☀Adjust_Screen_On_Good_Bad_Evaluation(Good_Bad_Screen_Tint_Settings const& settings)❰
+    
+    auto d = difference(settings.current_value,settings.standard_value);
+    if (settings.current_value < settings.standard_value){
+        auto percent = map_value_across_range(d,0,settings.expected_max_negative_difference,settings.negative_low_rgb_value,settings.negative_high_rgb_value);
+        Screen_Tint_Setter::Set_Rgb_Section(settings.below_color, 1.0 - percent);
+    }
+    else if (settings.current_value > settings.standard_value){
+        auto percent = map_value_across_range(d,0,settings.expected_max_positive_difference,settings.positive_low_rgb_value,settings.positive_high_rgb_value);
+        Screen_Tint_Setter::Set_Rgb_Section(settings.above_color, 1.0 - percent);
+    }
+❱
+
+◀private: static▶ float ☀difference(float a, float b)❰
+    if (a < b){
+        return b-a;
+    }
+    return a-b;
+❱
+◀private: static▶ float ☀map_value_across_range(float s, float a1, float a2, float b1, float b2)❰
+
+    return b1 + (s-a1)*(b2-b1)/(a2-a1);
 ❱

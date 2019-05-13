@@ -4,6 +4,7 @@ class
 ❪"code/transcompilers/unilang/tokens/generic_token"❫
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ❪"code/utilities/chinese/chinese_translations"❫
+❪"code/utilities/screen/good_bad_screen_tint_settings"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/exits/lib"❫
@@ -33,49 +34,27 @@ class
     //Unicode please
     Set_English_UTF8_Locale();
     
+    //initialize settings
+    Good_Bad_Screen_Tint_Settings settings;
+    settings.standard_value = Stock_Getter::Get_Uber_Open_Stock_Price();
+    settings.current_value = Stock_Getter::Get_Uber_Regular_Stock_Price();
+    settings.below_color = Rgb_Section::RED;
+    settings.above_color = Rgb_Section::GREEN;
+    settings.expected_max_positive_difference = 2.5;
+    settings.expected_max_negative_difference = 2.5;
+    settings.positive_low_rgb_value = .5;
+    settings.positive_high_rgb_value = 1;
+    settings.negative_low_rgb_value = .5;
+    settings.negative_high_rgb_value = 1;
+    
     float previous = 0;
-    auto open = Stock_Getter::Get_Uber_Open_Stock_Price();
     For_Every_N_Seconds_With_Exception_Catching(1,[&](){
         
-        auto current = Stock_Getter::Get_Uber_Regular_Stock_Price();
-        if (previous != current){
-            Change_Screen_Based_On_Price_Change(open, current);
+        settings.current_value = Stock_Getter::Get_Uber_Regular_Stock_Price();
+        if (previous != settings.current_value){
+            Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings);
         }
-        previous = current;
+        previous = settings.current_value;
         
     });
-❱
-
-◀private: static▶ void ☀Change_Screen_Based_On_Price_Change(float open, float current) ❰
-
-    if (current < open){
-        auto d = difference(current,open);
-        Tint_Red(d);
-    }
-    else if (current > open){
-        auto d = difference(current,open);
-        Tint_Green(d);
-    }
-❱
-
-◀private: static▶ void ☀Tint_Red(float relative_difference)❰
-    auto percent = map_value_across_range(relative_difference,0,2.5,.5,1);
-    std::cout << "red: " << percent << std::endl;
-    Screen_Tint_Setter::Set_Redness(1.0 - percent);
-❱
-◀private: static▶ void ☀Tint_Green(float relative_difference)❰
-    auto percent = map_value_across_range(relative_difference,0,2.5,.5,1);
-    std::cout << "green: " << percent << std::endl;
-    Screen_Tint_Setter::Set_Greeness(1.0 - percent);
-❱
-
-◀private: static▶ float ☀difference(float a, float b)❰
-    if (a < b){
-        return b-a;
-    }
-    return a-b;
-❱
-◀private: static▶ float ☀map_value_across_range(float s, float a1, float a2, float b1, float b2)❰
-
-    return b1 + (s-a1)*(b2-b1)/(a2-a1);
 ❱
