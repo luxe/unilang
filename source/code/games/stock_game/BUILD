@@ -28,6 +28,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/types/strings/transformers/squeeze:lib",
 "//code/utilities/screen:screen_tint_setter",
+"//code/utilities/stock:stock_getter",
 ])
 
 cc_binary(

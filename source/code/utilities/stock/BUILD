@@ -7,4 +7,5 @@ hcp(name = "stock_getter",deps=[
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/shell:lib",
 "//code/utilities/web:lib",
+"@nlohmann_json//:nlohmann_json",
 ])
