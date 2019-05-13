@@ -2,6 +2,7 @@
 #include <chrono>
 #include <thread>
 #include <gmpxx.h>
+#include <iostream>
 
 // sleep functions
 void Sleep_For_N_Nanoseconds(unsigned int const& number_of_nanoseconds);
@@ -59,6 +60,21 @@ template <typename Function>
 auto Sleep_For_N_Years_Then_Call_Function(unsigned int const& delay_amount, Function f) -> decltype(f) {
   Sleep_For_N_Years(delay_amount);
   return f();
+}
+
+//forever looping
+template <typename Function>
+void For_Every_N_Seconds_With_Exception_Catching(int seconds, Function f){
+  while (true){
+    
+    try{
+      f();
+    }
+    catch(std::exception const& e){
+      std::cout << e.what() << std::endl;
+    }
+    Sleep_For_N_Seconds(seconds);
+  }
 }
 
 //nanosecond delay looping
