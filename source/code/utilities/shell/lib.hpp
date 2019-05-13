@@ -25,6 +25,7 @@ void exec_quietly(std::string const& cmd);
 void exec_quietly(const char* cmd);
 void execute_quietly(std::string const& cmd);
 void execute_quietly(const char* cmd);
+void no_hup_execute_quietly_in_background(std::string const& cmd);
 
 //runs in the shell and gives you back the return code (nothing is silenced)
 int system(std::string const& cmd); //nice override for already existing C++ system(char*)

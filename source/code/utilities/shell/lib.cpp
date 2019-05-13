@@ -72,6 +72,13 @@ void exec_quietly(const char* cmd) {
 	exec(std::string(cmd) + " > /dev/null 2>&1");
 	return;
 }
+void no_hup_execute_quietly_in_background(std::string const& cmd) {
+    std::string full_command = "nohup ";
+    full_command += cmd;
+    full_command += " >/dev/null 2>&1 &";
+    exec(full_command);
+    
+}
 
 //runs in the shell and gives you back the error (nothing is silenced)
 int system(std::string const& cmd) {
