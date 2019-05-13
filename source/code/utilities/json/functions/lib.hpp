@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "code/utilities/json/nlohmann/lib.hpp"
+#include "nlohmann/json.hpp"
 
 //json append for all types that don't derive from an hcp file construct
 //so we assume the json library can handle all basic types and std containers

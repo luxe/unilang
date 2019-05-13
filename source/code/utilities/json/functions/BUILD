@@ -6,7 +6,7 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/json/nlohmann:lib",
-"//code/utilities/streams/filestreams:lib"
-]
-)
+    deps = [
+        "//code/utilities/streams/filestreams:lib",
+        "@nlohmann_json//:nlohmann_json"
+    ])
