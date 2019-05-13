@@ -7,7 +7,7 @@ hcp(name="label_settings", deps = [
 "//code/utilities/graphics/imgui/ui/draw:position",
 "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
 "//code/utilities/graphics/imgui/ui/draw/label:label_cursor_selection",
-"//code/utilities/graphics/imgui/ui/draw/label:label_styles",
+"//code/utilities/graphics/imgui/ui/draw/label/style:label_styles",
 "//code/utilities/graphics/imgui/ui/draw/label:label_user_state",
 ])
 
@@ -30,21 +30,7 @@ hcp(name="label_cursor_selection", deps = [
 "//code/utilities/graphics/imgui/ui/draw:position",
 ])
 
-hcp(name="label_style", deps = [
-    "//code/utilities/graphics/imgui/ui/draw:color",
-    "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
-    "//code/utilities/graphics/imgui/ui/draw/label:label_width_style",
-])
-
-hcp(name="label_styles", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/label:label_style",
-])
-
 hcp(name="label_user_state", deps = [
-])
-
-hcp(name="label_width_style", deps = [
-"//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
 ])
 
 hcp(name="label_cursor_mover", deps = [
