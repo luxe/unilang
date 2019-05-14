@@ -8,6 +8,8 @@ FROM ubuntu:14.04
 # As an aspiration, we want to migrate as many package manager-related actions into build rules.
 # But if it's too hard, they can stay here.
 # Also consider including debian packages directly in bazel rules (something to look into)?
+# We should do all of these installs as a single command.  
+# It will create less docker layers and its a better practice
 RUN apt-get update
 RUN apt-get install -y git
 #RUN apt-get install -y git-lfs
@@ -19,7 +21,7 @@ RUN apt-get install -y wget
 RUN apt-get install -y m4
 RUN apt-get install -y libgmp-dev
 RUN apt-get install -y libgmp3-dev
-RUN apt-get install -y xorg
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y xorg
 RUN apt-get install -y libsdl2-dev
 RUN apt-get install -y libsfml-dev
 RUN apt-get install -y libsdl2-image-dev
