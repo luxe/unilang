@@ -47,5 +47,13 @@ RUN echo LC_CTYPE="en_US.UTF-8" >> /etc/default/locale
 RUN echo LANGUAGE="en_US.UTF-8" >> /etc/default/locale
 RUN dpkg-reconfigure locales
 
+#these are the same between ubuntu versions:
+#RUN locale
+#RUN cat /etc/default/locale
+
+#might need to do:
+#--test_env=LANG --test_env=LOCALE_ARCHIVE
+#https://github.com/tweag/rules_haskell/issues/333
+
 # Copy the content of your repository into the image
 COPY . ./
