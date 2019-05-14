@@ -1,16 +1,20 @@
 FROM ubuntu:14.04
 #FROM ubuntu:18.04
 
-# I'd like to build all of these from source, but that's not easy in bazel.
+# I'd like to build all of these from source, but that's not always easy in bazel.
 # From Cmake to autotools; we live in a world of exotic builds with difficult to pin-down dependencies.
-# So this docker container is a fact of life.
+# We usually have to rewrite the tool's build files in skylark, and sometimes the build files generate other files for the build.
+# So this docker container is a shortcut when we can't figure out how to build from source.
 # As an aspiration, we want to migrate as many package manager-related actions into build rules.
 # But if it's too hard, they can stay here.
+# Also consider including debian packages directly in bazel rules (something to look into)?
 RUN apt-get update
 RUN apt-get install -y git
+#RUN apt-get install -y git-lfs
 #RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y patch
 RUN apt-get install -y python
+RUN apt-get install -y zip
 RUN apt-get install -y wget
 RUN apt-get install -y m4
 RUN apt-get install -y libgmp-dev
