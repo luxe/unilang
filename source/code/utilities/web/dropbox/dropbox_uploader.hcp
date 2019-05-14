@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪stdio.h❫
 ❪curl/curl.h❫
+❪"code/utilities/web/dropbox/dropbox_upload_settings"❫
 ⚯
 ❪"code/utilities/types/char/lib.hpp"❫
 ❪"code/utilities/shell/lib.hpp"❫
@@ -10,8 +11,17 @@ class
 ❪iostream❫
 ⚞⚟
 
-◀public: static▶ void ☀Upload(std::string const& local_file_path, std::string const& docker_file_path, std::string const& access_token)❰
-  Upload_With_Curl_Lib(local_file_path,docker_file_path,access_token);
+
+
+◀public: static▶ void ☀Upload(Dropbox_Upload_Settings const& settings)❰
+
+  if (settings.strategy == Upload_To_Dropbox_Strategy::CURL_COMMAND){
+    Upload_With_Curl_Command(settings.local_file_path,settings.docker_file_path,settings.access_token);
+  }
+  else if (settings.strategy == Upload_To_Dropbox_Strategy::CURL_LIB){
+    Upload_With_Curl_Lib(settings.local_file_path,settings.docker_file_path,settings.access_token);
+  }
+
 ❱
 
 ◀private: static▶ void ☀Upload_With_Curl_Lib(std::string const& local_file_path, std::string const& docker_file_path, std::string const& access_token)❰
