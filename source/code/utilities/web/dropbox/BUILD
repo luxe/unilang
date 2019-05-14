@@ -15,3 +15,6 @@ cc_binary(
   deps = ["//code/utilities/web/dropbox:dropbox_uploader",
   "//code/utilities/secret:secret_getter"]
 )
+
+hcp(name="dropbox_upload_settings", deps = [
+])
