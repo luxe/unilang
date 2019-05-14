@@ -32,13 +32,16 @@ RUN apt-get install -y locales
 # I should fix this in the tools that need them.
 # For now, In order to get the CIs to pass, we will force it like this.
 # Yeah, I don't know what the hell is going with all this UTF stuff.  
-# I'm just trying to get CIs to pass
+# I'm just trying to get CIs to pass.  It works in ubuntu 14 but not 18.
 RUN echo "nb_NO.UTF-8 UTF-8" >> /etc/locale.gen
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-RUN locale-gen en_US en_US.UTF-8
+RUN locale-gen "en_US"
+RUN locale-gen "en_US.UTF-8"
 RUN dpkg-reconfigure locales
 RUN env LANG=en_US.UTF-8
-RUN export LC_ALL=$LANG
+RUN export LC_ALL="en_US.UTF-8"
+RUN export LANG="en_US.UTF-8"
+#RUN update-locale LANG="en_US.UTF-8"
 
 # Copy the content of your repository into the image
 COPY . ./
