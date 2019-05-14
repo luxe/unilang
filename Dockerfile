@@ -42,6 +42,10 @@ RUN env LANG=en_US.UTF-8
 RUN export LC_ALL="en_US.UTF-8"
 RUN export LANG="en_US.UTF-8"
 #RUN update-locale LANG="en_US.UTF-8"
+RUN echo LC_ALL="en_US.UTF-8" >> /etc/default/locale
+RUN echo LC_CTYPE="en_US.UTF-8" >> /etc/default/locale
+RUN echo LANGUAGE="en_US.UTF-8" >> /etc/default/locale
+RUN dpkg-reconfigure locales
 
 # Copy the content of your repository into the image
 COPY . ./
