@@ -26,10 +26,15 @@ RUN apt-get install -y libsdl2-dev
 RUN apt-get install -y libsfml-dev
 RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
+RUN apt-get install -y locales
 
 # Language Locals.
 # I should fix this in the tools that need them.
 # For now, In order to get the CIs to pass, we will force it like this.
+# Yeah, I don't know what the hell is going with all this UTF stuff.  
+# I'm just trying to get CIs to pass
+RUN echo "nb_NO.UTF-8 UTF-8" >> /etc/locale.gen
+RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
 RUN locale-gen en_US en_US.UTF-8
 RUN dpkg-reconfigure locales
 RUN env LANG=en_US.UTF-8

@@ -117,6 +117,7 @@ cc_binary(
     name = "hcp-compiler",
     srcs = ["main.cpp"],
     deps = ["//code/transcompilers/hcp-compiler/official/program_options:lib",
+            "//code/utilities/locale:lib",
             "task_executer"],
 )
 
