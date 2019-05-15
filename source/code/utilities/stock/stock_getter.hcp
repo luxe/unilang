@@ -1,32 +1,32 @@
 class
 ❪string❫
+❪"nlohmann/json.hpp"❫
 ⚯
 ❪"code/utilities/streams/filestreams/lib.hpp"❫
 ❪"code/utilities/filesystem/paths/lib.hpp"❫
 ❪"code/utilities/shell/lib.hpp"❫
 ❪"code/utilities/web/lib"❫
 ❪iostream❫
-❪"nlohmann/json.hpp"❫
 ⚞⚟
 
 
 //generic
 ◀public: static▶ float ☀Get_Open_Market_Price(std::string symbol)❰
 
-    auto url = Yahoo_Finance_Url(symbol);
-    auto results = Get_HTML_Of_Site_With_Curl_Lib(url);
-    auto j = nlohmann::json::parse(results);
-    auto extracting = j["quoteResponse"]["result"][0];
-    float d = extracting.value("regularMarketOpen",0.00);
+    auto response = Get_Yahoo_Quote_Response(symbol);
+    float d = response.value("regularMarketOpen",0.00);
     return d;
 ❱
 ◀public: static▶ float ☀Get_Regular_Market_Price(std::string symbol)❰
 
-    auto url = Yahoo_Finance_Url(symbol);
-    auto results = Get_HTML_Of_Site_With_Curl_Lib(url);
-    auto j = nlohmann::json::parse(results);
-    auto extracting = j["quoteResponse"]["result"][0];
-    float d = extracting.value("regularMarketPrice",0.00);
+    auto response = Get_Yahoo_Quote_Response(symbol);
+    float d = response.value("regularMarketPrice",0.00);
+    return d;
+❱
+◀public: static▶ float ☀Get_Regular_Market_Change_Percent(std::string symbol)❰
+
+    auto response = Get_Yahoo_Quote_Response(symbol);
+    float d = response.value("regularMarketChangePercent",0.00);
     return d;
 ❱
 
@@ -38,7 +38,21 @@ class
 ◀public: static▶ float ☀Get_Uber_Open_Stock_Price() ❰
     return Get_Open_Market_Price("UBER");
 ❱
+◀public: static▶ float ☀Get_Uber_Regular_Market_Change_Percent() ❰
+    return Get_Regular_Market_Change_Percent("UBER");
+❱
 
+
+
+
+//yahoo related
+◀private: static▶ nlohmann::json ☀Get_Yahoo_Quote_Response(std::string const& symbol)❰
+    auto url = Yahoo_Finance_Url(symbol);
+    auto results = Get_HTML_Of_Site_With_Curl_Lib(url);
+    auto j = nlohmann::json::parse(results);
+    auto extracting = j["quoteResponse"]["result"][0];
+    return extracting;
+❱
 
 ◀private: static▶ std::string ☀Yahoo_Finance_Url(std::string symbol)❰
     std::string url = "https://query1.finance.yahoo.com/v7/finance/quote?lang=en-US&region=US&corsDomain=finance.yahoo.com&symbols=";
