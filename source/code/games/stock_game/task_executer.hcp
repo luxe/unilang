@@ -5,6 +5,7 @@ class
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ❪"code/utilities/chinese/chinese_translations"❫
 ❪"code/utilities/screen/good_bad_screen_tint_settings"❫
+❪"code/utilities/time/sleeping/lib"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/exits/lib"❫
@@ -23,7 +24,6 @@ class
 ❪"code/transcompilers/unilang/self_readme/latex_template_getter"❫
 ❪"code/utilities/upload/file_uploader"❫
 ❪"code/utilities/time/date/lib"❫
-❪"code/utilities/time/sleeping/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/transformers/squeeze/lib"❫
 ❪"code/utilities/screen/screen_tint_setter"❫
@@ -50,20 +50,43 @@ class
     settings.show_screen_tint = true;
     int seconds_to_fetch_changing_data = 1;
     
+    //how to source the value
+    auto how_to_source_value = [&](){return Stock_Getter::Get_Uber_Regular_Market_Change_Percent();};
+    
+    // what to do when the value changes
+    auto on_value_change = [&](float current){
+        settings.current_value = current;
+        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings);
+    };
+    
+    // monitor the changing value
+    When_Value_Changes(seconds_to_fetch_changing_data,how_to_source_value,on_value_change);
+    
+❱
+
+
+
+◀private:
+
+template <typename Fun1, typename Fun2>
+static void When_Value_Changes(int check_seconds, Fun1 source_action, Fun2 change_action){
+    
     float previous = 0;
-    For_Every_N_Seconds_With_Exception_Catching(seconds_to_fetch_changing_data,[&](){
+    float current = source_action();
+    For_Every_N_Seconds_With_Exception_Catching(check_seconds,[&](){
         
         
         //if current value has changed
-        settings.current_value = Stock_Getter::Get_Uber_Regular_Market_Change_Percent();
-        if (previous != settings.current_value){
+        current = source_action();
+        if (previous != current){
             
             //tint screen accordingly
-            Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings);
+            change_action(current);
         }
         
         //store previous value for next iteration
-        previous = settings.current_value;
+        previous = current;
         
     });
-❱
+}
+▶
