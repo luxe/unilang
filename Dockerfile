@@ -1,5 +1,5 @@
-FROM ubuntu:14.04
-#FROM ubuntu:18.04
+#FROM ubuntu:14.04
+FROM ubuntu:18.04
 
 # I'd like to build all of these from source, but that's not always easy in bazel.
 # From Cmake to autotools; we live in a world of exotic builds with difficult to pin-down dependencies.
@@ -10,7 +10,7 @@ FROM ubuntu:14.04
 # Also consider including debian packages directly in bazel rules (something to look into)?
 # We should do all of these installs as a single command.  
 # It will create less docker layers and its a better practice
-RUN apt-get update
+RUN apt-get update --fix-missing
 RUN apt-get install -y git
 #RUN apt-get install -y git-lfs
 #RUN apt-get install -y openjdk-8-jdk
@@ -46,6 +46,12 @@ RUN echo LC_ALL="en_US.UTF-8" >> /etc/default/locale
 RUN echo LC_CTYPE="en_US.UTF-8" >> /etc/default/locale
 RUN echo LANGUAGE="en_US.UTF-8" >> /etc/default/locale
 RUN dpkg-reconfigure locales
+
+
+RUN echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
+RUN echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections
+RUN rm "/etc/locale.gen"
+RUN dpkg-reconfigure --frontend noninteractive locales
 
 #these are the same between ubuntu versions:
 #RUN locale
