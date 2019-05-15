@@ -1,19 +1,29 @@
-#FROM ubuntu:14.04
+# Why does this docker container exist?
+# I'd like to build everything from source, but that's not always easy.
+# From Cmake to autotools; the world is full of exotic builds and difficult to pin-down dependencies.
+# For non-bazel projects, I usually have to rewrite the tool's build files in skylark.
+# This can be difficult.  For example, when build files generate other build files for the build.
+# We use the docker container when we can't figure out how to build from source.
+# As an aspiration, I'd want to migrate as many package manager-related actions into the build rules.
+# But if it's too hard, they can stay here.
+# It's also nice to have Dockerfiles for CIs and containerized contexts for different tools.
+
+# Other thoughts on reducing the Dockerfile:
+# I think there is a way to include debian packages directly in bazel rules.  We could look into that.
+# Although its a better practice to run all of these commands a a single command since it will create less layers,
+# I'm keeping them seperated as it makes debugging easier.
+
+# We try to upgrade to the latest Ubuntu when available
 FROM ubuntu:18.04
 
-# I'd like to build all of these from source, but that's not always easy in bazel.
-# From Cmake to autotools; we live in a world of exotic builds with difficult to pin-down dependencies.
-# We usually have to rewrite the tool's build files in skylark, and sometimes the build files generate other files for the build.
-# So this docker container is a shortcut when we can't figure out how to build from source.
-# As an aspiration, we want to migrate as many package manager-related actions into build rules.
-# But if it's too hard, they can stay here.
-# Also consider including debian packages directly in bazel rules (something to look into)?
-# We should do all of these installs as a single command.  
-# It will create less docker layers and its a better practice
+# All of the necessary apt-get installs
+# Strangely, wget was not working on a different machine??
+# Which is confusing because I was building a docker container; why would the host machine matter.
+# The fix was to use --fix-missing on the update.
+# With the transition from Ubuntu 14.04 to 18.04, installing xorg would pause for user input on country
+# This has been mitigated using the "noninteractive".
 RUN apt-get update --fix-missing
 RUN apt-get install -y git
-#RUN apt-get install -y git-lfs
-#RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y patch
 RUN apt-get install -y python
 RUN apt-get install -y zip
@@ -28,38 +38,18 @@ RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
 RUN apt-get install -y locales
 
-# Language Locals.
-# I should fix this in the tools that need them.
-# For now, In order to get the CIs to pass, we will force it like this.
-# Yeah, I don't know what the hell is going with all this UTF stuff.
-# I'm just trying to get CIs to pass.  It works in ubuntu 14 but not 18.
-RUN echo "nb_NO.UTF-8 UTF-8" >> /etc/locale.gen
-RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
-RUN locale-gen "en_US"
-RUN locale-gen "en_US.UTF-8"
-RUN dpkg-reconfigure locales
-RUN env LANG=en_US.UTF-8
-RUN export LC_ALL="en_US.UTF-8"
-RUN export LANG="en_US.UTF-8"
-#RUN update-locale LANG="en_US.UTF-8"
-RUN echo LC_ALL="en_US.UTF-8" >> /etc/default/locale
-RUN echo LC_CTYPE="en_US.UTF-8" >> /etc/default/locale
-RUN echo LANGUAGE="en_US.UTF-8" >> /etc/default/locale
-RUN dpkg-reconfigure locales
+# packages we may or may not need
+# RUN apt-get install -y git-lfs
+# RUN apt-get install -y openjdk-8-jdk
 
-
+# The build runs certain tools that need a particular locale to be available
+# I had to do this differently when transitioning from Ubuntu 14.04 to 18.04
+# This will ensure the en_US.UTF-8 locale is available.
+# Ideally, I'd like to fix the tools so this is not needed in the Dockerfile.
 RUN echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
 RUN echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections
 RUN rm "/etc/locale.gen"
 RUN dpkg-reconfigure --frontend noninteractive locales
-
-#these are the same between ubuntu versions:
-#RUN locale
-#RUN cat /etc/default/locale
-
-#might need to do:
-#--test_env=LANG --test_env=LOCALE_ARCHIVE
-#https://github.com/tweag/rules_haskell/issues/333
 
 # Copy the content of your repository into the image
 COPY . ./
