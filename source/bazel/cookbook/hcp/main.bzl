@@ -21,4 +21,6 @@ def hcp(name,deps=[]):
     )
       
     #compiling hpp/cpp
-    cpp_object(name,deps)
+    real_deps = list(deps)
+    real_deps += ["@boost//:serialization"]
+    cpp_object(name,real_deps)

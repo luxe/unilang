@@ -41,6 +41,11 @@ class
     Include_File_Printer::Print(hpp_stream,structure.Header_Includes());
     Include_File_Printer::Print(cpp_stream,structure.Source_Includes());
     hpp_stream << '\n';
+    hpp_stream << as_wstring(boost_serialization_headers());
+    
+    
+    
+    hpp_stream << '\n';
     cpp_stream << '\n';
 
     //dump hpp code wrapped in class name
@@ -105,15 +110,15 @@ class
       outfile << "\tfriend  std::string As_XML_String(" <<  wstr << " const& class_object);\n";
       */
       
-      outfile << "private:\n";
-      outfile << as_wstring(boost_serialization_interface(structure));
+      outfile << "public:\n";
+      outfile << as_wstring(boost_serialization_interface_methods(structure));
     }
     
     outfile << "};";
     
 ❱
 
-◀private: static▶ std::string ☀boost_serialization_interface(Class_Structure const& structure)❰
+◀private: static▶ std::string ☀boost_serialization_interface_methods(Class_Structure const& structure)❰
   std::string str;
   str += "template<class Archive>\n";
   str += "void serialize(Archive & ar, const unsigned int version){\n";
@@ -122,6 +127,15 @@ class
       std::cout << "data members" << std::endl;
   }
   str += "}\n";
+  return str;
+❱
+
+◀private: static▶ std::string ☀boost_serialization_headers()❰
+  std::string str;
+  str += "#define _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR\n";
+  str += "#define BOOST_NO_AUTO_PTR\n";
+  str += "#include <boost/archive/text_oarchive.hpp>\n";
+  str += "#include <boost/archive/text_iarchive.hpp>\n";
   return str;
 ❱
 
