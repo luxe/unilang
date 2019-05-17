@@ -14,9 +14,8 @@ class
 ❪"include_file_printer"❫
 ⚞⚟
 
-◀public:▶
 
-◀static▶ void ☀Compile_HCP_File(Class_Structure const& structure, std::string const& directory, bool const& utility_functions◀=true▶)❰
+◀public: static▶ void ☀Compile_HCP_File(Class_Structure const& structure, std::string const& directory, bool const& utility_functions◀=true▶)❰
 
     //use the structure to print the cpp and hpp versions of the file
 	
@@ -83,7 +82,7 @@ class
     }
 ❱
 
-◀static▶ void ☀Dump_HPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file, bool const& utility_functions)❰
+◀private: static▶ void ☀Dump_HPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file, bool const& utility_functions)❰
     auto str = Make_Capital_And_Underscored_In_User_Type_Format(As_Removed_Suffix(hcp_file));
     std::wstring wstr(str.begin(),str.end());
     outfile << "class " << wstr;
@@ -107,17 +106,21 @@ class
       */
       
       outfile << "private:\n";
-      //outfile << "friend class boost::serialization::access;\n";
-      outfile << "template<class Archive>\n";
-      outfile << "void serialize(Archive & ar, const unsigned int version){\n";
-      for (auto const& data_member: structure.Data_Members()){
-          outfile << "\tar & " << data_member << ";\n";
-      }
-      
-      outfile << "}\n";
+      outfile << as_wstring(boost_serialization_interface(structure));
     }
     
     outfile << "};";
     
 ❱
-◀private:▶
+
+◀private: static▶ std::string ☀boost_serialization_interface(Class_Structure const& structure)❰
+  std::string str;
+  str += "template<class Archive>\n";
+  str += "void serialize(Archive & ar, const unsigned int version){\n";
+  for (auto const& data_member: structure.Data_Members()){
+      str += "\tar & " + as_string(data_member) + ";\n";
+  }
+  str += "}\n";
+  return str;
+❱
+
