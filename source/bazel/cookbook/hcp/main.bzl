@@ -23,4 +23,5 @@ def hcp(name,deps=[]):
     #compiling hpp/cpp
     real_deps = list(deps)
     real_deps += ["@boost//:serialization"]
+    real_deps += ["@nlohmann_json//:nlohmann_json"]
     cpp_object(name,real_deps)

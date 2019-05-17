@@ -81,6 +81,7 @@ bootstrap_hcp(
     "//code/utilities/types/wstrings/transformers/trimming:lib",
     "//code/utilities/types/wstrings/transformers/other:lib",
     "//code/utilities/types/strings/observers/path:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
 	"//code/utilities/converters:lib",
 	"class_structure",
     "include_file_printer"

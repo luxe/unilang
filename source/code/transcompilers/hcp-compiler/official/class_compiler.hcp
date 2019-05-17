@@ -12,6 +12,7 @@ class
 ❪"code/utilities/types/wstrings/transformers/other/lib"❫
 ❪"code/utilities/converters/lib"❫
 ❪"include_file_printer"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚞⚟
 
 
@@ -51,15 +52,10 @@ class
 
     //dump hpp code wrapped in class name
     Dump_HPP(hpp_stream,structure,structure.File_Name(),utility_functions);
-
-    //dump cpp
-    cpp_stream << structure.CPP_Code();
+    Dump_CPP(cpp_stream,structure,structure.File_Name(),utility_functions);
     
-    auto class_name = as_wstring(Make_Capital_And_Underscored_In_User_Type_Format(As_Removed_Suffix(structure.File_Name())));
-    
+    //JUNK NOTSES
     //add the json exporting function
-    if (utility_functions){
-      
     /*
     cpp_stream << "//functions added automatically by hcp-compiler\n";
     
@@ -85,11 +81,14 @@ class
         cpp_stream << "\tstd::string xml_str;\n";
         cpp_stream << "\treturn xml_str;\n}";
     */
-    }
+❱
+
+◀private: static▶ std::string ☀Get_Class_Name(Class_Structure const& structure)❰
+  return Make_Capital_And_Underscored_In_User_Type_Format(As_Removed_Suffix(structure.File_Name()));
 ❱
 
 ◀private: static▶ void ☀Dump_HPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file, bool const& utility_functions)❰
-    auto str = Make_Capital_And_Underscored_In_User_Type_Format(As_Removed_Suffix(hcp_file));
+    auto str = Get_Class_Name(structure);
     std::wstring wstr(str.begin(),str.end());
     outfile << "class " << wstr;
     if (!structure.Inheritance().empty()){
@@ -117,10 +116,19 @@ class
     
     outfile << "};";
     outfile << "\n";
-    outfile << as_wstring(nlohmann_serialization_interface_methods(structure));
+    
+    if (utility_functions){
+      outfile << as_wstring(nlohmann_serialization_interface_methods(structure,str));
+    }
     
 ❱
 
+◀private: static▶ void ☀Dump_CPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file, bool const& utility_functions)❰
+  outfile << structure.CPP_Code();
+  
+  if (utility_functions){
+  }
+❱
 
 
 //serialization related
@@ -144,13 +152,23 @@ class
   return str;
 ❱
 
-◀private: static▶ std::string ☀nlohmann_serialization_interface_methods(Class_Structure const& structure)❰
+◀private: static▶ std::string ☀nlohmann_serialization_interface_methods(Class_Structure const& structure, std::string const& class_name)❰
   std::string str;
+  Append(str,"void to_json(nlohmann::json& j, const ");
+  Append(str,class_name);
+  Append_With_Newline(str,"&x);");
+  //Append_With_Newline(str,"}");
+  
+  Append(str,"void from_json(const nlohmann::json& j, ");
+  Append(str,class_name);
+  Append_With_Newline(str,"&x);");
+  //Append_With_Newline(str,"}");
   return str;
 ❱
 
 ◀private: static▶ std::string ☀nlohmann_serialization_headers()❰
   std::string str;
+  str += "#include \"nlohmann/json.hpp\"\n";
   return str;
 ❱
 
