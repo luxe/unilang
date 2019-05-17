@@ -1,3 +1,4 @@
+
 # Why does this docker container exist?
 # I'd like to build everything from source, but that's not always easy.
 # From Cmake to autotools; the world is full of exotic builds and difficult to pin-down dependencies.
