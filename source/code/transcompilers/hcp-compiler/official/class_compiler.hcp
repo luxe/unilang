@@ -42,6 +42,7 @@ class
     Include_File_Printer::Print(cpp_stream,structure.Source_Includes());
     hpp_stream << '\n';
     hpp_stream << as_wstring(boost_serialization_headers());
+    hpp_stream << as_wstring(nlohmann_serialization_headers());
     
     
     
@@ -115,16 +116,20 @@ class
     }
     
     outfile << "};";
+    outfile << "\n";
+    outfile << as_wstring(nlohmann_serialization_interface_methods(structure));
     
 ❱
 
+
+
+//serialization related
 ◀private: static▶ std::string ☀boost_serialization_interface_methods(Class_Structure const& structure)❰
   std::string str;
   str += "template<class Archive>\n";
   str += "void serialize(Archive & ar, const unsigned int version){\n";
   for (auto const& data_member: structure.Data_Members()){
       str += "\tar & " + as_string(data_member) + ";\n";
-      std::cout << "data members" << std::endl;
   }
   str += "}\n";
   return str;
@@ -138,4 +143,16 @@ class
   str += "#include <boost/archive/text_iarchive.hpp>\n";
   return str;
 ❱
+
+◀private: static▶ std::string ☀nlohmann_serialization_interface_methods(Class_Structure const& structure)❰
+  std::string str;
+  return str;
+❱
+
+◀private: static▶ std::string ☀nlohmann_serialization_headers()❰
+  std::string str;
+  return str;
+❱
+
+
 
