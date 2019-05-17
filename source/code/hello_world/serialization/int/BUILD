@@ -25,3 +25,6 @@ gtest(name = "cereal_class_int_intrusive",
 gtest(name = "cereal_class_int_nonintrusive",
       deps = ["@cereal//:main"]
 )
+gtest(name = "nlohmann_json_class_int_nonintrusive",
+      deps = ["@nlohmann_json//:nlohmann_json"]
+)
