@@ -125,8 +125,10 @@ class
 
 ◀private: static▶ void ☀Dump_CPP(std::wofstream & outfile, Class_Structure const& structure, std::string const& hcp_file, bool const& utility_functions)❰
   outfile << structure.CPP_Code();
+  auto str = Get_Class_Name(structure);
   
   if (utility_functions){
+    outfile << as_wstring(nlohmann_serialization_implementation_methods(structure,str));
   }
 ❱
 
@@ -157,12 +159,45 @@ class
   Append(str,"void to_json(nlohmann::json& j, const ");
   Append(str,class_name);
   Append_With_Newline(str,"&x);");
-  //Append_With_Newline(str,"}");
   
   Append(str,"void from_json(const nlohmann::json& j, ");
   Append(str,class_name);
   Append_With_Newline(str,"&x);");
-  //Append_With_Newline(str,"}");
+  return str;
+❱
+
+◀private: static▶ std::string ☀nlohmann_serialization_implementation_methods(Class_Structure const& structure, std::string const& class_name)❰
+  std::string str;
+  
+  //to json
+  Append(str,"void to_json(nlohmann::json& j, const ");
+  Append(str,class_name);
+  Append_With_Newline(str,"&x) {");
+  Append_With_Newline(str,"j = nlohmann::json{");
+  for (auto const& data_member: structure.Data_Members()){
+    Append(str,"{\"");
+    Append(str,as_string(data_member));
+    Append(str,"\", x.");
+    Append(str,as_string(data_member));
+    Append_With_Newline(str,"},");
+  }
+  Append_With_Newline(str,"};");
+  Append_With_Newline(str,"}");
+  
+  
+  //from json
+  Append(str,"void from_json(const nlohmann::json& j, ");
+  Append(str,class_name);
+  Append_With_Newline(str,"&x) {");
+  for (auto const& data_member: structure.Data_Members()){
+    Append(str,"j.at(\"");
+    Append(str,as_string(data_member));
+    Append(str,"\").get_to(x.");
+    Append(str,as_string(data_member));
+    Append_With_Newline(str,");");
+  }
+  Append_With_Newline(str,"}");
+  
   return str;
 ❱
 
