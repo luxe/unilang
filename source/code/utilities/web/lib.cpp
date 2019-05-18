@@ -4,7 +4,12 @@
 #include <curl/curl.h>
 #include <iostream>
 
-std::string Get_HTML_Of_Site(std::string const& website){
+std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings){
+  std::string str;
+  return str;
+}
+
+std::string Get_HTML_Of_Site_With_Curl_Command(std::string const& website){
   return execute_and_get_back_stdout_only("curl " + website);
 }
 
@@ -48,7 +53,7 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
     return "";
 }
 std::vector<std::string> Get_HTML_Of_Site_With_Each_Line_In_Vector(std::string const& website){
-    auto it = Get_HTML_Of_Site(website);
+    auto it = Get_HTML_Of_Site_With_Curl_Command(website);
     return Put_Each_Line_Of_String_Into_A_Vector(it);
 }
 void Send_Email(std::string const& message, std::string const& email)

@@ -2,9 +2,15 @@
 #include <curl/curl.h>
 #include <string>
 #include <vector>
+#include "code/utilities/web/html_fetch_settings.hpp"
 
-std::string Get_HTML_Of_Site(std::string const& website);
+
+std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings);
+std::string Get_HTML_Of_Site_With_Curl_Command(std::string const& website);
 std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& website);
+
+
+
 std::vector<std::string> Get_HTML_Of_Site_With_Each_Line_In_Vector(std::string const& website);
 void Send_Email(std::string const& message, std::string const& email);
 
