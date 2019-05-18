@@ -37,6 +37,7 @@ hcp(name = "task_executer", deps = [
 hcp(name = "deskstock_settings", deps = [
     "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
     "//code/utilities/locale:locale_settings",
+    "//code/utilities/web:web_json_extraction_settings",
 ])
 
 cc_binary(

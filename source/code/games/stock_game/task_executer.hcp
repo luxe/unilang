@@ -79,6 +79,29 @@ class
     settings.screen_tint.show_screen_tint = true;
     settings.seconds_to_fetch_changing_data = 1;
     
+    settings.value_get.fetch.strategy = Html_Fetch_Strategy::CURL_LIB;
+    settings.value_get.fetch.url = Stock_Getter::Yahoo_Finance_Url("UBER");
+    settings.value_get.extract.desired_key = "regularMarketChangePercent";
+    
+    {
+        Json_Extraction_Step step;
+        step.key = "quoteResponse";
+        step.index = false;
+        settings.value_get.extract.steps.emplace_back(step);
+    }
+    {
+        Json_Extraction_Step step;
+        step.key = "result";
+        step.index = false;
+        settings.value_get.extract.steps.emplace_back(step);
+    }
+    {
+        Json_Extraction_Step step;
+        step.key = "0";
+        step.index = true;
+        settings.value_get.extract.steps.emplace_back(step);
+    }
+    
     return settings;
 ❱
 

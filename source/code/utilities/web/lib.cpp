@@ -8,7 +8,7 @@
 float Extract_Web_Json_Float(Web_Json_Extraction_Settings const& settings){
   
   auto str = Get_Html_Of_Site(settings.fetch);
-  auto val = Json_Extractor::Extract(settings.extract);
+  auto val = Json_Extractor::Extract(str,settings.extract);
   return val;
 }
 
