@@ -1,15 +1,32 @@
 class
 ❪string❫
 ❪"code/utilities/json/json_extraction_settings"❫
+❪"nlohmann/json.hpp"❫
 ⚯
 ❪sys/stat.h❫
 ❪iostream❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
 
 
 ◀public: static▶ float ☀Extract(std::string const& str, Json_Extraction_Settings const& settings)❰
-    //TODO
-    return 0;
-
+    
+    //parse string to json
+    auto j = nlohmann::json::parse(str);
+    
+    //drill down to final element
+    for (auto const& it: settings.steps){
+        
+        if (it.index){
+            j = j[as_signed(it.key)];
+        }
+        else{
+            j = j[it.key];
+        }
+    }
+    
+    //extract final element
+    auto val = j.value(settings.desired_key,0.00);
+    return val;
 ❱

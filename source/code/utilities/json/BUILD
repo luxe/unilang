@@ -11,5 +11,6 @@ hcp(name = "json_extraction_step", deps = [
 ])
 
 hcp(name = "json_extractor", deps = [
-    "//code/utilities/json:json_extraction_settings"
+    "//code/utilities/json:json_extraction_settings",
+    "//code/utilities/types/strings/observers/converting:lib",
 ])
