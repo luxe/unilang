@@ -7,19 +7,8 @@ hcp(name = "screen_tint_setter",deps=[
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/shell:lib",
-"//code/utilities/screen:rgb_section",
-"//code/utilities/screen:good_bad_screen_tint_settings",
+"//code/utilities/screen/good_bad:rgb_section",
+"//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
 "//code/utilities/screen/redshift:redshift_command_getter",
 "//code/utilities/screen/redshift:redshift_settings",
-])
-
-enum_cpp(name = "rgb_section",
-values = [
-"red"
-,"green"
-,"blue"
-])
-
-hcp(name = "good_bad_screen_tint_settings",deps=[
-"//code/utilities/screen:rgb_section",
 ])

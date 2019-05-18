@@ -29,7 +29,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/strings/transformers/squeeze:lib",
 "//code/utilities/screen:screen_tint_setter",
 "//code/utilities/stock:stock_getter",
-"//code/utilities/screen:good_bad_screen_tint_settings",
+"//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
 ])
 
 cc_binary(
