@@ -3,9 +3,24 @@
 #include "code/utilities/shell/lib.hpp"
 #include <curl/curl.h>
 #include <iostream>
+#include "code/utilities/json/json_extractor.hpp"
+
+float Extract_Web_Json_Float(Web_Json_Extraction_Settings const& settings){
+  
+  auto str = Get_Html_Of_Site(settings.fetch);
+  auto val = Json_Extractor::Extract(settings.extract);
+  return val;
+}
 
 std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings){
   std::string str;
+  
+  if (settings.strategy == Html_Fetch_Strategy::CURL_LIB){
+    str = Get_HTML_Of_Site_With_Curl_Lib(settings.url);
+  }
+  else if (settings.strategy == Html_Fetch_Strategy::CURL_COMMAND){
+    str = Get_HTML_Of_Site_With_Curl_Command(settings.url);
+  }
   return str;
 }
 

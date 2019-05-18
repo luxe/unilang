@@ -11,7 +11,9 @@ cc_library(
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/shell:lib",
     "@curl",
-    "//code/utilities/web:html_fetch_settings"
+    "//code/utilities/web:html_fetch_settings",
+    "//code/utilities/web:web_json_extraction_settings",
+    "//code/utilities/json:json_extractor",
     ]
 )
 
@@ -23,4 +25,9 @@ values = [
 
 hcp(name = "html_fetch_settings", deps = [
     "//code/utilities/web:html_fetch_strategy",
+])
+
+hcp(name = "web_json_extraction_settings", deps = [
+    "//code/utilities/web:html_fetch_settings",
+    "//code/utilities/json:json_extraction_settings",
 ])
