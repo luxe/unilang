@@ -34,6 +34,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/locale:locale_setter",
 "//code/utilities/web:lib",
 "//code/games/stock_game:default_settings_getter",
+"//code/utilities/config:config_monitor",
 ])
 
 hcp(name = "default_settings_getter", deps = [

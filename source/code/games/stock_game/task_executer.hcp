@@ -34,10 +34,15 @@ class
 ❪iostream❫
 ❪"nlohmann/json.hpp"❫
 ❪"code/games/stock_game/default_settings_getter"❫
+❪"code/utilities/config/config_monitor"❫
 ⚞⚟
+
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
 
-    auto settings = Default_Settings_Getter::Get();
+    auto default_settings = Default_Settings_Getter::Get();
+    Deskstock_Settings settings;
+    Config_Monitor::Monitor_Changes(settings,default_settings);
+    
     Locale_Setter::Set(settings.locale);
     
     //nlohmann::json j = settings;
@@ -46,12 +51,16 @@ class
     
     
     //how to source the value
-    auto how_to_source_value = [&](){return Extract_Web_Json_Float(settings.value_get);};
+    auto how_to_source_value = [&](){
+        Config_Monitor::Monitor_Changes(settings,default_settings);
+        return Extract_Web_Json_Float(settings.value_get);
+    };
     
     // what to do when the value changes
     auto on_value_change = [&](float current){
         settings.screen_tint.current_value = current;
         Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings.screen_tint);
+        //dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color "'rgb(0,0,255)'"
     };
     
     // infinite program loop to monitor
