@@ -13,6 +13,7 @@ values = [
 hcp(name = "good_bad_screen_tint_settings",deps=[
 "//code/utilities/screen/good_bad:rgb_section",
 "//code/utilities/screen/good_bad:mood_setting",
+"//code/utilities/screen/redshift:redshift_settings",
 ])
 
 hcp(name = "mood_setting",deps=[

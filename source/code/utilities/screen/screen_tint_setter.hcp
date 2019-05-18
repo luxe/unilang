@@ -13,60 +13,54 @@ class
 ⚞⚟
 
 
-◀public: static▶ void ☀Set_Rgb_Section(Rgb_Section const& section, float percentage)❰
+◀public: static▶ void ☀Set_Rgb_Section(Redshift_Settings const& setting, Rgb_Section const& section, float percentage)❰
     switch (section){
-        case Rgb_Section::RED: Set_Redness(percentage); break;
-        case Rgb_Section::GREEN: Set_Greeness(percentage); break;
-        case Rgb_Section::BLUE: Set_Blueness(percentage); break;
+        case Rgb_Section::RED: Set_Redness(setting,percentage); break;
+        case Rgb_Section::GREEN: Set_Greeness(setting,percentage); break;
+        case Rgb_Section::BLUE: Set_Blueness(setting,percentage); break;
         default:;
     }
 ❱
 
-◀private: static▶ void ☀Set_Redness(float red_percentage)❰
-    auto command = Get_Redness_Redshift_Command(red_percentage);
+◀private: static▶ void ☀Set_Redness(Redshift_Settings const& setting, float red_percentage)❰
+    auto command = Get_Redness_Redshift_Command(setting, red_percentage);
     no_hup_execute_quietly_in_background(command);
 ❱
-◀private: static▶ void ☀Set_Greeness(float green_percentage)❰
-    auto command = Get_Greeness_Redshift_Command(green_percentage);
+◀private: static▶ void ☀Set_Greeness(Redshift_Settings const& setting, float green_percentage)❰
+    auto command = Get_Greeness_Redshift_Command(setting, green_percentage);
     no_hup_execute_quietly_in_background(command);
 ❱
-◀private: static▶ void ☀Set_Blueness(float blue_percentage)❰
-    auto command = Get_Blueness_Redshift_Command(blue_percentage);
+◀private: static▶ void ☀Set_Blueness(Redshift_Settings const& setting, float blue_percentage)❰
+    auto command = Get_Blueness_Redshift_Command(setting, blue_percentage);
     no_hup_execute_quietly_in_background(command);
 ❱
 
-◀private: static▶ std::string ☀Get_Redness_Redshift_Command(float red_percentage)❰
-
-    Redshift_Settings shift_settings;
+◀private: static▶ std::string ☀Get_Redness_Redshift_Command(Redshift_Settings setting, float red_percentage)❰
     
     //adjust for redness
     float as_decimal = red_percentage;
-    shift_settings.green_gamma_correction -= as_decimal;
-    shift_settings.blue_gamma_correction -= as_decimal;
+    setting.green_gamma_correction -= as_decimal;
+    setting.blue_gamma_correction -= as_decimal;
     
-    return Redshift_Command_Getter::Get(shift_settings);
+    return Redshift_Command_Getter::Get(setting);
 ❱
-◀private: static▶ std::string ☀Get_Greeness_Redshift_Command(float green_percentage)❰
-
-    Redshift_Settings shift_settings;
+◀private: static▶ std::string ☀Get_Greeness_Redshift_Command(Redshift_Settings setting, float green_percentage)❰
     
     //adjust for redness
     float as_decimal = green_percentage;
-    shift_settings.red_gamma_correction -= as_decimal;
-    shift_settings.blue_gamma_correction -= as_decimal;
+    setting.red_gamma_correction -= as_decimal;
+    setting.blue_gamma_correction -= as_decimal;
     
-    return Redshift_Command_Getter::Get(shift_settings);
+    return Redshift_Command_Getter::Get(setting);
 ❱
-◀private: static▶ std::string ☀Get_Blueness_Redshift_Command(float blue_percentage)❰
-
-    Redshift_Settings shift_settings;
+◀private: static▶ std::string ☀Get_Blueness_Redshift_Command(Redshift_Settings setting, float blue_percentage)❰
     
     //adjust for redness
     float as_decimal = blue_percentage;
-    shift_settings.red_gamma_correction -= as_decimal;
-    shift_settings.green_gamma_correction -= as_decimal;
+    setting.red_gamma_correction -= as_decimal;
+    setting.green_gamma_correction -= as_decimal;
     
-    return Redshift_Command_Getter::Get(shift_settings);
+    return Redshift_Command_Getter::Get(setting);
 ❱
 
 
@@ -85,14 +79,11 @@ class
 ◀private: static▶ void ☀Set_Mood(Good_Bad_Screen_Tint_Settings const& settings, Mood_Setting const& mood)❰
 
         auto d = difference(settings.current_value,settings.standard_value);
-        
-        //clamp if over
         clamp_if_over(d,mood.expected_max_difference);
-        
         auto percent = map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
         
         if (settings.show_screen_tint){
-            Set_Rgb_Section(mood.color, 1.0 - percent);
+            Set_Rgb_Section(settings.shift, mood.color, 1.0 - percent);
         }
         if (settings.debug_data){
             Print_Debug_Message(as_string(mood.color),settings,d,percent);
