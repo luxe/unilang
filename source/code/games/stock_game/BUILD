@@ -33,6 +33,13 @@ hcp(name = "task_executer", deps = [
 "//code/games/stock_game:deskstock_settings",
 "//code/utilities/locale:locale_setter",
 "//code/utilities/web:lib",
+"//code/games/stock_game:default_settings_getter",
+])
+
+hcp(name = "default_settings_getter", deps = [
+"//code/games/stock_game:deskstock_settings",
+"//code/utilities/stock:stock_getter",
+"//code/utilities/web:lib",
 ])
 
 hcp(name = "deskstock_settings", deps = [

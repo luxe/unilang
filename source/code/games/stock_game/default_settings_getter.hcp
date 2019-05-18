@@ -1,0 +1,57 @@
+class
+❪"code/games/stock_game/deskstock_settings"❫
+⚯
+❪"code/utilities/stock/stock_getter"❫
+❪"code/utilities/web/lib"❫
+❪iostream❫
+⚞⚟
+
+
+◀public: static▶ Deskstock_Settings ☀Get() ❰
+    Deskstock_Settings settings;
+    
+    //changing value to analyze
+    settings.screen_tint.standard_value = 0;
+    settings.screen_tint.current_value = 0;
+    
+    //above expected
+    settings.screen_tint.good.color = Rgb_Section::GREEN;
+    settings.screen_tint.good.expected_max_difference = 5.0;
+    settings.screen_tint.good.low_rgb_value = .4;
+    settings.screen_tint.good.high_rgb_value = 1;
+    
+    //below expected
+    settings.screen_tint.bad.color = Rgb_Section::RED;
+    settings.screen_tint.bad.expected_max_difference = 5.0;
+    settings.screen_tint.bad.low_rgb_value = .4;
+    settings.screen_tint.bad.high_rgb_value = 1;
+    
+    settings.screen_tint.debug_data = true;
+    settings.screen_tint.show_screen_tint = true;
+    settings.seconds_to_fetch_changing_data = 1;
+    
+    settings.value_get.fetch.strategy = Html_Fetch_Strategy::CURL_LIB;
+    settings.value_get.fetch.url = Stock_Getter::Yahoo_Finance_Url("UBER");
+    settings.value_get.extract.desired_key = "regularMarketChangePercent";
+    
+    {
+        Json_Extraction_Step step;
+        step.key = "quoteResponse";
+        step.index = false;
+        settings.value_get.extract.steps.emplace_back(step);
+    }
+    {
+        Json_Extraction_Step step;
+        step.key = "result";
+        step.index = false;
+        settings.value_get.extract.steps.emplace_back(step);
+    }
+    {
+        Json_Extraction_Step step;
+        step.key = "0";
+        step.index = true;
+        settings.value_get.extract.steps.emplace_back(step);
+    }
+    
+    return settings;
+❱
