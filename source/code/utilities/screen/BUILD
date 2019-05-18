@@ -9,6 +9,7 @@ hcp(name = "screen_tint_setter",deps=[
 "//code/utilities/shell:lib",
 "//code/utilities/screen/good_bad:rgb_section",
 "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
+"//code/utilities/screen/good_bad:mood_setting",
 "//code/utilities/screen/redshift:redshift_command_getter",
 "//code/utilities/screen/redshift:redshift_settings",
 ])

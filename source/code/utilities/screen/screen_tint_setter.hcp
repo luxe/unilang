@@ -2,13 +2,14 @@ class
 ❪string❫
 ❪"code/utilities/screen/good_bad/rgb_section.hpp"❫
 ❪"code/utilities/screen/good_bad/good_bad_screen_tint_settings.hpp"❫
+❪"code/utilities/screen/redshift/redshift_settings"❫
+❪"code/utilities/screen/good_bad/mood_setting"❫
 ⚯
 ❪"code/utilities/streams/filestreams/lib.hpp"❫
 ❪"code/utilities/filesystem/paths/lib.hpp"❫
 ❪"code/utilities/shell/lib.hpp"❫
 ❪"code/utilities/screen/redshift/redshift_command_getter"❫
 ❪iostream❫
-❪"code/utilities/screen/redshift/redshift_settings"❫
 ⚞⚟
 
 
@@ -73,35 +74,30 @@ class
 //use case
 ◀public: static▶ void ☀Adjust_Screen_On_Good_Bad_Evaluation(Good_Bad_Screen_Tint_Settings const& settings)❰
     
-    auto d = difference(settings.current_value,settings.standard_value);
     if (settings.current_value < settings.standard_value){
-        
-        //clamp if over
-        clamp_if_over(d,settings.bad.expected_max_difference);
-        
-        auto percent = map_value_across_range(d,0,settings.bad.expected_max_difference,settings.bad.low_rgb_value,settings.bad.high_rgb_value);
-        
-        if (settings.show_screen_tint){
-            Screen_Tint_Setter::Set_Rgb_Section(settings.bad.color, 1.0 - percent);
-        }
-        if (settings.debug_data){
-            Print_Debug_Message("redness",settings,d,percent);
-        }
+        Set_Mood(settings,settings.bad);
     }
     else if (settings.current_value > settings.standard_value){
+        Set_Mood(settings,settings.good);
+    }
+❱
+
+◀private: static▶ void ☀Set_Mood(Good_Bad_Screen_Tint_Settings const& settings, Mood_Setting const& mood)❰
+
+        auto d = difference(settings.current_value,settings.standard_value);
         
         //clamp if over
-        clamp_if_over(d,settings.good.expected_max_difference);
+        clamp_if_over(d,mood.expected_max_difference);
         
-        auto percent = map_value_across_range(d,0,settings.good.expected_max_difference,settings.good.low_rgb_value,settings.good.high_rgb_value);
+        auto percent = map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
         
         if (settings.show_screen_tint){
-            Screen_Tint_Setter::Set_Rgb_Section(settings.good.color, 1.0 - percent);
+            Set_Rgb_Section(mood.color, 1.0 - percent);
         }
         if (settings.debug_data){
-            Print_Debug_Message("greenness",settings,d,percent);
+            Print_Debug_Message(as_string(mood.color),settings,d,percent);
         }
-    }
+        
 ❱
 
 ◀private: static▶ void ☀Print_Debug_Message(std::string const& label, Good_Bad_Screen_Tint_Settings const& settings, float difference, float percent)❰
