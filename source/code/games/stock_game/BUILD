@@ -30,6 +30,11 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/screen:screen_tint_setter",
 "//code/utilities/stock:stock_getter",
 "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
+"//code/games/stock_game:deskstock_settings",
+])
+
+hcp(name = "deskstock_settings", deps = [
+    "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
 ])
 
 cc_binary(

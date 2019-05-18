@@ -6,6 +6,7 @@ class
 ❪"code/utilities/chinese/chinese_translations"❫
 ❪"code/utilities/screen/good_bad/good_bad_screen_tint_settings"❫
 ❪"code/utilities/time/sleeping/lib"❫
+❪"code/games/stock_game/deskstock_settings"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/exits/lib"❫
@@ -36,24 +37,7 @@ class
     //Unicode please
     Set_English_UTF8_Locale();
     
-    //initialize settings
-    Good_Bad_Screen_Tint_Settings settings;
-    settings.standard_value = 0;
-    settings.current_value = Stock_Getter::Get_Uber_Regular_Market_Change_Percent();
-    
-    settings.good.color = Rgb_Section::GREEN;
-    settings.good.expected_max_difference = 5.0;
-    settings.good.low_rgb_value = .4;
-    settings.good.high_rgb_value = 1;
-    
-    settings.bad.color = Rgb_Section::RED;
-    settings.bad.expected_max_difference = 5.0;
-    settings.bad.low_rgb_value = .4;
-    settings.bad.high_rgb_value = 1;
-    
-    settings.debug_data = true;
-    settings.show_screen_tint = true;
-    int seconds_to_fetch_changing_data = 1;
+    auto settings = Default_Settings();
     
     nlohmann::json j = settings;
     std::cout << j.dump(2) << std::endl;
@@ -65,22 +49,46 @@ class
     
     // what to do when the value changes
     auto on_value_change = [&](float current){
-        settings.current_value = current;
-        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings);
+        settings.screen_tint.current_value = current;
+        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings.screen_tint);
     };
     
     // monitor the changing value
-    When_Value_Changes(seconds_to_fetch_changing_data,how_to_source_value,on_value_change);
+    When_Value_Changes(settings.seconds_to_fetch_changing_data,how_to_source_value,on_value_change);
+❱
+
+◀private: static▶ Deskstock_Settings ☀Default_Settings() ❰
+    Deskstock_Settings settings;
+    
+    //changing value to analyze
+    settings.screen_tint.standard_value = 0;
+    settings.screen_tint.current_value = 0;
+    
+    //above expected
+    settings.screen_tint.good.color = Rgb_Section::GREEN;
+    settings.screen_tint.good.expected_max_difference = 5.0;
+    settings.screen_tint.good.low_rgb_value = .4;
+    settings.screen_tint.good.high_rgb_value = 1;
+    
+    //below expected
+    settings.screen_tint.bad.color = Rgb_Section::RED;
+    settings.screen_tint.bad.expected_max_difference = 5.0;
+    settings.screen_tint.bad.low_rgb_value = .4;
+    settings.screen_tint.bad.high_rgb_value = 1;
+    
+    settings.screen_tint.debug_data = true;
+    settings.screen_tint.show_screen_tint = true;
+    settings.seconds_to_fetch_changing_data = 1;
+    
+    return settings;
 ❱
 
 
-◀private:
-
-template <typename Fun1, typename Fun2>
+◀private: template <typename Fun1, typename Fun2>
 static void When_Value_Changes(int check_seconds, Fun1 source_action, Fun2 change_action){
     
     float previous = 0;
-    float current = source_action();
+    float current = 0;
     For_Every_N_Seconds_With_Exception_Catching(check_seconds,[&](){
         
         
