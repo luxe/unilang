@@ -31,7 +31,7 @@ pkg_deb(
     homepage = "none",
     maintainer = "none",
     package = "deskstock",
-    version = "2.0",
+    version = "1.0",
 )
 
 hcp(name = "task_executer", deps = [
