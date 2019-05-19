@@ -1,6 +1,31 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
+
+pkg_tar(
+    name = "deskstock",
+    strip_prefix = "/src",
+    package_dir = "/usr/bin",
+    srcs = ["//code/games/stock_game:main"],
+    mode = "0755",
+)
+
+pkg_deb(
+    name = "deskstock-debian",
+    architecture = "amd64",
+    built_using = "unzip (6.0.1)",
+    data = ":deskstock",
+    depends = [
+        "zlib1g-dev",
+        "unzip",
+    ],
+    description = "hello",
+    homepage = "none",
+    maintainer = "none",
+    package = "deskstock",
+    version = "1.0",
+)
 
 hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
