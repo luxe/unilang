@@ -52,6 +52,10 @@ hcp(name = "deskstock_settings", deps = [
 
 hcp(name = "value_get_settings", deps = [
     "//code/utilities/web:web_json_extraction_settings",
+    "//code/games/stock_game:simulation_value_settings",
+])
+
+hcp(name = "simulation_value_settings", deps = [
 ])
 
 cc_binary(
