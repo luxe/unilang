@@ -77,19 +77,21 @@ class
     };
     
     // whether we consider the value changed and should take action
-    // we should take action if:
-    // -the value has changed
-    // -the config has changed
     auto should_take_action = [&](float previous, float current){ 
         if (previous != current){
             return true;
         }
         
+        return false;
+    };
+    
+    
+    // if the config was updated, we should reset
+    auto should_reset = [&](){
         if (ms.was_updated){
             ms.was_updated = false;
             return true;
         }
-        
         return false;
     };
     
@@ -102,32 +104,34 @@ class
     
     // infinite program loop to monitor
     Locale_Setter::Set(settings.locale);
-    When_Value_Changes(settings.seconds_to_fetch_changing_data,
+    When_Value_Changes(settings.ms_to_fetch_changing_data,
                        how_to_source_value,
+                       should_reset,
                        should_take_action,
                        on_value_change);
 ❱
 
 
-◀private: template <typename Fun1, typename Fun2, typename Fun3>
-static void When_Value_Changes(int check_seconds, Fun1 source_action, Fun2 should_take_action, Fun3 change_action){
+◀private: template <typename Fun1, typename Fun2, typename Fun3, typename Fun4>
+static void When_Value_Changes(int & check_mseconds, Fun1 source_action, Fun2 should_reset, Fun3 should_take_action, Fun4 change_action){
     
     float previous = 0;
     float current = 0;
-    For_Every_N_Seconds_With_Exception_Catching(check_seconds,[&](){
-        
-        
-        //if current value has changed
-        current = source_action();
-        if (should_take_action(previous,current)){
+    while (true){
+        For_Every_N_Milliseconds_With_Exception_Catching(check_mseconds,[&](){
             
-            //tint screen accordingly
-            change_action(current);
-        }
-        
-        //store previous value for next iteration
-        previous = current;
-        
-    });
+            //if current value has changed
+            current = source_action();
+            if (should_take_action(previous,current)){
+                
+                //tint screen accordingly
+                change_action(current);
+            }
+            
+            //store previous value for next iteration
+            previous = current;
+            
+        },should_reset);
+    }
 }
 ▶

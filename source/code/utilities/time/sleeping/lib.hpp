@@ -63,9 +63,9 @@ auto Sleep_For_N_Years_Then_Call_Function(unsigned int const& delay_amount, Func
 }
 
 //forever looping
-template <typename Function>
-void For_Every_N_Seconds_With_Exception_Catching(int seconds, Function f){
-  while (true){
+template <typename Function, typename ShouldSkipFun>
+void For_Every_N_Milliseconds_With_Exception_Catching(int mseconds, Function f, ShouldSkipFun should_exit){
+  while (!should_exit()){
     
     try{
       f();
@@ -73,7 +73,7 @@ void For_Every_N_Seconds_With_Exception_Catching(int seconds, Function f){
     catch(std::exception const& e){
       std::cout << e.what() << std::endl;
     }
-    Sleep_For_N_Seconds(seconds);
+    Sleep_For_N_Milliseconds(mseconds);
   }
 }
 
