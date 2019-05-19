@@ -35,6 +35,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/web:lib",
 "//code/games/stock_game:default_settings_getter",
 "//code/utilities/config:config_monitor",
+"//code/utilities/config:config_monitor_settings",
 ])
 
 hcp(name = "default_settings_getter", deps = [

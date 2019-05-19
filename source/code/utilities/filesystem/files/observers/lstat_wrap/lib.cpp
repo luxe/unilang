@@ -7,8 +7,10 @@
 size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file)
 {
   //std::filesystem::path p(path_to_file);
-  //auto point = std::filesystem::last_write_time(p);
-  
+  struct stat result;
+  if (lstat(path_to_file.c_str(), &result) == 0){
+      return result.st_mtime;
+  }
   return 0;
 }
 
