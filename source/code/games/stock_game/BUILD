@@ -11,11 +11,19 @@ pkg_tar(
     mode = "0755",
 )
 
+pkg_tar(
+    name = "debian-data",
+    extension = "tar.gz",
+    deps = [
+        ":deskstock",
+    ],
+)
+
 pkg_deb(
     name = "deskstock-debian",
     architecture = "amd64",
     built_using = "unzip (6.0.1)",
-    data = ":deskstock",
+    data = ":debian-data",
     depends = [
         "zlib1g-dev",
         "unzip",
