@@ -5,7 +5,6 @@ load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
 pkg_tar(
     name = "deskstock",
-    strip_prefix = "/src",
     package_dir = "/usr/bin",
     srcs = ["//code/games/stock_game:main"],
     mode = "0755",
