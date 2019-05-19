@@ -45,9 +45,9 @@ hcp(name = "default_settings_getter", deps = [
 ])
 
 hcp(name = "deskstock_settings", deps = [
-    "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
     "//code/utilities/locale:locale_settings",
     "//code/games/stock_game:value_get_settings",
+    "//code/games/stock_game:system_effect_settings",
 ])
 
 hcp(name = "value_get_settings", deps = [
@@ -56,6 +56,10 @@ hcp(name = "value_get_settings", deps = [
 ])
 
 hcp(name = "simulation_value_settings", deps = [
+])
+
+hcp(name = "system_effect_settings", deps = [
+    "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
 ])
 
 cc_binary(
