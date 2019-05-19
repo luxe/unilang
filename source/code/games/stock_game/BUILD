@@ -27,11 +27,11 @@ pkg_deb(
         "zlib1g-dev",
         "unzip",
     ],
-    description = "Feel the stock market as you work",
+    description = "Feel the stock market while you work",
     homepage = "none",
     maintainer = "none",
     package = "deskstock",
-    version = "1.0",
+    version = "2.0",
 )
 
 hcp(name = "task_executer", deps = [
