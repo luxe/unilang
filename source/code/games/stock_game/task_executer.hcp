@@ -44,17 +44,29 @@ class
     
     Deskstock_Settings settings;
     Config_Monitor_Settings ms;
+    ms.config_path = Full_Path_To_Home() + "/.destock";
     Config_Monitor::Monitor_Changes(ms,settings,default_settings);
-    
-    //nlohmann::json j = settings;
-    //std::cout << j.dump(2) << std::endl;
-    //while(true){}
     
     
     //how to source the value
     auto how_to_source_value = [&](){
         Config_Monitor::Monitor_Changes(ms,settings,default_settings);
-        return Extract_Web_Json_Float(settings.value_get);
+        auto current = Extract_Web_Json_Float(settings.value_get);
+        return current;
+    };
+    
+    // whether we consider the value changed and should take action
+    auto should_take_action = [&](float previous, float current){ 
+        if (previous != current){
+            return true;
+        }
+        
+        if (ms.was_updated){
+            ms.was_updated = false;
+            return true;
+        }
+        
+        return false;
     };
     
     // what to do when the value changes
@@ -66,12 +78,15 @@ class
     
     // infinite program loop to monitor
     Locale_Setter::Set(settings.locale);
-    When_Value_Changes(settings.seconds_to_fetch_changing_data,how_to_source_value,on_value_change);
+    When_Value_Changes(settings.seconds_to_fetch_changing_data,
+                       how_to_source_value,
+                       should_take_action,
+                       on_value_change);
 ❱
 
 
-◀private: template <typename Fun1, typename Fun2>
-static void When_Value_Changes(int check_seconds, Fun1 source_action, Fun2 change_action){
+◀private: template <typename Fun1, typename Fun2, typename Fun3>
+static void When_Value_Changes(int check_seconds, Fun1 source_action, Fun2 should_take_action, Fun3 change_action){
     
     float previous = 0;
     float current = 0;
@@ -80,7 +95,7 @@ static void When_Value_Changes(int check_seconds, Fun1 source_action, Fun2 chang
         
         //if current value has changed
         current = source_action();
-        if (previous != current){
+        if (should_take_action(previous,current)){
             
             //tint screen accordingly
             change_action(current);

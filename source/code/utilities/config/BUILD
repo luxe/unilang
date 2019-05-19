@@ -9,6 +9,8 @@ hcp(name = "config_monitor",deps=[
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/config:config_monitor_settings",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+"//code/utilities/json/functions:lib",
+"//code/utilities/streams/filestreams/read_all:lib",
 ])
 
 hcp(name = "config_monitor_settings", deps = [

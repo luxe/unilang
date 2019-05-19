@@ -27,6 +27,14 @@ std::string As_Minified_JSON_String(T const& t){
     nlohmann::json r = j;
     return r.dump();
 }
+template <typename T>
+void Write_Json_To_File(T const& t, std::string const& path){
+    nlohmann::json j = t;
+    auto str = j.dump(2);
+    std::ofstream outfile(path);
+    outfile << str;
+    outfile.close();
+}
 
 //validating json
 bool Is_Valid_JSON_File(std::string const& file_name);

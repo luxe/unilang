@@ -2,10 +2,12 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/streams/filestreams/read_all/lib"❫
 ❪iostream❫
 ❪"nlohmann/json.hpp"❫
 ❪"code/utilities/config/config_monitor_settings.hpp"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib.hpp"❫
+❪"code/utilities/json/functions/lib"❫
 ⚯
 ⚞⚟
 
@@ -14,8 +16,46 @@ class
 ◀public: template <typename T>
 static void Monitor_Changes(Config_Monitor_Settings & ms, T & settings, T const& default_settings){
     
-    ms.last_access = Last_Modified_Time_From_Epoch(ms.config_path);
-    std::cout << ms.last_access << std::endl;
+    // Make sure file exists first
+    if (!File_Exists(ms.config_path)){
+        std::cout << "Config does not exist.  Creating" << std::endl;
+        Write_Json_To_File(default_settings,ms.config_path);
+        ms.was_updated = true;
+    }
+    
+    // Update settings if needed
+    if (Config_File_Newer(ms)){
+        std::cout << "Config is newer.  Reloading" << std::endl;
+        ms.was_updated = true;
+        
+        try{
+            Load_Config_Settings(settings,ms);
+        }
+        catch(...){
+        }
+    }
     
 }
 ▶
+
+◀public: template <typename T>
+static void Load_Config_Settings(T & settings, Config_Monitor_Settings const& ms){
+    auto str = Read_Entire_File_Into_String(ms.config_path);
+    auto j = nlohmann::json::parse(str);
+    settings = j.get<T>();
+}
+▶
+
+
+◀private: static▶ bool ☀Config_File_Newer(Config_Monitor_Settings & ms)❰
+    
+    auto current_last_access = Last_Modified_Time_From_Epoch(ms.config_path);
+    
+    bool is_newer = false;
+    if (ms.last_access < current_last_access){
+        is_newer = true;
+    }
+    
+    ms.last_access = current_last_access;
+    return is_newer;
+❱
