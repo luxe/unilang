@@ -13,12 +13,6 @@ hcp(name = "task_executer", deps = [
 "//code/transcompilers/unilang/tokens:get_tokens",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/transcompilers/unilang/user-frontend:code_graphs_creator",
-"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
-"//code/transcompilers/unilang/structure/model:inlined_structures",
-"//code/transcompilers/unilang/main/root_settings:root_settings_getter",
-"//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
-"//code/transcompilers/unilang/self_readme:latex_template_getter",
 "//code/utilities/upload:file_uploader",
 "//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
@@ -36,6 +30,8 @@ hcp(name = "task_executer", deps = [
 "//code/games/stock_game:default_settings_getter",
 "//code/utilities/config:config_monitor",
 "//code/utilities/config:config_monitor_settings",
+"//code/utilities/types/strings/transformers/search_replace:lib",
+"//code/utilities/shell:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [

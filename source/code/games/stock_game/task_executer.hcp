@@ -16,15 +16,6 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
-❪"code/transcompilers/unilang/user-frontend/code_graphs_creator"❫
-❪"code/transcompilers/unilang/dependency_graph_creator/code_graph"❫
-❪"code/transcompilers/unilang/main/root_settings/root_settings_getter"❫
-❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
-❪"code/transcompilers/unilang/compiler-frontends/dzslides/dzslides_exporter"❫
-❪"code/transcompilers/unilang/compiler-frontends/slidy/slidy_exporter"❫
-❪"code/transcompilers/unilang/self_readme/latex_template_getter"❫
-❪"code/utilities/upload/file_uploader"❫
-❪"code/utilities/time/date/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/transformers/squeeze/lib"❫
 ❪"code/utilities/screen/screen_tint_setter"❫
@@ -36,6 +27,8 @@ class
 ❪"code/games/stock_game/default_settings_getter"❫
 ❪"code/utilities/config/config_monitor"❫
 ❪"code/utilities/config/config_monitor_settings"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/shell/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -99,7 +92,16 @@ class
     auto on_value_change = [&](float current){
         settings.system_effects.screen_tint.current_value = current;
         Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings.system_effects.screen_tint);
+        
+        //TODO(thickey): change terminal
         //dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color "'rgb(0,0,255)'"
+        
+        if (settings.system_effects.run_user_commands){
+            for (auto const& it: settings.system_effects.user_commands){
+                auto real_command = string_replace_all(it,"{{value}}",std::to_string(current));
+                execute(real_command);
+            }
+        }
     };
     
     // infinite program loop to monitor
