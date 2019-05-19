@@ -4,9 +4,9 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
 pkg_tar(
-    name = "deskstock",
+    name = "deskstock_tar",
     package_dir = "/usr/bin",
-    srcs = ["//code/games/stock_game:main"],
+    srcs = ["//code/games/stock_game:deskstock"],
     mode = "0755",
 )
 
@@ -14,7 +14,7 @@ pkg_tar(
     name = "debian-data",
     extension = "tar.gz",
     deps = [
-        ":deskstock",
+        ":deskstock_tar",
     ],
 )
 
@@ -27,7 +27,7 @@ pkg_deb(
         "zlib1g-dev",
         "unzip",
     ],
-    description = "hello",
+    description = "Feel the stock market as you work",
     homepage = "none",
     maintainer = "none",
     package = "deskstock",
@@ -91,7 +91,7 @@ hcp(name = "system_effect_settings", deps = [
 ])
 
 cc_binary(
-    name = "main",
+    name = "deskstock",
     srcs = ["main.cpp"],
     deps = ["//code/games/stock_game:task_executer"]
 )
