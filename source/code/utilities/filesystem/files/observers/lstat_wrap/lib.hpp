@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 
+size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file);
+
 //checking characteristics of a single file
 bool Is_Symbolic_Link(std::string path_to_file);
 bool Is_Directory(std::string path_to_file);

@@ -2,6 +2,15 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <filesystem>
+
+size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file)
+{
+  //std::filesystem::path p(path_to_file);
+  //auto point = std::filesystem::last_write_time(p);
+  
+  return 0;
+}
 
 //characteristics about a particular file
 bool Is_Symbolic_Link(std::string path_to_file){

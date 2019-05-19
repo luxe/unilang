@@ -1,5 +1,7 @@
 #pragma once
+#include <cstdlib>
 
+size_t Time_Since_Epoch();
 unsigned int Current_Second();
 unsigned int Current_Minute();
 unsigned int Current_Hour();

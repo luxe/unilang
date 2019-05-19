@@ -2,6 +2,11 @@
 #include <chrono>
 #include <ctime>
 
+size_t Time_Since_Epoch(){
+    auto now = std::chrono::system_clock::now();
+    return now.time_since_epoch().count();
+}
+
 //struct tm wrappers
 unsigned int Current_Second(){
     auto now = std::chrono::system_clock::now();
