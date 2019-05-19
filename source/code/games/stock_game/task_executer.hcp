@@ -53,7 +53,26 @@ class
     //here we customize on a web endpoint that returns json
     auto how_to_source_value = [&](){
         Config_Monitor::Monitor_Changes(ms,settings,default_settings);
-        auto current = Extract_Web_Json_Float(settings.value_get.web);
+        
+        float current = 0;
+        
+        //extract from simulation
+        if (settings.value_get.simulate){
+            current = settings.value_get.cycled_values[settings.value_get.current_simulation_index];
+            
+            //update index 
+            if (settings.value_get.current_simulation_index >= settings.value_get.cycled_values.size()-1){
+                settings.value_get.current_simulation_index = 0;
+            }
+            else{
+                settings.value_get.current_simulation_index++;
+            }
+        }
+        
+        //extract from web
+        else{
+            current = Extract_Web_Json_Float(settings.value_get.web);
+        }
         return current;
     };
     
