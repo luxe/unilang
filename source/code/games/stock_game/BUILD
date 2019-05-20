@@ -64,12 +64,18 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/config:config_monitor_settings",
 "//code/utilities/types/strings/transformers/search_replace:lib",
 "//code/utilities/shell:lib",
+"//code/games/stock_game:deskstock_state",
 ])
 
 hcp(name = "default_settings_getter", deps = [
 "//code/games/stock_game:deskstock_settings",
 "//code/utilities/stock:stock_getter",
 "//code/utilities/web:lib",
+])
+
+hcp(name = "deskstock_state", deps = [
+    "//code/games/stock_game:deskstock_settings",
+    "//code/utilities/config:config_monitor_settings",
 ])
 
 hcp(name = "deskstock_settings", deps = [
