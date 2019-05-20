@@ -55,18 +55,17 @@ class
     
     // if the config was updated, we should reset
     auto should_reset = [&](){
-        if (state.ms.was_updated){
-            state.ms.was_updated = false;
-            return true;
-        }
-        return false;
+        return Config_Monitor::Trigger_Update(state.ms);
     };
     
     // what to do when the value changes
     auto on_value_change = [&](float current){
+        
+        //effect 1
         state.current_settings.system_effects.screen_tint.current_value = current;
         Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(state.current_settings.system_effects.screen_tint);
         
+        //effect 2
         if (state.current_settings.system_effects.run_user_commands){
             for (auto const& it: state.current_settings.system_effects.user_commands){
                 auto real_command = string_replace_all(it,"{{value}}",std::to_string(current));
@@ -74,10 +73,12 @@ class
             }
         }
         
+        //effect 3
         //TODO(thickey): change terminal
         //dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color "'rgb(0,0,255)'"
         
-        //TODO(anyone):  if you have additional system effects to perform on a changing value, include the logic here
+        //effect n
+        //TODO(anyone):  Add additional system effects to perform on a changing value, include the logic here
     };
     
     // infinite program loop
@@ -120,7 +121,7 @@ class
         current = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
     }
     
-    //TODO(anyone): If you have additional ways to source a value,  include the logic here
+    //TODO(anyone): Add additional ways to source a value
     return current;
 ❱
 
