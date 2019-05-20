@@ -34,7 +34,7 @@ pkg_deb(
     version = "1.0",
 )
 
-hcp(name = "task_executer", deps = [
+hcp(name = "deskstock_runner", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
 "//code/utilities/exits:lib",
@@ -99,5 +99,5 @@ hcp(name = "system_effect_settings", deps = [
 cc_binary(
     name = "deskstock",
     srcs = ["main.cpp"],
-    deps = ["//code/games/stock_game:task_executer"]
+    deps = ["//code/games/stock_game:deskstock_runner"]
 )
