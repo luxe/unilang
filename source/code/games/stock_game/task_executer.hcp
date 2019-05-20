@@ -7,6 +7,7 @@ class
 ❪"code/utilities/screen/good_bad/good_bad_screen_tint_settings"❫
 ❪"code/utilities/time/sleeping/lib"❫
 ❪"code/games/stock_game/deskstock_settings"❫
+❪"code/games/stock_game/deskstock_state"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/exits/lib"❫
@@ -33,38 +34,34 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
 
-    auto default_settings = Default_Settings_Getter::Get();
-    
-    Deskstock_Settings settings;
-    Config_Monitor_Settings ms;
-    ms.config_path = Full_Path_To_Home() + "/.destock";
-    Config_Monitor::Monitor_Changes(ms,settings,default_settings);
+    // Load the program state for usage in the rest of the program
+    auto state = Get_Program_State();
     
     
     //how to source the value
     //we can get a float from anywhere
     //here we customize on a web endpoint that returns json
     auto how_to_source_value = [&](){
-        Config_Monitor::Monitor_Changes(ms,settings,default_settings);
+        Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
         
         float current = 0;
         
         //extract from simulation
-        if (settings.how_to_get_value.through_simulation.simulate){
-            current = settings.how_to_get_value.through_simulation.cycled_values[settings.how_to_get_value.through_simulation.current_simulation_index];
+        if (state.current_settings.how_to_get_value.through_simulation.simulate){
+            current = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
             
             //update index 
-            if (settings.how_to_get_value.through_simulation.current_simulation_index >= settings.how_to_get_value.through_simulation.cycled_values.size()-1){
-                settings.how_to_get_value.through_simulation.current_simulation_index = 0;
+            if (state.current_settings.how_to_get_value.through_simulation.current_simulation_index >= state.current_settings.how_to_get_value.through_simulation.cycled_values.size()-1){
+                state.current_settings.how_to_get_value.through_simulation.current_simulation_index = 0;
             }
             else{
-                settings.how_to_get_value.through_simulation.current_simulation_index++;
+                state.current_settings.how_to_get_value.through_simulation.current_simulation_index++;
             }
         }
         
         //extract from web
         else{
-            current = Extract_Web_Json_Float(settings.how_to_get_value.through_web);
+            current = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
         }
         
         //TODO(anyone): If you have additional ways to source a value,  include the logic here
@@ -83,8 +80,8 @@ class
     
     // if the config was updated, we should reset
     auto should_reset = [&](){
-        if (ms.was_updated){
-            ms.was_updated = false;
+        if (state.ms.was_updated){
+            state.ms.was_updated = false;
             return true;
         }
         return false;
@@ -92,11 +89,11 @@ class
     
     // what to do when the value changes
     auto on_value_change = [&](float current){
-        settings.system_effects.screen_tint.current_value = current;
-        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(settings.system_effects.screen_tint);
+        state.current_settings.system_effects.screen_tint.current_value = current;
+        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(state.current_settings.system_effects.screen_tint);
         
-        if (settings.system_effects.run_user_commands){
-            for (auto const& it: settings.system_effects.user_commands){
+        if (state.current_settings.system_effects.run_user_commands){
+            for (auto const& it: state.current_settings.system_effects.user_commands){
                 auto real_command = string_replace_all(it,"{{value}}",std::to_string(current));
                 system(real_command);
             }
@@ -110,12 +107,20 @@ class
     
     // infinite program loop
     // all the lambdas are a little sloppy, improvements are welcome.
-    Locale_Setter::Set(settings.locale);
-    When_Value_Changes(settings.ms_to_fetch_changing_data,
+    Locale_Setter::Set(state.current_settings.locale);
+    When_Value_Changes(state.current_settings.ms_to_fetch_changing_data,
                        how_to_source_value,
                        should_reset,
                        should_take_action,
                        on_value_change);
+❱
+
+
+◀private: static▶ Deskstock_State ☀Get_Program_State() ❰
+    Deskstock_State state;
+    state.ms.config_path = Full_Path_To_Home() + "/.destock";
+    Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
+    return state;
 ❱
 
 
