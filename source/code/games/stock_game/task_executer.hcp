@@ -34,7 +34,7 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
 
-    // Load the program state for usage in the rest of the program
+    //Load the program state for usage in the rest of the program
     auto state = Get_Program_State();
     
     
@@ -43,38 +43,13 @@ class
     //here we customize on a web endpoint that returns json
     auto how_to_source_value = [&](){
         Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
-        
-        float current = 0;
-        
-        //extract from simulation
-        if (state.current_settings.how_to_get_value.through_simulation.simulate){
-            current = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
-            
-            //update index 
-            if (state.current_settings.how_to_get_value.through_simulation.current_simulation_index >= state.current_settings.how_to_get_value.through_simulation.cycled_values.size()-1){
-                state.current_settings.how_to_get_value.through_simulation.current_simulation_index = 0;
-            }
-            else{
-                state.current_settings.how_to_get_value.through_simulation.current_simulation_index++;
-            }
-        }
-        
-        //extract from web
-        else{
-            current = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
-        }
-        
-        //TODO(anyone): If you have additional ways to source a value,  include the logic here
-        return current;
+        return Source_The_Float_Value(state);
     };
     
-    // whether we consider the value changed and should take action
-    auto should_take_action = [&](float previous, float current){ 
-        if (previous != current){
-            return true;
-        }
-        
-        return false;
+    //whether we consider the value changed and should take action
+    //if the values are different we take action
+    auto should_take_action = [&](float previous, float current){
+        return previous != current;
     };
     
     
@@ -124,12 +99,37 @@ class
 ❱
 
 
-◀private: static▶ float ☀Source_The_Float_Value() ❰
-    float val = 0;
-    return val;
+◀private: static▶ float ☀Source_The_Float_Value(Deskstock_State & state) ❰
+    float current = 0;
+    
+    //extract from simulation
+    if (state.current_settings.how_to_get_value.through_simulation.simulate){
+        current = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
+        
+        //update index 
+        if (state.current_settings.how_to_get_value.through_simulation.current_simulation_index >= state.current_settings.how_to_get_value.through_simulation.cycled_values.size()-1){
+            state.current_settings.how_to_get_value.through_simulation.current_simulation_index = 0;
+        }
+        else{
+            state.current_settings.how_to_get_value.through_simulation.current_simulation_index++;
+        }
+    }
+    
+    //extract from web
+    else{
+        current = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
+    }
+    
+    //TODO(anyone): If you have additional ways to source a value,  include the logic here
+    return current;
 ❱
 
 
+
+// this is kind of sloppy.  I just wanted a generic "do this every time a value changes" kind of function.
+// I ended up slipping in a lot of lambdas as the tool grew.
+// It's still feels event based, which is nice.
+// But this is the engine that runs in a loop and dispatches to all the behaviors passed in.
 ◀private: template <typename Fun1, typename Fun2, typename Fun3, typename Fun4>
 static void When_Value_Changes(int & check_mseconds, Fun1 source_action, Fun2 should_reset, Fun3 should_take_action, Fun4 change_action){
     
