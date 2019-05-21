@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪iostream❫
 ❪"code/utilities/terminal/change_terminal_settings"❫
+❪"code/utilities/math/math"❫
 ⚯
 ⚞⚟
 
@@ -23,6 +24,42 @@ class
         //Set_Mood(settings,settings.good);
     }
 ❱
+
+
+◀private: static▶ void ☀Set_Mood(Change_Terminal_Settings const& settings, Mood_Setting const& mood)❰
+
+        auto d = Math::clamped_difference(settings.current_value,settings.standard_value,mood.expected_max_difference);
+        if (d >= mood.difference_until_change){
+            auto percent = Math::map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
+            
+            //Set_Rgb_Section(settings.shift, mood.color, percent);
+            if (settings.debug_data){
+                Print_Debug_Message(as_string(mood.color),settings,d,percent);
+            }
+        }
+        
+❱
+
+◀private: static▶ void ☀Print_Debug_Message(std::string const& label, Change_Terminal_Settings const& settings, float difference, float percent)❰
+    std::cout << settings.standard_value << " -> " << settings.current_value << " ";
+    std::cout << "diff: " << difference << " (" << (percent * 100) << "% " << label << ")" << std::endl;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ◀public: static▶ void ☀Change_Background(int r, int g, int b)❰
     //dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-colors true

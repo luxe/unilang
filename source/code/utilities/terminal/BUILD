@@ -5,6 +5,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "terminal_changer",deps=[
     "//code/utilities/terminal:change_terminal_settings",
+    "//code/utilities/math:math",
 ])
 
 hcp(name = "change_terminal_settings", deps=[
