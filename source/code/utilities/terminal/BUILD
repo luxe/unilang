@@ -4,4 +4,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "terminal_changer",deps=[
+    "//code/utilities/terminal:change_terminal_settings",
+])
+
+hcp(name = "change_terminal_settings", deps=[
 ])
