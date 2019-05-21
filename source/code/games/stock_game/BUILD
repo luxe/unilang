@@ -66,6 +66,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/shell:lib",
 "//code/games/stock_game:deskstock_state",
 "//code/utilities/system:installed_programs_checker",
+"//code/utilities/terminal:terminal_changer",
 ])
 
 hcp(name = "default_settings_getter", deps = [
@@ -96,6 +97,7 @@ hcp(name = "simulation_value_settings", deps = [
 
 hcp(name = "system_effect_settings", deps = [
     "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
+    "//code/utilities/terminal:change_terminal_settings",
 ])
 
 cc_binary(
