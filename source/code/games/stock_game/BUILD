@@ -65,6 +65,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/types/strings/transformers/search_replace:lib",
 "//code/utilities/shell:lib",
 "//code/games/stock_game:deskstock_state",
+"//code/utilities/system:installed_programs_checker",
 ])
 
 hcp(name = "default_settings_getter", deps = [
