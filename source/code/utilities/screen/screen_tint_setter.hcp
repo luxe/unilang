@@ -9,6 +9,7 @@ class
 ❪"code/utilities/filesystem/paths/lib.hpp"❫
 ❪"code/utilities/shell/lib.hpp"❫
 ❪"code/utilities/screen/redshift/redshift_command_getter"❫
+❪"code/utilities/math/math"❫
 ❪iostream❫
 ⚞⚟
 
@@ -78,11 +79,11 @@ class
 
 ◀private: static▶ void ☀Set_Mood(Good_Bad_Screen_Tint_Settings const& settings, Mood_Setting const& mood)❰
 
-        auto d = difference(settings.current_value,settings.standard_value);
-        clamp_if_over(d,mood.expected_max_difference);
+        auto d = Math::difference(settings.current_value,settings.standard_value);
+        Math::clamp_if_over(d,mood.expected_max_difference);
         
         if (d >= mood.difference_until_change){
-            auto percent = map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
+            auto percent = Math::map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
             
             if (settings.show_screen_tint){
                 Set_Rgb_Section(settings.shift, mood.color, percent);
@@ -97,21 +98,4 @@ class
 ◀private: static▶ void ☀Print_Debug_Message(std::string const& label, Good_Bad_Screen_Tint_Settings const& settings, float difference, float percent)❰
     std::cout << settings.standard_value << " -> " << settings.current_value << " ";
     std::cout << "diff: " << difference << " (" << (percent * 100) << "% " << label << ")" << std::endl;
-❱
-
-◀private: static▶ void ☀clamp_if_over(float & val, float const& roof)❰
-    if (val > roof){
-        val = roof;
-    }
-❱
-
-◀private: static▶ float ☀difference(float a, float b)❰
-    if (a < b){
-        return b-a;
-    }
-    return a-b;
-❱
-◀private: static▶ float ☀map_value_across_range(float s, float a1, float a2, float b1, float b2)❰
-
-    return b1 + (s-a1)*(b2-b1)/(a2-a1);
 ❱
