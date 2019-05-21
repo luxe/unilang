@@ -10,3 +10,11 @@ package(
 #    linkopts = ["-lxcb"],
 #    deps = [],
 #)
+
+cc_binary(
+    name = "graphics",
+    srcs = ["graphics.cpp"],
+    #copts = ["-L/usr/lib/x86_64-linux-gnu"],
+    linkopts = ["-lxcb"],
+    deps = [],
+)
