@@ -8,4 +8,5 @@ hcp(name = "terminal_changer",deps=[
 ])
 
 hcp(name = "change_terminal_settings", deps=[
+    "//code/utilities/screen/good_bad:mood_setting"
 ])
