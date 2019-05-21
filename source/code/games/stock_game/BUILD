@@ -82,6 +82,7 @@ hcp(name = "deskstock_settings", deps = [
     "//code/utilities/locale:locale_settings",
     "//code/games/stock_game:value_get_settings",
     "//code/games/stock_game:system_effect_settings",
+    "//code/utilities/system:check_installed_program_settings",
 ])
 
 hcp(name = "value_get_settings", deps = [
