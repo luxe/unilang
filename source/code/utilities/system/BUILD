@@ -5,7 +5,11 @@ load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
 
 hcp(name = "installed_programs_checker", deps = [
-    "//code/utilities/system:lib"
+    "//code/utilities/system:lib",
+    "//code/utilities/system:check_installed_program_settings"
+])
+
+hcp(name = "check_installed_program_settings", deps = [
 ])
 
 cc_library(
