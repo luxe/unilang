@@ -12,7 +12,7 @@
 # Other thoughts on reducing the Dockerfile:
 # I think there is a way to include debian packages directly in bazel rules.  We could look into that.
 # Although its a better practice to run all of these commands a a single command since it will create less layers,
-# I'm keeping them seperated as it makes debugging easier.
+# I'm keeping them separated as it makes debugging easier.
 
 # We try to upgrade to the latest Ubuntu when available
 FROM ubuntu:18.04
@@ -38,6 +38,7 @@ RUN apt-get install -y libsfml-dev
 RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
 RUN apt-get install -y locales
+RUN apt-get install -y libxdo-dev
 
 # packages we may or may not need
 # RUN apt-get install -y git-lfs
