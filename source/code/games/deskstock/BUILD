@@ -78,6 +78,8 @@ hcp(name = "float_sourcer", deps = [
     "//code/games/deskstock/settings:deskstock_state",
     "//code/utilities/web:lib",
     "//code/utilities/shell:lib",
+    "//code/utilities/types/strings/transformers/other:lib",
+    "//code/utilities/types/vectors/operators:lib",
 ])
 
 hcp(name = "system_effecter", deps = [

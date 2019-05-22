@@ -5,6 +5,7 @@
 std::vector<char> Convert_To_Vec_Of_Chars(std::string const& str);
 
 std::vector<int> Collect_Whitespace_Separated_Numbers(std::string const& s);
+std::vector<float> Collect_Whitespace_Separated_Floats(std::string const& s);
 
 
 

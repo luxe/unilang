@@ -24,6 +24,14 @@ std::vector<int> Collect_Whitespace_Separated_Numbers(std::string const& s){
         }
         return numbers;
 }
+std::vector<float> Collect_Whitespace_Separated_Floats(std::string const& s){
+        auto parts = Get_Each_Column(s);
+        std::vector<float> numbers;
+        for (auto it: parts){
+                numbers.push_back(std::stof(it));
+        }
+        return numbers;
+}
 
 //both
 

@@ -5,13 +5,15 @@ class
 ⚯
 ❪"code/utilities/web/lib"❫
 ❪"code/utilities/shell/lib"❫
+❪"code/utilities/types/strings/transformers/other/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 
 ◀public: static▶ std::vector<float> ☀Source_Floats(Deskstock_State & state) ❰
     std::vector<float> current;
     
-    //extract from simulation
+    //extract 1 (simulation)
     if (state.current_settings.how_to_get_value.through_simulation.simulate){
         auto temp = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
         current.emplace_back(temp);
@@ -25,7 +27,17 @@ class
         }
     }
     
-    //extract from web
+    //extract 2 (custom)
+    else if (state.current_settings.how_to_get_value.through_custom.enable){
+        for (auto const& it: state.current_settings.how_to_get_value.through_custom.user_commands){
+            auto result = execute(it);
+            auto floats = Collect_Whitespace_Separated_Floats(result);
+            current += floats;
+            
+        }
+    }
+    
+    //extract 3 (from web)
     else{
         auto temp = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
         current.emplace_back(temp);
