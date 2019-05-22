@@ -553,25 +553,16 @@ std::vector<std::string> Recursively_Get_All_Paths_To_Files_Of_Given_File_Extens
     return vec;
  }
 std::vector<std::string> Recursively_Get_All_Paths_To_cpp_Files_Of_Path(std::string const& path){
-    auto str_1 = exec("find " + path + " -type f -name \\*.cpp 2>/dev/null;");
-    auto str_2 = exec("find " + path + " -type l -name \\*.cpp 2>/dev/null;");
-    auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
-    vec += Put_Each_Line_Of_String_Into_A_Vector(str_2);
-    return vec;
+    return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("cpp",path);
  }
  std::vector<std::string> Recursively_Get_All_Paths_To_hpp_Files_Of_Path(std::string const& path){
-    auto str_1 = exec("find " + path + " -type f -name \\*.hpp 2>/dev/null;");
-    auto str_2 = exec("find " + path + " -type l -name \\*.hpp 2>/dev/null;");
-    auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
-    vec += Put_Each_Line_Of_String_Into_A_Vector(str_2);
-    return vec;
+    return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("hpp",path);
  }
   std::vector<std::string> Recursively_Get_All_Paths_To_hcp_Files_Of_Path(std::string const& path){
-    auto str_1 = exec("find " + path + " -type f -name \\*.hcp 2>/dev/null;");
-    auto str_2 = exec("find " + path + " -type l -name \\*.hcp 2>/dev/null;");
-    auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
-    vec += Put_Each_Line_Of_String_Into_A_Vector(str_2);
-    return vec;
+    return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("hcp",path);
+ }
+ std::vector<std::string> Recursively_Get_All_Paths_To_Deb_Files_Of_Path(std::string const& path){
+    return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("deb",path);
  }
 std::vector<std::string> Recursively_Get_All_Paths_To_Directories_Of_Given_Name_From_Path(std::string directory_name, std::string const& path){
   std::string str = exec("find " + path + " -type d -name " + directory_name + " 2>/dev/null;");
