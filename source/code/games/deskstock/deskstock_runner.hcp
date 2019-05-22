@@ -34,6 +34,7 @@ class
 ❪"code/utilities/terminal/terminal_changer"❫
 ❪"code/utilities/math/math"❫
 ❪"code/games/deskstock/float_sourcer"❫
+❪"code/games/deskstock/system_effecter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run() ❰
@@ -64,7 +65,7 @@ class
     
     // what to do when the value changes
     auto on_value_change = [&](std::vector<float> const& current){
-        Effect_The_System(state,current);
+        System_Effecter::Effect_The_System(state,current);
     };
     
     // infinite program loop
@@ -79,6 +80,8 @@ class
 ❱
 
 
+// The deskstock state is primarily whatever is in the config file
+// if the config file does not exist we will automatically refresh it with default values
 ◀private: static▶ Deskstock_State ☀Get_Program_State() ❰
     Deskstock_State state;
     state.default_settings = Default_Settings_Getter::Get();
@@ -86,35 +89,6 @@ class
     Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
     return state;
 ❱
-
-◀private: static▶ void ☀Effect_The_System(Deskstock_State & state, std::vector<float> const& currents)❰
-
-    // single valye effectors
-    if (currents.size() == 1){
-        auto current = currents[0];
-        
-        //effect 1
-        state.current_settings.system_effects.effect_screen_tint.current_value = current;
-        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(state.current_settings.system_effects.effect_screen_tint);
-        
-        //effect 2
-        if (state.current_settings.system_effects.effect_custom.enable){
-            for (auto const& it: state.current_settings.system_effects.effect_custom.user_commands){
-                auto real_command = string_replace_all(it,"{{value}}",std::to_string(current));
-                system(real_command);
-            }
-        }
-        
-        //effect 3
-        state.current_settings.system_effects.effect_terminal.current_value = current;
-        Terminal_Changer::Change_Terminal(state.current_settings.system_effects.effect_terminal);
-    }
-    
-    //effect n
-    //TODO(anyone):  Add additional system effects to perform on a changing value
-❱
-
-
 
 // this is kind of sloppy.  I just wanted a generic "do this every time a value changes" kind of function.
 // I ended up slipping in a lot of lambdas as the tool grew.

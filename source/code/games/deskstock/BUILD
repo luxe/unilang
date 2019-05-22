@@ -71,12 +71,21 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/terminal:terminal_changer",
 "//code/utilities/math:math",
 "//code/games/deskstock:float_sourcer",
+"//code/games/deskstock:system_effecter",
 ])
 
 hcp(name = "float_sourcer", deps = [
     "//code/games/deskstock/settings:deskstock_state",
     "//code/utilities/web:lib",
     "//code/utilities/shell:lib",
+])
+
+hcp(name = "system_effecter", deps = [
+    "//code/games/deskstock/settings:deskstock_state",
+    "//code/utilities/screen:screen_tint_setter",
+    "//code/utilities/types/strings/transformers/search_replace:lib",
+    "//code/utilities/shell:lib",
+    "//code/utilities/terminal:terminal_changer",
 ])
 
 hcp(name = "default_settings_getter", deps = [
