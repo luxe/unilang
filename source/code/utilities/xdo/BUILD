@@ -2,11 +2,11 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-# cc_library(
-#     name = "lib",
-#     srcs = glob(["*.cpp"]),
-#     hdrs = glob(["*.hpp"]),
-#     deps = [
-#         "@xdo//:main",
-#     ]
-# )
+cc_library(
+     name = "lib",
+     srcs = glob(["*.cpp"]),
+     hdrs = glob(["*.hpp"]),
+     deps = [
+         #"@xdo//:main",
+     ]
+ )
