@@ -70,6 +70,13 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/system:installed_programs_checker",
 "//code/utilities/terminal:terminal_changer",
 "//code/utilities/math:math",
+"//code/games/deskstock:float_sourcer",
+])
+
+hcp(name = "float_sourcer", deps = [
+    "//code/games/deskstock/settings:deskstock_state",
+    "//code/utilities/web:lib",
+    "//code/utilities/shell:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [

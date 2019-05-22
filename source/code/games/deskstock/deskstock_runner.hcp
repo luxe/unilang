@@ -33,6 +33,7 @@ class
 ❪"code/utilities/system/installed_programs_checker"❫
 ❪"code/utilities/terminal/terminal_changer"❫
 ❪"code/utilities/math/math"❫
+❪"code/games/deskstock/float_sourcer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run() ❰
@@ -45,7 +46,7 @@ class
     //here we customize on a web endpoint that returns json
     auto how_to_source_value = [&](){
         Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
-        return Source_The_Float_Value(state);
+        return Float_Sourcer::Source_Floats(state);
     };
     
     //whether we consider the value changed and should take action
@@ -84,34 +85,6 @@ class
     state.ms.config_path = Full_Path_To_Home_Config_File("destock");
     Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
     return state;
-❱
-
-
-◀private: static▶ std::vector<float> ☀Source_The_Float_Value(Deskstock_State & state) ❰
-    std::vector<float> current;
-    
-    //extract from simulation
-    if (state.current_settings.how_to_get_value.through_simulation.simulate){
-        auto temp = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
-        current.emplace_back(temp);
-        
-        //update index 
-        if (state.current_settings.how_to_get_value.through_simulation.current_simulation_index >= state.current_settings.how_to_get_value.through_simulation.cycled_values.size()-1){
-            state.current_settings.how_to_get_value.through_simulation.current_simulation_index = 0;
-        }
-        else{
-            state.current_settings.how_to_get_value.through_simulation.current_simulation_index++;
-        }
-    }
-    
-    //extract from web
-    else{
-        auto temp = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
-        current.emplace_back(temp);
-    }
-    
-    //TODO(anyone): Add additional ways to source a value
-    return current;
 ❱
 
 ◀private: static▶ void ☀Effect_The_System(Deskstock_State & state, std::vector<float> const& currents)❰

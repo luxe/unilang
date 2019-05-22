@@ -1,0 +1,36 @@
+class
+
+❪vector❫
+❪"code/games/deskstock/settings/deskstock_state"❫
+⚯
+❪"code/utilities/web/lib"❫
+❪"code/utilities/shell/lib"❫
+⚞⚟
+
+
+◀public: static▶ std::vector<float> ☀Source_Floats(Deskstock_State & state) ❰
+    std::vector<float> current;
+    
+    //extract from simulation
+    if (state.current_settings.how_to_get_value.through_simulation.simulate){
+        auto temp = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
+        current.emplace_back(temp);
+        
+        //update index 
+        if (state.current_settings.how_to_get_value.through_simulation.current_simulation_index >= state.current_settings.how_to_get_value.through_simulation.cycled_values.size()-1){
+            state.current_settings.how_to_get_value.through_simulation.current_simulation_index = 0;
+        }
+        else{
+            state.current_settings.how_to_get_value.through_simulation.current_simulation_index++;
+        }
+    }
+    
+    //extract from web
+    else{
+        auto temp = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
+        current.emplace_back(temp);
+    }
+    
+    //TODO(anyone): Add additional ways to source a value
+    return current;
+❱
