@@ -32,6 +32,7 @@ class
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/system/installed_programs_checker"❫
 ❪"code/utilities/terminal/terminal_changer"❫
+❪"code/utilities/math/math"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run() ❰
@@ -50,8 +51,8 @@ class
     
     //whether we consider the value changed and should take action
     //if the values are different we take action
-    auto should_take_action = [&](float previous, float current){
-        return previous != current;
+    auto should_take_action = [&](std::vector<float> const& previous, std::vector<float> const& current){
+        return Math::different(previous,current);
     };
     
     // if the config was updated, we should reset the main loop
@@ -62,7 +63,7 @@ class
     };
     
     // what to do when the value changes
-    auto on_value_change = [&](float current){
+    auto on_value_change = [&](std::vector<float> const& current){
         Effect_The_System(state,current);
     };
     
@@ -87,12 +88,13 @@ class
 ❱
 
 
-◀private: static▶ float ☀Source_The_Float_Value(Deskstock_State & state) ❰
-    float current = 0;
+◀private: static▶ std::vector<float> ☀Source_The_Float_Value(Deskstock_State & state) ❰
+    std::vector<float> current;
     
     //extract from simulation
     if (state.current_settings.how_to_get_value.through_simulation.simulate){
-        current = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
+        auto temp = state.current_settings.how_to_get_value.through_simulation.cycled_values[state.current_settings.how_to_get_value.through_simulation.current_simulation_index];
+        current.emplace_back(temp);
         
         //update index 
         if (state.current_settings.how_to_get_value.through_simulation.current_simulation_index >= state.current_settings.how_to_get_value.through_simulation.cycled_values.size()-1){
@@ -105,30 +107,35 @@ class
     
     //extract from web
     else{
-        current = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
+        auto temp = Extract_Web_Json_Float(state.current_settings.how_to_get_value.through_web);
+        current.emplace_back(temp);
     }
     
     //TODO(anyone): Add additional ways to source a value
     return current;
 ❱
 
-◀private: static▶ void ☀Effect_The_System(Deskstock_State & state, const float & current)❰
+◀private: static▶ void ☀Effect_The_System(Deskstock_State & state, std::vector<float> const& currents)❰
 
-    //effect 1
-    state.current_settings.system_effects.screen_tint.current_value = current;
-    Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(state.current_settings.system_effects.screen_tint);
-    
-    //effect 2
-    if (state.current_settings.system_effects.run_user_commands){
-        for (auto const& it: state.current_settings.system_effects.user_commands){
-            auto real_command = string_replace_all(it,"{{value}}",std::to_string(current));
-            system(real_command);
+    if (currents.size() == 1){
+        auto current = currents[0];
+        
+        //effect 1
+        state.current_settings.system_effects.screen_tint.current_value = current;
+        Screen_Tint_Setter::Adjust_Screen_On_Good_Bad_Evaluation(state.current_settings.system_effects.screen_tint);
+        
+        //effect 2
+        if (state.current_settings.system_effects.run_user_commands){
+            for (auto const& it: state.current_settings.system_effects.user_commands){
+                auto real_command = string_replace_all(it,"{{value}}",std::to_string(current));
+                system(real_command);
+            }
         }
+        
+        //effect 3
+        state.current_settings.system_effects.terminal.current_value = current;
+        Terminal_Changer::Change_Terminal(state.current_settings.system_effects.terminal);
     }
-    
-    //effect 3
-    state.current_settings.system_effects.terminal.current_value = current;
-    Terminal_Changer::Change_Terminal(state.current_settings.system_effects.terminal);
     
     //effect n
     //TODO(anyone):  Add additional system effects to perform on a changing value
@@ -143,8 +150,8 @@ class
 ◀private: template <typename Fun1, typename Fun2, typename Fun3, typename Fun4>
 static void When_Value_Changes(int & check_mseconds, Fun1 source_action, Fun2 should_reset, Fun3 should_take_action, Fun4 change_action){
     
-    float previous = 0;
-    float current = 0;
+    std::vector<float> previous;
+    std::vector<float> current;
     while (true){
         For_Every_N_Milliseconds_With_Exception_Catching(check_mseconds,[&](){
             
