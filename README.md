@@ -8,11 +8,10 @@
 
 <summary>Introduction</summary>
 
-This document is the official unilang guide.  It contains all of the documentation with links to supplementary information.  
 
 
 ## GPLs Fall Short
-Despite their name, **general-purpose programming languages (GPLs)** have become associated with specific niches that target particular programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations on the problem space lead to different languages being chosen.  A cross-domain problem is then solved through a mixture of languages.  Under such circumstances, individual GPLs have not proven general enough as the solution to the entire problem space.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology to be less productive for establishing insight and enabling change over time.  It is better to have the entire problem space of software encoded from the same unifying model.  A unifying language can operate as a transcompiler to other existing GPLs.  
+Despite their name, **general-purpose programming languages (GPLs)** become associated with specific niches that target particular programming domains.  Due to the differences between these languages (both internal and external to their design), evaluations on the problem space lead to different languages being chosen.  A cross-domain problem is then solved through a mixture of languages.  Under such circumstances, individual GPLs have not proven general enough as the solution to the entire problem space.  Unilang's stance is that the amalgamation of different languages could be an implementation detail below a more conceptually pure representation of the full problem ontology.  We consider different languages within the same ontology to be less productive for establishing insight and enabling change over time.  It is better to have the entire problem space of software encoded from the same unifying model.  A unifying language can operate as a transcompiler to other existing GPLs.  
 
 
 ## The Next Layer
@@ -168,7 +167,7 @@ git clone git@github.com:luxe/unilang.git
 cd unilang
 ./build_everything
 ```
-Various CIs are also building from source and can be used as reference.  
+Various CIs are used to test the correctness of the build.  Referencing these builds may help you acquire any additional dependencies.  The reason we use multiple CIs is to ensure a general consensus and catch any outlier issues.  
 
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
@@ -183,6 +182,10 @@ Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/bran
 Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Full Build | 
 Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)](https://travis-ci.com/luxe/unilang) | Full Build | 
 
+To install directly, you can use.  
+```
+TODO: add commands
+```
 
 
 
