@@ -57,7 +57,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/screen:screen_tint_setter",
 "//code/utilities/stock:stock_getter",
 "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
-"//code/games/deskstock:deskstock_settings",
+"//code/games/deskstock/settings:deskstock_settings",
 "//code/utilities/locale:locale_setter",
 "//code/utilities/web:lib",
 "//code/games/deskstock:default_settings_getter",
@@ -65,41 +65,16 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/config:config_monitor_settings",
 "//code/utilities/types/strings/transformers/search_replace:lib",
 "//code/utilities/shell:lib",
-"//code/games/deskstock:deskstock_state",
+"//code/games/deskstock/settings:deskstock_state",
 "//code/utilities/system:installed_programs_checker",
 "//code/utilities/terminal:terminal_changer",
 "//code/utilities/math:math",
 ])
 
 hcp(name = "default_settings_getter", deps = [
-"//code/games/deskstock:deskstock_settings",
+"//code/games/deskstock/settings:deskstock_settings",
 "//code/utilities/stock:stock_getter",
 "//code/utilities/web:lib",
-])
-
-hcp(name = "deskstock_state", deps = [
-    "//code/games/deskstock:deskstock_settings",
-    "//code/utilities/config:config_monitor_settings",
-])
-
-hcp(name = "deskstock_settings", deps = [
-    "//code/utilities/locale:locale_settings",
-    "//code/games/deskstock:value_get_settings",
-    "//code/games/deskstock:system_effect_settings",
-    "//code/utilities/system:check_installed_program_settings",
-])
-
-hcp(name = "value_get_settings", deps = [
-    "//code/utilities/web:web_json_extraction_settings",
-    "//code/games/deskstock:simulation_value_settings",
-])
-
-hcp(name = "simulation_value_settings", deps = [
-])
-
-hcp(name = "system_effect_settings", deps = [
-    "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
-    "//code/utilities/terminal:change_terminal_settings",
 ])
 
 cc_binary(
