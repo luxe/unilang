@@ -82,7 +82,7 @@ class
 ◀private: static▶ Deskstock_State ☀Get_Program_State() ❰
     Deskstock_State state;
     state.default_settings = Default_Settings_Getter::Get();
-    state.ms.config_path = Full_Path_To_Home() + "/.destock";
+    state.ms.config_path = Full_Path_To_Home_Config_File("destock");
     Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
     return state;
 ❱
@@ -117,6 +117,7 @@ class
 
 ◀private: static▶ void ☀Effect_The_System(Deskstock_State & state, std::vector<float> const& currents)❰
 
+    // single valye effectors
     if (currents.size() == 1){
         auto current = currents[0];
         
@@ -153,6 +154,8 @@ static void When_Value_Changes(int & check_mseconds, Fun1 source_action, Fun2 sh
     std::vector<float> previous;
     std::vector<float> current;
     while (true){
+        previous.clear();
+        current.clear();
         For_Every_N_Milliseconds_With_Exception_Catching(check_mseconds,[&](){
             
             //if current value has changed

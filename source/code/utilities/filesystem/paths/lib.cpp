@@ -177,6 +177,11 @@ std::string Full_Path_To_Desktop(){
 	return dir;
 }
 
+std::string Full_Path_To_Home_Config_File(std::string const& config_for)
+{
+	return Full_Path_To_Home() + "/." + config_for;
+}
+
 //+--------------------+
 //| Checking Existence |
 //+--------------------+
