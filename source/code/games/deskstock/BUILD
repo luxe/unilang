@@ -80,6 +80,7 @@ hcp(name = "float_sourcer", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/types/strings/transformers/other:lib",
     "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/mouse:mouse_controller",
 ])
 
 hcp(name = "system_effecter", deps = [
@@ -99,5 +100,6 @@ hcp(name = "default_settings_getter", deps = [
 cc_binary(
     name = "deskstock",
     srcs = ["main.cpp"],
-    deps = ["//code/games/deskstock:deskstock_runner"]
+    deps = ["//code/games/deskstock:deskstock_runner"],
+    linkopts = ["-lxdo"],
 )
