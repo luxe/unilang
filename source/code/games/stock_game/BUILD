@@ -26,10 +26,11 @@ pkg_deb(
     depends = [
         "zlib1g-dev",
         "unzip",
+        "redshift",
     ],
     description = "Feel the stock market while you work",
     homepage = "none",
-    maintainer = "none",
+    maintainer = "Trevor Hickey <TrevorJamesHickey@gmail.com>",
     package = "deskstock",
     version = "1.0",
 )
