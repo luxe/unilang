@@ -9,10 +9,9 @@ hcp(name = "deskstock_state", deps = [
 ])
 
 hcp(name = "deskstock_settings", deps = [
-    "//code/utilities/locale:locale_settings",
     "//code/games/deskstock/settings:value_get_settings",
     "//code/games/deskstock/settings:system_effect_settings",
-    "//code/utilities/system:check_installed_program_settings",
+    "//code/games/deskstock/settings:startup_settings",
 ])
 
 hcp(name = "value_get_settings", deps = [
@@ -26,4 +25,9 @@ hcp(name = "simulation_value_settings", deps = [
 hcp(name = "system_effect_settings", deps = [
     "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
     "//code/utilities/terminal:change_terminal_settings",
+])
+
+hcp(name = "startup_settings", deps = [
+    "//code/utilities/system:check_installed_program_settings",
+    "//code/utilities/locale:locale_settings",
 ])
