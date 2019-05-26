@@ -6,7 +6,7 @@ load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 pkg_tar(
     name = "deskstock_tar",
     package_dir = "/usr/bin",
-    srcs = ["//code/games/deskstock:deskstock"],
+    srcs = ["//code/tools/deskstock:deskstock"],
     mode = "0755",
 )
 
@@ -58,24 +58,24 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/screen:screen_tint_setter",
 "//code/utilities/stock:stock_getter",
 "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
-"//code/games/deskstock/settings:deskstock_settings",
+"//code/tools/deskstock/settings:deskstock_settings",
 "//code/utilities/locale:locale_setter",
 "//code/utilities/web:lib",
-"//code/games/deskstock:default_settings_getter",
+"//code/tools/deskstock:default_settings_getter",
 "//code/utilities/config:config_monitor",
 "//code/utilities/config:config_monitor_settings",
 "//code/utilities/types/strings/transformers/search_replace:lib",
 "//code/utilities/shell:lib",
-"//code/games/deskstock/settings:deskstock_state",
+"//code/tools/deskstock/settings:deskstock_state",
 "//code/utilities/system:installed_programs_checker",
 "//code/utilities/terminal:terminal_changer",
 "//code/utilities/math:math",
-"//code/games/deskstock:float_sourcer",
-"//code/games/deskstock:system_effecter",
+"//code/tools/deskstock:float_sourcer",
+"//code/tools/deskstock:system_effecter",
 ])
 
 hcp(name = "float_sourcer", deps = [
-    "//code/games/deskstock/settings:deskstock_state",
+    "//code/tools/deskstock/settings:deskstock_state",
     "//code/utilities/web:lib",
     "//code/utilities/shell:lib",
     "//code/utilities/types/strings/transformers/other:lib",
@@ -84,7 +84,7 @@ hcp(name = "float_sourcer", deps = [
 ])
 
 hcp(name = "system_effecter", deps = [
-    "//code/games/deskstock/settings:deskstock_state",
+    "//code/tools/deskstock/settings:deskstock_state",
     "//code/utilities/screen:screen_tint_setter",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/shell:lib",
@@ -92,7 +92,7 @@ hcp(name = "system_effecter", deps = [
 ])
 
 hcp(name = "default_settings_getter", deps = [
-"//code/games/deskstock/settings:deskstock_settings",
+"//code/tools/deskstock/settings:deskstock_settings",
 "//code/utilities/stock:stock_getter",
 "//code/utilities/web:lib",
 ])
@@ -100,6 +100,6 @@ hcp(name = "default_settings_getter", deps = [
 cc_binary(
     name = "deskstock",
     srcs = ["main.cpp"],
-    deps = ["//code/games/deskstock:deskstock_runner"],
+    deps = ["//code/tools/deskstock:deskstock_runner"],
     linkopts = ["-lxdo"],
 )

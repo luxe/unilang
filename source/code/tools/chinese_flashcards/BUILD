@@ -29,5 +29,5 @@ hcp(name = "task_executer", deps = [
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["//code/games/chinese_flashcards:task_executer"]
+    deps = ["//code/tools/chinese_flashcards:task_executer"]
 )

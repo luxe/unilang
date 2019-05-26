@@ -1,5 +1,5 @@
 #include <iostream>
-#include "code/games/deskstock/deskstock_runner.hpp"
+#include "code/tools/deskstock/deskstock_runner.hpp"
 
 int main(){
     
