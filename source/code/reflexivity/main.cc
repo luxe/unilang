@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
-#include "code/bazel_refresh/bazel_refresher.hpp"
-#include "code/bazel_refresh/dockerfile_refresher.hpp"
+#include "code/reflexivity/bazel_refresher.hpp"
+#include "code/reflexivity/dockerfile_refresher.hpp"
 #include "code/utilities/locale/lib.hpp"
 
 
