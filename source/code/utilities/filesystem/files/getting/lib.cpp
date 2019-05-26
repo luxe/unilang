@@ -551,7 +551,14 @@ std::vector<std::string> Recursively_Get_All_Paths_To_Files_Of_Given_File_Extens
     auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
     vec += Put_Each_Line_Of_String_Into_A_Vector(str_2);
     return vec;
- }
+}
+std::vector<std::string> Recursively_Get_All_Paths_To_Non_Symlink_Files_Of_Given_File_Extension_From_Path(std::string file_extension, std::string const& path){
+    auto str_1 = exec("find " + path + " -type f -name \\*." + file_extension + " 2>/dev/null;");
+    auto vec = Put_Each_Line_Of_String_Into_A_Vector(str_1);
+    return vec;
+}
+ 
+ 
 std::vector<std::string> Recursively_Get_All_Paths_To_cpp_Files_Of_Path(std::string const& path){
     return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("cpp",path);
  }
