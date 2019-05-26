@@ -49,19 +49,12 @@ class
     //parse it
     Program_Input input;
     input.settings = Root_Settings_Getter::Get();
-    input.options.input_files.emplace_back(from);
-    auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
-    
-    //ensure the parse was good
-    if (graphs.size() != 1){
-        Exit_With_Error("we should have parsed out a single code graph");
-    }
     
     //build markdown documentation
-    auto structure = graphs[0].structure;
+    auto structure = Get_Unilang_Structure_From_File(from);
     auto contributors = input.settings.compiler_settings.trevor.contributors;
     auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
-    auto result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
+    auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
     Write_To_File(to_readme,result);
     
     //build pdf documentation
@@ -74,7 +67,7 @@ class
     int font_size = 12;
     int toc_depth = 2;
     
-    result = Markdown_Str_Getter::Get(graphs[0].structure,contributors,md_settings);
+    result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
     Write_To_File(to_raw_pdf,result);
     std::string command = "pandoc --toc -V -s ";
     command += "--template=";
@@ -101,8 +94,32 @@ class
     
     //build html slides documentation
     auto dz_settings = input.settings.compiler_settings.trevor.settings.foreign_language.dzslides;
-    Dzslides_Exporter::Create_Markdown_And_Slides(graphs[0].structure,contributors,dz_settings,slides_base_name);
+    Dzslides_Exporter::Create_Markdown_And_Slides(structure,contributors,dz_settings,slides_base_name);
     
+    
+    Upload(upload_to_dropbox,to_manual_pdf);
+❱
+
+◀private: static▶ Structure ☀Get_Unilang_Structure_From_File(std::string const& file)❰
+
+    //parse it
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+    input.options.input_files.emplace_back(file);
+    auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
+    
+    //ensure the parse was good
+    if (graphs.size() != 1){
+        Exit_With_Error("we should have parsed out a single code graph");
+    }
+    
+    //build markdown documentation
+    auto structure = graphs[0].structure;
+    return structure;
+❱
+
+◀private: static▶ void ☀Upload(bool const& upload_to_dropbox, std::string const& to_manual_pdf)❰
+
     //upload pdf to dropbox
     if (upload_to_dropbox){
         
@@ -114,6 +131,7 @@ class
         Dropbox_Uploader::Upload(d_settings);
     }
 ❱
+
 
 ◀private: static▶ void ☀Move_To_Unilang_Docs_Place_In_Repo() ❰
     auto build_from = Bazel_Derived_Path_To_Self_Unilang();
