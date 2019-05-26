@@ -12,4 +12,6 @@ cc_binary(
 
 
 hcp(name = "software_deployer", deps = [
+    "//code/utilities/filesystem/files/getting:lib",
+    "//code/utilities/filesystem/paths:lib",
 ])
