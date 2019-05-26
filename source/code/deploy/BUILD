@@ -5,6 +5,11 @@ cc_binary(
     name = "deploy",
     srcs = ["main.cpp"],
     deps = [
-    "//code/utilities/locale:lib"
+    "//code/utilities/locale:lib",
+    "//code/deploy:software_deployer"
     ],
 )
+
+
+hcp(name = "software_deployer", deps = [
+])
