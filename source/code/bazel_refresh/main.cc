@@ -10,6 +10,8 @@
 // Like most things, more possibilities open up, when the repo infrastructure is expressed in a data model
 int main(int argc, char** argv){
     Set_English_UTF8_Locale();
+    
+    //things within the repository to regenerate
     Bazel_Refresher::Refresh();
     Dockerfile_Refresher::Refresh();
 }
