@@ -22,6 +22,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/web/dropbox:dropbox_uploader",
 "//code/utilities/secret:secret_getter",
 "//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
+"//code/utilities/pdf:pdf_settings",
 ])
 
 hcp(name = "latex_template_getter", deps = [

@@ -3,6 +3,7 @@ class
 ❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/transcompilers/unilang/tokens/generic_token"❫
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
+❪"code/utilities/pdf/pdf_settings"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/exits/lib"❫
@@ -57,7 +58,13 @@ class
     Write_To_File(to_readme,result);
     
     //build pdf documentation
-    Create_Pdf(structure,to_latex_template,to_manual_pdf,to_raw_pdf);
+    
+    
+    Pdf_Settings pdf_settings;
+    pdf_settings.latex_template = to_latex_template;
+    pdf_settings.md_format = to_raw_pdf;
+    pdf_settings.resulting_pdf = to_manual_pdf;
+    Create_Pdf(structure,pdf_settings);
     
     //build html slides documentation
     auto dz_settings = input.settings.compiler_settings.trevor.settings.foreign_language.dzslides;
@@ -67,38 +74,32 @@ class
     Upload(upload_to_dropbox,to_manual_pdf);
 ❱
 
-◀private: static▶ void ☀Create_Pdf(Structure const& structure, std::string const& to_latex_template, std::string const& to_manual_pdf, std::string const& to_raw_pdf)❰
+◀private: static▶ void ☀Create_Pdf(Structure const& structure, Pdf_Settings const& pdf_settings)❰
 
     Program_Input input;
     input.settings = Root_Settings_Getter::Get();
     auto contributors = input.settings.compiler_settings.trevor.contributors;
     auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
     
-    Set_Path(Bazel_Derived_Root_Of_Repo());
-    Write_To_File(to_latex_template,Latex_Template_Getter::Get());
+    Write_To_File(pdf_settings.latex_template,Latex_Template_Getter::Get());
     md_settings.headers.allow_labeled_image_titles = false;
     md_settings.headers.h1_as_details_tags = false;
     md_settings.headers.h1_as_summary_tags = false;
     md_settings.tables.print = false;
-    int font_size = 12;
-    int toc_depth = 2;
-    std::string mainfont = "Palatino";
-    std::string sansfont = "Helvetica";
-    std::string monofont = "Menlo";
     
     
     std::vector<std::pair<std::string,std::string>> vars;
-    vars.emplace_back("mainfont",mainfont);
-    vars.emplace_back("sansfont",sansfont);
-    vars.emplace_back("monofont",monofont);
+    vars.emplace_back("mainfont",pdf_settings.mainfont);
+    vars.emplace_back("sansfont",pdf_settings.sansfont);
+    vars.emplace_back("monofont",pdf_settings.monofont);
     
     auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
-    Write_To_File(to_raw_pdf,result);
+    Write_To_File(pdf_settings.md_format,result);
     std::string command = "pandoc --toc -V -s ";
     
     //add template
     command += "--template=";
-    command += to_latex_template;
+    command += pdf_settings.latex_template;
     command += " ";
     
     //add vars
@@ -112,17 +113,17 @@ class
     
     //font size
     command += "--variable fontsize=";
-    command += std::to_string(font_size);
+    command += std::to_string(pdf_settings.font_size);
     
     command += "pt ";
     command += "--toc-depth=";
-    command += std::to_string(toc_depth);
+    command += std::to_string(pdf_settings.toc_depth);
     command += " ";
     //command += "--latex-engine=xelatex ";
     command += "-o ";
-    command += to_manual_pdf;
+    command += pdf_settings.resulting_pdf;
     command += " ";
-    command += to_raw_pdf;
+    command += pdf_settings.md_format;
     if (Unsuccessful_Run_Of_Command(command)){
         Exit_With_Error("failed to create pdf");
     }
