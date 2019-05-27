@@ -4,6 +4,8 @@ class
 ⚯
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Deploy()❰
@@ -11,7 +13,19 @@ class
     //get all the debian packages out of this repository
     auto exported_path = Bazel_Working_Directory() + "/bazel-bin/code";
     auto debs = Recursively_Get_All_Paths_To_Non_Symlink_Deb_Files_Of_Path(exported_path);
-    for (auto it: debs){
+    
+    Deploy_Deskstock(debs);
+    
+❱
+
+
+◀private: static▶ void ☀Deploy_Deskstock(std::vector<std::string> const& debs)❰
+
+    auto specific_debs = Filter(debs,[&](std::string const& file){
+        return File_Name_Starts_With(file,"deskstock_");
+    });
+    
+    for (auto it: specific_debs){
         std::cout << it << std::endl;
     }
 ❱
