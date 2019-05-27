@@ -99,3 +99,9 @@ void Empty_Out_Folder_But_Keep_Folder(std::string path){
     std::string command = std::string("rm -rf ") + path + "*";
     execute_quietly(command);
 }
+
+void Delete_File(std::string const& file){
+    
+    std::string command = std::string("rm -f ") + file;
+    execute_quietly(command);
+}
