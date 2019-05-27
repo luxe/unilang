@@ -19,9 +19,8 @@ pkg_tar(
 )
 
 
-#also do architecture=all
 pkg_deb(
-    name = "deskstock-debian",
+    name = "deskstock-debian-amd64",
     data = ":debian-data",
     package = "deskstock",
     architecture = "amd64",
@@ -33,6 +32,23 @@ pkg_deb(
         "zlib1g-dev",
         "unzip",
         "redshift",
+        "libxdo-dev"
+    ],
+)
+pkg_deb(
+    name = "deskstock-debian-all",
+    data = ":debian-data",
+    package = "deskstock",
+    architecture = "all",
+    maintainer = "Trevor Hickey <TrevorJamesHickey@gmail.com>",
+    version = "1.0",
+    description = "Feel the stock market while you work",
+    homepage = "none",
+    depends = [
+        "zlib1g-dev",
+        "unzip",
+        "redshift",
+        "libxdo-dev"
     ],
 )
 
