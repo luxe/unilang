@@ -16,4 +16,5 @@ hcp(name = "software_deployer", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/utilities/types/vectors/observers:lib",
+    "//code/tools/deskstock:documentation_getter",
 ])
