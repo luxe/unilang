@@ -62,6 +62,18 @@ bool The_Same_Except_For_One_Element(std::vector<T> const& v1, std::vector<T> co
 	return false;
 }
 
+template <typename T, typename Fun>
+std::vector<T> Filter(std::vector<T> const& vec, Fun pred){
+  std::vector<T> new_vec;
+  for (auto const& it: vec){
+    if (pred(it)){
+      new_vec.emplace_back(it);
+    }
+  }
+  
+  return new_vec;
+}
+
 
 template<typename T>
 const T& Get_Nth_Element(std::vector<T> const& container, size_t n) {

@@ -8,6 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = ["//code/utilities/types/char:lib",
     "//code/utilities/types/general:lib",
+    "//code/utilities/types/strings/observers/other:lib",
     "@boost//:range",
     ]
 )

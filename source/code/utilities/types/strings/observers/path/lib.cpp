@@ -1,7 +1,8 @@
 #include "code/utilities/types/strings/observers/path/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
 #include "code/utilities/types/general/lib.hpp"
-#include "boost/range/adaptor/reversed.hpp" 
+#include "boost/range/adaptor/reversed.hpp"
+#include "code/utilities/types/strings/observers/other/lib.hpp"
 
 std::string Get_File_Extension(std::string const& str){
     std::string extension;
@@ -35,4 +36,8 @@ std::string Get_File_Name(std::string const& str){
     }
     
     return filename;
+}
+bool File_Name_Starts_With(std::string const& str, std::string const& prefix){
+    auto file_name = Get_File_Name(str);
+    return Begins_With(file_name,prefix);
 }
