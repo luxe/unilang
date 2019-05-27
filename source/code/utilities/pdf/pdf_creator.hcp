@@ -1,0 +1,75 @@
+class
+❪string❫
+❪iostream❫
+❪cstdlib❫
+❪iostream❫
+❪vector❫
+❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
+❪"code/transcompilers/unilang/main/program_input"❫
+❪"code/utilities/pdf/pdf_settings"❫
+⚯
+❪"code/transcompilers/unilang/main/root_settings/root_settings_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/pdf/latex_template_getter"❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/filesystem/files/temp_file"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Create_Pdf(Structure const& structure, Pdf_Settings const& pdf_settings)❰
+
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+    auto contributors = input.settings.compiler_settings.trevor.contributors;
+    auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
+    
+    auto garbage1 = Temp_File(pdf_settings.latex_template,Latex_Template_Getter::Get());
+    md_settings.headers.allow_labeled_image_titles = false;
+    md_settings.headers.h1_as_details_tags = false;
+    md_settings.headers.h1_as_summary_tags = false;
+    md_settings.tables.print = false;
+    
+    
+    std::vector<std::pair<std::string,std::string>> vars;
+    vars.emplace_back("mainfont",pdf_settings.mainfont);
+    vars.emplace_back("sansfont",pdf_settings.sansfont);
+    vars.emplace_back("monofont",pdf_settings.monofont);
+    
+    auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
+    auto garbage2 = Temp_File(pdf_settings.md_format,result);
+    std::string command = "pandoc --toc -V -s ";
+    
+    //add template
+    command += "--template=";
+    command += pdf_settings.latex_template;
+    command += " ";
+    
+    //add vars
+    for (auto const& var: vars){
+        command += "--variable ";
+        command += var.first;
+        command += "=\"";
+        command += var.second;
+        command += "\" ";
+    }
+    
+    //font size
+    command += "--variable fontsize=";
+    command += std::to_string(pdf_settings.font_size);
+    
+    command += "pt ";
+    command += "--toc-depth=";
+    command += std::to_string(pdf_settings.toc_depth);
+    command += " ";
+    //command += "--latex-engine=xelatex ";
+    command += "-o ";
+    command += pdf_settings.resulting_pdf;
+    command += " ";
+    command += pdf_settings.md_format;
+    if (Unsuccessful_Run_Of_Command(command)){
+        Exit_With_Error("failed to create pdf");
+    }
+❱
