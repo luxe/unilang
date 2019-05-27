@@ -20,4 +20,5 @@ hcp(name = "software_deployer", deps = [
     
     "//code/utilities/pdf:pdf_settings",
     "//code/utilities/pdf:pdf_creator",
+    "//code/utilities/filesystem/files/moving:lib",
 ])
