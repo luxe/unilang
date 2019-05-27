@@ -82,16 +82,28 @@ class
     md_settings.tables.print = false;
     int font_size = 12;
     int toc_depth = 2;
+    std::vector<std::pair<std::string,std::string>> vars;
+    vars.emplace_back("mainfont","Palatino");
+    vars.emplace_back("sansfont","Helvetica");
+    vars.emplace_back("monofont","Menlo");
     
     auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
     Write_To_File(to_raw_pdf,result);
     std::string command = "pandoc --toc -V -s ";
+    
+    //add template
     command += "--template=";
     command += to_latex_template;
     command += " ";
-    command += "--variable mainfont=\"Palatino\" ";
-    command += "--variable sansfont=\"Helvetica\" ";
-    command += "--variable monofont=\"Menlo\" ";
+    
+    //add vars
+    for (auto const& var: vars){
+        command += "--variable ";
+        command += var.first;
+        command += "=\"";
+        command += var.second;
+        command += "\" ";
+    }
     command += "--variable fontsize=";
     command += std::to_string(font_size);
     command += "pt ";
