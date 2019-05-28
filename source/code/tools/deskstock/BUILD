@@ -4,55 +4,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
-pkg_tar(
-    name = "deskstock_tar",
-    package_dir = "/usr/bin",
-    srcs = ["//code/tools/deskstock:deskstock"],
-    mode = "0755",
-)
-
-pkg_tar(
-    name = "debian-data",
-    extension = "tar.gz",
-    deps = [
-        ":deskstock_tar",
-    ],
-)
-
-
-pkg_deb(
-    name = "deskstock-debian-amd64",
-    data = ":debian-data",
-    package = "deskstock",
-    architecture = "amd64",
-    maintainer = "Trevor Hickey <TrevorJamesHickey@gmail.com>",
-    version = "1.0",
-    description = "Feel the stock market while you work",
-    homepage = "none",
-    depends = [
-        "zlib1g-dev",
-        "unzip",
-        "redshift",
-        "libxdo-dev"
-    ],
-)
-pkg_deb(
-    name = "deskstock-debian-all",
-    data = ":debian-data",
-    package = "deskstock",
-    architecture = "all",
-    maintainer = "Trevor Hickey <TrevorJamesHickey@gmail.com>",
-    version = "1.0",
-    description = "Feel the stock market while you work",
-    homepage = "none",
-    depends = [
-        "zlib1g-dev",
-        "unzip",
-        "redshift",
-        "libxdo-dev"
-    ],
-)
-
 hcp(name = "deskstock_runner", deps = [
 "//code/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
@@ -120,7 +71,30 @@ hcp(name = "documentation_getter", deps = [
     "//code/utilities/converters:lib",
 ])
 
+pkg_tar(
+    name = "deskstock_tar",
+    package_dir = "/usr/bin",
+    srcs = ["//code/tools/deskstock:deskstock"],
+    mode = "0755",
+)
+
+pkg_tar(
+    name = "debian-data",
+    extension = "tar.gz",
+    deps = [
+        ":deskstock_tar",
+    ],
+)
+
 distributable_cpp_main(
     name = "deskstock",
     deps = ["//code/tools/deskstock:deskstock_runner"],
+    data = ":debian-data",
+    description = "Feel the stock market while you work",
+    depends = [
+        "zlib1g-dev",
+        "unzip",
+        "redshift",
+        "libxdo-dev"
+    ],
 )
