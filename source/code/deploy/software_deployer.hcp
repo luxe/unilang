@@ -31,23 +31,24 @@ class
 
 ◀private: static▶ void ☀Deploy_Deskstock(std::vector<std::string> const& debs)❰
 
-    Create_Path_If_It_Doesnt_Already_Exist_And_Step_Into_It("deskstock");
-
-    //find deskstock debs and copy them over
-    auto specific_debs = Filter(debs,[&](std::string const& file){
-        return File_Name_Starts_With(file,"deskstock_");
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function("releases/deskstock",[&](){
+    
+        //find deskstock debs and copy them over
+        auto specific_debs = Filter(debs,[&](std::string const& file){
+            return File_Name_Starts_With(file,"deskstock_");
+        });
+        Copy_Files_To_Current_Directory(specific_debs);
+        
+        //create pdf documentation
+        auto doc_structure = Documentation_Getter::Get();
+        Pdf_Settings pdf_settings;
+        pdf_settings.latex_template = "temp_latex.tex";
+        pdf_settings.md_format = "temp_markdown.md";
+        pdf_settings.resulting_pdf = "deskstock.pdf";
+        Pdf_Creator::Create_Pdf(doc_structure,pdf_settings);
+        
+        for (auto it: specific_debs){
+            std::cout << it << std::endl;
+        }
     });
-    Copy_Files_To_Current_Directory(specific_debs);
-    
-    //create pdf documentation
-    auto doc_structure = Documentation_Getter::Get();
-    Pdf_Settings pdf_settings;
-    pdf_settings.latex_template = "temp_latex.tex";
-    pdf_settings.md_format = "temp_markdown.md";
-    pdf_settings.resulting_pdf = "deskstock.pdf";
-    Pdf_Creator::Create_Pdf(doc_structure,pdf_settings);
-    
-    for (auto it: specific_debs){
-        std::cout << it << std::endl;
-    }
 ❱

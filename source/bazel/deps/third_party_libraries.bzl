@@ -36,10 +36,14 @@ load("//bazel/deps/get:grpc.bzl", "grpc")
 load("//bazel/deps/get:fmt.bzl", "fmt")
 load("//bazel/deps/get:glfw.bzl", "glfw")
 load("//bazel/deps/get:cereal.bzl", "cereal")
+load("//bazel/deps/get:xdo.bzl", "xdo")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
 # for the urls.  the first url can be where we host it.
+# Also, github is a single source of failure here.  
+# Its probably okay to clone on github and use that as a mirror,
+# but we may also want additional hosting elsewhere (ex: buildfactory)
 
 # TODO(thickey): as a rule of thumb, we do not want patch files.  
 # when a patch file is created, we need to work with the original author to merge it back.
@@ -130,3 +134,4 @@ def third_party_libraries():
     # Other
     grpc()
     fmt()
+    xdo()

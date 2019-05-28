@@ -116,6 +116,7 @@ hcp(name = "default_settings_getter", deps = [
 hcp(name = "documentation_getter", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
     "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/utilities/converters:lib",
 ])
 
 cc_binary(
