@@ -69,6 +69,9 @@ hcp(name = "documentation_getter", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
     "//code/transcompilers/unilang/structure/model:inlined_structures",
     "//code/utilities/converters:lib",
+    "//code/tools/deskstock/settings:startup_settings",
+    "//code/utilities/json/functions:lib",
+    "//code/tools/deskstock:default_settings_getter",
 ])
 
 pkg_tar(

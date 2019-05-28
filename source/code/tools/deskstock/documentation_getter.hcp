@@ -1,21 +1,30 @@
 class
+❪iostream❫
+❪fstream❫
+❪string❫
 ❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/transcompilers/unilang/structure/model/structure"❫
 ⚯
 ❪"code/utilities/converters/lib"❫
+❪"code/tools/deskstock/settings/startup_settings"❫
+❪"code/tools/deskstock/default_settings_getter"❫
+❪"code/utilities/json/functions/lib"❫
 ⚞⚟
 
 ◀public: static▶ Structure ☀Get() ❰
     Structure s;
     s.literature.paragraphs.emplace_back(Title());
     s.literature.paragraphs.emplace_back(Introduction());
+    s.literature.paragraphs.emplace_back(Configuration());
+    s.literature.paragraphs.emplace_back(Startup());
+    s.literature.paragraphs.emplace_back(Monitoring());
     s.literature.paragraphs.emplace_back(Sourcing());
     s.literature.paragraphs.emplace_back(Effecting());
     return s;
 ❱
 
 
-◀public: static▶ Paragraph ☀Title() ❰
+◀private: static▶ Paragraph ☀Title() ❰
     Paragraph p;
     p.depth.value = as_wstring("0");
     p.title.value = as_wstring("Feel the stock market");
@@ -28,23 +37,107 @@ class
     return p;
 ❱
 
-◀public: static▶ Paragraph ☀Introduction() ❰
+◀private: static▶ Paragraph ☀Introduction() ❰
     Paragraph p;
     p.depth.value = as_wstring("0");
     p.title.value = as_wstring("Introduction");
+    
+    Add_Sentence(p,"deskstock is a tool that monitors changing values over time");
+    Add_Sentence(p,"it adjusts your system to reflect that changing value in fun and potentially useful ways");
+    Add_Sentence(p,"there are different ways to source values for monitoring, and many built in effects to perform on monitored values");
+    Add_Sentence(p,"you can customize how frequently observations and changes are performed on your system");
+    Add_Sentence(p,"the tool is designed to be run in the background and reflect changes to you throughout the day");
+    Add_Sentence(p,"write your own configurations and share them with others");
     return p;
 ❱
 
-◀public: static▶ Paragraph ☀Sourcing() ❰
+◀private: static▶ Paragraph ☀Configuration() ❰
     Paragraph p;
     p.depth.value = as_wstring("0");
+    p.title.value = as_wstring("Configuration");
+    
+    Add_Sentence(p,"all configuration for deskstock will be found in your home directory inside the file **.deskstock**");
+    Add_Sentence(p,"this is a json file that will be automatically reloaded by the program upon saving");
+    Add_Sentence(p,"go ahead, you can adjust this configuration while the program is running, and it will pick up the changes in real-time");
+    Add_Sentence(p,"if you specify malformed json, or your json does not match the schema known to the program, it will tell you");
+    Add_Sentence(p,"the best way to fix this, is to simply delete the configuration file");
+    Add_Sentence(p,"the program will automatically re-create it with a valid default configuration");
+    Add_Sentence(p,"a word of warning on how you configure things");
+    Add_Sentence(p,"deskstock does not apply any artificial restrictions");
+    Add_Sentence(p,"if you want to ping a sever every millisecond, or spawn an infinite amount of processes you can");
+    Add_Sentence(p,"its up to you to configure things that are sensible on your machine");
+    Add_Sentence(p,"in the following sections, we will cover more specifically the different areas of configuration");
+    return p;
+❱
+
+◀private: static▶ Paragraph ☀Startup() ❰
+    Paragraph p;
+    p.depth.value = as_wstring("1");
+    p.title.value = as_wstring("Startup");
+    
+    Add_Sentence(p,"startup configurations refer to any initial provisioning that needs to take place as soon as deskstock starts");
+    auto default_settings = Default_Settings_Getter::Get();
+    auto config_example = As_JSON_String(default_settings.startup);
+    Add_Sentence_With_Code(p,"configurations related to the program startup looks as followed",config_example);
+    Add_Sentence(p,"the **locale** of the program can be changed depending on the user's language and region");
+    Add_Sentence(p,"disable the **set** flag if you don't want to configure the locale at all");
+    Add_Sentence(p,"in this case, your system's default will be used");
+    //break
+    Add_Sentence(p,"**needed programs** are additional programs that deskstock will call for you on your behalf when monitoring and effecting");
+    Add_Sentence(p,"if you want to ensure the user has these programs available, specify them here");
+    Add_Sentence(p,"deskstock will error out if a program is listed but cannot be found");
+    Add_Sentence(p,"this is useful if you write custom rules that rely on programs which might not exist on other people's machines");
+    Add_Sentence(p,"disable the **check** flag if you don't want to check for additional programs");
+    //break
+    Add_Sentence(p,"these effects only take place on program startup");
+    Add_Sentence(p,"unlike other configurations, the program will need restarted for the settings to take effect");
+    
+    return p;
+❱
+
+◀private: static▶ Paragraph ☀Monitoring() ❰
+    Paragraph p;
+    p.depth.value = as_wstring("1");
+    p.title.value = as_wstring("Monitoring");
+    
+    Add_Sentence(p,"startup configurations refer to any initial provisioning that needs to take place as soon as deskstock starts");
+    
+    Add_Sentence(p,"configurations related to monitoring");
+    return p;
+❱
+
+◀private: static▶ Paragraph ☀Sourcing() ❰
+    Paragraph p;
+    p.depth.value = as_wstring("1");
     p.title.value = as_wstring("Sourcing");
+    
+    Add_Sentence(p,"what value or set of values do you want to monitor?");
+    Add_Sentence(p,"sourcing refers to the configuration you can use to specify how your value(s) will be monitored");
+    Add_Sentence(p,"Each section below shows different ways you can enable sourcing for particular values");
     return p;
 ❱
 
-◀public: static▶ Paragraph ☀Effecting() ❰
+
+
+◀private: static▶ Paragraph ☀Effecting() ❰
     Paragraph p;
-    p.depth.value = as_wstring("0");
+    p.depth.value = as_wstring("1");
     p.title.value = as_wstring("Effecting");
     return p;
+❱
+
+
+◀private: static▶ void ☀Add_Sentence(Paragraph & p, std::string const& str) ❰
+    Sentence s;
+    s.text.value = as_wstring(str);
+    p.sentences.emplace_back(s);
+❱
+◀private: static▶ void ☀Add_Sentence_With_Code(Paragraph & p, std::string const& str, std::string const& code) ❰
+    Sentence s;
+    s.text.value = as_wstring(str);
+    
+    Code_Line line;
+    line.line.value = as_wstring(code);
+    s.codes.emplace_back(line);
+    p.sentences.emplace_back(s);
 ❱
