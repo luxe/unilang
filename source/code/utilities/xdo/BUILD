@@ -8,5 +8,6 @@ cc_library(
      hdrs = glob(["*.hpp"]),
      deps = [
          #"@xdo//:main",
-     ]
+     ],
+     linkopts = ["-lxdo"],
  )

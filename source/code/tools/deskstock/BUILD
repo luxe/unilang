@@ -123,5 +123,4 @@ cc_binary(
     name = "deskstock",
     srcs = ["main.cpp"],
     deps = ["//code/tools/deskstock:deskstock_runner"],
-    linkopts = ["-lxdo"],
 )
