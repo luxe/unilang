@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
 pkg_tar(
@@ -119,8 +120,7 @@ hcp(name = "documentation_getter", deps = [
     "//code/utilities/converters:lib",
 ])
 
-cc_binary(
+distributable_cpp_main(
     name = "deskstock",
-    srcs = ["main.cpp"],
     deps = ["//code/tools/deskstock:deskstock_runner"],
 )
