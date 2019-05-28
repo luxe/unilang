@@ -12,6 +12,7 @@ hcp(name = "deskstock_settings", deps = [
     "//code/tools/deskstock/settings:value_get_settings",
     "//code/tools/deskstock/settings:system_effect_settings",
     "//code/tools/deskstock/settings:startup_settings",
+    "//code/tools/deskstock/settings:monitor_settings",
 ])
 
 hcp(name = "value_get_settings", deps = [
@@ -39,4 +40,7 @@ hcp(name = "user_command_settings", deps = [
 ])
 
 hcp(name = "mouse_value_settings", deps = [
+])
+
+hcp(name = "monitor_settings", deps = [
 ])
