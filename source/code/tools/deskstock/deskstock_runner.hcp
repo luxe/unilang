@@ -42,16 +42,18 @@ class
     //Load the program state for usage in the rest of the program
     auto state = Get_Program_State();
     
-    //how to source the value
+    //How to source the value.
     //we can get a float from anywhere
-    //here we customize on a web endpoint that returns json
+    //here we choose to source from various places
     auto how_to_source_value = [&](){
         Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
         return Float_Sourcer::Source_Floats(state);
     };
     
-    //whether we consider the value changed and should take action
-    //if the values are different we take action
+    //Whether we consider the value changed and should take action.
+    //we decide whether to take action based on configuration.
+    //we might only take action if the values have changed.
+    //or we might ALWAYS take action each iteration; its up to the user.
     auto should_take_action = [&](std::vector<float> const& previous, std::vector<float> const& current){
         
         if (state.current_settings.monitor.only_on_change){
@@ -68,6 +70,7 @@ class
     };
     
     // what to do when the value changes
+    // in our case, we perform the configured effects on the system
     auto on_value_change = [&](std::vector<float> const& current){
         System_Effecter::Effect_The_System(state,current);
     };

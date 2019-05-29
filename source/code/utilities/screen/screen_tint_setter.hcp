@@ -10,63 +10,9 @@ class
 ❪"code/utilities/shell/lib.hpp"❫
 ❪"code/utilities/screen/redshift/redshift_command_getter"❫
 ❪"code/utilities/math/math"❫
+❪"code/utilities/screen/screen_gama_setter"❫
 ❪iostream❫
 ⚞⚟
-
-
-◀public: static▶ void ☀Set_Rgb_Section(Redshift_Settings const& setting, Rgb_Section const& section, float percentage)❰
-    switch (section){
-        case Rgb_Section::RED: Set_Redness(setting,percentage); break;
-        case Rgb_Section::GREEN: Set_Greeness(setting,percentage); break;
-        case Rgb_Section::BLUE: Set_Blueness(setting,percentage); break;
-        default:;
-    }
-❱
-
-◀public: static▶ void ☀Reset_Rgb_Section(Redshift_Settings const& setting)❰
-    Set_Redness(setting,0);
-❱
-
-◀private: static▶ void ☀Set_Redness(Redshift_Settings const& setting, float red_percentage)❰
-    auto command = Get_Redness_Redshift_Command(setting, red_percentage);
-    no_hup_execute_quietly_in_background(command);
-❱
-◀private: static▶ void ☀Set_Greeness(Redshift_Settings const& setting, float green_percentage)❰
-    auto command = Get_Greeness_Redshift_Command(setting, green_percentage);
-    no_hup_execute_quietly_in_background(command);
-❱
-◀private: static▶ void ☀Set_Blueness(Redshift_Settings const& setting, float blue_percentage)❰
-    auto command = Get_Blueness_Redshift_Command(setting, blue_percentage);
-    no_hup_execute_quietly_in_background(command);
-❱
-
-◀private: static▶ std::string ☀Get_Redness_Redshift_Command(Redshift_Settings setting, float red_percentage)❰
-    
-    //adjust for redness
-    float as_decimal = red_percentage;
-    setting.green_gamma_correction -= as_decimal;
-    setting.blue_gamma_correction -= as_decimal;
-    
-    return Redshift_Command_Getter::Get(setting);
-❱
-◀private: static▶ std::string ☀Get_Greeness_Redshift_Command(Redshift_Settings setting, float green_percentage)❰
-    
-    //adjust for redness
-    float as_decimal = green_percentage;
-    setting.red_gamma_correction -= as_decimal;
-    setting.blue_gamma_correction -= as_decimal;
-    
-    return Redshift_Command_Getter::Get(setting);
-❱
-◀private: static▶ std::string ☀Get_Blueness_Redshift_Command(Redshift_Settings setting, float blue_percentage)❰
-    
-    //adjust for redness
-    float as_decimal = blue_percentage;
-    setting.red_gamma_correction -= as_decimal;
-    setting.green_gamma_correction -= as_decimal;
-    
-    return Redshift_Command_Getter::Get(setting);
-❱
 
 
 
@@ -82,25 +28,40 @@ class
 ❱
 
 ◀private: static▶ void ☀Set_Mood(Good_Bad_Screen_Tint_Settings const& settings, Mood_Setting const& mood)❰
-
-        auto d = Math::clamped_difference(settings.current_value,settings.standard_value,mood.expected_max_difference);
-        if (d >= mood.difference_until_change){
-            auto percent = Math::map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
-            
-            if (settings.show_screen_tint){
-                Set_Rgb_Section(settings.shift, mood.color, percent);
-            }
-            else{
-                Reset_Rgb_Section(settings.shift);
-            }
-            if (settings.debug_data){
-                Print_Debug_Message(as_string(mood.color),settings,d,percent);
-            }
-        }
+    
+    auto r_pct = Get_Mood_Percentage(settings,mood.red);
+    auto g_pct = Get_Mood_Percentage(settings,mood.green);
+    auto b_pct = Get_Mood_Percentage(settings,mood.blue);
         
+    if (settings.show_screen_tint){
+        Screen_Gama_Setter::Set_Rgb_Section(settings.shift, r_pct, g_pct, b_pct);
+    }
+    else{
+        Screen_Gama_Setter::Reset_Rgb_Section(settings.shift);
+    }
+    if (settings.debug_data){
+        Print_Debug_Message(settings,r_pct,g_pct,b_pct);
+    }
 ❱
 
-◀private: static▶ void ☀Print_Debug_Message(std::string const& label, Good_Bad_Screen_Tint_Settings const& settings, float difference, float percent)❰
+◀private: static▶ float ☀Get_Mood_Percentage(Good_Bad_Screen_Tint_Settings const& settings, Gama_Slider const& slider)❰
+
+    // make sure the difference is significant
+    auto d = Math::clamped_difference(settings.current_value,settings.standard_value,slider.expected_max_difference);
+    if (d < slider.difference_until_change){
+        return 0;
+    }
+    
+    //fit the difference to a range
+    auto percent = Math::map_value_across_range(d,0,slider.expected_max_difference,slider.low_rgb_value,slider.high_rgb_value);
+    return percent;
+❱
+
+◀private: static▶ void ☀Print_Debug_Message(Good_Bad_Screen_Tint_Settings const& settings, float r, float g, float b)❰
     std::cout << settings.standard_value << " -> " << settings.current_value << " ";
-    std::cout << "diff: " << difference << " (" << (percent * 100) << "% " << label << ")" << std::endl;
+    std::cout << "diff: " << " (" << decimal_as_str_pct(r) << " " << decimal_as_str_pct(g) << " " << decimal_as_str_pct(b) << ")" << std::endl;
+❱
+
+◀private: static▶ std::string ☀decimal_as_str_pct(float f)❰
+    return std::to_string(f * 100) + "%";
 ❱

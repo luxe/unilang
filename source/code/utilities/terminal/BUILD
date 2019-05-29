@@ -7,6 +7,13 @@ hcp(name = "terminal_changer",deps=[
     "//code/utilities/terminal:good_bad_terminal_settings",
     "//code/utilities/math:math",
     "//code/utilities/shell:lib",
+    "//code/utilities/terminal:terminal_background_changer",
+])
+
+hcp(name = "terminal_background_changer",deps=[
+    "//code/utilities/terminal:good_bad_terminal_settings",
+    "//code/utilities/math:math",
+    "//code/utilities/shell:lib",
 ])
 
 hcp(name = "good_bad_terminal_settings", deps=[

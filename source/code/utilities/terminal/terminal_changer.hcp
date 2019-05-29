@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪iostream❫
 ❪"code/utilities/terminal/good_bad_terminal_settings"❫
+❪"code/utilities/terminal/terminal_background_changer"❫
 ❪"code/utilities/math/math"❫
 ❪"code/utilities/shell/lib.hpp"❫
 ⚯
@@ -10,12 +11,12 @@ class
 
 ◀public: static▶ void ☀Change_Terminal(Good_Bad_Terminal_Settings const& settings)❰
     if (settings.change_background){
-        Enable_Color_Changing_In_Terminal();
+        Terminal_Background_Changer::Enable_Color_Changing_In_Terminal();
         Adjust_Background_On_Good_Bad_Evaluation(settings);
     }
     else
     {
-        Disable_Color_Changing_In_Terminal();
+        Terminal_Background_Changer::Disable_Color_Changing_In_Terminal();
     }
 ❱
 
@@ -34,78 +35,30 @@ class
 
 ◀private: static▶ void ☀Set_Mood(Good_Bad_Terminal_Settings const& settings, Mood_Setting const& mood)❰
 
-    auto d = Math::clamped_difference(settings.current_value,settings.standard_value,mood.expected_max_difference);
-    if (d >= mood.difference_until_change){
-        auto rgb_val = Math::map_value_across_range(d,0,mood.expected_max_difference,mood.low_rgb_value,mood.high_rgb_value);
+        auto r_pct = Get_Mood_Percentage(settings,mood.red);
+        auto g_pct = Get_Mood_Percentage(settings,mood.green);
+        auto b_pct = Get_Mood_Percentage(settings,mood.blue);
+        Terminal_Background_Changer::Set_Background_By_Rgb_Section(r_pct, g_pct, b_pct);
         
-        Set_Background_By_Rgb_Section(mood.color, rgb_val);
         if (settings.debug_data){
-            Print_Debug_Message(as_string(mood.color),settings,d,rgb_val);
+            Print_Debug_Message(settings,r_pct,g_pct,b_pct);
         }
-    }
 ❱
-◀private: static▶ void ☀Print_Debug_Message(std::string const& label, Good_Bad_Terminal_Settings const& settings, float difference, float rgb_val)❰
+◀private: static▶ void ☀Print_Debug_Message(Good_Bad_Terminal_Settings const& settings, float r, float g, float b)❰
     std::cout << settings.standard_value << " -> " << settings.current_value << " ";
-    std::cout << "diff: " << difference << " (" << rgb_val << " " << label << ")" << std::endl;
+    std::cout << "diff: (" << r << " " << g << " " << b << ")" << std::endl;
 ❱
 
 
+◀private: static▶ float ☀Get_Mood_Percentage(Good_Bad_Terminal_Settings const& settings, Gama_Slider const& slider)❰
 
-
-
-◀private: static▶ void ☀Set_Background_By_Rgb_Section(Rgb_Section const& section, float rgb_val)❰
-    switch (section){
-        case Rgb_Section::RED: Set_Redness(rgb_val); break;
-        case Rgb_Section::GREEN: Set_Greeness(rgb_val); break;
-        case Rgb_Section::BLUE: Set_Blueness(rgb_val); break;
-        default:;
+    // make sure the difference is significant
+    auto d = Math::clamped_difference(settings.current_value,settings.standard_value,slider.expected_max_difference);
+    if (d < slider.difference_until_change){
+        return 0;
     }
+    
+    //fit the difference to a range
+    auto percent = Math::map_value_across_range(d,0,slider.expected_max_difference,slider.low_rgb_value,slider.high_rgb_value);
+    return percent;
 ❱
-
-◀private: static▶ void ☀Set_Redness(float rgb_val)❰
-    auto command = Get_Redness_Terminal_Bg_Command(rgb_val);
-    no_hup_execute_quietly_in_background(command);
-❱
-◀private: static▶ void ☀Set_Greeness(float rgb_val)❰
-    auto command = Get_Greeness_Terminal_Bg_Command(rgb_val);
-    no_hup_execute_quietly_in_background(command);
-❱
-◀private: static▶ void ☀Set_Blueness(float rgb_val)❰
-    auto command = Get_Blueness_Terminal_Bg_Command(rgb_val);
-    no_hup_execute_quietly_in_background(command);
-❱
-
-◀private: static▶ std::string ☀Get_Redness_Terminal_Bg_Command(float rgb_val)❰
-    return Terminal_Bg_Command(rgb_val,0,0);
-❱
-◀private: static▶ std::string ☀Get_Greeness_Terminal_Bg_Command(float rgb_val)❰
-    return Terminal_Bg_Command(0,rgb_val,0);
-❱
-◀private: static▶ std::string ☀Get_Blueness_Terminal_Bg_Command(float rgb_val)❰
-    return Terminal_Bg_Command(0,0,rgb_val);
-❱
-
-◀private: static▶ std::string ☀Terminal_Bg_Command(int r, int g, int b)❰
-    std::string command = "dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color \"'rgb(";
-    command += std::to_string(r);
-    command += ",";
-    command += std::to_string(g);
-    command += ",";
-    command += std::to_string(b);
-    command += ")'\"";
-    //std::cout << command << std::endl;
-    return command;
-❱
-
-
-
-◀private: static▶ void ☀Enable_Color_Changing_In_Terminal()❰
-    std::string command = "dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-colors false";
-    execute_quietly(command);
-❱
-◀private: static▶ void ☀Disable_Color_Changing_In_Terminal()❰
-    std::string command = "dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/use-theme-colors true";
-    execute_quietly(command);
-❱
-
-
