@@ -27,7 +27,7 @@ hcp(name = "simulation_value_settings", deps = [
 
 hcp(name = "system_effect_settings", deps = [
     "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
-    "//code/utilities/terminal:good_bad_terminal_settings",
+    "//code/utilities/terminal/good_bad:good_bad_terminal_settings",
     "//code/tools/deskstock/settings:user_command_settings",
 ])
 

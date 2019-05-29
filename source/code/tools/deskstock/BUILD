@@ -36,7 +36,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/shell:lib",
 "//code/tools/deskstock/settings:deskstock_state",
 "//code/utilities/system:installed_programs_checker",
-"//code/utilities/terminal:terminal_changer",
+"//code/utilities/terminal/good_bad:terminal_changer",
 "//code/utilities/math:math",
 "//code/tools/deskstock:float_sourcer",
 "//code/tools/deskstock:system_effecter",
@@ -56,7 +56,7 @@ hcp(name = "system_effecter", deps = [
     "//code/utilities/screen:screen_tint_setter",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/shell:lib",
-    "//code/utilities/terminal:terminal_changer",
+    "//code/utilities/terminal/good_bad:terminal_changer",
 ])
 
 hcp(name = "default_settings_getter", deps = [
