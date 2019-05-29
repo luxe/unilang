@@ -7,3 +7,7 @@ hcp(name = "mouse_binded_gama_slider",deps=[
     "//code/utilities/data_structures:two_d_coordinate_dimension",
     "//code/utilities/screen/good_bad:gama_slider",
 ])
+
+hcp(name = "mouse_terminal_settings",deps=[
+    "//code/utilities/terminal/mouse:mouse_binded_gama_slider",
+])
