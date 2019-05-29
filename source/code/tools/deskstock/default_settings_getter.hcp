@@ -20,52 +20,10 @@ class
     settings.startup.locale.cout = "en_US.UTF-8";
     
     //SCREEN TINTING
-    //changing value to analyze
-    settings.system_effects.effect_screen_tint.standard_value = 0;
-    settings.system_effects.effect_screen_tint.current_value = 0;
+    settings.system_effects.effect_screen_tint = Clasic_Good_Bad_Screen();
     
-    //above mood (good)
-    settings.system_effects.effect_screen_tint.good.red = No_Op_Gama_Slider();
-    settings.system_effects.effect_screen_tint.good.green.expected_max_difference = 5.0;
-    settings.system_effects.effect_screen_tint.good.green.low_rgb_value = 0;
-    settings.system_effects.effect_screen_tint.good.green.high_rgb_value = 1;
-    settings.system_effects.effect_screen_tint.good.green.difference_until_change = 0;
-    settings.system_effects.effect_screen_tint.good.blue = No_Op_Gama_Slider();
-    
-    //below mood (bad)
-    settings.system_effects.effect_screen_tint.bad.red.expected_max_difference = 5.0;
-    settings.system_effects.effect_screen_tint.bad.red.low_rgb_value = 0;
-    settings.system_effects.effect_screen_tint.bad.red.high_rgb_value = 1;
-    settings.system_effects.effect_screen_tint.bad.red.difference_until_change = 0;
-    settings.system_effects.effect_screen_tint.bad.green = No_Op_Gama_Slider();
-    settings.system_effects.effect_screen_tint.bad.blue = No_Op_Gama_Slider();
-    
-    settings.system_effects.effect_screen_tint.debug_data = false;
-    settings.system_effects.effect_screen_tint.show_screen_tint = false;
-    
-    //TERMINAL ACTION
-    //changing value to analyze
-    settings.system_effects.effect_terminal.standard_value = 0;
-    settings.system_effects.effect_terminal.current_value = 0;
-    
-    //above mood (good)
-    settings.system_effects.effect_terminal.good.red = No_Op_Gama_Slider();
-    settings.system_effects.effect_terminal.good.green.expected_max_difference = 5.0;
-    settings.system_effects.effect_terminal.good.green.low_rgb_value = 50;
-    settings.system_effects.effect_terminal.good.green.high_rgb_value = 255;
-    settings.system_effects.effect_terminal.good.green.difference_until_change = 0;
-    settings.system_effects.effect_terminal.good.blue = No_Op_Gama_Slider();
-    
-    //below mood (bad)
-    settings.system_effects.effect_terminal.bad.red.expected_max_difference = 5.0;
-    settings.system_effects.effect_terminal.bad.red.low_rgb_value = 50;
-    settings.system_effects.effect_terminal.bad.red.high_rgb_value = 255;
-    settings.system_effects.effect_terminal.bad.red.difference_until_change = 0;
-    settings.system_effects.effect_terminal.bad.green = No_Op_Gama_Slider();
-    settings.system_effects.effect_terminal.bad.blue = No_Op_Gama_Slider();
-    
-    settings.system_effects.effect_terminal.debug_data = false;
-    settings.system_effects.effect_terminal.change_background = true;
+    //TERMINAL TINTING
+    settings.system_effects.effect_terminal = Clasic_Good_Bad_Terminal();
     
     
     //CUSTOM ACTION
@@ -78,28 +36,7 @@ class
     settings.monitor.only_on_change = true;
     
     //WEB FETCHING
-    settings.how_to_get_value.through_web.fetch.strategy = Html_Fetch_Strategy::CURL_LIB;
-    settings.how_to_get_value.through_web.fetch.url = Stock_Getter::Yahoo_Finance_Url("UBER");
-    settings.how_to_get_value.through_web.extract.desired_key = "regularMarketChangePercent";
-    
-    {
-        Json_Extraction_Step step;
-        step.key = "quoteResponse";
-        step.index = false;
-        settings.how_to_get_value.through_web.extract.steps.emplace_back(step);
-    }
-    {
-        Json_Extraction_Step step;
-        step.key = "result";
-        step.index = false;
-        settings.how_to_get_value.through_web.extract.steps.emplace_back(step);
-    }
-    {
-        Json_Extraction_Step step;
-        step.key = "0";
-        step.index = true;
-        settings.how_to_get_value.through_web.extract.steps.emplace_back(step);
-    }
+    settings.how_to_get_value.through_web = Fetching_Uber_Stock_Price_Change();
     
     //SIMULATE FETCHING
     settings.how_to_get_value.through_simulation.simulate = false;
@@ -122,11 +59,96 @@ class
     return settings;
 ❱
 
-◀public: static▶ Gama_Slider ☀No_Op_Gama_Slider() ❰
+◀private: static▶ Gama_Slider ☀No_Op_Gama_Slider() ❰
     Gama_Slider slider;
     slider.expected_max_difference = 0;
     slider.low_rgb_value = 0;
     slider.high_rgb_value = 0;
     slider.difference_until_change = 0;
     return slider;
+❱
+
+◀private: static▶ Web_Json_Extraction_Settings ☀Fetching_Uber_Stock_Price_Change() ❰
+    Web_Json_Extraction_Settings settings;
+    settings.fetch.strategy = Html_Fetch_Strategy::CURL_LIB;
+    settings.fetch.url = Stock_Getter::Yahoo_Finance_Url("UBER");
+    settings.extract.desired_key = "regularMarketChangePercent";
+    
+    {
+        Json_Extraction_Step step;
+        step.key = "quoteResponse";
+        step.index = false;
+        settings.extract.steps.emplace_back(step);
+    }
+    {
+        Json_Extraction_Step step;
+        step.key = "result";
+        step.index = false;
+        settings.extract.steps.emplace_back(step);
+    }
+    {
+        Json_Extraction_Step step;
+        step.key = "0";
+        step.index = true;
+        settings.extract.steps.emplace_back(step);
+    }
+    return settings;
+❱
+
+◀private: static▶ Good_Bad_Terminal_Settings ☀Clasic_Good_Bad_Terminal() ❰
+    Good_Bad_Terminal_Settings settings;
+
+    //changing value to analyze
+    settings.standard_value = 0;
+    settings.current_value = 0;
+    
+    //above mood (good)
+    settings.good.red = No_Op_Gama_Slider();
+    settings.good.green.expected_max_difference = 5.0;
+    settings.good.green.low_rgb_value = 50;
+    settings.good.green.high_rgb_value = 255;
+    settings.good.green.difference_until_change = 0;
+    settings.good.blue = No_Op_Gama_Slider();
+    
+    //below mood (bad)
+    settings.bad.red.expected_max_difference = 5.0;
+    settings.bad.red.low_rgb_value = 50;
+    settings.bad.red.high_rgb_value = 255;
+    settings.bad.red.difference_until_change = 0;
+    settings.bad.green = No_Op_Gama_Slider();
+    settings.bad.blue = No_Op_Gama_Slider();
+    
+    settings.debug_data = false;
+    settings.change_background = true;
+    
+    return settings;
+❱
+
+◀private: static▶ Good_Bad_Screen_Tint_Settings ☀Clasic_Good_Bad_Screen() ❰
+    Good_Bad_Screen_Tint_Settings settings;
+    
+    //changing value to analyze
+    settings.standard_value = 0;
+    settings.current_value = 0;
+    
+    //above mood (good)
+    settings.good.red = No_Op_Gama_Slider();
+    settings.good.green.expected_max_difference = 5.0;
+    settings.good.green.low_rgb_value = 0;
+    settings.good.green.high_rgb_value = 1;
+    settings.good.green.difference_until_change = 0;
+    settings.good.blue = No_Op_Gama_Slider();
+    
+    //below mood (bad)
+    settings.bad.red.expected_max_difference = 5.0;
+    settings.bad.red.low_rgb_value = 0;
+    settings.bad.red.high_rgb_value = 1;
+    settings.bad.red.difference_until_change = 0;
+    settings.bad.green = No_Op_Gama_Slider();
+    settings.bad.blue = No_Op_Gama_Slider();
+    
+    settings.debug_data = false;
+    settings.show_screen_tint = false;
+    
+    return settings;
 ❱
