@@ -29,6 +29,7 @@ hcp(name = "system_effect_settings", deps = [
     "//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
     "//code/utilities/terminal/good_bad:good_bad_terminal_settings",
     "//code/tools/deskstock/settings:user_command_settings",
+    "//code/utilities/terminal/mouse:mouse_terminal_settings",
 ])
 
 hcp(name = "startup_settings", deps = [

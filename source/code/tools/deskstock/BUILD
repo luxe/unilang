@@ -57,6 +57,7 @@ hcp(name = "system_effecter", deps = [
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/shell:lib",
     "//code/utilities/terminal/good_bad:terminal_changer",
+    "//code/utilities/terminal/mouse:mouse_terminal_changer",
 ])
 
 hcp(name = "default_settings_getter", deps = [
