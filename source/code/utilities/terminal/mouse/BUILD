@@ -11,3 +11,10 @@ hcp(name = "mouse_binded_gama_slider",deps=[
 hcp(name = "mouse_terminal_settings",deps=[
     "//code/utilities/terminal/mouse:mouse_binded_gama_slider",
 ])
+
+hcp(name = "mouse_terminal_changer",deps=[
+    "//code/utilities/terminal/mouse:mouse_terminal_settings",
+    "//code/utilities/terminal:terminal_background_changer",
+    "//code/utilities/math:math",
+    "//code/utilities/shell:lib",
+])

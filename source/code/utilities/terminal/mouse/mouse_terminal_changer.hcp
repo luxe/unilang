@@ -1,0 +1,49 @@
+class
+❪string❫
+❪iostream❫
+❪"code/utilities/terminal/mouse/mouse_terminal_settings"❫
+❪"code/utilities/terminal/terminal_background_changer"❫
+❪"code/utilities/math/math"❫
+❪"code/utilities/shell/lib.hpp"❫
+⚯
+⚞⚟
+
+
+◀public: static▶ void ☀Change_Terminal(Mouse_Terminal_Settings const& settings)❰
+
+    Terminal_Background_Changer::Set_State_Of_Color_Changing_In_Terminal(settings.change_background);
+
+    if (settings.change_background){
+        Adjust_Background_On_Mouse_Evaluation(settings);
+    }
+❱
+
+◀private: static▶ void ☀Adjust_Background_On_Mouse_Evaluation(Mouse_Terminal_Settings const& settings)❰
+
+        auto r_pct = Get_Mood_Percentage(settings,settings.red);
+        auto g_pct = Get_Mood_Percentage(settings,settings.green);
+        auto b_pct = Get_Mood_Percentage(settings,settings.blue);
+        Terminal_Background_Changer::Set_Background_By_Rgb_Section(r_pct, g_pct, b_pct);
+        
+        //if (settings.debug_data){
+        //    Print_Debug_Message(settings,r_pct,g_pct,b_pct);
+        //}
+❱
+
+◀private: static▶ float ☀Get_Mood_Percentage(Mouse_Terminal_Settings const& settings, Mouse_Binded_Gama_Slider const& slider)❰
+
+    auto mouse_current = settings.current_x;
+    if (slider.binded == Two_D_Coordinate_Dimension::Y){
+        mouse_current = settings.current_y;
+    }
+    
+    // make sure the difference is significant
+    auto d = Math::clamped_difference(mouse_current,settings.standard_value,slider.slider.expected_max_difference);
+    if (d < slider.slider.difference_until_change){
+        return 0;
+    }
+    
+    //fit the difference to a range
+    auto percent = Math::map_value_across_range(d,0,slider.slider.expected_max_difference,slider.slider.low_rgb_value,slider.slider.high_rgb_value);
+    return percent;
+❱
