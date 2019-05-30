@@ -9,3 +9,10 @@ values = [
 "x"
 ,"y"
 ])
+
+enum_cpp(name = "optional_two_d_coordinate_dimension",
+values = [
+"x"
+,"y"
+,"none"
+])
