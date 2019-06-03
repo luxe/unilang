@@ -46,8 +46,16 @@ class
     //we can get a float from anywhere
     //here we choose to source from various places
     auto how_to_source_value = [&](){
-        Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
-        return Float_Sourcer::Source_Floats(state);
+        auto success = Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
+        
+        if (!success){
+            return Float_Sourcer::Source_Floats(state);
+        }
+        
+        // we couldn't read from config
+        std::cout << "couldn't source any values" << std::endl;
+        std::vector<float> empty;
+        return empty;
     };
     
     //Whether we consider the value changed and should take action.
@@ -99,8 +107,8 @@ class
 
 // this is kind of sloppy.  I just wanted a generic "do this every time a value changes" kind of function.
 // I ended up slipping in a lot of lambdas as the tool grew.
-// It's still feels event based, which is nice.
-// But this is the engine that runs in a loop and dispatches to all the behaviors passed in.
+// It still feels event based, which is fine.
+// But anyway, this is the little float observing engine that runs in a loop and dispatches to all the behaviors passed in.
 ◀private: template <typename Fun1, typename Fun2, typename Fun3, typename Fun4>
 static void When_Value_Changes(int & check_mseconds, Fun1 source_action, Fun2 should_reset, Fun3 should_take_action, Fun4 change_action){
     

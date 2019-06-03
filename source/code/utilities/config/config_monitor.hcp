@@ -14,7 +14,7 @@ class
 
 
 ◀public: template <typename T>
-static void Monitor_Changes(Config_Monitor_Settings & ms, T & settings, T const& default_settings){
+static bool Monitor_Changes(Config_Monitor_Settings & ms, T & settings, T const& default_settings){
     
     // Make sure file exists first
     if (!File_Exists(ms.config_path)){
@@ -31,10 +31,12 @@ static void Monitor_Changes(Config_Monitor_Settings & ms, T & settings, T const&
         try{
             Load_Config_Settings(settings,ms);
         }
-        catch(...){
+        catch(nlohmann::json::exception& e){
+            std::cout << e.what() << std::endl;
+            return false;
         }
     }
-    
+    return true;
 }
 ▶
 
