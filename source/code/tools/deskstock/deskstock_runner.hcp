@@ -8,6 +8,7 @@ class
 ❪"code/utilities/time/sleeping/lib"❫
 ❪"code/tools/deskstock/settings/deskstock_settings"❫
 ❪"code/tools/deskstock/settings/deskstock_state"❫
+❪"code/tools/deskstock/meta_settings"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/exits/lib"❫
@@ -37,10 +38,10 @@ class
 ❪"code/tools/deskstock/system_effecter"❫
 ⚞⚟
 
-◀public: static▶ void ☀Run() ❰
+◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
 
     //Load the program state for usage in the rest of the program
-    auto state = Get_Program_State();
+    auto state = Get_Program_State(meta);
     
     //How to source the value.
     //we can get a float from anywhere
@@ -97,10 +98,10 @@ class
 
 // The deskstock state is primarily whatever is in the config file
 // if the config file does not exist we will automatically refresh it with default values
-◀private: static▶ Deskstock_State ☀Get_Program_State() ❰
+◀private: static▶ Deskstock_State ☀Get_Program_State(Meta_Settings const& meta) ❰
     Deskstock_State state;
     state.default_settings = Default_Settings_Getter::Get();
-    state.ms.config_path = Full_Path_To_Home_Config_File("destock");
+    state.ms.config_path = Full_Path_To_Home_Config_File(meta.program_name);
     Config_Monitor::Monitor_Changes(state.ms,state.current_settings,state.default_settings);
     return state;
 ❱

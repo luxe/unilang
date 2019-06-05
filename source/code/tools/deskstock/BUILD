@@ -40,6 +40,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/math:math",
 "//code/tools/deskstock:float_sourcer",
 "//code/tools/deskstock:system_effecter",
+"//code/tools/deskstock:meta_settings",
 ])
 
 hcp(name = "float_sourcer", deps = [
@@ -75,6 +76,9 @@ hcp(name = "documentation_getter", deps = [
     "//code/tools/deskstock:default_settings_getter",
 ])
 
+hcp(name = "meta_settings", deps = [
+])
+
 pkg_tar(
     name = "deskstock_tar",
     package_dir = "/usr/bin",
@@ -92,7 +96,10 @@ pkg_tar(
 
 distributable_cpp_main(
     name = "deskstock",
-    deps = ["//code/tools/deskstock:deskstock_runner"],
+    deps = [
+        "//code/tools/deskstock:deskstock_runner",
+        "//code/tools/deskstock:meta_settings"
+    ],
     data = ":debian-data",
     description = "Feel the stock market while you work",
     depends = [
