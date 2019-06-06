@@ -1,0 +1,78 @@
+class
+❪iostream❫
+❪vector❫
+❪string❫
+❪cmath❫
+⚯
+❪"code/utilities/shell/lib.hpp"❫
+❪"code/utilities/types/strings/observers/converting/lib.hpp"❫
+⚞⚟
+
+// get and setters for the mouse size
+◀public:▶ void ☀set_mouse_size(int const& size)❰
+    std::string command = "gsettings set org.gnome.desktop.interface cursor-size " + std::to_string(size);
+    execute(command);
+❱
+◀public:▶ int ☀get_mouse_size()❰
+    std::string command = "gsettings get org.gnome.desktop.interface cursor-size";
+    auto curr_size = execute(command);
+    return as_signed(curr_size);
+❱
+
+
+
+//use cases
+//grow the mouse larger on each call
+//reaches a max size and doesn't grow any further
+◀public:▶ void ☀make_mouse_larger()❰
+    auto curr_size = get_mouse_size();
+    auto sizes = get_standard_mouse_sizes();
+    
+    
+    for (size_t i = 0; i < sizes.size(); ++i){
+        if (sizes[i] > curr_size){
+            set_mouse_size(sizes[i]);
+            break;
+        }
+    }
+    
+    
+❱
+
+//shrinks the mouse smaller on each call
+//reaches a min size and doesn't grow shrink further
+◀public:▶ void ☀make_mouse_smaller()❰
+    auto curr_size = get_mouse_size();
+    auto sizes = get_standard_mouse_sizes();
+    
+    for (size_t i = sizes.size()-1; i >= 0; --i){
+        if (sizes[i] < curr_size){
+            set_mouse_size(sizes[i]);
+            break;
+        }
+    }
+❱
+
+
+
+
+
+
+◀private:▶ std::vector<int> ☀get_standard_mouse_sizes()❰
+
+    int default_size = 24;
+    int medium_size = 32;
+    int large_size = 48;
+    int larger_size = 64;
+    int largest_size = 96;
+    
+    std::vector<int> mouse_sizes;
+    mouse_sizes.emplace_back(default_size);
+    mouse_sizes.emplace_back(medium_size);
+    mouse_sizes.emplace_back(large_size);
+    mouse_sizes.emplace_back(larger_size);
+    mouse_sizes.emplace_back(largest_size);
+    return mouse_sizes;
+❱
+
+

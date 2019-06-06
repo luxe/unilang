@@ -8,3 +8,8 @@ hcp(name = "mouse_controller",deps=[
  "//code/utilities/time/sleeping:lib",
  "//code/utilities/random:lib",
  ])
+
+hcp(name = "mouse_resizer", deps = [
+    "//code/utilities/shell:lib",
+    "//code/utilities/types/strings/observers/converting:lib"
+])
