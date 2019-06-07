@@ -28,7 +28,6 @@ void For_Each_Index_Backward(Container const& c, Function f){
     if (c.empty()){
         return;
     }
-    
     for (size_t i = c.size()-1; i >= 0; --i){
         f(i);
     }
