@@ -17,6 +17,23 @@ void Repeat_Forever(Function f) {
     while (true) {f();}
 }
 
+template <typename Container, typename Function>
+void For_Each_Index(Container const& c, Function f){
+    for (size_t i = 0; i < c.size(); ++i){
+        f(i);
+    }
+}
+template <typename Container, typename Function>
+void For_Each_Index_Backward(Container const& c, Function f){
+    if (c.empty()){
+        return;
+    }
+    
+    for (size_t i = c.size()-1; i >= 0; --i){
+        f(i);
+    }
+}
+
 //looping n times
 
 //when you don't actually care about the index, 
