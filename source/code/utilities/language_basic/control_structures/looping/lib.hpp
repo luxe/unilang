@@ -33,6 +33,17 @@ void For_Each_Index_Backward(Container const& c, Function f){
     }
 }
 
+
+template <typename Container, typename Predicate, typename Function>
+void Once_Index_Predicate_Forward(Container const& c, Predicate p, Function f){
+    for (size_t i = 0; i < c.size(); ++i){
+        if (p(i)){
+            f(i);
+            break;
+        }
+    }
+}
+
 //looping n times
 
 //when you don't actually care about the index, 
