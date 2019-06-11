@@ -18,6 +18,7 @@ hcp(name="github_uploader", deps = [
     "//code/utilities/streams/filestreams/read_all:lib",
     "//code/utilities/filesystem/files/getting:lib",
     "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/git-related:git_updater",
         "@curl",
 ])
 
