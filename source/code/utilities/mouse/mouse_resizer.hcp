@@ -10,11 +10,11 @@ class
 ⚞⚟
 
 // get and setters for the mouse size
-◀public:▶ void ☀set_mouse_size(int const& size)❰
+◀public: static▶ void ☀set_mouse_size(int const& size)❰
     std::string command = "gsettings set org.gnome.desktop.interface cursor-size " + std::to_string(size);
     execute(command);
 ❱
-◀public:▶ int ☀get_mouse_size()❰
+◀public: static▶ int ☀get_mouse_size()❰
     std::string command = "gsettings get org.gnome.desktop.interface cursor-size";
     auto curr_size = execute(command);
     return as_signed(curr_size);
@@ -25,12 +25,10 @@ class
 //use cases
 //grow the mouse larger on each call
 //reaches a max size and doesn't grow any further
-◀public:▶ void ☀make_mouse_larger()❰
+◀public: static▶ void ☀make_mouse_larger()❰
     auto curr_size = get_mouse_size();
     auto sizes = get_standard_mouse_sizes();
     
-    //For_Each_Index(sizes,[&](size_t i){
-    //});
     Once_Index_Predicate_Forward(sizes,
     [&](size_t i){
         return sizes[i] > curr_size;
@@ -38,44 +36,63 @@ class
     [&](size_t i){
         set_mouse_size(sizes[i]);
     });
-    
-    for (size_t i = 0; i < sizes.size(); ++i){
-        if (sizes[i] > curr_size){
-            set_mouse_size(sizes[i]);
-            break;
-        }
-    }
 ❱
 
 //shrinks the mouse smaller on each call
 //reaches a min size and doesn't grow shrink further
-◀public:▶ void ☀make_mouse_smaller()❰
+◀public: static▶ void ☀make_mouse_smaller()❰
     auto curr_size = get_mouse_size();
     auto sizes = get_standard_mouse_sizes();
     
-    for (size_t i = sizes.size()-1; i >= 0; --i){
+    Once_Index_Predicate_Backward(sizes,
+    [&](size_t i){
+        return sizes[i] < curr_size;
+    },
+    [&](size_t i){
+        set_mouse_size(sizes[i]);
+    });
+❱
+
+◀public: static▶ bool ☀can_mouse_get_larger()❰
+    auto curr_size = get_mouse_size();
+    auto sizes = get_standard_mouse_sizes();
+    for (size_t i = 0; i < sizes.size(); ++i){
+        if (sizes[i] > curr_size){
+            return true;
+        }
+    }
+    return false;
+❱
+◀public: static▶ bool ☀can_mouse_get_smaller()❰
+    auto curr_size = get_mouse_size();
+    auto sizes = get_standard_mouse_sizes();
+    for (size_t i = 0; i < sizes.size(); ++i){
         if (sizes[i] < curr_size){
-            set_mouse_size(sizes[i]);
-            break;
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀public: static▶ void ☀cycle_standard_mouse()❰
+
+    while(true){
+        while(can_mouse_get_larger()){
+            make_mouse_larger();
+            std::cout << "larger" << std::endl;
+        }
+        while(can_mouse_get_smaller()){
+            make_mouse_smaller();
+            std::cout << "smaller" << std::endl;
         }
     }
 ❱
 
-◀public:▶ bool ☀can_mouse_get_larger()❰
-    return true;
-❱
-◀public:▶ bool ☀can_mouse_get_smaller()❰
-    return true;
-❱
-
-◀public:▶ void ☀cycle_standard_mouse()❰
-❱
 
 
 
 
-
-◀private:▶ std::vector<int> ☀get_standard_mouse_sizes()❰
+◀private: static▶ std::vector<int> ☀get_standard_mouse_sizes()❰
 
     int default_size = 24;
     int medium_size = 32;

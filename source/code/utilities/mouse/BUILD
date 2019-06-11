@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name = "mouse_controller",deps=[
  "//code/utilities/xdo:lib",
@@ -13,4 +14,8 @@ hcp(name = "mouse_resizer", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/language_basic/control_structures/looping:lib"
+])
+
+cpp_main(name = "cycle_mouse",deps = [
+         "//code/utilities/mouse:mouse_resizer"
 ])

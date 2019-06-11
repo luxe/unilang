@@ -43,6 +43,15 @@ void Once_Index_Predicate_Forward(Container const& c, Predicate p, Function f){
         }
     }
 }
+template <typename Container, typename Predicate, typename Function>
+void Once_Index_Predicate_Backward(Container const& c, Predicate p, Function f){
+    for (size_t i = c.size()-1; i >= 0; --i){
+        if (p(i)){
+            f(i);
+            break;
+        }
+    }
+}
 
 //looping n times
 
