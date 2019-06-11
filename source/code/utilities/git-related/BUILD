@@ -30,6 +30,10 @@ hcp(name="git_setuper", deps = [
         "@curl",
 ])
 
+hcp(name="git_updater", deps = [
+    "//code/utilities/shell:lib",
+])
+
 cc_binary(
   name = "setup_git",
   srcs = ["setup_git.cpp"],
