@@ -22,4 +22,10 @@ hcp(name = "software_deployer", deps = [
     "//code/utilities/pdf:pdf_creator",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/utilities/git-related:git_updater",
+    
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/transcompilers/unilang/main:program_input",
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/transcompilers/unilang/main/root_settings:root_settings_getter",
+    "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
 ])

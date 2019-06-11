@@ -1,17 +1,23 @@
 class
 ❪string❫
 ❪iostream❫
+❪"code/transcompilers/unilang/structure/model/inlined_structures"❫
+❪"code/transcompilers/unilang/structure/model/structure"❫
 ⚯
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/tools/deskstock/documentation_getter"❫
+❪"code/transcompilers/unilang/main/program_input"❫
 
 ❪"code/utilities/pdf/pdf_settings"❫
 ❪"code/utilities/pdf/pdf_creator"❫
 ❪"code/utilities/filesystem/files/moving/lib"❫
 ❪"code/utilities/git-related/git_updater"❫
+❪"code/transcompilers/unilang/main/root_settings/root_settings_getter"❫
+❪"code/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Deploy()❰
@@ -31,6 +37,9 @@ class
       //dpkg-scanpackages -m . | gzip -c > Packages.gz
       //https://www.guyrutenberg.com/2016/07/15/creating-a-personal-apt-repository-using-dpkg-scanpackages/
       //https://askubuntu.com/questions/71510/how-do-i-create-a-ppa/71516#71516
+      
+      //https://assafmo.github.io/2019/05/02/ppa-repo-hosted-on-github.html
+      //https://github.com/assafmo/ppa/blob/master/update.sh
     
 ❱
 
@@ -51,10 +60,31 @@ class
         pdf_settings.latex_template = "temp_latex.tex";
         pdf_settings.md_format = "temp_markdown.md";
         pdf_settings.resulting_pdf = "deskstock.pdf";
+        pdf_settings.font_size = 10;
         Pdf_Creator::Create_Pdf(doc_structure,pdf_settings);
+        Create_Markdown(doc_structure,"deskstock.md");
+        execute("pandoc deskstock.md --from markdown --to html5 > deskstock.html");
         
         for (auto it: specific_debs){
             std::cout << it << std::endl;
         }
     });
 ❱
+
+◀private: static▶ void ☀Create_Markdown(Structure const& structure, std::string const& file_name)❰
+
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+    auto contributors = input.settings.compiler_settings.trevor.contributors;
+    auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
+    
+    md_settings.headers.allow_labeled_image_titles = false;
+    md_settings.headers.h1_as_details_tags = false;
+    md_settings.headers.h1_as_summary_tags = false;
+    md_settings.tables.print = false;
+    
+    auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
+    Write_To_File(file_name,result);
+    
+❱
+
