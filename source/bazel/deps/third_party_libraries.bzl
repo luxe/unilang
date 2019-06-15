@@ -37,6 +37,7 @@ load("//bazel/deps/get:fmt.bzl", "fmt")
 load("//bazel/deps/get:glfw.bzl", "glfw")
 load("//bazel/deps/get:cereal.bzl", "cereal")
 load("//bazel/deps/get:xdo.bzl", "xdo")
+load("//bazel/deps/get:expat.bzl", "expat")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -86,7 +87,7 @@ def third_party_libraries():
     # Logging
     spdlog()
     
-    # Serialization
+    # Serialization / Parsers
     rapid_json()
     nlohmann_json()
     yaml_cpp()
@@ -94,6 +95,7 @@ def third_party_libraries():
     protobuf()
     apache_thrift()
     cereal()
+    expat()
     
     # Data Structures
     andres_graph()
