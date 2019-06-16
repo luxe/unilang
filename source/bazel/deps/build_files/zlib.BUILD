@@ -1,6 +1,13 @@
 licenses(["notice"])  # BSD/MIT-like license (for zlib)
 
 cc_library(
+    name = "headers",
+    hdrs = ["zlib.h"],
+    includes = ["."],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
     name = "zlib",
     srcs = [
         "adler32.c",
@@ -29,8 +36,7 @@ cc_library(
         "zutil.c",
         "zutil.h",
     ],
-    hdrs = ["zlib.h"],
     copts = ["-Wno-everything"],
-    includes = ["."],
     visibility = ["//visibility:public"],
+    deps = [":headers"],
 )
