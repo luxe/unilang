@@ -38,6 +38,7 @@ load("//bazel/deps/get:glfw.bzl", "glfw")
 load("//bazel/deps/get:cereal.bzl", "cereal")
 load("//bazel/deps/get:xdo.bzl", "xdo")
 load("//bazel/deps/get:expat.bzl", "expat")
+load("//bazel/deps/get:chrome_drivers.bzl", "chrome_drivers")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -122,6 +123,7 @@ def third_party_libraries():
     zlib()
     openssl()
     curl()
+    chrome_drivers()
     
     # CLI
     cli11()
