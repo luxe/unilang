@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
+load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
 hcp(name = "deskstock_runner", deps = [
@@ -78,21 +79,6 @@ hcp(name = "documentation_getter", deps = [
 
 hcp(name = "meta_settings", deps = [
 ])
-
-pkg_tar(
-    name = "deskstock_tar",
-    package_dir = "/usr/bin",
-    srcs = ["//code/tools/deskstock:deskstock"],
-    mode = "0755",
-)
-
-pkg_tar(
-    name = "debian-data",
-    extension = "tar.gz",
-    deps = [
-        ":deskstock_tar",
-    ],
-)
 
 distributable_cpp_main(
     name = "deskstock",
