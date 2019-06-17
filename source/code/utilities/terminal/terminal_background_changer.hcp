@@ -38,7 +38,7 @@ class
 ❱
 
 ◀public: static▶ void ☀Set_Background_By_Rgb_Section(float red, float green, float blue)❰
-    auto command = Terminal_Bg_Command(red,green,blue);
+    auto command = Terminal_Bg_Command(red,green,blue,Default_Terminal_Profile());
     no_hup_execute_quietly_in_background(command);
 ❱
 
@@ -56,17 +56,28 @@ class
 ❱
 
 ◀private: static▶ std::string ☀Get_Redness_Terminal_Bg_Command(float rgb_val)❰
-    return Terminal_Bg_Command(rgb_val,0,0);
+    return Terminal_Bg_Command(rgb_val,0,0,Default_Terminal_Profile());
 ❱
 ◀private: static▶ std::string ☀Get_Greeness_Terminal_Bg_Command(float rgb_val)❰
-    return Terminal_Bg_Command(0,rgb_val,0);
+    return Terminal_Bg_Command(0,rgb_val,0,Default_Terminal_Profile());
 ❱
 ◀private: static▶ std::string ☀Get_Blueness_Terminal_Bg_Command(float rgb_val)❰
-    return Terminal_Bg_Command(0,0,rgb_val);
+    return Terminal_Bg_Command(0,0,rgb_val,Default_Terminal_Profile());
 ❱
 
-◀private: static▶ std::string ☀Terminal_Bg_Command(int r, int g, int b)❰
-    std::string command = "dconf write /org/gnome/terminal/legacy/profiles:/:b1dcc9dd-5262-4d8d-a863-c897e6d979b9/background-color \"'rgb(";
+
+◀private: static▶ std::vector<std::string> ☀Terminal_Bg_Commands(int r, int g, int b, std::vector<std::string> const& terminal_profiles)❰
+    std::vector<std::string> commands;
+    for (auto it: terminal_profiles){
+        commands.emplace_back(Terminal_Bg_Command(r,g,b,it));
+    }
+    return commands;
+❱
+
+◀private: static▶ std::string ☀Terminal_Bg_Command(int r, int g, int b, std::string const& terminal_profile)❰
+    std::string command = "dconf write /org/gnome/terminal/legacy/profiles:/";
+    command += terminal_profile;
+    command += "background-color \"'rgb(";
     command += std::to_string(r);
     command += ",";
     command += std::to_string(g);
@@ -74,4 +85,9 @@ class
     command += std::to_string(b);
     command += ")'\"";
     return command;
+❱
+
+
+◀private: static▶ std::string ☀Default_Terminal_Profile()❰
+    return ":b1dcc9dd-5262-4d8d-a863-c897e6d979b9/";
 ❱
