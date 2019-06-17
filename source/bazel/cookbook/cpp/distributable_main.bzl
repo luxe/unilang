@@ -13,7 +13,7 @@ def distributable_cpp_main(name,data,description,depends=[],deps=[]):
     cpp_main(name,deps)
     
     package_binaries(name = name,
-                 binary_targets = ["//code/tools/deskstock:deskstock"])
+                 binary_targets = [":" + name])
 
     amd_name = name + AMD_64_EXTENSION
     pkg_deb(
