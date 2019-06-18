@@ -4,11 +4,11 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 def boost():
     # Boost 1 (the boost code)
     #http_archive(
-   #     name = "boost",
-   #     build_file = "@com_github_nelhage_rules_boost//:BUILD.boost",
-   #     sha256 = "9a2c2819310839ea373f42d69e733c339b4e9a19deab6bfec448281554aa4dbb",
-   #     strip_prefix = "boost_1_69_0",
-   #     urls = [
+    #     name = "boost",
+    #     build_file = "@com_github_nelhage_rules_boost//:BUILD.boost",
+    #     sha256 = "9a2c2819310839ea373f42d69e733c339b4e9a19deab6bfec448281554aa4dbb",
+    #     strip_prefix = "boost_1_69_0",
+    #     urls = [
     #        "https://sourceforge.net/projects/boost/files/boost/1.69.0/boost_1_69_0.tar.gz",
     #    ],
     #)
@@ -26,14 +26,14 @@ def boost():
     # Boost 2 (the rules to build boost code)
     http_archive(
         name = "com_github_nelhage_rules_boost",
-        sha256 = "9ebbf90210bb60ba71dbb3c6b0d585e792517cef7e66d79b7c04f526fd8469ef",
+        sha256 = "3dade7836dd5dc21935a5e4a9fbf40605957be31088bf47397dff6f9a0d700bb",
         patches = [
            "//bazel/deps/build_files:rules_boost.patch",
         ],
-        strip_prefix = "rules_boost-eafab11dbd1d4cd1151f8407bd6ed81d1240d122",
+        strip_prefix = "rules_boost-67c383977a82196164498431f98864135beed7f0",
         urls = [
-            "https://github.com/unilang/rules_boost/archive/eafab11dbd1d4cd1151f8407bd6ed81d1240d122.zip",
-            "https://github.com/nelhage/rules_boost/archive/eafab11dbd1d4cd1151f8407bd6ed81d1240d122.zip",
+            "https://github.com/unilang/rules_boost/archive/67c383977a82196164498431f98864135beed7f0.zip",
+            "https://github.com/nelhage/rules_boost/archive/67c383977a82196164498431f98864135beed7f0.zip",
         ],
     )
     

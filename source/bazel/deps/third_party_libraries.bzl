@@ -39,6 +39,7 @@ load("//bazel/deps/get:cereal.bzl", "cereal")
 load("//bazel/deps/get:xdo.bzl", "xdo")
 load("//bazel/deps/get:expat.bzl", "expat")
 load("//bazel/deps/get:chrome_drivers.bzl", "chrome_drivers")
+load("//bazel/deps/get:python3.bzl", "python3")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -139,3 +140,4 @@ def third_party_libraries():
     grpc()
     fmt()
     xdo()
+    python3()
