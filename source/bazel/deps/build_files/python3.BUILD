@@ -12,7 +12,6 @@ cc_library(
 )
 
 # Converts libpython3.6m-pic into a shared object. This is needed for embedded support of custom bindings.
-
 cc_import(
     name = "libpython3.6m-pic",
     static_library = "usr/lib/python3.6/config-3.6m-x86_64-linux-gnu/libpython3.6m-pic.a",
@@ -45,7 +44,6 @@ genrule(
 )
 
 # Creates a filegroup of "everything" for use by our hermetic Python.
-
 filegroup(
     name = "everything",
     srcs = glob(
@@ -56,7 +54,6 @@ filegroup(
 )
 
 # Packages all of this into a single target, and adds in the Python3 runfiles as data dependencies.
-
 cc_library(
     name = "python3",
     srcs = [":libpython3.6m.so"],
