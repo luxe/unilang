@@ -7,6 +7,7 @@ load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 hcp(name = "chrome_version_getter", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/types/strings/observers/columns:lib",
+    "//code/utilities/system:lib",
 ])
 
 cpp_main(name = "chrome_version",deps = [
