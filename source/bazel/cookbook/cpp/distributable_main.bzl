@@ -9,6 +9,7 @@ def distributable_cpp_main(name,data,description,depends=[],deps=[]):
     MAINTAINER = "Trevor Hickey <TrevorJamesHickey@gmail.com>"
     DEFAULT_VERSION = "1.0"
     DEFAULT_HOMEPAGE = "none"
+    DATA_TARGET = ":" + name + "-data"
     
     cpp_main(name,deps)
     
@@ -18,7 +19,7 @@ def distributable_cpp_main(name,data,description,depends=[],deps=[]):
     amd_name = name + AMD_64_EXTENSION
     pkg_deb(
         name = amd_name,
-        data = ":deskstock-data",
+        data = DATA_TARGET,
         package = name,
         architecture = "amd64",
         maintainer = MAINTAINER,
@@ -31,7 +32,7 @@ def distributable_cpp_main(name,data,description,depends=[],deps=[]):
     all_name = name + EVERYTHING_EXTENSION
     pkg_deb(
         name = all_name,
-        data = ":deskstock-data",
+        data = DATA_TARGET,
         package = name,
         architecture = "all",
         maintainer = MAINTAINER,
