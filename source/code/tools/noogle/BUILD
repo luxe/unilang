@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
-load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
+load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
 
 hcp(name = "meta_settings", deps = [
 ])
@@ -11,6 +11,11 @@ hcp(name = "meta_settings", deps = [
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
 ])
+
+distributable_data(name="chrome_drivers",
+                   description="chrome drivers for automating google chrome with selenium",
+                   file_groups=["@chrome_drivers//:chrome_drivers"]
+                   )
 
 distributable_cpp_main(
     name = "noogle",
