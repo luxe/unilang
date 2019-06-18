@@ -10,5 +10,5 @@ hcp(name = "chrome_version_getter", deps = [
 ])
 
 cpp_main(name = "chrome_version",deps = [
-         "//code/utilities/web/chrome:chrome_version_getter"
+         "//code/utilities/web/chrome/version:chrome_version_getter"
 ])
