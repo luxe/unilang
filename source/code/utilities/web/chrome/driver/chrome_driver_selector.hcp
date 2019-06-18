@@ -8,19 +8,31 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/exits/lib"❫
 ⚞⚟
 
 
 ◀public: static▶ std::string ☀Get_Driver_Path()❰
 
-    auto version = Chrome_Version_Getter::Get_Version();
+    // make sure the chrome drivers exist
     std::string path = "/usr/local/share/chrome_drivers/versions/";
+    if (!Directory_Exists(path)){
+        Exit_With_Error(path + " does not exist");
+    }
     
-    //the version numbers of chrome don't match the version numbers they deploy on chrome drivers.
-    //typical. they are close through.  we could make a best guess and hard-code versions that seem to work with appropriate drivers.
+    //make sure there is at least 1 versioned driver
+    auto dir_names = Get_Dirs_Of_Path(path);
+    if (dir_names.empty()){
+        Exit_With_Error(std::string("there are no versioned chrome drivers in ") + path);
+    }
+    
+    //the version numbers of chrome don't always match the version numbers they deploy on chrome drivers.
+    //typical. they are close through. I'm guessing they cut chrome releases more often than driver releases.
+    // we could make a best guess and hard-code versions that seem to work with appropriate drivers.
     //or we could compare version numbers-- but do we choose the older chrome driver or the newer chrome driver?
     //for now, we'll hard code versions, and guess if there is no exact match.
-    
+    auto version = Chrome_Version_Getter::Get_Version();
     
     using chrome_version = std::string;
     using driver_version = std::string;
@@ -37,7 +49,6 @@ class
     
     //no hard-coded mapping.
     //do we have an exact match instead?
-    auto dir_names = Get_Dirs_Of_Path(path);
     if (In_Vector(dir_names,version)){
         path += version;
         return Complete_Versioned_Driver_Path(path);
@@ -52,7 +63,6 @@ class
         return Complete_Versioned_Driver_Path(path);
         }
     }
-    
     
     //I don't know.  just give them the newest driver
     path += Last_Element(dir_names);
@@ -86,8 +96,8 @@ class
         else{
             return false;
         }
-        
-        //they were the same
-        return false;
     }
+    
+    //they were the same
+    return false;
 ❱

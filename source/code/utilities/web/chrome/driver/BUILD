@@ -13,4 +13,6 @@ hcp(name = "chrome_driver_selector", deps = [
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/exits:lib",
 ])
