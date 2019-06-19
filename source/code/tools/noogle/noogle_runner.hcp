@@ -18,7 +18,12 @@ class
     auto settings = Default_Settings_Getter::Get();
     Browser_Creator::Create(settings.browser);
     Go_To_Google_And_Search_Something(settings.browser,"test");
-    //Get_Google_Next_Prev_Pages(settings.browser);
+    
+    auto urls = Get_Google_Next_Prev_Pages(settings.browser);
+    //auto urls = Get_Search_Result_Urls_From_Page(settings.browser);
+    for (auto it: urls){
+        std::cout << it << std::endl;
+    }
 ❱
 
 
@@ -56,7 +61,7 @@ class
     return results;
 ❱
 
-◀private: static▶ void ☀Get_Google_Next_Prev_Pages(Browser_Settings const& browser)❰
+◀private: static▶ std::vector<std::string> ☀Get_Google_Next_Prev_Pages(Browser_Settings const& browser)❰
 
     //this way didn't work
     //pybind11::exec("RESULTS_LOCATOR = '//div/h3/a'");
@@ -69,20 +74,21 @@ class
     pybind11::exec("links = linkBox.find_elements_by_css_selector('a')");
     pybind11::exec("linkList = []");
     pybind11::exec("for link in links: linkList.append(link.get_attribute('href'))");
-    //pybind11::exec("print(linkList)");
-    
-    
     auto result = Convert_Python_Strings_To_Vec("linkList");
+    return result;
     
-    for (auto const& it: result){
-        std::cout << it << std::endl;
-    }
 ❱
 
-◀private: static▶ void ☀Get_Search_Result_Urls_From_Page(Browser_Settings const& browser)❰
+◀private: static▶ std::vector<std::string> ☀Get_Search_Result_Urls_From_Page(Browser_Settings const& browser)❰
 
-    //pybind11::exec("results = " + browser.browser_name + ".find_elements_by_css_selector('div.g')");
-    //pybind11::exec("linkList = []");
-    //pybind11::exec("for link in results: linkList.append(link.find_element_by_tag_name('a'))");
-    //href = link.get_attribute("href")
+    pybind11::exec("results = " + browser.browser_name + ".find_elements_by_css_selector('div.g')");
+    pybind11::exec("linkList = []");
+    pybind11::exec("for link in results: linkList.append(link.find_element_by_tag_name('a').get_attribute('href'))");
+    auto result = Convert_Python_Strings_To_Vec("linkList");
+    
+    
+    //import urlparse
+    //print(urlparse.parse_qs(urlparse.urlparse(href).query)["q"])
+    
+    return result;
 ❱
