@@ -13,7 +13,13 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
     "//code/utilities/web/automate/browser:browser_creator",
     "//code/utilities/web/automate/browser:browser_settings",
+    "//code/tools/noogle:default_settings_getter",
     "@pybind11//:pybind11",
+])
+
+hcp(name = "default_settings_getter", deps = [
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/utilities/web/chrome/driver:chrome_driver_selector",
 ])
 
 distributable_data(name="chrome_drivers",

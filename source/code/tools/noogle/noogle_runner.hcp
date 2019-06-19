@@ -6,6 +6,7 @@ class
 ❪"code/utilities/web/chrome/driver/chrome_driver_selector"❫
 ❪pybind11/embed.h❫
 ❪"code/utilities/web/automate/browser/browser_creator"❫
+❪"code/tools/noogle/default_settings_getter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
@@ -14,37 +15,10 @@ class
     pybind11::scoped_interpreter guard{};
     
     //create a browser to automate queries on
-    auto settings = Default_Browser_Settings();
-    Browser_Creator::Create(settings);
-    Go_To_Google_And_Search_Something(settings,"test");
-    Get_Google_Page_Links(settings);
-❱
-
-
-◀private: static▶ Browser_Settings ☀Default_Browser_Settings() ❰
-
-    Browser_Settings settings;
-    settings.headless = true;
-    settings.ignore_certificate_errors = true;
-    settings.disable_notifications = true;
-    settings.disable_extensions = true;
-    settings.start_maximized = true;
-    settings.use_user_agent = true;
-    settings.user_agent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) Version/9.1.2 Safari/601.7.7";
-    
-    //waiting
-    settings.set_implicit_wait = true;
-    settings.implicit_wait_s = 10;
-    
-    //names
-    settings.browser_name = "browser";
-    
-    // other settings
-    settings.use_direct_driver_path = false;
-    settings.direct_driver_path = "";
-    settings.chrome_driver_derive = Chrome_Driver_Selector::Default_Settings();
-    
-    return settings;
+    auto settings = Default_Settings_Getter::Get();
+    Browser_Creator::Create(settings.browser);
+    Go_To_Google_And_Search_Something(settings.browser,"test");
+    Get_Google_Page_Links(settings.browser);
 ❱
 
 
