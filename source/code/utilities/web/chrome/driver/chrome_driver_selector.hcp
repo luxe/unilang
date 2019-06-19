@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪iostream❫
 ❪"code/utilities/web/chrome/version/chrome_version_getter"❫
+❪"code/utilities/web/chrome/driver/chrome_driver_selection_settings"❫
 ⚯
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
@@ -17,22 +18,43 @@ class
 //we want to pick the most appropriate chrome driver which should already be localed on the user's machine
 //we bundle all of the chrome drivers in deb as a convenience to the user, and place them in a relevant location.
 //it is expected that the user has already installed this deb, and that they already have google chrome installed
-◀public: static▶ std::string ☀Get_Driver_Path()❰
+
+◀public: static▶ Chrome_Driver_Selection_Settings ☀Default_Settings()❰
+    Chrome_Driver_Selection_Settings settings;
+    settings.versions_path = "/usr/local/share/chrome_drivers/versions/";
+    settings.driver_binary_name = "chromedriver";
+    settings.check_system_state = true;
+    return settings;
+❱
+
+◀public: static▶ std::string ☀Get_Driver_Path(Chrome_Driver_Selection_Settings const& settings)❰
+
+    if (settings.check_system_state){
+        Check_That_The_System_Is_Properly_Configured(settings);
+    }
+    
+    //figure out the path to the chrome driver
+    auto dir_names = Get_Dirs_Of_Path(settings.versions_path);
+    auto ideal_driver_path = Fancy_Decision_Algorithm(settings.versions_path,dir_names);
+    
+    //check that what we come up with is a valid binary (sanity check)
+    //TODO
+    
+    return ideal_driver_path;
+❱
+
+◀private: static▶ void ☀Check_That_The_System_Is_Properly_Configured(Chrome_Driver_Selection_Settings const& settings)❰
 
     // make sure the chrome drivers exist
-    std::string path = "/usr/local/share/chrome_drivers/versions/";
-    if (!Directory_Exists(path)){
-        Exit_With_Error(path + " does not exist");
+    if (!Directory_Exists(settings.versions_path)){
+        Exit_With_Error(settings.versions_path + " does not exist");
     }
     
     //make sure there is at least 1 versioned driver
-    auto dir_names = Get_Dirs_Of_Path(path);
+    auto dir_names = Get_Dirs_Of_Path(settings.versions_path);
     if (dir_names.empty()){
-        Exit_With_Error(std::string("there are no versioned chrome drivers in ") + path);
+        Exit_With_Error(std::string("there are no versioned chrome drivers in ") + settings.versions_path);
     }
-    
-    auto ideal_driver_path = Fancy_Decision_Algorithm(path,dir_names);
-    return ideal_driver_path;
 ❱
 
 ◀private: static▶ std::string ☀Fancy_Decision_Algorithm(std::string path, std::vector<std::string> const& dir_names)❰
@@ -68,15 +90,14 @@ class
     //time to take a guess
     for (auto it: dir_names){
         if (!Is_Version_Number_Less(version,it)){
-        path += it;
-        return Complete_Versioned_Driver_Path(path);
+            path += it;
+            return Complete_Versioned_Driver_Path(path);
         }
     }
     
     //I don't know.  just give them the newest driver
     path += Last_Element(dir_names);
     return Complete_Versioned_Driver_Path(path);
-    
 ❱
 
 
