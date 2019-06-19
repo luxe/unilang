@@ -10,22 +10,32 @@ class
 
 ◀public: static▶ void ☀Create(Browser_Settings const& settings) ❰
       
+    //include python imports
+    Include_Necessary_Imports(settings);
+    
+    //customize and create selenium browser with driver attached
+    Create_Browser_Object(settings);
+❱
+
+◀private: static▶ void ☀Include_Necessary_Imports(Browser_Settings const& settings) ❰
     try {
-        //include python imports
         pybind11::exec("from selenium import webdriver");
         pybind11::exec("from selenium.webdriver.chrome.options import Options");
         pybind11::exec("from selenium.webdriver.common.keys import Keys");
         pybind11::exec("from selenium.webdriver.support.ui import Select");
+        pybind11::exec("from selenium.webdriver.common.by import By");
+        pybind11::exec("from selenium.webdriver.support.ui import WebDriverWait");
+        pybind11::exec("from selenium.webdriver.support import expected_conditions as EC");
     }
     catch(std::exception const& e){
-        //std::cerr << e.what();
-        // /std::cerr << std::endl;
         std::cerr << "You need selenium installed for python3.\n";
         std::cerr << "Try pip3 install selenium\n";
         exit(EXIT_SUCCESS);
     }
-    
-    //customize browser
+❱
+
+◀private: static▶ void ☀Create_Browser_Object(Browser_Settings const& settings) ❰
+
     pybind11::exec("chrome_options = Options()");
     //pybind11::exec("chrome_options.add_argument('user-data-dir=/home/flighty/.config/chromium/test_profile')");
     
@@ -55,7 +65,6 @@ class
     }
     
     pybind11::exec("executable_path = \"" + settings.driver_path + "\"");
-    
     pybind11::exec(settings.browser_name + " = webdriver.Chrome(chrome_options=chrome_options,executable_path=executable_path)");
     
     //Once set, the implicit wait is set for the life of the WebDriver object.

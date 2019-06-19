@@ -17,13 +17,14 @@ class
     auto settings = Default_Browser_Settings();
     Browser_Creator::Create(settings);
     Go_To_Google_And_Search_Something(settings,"test");
+    Get_Google_Page_Links(settings);
 ❱
 
 
 ◀private: static▶ Browser_Settings ☀Default_Browser_Settings() ❰
 
     Browser_Settings settings;
-    settings.headless = false;
+    settings.headless = true;
     settings.ignore_certificate_errors = true;
     settings.disable_notifications = true;
     settings.disable_extensions = true;
@@ -40,9 +41,14 @@ class
     
     // other settings
     settings.driver_path = Chrome_Driver_Selector::Get_Driver_Path();
+    std::cout << settings.driver_path << std::endl;
     return settings;
 ❱
 
+
+
+
+//browser navigating
 ◀private: static▶ void ☀Go_To_Google_And_Search_Something(Browser_Settings const& settings, std::string const& search_query)❰
     Go_To_Google(settings);
     pybind11::exec("thing = " + settings.browser_name + ".find_element_by_name('q')");
@@ -58,4 +64,39 @@ class
 ◀private: static▶ void ☀Go_To_Url(Browser_Settings const& browser, std::string const& url)❰
     
     pybind11::exec(browser.browser_name + ".get('" + url + "')");
+❱
+
+◀private: static▶ std::vector<std::string> ☀Convert_Python_Strings_To_Vec(std::string const& var_name)❰
+    auto py_obj = pybind11::eval("linkList").cast<pybind11::list>();
+    std::vector<std::string> results;
+    for (pybind11::handle o : py_obj) {
+        std::string str = pybind11::cast<std::string>(o);
+        results.emplace_back(str);
+    }
+    return results;
+❱
+
+◀private: static▶ void ☀Get_Google_Page_Links(Browser_Settings const& browser)❰
+
+    //this way didn't work
+    //pybind11::exec("RESULTS_LOCATOR = '//div/h3/a'");
+    //pybind11::exec("WebDriverWait(" + browser.browser_name + ", 10).until(EC.visibility_of_element_located((By.XPATH, RESULTS_LOCATOR)))");
+    //pybind11::exec("page1_results = " + browser.browser_name + ".find_elements(By.XPATH, RESULTS_LOCATOR)");
+    //pybind11::exec("print page1_results");
+
+    //but this way does
+    pybind11::exec("linkBox = " + browser.browser_name + ".find_element_by_xpath('//*[@id=\"nav\"]/tbody/tr')");
+    pybind11::exec("links = linkBox.find_elements_by_css_selector('a')");
+    pybind11::exec("linkList = []");
+    pybind11::exec("for link in links: linkList.append(link.get_attribute('href'))");
+    //pybind11::exec("print(linkList)");
+    
+    
+    auto result = Convert_Python_Strings_To_Vec("linkList");
+    
+    for (auto const& it: result){
+        std::cout << it << std::endl;
+    }
+
+    
 ❱
