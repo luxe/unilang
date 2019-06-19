@@ -11,6 +11,8 @@ hcp(name = "meta_settings", deps = [
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
+    "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/browser:browser_settings",
     "@pybind11//:pybind11",
 ])
 

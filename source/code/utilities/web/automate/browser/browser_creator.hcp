@@ -1,15 +1,13 @@
 class
 ❪pybind11/embed.h❫
+❪"code/utilities/web/automate/browser/browser_settings"❫
 ⚯
 ⚞⚟
 
 
 
 
-◀public: static▶ void ☀Create() ❰
-
-
-    bool headless = false;
+◀public: static▶ void ☀Create(Browser_Settings const& settings) ❰
       
     //include python imports
     pybind11::exec("from selenium import webdriver");
@@ -17,28 +15,34 @@ class
     pybind11::exec("from selenium.webdriver.common.keys import Keys");
     pybind11::exec("from selenium.webdriver.support.ui import Select");
     
-    /*
     //customize browser
-    boost::python::exec("chrome_options = Options()", ns);
-    boost::python::exec("chrome_options.add_argument('user-data-dir=/home/flighty/.config/chromium/test_profile')", ns);
-    boost::python::exec("chrome_options.add_argument('--ignore-certificate-errors')", ns);
-    boost::python::exec("chrome_options.add_argument('--disable-notifications')", ns);
-    boost::python::exec("chrome_options.add_argument('--disable-extensions')", ns);
-    boost::python::exec("chrome_options.add_argument('--start-maximized')", ns);
+    pybind11::exec("chrome_options = Options()");
+    //pybind11::exec("chrome_options.add_argument('user-data-dir=/home/flighty/.config/chromium/test_profile')");
+    pybind11::exec("chrome_options.add_argument('--ignore-certificate-errors')");
+    pybind11::exec("chrome_options.add_argument('--disable-notifications')");
+    pybind11::exec("chrome_options.add_argument('--disable-extensions')");
+    pybind11::exec("chrome_options.add_argument('--start-maximized')");
     
     //add a user agent so we don't get caught
-    boost::python::exec("chrome_options.add_argument('user-agent=Mozilla/5.0 (Macintosh; "
+    pybind11::exec("chrome_options.add_argument('user-agent=Mozilla/5.0 (Macintosh; "
                         "Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) "
-                        "Version/9.1.2 Safari/601.7.7')", ns);
+                        "Version/9.1.2 Safari/601.7.7')");
     //browser.execute_script("return navigator.userAgent")
     
-    if (headless){
-        boost::python::exec("chrome_options.add_argument('--headless')", ns);
+    if (settings.headless){
+        pybind11::exec("chrome_options.add_argument('--headless')");
     }
     
-    boost::python::exec("browser = webdriver.Chrome(chrome_options=chrome_options)", ns);
+    
+    pybind11::exec("executable_path = \"" + settings.driver_path + "\"");
+    
+    pybind11::exec("browser = webdriver.Chrome(chrome_options=chrome_options,executable_path=executable_path)");
     
     //Once set, the implicit wait is set for the life of the WebDriver object.
-    boost::python::exec("browser.implicitly_wait(10)", ns);
-    */
+    if (settings.set_implicit_wait){
+        std::string command = "browser.implicitly_wait(";
+        command += std::to_string(settings.implicit_wait_s);
+        command += ")";
+        pybind11::exec(command);
+    }
 ❱
