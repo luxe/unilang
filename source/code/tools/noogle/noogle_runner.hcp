@@ -10,9 +10,17 @@ class
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
+    //RAII stuff.  make sure we have a python environment going for the duration of the program
     pybind11::scoped_interpreter guard{};
     
-    
+    //create a browser to automate queries on
+    auto settings = Default_Browser_Settings();
+    Browser_Creator::Create(settings);
+❱
+
+
+◀private: static▶ Browser_Settings ☀Default_Browser_Settings() ❰
+
     Browser_Settings settings;
     settings.headless = false;
     settings.ignore_certificate_errors = true;
@@ -29,8 +37,7 @@ class
     //names
     settings.browser_name = "browser";
     
+    // other settings
     settings.driver_path = Chrome_Driver_Selector::Get_Driver_Path();
-    
-    
-    Browser_Creator::Create(settings);
+    return settings;
 ❱
