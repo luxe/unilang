@@ -2,6 +2,7 @@ class
 ❪pybind11/embed.h❫
 ❪"code/utilities/web/automate/browser/browser_settings"❫
 ⚯
+❪iostream❫
 ⚞⚟
 
 
@@ -9,38 +10,57 @@ class
 
 ◀public: static▶ void ☀Create(Browser_Settings const& settings) ❰
       
-    //include python imports
-    pybind11::exec("from selenium import webdriver");
-    pybind11::exec("from selenium.webdriver.chrome.options import Options");
-    pybind11::exec("from selenium.webdriver.common.keys import Keys");
-    pybind11::exec("from selenium.webdriver.support.ui import Select");
+    try {
+        //include python imports
+        pybind11::exec("from selenium import webdriver");
+        pybind11::exec("from selenium.webdriver.chrome.options import Options");
+        pybind11::exec("from selenium.webdriver.common.keys import Keys");
+        pybind11::exec("from selenium.webdriver.support.ui import Select");
+    }
+    catch(std::exception const& e){
+        //std::cerr << e.what();
+        // /std::cerr << std::endl;
+        std::cerr << "You need selenium installed for python3.\n";
+        std::cerr << "Try pip3 install selenium\n";
+        exit(EXIT_SUCCESS);
+    }
     
     //customize browser
     pybind11::exec("chrome_options = Options()");
     //pybind11::exec("chrome_options.add_argument('user-data-dir=/home/flighty/.config/chromium/test_profile')");
-    pybind11::exec("chrome_options.add_argument('--ignore-certificate-errors')");
-    pybind11::exec("chrome_options.add_argument('--disable-notifications')");
-    pybind11::exec("chrome_options.add_argument('--disable-extensions')");
-    pybind11::exec("chrome_options.add_argument('--start-maximized')");
+    
+    if (settings.ignore_certificate_errors){
+        pybind11::exec("chrome_options.add_argument('--ignore-certificate-errors')");
+    }
+    
+    if (settings.disable_notifications){
+        pybind11::exec("chrome_options.add_argument('--disable-notifications')");
+    }
+    
+    if (settings.disable_extensions){
+        pybind11::exec("chrome_options.add_argument('--disable-extensions')");
+    }
+    
+    if (settings.start_maximized){
+        pybind11::exec("chrome_options.add_argument('--start-maximized')");
+    }
     
     //add a user agent so we don't get caught
-    pybind11::exec("chrome_options.add_argument('user-agent=Mozilla/5.0 (Macintosh; "
-                        "Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) "
-                        "Version/9.1.2 Safari/601.7.7')");
-    //browser.execute_script("return navigator.userAgent")
+    if (settings.use_user_agent){
+        pybind11::exec("chrome_options.add_argument('user-agent=" + settings.user_agent + "')");
+    }
     
     if (settings.headless){
         pybind11::exec("chrome_options.add_argument('--headless')");
     }
     
-    
     pybind11::exec("executable_path = \"" + settings.driver_path + "\"");
     
-    pybind11::exec("browser = webdriver.Chrome(chrome_options=chrome_options,executable_path=executable_path)");
+    pybind11::exec(settings.browser_name + " = webdriver.Chrome(chrome_options=chrome_options,executable_path=executable_path)");
     
     //Once set, the implicit wait is set for the life of the WebDriver object.
     if (settings.set_implicit_wait){
-        std::string command = "browser.implicitly_wait(";
+        std::string command = settings.browser_name + ".implicitly_wait(";
         command += std::to_string(settings.implicit_wait_s);
         command += ")";
         pybind11::exec(command);
