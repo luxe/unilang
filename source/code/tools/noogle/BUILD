@@ -11,6 +11,7 @@ hcp(name = "meta_settings", deps = [
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
+    "@pybind11//:pybind11",
 ])
 
 distributable_data(name="chrome_drivers",
