@@ -12,3 +12,4 @@ std::string Get_Path_After_Desktop(std::string const& str);
 std::pair<std::string,std::string> Split_On_First_Instance_Of_Char(std::string const& str, char const& c);
 std::pair<std::string,std::string> Split_On_Second_Instance_Of_Char(std::string const& str, char const& c);
 std::pair<std::string,std::string> Split_By_Char(std::string const& str, char const& c);
+std::vector<std::string> Default_Boost_Tokenize(std::string const& str);

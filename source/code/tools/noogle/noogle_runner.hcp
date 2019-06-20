@@ -5,6 +5,7 @@ class
 ❪"code/utilities/data_structures/queue/safe_queue.h"❫
 ❪"code/utilities/data_structures/queue/finishable_safe_queue.h"❫
 ❪"code/tools/noogle/noogle_running_stats"❫
+❪"code/tools/noogle/noogle_result"❫
 ❪atomic❫
 ⚯
 ❪iostream❫
@@ -22,9 +23,13 @@ class
 ❪boost/asio/thread_pool.hpp❫
 ❪boost/asio/post.hpp❫
 ❪"code/utilities/printers/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
 ⚞⚟
 
 //apt-get install python3-bs4
+
+//can you noogle a googol?
+//should return a very large number (mpz support)
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
 
@@ -53,39 +58,25 @@ class
     
     //get all of the google urls to search with
     auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,"test");
-
-    //add result urls to a queue
+    
+    
     FinishableSafeQueue<std::string> result_urls;
-    std::thread t1(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
-    
     FinishableSafeQueue<std::string> html_results;
-    std::thread t2(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
-    
     FinishableSafeQueue<std::string> sanitized_text;
-    std::thread t3(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
+    FinishableSafeQueue<Noogle_Result> noogle_results;
     
-    std::thread t4(Show_Results,std::cref(stats));
+    std::thread t1(Show_Results,std::cref(stats),std::ref(noogle_results));
+    std::thread t2(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
+    std::thread t3(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
+    std::thread t4(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
+    std::thread t5(Parse_For_Noogle_Results,std::ref(stats),std::ref(sanitized_text),std::ref(noogle_results));
     
     t1.join();
     t2.join();
     t3.join();
     t4.join();
+    t5.join();
     
-    //auto urls = Get_Google_Result_Urls(settings.browser,google_search_urls[0]);
-    //for (auto it: urls){
-    //     std::cout << it << std::endl;
-    //}
-    
-    /*
-    Go_To_Google_And_Search_Something(settings.browser,"test");
-    
-    auto urls = Get_Google_Next_Prev_Pages(settings.browser);
-    //auto urls = Get_Search_Result_Urls_From_Page(settings.browser);
-    for (auto it: urls){
-        std::cout << it << std::endl;
-    }
-    
-    */
 ❱
 
 
@@ -170,21 +161,33 @@ def parse_html(x):
     sanitized_text.mark_finished();
 ❱
 
+//STEP 4
+◀private: static▶ void ☀Parse_For_Noogle_Results(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & sanitized_text, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+    while(!sanitized_text.is_finished()){
+        
+        auto str = sanitized_text.get();
+        auto tokens = Default_Boost_Tokenize(str);
+        for (size_t i = 0; i < tokens.size(); ++i){
+        }
+    }
+    
+    noogle_results.mark_finished();
+❱
 
-//SHOW STEP 4
-◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats)❰
+//SHOW STEP
+◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
-    while (true){
+    while(!noogle_results.is_finished()){
         std::string progress;
-        progress += "web results [" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
+        progress += "urls [" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
         progress += " ";
-        progress += "html blobs [" + std::to_string(stats.htmls_current) + "/" + std::to_string(stats.htmls_total) + "]";
+        progress += "htmls [" + std::to_string(stats.htmls_current) + "/" + std::to_string(stats.htmls_total) + "]";
         progress += " ";
-        progress += "sanitized text [" + std::to_string(stats.sanitized_current) + "/" + std::to_string(stats.sanitized_total) + "]";
+        progress += "texts [" + std::to_string(stats.sanitized_current) + "/" + std::to_string(stats.sanitized_total) + "]";
         Clear_Terminal3();
         std::cout << progress;
         std::cout.flush();
-        Sleep_For_N_Seconds(1);
+        Sleep_For_N_Milliseconds(500);
     }
 ❱
 
@@ -235,13 +238,6 @@ def parse_html(x):
 
 ◀private: static▶ std::vector<std::string> ☀Get_Google_Next_Prev_Pages(Browser_Settings const& browser)❰
 
-    //this way didn't work
-    //pybind11::exec("RESULTS_LOCATOR = '//div/h3/a'");
-    //pybind11::exec("WebDriverWait(" + browser.browser_name + ", 10).until(EC.visibility_of_element_located((By.XPATH, RESULTS_LOCATOR)))");
-    //pybind11::exec("page1_results = " + browser.browser_name + ".find_elements(By.XPATH, RESULTS_LOCATOR)");
-    //pybind11::exec("print page1_results");
-
-    //but this way does
     pybind11::exec("linkBox = " + browser.browser_name + ".find_element_by_xpath('//*[@id=\"nav\"]/tbody/tr')");
     pybind11::exec("links = linkBox.find_elements_by_css_selector('a')");
     pybind11::exec("linkList = []");
@@ -259,6 +255,7 @@ def parse_html(x):
     auto result = Convert_Python_Strings_To_Vec("linkList");
     
     
+    //should go further, and try to parse the url?
     //import urlparse
     //print(urlparse.parse_qs(urlparse.urlparse(href).query)["q"])
     

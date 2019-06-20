@@ -11,6 +11,9 @@ hcp(name = "meta_settings", deps = [
 hcp(name = "noogle_running_stats", deps = [
 ])
 
+hcp(name = "noogle_result", deps = [
+])
+
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
@@ -30,6 +33,8 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web:lib",
     "//code/tools/noogle:noogle_running_stats",
     "//code/utilities/printers:lib",
+    "//code/tools/noogle:noogle_result",
+    "//code/utilities/types/strings/observers/splitting:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [

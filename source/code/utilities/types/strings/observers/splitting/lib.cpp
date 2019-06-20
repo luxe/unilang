@@ -1,4 +1,5 @@
 #include "code/utilities/types/strings/observers/splitting/lib.hpp"
+#include<boost/tokenizer.hpp>
 
 std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& str, char const& delimiter){
 	std::vector<std::string> parts;
@@ -115,3 +116,17 @@ std::pair<std::string,std::string> Split_By_Char(std::string const& str, char co
     }    
     return p;
 }
+std::vector<std::string> Default_Boost_Tokenize(std::string const& str)
+{
+    std::vector<std::string> results;
+    using namespace std;
+    using namespace boost;
+    tokenizer<> tok(str);
+    for(tokenizer<>::iterator beg=tok.begin(); beg!=tok.end();++beg){
+       results.emplace_back(*beg);
+    }
+    return results;
+}
+
+
+
