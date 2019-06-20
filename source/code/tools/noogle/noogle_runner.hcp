@@ -14,6 +14,7 @@ class
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ❪"code/utilities/types/strings/transformers/squeeze/lib"❫
 ❪"code/utilities/time/sleeping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
 
@@ -37,7 +38,6 @@ class
     //create a browser to automate queries on
     Browser_Creator::Create(settings.browser);
     
-    
     //get all of the google urls to search with
     auto google_search_urls = Devise_Google_Search_Urls(settings,"test");
 
@@ -45,7 +45,7 @@ class
     FinishableSafeQueue<std::string> result_urls;
     std::thread t1(Google_Search_Urls_To_Google_Result_Urls,settings.browser,google_search_urls,std::ref(result_urls));
     
-    SafeQueue<std::string> html_results;
+    FinishableSafeQueue<std::string> html_results;
     std::thread t2(Convert_Result_Urls_To_Html,settings.browser,std::ref(result_urls),std::ref(html_results));
     
     t1.join();
@@ -73,19 +73,42 @@ class
     for (auto const& search_url: google_search_urls){
         auto result_urls = Get_Google_Result_Urls(settings,search_url);
         for (auto const& result_url: result_urls){
-            q.add(result_url);
+            if (Google_Result_Url_Is_Valid_For_Exploring(result_url)){
+                q.add(result_url);
+            }
         }
     }
     q.mark_finished();
 ❱
 
-◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, FinishableSafeQueue<std::string> & urls_in, SafeQueue<std::string> & html_out)❰
+◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url)❰
+    if (Begins_With(url,"https://www.google.com/search?")){
+        return false;
+    }
+    return true;
+❱
+
+
+◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
     
     while(!urls_in.is_finished()){
         auto str = urls_in.get();
         std::cout << str << std::endl;
     }
 ❱
+
+
+
+//     int threadNumbers = std::thread::hardware_concurrency();
+//     boost::asio::thread_pool pool(threadNumbers);
+
+//     for (size_t i = 0; i < 50; ++i){
+//         boost::asio::post(pool, [=]() {
+//           std::cout << i << std::endl;
+//         });
+//     }
+//     pool.join();
+// }
 
 ◀private: static▶ std::vector<std::string> ☀Get_Google_Result_Urls(Browser_Settings const& settings, std::string const& url)❰
     Go_To_Url(settings,url);
@@ -112,7 +135,6 @@ class
         urls.emplace_back(new_url);
     }
     return urls;
-
 ❱
 
 

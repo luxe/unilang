@@ -21,6 +21,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/data_structures/queue:safe_queue",
     "//code/utilities/data_structures/queue:finishable_safe_queue",
     "//code/utilities/time/sleeping:lib",
+    "//code/utilities/types/strings/observers/other:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [
