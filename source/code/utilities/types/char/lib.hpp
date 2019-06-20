@@ -40,3 +40,12 @@ std::string As_Binary(const char c);
 char From_Binary(std::string const& str);
 
 int as_number(char const& c);
+
+
+
+//character for bars
+//█
+//██████████████
+
+//■
+//■■■■■■■■■■■■
