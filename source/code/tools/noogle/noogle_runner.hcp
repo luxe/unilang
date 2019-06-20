@@ -4,6 +4,8 @@ class
 ❪"code/tools/noogle/settings/noogle_settings"❫
 ❪"code/utilities/data_structures/queue/safe_queue.h"❫
 ❪"code/utilities/data_structures/queue/finishable_safe_queue.h"❫
+❪"code/tools/noogle/noogle_running_stats"❫
+❪atomic❫
 ⚯
 ❪iostream❫
 ❪thread❫
@@ -21,12 +23,14 @@ class
 ❪boost/asio/post.hpp❫
 ⚞⚟
 
+//apt-get install python3-bs4
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
 
 
     //when the python scoped interpreter exists, I can't ctrl+c the program
     //we'll remedy that with a custom signal handler.
+    //find out why this is, maybe we can do something better.
     //https://github.com/pybind/pybind11/issues/1813
     signal(SIGINT,[](int signum){
         exit(signum);
@@ -35,6 +39,7 @@ class
 
     //settings
     auto settings = Default_Settings_Getter::Get();
+    std::atomic<Noogle_Running_Stats> stats;
     
     //make sure we have a python environment going for the duration of the program (RAII)
     pybind11::scoped_interpreter guard{};

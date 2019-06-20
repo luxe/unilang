@@ -8,6 +8,9 @@ load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
 hcp(name = "meta_settings", deps = [
 ])
 
+hcp(name = "noogle_running_stats", deps = [
+])
+
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
@@ -25,6 +28,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/web/google:google_search_url_deviser",
     "//code/utilities/web:lib",
+    "//code/tools/noogle:noogle_running_stats",
 ])
 
 hcp(name = "default_settings_getter", deps = [
