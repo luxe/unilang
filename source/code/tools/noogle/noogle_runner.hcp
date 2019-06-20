@@ -88,6 +88,7 @@ class
         }
     }
     q.mark_finished();
+    std::cout << "google search urls to results urls finished" << std::endl;
 ❱
 
 ◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url)❰
@@ -106,21 +107,27 @@ class
     boost::asio::thread_pool pool(threadNumbers);
     while(!urls_in.is_finished()){
         auto str = urls_in.get();
-        boost::asio::post(pool, [&]() {
+        boost::asio::post(pool, [&,str]() {
             Html_Fetch_Settings fetch_settings;
             fetch_settings.url = str;
-            html_out.add(Get_Html_Of_Site(fetch_settings));
+            auto html = Get_Html_Of_Site(fetch_settings);
+            html_out.add(html);
+            
+            if (html.empty()){
+                std::cout << fetch_settings.url << std::endl;
+            }
         });
     }
     pool.join();
     html_out.mark_finished();
+    std::cout << "getting html finished" << std::endl;
 ❱
 
 //STEP 3
 ◀private: static▶ void ☀Sanitize_Html(FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
     while(!html_results.is_finished()){
         auto str = html_results.get();
-        std::cout << str.size() << std::endl;
+        //std::cout << str.size() << std::endl;
     }
 ❱
 

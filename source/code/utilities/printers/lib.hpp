@@ -4,6 +4,12 @@
 #include <fstream>
 #include "code/utilities/printers/prettyprint.hpp"
 
+
+
+void Clear_Terminal();
+void Clear_Terminal2();
+void Clear_Terminal3();
+void Move_Cursor_Up();
 void Output_And_Flush(std::string const& message);
 void Print_Newline();
 
