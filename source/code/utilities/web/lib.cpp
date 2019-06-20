@@ -38,8 +38,16 @@ int writer(char *data, size_t size, size_t nmemb, std::string *buffer){
   return result;
 }
 
+void possibly_show_error(std::string const& message, bool const& should_show){
+  if (should_show){
+    std::cerr << message << std::endl;
+  }
+}
+
 std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
     std::string buffer;
+    
+    bool show_errors = false;
  
     CURL *curl;
     CURLcode result;
@@ -60,13 +68,16 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
       if (result == CURLE_OK)
           return buffer;
       //curl_easy_strerror was added in libcurl 7.12.0
-      std::cerr << "error: " << result << " " << curl_easy_strerror(result) << std::endl;
+      std::string message = std::string("error: ") + std::to_string(result) + " " + curl_easy_strerror(result);
+      possibly_show_error(message,show_errors);
       return "";
     }
  
-    std::cerr << "error: could not initalize curl" << std::endl;
+    possibly_show_error("error: could not initalize curl",show_errors);
     return "";
 }
+
+
 std::vector<std::string> Get_HTML_Of_Site_With_Each_Line_In_Vector(std::string const& website){
     auto it = Get_HTML_Of_Site_With_Curl_Command(website);
     return Put_Each_Line_Of_String_Into_A_Vector(it);

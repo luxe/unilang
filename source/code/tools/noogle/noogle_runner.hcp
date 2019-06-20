@@ -15,6 +15,10 @@ class
 ❪"code/utilities/types/strings/transformers/squeeze/lib"❫
 ❪"code/utilities/time/sleeping/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/web/google/google_search_url_deviser"❫
+❪"code/utilities/web/lib"❫
+❪boost/asio/thread_pool.hpp❫
+❪boost/asio/post.hpp❫
 ⚞⚟
 
 
@@ -39,7 +43,7 @@ class
     Browser_Creator::Create(settings.browser);
     
     //get all of the google urls to search with
-    auto google_search_urls = Devise_Google_Search_Urls(settings,"test");
+    auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,"news");
 
     //add result urls to a queue
     FinishableSafeQueue<std::string> result_urls;
@@ -48,8 +52,12 @@ class
     FinishableSafeQueue<std::string> html_results;
     std::thread t2(Convert_Result_Urls_To_Html,settings.browser,std::ref(result_urls),std::ref(html_results));
     
+    FinishableSafeQueue<std::string> sanitized_text;
+    std::thread t3(Sanitize_Html,std::ref(html_results),std::ref(sanitized_text));
+    
     t1.join();
     t2.join();
+    t3.join();
     
     //auto urls = Get_Google_Result_Urls(settings.browser,google_search_urls[0]);
     //for (auto it: urls){
@@ -69,6 +77,7 @@ class
 ❱
 
 
+//STEP 1
 ◀private: static▶ void ☀Google_Search_Urls_To_Google_Result_Urls(Browser_Settings const& settings, std::vector<std::string> const& google_search_urls, FinishableSafeQueue<std::string> & q)❰
     for (auto const& search_url: google_search_urls){
         auto result_urls = Get_Google_Result_Urls(settings,search_url);
@@ -89,57 +98,43 @@ class
 ❱
 
 
+//STEP 2
 ◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
     
+    //int threadNumbers = std::thread::hardware_concurrency();
+    int threadNumbers = 10;
+    boost::asio::thread_pool pool(threadNumbers);
     while(!urls_in.is_finished()){
         auto str = urls_in.get();
-        std::cout << str << std::endl;
+        boost::asio::post(pool, [&]() {
+            Html_Fetch_Settings fetch_settings;
+            fetch_settings.url = str;
+            html_out.add(Get_Html_Of_Site(fetch_settings));
+        });
+    }
+    pool.join();
+    html_out.mark_finished();
+❱
+
+//STEP 3
+◀private: static▶ void ☀Sanitize_Html(FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
+    while(!html_results.is_finished()){
+        auto str = html_results.get();
+        std::cout << str.size() << std::endl;
     }
 ❱
 
 
 
-//     int threadNumbers = std::thread::hardware_concurrency();
-//     boost::asio::thread_pool pool(threadNumbers);
 
-//     for (size_t i = 0; i < 50; ++i){
-//         boost::asio::post(pool, [=]() {
-//           std::cout << i << std::endl;
-//         });
-//     }
-//     pool.join();
-// }
-
-◀private: static▶ std::vector<std::string> ☀Get_Google_Result_Urls(Browser_Settings const& settings, std::string const& url)❰
-    Go_To_Url(settings,url);
-    return Get_Search_Result_Urls_From_Page(settings);
-❱
-
-
-◀private: static▶ std::vector<std::string> ☀Devise_Google_Search_Urls(Noogle_Settings const& settings, std::string query)❰
-    
-    std::string base_url = "https://www.google.com/search?q=";
-    int page_count = 5;
-    int results_per_page = 100; //max 100
-    
-    Squeeze_Away_Spaces(query);
-    replace_spaces_with_plus(query);
-    base_url += query;
-    
-    std::vector<std::string> urls;
-    for (size_t i = 0; i < page_count; ++i){
-        auto new_url = base_url;
-        new_url += "&num=" + std::to_string(results_per_page);
-        new_url += "&start=";
-        new_url += std::to_string((i*results_per_page));
-        urls.emplace_back(new_url);
-    }
-    return urls;
-❱
 
 
 
 //browser navigating
+◀private: static▶ std::vector<std::string> ☀Get_Google_Result_Urls(Browser_Settings const& settings, std::string const& url)❰
+    Go_To_Url(settings,url);
+    return Get_Search_Result_Urls_From_Page(settings);
+❱
 ◀private: static▶ void ☀Go_To_Google_And_Search_Something(Browser_Settings const& settings, std::string const& search_query)❰
     Go_To_Google_And_Search_Something_Go_To_Page_First(settings,search_query);
 ❱
