@@ -25,11 +25,15 @@ class
     Browser_Creator::Create(settings.browser);
     
     
+    //get all of the google urls to search with
     auto google_search_urls = Devise_Google_Search_Urls(settings,"test");
-    // for (auto it: google_search_urls){ std::cout << it << std::endl;}
     
+    //add result urls to a queue
     SafeQueue<std::string> result_urls;
     std::thread(Google_Search_Urls_To_Google_Result_Urls,settings.browser,google_search_urls,std::ref(result_urls)).detach();
+    
+    SafeQueue<std::string> html_results;
+    std::thread(Convert_Result_Urls_To_Html,settings.browser,std::ref(result_urls),std::ref(html_results)).detach();
     
     //auto urls = Get_Google_Result_Urls(settings.browser,google_search_urls[0]);
     //for (auto it: urls){
@@ -56,6 +60,9 @@ class
             q.add(result_url);
         }
     }
+❱
+
+◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, SafeQueue<std::string> & urls_in, SafeQueue<std::string> & html_out)❰
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Get_Google_Result_Urls(Browser_Settings const& settings, std::string const& url)❰
