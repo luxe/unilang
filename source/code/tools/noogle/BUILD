@@ -29,6 +29,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/google:google_search_url_deviser",
     "//code/utilities/web:lib",
     "//code/tools/noogle:noogle_running_stats",
+    "//code/utilities/printers:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [

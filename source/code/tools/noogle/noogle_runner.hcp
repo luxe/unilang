@@ -21,6 +21,7 @@ class
 ❪"code/utilities/web/lib"❫
 ❪boost/asio/thread_pool.hpp❫
 ❪boost/asio/post.hpp❫
+❪"code/utilities/printers/lib"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -39,7 +40,7 @@ class
 
     //settings
     auto settings = Default_Settings_Getter::Get();
-    std::atomic<Noogle_Running_Stats> stats;
+    Noogle_Running_Stats stats;
     
     //make sure we have a python environment going for the duration of the program (RAII)
     pybind11::scoped_interpreter guard{};
@@ -48,21 +49,24 @@ class
     Browser_Creator::Create(settings.browser);
     
     //get all of the google urls to search with
-    auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,"news");
+    auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,"test");
 
     //add result urls to a queue
     FinishableSafeQueue<std::string> result_urls;
-    std::thread t1(Google_Search_Urls_To_Google_Result_Urls,settings.browser,google_search_urls,std::ref(result_urls));
+    std::thread t1(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
     
     FinishableSafeQueue<std::string> html_results;
-    std::thread t2(Convert_Result_Urls_To_Html,settings.browser,std::ref(result_urls),std::ref(html_results));
+    std::thread t2(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
     
     FinishableSafeQueue<std::string> sanitized_text;
     std::thread t3(Sanitize_Html,std::ref(html_results),std::ref(sanitized_text));
     
+    std::thread t4(Show_Results,std::cref(stats));
+    
     t1.join();
     t2.join();
     t3.join();
+    t4.join();
     
     //auto urls = Get_Google_Result_Urls(settings.browser,google_search_urls[0]);
     //for (auto it: urls){
@@ -83,17 +87,18 @@ class
 
 
 //STEP 1
-◀private: static▶ void ☀Google_Search_Urls_To_Google_Result_Urls(Browser_Settings const& settings, std::vector<std::string> const& google_search_urls, FinishableSafeQueue<std::string> & q)❰
+◀private: static▶ void ☀Google_Search_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_search_urls, FinishableSafeQueue<std::string> & q)❰
     for (auto const& search_url: google_search_urls){
         auto result_urls = Get_Google_Result_Urls(settings,search_url);
         for (auto const& result_url: result_urls){
             if (Google_Result_Url_Is_Valid_For_Exploring(result_url)){
+                ++stats.sites_total;
                 q.add(result_url);
+                ++stats.sites_current;
             }
         }
     }
     q.mark_finished();
-    std::cout << "google search urls to results urls finished" << std::endl;
 ❱
 
 ◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url)❰
@@ -105,27 +110,28 @@ class
 
 
 //STEP 2
-◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
+◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
     
     //int threadNumbers = std::thread::hardware_concurrency();
     int threadNumbers = 10;
     boost::asio::thread_pool pool(threadNumbers);
     while(!urls_in.is_finished()){
         auto str = urls_in.get();
+        ++stats.htmls_total;
         boost::asio::post(pool, [&,str]() {
             Html_Fetch_Settings fetch_settings;
             fetch_settings.url = str;
             auto html = Get_Html_Of_Site(fetch_settings);
             html_out.add(html);
+            ++stats.htmls_current;
             
             if (html.empty()){
-                std::cout << fetch_settings.url << std::endl;
+                //std::cout << fetch_settings.url << std::endl;
             }
         });
     }
     pool.join();
     html_out.mark_finished();
-    std::cout << "getting html finished" << std::endl;
 ❱
 
 //STEP 3
@@ -137,7 +143,20 @@ class
 ❱
 
 
+//SHOW STEP 4
+◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats)❰
 
+    while (true){
+        std::string progress;
+        progress += "[" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
+        progress += " ";
+        progress += "[" + std::to_string(stats.htmls_current) + "/" + std::to_string(stats.htmls_total) + "]";
+        Clear_Terminal3();
+        std::cout << progress;
+        std::cout.flush();
+        Sleep_For_N_Seconds(1);
+    }
+❱
 
 
 
