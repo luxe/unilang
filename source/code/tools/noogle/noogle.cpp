@@ -1,12 +1,13 @@
 #include <iostream>
 #include "code/tools/noogle/meta_settings.hpp"
 #include "code/tools/noogle/noogle_runner.hpp"
+#include "code/tools/noogle/program_options/program_options.hpp"
 
-int main(){
-    
-    //should probably do prog args and stuff
+int main(int const argc, char** const argv){
     
     Meta_Settings meta;
     meta.program_name = "noogle";
-    Noogle_Runner::Run(meta);
+    
+    Program_Options program_options(argc, argv);
+    Noogle_Runner::Run(meta,program_options);
 }

@@ -36,6 +36,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:noogle_result",
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/observers/characteristic:spirit_numeric_checker",
+    "//code/tools/noogle/program_options:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [
@@ -52,7 +53,8 @@ distributable_cpp_main(
     name = "noogle",
     deps = [
         "//code/tools/noogle:noogle_runner",
-        "//code/tools/noogle:meta_settings"
+        "//code/tools/noogle:meta_settings",
+        "//code/tools/noogle/program_options:lib",
     ],
     data = ":debian-data",
     description = "google but numbers",

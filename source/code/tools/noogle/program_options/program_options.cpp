@@ -26,7 +26,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	using namespace boost::program_options;
 
 	//Program Description
-	options_description desc("like google but numbers");
+	options_description desc("like google but you get numbers");
 
 	//Program Flags
 	desc.add_options()
