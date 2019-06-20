@@ -5,16 +5,17 @@
 
 // A threadsafe-queue.
 template <class T>
-class SafeQueue
+class FinishableSafeQueue
 {
 public:
-  SafeQueue()
+  FinishableSafeQueue()
     : q()
     , m()
     , c()
+    , finished(false)
   {}
 
-  ~SafeQueue()
+  ~FinishableSafeQueue()
   {}
 
   // Add an element to the queue.
@@ -39,9 +40,24 @@ public:
     q.pop();
     return val;
   }
+  
+  void mark_finished()
+  {
+    std::unique_lock<std::mutex> lock(m);
+    finished = true;
+  }
+  
+  bool is_finished()
+  {
+    std::unique_lock<std::mutex> lock(m);
+    return finished;
+  }
+  
+  
 
 private:
   std::queue<T> q;
   mutable std::mutex m;
   std::condition_variable c;
+  bool finished;
 };

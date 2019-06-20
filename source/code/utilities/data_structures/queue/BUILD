@@ -8,3 +8,10 @@ cc_library(
     deps = [
     ]
 )
+
+cc_library(
+    name = "finishable_safe_queue",
+    hdrs = ["finishable_safe_queue.h"],
+    deps = [
+    ]
+)

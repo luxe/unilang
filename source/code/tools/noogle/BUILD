@@ -19,6 +19,7 @@ hcp(name = "noogle_runner", deps = [
     "@pybind11//:pybind11",
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/data_structures/queue:safe_queue",
+    "//code/utilities/data_structures/queue:finishable_safe_queue",
     "//code/utilities/time/sleeping:lib",
 ])
 
