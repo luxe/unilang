@@ -24,6 +24,7 @@ class
 ❪boost/asio/post.hpp❫
 ❪"code/utilities/printers/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/characteristic/spirit_numeric_checker"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -168,11 +169,25 @@ def parse_html(x):
         auto str = sanitized_text.get();
         auto tokens = Default_Boost_Tokenize(str);
         for (size_t i = 0; i < tokens.size(); ++i){
+            Decide_If_Token_Is_A_Result(tokens[i],tokens,i,noogle_results);
         }
     }
     
     noogle_results.mark_finished();
 ❱
+◀private: static▶ void ☀Decide_If_Token_Is_A_Result(std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+
+    if (Spirit_Numeric_Checker::Is_Numeric(token)){
+        Noogle_Result result;
+        result.number = token;
+        noogle_results.add(result);
+        std::cout << token << std::endl;
+    }
+    
+    noogle_results.mark_finished();
+❱
+
+
 
 //SHOW STEP
 ◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
@@ -184,6 +199,8 @@ def parse_html(x):
         progress += "htmls [" + std::to_string(stats.htmls_current) + "/" + std::to_string(stats.htmls_total) + "]";
         progress += " ";
         progress += "texts [" + std::to_string(stats.sanitized_current) + "/" + std::to_string(stats.sanitized_total) + "]";
+        progress += " ";
+        progress += "results: " + std::to_string(stats.results);
         Clear_Terminal3();
         std::cout << progress;
         std::cout.flush();

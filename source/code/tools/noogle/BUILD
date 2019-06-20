@@ -35,6 +35,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/printers:lib",
     "//code/tools/noogle:noogle_result",
     "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/utilities/types/strings/observers/characteristic:spirit_numeric_checker",
 ])
 
 hcp(name = "default_settings_getter", deps = [
