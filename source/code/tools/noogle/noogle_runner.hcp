@@ -17,17 +17,20 @@ class
 
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
+
+    //settings
+    auto settings = Default_Settings_Getter::Get();
     
     //make sure we have a python environment going for the duration of the program (RAII)
     pybind11::scoped_interpreter guard{};
     
     //create a browser to automate queries on
-    auto settings = Default_Settings_Getter::Get();
     Browser_Creator::Create(settings.browser);
     
     
     //get all of the google urls to search with
     auto google_search_urls = Devise_Google_Search_Urls(settings,"test");
+
     
     //add result urls to a queue
     SafeQueue<std::string> result_urls;
@@ -59,7 +62,6 @@ class
 
 ◀private: static▶ void ☀Google_Search_Urls_To_Google_Result_Urls(Browser_Settings const& settings, std::vector<std::string> const& google_search_urls, SafeQueue<std::string> & q)❰
     for (auto const& search_url: google_search_urls){
-        std::cout << "there" << std::endl;
         auto result_urls = Get_Google_Result_Urls(settings,search_url);
         for (auto const& result_url: result_urls){
             q.add(result_url);
