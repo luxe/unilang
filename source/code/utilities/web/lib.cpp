@@ -48,6 +48,7 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
     std::string buffer;
     
     bool show_errors = false;
+    int seconds_till_timeout = 10;
  
     CURL *curl;
     CURLcode result;
@@ -59,6 +60,7 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
       curl_easy_setopt(curl, CURLOPT_HEADER, 0);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
       curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT,seconds_till_timeout);
  
       result = curl_easy_perform(curl);//http get performed
  

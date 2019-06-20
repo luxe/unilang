@@ -45,6 +45,9 @@ class
     //make sure we have a python environment going for the duration of the program (RAII)
     pybind11::scoped_interpreter guard{};
     
+    //add python implementations
+    add_beautiful_soup_function();
+    
     //create a browser to automate queries on
     Browser_Creator::Create(settings.browser);
     
@@ -59,7 +62,7 @@ class
     std::thread t2(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
     
     FinishableSafeQueue<std::string> sanitized_text;
-    std::thread t3(Sanitize_Html,std::ref(html_results),std::ref(sanitized_text));
+    std::thread t3(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
     
     std::thread t4(Show_Results,std::cref(stats));
     
@@ -84,6 +87,28 @@ class
     
     */
 ❱
+
+
+◀private: static▶ std::string ☀parse_away_html_tags(std::string & html)❰
+    make_python_str(html);
+    auto parsed = pybind11::eval("parse_html(" + html + ")").cast<std::string>();
+    return parsed;
+❱
+
+◀private: static▶ void ☀make_python_str(std::string & str)❰
+    str += "\"\"\"\n";
+    str = std::string("\"\"\"\n") + str;
+❱
+
+◀private: static▶ void ☀add_beautiful_soup_function()❰
+    pybind11::exec("from bs4 import BeautifulSoup");
+    pybind11::exec(R"(
+def parse_html(x):
+    soup = BeautifulSoup(x, 'html.parser')
+    return soup.get_text()
+)");
+❱
+
 
 
 //STEP 1
@@ -135,11 +160,14 @@ class
 ❱
 
 //STEP 3
-◀private: static▶ void ☀Sanitize_Html(FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
+◀private: static▶ void ☀Sanitize_Html(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
     while(!html_results.is_finished()){
         auto str = html_results.get();
-        //std::cout << str.size() << std::endl;
+            ++stats.sanitized_total;
+            sanitized_text.add(parse_away_html_tags(str));
+            ++stats.sanitized_current;
     }
+    sanitized_text.mark_finished();
 ❱
 
 
@@ -148,9 +176,11 @@ class
 
     while (true){
         std::string progress;
-        progress += "[" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
+        progress += "web results [" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
         progress += " ";
-        progress += "[" + std::to_string(stats.htmls_current) + "/" + std::to_string(stats.htmls_total) + "]";
+        progress += "html blobs [" + std::to_string(stats.htmls_current) + "/" + std::to_string(stats.htmls_total) + "]";
+        progress += " ";
+        progress += "sanitized text [" + std::to_string(stats.sanitized_current) + "/" + std::to_string(stats.sanitized_total) + "]";
         Clear_Terminal3();
         std::cout << progress;
         std::cout.flush();
@@ -195,6 +225,12 @@ class
         results.emplace_back(str);
     }
     return results;
+❱
+
+◀private: static▶ std::string ☀Get_Raw_Text_Of_Webpage(std::string const& html)❰
+
+    pybind11::str py_s = pybind11::str(html);
+    return html;
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Get_Google_Next_Prev_Pages(Browser_Settings const& browser)❰
