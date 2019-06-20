@@ -18,7 +18,7 @@ public:
   {}
 
   // Add an element to the queue.
-  void enqueue(T t)
+  void add(T t)
   {
     std::lock_guard<std::mutex> lock(m);
     q.push(t);
@@ -27,7 +27,7 @@ public:
 
   // Get the "front"-element.
   // If the queue is empty, wait till a element is avaiable.
-  T dequeue(void)
+  T get(void)
   {
     std::unique_lock<std::mutex> lock(m);
     while(q.empty())
