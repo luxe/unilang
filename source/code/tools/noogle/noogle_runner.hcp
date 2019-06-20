@@ -1,22 +1,37 @@
 class
 ❪"code/tools/noogle/meta_settings"❫
 ❪"code/utilities/web/automate/browser/browser_settings"❫
+❪"code/tools/noogle/settings/noogle_settings"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/web/chrome/driver/chrome_driver_selector"❫
 ❪pybind11/embed.h❫
 ❪"code/utilities/web/automate/browser/browser_creator"❫
 ❪"code/tools/noogle/default_settings_getter"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/transformers/squeeze/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
-    //RAII stuff.  make sure we have a python environment going for the duration of the program
+    //make sure we have a python environment going for the duration of the program (RAII)
     pybind11::scoped_interpreter guard{};
     
     //create a browser to automate queries on
     auto settings = Default_Settings_Getter::Get();
     Browser_Creator::Create(settings.browser);
+    
+    
+    auto google_search_urls = Devise_Google_Search_Urls(settings,"test");
+    // for (auto it: google_search_urls){
+    //     std::cout << it << std::endl;
+    // }
+    auto urls = Get_Google_Result_Urls(settings.browser,google_search_urls[0]);
+    for (auto it: urls){
+         std::cout << it << std::endl;
+    }
+    
+    /*
     Go_To_Google_And_Search_Something(settings.browser,"test");
     
     auto urls = Get_Google_Next_Prev_Pages(settings.browser);
@@ -24,8 +39,34 @@ class
     for (auto it: urls){
         std::cout << it << std::endl;
     }
+    
+    */
 ❱
 
+◀private: static▶ std::vector<std::string> ☀Get_Google_Result_Urls(Browser_Settings const& settings, std::string const& url)❰
+    Go_To_Url(settings,url);
+    return Get_Search_Result_Urls_From_Page(settings);
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Devise_Google_Search_Urls(Noogle_Settings const& settings, std::string query)❰
+    
+    std::string base_url = "https://www.google.com/search?q=";
+    Squeeze_Away_Spaces(query);
+    replace_spaces_with_plus(query);
+    base_url += query;
+    
+    std::vector<std::string> urls;
+    for (size_t i = 0; i < 5; ++i){
+        auto new_url = base_url;
+        new_url += "&num=100";
+        new_url += "&start=";
+        new_url += std::to_string((i*100));
+        urls.emplace_back(new_url);
+    }
+    return urls;
+
+❱
 
 
 

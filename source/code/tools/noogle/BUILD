@@ -14,7 +14,10 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/automate/browser:browser_creator",
     "//code/utilities/web/automate/browser:browser_settings",
     "//code/tools/noogle:default_settings_getter",
+    "//code/utilities/types/strings/transformers/search_replace:lib",
+    "//code/utilities/types/strings/transformers/squeeze:lib",
     "@pybind11//:pybind11",
+    "//code/tools/noogle/settings:noogle_settings",
 ])
 
 hcp(name = "default_settings_getter", deps = [
