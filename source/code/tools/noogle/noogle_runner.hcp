@@ -7,6 +7,7 @@ class
 ❪"code/tools/noogle/noogle_running_stats"❫
 ❪"code/tools/noogle/noogle_result"❫
 ❪atomic❫
+❪unordered_set❫
 ❪"code/tools/noogle/program_options/program_options"❫
 ⚯
 ❪iostream❫
@@ -66,7 +67,6 @@ class
     //get all of the google urls to search with
     auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
     auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
-    std::cout << google_query_urls << std::endl;
     
     
     FinishableSafeQueue<std::string> result_urls;
@@ -142,6 +142,10 @@ def parse_html(path):
 
 ◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url)❰
     if (Begins_With(url,"https://www.google.com/search?")){
+        return false;
+    }
+    
+    if (Begins_With(url,"mailto:")){
         return false;
     }
     return true;
@@ -223,42 +227,42 @@ def parse_html(path):
 ❱
 ◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
+    std::unordered_set<std::string> local_site_results;
     if (Spirit_Numeric_Checker::Is_Numeric(token)){
-        Add_Left_Window(stats,token,tokens,index,noogle_results);
-        Add_Right_Window(stats,token,tokens,index,noogle_results);
+        Add_Left_Window(stats,token,tokens,index,local_site_results);
+        Add_Right_Window(stats,token,tokens,index,local_site_results);
+    }
+    
+    
+    //add local site results to global
+    for (auto const& it: local_site_results){
+        Noogle_Result result;
+        result.number = it;
+        noogle_results.add(result);
+        stats.currated_results.Add(result.number);
+        ++stats.results;
+        
     }
 ❱
 
-◀private: static▶ void ☀Add_Left_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+◀private: static▶ void ☀Add_Left_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, std::unordered_set<std::string> & local_site_results)❰
     if (index-1 > 0){
         auto window_word = tokens[index-1];
         if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Has_A_Numeric_Character(window_word)){
-            Noogle_Result result;
-            result.number = window_word + " " + token;
-            noogle_results.add(result);
-            stats.currated_results.Add(result.number);
-            ++stats.results;
+            local_site_results.insert(window_word + " " + token);
         }
     }
 ❱
-◀private: static▶ void ☀Add_Right_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+◀private: static▶ void ☀Add_Right_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, std::unordered_set<std::string> & local_site_results)❰
     if (index+1 < tokens.size()){
         auto window_word = tokens[index+1];
         if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Has_A_Numeric_Character(window_word)){
-            Noogle_Result result;
-            result.number = token + " " + window_word;
-            noogle_results.add(result);
-            stats.currated_results.Add(result.number);
-            ++stats.results;
+            local_site_results.insert(token + " " + window_word);
         }
     }
 ❱
-◀private: static▶ void ☀Add_Exact(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
-    Noogle_Result result;
-    result.number = token;
-    noogle_results.add(result);
-    stats.currated_results.Add(result.number);
-    ++stats.results;
+◀private: static▶ void ☀Add_Exact(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, std::unordered_set<std::string> & local_site_results)❰
+    local_site_results.insert(token);
 ❱
 
 ◀private: static▶ bool ☀Is_A_Webish_Word(std::string const& str)❰
@@ -335,6 +339,36 @@ def parse_html(path):
     web_words.emplace_back("about");
     web_words.emplace_back("Navbar");
     web_words.emplace_back("navbar");
+    web_words.emplace_back("n");
+    web_words.emplace_back("void");
+    web_words.emplace_back("var");
+    web_words.emplace_back("s");
+    web_words.emplace_back("calc");
+    web_words.emplace_back("r");
+    web_words.emplace_back("typename");
+    web_words.emplace_back("c");
+    web_words.emplace_back("transform");
+    web_words.emplace_back("display");
+    web_words.emplace_back("insert");
+    web_words.emplace_back("radius");
+    web_words.emplace_back("this");
+    web_words.emplace_back("gt");
+    web_words.emplace_back("function");
+    web_words.emplace_back("e");
+    web_words.emplace_back("if");
+    web_words.emplace_back("script");
+    web_words.emplace_back("flex");
+    web_words.emplace_back("density");
+    web_words.emplace_back("nav");
+    web_words.emplace_back("order");
+    web_words.emplace_back("text");
+    web_words.emplace_back("shadow");
+    web_words.emplace_back("translateY");
+    web_words.emplace_back("translateX");
+    web_words.emplace_back("uc");
+    web_words.emplace_back("el");
+    web_words.emplace_back("cn");
+    web_words.emplace_back("data");
     
     return String_In_Vector(web_words,str);
 ❱
