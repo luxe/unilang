@@ -129,6 +129,15 @@ bool Starts_With_Digit(std::string const& str){
 	return false;
 }
 
+
+//character testing on at least 1 char
+bool Has_A_Numeric_Character(std::string const& str){
+    for (auto const& it: str){
+        if (Is_A_Numeric_Character(it)){return true;}
+    }
+    return false;
+}
+
 //observing string functions
 bool Consecutive_Space_In_The_Middle(std::string s) {
 

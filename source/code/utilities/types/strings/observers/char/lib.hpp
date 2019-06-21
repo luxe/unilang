@@ -23,6 +23,10 @@ bool Has_Only_Alphanumeric_And_Underscores(std::string const& str);
 bool Has_Only_Uppercase_Letters_Numbers_And_Underscores(std::string const& str);
 bool Starts_With_Digit(std::string const& str);
 
+
+//character testing on at least 1 char
+bool Has_A_Numeric_Character(std::string const& str);
+
 //character observing
 bool Consecutive_Space_In_The_Middle(std::string s);
 bool Contains_Only_Whitespace_Characters(std::string const& str);

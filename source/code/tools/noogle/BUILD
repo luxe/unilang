@@ -41,6 +41,8 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/observers/characteristic:spirit_numeric_checker",
     "//code/tools/noogle/program_options:lib",
     "//code/utilities/exits:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/types/strings/observers/char:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [

@@ -29,6 +29,8 @@ class
 ❪"code/utilities/printers/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/observers/characteristic/spirit_numeric_checker"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -64,6 +66,7 @@ class
     //get all of the google urls to search with
     auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
     auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
+    std::cout << google_query_urls << std::endl;
     
     
     FinishableSafeQueue<std::string> result_urls;
@@ -102,6 +105,20 @@ class
     pybind11::exec(R"(
 def parse_html(x):
     soup = BeautifulSoup(x, 'html.parser')
+    result = soup.get_text()
+    # print(result)
+    return result
+)");
+❱
+
+◀private: static▶ void ☀add_beautiful_soup_function_on_path()❰
+    pybind11::exec("from bs4 import BeautifulSoup");
+    pybind11::exec(R"(
+def parse_html(path):
+
+    with open(path, 'r') as content_file:
+        content = content_file.read()
+    soup = BeautifulSoup(content 'html.parser')
     return soup.get_text()
 )");
 ❱
@@ -180,7 +197,12 @@ def parse_html(x):
     while(!html_results.is_finished() || !html_results.is_empty()){
         auto str = html_results.get();
             ++stats.sanitized_total;
-            sanitized_text.add(str);
+            try{
+                sanitized_text.add(parse_away_html_tags(str));
+            }
+            catch(...){
+                //sanitized_text.add(str);
+            }
             ++stats.sanitized_current;
     }
     sanitized_text.mark_finished();
@@ -209,9 +231,10 @@ def parse_html(x):
 
 ◀private: static▶ void ☀Add_Left_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
     if (index-1 > 0){
-        if (!Spirit_Numeric_Checker::Is_Numeric(tokens[index-1])){
+        auto window_word = tokens[index-1];
+        if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Has_A_Numeric_Character(window_word)){
             Noogle_Result result;
-            result.number = tokens[index-1] + " " + token;
+            result.number = window_word + " " + token;
             noogle_results.add(result);
             stats.currated_results.Add(result.number);
             ++stats.results;
@@ -220,9 +243,10 @@ def parse_html(x):
 ❱
 ◀private: static▶ void ☀Add_Right_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
     if (index+1 < tokens.size()){
-        if (!Spirit_Numeric_Checker::Is_Numeric(tokens[index+1])){
+        auto window_word = tokens[index+1];
+        if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Has_A_Numeric_Character(window_word)){
             Noogle_Result result;
-            result.number = token + " " + tokens[index+1];
+            result.number = token + " " + window_word;
             noogle_results.add(result);
             stats.currated_results.Add(result.number);
             ++stats.results;
@@ -237,6 +261,84 @@ def parse_html(x):
     ++stats.results;
 ❱
 
+◀private: static▶ bool ☀Is_A_Webish_Word(std::string const& str)❰
+    std::vector<std::string> web_words;
+    web_words.emplace_back("width");
+    web_words.emplace_back("a");
+    web_words.emplace_back("x");
+    web_words.emplace_back("y");
+    web_words.emplace_back("css");
+    web_words.emplace_back("height");
+    web_words.emplace_back("isOutstream");
+    web_words.emplace_back("id");
+    web_words.emplace_back("ids");
+    web_words.emplace_back("i");
+    web_words.emplace_back("size");
+    web_words.emplace_back("index");
+    web_words.emplace_back("margin");
+    web_words.emplace_back("right");
+    web_words.emplace_back("bottom");
+    web_words.emplace_back("t");
+    web_words.emplace_back("rgb");
+    web_words.emplace_back("rgba");
+    web_words.emplace_back("25rem");
+    web_words.emplace_back("rem");
+    web_words.emplace_back("important");
+    web_words.emplace_back("left");
+    web_words.emplace_back("top");
+    web_words.emplace_back("type");
+    web_words.emplace_back("t");
+    web_words.emplace_back("padding");
+    web_words.emplace_back("Element");
+    
+    web_words.emplace_back("GMT");
+    web_words.emplace_back("UTC");
+    web_words.emplace_back("media");
+    web_words.emplace_back("cnn");
+    web_words.emplace_back("weight");
+    web_words.emplace_back("scale");
+    web_words.emplace_back("sites");
+    web_words.emplace_back("assetDuration");
+    web_words.emplace_back("zn");
+    web_words.emplace_back("border");
+    web_words.emplace_back("color");
+    web_words.emplace_back("625rem");
+    web_words.emplace_back("js");
+    web_words.emplace_back("idx");
+    web_words.emplace_back("webkit");
+    web_words.emplace_back("opacity");
+    web_words.emplace_back("auto");
+    web_words.emplace_back("position");
+    web_words.emplace_back("pg");
+    web_words.emplace_back("translate");
+    web_words.emplace_back("Video");
+    web_words.emplace_back("px");
+    web_words.emplace_back("2n");
+    web_words.emplace_back("cd");
+    web_words.emplace_back("front");
+    web_words.emplace_back("containers");
+    web_words.emplace_back("cnnsans");
+    web_words.emplace_back("clear");
+    web_words.emplace_back("body");
+    web_words.emplace_back("jpg");
+    web_words.emplace_back("search");
+    web_words.emplace_back("widget");
+    web_words.emplace_back("spacing");
+    web_words.emplace_back("char");
+    web_words.emplace_back("o");
+    web_words.emplace_back("z");
+    web_words.emplace_back("supersection");
+    web_words.emplace_back("title");
+    web_words.emplace_back("isPrivate");
+    web_words.emplace_back("full");
+    web_words.emplace_back("length");
+    web_words.emplace_back("about");
+    web_words.emplace_back("Navbar");
+    web_words.emplace_back("navbar");
+    
+    return String_In_Vector(web_words,str);
+❱
+
 
 
 //SHOW STEP
@@ -246,7 +348,7 @@ def parse_html(x):
     while(!noogle_results.is_finished()){
         Clear_Terminal_Up_N_Lines(height);
         
-        auto results = stats.currated_results.Top_N_Most_Common(30);
+        auto results = stats.currated_results.Top_N_Most_Common(40);
         height = results.size();
         std::cout << Build_Progress_Message(stats,results);
         std::cout.flush();
