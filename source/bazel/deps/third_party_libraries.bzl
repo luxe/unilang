@@ -40,6 +40,7 @@ load("//bazel/deps/get:xdo.bzl", "xdo")
 load("//bazel/deps/get:expat.bzl", "expat")
 load("//bazel/deps/get:chrome_drivers.bzl", "chrome_drivers")
 load("//bazel/deps/get:python3.bzl", "python3")
+load("//bazel/deps/get:tippecanoe.bzl", "tippecanoe")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -47,6 +48,7 @@ load("//bazel/deps/get:python3.bzl", "python3")
 # Also, github is a single source of failure here.  
 # Its probably okay to clone on github and use that as a mirror,
 # but we may also want additional hosting elsewhere (ex: buildfactory)
+# we may want to set up our own servers in case of another world war and we lose github
 
 # TODO(thickey): as a rule of thumb, we do not want patch files.  
 # when a patch file is created, we need to work with the original author to merge it back.
@@ -141,3 +143,4 @@ def third_party_libraries():
     fmt()
     xdo()
     python3()
+    tippecanoe()
