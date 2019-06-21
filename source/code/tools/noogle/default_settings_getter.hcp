@@ -4,6 +4,7 @@ class
 ❪iostream❫
 ❪"code/utilities/web/chrome/driver/chrome_driver_selector"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/secret/secret_getter"❫
 ⚞⚟
 
 
@@ -11,9 +12,8 @@ class
     Noogle_Settings settings;
     settings.browser = Default_Browser_Settings();
     
-    settings.devise_google_search_urls.base_url = "https://www.google.com/search?q=";
-    settings.devise_google_search_urls.page_count = 3;
-    settings.devise_google_search_urls.results_per_page = 100;
+    settings.devise_google_search_urls = Google_Search_Settings();
+    settings.devise_google_query_urls = Google_Query_Settings();
     
     return settings;
 ❱
@@ -21,7 +21,7 @@ class
 ◀private: static▶ Browser_Settings ☀Default_Browser_Settings() ❰
 
     Browser_Settings settings;
-    settings.headless = false;
+    settings.headless = true;
     settings.ignore_certificate_errors = true;
     settings.disable_notifications = true;
     settings.disable_extensions = true;
@@ -47,9 +47,31 @@ class
     return settings;
 ❱
 
+◀private: static▶ Google_Search_Url_Devise_Settings ☀Google_Search_Settings()❰
+
+    Google_Search_Url_Devise_Settings settings;
+    settings.base_url = "https://www.google.com/search?q=";
+    settings.page_count = 3;
+    settings.results_per_page = 100;
+    return settings;
+❱
+◀private: static▶ Google_Json_Url_Devise_Settings ☀Google_Query_Settings()❰
+
+    Google_Json_Url_Devise_Settings settings;
+    settings.base_url = "https://www.googleapis.com/customsearch/v1?q=";
+    settings.page_count = 3;
+    settings.results_per_page = 100;
+    
+    settings.lr = "lang_en";
+    settings.api_key = Secret_Getter::Google_Search_Api_Key();
+    settings.cx = Secret_Getter::Google_Search_Cx();
+    return settings;
+❱
+
 ◀private: static▶ std::string ☀My_User_Agent()❰
     return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
 ❱
 ◀private: static▶ std::string ☀Spoofed_User_Agent()❰
     return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/601.7.7 (KHTML, like Gecko) Version/9.1.2 Safari/601.7.7";
 ❱
+

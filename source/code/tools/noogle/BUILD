@@ -45,6 +45,7 @@ hcp(name = "default_settings_getter", deps = [
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
     "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/secret:secret_getter",
 ])
 
 distributable_data(name="chrome_drivers",
