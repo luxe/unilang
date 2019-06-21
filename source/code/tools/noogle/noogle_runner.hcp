@@ -134,7 +134,7 @@ def parse_html(x):
     //int threadNumbers = std::thread::hardware_concurrency();
     int threadNumbers = 10;
     boost::asio::thread_pool pool(threadNumbers);
-    while(!urls_in.is_finished()){
+    while(!urls_in.is_finished() && !urls_in.is_empty()){
         auto str = urls_in.get();
         ++stats.htmls_total;
         boost::asio::post(pool, [&,str]() {
@@ -155,7 +155,7 @@ def parse_html(x):
 
 //STEP 3
 ◀private: static▶ void ☀Sanitize_Html(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
-    while(!html_results.is_finished()){
+    while(!html_results.is_finished() && !html_results.is_empty()){
         auto str = html_results.get();
             ++stats.sanitized_total;
             sanitized_text.add(str);
@@ -166,26 +166,25 @@ def parse_html(x):
 
 //STEP 4
 ◀private: static▶ void ☀Parse_For_Noogle_Results(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & sanitized_text, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
-    while(!sanitized_text.is_finished()){
+    while(!sanitized_text.is_finished() && !sanitized_text.is_empty()){
         
         auto str = sanitized_text.get();
         auto tokens = Default_Boost_Tokenize(str);
         for (size_t i = 0; i < tokens.size(); ++i){
-            Decide_If_Token_Is_A_Result(tokens[i],tokens,i,noogle_results);
+            Decide_If_Token_Is_A_Result(stats,tokens[i],tokens,i,noogle_results);
         }
     }
     
     noogle_results.mark_finished();
 ❱
-◀private: static▶ void ☀Decide_If_Token_Is_A_Result(std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
     if (Spirit_Numeric_Checker::Is_Numeric(token)){
         Noogle_Result result;
         result.number = token;
         noogle_results.add(result);
+        ++stats.results;
     }
-    
-    noogle_results.mark_finished();
 ❱
 
 
@@ -195,6 +194,7 @@ def parse_html(x):
 
     int counter = 0;
     while(!noogle_results.is_finished()){
+    //while (true){
         std::string progress;
         progress += std::to_string(counter);
         ++counter;
@@ -275,11 +275,15 @@ def parse_html(x):
     pybind11::exec("results = " + browser.browser_name + ".find_elements_by_css_selector('div.g')");
     pybind11::exec("linkList = []");
     pybind11::exec("for link in results: linkList.append(link.find_element_by_tag_name('a').get_attribute('href'))");
-    pybind11::exec("print(linkList)");
+    //pybind11::exec("print(linkList)");
     auto result = Convert_Python_Strings_To_Vec("linkList");
     
+    std::string detection_message = "Our systems have detected unusual traffic from your computer network";
     if (result.empty()){
-        Exit_With_Error("Google is captcha blocking you.");
+        auto page_source = Get_Page_Source(browser);
+        if (Contains_Substring(page_source,detection_message)){
+            Exit_With_Error("\nGoogle is captcha blocking you.");
+        }
     }
     
     
@@ -289,3 +293,9 @@ def parse_html(x):
     
     return result;
 ❱
+
+
+◀private: static▶ std::string ☀Get_Page_Source(Browser_Settings const& browser)❰
+    return pybind11::eval(browser.browser_name + ".page_source").cast<std::string>();
+❱
+

@@ -41,6 +41,11 @@ public:
     return val;
   }
   
+  bool is_empty(){
+    std::unique_lock<std::mutex> lock(m);
+    return q.empty();
+  }
+  
   void mark_finished()
   {
     std::unique_lock<std::mutex> lock(m);

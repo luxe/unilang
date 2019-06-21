@@ -3,6 +3,7 @@
 #include <map>
 #include <algorithm>
 #include <iostream>
+#include <queue>
 
 template <typename T>
 class Unique_Counter{
@@ -32,4 +33,13 @@ class Unique_Counter{
     });
     return it->first;
   }
+  
+  std::vector<std::pair<T,int>> Top_N_Most_Common(){
+    std::priority_queue<std::pair<int,T>> q;
+    
+    std::vector<std::pair<T,int>> results;
+    return results;
+    
+  }
+  
 };
