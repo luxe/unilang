@@ -202,12 +202,39 @@ def parse_html(x):
 ◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
     if (Spirit_Numeric_Checker::Is_Numeric(token)){
-        Noogle_Result result;
-        result.number = token;
-        noogle_results.add(result);
-        stats.currated_results.Add(result.number);
-        ++stats.results;
+        Add_Left_Window(stats,token,tokens,index,noogle_results);
+        Add_Right_Window(stats,token,tokens,index,noogle_results);
     }
+❱
+
+◀private: static▶ void ☀Add_Left_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+    if (index-1 > 0){
+        if (!Spirit_Numeric_Checker::Is_Numeric(tokens[index-1])){
+            Noogle_Result result;
+            result.number = tokens[index-1] + " " + token;
+            noogle_results.add(result);
+            stats.currated_results.Add(result.number);
+            ++stats.results;
+        }
+    }
+❱
+◀private: static▶ void ☀Add_Right_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+    if (index+1 < tokens.size()){
+        if (!Spirit_Numeric_Checker::Is_Numeric(tokens[index+1])){
+            Noogle_Result result;
+            result.number = token + " " + tokens[index+1];
+            noogle_results.add(result);
+            stats.currated_results.Add(result.number);
+            ++stats.results;
+        }
+    }
+❱
+◀private: static▶ void ☀Add_Exact(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+    Noogle_Result result;
+    result.number = token;
+    noogle_results.add(result);
+    stats.currated_results.Add(result.number);
+    ++stats.results;
 ❱
 
 
