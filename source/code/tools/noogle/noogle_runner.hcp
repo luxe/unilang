@@ -205,7 +205,7 @@ def parse_html(path):
                 sanitized_text.add(parse_away_html_tags(str));
             }
             catch(...){
-                //sanitized_text.add(str);
+                sanitized_text.add(str);
             }
             ++stats.sanitized_current;
     }
@@ -216,23 +216,22 @@ def parse_html(path):
 ◀private: static▶ void ☀Parse_For_Noogle_Results(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & sanitized_text, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
     while(!sanitized_text.is_finished() || !sanitized_text.is_empty()){
         
-        auto str = sanitized_text.get();
-        auto tokens = Default_Boost_Tokenize(str);
-        for (size_t i = 0; i < tokens.size(); ++i){
-            Decide_If_Token_Is_A_Result(stats,tokens[i],tokens,i,noogle_results);
-        }
+        auto blob = sanitized_text.get();
+        Parse_Html_Blob(blob,stats,noogle_results);
     }
     
     noogle_results.mark_finished();
 ❱
-◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+
+◀private: static▶ void ☀Parse_Html_Blob(std::string const& blob, Noogle_Running_Stats & stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+
+
 
     std::unordered_set<std::string> local_site_results;
-    if (Spirit_Numeric_Checker::Is_Numeric(token)){
-        Add_Left_Window(stats,token,tokens,index,local_site_results);
-        Add_Right_Window(stats,token,tokens,index,local_site_results);
+    auto tokens = Default_Boost_Tokenize(blob);
+    for (size_t i = 0; i < tokens.size(); ++i){
+        Decide_If_Token_Is_A_Result(stats,tokens[i],tokens,i,local_site_results);
     }
-    
     
     //add local site results to global
     for (auto const& it: local_site_results){
@@ -242,6 +241,16 @@ def parse_html(path):
         stats.currated_results.Add(result.number);
         ++stats.results;
         
+    }
+❱
+
+
+
+◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index,  std::unordered_set<std::string> & local_site_results)❰
+
+    if (Spirit_Numeric_Checker::Is_Numeric(token)){
+        Add_Left_Window(stats,token,tokens,index,local_site_results);
+        Add_Right_Window(stats,token,tokens,index,local_site_results);
     }
 ❱
 
@@ -294,7 +303,6 @@ def parse_html(path):
     web_words.emplace_back("t");
     web_words.emplace_back("padding");
     web_words.emplace_back("Element");
-    
     web_words.emplace_back("GMT");
     web_words.emplace_back("UTC");
     web_words.emplace_back("media");
@@ -369,6 +377,62 @@ def parse_html(path):
     web_words.emplace_back("el");
     web_words.emplace_back("cn");
     web_words.emplace_back("data");
+    web_words.emplace_back("isHidden");
+    web_words.emplace_back("value");
+    web_words.emplace_back("autoMax");
+    web_words.emplace_back("src");
+    web_words.emplace_back("sizes");
+    web_words.emplace_back("arguments");
+    web_words.emplace_back("ngcontent");
+    web_words.emplace_back("exp");
+    web_words.emplace_back("h");
+    web_words.emplace_back("w");
+    web_words.emplace_back("l");
+    web_words.emplace_back("font");
+    web_words.emplace_back("async");
+    web_words.emplace_back("head");
+    web_words.emplace_back("j");
+    web_words.emplace_back("new");
+    web_words.emplace_back("return");
+    web_words.emplace_back("window");
+    web_words.emplace_back("for");
+    web_words.emplace_back("split");
+    web_words.emplace_back("d");
+    web_words.emplace_back("appendChild");
+    web_words.emplace_back("charAt");
+    web_words.emplace_back("dateModified");
+    web_words.emplace_back("f");
+    web_words.emplace_back("else");
+    web_words.emplace_back("window");
+    web_words.emplace_back("document");
+    web_words.emplace_back("undefined");
+    web_words.emplace_back("api");
+    web_words.emplace_back("writable");
+    web_words.emplace_back("enumerable");
+    web_words.emplace_back("dev");
+    web_words.emplace_back("aborted");
+    web_words.emplace_back("try");
+    web_words.emplace_back("p");
+    web_words.emplace_back("call");
+    web_words.emplace_back("k");
+    web_words.emplace_back("g");
+    web_words.emplace_back("routeName");
+    web_words.emplace_back("addPageAction");
+    web_words.emplace_back("abort");
+    web_words.emplace_back("item");
+    web_words.emplace_back("catch");
+    web_words.emplace_back("you");
+    web_words.emplace_back("utf");
+    web_words.emplace_back("xhr");
+    web_words.emplace_back("status");
+    web_words.emplace_back("loaded");
+    web_words.emplace_back("characterData");
+    web_words.emplace_back("m");
+    web_words.emplace_back("loaded");
+    web_words.emplace_back("listener");
+    web_words.emplace_back("err");
+    web_words.emplace_back("background");
+    web_words.emplace_back("totalCbs");
     
     return String_In_Vector(web_words,str);
 ❱
