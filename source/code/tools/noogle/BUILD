@@ -31,6 +31,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/time/sleeping:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/web/google:google_search_url_deviser",
+    "//code/utilities/web/google:google_json_url_deviser",
     "//code/utilities/web:lib",
     "//code/tools/noogle:noogle_running_stats",
     "//code/utilities/printers:lib",

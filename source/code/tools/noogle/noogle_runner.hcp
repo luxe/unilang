@@ -20,6 +20,7 @@ class
 ❪"code/utilities/time/sleeping/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/web/google/google_search_url_deviser"❫
+❪"code/utilities/web/google/google_json_url_deviser"❫
 ❪"code/utilities/web/lib"❫
 ❪"code/utilities/exits/lib"❫
 ❪boost/asio/thread_pool.hpp❫
@@ -57,10 +58,11 @@ class
     add_beautiful_soup_function();
     
     //create a browser to automate queries on
-    Browser_Creator::Create(settings.browser);
+    //Browser_Creator::Create(settings.browser);
     
     //get all of the google urls to search with
     auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
+    auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
     
     
     FinishableSafeQueue<std::string> result_urls;
@@ -68,17 +70,17 @@ class
     FinishableSafeQueue<std::string> sanitized_text;
     FinishableSafeQueue<Noogle_Result> noogle_results;
     
-    std::thread t1(Show_Results,std::cref(stats),std::ref(noogle_results));
-    std::thread t2(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
-    std::thread t3(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
-    std::thread t4(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
-    std::thread t5(Parse_For_Noogle_Results,std::ref(stats),std::ref(sanitized_text),std::ref(noogle_results));
+    std::vector<std::thread> jobs;
+    jobs.emplace_back(Show_Results,std::cref(stats),std::ref(noogle_results));
+    //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
+    jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_query_urls,std::ref(result_urls));
+    jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
+    jobs.emplace_back(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
+    jobs.emplace_back(Parse_For_Noogle_Results,std::ref(stats),std::ref(sanitized_text),std::ref(noogle_results));
     
-    t1.join();
-    t2.join();
-    t3.join();
-    t4.join();
-    t5.join();
+    for (auto & it: jobs){
+        it.join();
+    }
     
 ❱
 
@@ -105,7 +107,7 @@ def parse_html(x):
 
 
 
-//STEP 1
+//STEP 1 (A)
 ◀private: static▶ void ☀Google_Search_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_search_urls, FinishableSafeQueue<std::string> & q)❰
     for (auto const& search_url: google_search_urls){
         auto result_urls = Get_Google_Result_Urls(settings,search_url);
@@ -127,6 +129,25 @@ def parse_html(x):
     return true;
 ❱
 
+//STEP 1 (B)
+◀private: static▶ void ☀Google_Query_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_query_urls, FinishableSafeQueue<std::string> & q)❰
+    for (auto const& search_url: google_query_urls){
+        
+        //query json endpoint
+        Html_Fetch_Settings fetch_settings;
+        fetch_settings.url = search_url;
+        auto response = Get_Html_Of_Site(fetch_settings);
+        
+        auto j = nlohmann::json::parse(response);
+        for (auto it: j["items"]){
+            auto result_url = it["link"].get<std::string>();
+            ++stats.sites_total;
+            q.add(result_url);
+            ++stats.sites_current;
+        }
+    }
+    q.mark_finished();
+❱
 
 //STEP 2
 ◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
