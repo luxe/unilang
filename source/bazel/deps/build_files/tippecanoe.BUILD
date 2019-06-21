@@ -25,23 +25,115 @@ cc_library(
     hdrs = glob(["mapbox/**/*.hpp"]),
 )
 
-
 cc_library(
     name = "catch",
     hdrs = ["catch/catch.hpp"],
 )
 
-#Main Source Code
 cc_library(
-    name = "main_lib",
-    hdrs = glob(["*.hpp"]),
-    srcs = glob(["*.cpp"]),
+    name = "nested_deps",
     deps = [
-        "@sqlite3//:sqlite3",
         ":json_pull",
         ":milo",
         ":protozero",
-        ":catch",
         ":mapbox",
+        ":catch",
+        
     ]
+)
+
+cc_library(
+    name = "main_headers",
+    hdrs = [
+        "csv.hpp",
+        "dirtiles.hpp",
+        "evaluator.hpp",
+        "geobuf.hpp",
+        "geocsv.hpp",
+        "geojson.hpp",
+        "geojson-loop.hpp",
+        "geometry.hpp",
+        "main.hpp",
+        "mbtiles.hpp",
+        "memfile.hpp",
+        "mvt.hpp",
+        "options.hpp",
+        "plugin.hpp",
+        "pool.hpp",
+        "projection.hpp",
+        "read_json.hpp",
+        "serial.hpp",
+        "text.hpp",
+        "tile.hpp",
+        "version.hpp",
+        "write_json.hpp",
+    ],
+    includes = ["."],
+    deps = [
+        "@sqlite3//:sqlite3",
+        ":nested_deps"
+    ]
+)
+
+cc_library(
+    name = "main_src",
+    srcs = [
+        "csv.cpp",
+        #"decode.cpp",
+        "dirtiles.cpp",
+        #"enumerate.cpp",
+        "evaluator.cpp",
+        "geobuf.cpp",
+        "geocsv.cpp",
+        "geojson.cpp",
+        "geojson-loop.cpp",
+        "geometry.cpp",
+        #"jsontool.cpp",
+        #"main.cpp",
+        "mbtiles.cpp",
+        "memfile.cpp",
+        "mvt.cpp",
+        "plugin.cpp",
+        "pool.cpp",
+        "projection.cpp",
+        "read_json.cpp",
+        "serial.cpp",
+        "text.cpp",
+        "tile.cpp",
+        "tile-join.cpp",
+        #"unit.cpp",
+        "write_json.cpp",
+    ],
+    includes = ["."],
+    deps = [
+        "@sqlite3//:sqlite3",
+        ":nested_deps",
+        ":main_headers"
+    ]
+)
+
+
+# programs from makefile
+# tippecanoe
+# enumerate
+# decode
+# join
+# json-tool
+# unit
+cc_binary(
+    name = "tippecanoe",
+    srcs = [
+        "main.cpp"
+    ],
+    includes = ["."],
+    deps = [
+        "@sqlite3//:sqlite3",
+        ":nested_deps",
+        ":main_headers",
+        ":main_src"
+    ],
+    linkopts = [
+        "-lm",
+        "-lz",
+    ],
 )
