@@ -37,11 +37,13 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/observers/characteristic:spirit_numeric_checker",
     "//code/tools/noogle/program_options:lib",
+    "//code/utilities/exits:lib",
 ])
 
 hcp(name = "default_settings_getter", deps = [
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
+    "//code/utilities/filesystem/paths:lib",
 ])
 
 distributable_data(name="chrome_drivers",
