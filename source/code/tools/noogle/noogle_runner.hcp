@@ -134,7 +134,7 @@ def parse_html(x):
     //int threadNumbers = std::thread::hardware_concurrency();
     int threadNumbers = 10;
     boost::asio::thread_pool pool(threadNumbers);
-    while(!urls_in.is_finished() && !urls_in.is_empty()){
+    while(!urls_in.is_finished() || !urls_in.is_empty()){
         auto str = urls_in.get();
         ++stats.htmls_total;
         boost::asio::post(pool, [&,str]() {
@@ -155,7 +155,7 @@ def parse_html(x):
 
 //STEP 3
 ◀private: static▶ void ☀Sanitize_Html(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
-    while(!html_results.is_finished() && !html_results.is_empty()){
+    while(!html_results.is_finished() || !html_results.is_empty()){
         auto str = html_results.get();
             ++stats.sanitized_total;
             sanitized_text.add(str);
@@ -166,7 +166,7 @@ def parse_html(x):
 
 //STEP 4
 ◀private: static▶ void ☀Parse_For_Noogle_Results(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & sanitized_text, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
-    while(!sanitized_text.is_finished() && !sanitized_text.is_empty()){
+    while(!sanitized_text.is_finished() || !sanitized_text.is_empty()){
         
         auto str = sanitized_text.get();
         auto tokens = Default_Boost_Tokenize(str);
@@ -197,7 +197,7 @@ def parse_html(x):
     while(!noogle_results.is_finished()){
         Clear_Terminal_Up_N_Lines(height);
         
-        auto results = stats.currated_results.Top_N_Most_Common(5);
+        auto results = stats.currated_results.Top_N_Most_Common(30);
         height = results.size();
         std::cout << Build_Progress_Message(stats,results);
         std::cout.flush();
