@@ -1,0 +1,97 @@
+class
+❪"code/utilities/web/automate/browser/browser_settings"❫
+⚯
+❪iostream❫
+❪thread❫
+❪pybind11/embed.h❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/transformers/squeeze/lib"❫
+❪"code/utilities/time/sleeping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/printers/lib"❫
+⚞⚟
+
+//browser navigating
+◀public: static▶ std::vector<std::string> ☀Get_Google_Result_Urls(Browser_Settings const& settings, std::string const& url)❰
+    Go_To_Url(settings,url);
+    return Get_Search_Result_Urls_From_Page(settings);
+❱
+◀private: static▶ void ☀Go_To_Google_And_Search_Something(Browser_Settings const& settings, std::string const& search_query)❰
+    Go_To_Google_And_Search_Something_Go_To_Page_First(settings,search_query);
+❱
+
+◀private: static▶ void ☀Go_To_Google_And_Search_Something_Go_To_Page_First(Browser_Settings const& settings, std::string const& search_query)❰
+    Go_To_Google(settings);
+    pybind11::exec("thing = " + settings.browser_name + ".find_element_by_name('q')");
+    pybind11::exec("thing.send_keys('" + search_query + "')");
+    pybind11::exec("thing.send_keys(Keys.RETURN)");
+    //pybind11::exec("thing.submit()");
+❱
+
+◀private: static▶ void ☀Go_To_Google(Browser_Settings const& settings)❰
+    Go_To_Url(settings,"http://google.com");
+❱
+
+◀private: static▶ void ☀Go_To_Url(Browser_Settings const& browser, std::string const& url)❰
+    
+    pybind11::exec(browser.browser_name + ".get('" + url + "')");
+❱
+
+◀private: static▶ std::vector<std::string> ☀Convert_Python_Strings_To_Vec(std::string const& var_name)❰
+    auto py_obj = pybind11::eval("linkList").cast<pybind11::list>();
+    std::vector<std::string> results;
+    for (pybind11::handle o : py_obj) {
+        std::string str = pybind11::cast<std::string>(o);
+        results.emplace_back(str);
+    }
+    return results;
+❱
+
+◀private: static▶ std::string ☀Get_Raw_Text_Of_Webpage(std::string const& html)❰
+
+    pybind11::str py_s = pybind11::str(html);
+    return html;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Google_Next_Prev_Pages(Browser_Settings const& browser)❰
+
+    pybind11::exec("linkBox = " + browser.browser_name + ".find_element_by_xpath('//*[@id=\"nav\"]/tbody/tr')");
+    pybind11::exec("links = linkBox.find_elements_by_css_selector('a')");
+    pybind11::exec("linkList = []");
+    pybind11::exec("for link in links: linkList.append(link.get_attribute('href'))");
+    auto result = Convert_Python_Strings_To_Vec("linkList");
+    return result;
+    
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Search_Result_Urls_From_Page(Browser_Settings const& browser)❰
+
+    //pybind11::exec("print(" + browser.browser_name + ".page_source)");
+    pybind11::exec("results = " + browser.browser_name + ".find_elements_by_css_selector('div.g')");
+    pybind11::exec("linkList = []");
+    pybind11::exec("for link in results: linkList.append(link.find_element_by_tag_name('a').get_attribute('href'))");
+    //pybind11::exec("print(linkList)");
+    auto result = Convert_Python_Strings_To_Vec("linkList");
+    
+    std::string detection_message = "Our systems have detected unusual traffic from your computer network";
+    if (result.empty()){
+        auto page_source = Get_Page_Source(browser);
+        if (Contains_Substring(page_source,detection_message)){
+            Exit_With_Error("\nGoogle is captcha blocking you.");
+        }
+    }
+    
+    
+    //should go further, and try to parse the url?
+    //import urlparse
+    //print(urlparse.parse_qs(urlparse.urlparse(href).query)["q"])
+    
+    return result;
+❱
+
+
+◀private: static▶ std::string ☀Get_Page_Source(Browser_Settings const& browser)❰
+    return pybind11::eval(browser.browser_name + ".page_source").cast<std::string>();
+❱

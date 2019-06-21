@@ -20,6 +20,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
     "//code/utilities/web/automate/browser:browser_creator",
     "//code/utilities/web/automate/browser:browser_settings",
+    "//code/utilities/web/automate/navigation:browser_navigator",
     "//code/tools/noogle:default_settings_getter",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/types/strings/transformers/squeeze:lib",
