@@ -1,0 +1,35 @@
+class
+❪vector❫
+❪string❫
+❪"code/utilities/web/google/google_json_url_devise_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/transformers/squeeze/lib"❫
+⚞⚟
+
+◀public: static▶ std::vector<std::string> ☀Devise(Google_Json_Url_Devise_Settings const& settings, std::string query)❰
+    
+    std::string base_url = settings.base_url;
+    int page_count = settings.page_count;
+    int results_per_page = settings.results_per_page;
+    
+    Squeeze_Away_Spaces(query);
+    replace_spaces_with_plus(query);
+    base_url += query;
+    
+    std::vector<std::string> urls;
+    for (size_t i = 0; i < page_count; ++i){
+        auto new_url = base_url;
+        new_url += "&num=" + std::to_string(results_per_page);
+        new_url += "&start=";
+        new_url += std::to_string((i*results_per_page));
+        new_url += "&key=";
+        new_url += settings.api_key;
+        new_url += "&cx=";
+        new_url += settings.cx;
+        new_url += "&lr=";
+        new_url += settings.lr;
+        urls.emplace_back(new_url);
+    }
+    return urls;
+❱
