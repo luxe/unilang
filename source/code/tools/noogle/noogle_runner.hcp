@@ -183,6 +183,7 @@ def parse_html(x):
         Noogle_Result result;
         result.number = token;
         noogle_results.add(result);
+        stats.currated_results.Add(result.number);
         ++stats.results;
     }
 ❱
@@ -192,12 +193,20 @@ def parse_html(x):
 //SHOW STEP
 ◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
-    int counter = 0;
+    int height = 0;
     while(!noogle_results.is_finished()){
-    //while (true){
+        Clear_Terminal_Up_N_Lines(height);
+        
+        auto results = stats.currated_results.Top_N_Most_Common(5);
+        height = results.size();
+        std::cout << Build_Progress_Message(stats,results);
+        std::cout.flush();
+        Sleep_For_N_Milliseconds(1000);
+    }
+❱
+
+◀private: static▶ std::string ☀Build_Progress_Message(Noogle_Running_Stats const& stats, std::vector<std::pair<int,std::string>> const& results)❰
         std::string progress;
-        progress += std::to_string(counter);
-        ++counter;
         progress += " ";
         progress += "urls [" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
         progress += " ";
@@ -206,11 +215,13 @@ def parse_html(x):
         progress += "texts [" + std::to_string(stats.sanitized_current) + "/" + std::to_string(stats.sanitized_total) + "]";
         progress += " ";
         progress += "results: " + std::to_string(stats.results);
-        Clear_Terminal3();
-        std::cout << progress;
-        std::cout.flush();
-        Sleep_For_N_Milliseconds(1000);
-    }
+        
+        for (auto const& it: results){
+            progress += "\n";
+            progress += it.second + " " + std::to_string(it.first);
+        }
+        
+        return progress;
 ❱
 
 

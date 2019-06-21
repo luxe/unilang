@@ -4,6 +4,8 @@
 #include <algorithm>
 #include <iostream>
 #include <queue>
+#include <utility>
+#include <functional>
 
 template <typename T>
 class Unique_Counter{
@@ -20,24 +22,35 @@ class Unique_Counter{
     }
   }
   
-  T Most_Common(){
+  T Most_Common() const{
     auto it = std::max_element(hash_table.begin(),hash_table.end(),[](auto x, auto y){
       return x.second < y.second;
     });
     return it->first;
   }
   
-  T Least_Common(){
+  T Least_Common() const{
     auto it = std::min_element(hash_table.begin(),hash_table.end(),[](auto x, auto y){
       return x.second < y.second;
     });
     return it->first;
   }
   
-  std::vector<std::pair<T,int>> Top_N_Most_Common(){
+  std::vector<std::pair<int,T>> Top_N_Most_Common(int amount) const{
     std::priority_queue<std::pair<int,T>> q;
     
-    std::vector<std::pair<T,int>> results;
+    for (auto const& it: hash_table){
+      auto add = std::make_pair(it.second,it.first);
+      q.push(add);
+    }
+    
+    std::vector<std::pair<int,T>> results;
+    for (size_t i = 0; i < amount && !q.empty(); ++i){
+      
+      auto p = q.top();
+      q.pop();
+      results.emplace_back(p);
+    }
     return results;
     
   }

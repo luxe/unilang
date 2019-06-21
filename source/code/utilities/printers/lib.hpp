@@ -10,6 +10,8 @@ void Clear_Terminal();
 void Clear_Terminal2();
 void Clear_Terminal3();
 void Move_Cursor_Up();
+void Clear_Terminal_Up_N_Lines(int n);
+
 void Output_And_Flush(std::string const& message);
 void Print_Newline();
 

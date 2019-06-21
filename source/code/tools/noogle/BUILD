@@ -9,6 +9,7 @@ hcp(name = "meta_settings", deps = [
 ])
 
 hcp(name = "noogle_running_stats", deps = [
+    "//code/utilities/data_structures/unique_counter:unique_counter",
 ])
 
 hcp(name = "noogle_result", deps = [
