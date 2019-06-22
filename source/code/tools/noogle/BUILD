@@ -26,6 +26,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/transformers/squeeze:lib",
     "@pybind11//:pybind11",
     "@boost//:asio",
+    "@cxx_url//:cxx_url",
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/data_structures/queue:safe_queue",
     "//code/utilities/data_structures/queue:finishable_safe_queue",
@@ -43,6 +44,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/exits:lib",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/observers/char:lib",
+    
 ])
 
 hcp(name = "default_settings_getter", deps = [
