@@ -32,6 +32,7 @@ class
 ❪"code/utilities/types/strings/observers/characteristic/spirit_numeric_checker"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/strings/observers/char/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"url.hpp"❫
 ⚞⚟
 
@@ -150,27 +151,44 @@ def parse_html(path):
 
 ◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url,std::unordered_set<std::string> & seen_hosts)❰
    
-   Url parsed_url(url);
-   auto host_name = parsed_url.host();
-   
-    if (Begins_With(url,"https://www.google.com/search?")){
-        return false;
+   try {
+       Url parsed_url(url);
+       auto host_name = parsed_url.host();
+       auto parts = Split_Into_Parts_From_Dot(host_name);
+       while (parts.size() > 2){
+            Remove_First_Element(parts);
+       }
+       std::string new_host_name = "";
+       if (!parts.empty()){
+            new_host_name = parts[0];
+       }
+       
+        if (Begins_With(url,"https://www.google.com/search?")){
+            return false;
+        }
+        
+        if (Begins_With(url,"mailto:")){
+            return false;
+        }
+        
+        if (seen_hosts.find(new_host_name) != seen_hosts.end()){
+            //std::cout << "dropping " << new_host_name << std::endl;
+            return false;
+        }
+        
+        //std::cout << new_host_name << std::endl;
+        seen_hosts.insert(new_host_name);
     }
-    
-    if (Begins_With(url,"mailto:")){
-        return false;
+    catch(...){
     }
-    
-    if (seen_hosts.find(host_name) == seen_hosts.end()){
-        return false;
-    }
-    
-    seen_hosts.insert(host_name);
     return true;
 ❱
 
 //STEP 1 (B)
 ◀private: static▶ void ☀Google_Query_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_query_urls, FinishableSafeQueue<std::string> & q)❰
+    
+    std::unordered_set<std::string> seen_hosts;
+    
     for (auto const& search_url: google_query_urls){
         
         //query json endpoint
@@ -181,9 +199,11 @@ def parse_html(path):
         auto j = nlohmann::json::parse(response);
         for (auto it: j["items"]){
             auto result_url = it["link"].get<std::string>();
-            ++stats.sites_total;
-            q.add(result_url);
-            ++stats.sites_current;
+            if (Google_Result_Url_Is_Valid_For_Exploring(result_url,seen_hosts)){
+                ++stats.sites_total;
+                q.add(result_url);
+                ++stats.sites_current;
+            }
         }
     }
     q.mark_finished();
@@ -223,7 +243,7 @@ def parse_html(path):
                 sanitized_text.add(parse_away_html_tags(str));
             }
             catch(...){
-                sanitized_text.add(str);
+                //sanitized_text.add(str);
             }
             ++stats.sanitized_current;
     }
@@ -495,6 +515,27 @@ def parse_html(path):
     web_words.emplace_back("enable");
     web_words.emplace_back("deskstop");
     web_words.emplace_back("widthType");
+    web_words.emplace_back("wgWikiaMaxNameChars");
+    web_words.emplace_back("wgTrackID");
+    web_words.emplace_back("wgStyleVersion");
+    web_words.emplace_back("wgMobileQualaroo");
+    web_words.emplace_back("wgMinimalPasswordLength");
+    web_words.emplace_back("wgMaxUploadSize");
+    web_words.emplace_back("wgFollowedPagesPagerLimitAjax");
+    web_words.emplace_back("wgFollowedPagesPagerLimit");
+    web_words.emplace_back("wgEnableTrackingOptInModal");
+    web_words.emplace_back("wgAdDriverStickySlotsLines");
+    web_words.emplace_back("wgAdDriverPorvataMoatTrackingSampling");
+    web_words.emplace_back("wgAdDriverPlayAdsOnNextFVFrequency");
+    web_words.emplace_back("wgAdDriverMoatTrackingForFeaturedVideoAdSampling");
+    web_words.emplace_back("wgAdDriverDelayTimeout");
+    web_words.emplace_back("wgAdDriverAbTestIdTargeting");
+    web_words.emplace_back("to");
+    web_words.emplace_back("null");
+    web_words.emplace_back("line");
+    web_words.emplace_back("substr");
+    web_words.emplace_back("md");
+    web_words.emplace_back("visibility");
 
     
     

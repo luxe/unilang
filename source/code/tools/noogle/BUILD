@@ -44,6 +44,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/exits:lib",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/observers/char:lib",
+    "//code/utilities/types/vectors/transformers:lib",
     
 ])
 
