@@ -90,3 +90,31 @@ std::string Get_Substring_Found_Between_First_Instance_Of_Two_Characters(std::st
 	}
 	return substring;
 }
+
+
+
+
+size_t height(std::string const& str)
+{
+    size_t count = 1;
+    for (auto const& it: str){
+        if (it == '\n'){
+            ++count;
+        }
+    }
+    return count;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

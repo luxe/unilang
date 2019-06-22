@@ -28,3 +28,5 @@ void Alphabetize_And_Print(std::vector<T> results){
 	for (auto const& it: results){std::cout << it << '\n';}
 	return;
 }
+
+size_t height(std::string const& str);

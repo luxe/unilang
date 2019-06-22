@@ -5,10 +5,34 @@
 #include <algorithm>
 #include <set>
 #include <random>
+#include <utility>
 
 std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs);
 std::string Table_As_Column_Aligned(std::vector<std::vector<std::string>> table);
 size_t Longest_Element_Size(std::vector<std::string> strs);
+
+template <typename T>
+size_t Longest_Element_Size_Of_Pair_First(std::vector<std::pair<std::string,T>> const& strs){
+  int size = 0;
+  for (auto const& it: strs){
+    if (it.first.size() > size){
+      size = it.first.size();
+    }
+  }
+  return size;
+}
+
+template <typename T>
+size_t Longest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,std::string>> const& strs){
+  int size = 0;
+  for (auto const& it: strs){
+    if (it.second.size() > size){
+      size = it.second.size();
+    }
+  }
+  return size;
+}
+
 
 template<typename T>
 size_t Get_Index_Of_Element(std::vector<T> const& v, T const& element){
