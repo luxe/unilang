@@ -26,6 +26,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/transformers/squeeze:lib",
     "@pybind11//:pybind11",
     "@boost//:asio",
+    #"@boost//:stacktrace",
     "@cxx_url//:cxx_url",
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/data_structures/queue:safe_queue",

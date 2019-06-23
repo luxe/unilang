@@ -55,6 +55,18 @@ class
     signal(SIGINT,[](int signum){
         exit(signum);
     });
+    
+    //catch crashes
+    // signal(SIGSEGV,[](int signum){
+    //     ::signal(signum, SIG_DFL);
+    //     boost::stacktrace::safe_dump_to("./backtrace.dump");
+    //     ::raise(SIGABRT);
+    // });
+    // signal(SIGABRT,[](int signum){
+    //     ::signal(signum, SIG_DFL);
+    //     boost::stacktrace::safe_dump_to("./backtrace.dump");
+    //     ::raise(SIGABRT);
+    // });
 
 
     //settings
@@ -75,6 +87,10 @@ class
     auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
     google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " number");
     google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " has");
+    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " how many");
+    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " total");
+    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " amount");
+    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " count");
     
     //for (auto const& it: google_query_urls){
     //    std::cout << it << std::endl;
@@ -304,9 +320,9 @@ def parse_html(path):
 ❱
 
 ◀private: static▶ void ☀Add_Left_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, std::unordered_set<std::string> & local_site_results)❰
-    if (index-1 > 0){
+    if (index != 0){
         auto window_word = tokens[index-1];
-        if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Has_A_Numeric_Character(window_word)){
+        if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Is_A_Boring_Word(window_word) && !Has_A_Numeric_Character(window_word)){
             local_site_results.insert(window_word + " " + token);
         }
     }
@@ -314,7 +330,7 @@ def parse_html(path):
 ◀private: static▶ void ☀Add_Right_Window(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, std::unordered_set<std::string> & local_site_results)❰
     if (index+1 < tokens.size()){
         auto window_word = tokens[index+1];
-        if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Has_A_Numeric_Character(window_word)){
+        if (!Spirit_Numeric_Checker::Is_Numeric(window_word) && !Is_A_Webish_Word(window_word) && !Is_A_Boring_Word(window_word) && !Has_A_Numeric_Character(window_word)){
             local_site_results.insert(token + " " + window_word);
         }
     }
@@ -555,20 +571,24 @@ def parse_html(path):
     web_words.emplace_back("outline");
     web_words.emplace_back("Chromium");
     web_words.emplace_back("applicationTime");
+    web_words.emplace_back("appendChild");
+    web_words.emplace_back("CDATA");
     
-// 1 of         | ████████████████████
-// is 1         | ████████
-// the 2        | ██████
-// in 1         | ██████
-// than 1
-
-    
-    
-
     
     return String_In_Vector(web_words,str);
 ❱
 
+◀private: static▶ bool ☀Is_A_Boring_Word(std::string const& str)❰
+    std::vector<std::string> web_words;
+    web_words.emplace_back("of");
+    web_words.emplace_back("is");
+    web_words.emplace_back("the");
+    web_words.emplace_back("in");
+    web_words.emplace_back("than");
+    web_words.emplace_back("at");
+    
+    return String_In_Vector(web_words,As_Lowercase(str));
+❱
 
 ◀private: static▶ bool ☀Is_English_Number(std::string const& str)❰
 
