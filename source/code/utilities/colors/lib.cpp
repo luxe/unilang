@@ -14,7 +14,7 @@ std::string colorize_background(std::string const& message, int const& forground
 }
 
 std::string colorize_rgb(std::string const& message, int r, int g, int b) {
-	return std::string("\033[38;2;") + std::to_string(r) + std::to_string(g) + std::to_string(b) + "m" + message + "\x1b[0m";
+	return std::string("\033[38;2;") + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m" + message + "\x1b[0m";
 }
 
 //specific colorizing string functions

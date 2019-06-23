@@ -10,4 +10,5 @@ hcp(name="chart_getter", deps = [
     "//code/utilities/types/strings/observers/padding:lib",
     "//code/utilities/types/strings/creators:lib",
     "//code/utilities/math:math",
+    "//code/utilities/colors:lib",
 ])
