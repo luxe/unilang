@@ -33,6 +33,28 @@ size_t Longest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,std::string>>
   return size;
 }
 
+template <typename T>
+size_t Largest_Element_Size_Of_Pair_First(std::vector<std::pair<int,T>> const& strs){
+  int val = 0;
+  for (auto const& it: strs){
+    if (it.first > val){
+      val = it.first;
+    }
+  }
+  return val;
+}
+
+template <typename T>
+size_t Largest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,int>> const& strs){
+  int val = 0;
+  for (auto const& it: strs){
+    if (it.second > val){
+      val = it.second;
+    }
+  }
+  return val;
+}
+
 
 template<typename T>
 size_t Get_Index_Of_Element(std::vector<T> const& v, T const& element){
