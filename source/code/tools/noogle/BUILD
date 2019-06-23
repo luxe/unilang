@@ -53,6 +53,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/types/strings/transformers/casing:lib",
     "//code/utilities/chart/ascii:chart_getter",
+    "//code/utilities/types/sets:lib",
     
 ])
 

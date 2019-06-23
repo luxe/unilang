@@ -38,6 +38,7 @@ class
 ❪"code/utilities/types/strings/transformers/casing/lib"❫
 ❪"code/utilities/chart/ascii/chart_getter"❫
 ❪"url.hpp"❫
+❪"code/utilities/types/sets/lib"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -91,6 +92,8 @@ class
     google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " total");
     google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " amount");
     google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " count");
+    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " facts");
+    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " result");
     
     //for (auto const& it: google_query_urls){
     //    std::cout << it << std::endl;
@@ -237,6 +240,9 @@ def parse_html(path):
 //STEP 2
 ◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
     
+    
+    std::unordered_set<std::string> duplicate_htmls;
+    
     //int threadNumbers = std::thread::hardware_concurrency();
     int threadNumbers = 10;
     boost::asio::thread_pool pool(threadNumbers);
@@ -247,8 +253,12 @@ def parse_html(path):
             Html_Fetch_Settings fetch_settings;
             fetch_settings.url = str;
             auto html = Get_Html_Of_Site(fetch_settings);
-            html_out.add(html);
-            ++stats.htmls.current;
+            
+            if (duplicate_htmls.find(html) == duplicate_htmls.end()){
+                html_out.add(html);
+                ++stats.htmls.current;
+                duplicate_htmls.insert(html);
+            }
             
             if (html.empty()){
                 //std::cout << fetch_settings.url << std::endl;
@@ -577,6 +587,9 @@ def parse_html(path):
     web_words.emplace_back("applicationTime");
     web_words.emplace_back("appendChild");
     web_words.emplace_back("CDATA");
+    web_words.emplace_back("networkId");
+    web_words.emplace_back("O");
+    web_words.emplace_back("A");
     
     
     return String_In_Vector(web_words,str);
@@ -590,6 +603,12 @@ def parse_html(path):
     web_words.emplace_back("in");
     web_words.emplace_back("than");
     web_words.emplace_back("at");
+    web_words.emplace_back("and");
+    web_words.emplace_back("or");
+    web_words.emplace_back("but");
+    web_words.emplace_back("was");
+    web_words.emplace_back("ver");
+    web_words.emplace_back("now");
     
     return String_In_Vector(web_words,As_Lowercase(str));
 ❱
