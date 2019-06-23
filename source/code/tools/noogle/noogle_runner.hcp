@@ -41,6 +41,7 @@ class
 ❪"code/utilities/types/sets/lib"❫
 ❪"code/utilities/types/strings/observers/characteristic/english_number_to_integral_converter"❫
 ❪"code/utilities/types/strings/observers/characteristic/is_english_number_checker"❫
+❪"code/tools/noogle/results_shower"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -109,7 +110,7 @@ class
     FinishableSafeQueue<Noogle_Result> noogle_results;
     
     std::vector<std::thread> jobs;
-    jobs.emplace_back(Show_Results,std::cref(stats),std::ref(noogle_results));
+    jobs.emplace_back(Results_Shower::Show_Results,std::cref(stats),std::ref(noogle_results));
     //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
     jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_query_urls,std::ref(result_urls));
     jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
@@ -613,38 +614,5 @@ def parse_html(path):
     web_words.emplace_back("now");
     
     return String_In_Vector(web_words,As_Lowercase(str));
-❱
-
-
-//SHOW STEP
-◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
-
-    int chart_height = 0;
-    while(!noogle_results.is_finished()){
-        Clear_Terminal_Up_N_Lines(chart_height);
-        
-        auto results = stats.currated_results.Top_N_Most_Common(40);
-        auto chart = Chart_Getter::Get(results);
-        chart_height = height(chart);
-        std::cout << Build_Progress_Message(stats,chart);
-        std::cout.flush();
-        Sleep_For_N_Milliseconds(500);
-    }
-❱
-
-◀private: static▶ std::string ☀Build_Progress_Message(Noogle_Running_Stats const& stats, std::string const& chart)❰
-        std::string progress;
-        progress += " ";
-        progress += "urls [" + std::to_string(stats.sites.current) + "/" + std::to_string(stats.sites.total) + "]";
-        progress += " ";
-        progress += "htmls [" + std::to_string(stats.htmls.current) + "/" + std::to_string(stats.htmls.total) + "]";
-        progress += " ";
-        progress += "texts [" + std::to_string(stats.sanitized.current) + "/" + std::to_string(stats.sanitized.total) + "]";
-        progress += " ";
-        progress += "results: " + std::to_string(stats.results);
-        progress += "\n";
-        progress += chart;
-        
-        return progress;
 ❱
 

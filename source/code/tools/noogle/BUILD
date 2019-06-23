@@ -19,6 +19,21 @@ hcp(name = "noogle_result", deps = [
 hcp(name = "queue_state", deps = [
 ])
 
+hcp(name = "results_shower", deps = [
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/utilities/data_structures/queue:finishable_safe_queue",
+    "//code/tools/noogle:noogle_running_stats",
+    "//code/tools/noogle:noogle_result",
+    "//code/utilities/time/sleeping:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/types/strings/observers/char:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/chart/ascii:chart_getter",
+    "//code/utilities/printers:lib",
+])
+
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
@@ -56,6 +71,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/sets:lib",
     "//code/utilities/types/strings/observers/characteristic:english_number_to_integral_converter",
     "//code/utilities/types/strings/observers/characteristic:is_english_number_checker",
+    "//code/tools/noogle:results_shower",
     
 ])
 

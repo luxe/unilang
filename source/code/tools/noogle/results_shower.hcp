@@ -1,0 +1,49 @@
+class
+❪"code/tools/noogle/settings/noogle_settings"❫
+❪"code/utilities/data_structures/queue/finishable_safe_queue.h"❫
+❪"code/tools/noogle/noogle_running_stats"❫
+❪"code/tools/noogle/noogle_result"❫
+⚯
+❪iostream❫
+❪string❫
+❪"code/utilities/time/sleeping/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/chart/ascii/chart_getter"❫
+❪"code/utilities/printers/lib"❫
+⚞⚟
+
+//SHOW STEP
+◀public: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
+
+    int chart_height = 0;
+    while(!noogle_results.is_finished()){
+        Clear_Terminal_Up_N_Lines(chart_height);
+        
+        auto results = stats.currated_results.Top_N_Most_Common(40);
+        auto chart = Chart_Getter::Get(results);
+        chart_height = height(chart);
+        std::cout << Build_Progress_Message(stats,chart);
+        std::cout.flush();
+        Sleep_For_N_Milliseconds(500);
+    }
+❱
+
+◀private: static▶ std::string ☀Build_Progress_Message(Noogle_Running_Stats const& stats, std::string const& chart)❰
+        std::string progress;
+        progress += " ";
+        progress += "urls [" + std::to_string(stats.sites.current) + "/" + std::to_string(stats.sites.total) + "]";
+        progress += " ";
+        progress += "htmls [" + std::to_string(stats.htmls.current) + "/" + std::to_string(stats.htmls.total) + "]";
+        progress += " ";
+        progress += "texts [" + std::to_string(stats.sanitized.current) + "/" + std::to_string(stats.sanitized.total) + "]";
+        progress += " ";
+        progress += "results: " + std::to_string(stats.results);
+        progress += "\n";
+        progress += chart;
+        
+        return progress;
+❱
