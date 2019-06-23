@@ -59,6 +59,15 @@ class
         exit(signum);
     });
     
+    //make sure we have a python environment going for the duration of the program (RAII)
+    pybind11::scoped_interpreter guard{};
+    
+    //add python implementations
+    add_beautiful_soup_function();
+    
+    //create a browser to automate queries on
+    //Browser_Creator::Create(settings.browser);
+    
     //catch crashes
     // signal(SIGSEGV,[](int signum){
     //     ::signal(signum, SIG_DFL);
@@ -75,15 +84,6 @@ class
     //settings
     auto settings = Default_Settings_Getter::Get();
     Noogle_Running_Stats stats;
-    
-    //make sure we have a python environment going for the duration of the program (RAII)
-    pybind11::scoped_interpreter guard{};
-    
-    //add python implementations
-    add_beautiful_soup_function();
-    
-    //create a browser to automate queries on
-    //Browser_Creator::Create(settings.browser);
     
     //get all of the google urls to search with
     auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());

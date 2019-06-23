@@ -12,6 +12,7 @@ Program_Options::Program_Options(int const& argc, char** const& argv){
 
 	//set positional arguments
 	positional_options_description pod;
+	pod.add("query", -1);
 
 	//build variable map
 	Build_Variable_Map(argc,argv,desc,pod);
