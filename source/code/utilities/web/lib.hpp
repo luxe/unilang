@@ -8,7 +8,7 @@
 float Extract_Web_Json_Float(Web_Json_Extraction_Settings const& settings);
 std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings);
 std::string Get_HTML_Of_Site_With_Curl_Command(std::string const& website);
-std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& website);
+std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings);
 
 
 

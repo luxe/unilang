@@ -32,6 +32,7 @@ hcp(name = "results_shower", deps = [
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/chart/ascii:chart_getter",
     "//code/utilities/printers:lib",
+    "//code/utilities/colors:lib",
 ])
 
 hcp(name = "noogle_runner", deps = [

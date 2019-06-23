@@ -16,7 +16,7 @@ std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings){
   std::string str;
   
   if (settings.strategy == Html_Fetch_Strategy::CURL_LIB){
-    str = Get_HTML_Of_Site_With_Curl_Lib(settings.url);
+    str = Get_HTML_Of_Site_With_Curl_Lib(settings);
   }
   else if (settings.strategy == Html_Fetch_Strategy::CURL_COMMAND){
     str = Get_HTML_Of_Site_With_Curl_Command(settings.url);
@@ -44,11 +44,8 @@ void possibly_show_error(std::string const& message, bool const& should_show){
   }
 }
 
-std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
+std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
     std::string buffer;
-    
-    bool show_errors = false;
-    int seconds_till_timeout = 10;
  
     CURL *curl;
     CURLcode result;
@@ -56,13 +53,21 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
     curl = curl_easy_init();
  
     if (curl){
-      curl_easy_setopt(curl, CURLOPT_URL, url.c_str()  );
+      curl_easy_setopt(curl, CURLOPT_URL, settings.url.c_str()  );
       curl_easy_setopt(curl, CURLOPT_HEADER, 0);
       curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writer);
       curl_easy_setopt(curl, CURLOPT_WRITEDATA, &buffer);
-      curl_easy_setopt(curl, CURLOPT_TIMEOUT,seconds_till_timeout);
+      curl_easy_setopt(curl, CURLOPT_TIMEOUT,settings.seconds_till_timeout);
+      
+      //set headers
+      struct curl_slist *list = NULL;
+      for (auto const& it: settings.headers){
+        list = curl_slist_append(list, it.c_str());
+      }
+      curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
  
       result = curl_easy_perform(curl);//http get performed
+      curl_slist_free_all(list); /* free the list again */
  
       curl_easy_cleanup(curl);//must cleanup
  
@@ -71,11 +76,11 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(std::string const& url){
           return buffer;
       //curl_easy_strerror was added in libcurl 7.12.0
       std::string message = std::string("error: ") + std::to_string(result) + " " + curl_easy_strerror(result);
-      possibly_show_error(message,show_errors);
+      possibly_show_error(message,settings.show_errors);
       return "";
     }
  
-    possibly_show_error("error: could not initalize curl",show_errors);
+    possibly_show_error("error: could not initalize curl",settings.show_errors);
     return "";
 }
 
