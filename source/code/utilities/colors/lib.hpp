@@ -6,6 +6,8 @@ std::string colorize(std::string const& message, int const& background, int cons
 std::string colorize_forground(std::string const& message, int const& background);
 std::string colorize_background(std::string const& message, int const& forground);
 
+std::string colorize_rgb(std::string const& message, int r, int g, int b);
+
 //specific colorizing string functions
 std::string Green_String(std::string const& str);
 std::string Red_String(std::string const& str);

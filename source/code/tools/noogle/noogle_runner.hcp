@@ -29,12 +29,14 @@ class
 ❪boost/asio/post.hpp❫
 ❪"code/utilities/printers/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/observers/characteristic/spirit_numeric_checker"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/strings/observers/char/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/chart/ascii/chart_getter"❫
 ❪"url.hpp"❫
 ⚞⚟
 
@@ -611,19 +613,20 @@ def parse_html(path):
 //SHOW STEP
 ◀private: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
-    int height = 0;
+    int chart_height = 0;
     while(!noogle_results.is_finished()){
-        Clear_Terminal_Up_N_Lines(height);
+        Clear_Terminal_Up_N_Lines(chart_height);
         
         auto results = stats.currated_results.Top_N_Most_Common(40);
-        height = results.size();
-        std::cout << Build_Progress_Message(stats,results);
+        auto chart = Chart_Getter::Get(results);
+        chart_height = height(chart);
+        std::cout << Build_Progress_Message(stats,chart);
         std::cout.flush();
         Sleep_For_N_Milliseconds(500);
     }
 ❱
 
-◀private: static▶ std::string ☀Build_Progress_Message(Noogle_Running_Stats const& stats, std::vector<std::pair<int,std::string>> const& results)❰
+◀private: static▶ std::string ☀Build_Progress_Message(Noogle_Running_Stats const& stats, std::string const& chart)❰
         std::string progress;
         progress += " ";
         progress += "urls [" + std::to_string(stats.sites_current) + "/" + std::to_string(stats.sites_total) + "]";
@@ -633,11 +636,8 @@ def parse_html(path):
         progress += "texts [" + std::to_string(stats.sanitized_current) + "/" + std::to_string(stats.sanitized_total) + "]";
         progress += " ";
         progress += "results: " + std::to_string(stats.results);
-        
-        for (auto const& it: results){
-            progress += "\n";
-            progress += it.second + " " + std::to_string(it.first);
-        }
+        progress += "\n";
+        progress += chart;
         
         return progress;
 ❱

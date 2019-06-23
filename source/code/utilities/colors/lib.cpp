@@ -1,5 +1,6 @@
 #include "code/utilities/colors/lib.hpp"
 #include <iostream>
+#include <string>
 
 //base colorizing string functions
 std::string colorize(std::string const& message, int const& background, int const& forground) {
@@ -10,6 +11,10 @@ std::string colorize_forground(std::string const& message, int const& background
 }
 std::string colorize_background(std::string const& message, int const& forground) {
 	return std::string("\x1b[48;5;" + std::to_string(forground) + "m" + message + "\x1b[0m");
+}
+
+std::string colorize_rgb(std::string const& message, int r, int g, int b) {
+	return std::string("\033[38;2;") + std::to_string(r) + std::to_string(g) + std::to_string(b) + "m" + message + "\x1b[0m";
 }
 
 //specific colorizing string functions
