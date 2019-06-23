@@ -10,9 +10,13 @@ hcp(name = "meta_settings", deps = [
 
 hcp(name = "noogle_running_stats", deps = [
     "//code/utilities/data_structures/unique_counter:unique_counter",
+    "//code/tools/noogle:queue_state",
 ])
 
 hcp(name = "noogle_result", deps = [
+])
+
+hcp(name = "queue_state", deps = [
 ])
 
 hcp(name = "noogle_runner", deps = [
