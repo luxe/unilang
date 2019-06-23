@@ -39,6 +39,8 @@ class
 ❪"code/utilities/chart/ascii/chart_getter"❫
 ❪"url.hpp"❫
 ❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/types/strings/observers/characteristic/english_number_to_integral_converter"❫
+❪"code/utilities/types/strings/observers/characteristic/is_english_number_checker"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -324,9 +326,9 @@ def parse_html(path):
 ◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index,  std::unordered_set<std::string> & local_site_results)❰
 
     
-    if (Spirit_Numeric_Checker::Is_Numeric(token) || Is_English_Number(token)){
+    if (Spirit_Numeric_Checker::Is_Numeric(token) || Is_English_Number_Checker::Check(token)){
         
-        auto as_number = English_Number_To_Integral(token);
+        auto as_number = English_Number_To_Integral_Converter::Convert(token);
         
         Add_Left_Window(stats,as_number,tokens,index,local_site_results);
         Add_Right_Window(stats,as_number,tokens,index,local_site_results);
@@ -612,55 +614,6 @@ def parse_html(path):
     
     return String_In_Vector(web_words,As_Lowercase(str));
 ❱
-
-◀private: static▶ bool ☀Is_English_Number(std::string const& str)❰
-
-    std::vector<std::string> number_words;
-    number_words.emplace_back("one");
-    number_words.emplace_back("two");
-    number_words.emplace_back("three");
-    number_words.emplace_back("four");
-    number_words.emplace_back("five");
-    number_words.emplace_back("six");
-    number_words.emplace_back("seven");
-    number_words.emplace_back("eight");
-    number_words.emplace_back("nine");
-    number_words.emplace_back("ten");
-    number_words.emplace_back("eleven");
-    number_words.emplace_back("twelve");
-    number_words.emplace_back("thirteen");
-    
-    return String_In_Vector(number_words,As_Lowercase(str));
-❱
-
-◀private: static▶ std::string ☀English_Number_To_Integral(std::string const& str)❰
-
-    auto word = As_Lowercase(str);
-    std::map<std::string,std::string> mapping;
-    mapping.insert({"zero","0"});
-    mapping.insert({"one","1"});
-    mapping.insert({"two","2"});
-    mapping.insert({"three","3"});
-    mapping.insert({"four","4"});
-    mapping.insert({"five","5"});
-    mapping.insert({"six","6"});
-    mapping.insert({"seven","7"});
-    mapping.insert({"eight","8"});
-    mapping.insert({"nine","9"});
-    mapping.insert({"ten","10"});
-    mapping.insert({"eleven","11"});
-    mapping.insert({"twelve","12"});
-    mapping.insert({"thirteen","13"});
-    
-    auto found = mapping.find(word);
-    if (found != mapping.end()){
-        return found->second;
-    }
-    return str;
-❱
-
-
-
 
 
 //SHOW STEP

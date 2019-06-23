@@ -54,6 +54,8 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/transformers/casing:lib",
     "//code/utilities/chart/ascii:chart_getter",
     "//code/utilities/types/sets:lib",
+    "//code/utilities/types/strings/observers/characteristic:english_number_to_integral_converter",
+    "//code/utilities/types/strings/observers/characteristic:is_english_number_checker",
     
 ])
 

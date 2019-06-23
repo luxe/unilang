@@ -10,6 +10,15 @@ cc_library(
     deps = ["//code/utilities/types/char:lib"]
 )
 
+hcp(name="english_number_to_integral_converter",   deps = [
+  "//code/utilities/types/strings/transformers/casing:lib"
+])
+
+hcp(name="is_english_number_checker",   deps = [
+  "//code/utilities/types/vectors/observers:lib",
+  "//code/utilities/types/strings/transformers/casing:lib",
+])
+
 hcp(name="spirit_numeric_checker",   deps = [
   "@boost//:spirit",
   "@boost//:phoenix",
