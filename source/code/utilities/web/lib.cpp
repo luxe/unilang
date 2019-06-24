@@ -49,7 +49,6 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
  
     CURL *curl;
     CURLcode result;
- 	
     curl = curl_easy_init();
  
     if (curl){
