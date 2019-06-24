@@ -96,8 +96,12 @@ class
     stats.htmls.name = "htmls";
     stats.sanitized.name = "sanitized";
     
-    //get all of the google urls to search with
-    auto queries = expand_query(options.Query());
+    //expand the user's query to many enriched queries to help increase our search
+    auto queries = expand_query(options.Query(),settings.query_expand);
+    
+    
+    
+    
     //auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
     //auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
     
@@ -135,12 +139,16 @@ class
     
 ❱
 
-◀private: static▶ std::vector<std::string> ☀expand_query(std::string const& query)❰
+◀private: static▶ std::vector<std::string> ☀expand_query(std::string const& query, Query_Expand_Settings const& settings)❰
     std::vector<std::string> queries;
-    std::vector<std::string> extras {"number","has","how many","total","amount","count","facts","result","stats"};
-    queries.emplace_back(query);
-    for (auto const& it: extras){
-        queries.emplace_back(query + " " + it);
+    
+    if (settings.use_given_search_query){
+        queries.emplace_back(query);
+    }
+    if (settings.add_extra_search_terms){
+        for (auto const& it: settings.extra_search_terms){
+            queries.emplace_back(query + " " + it);
+        }
     }
     return queries;
 ❱
