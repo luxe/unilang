@@ -43,6 +43,7 @@ class
 ❪"code/utilities/types/strings/observers/characteristic/english_number_to_integral_converter"❫
 ❪"code/utilities/types/strings/observers/characteristic/is_english_number_checker"❫
 ❪"code/tools/noogle/results_shower"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -156,8 +157,27 @@ class
     pybind11::exec(R"(
 def parse_html(x):
     soup = BeautifulSoup(x, 'html.parser')
+    
+    # kill all script and style elements
+    for script in soup(["script", "style"]):
+        script.decompose()    # rip it out
+
     result = soup.get_text()
     # print(result)
+    return result
+
+
+def visible(element):
+    if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
+        return False
+    elif re.match('<!--.*-->', str(element.encode('utf-8'))):
+        return False
+    return True
+    
+def parse_html2(x):
+    soup = BeautifulSoup(x)
+    data = soup.findAll(text=True)
+    result = filter(visible, data)
     return result
 )");
 ❱
@@ -198,16 +218,7 @@ def parse_html(path):
 ◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url,std::unordered_set<std::string> & seen_hosts)❰
    
    try {
-       Url parsed_url(url);
-       auto host_name = parsed_url.host();
-       auto parts = Split_Into_Parts_From_Dot(host_name);
-       while (parts.size() > 2){
-            Remove_First_Element(parts);
-       }
-       std::string new_host_name = "";
-       if (!parts.empty()){
-            new_host_name = parts[0];
-       }
+       std::string new_host_name = url_as_hostname(url);
        
         if (Begins_With(url,"https://www.google.com/search?")){
             return false;
@@ -229,6 +240,21 @@ def parse_html(path):
     }
     return true;
 ❱
+
+◀private: static▶ std::string ☀url_as_hostname(std::string const& url)❰
+       Url parsed_url(url);
+       auto host_name = parsed_url.host();
+       auto parts = Split_Into_Parts_From_Dot(host_name);
+       while (parts.size() > 2){
+            Remove_First_Element(parts);
+       }
+       std::string new_host_name = "";
+       if (!parts.empty()){
+            new_host_name = parts[0];
+       }
+       return new_host_name;
+❱
+
 
 //STEP 1 (B)
 ◀private: static▶ void ☀Google_Query_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_query_urls, FinishableSafeQueue<std::string> & q)❰
@@ -285,6 +311,9 @@ def parse_html(path):
     
     
     std::unordered_set<std::string> duplicate_htmls;
+    bool write_html_files = false;
+    std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
+    
     
     //int threadNumbers = std::thread::hardware_concurrency();
     int threadNumbers = 10;
@@ -300,6 +329,10 @@ def parse_html(path):
             if (duplicate_htmls.find(html) == duplicate_htmls.end()){
                 html_out.add(html);
                 duplicate_htmls.insert(html);
+                
+               if (write_html_files){
+                    Write_To_File(dump_html_location + url_as_hostname(fetch_settings.url),html);
+                }
             }
             ++stats.htmls.current;
             
@@ -315,20 +348,39 @@ def parse_html(path):
 
 //STEP 3
 ◀private: static▶ void ☀Sanitize_Html(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
+
+    int i = 0;
+    bool write_html_files = true;
+    std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
+    
     while(!html_results.is_finished() || !html_results.is_empty()){
         auto str = html_results.get();
             ++stats.sanitized.total;
-            try{
-                sanitized_text.add(parse_away_html_tags(str));
-            }
-            catch(...){
-                //sanitized_text.add(str);
-            }
+            sanitized_text.add(parse_out_text_from_html(str));
             ++stats.sanitized.current;
+            
+           if (write_html_files){
+                Write_To_File(dump_html_location + std::to_string(i),parse_out_text_from_html(str));
+                ++i;
+            }
+            
+            
     }
     sanitized_text.mark_finished();
     stats.sanitized.finished = true;
 ❱
+
+◀private: static▶ std::string ☀parse_out_text_from_html(std::string str)❰
+    try{
+        auto result = parse_away_html_tags(str);
+        return result;
+    }
+    catch(...){
+        //sanitized_text.add(str);
+    }
+    return "empty";
+❱
+
 
 //STEP 4
 ◀private: static▶ void ☀Parse_For_Noogle_Results(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & sanitized_text, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
@@ -636,6 +688,7 @@ def parse_html(path):
     web_words.emplace_back("html");
     web_words.emplace_back("UTF");
     web_words.emplace_back("commentCount");
+    web_words.emplace_back("indexOf");
     return String_In_Vector(web_words,str);
 ❱
 
@@ -653,6 +706,13 @@ def parse_html(path):
     web_words.emplace_back("was");
     web_words.emplace_back("ver");
     web_words.emplace_back("now");
+    web_words.emplace_back("as");
+    web_words.emplace_back("only");
+    web_words.emplace_back("that");
+    web_words.emplace_back("this");
+    web_words.emplace_back("with");
+    web_words.emplace_back("them");
+    web_words.emplace_back("by");
     return String_In_Vector(web_words,As_Lowercase(str));
 ❱
 

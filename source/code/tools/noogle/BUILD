@@ -74,6 +74,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/observers/characteristic:is_english_number_checker",
     "//code/tools/noogle:results_shower",
     "//code/utilities/web/bing:bing_json_url_deviser",
+    "//code/utilities/filesystem/files/creating:lib",
     
 ])
 
