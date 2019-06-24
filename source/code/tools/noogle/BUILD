@@ -75,6 +75,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:results_shower",
     "//code/utilities/web/bing:bing_json_url_deviser",
     "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/types/strings/transformers/html:html_raw_text_getter",
     
 ])
 

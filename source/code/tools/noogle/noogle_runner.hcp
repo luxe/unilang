@@ -44,6 +44,7 @@ class
 ❪"code/utilities/types/strings/observers/characteristic/is_english_number_checker"❫
 ❪"code/tools/noogle/results_shower"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/html/html_raw_text_getter"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -97,7 +98,7 @@ class
     stats.sanitized.name = "sanitized";
     
     //expand the user's query to many enriched queries to help increase our search
-    auto queries = expand_query(options.Query(),settings.query_expand);
+    auto queries = expand_query(settings.query_expand,options.Query());
     
     
     
@@ -139,17 +140,22 @@ class
     
 ❱
 
-◀private: static▶ std::vector<std::string> ☀expand_query(std::string const& query, Query_Expand_Settings const& settings)❰
+◀private: static▶ std::vector<std::string> ☀expand_query(Query_Expand_Settings const& settings, std::string const& query)❰
     std::vector<std::string> queries;
     
+    //default user given
     if (settings.use_given_search_query){
         queries.emplace_back(query);
     }
+    
+    //user given with some extra search terms added
     if (settings.add_extra_search_terms){
         for (auto const& it: settings.extra_search_terms){
             queries.emplace_back(query + " " + it);
         }
     }
+    
+    
     return queries;
 ❱
 
