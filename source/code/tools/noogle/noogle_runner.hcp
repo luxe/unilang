@@ -72,7 +72,7 @@ class
     pybind11::scoped_interpreter guard{};
     
     //add python implementations
-    add_beautiful_soup_function();
+    Html_Raw_Text_Getter::add_beautiful_soup_function();
     
     //create a browser to automate queries on
     //Browser_Creator::Create(settings.browser);
@@ -158,62 +158,6 @@ class
     
     return queries;
 ❱
-
-
-
-◀private: static▶ std::string ☀parse_away_html_tags(std::string & html)❰
-    make_python_str(html);
-    auto parsed = pybind11::eval("parse_html(" + html + ")").cast<std::string>();
-    return parsed;
-❱
-
-◀private: static▶ void ☀make_python_str(std::string & str)❰
-    str += "\"\"\"\n";
-    str = std::string("\"\"\"\n") + str;
-❱
-
-◀private: static▶ void ☀add_beautiful_soup_function()❰
-    pybind11::exec("from bs4 import BeautifulSoup");
-    pybind11::exec(R"(
-def parse_html(x):
-    soup = BeautifulSoup(x, 'html.parser')
-    
-    # kill all script and style elements
-    for script in soup(["script", "style"]):
-        script.decompose()    # rip it out
-
-    result = soup.get_text()
-    # print(result)
-    return result
-
-
-def visible(element):
-    if element.parent.name in ['style', 'script', '[document]', 'head', 'title']:
-        return False
-    elif re.match('<!--.*-->', str(element.encode('utf-8'))):
-        return False
-    return True
-    
-def parse_html2(x):
-    soup = BeautifulSoup(x)
-    data = soup.findAll(text=True)
-    result = filter(visible, data)
-    return result
-)");
-❱
-
-◀private: static▶ void ☀add_beautiful_soup_function_on_path()❰
-    pybind11::exec("from bs4 import BeautifulSoup");
-    pybind11::exec(R"(
-def parse_html(path):
-
-    with open(path, 'r') as content_file:
-        content = content_file.read()
-    soup = BeautifulSoup(content 'html.parser')
-    return soup.get_text()
-)");
-❱
-
 
 
 //STEP 1 (A)
@@ -395,7 +339,7 @@ def parse_html(path):
 
 ◀private: static▶ std::string ☀parse_out_text_from_html(std::string str)❰
     try{
-        auto result = parse_away_html_tags(str);
+        auto result = Html_Raw_Text_Getter::parse_away_html_tags(str);
         return result;
     }
     catch(...){
