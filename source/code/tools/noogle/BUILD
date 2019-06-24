@@ -73,6 +73,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/observers/characteristic:english_number_to_integral_converter",
     "//code/utilities/types/strings/observers/characteristic:is_english_number_checker",
     "//code/tools/noogle:results_shower",
+    "//code/utilities/web/bing:bing_json_url_deviser",
     
 ])
 

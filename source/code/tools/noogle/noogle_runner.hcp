@@ -23,6 +23,7 @@ class
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/web/google/google_search_url_deviser"❫
 ❪"code/utilities/web/google/google_json_url_deviser"❫
+❪"code/utilities/web/bing/bing_json_url_deviser"❫
 ❪"code/utilities/web/lib"❫
 ❪"code/utilities/exits/lib"❫
 ❪boost/asio/thread_pool.hpp❫
@@ -87,16 +88,16 @@ class
     Noogle_Running_Stats stats;
     
     //get all of the google urls to search with
-    auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
-    auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " number");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " has");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " how many");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " total");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " amount");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " count");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " facts");
-    google_query_urls += Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query() + " result");
+    auto queries = expand_query(options.Query());
+    //auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
+    //auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
+    
+    std::vector<std::string> bing_urls;
+    for (auto const& query: queries){
+        bing_urls += Bing_Json_Url_Deviser::Devise(settings.devise_bing_query_urls,query);
+    }
+    
+    
     
     //for (auto const& it: google_query_urls){
     //    std::cout << it << std::endl;
@@ -112,7 +113,8 @@ class
     std::vector<std::thread> jobs;
     jobs.emplace_back(Results_Shower::Show_Results,std::cref(stats),std::ref(noogle_results));
     //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
-    jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_query_urls,std::ref(result_urls));
+    //jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_query_urls,std::ref(result_urls));
+    jobs.emplace_back(Bing_Query_Urls_To_Result_Urls,std::ref(stats),bing_urls,std::ref(result_urls));
     jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
     jobs.emplace_back(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
     jobs.emplace_back(Parse_For_Noogle_Results,std::ref(stats),std::ref(sanitized_text),std::ref(noogle_results));
@@ -122,6 +124,17 @@ class
     }
     
 ❱
+
+◀private: static▶ std::vector<std::string> ☀expand_query(std::string const& query)❰
+    std::vector<std::string> queries;
+    std::vector<std::string> extras {"number","has","how many","total","amount","count","facts","result","stats"};
+    queries.emplace_back(query);
+    for (auto const& it: extras){
+        queries.emplace_back(query + " " + it);
+    }
+    return queries;
+❱
+
 
 
 ◀private: static▶ std::string ☀parse_away_html_tags(std::string & html)❰
@@ -218,7 +231,6 @@ def parse_html(path):
 ◀private: static▶ void ☀Google_Query_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_query_urls, FinishableSafeQueue<std::string> & q)❰
     
     std::unordered_set<std::string> seen_hosts;
-    
     for (auto const& search_url: google_query_urls){
         
         //query json endpoint
@@ -229,6 +241,30 @@ def parse_html(path):
         auto j = nlohmann::json::parse(response);
         for (auto it: j["items"]){
             auto result_url = it["link"].get<std::string>();
+            if (Google_Result_Url_Is_Valid_For_Exploring(result_url,seen_hosts)){
+                ++stats.sites.total;
+                q.add(result_url);
+                ++stats.sites.current;
+            }
+        }
+    }
+    q.mark_finished();
+    stats.sites.finished = true;
+❱
+
+//STEP 1 (C)
+◀private: static▶ void ☀Bing_Query_Urls_To_Result_Urls(Noogle_Running_Stats & stats, std::vector<std::string> const& urls, FinishableSafeQueue<std::string> & q)❰
+    std::unordered_set<std::string> seen_hosts;
+    for (auto const& search_url: urls){
+        
+        //query json endpoint
+        Html_Fetch_Settings fetch_settings;
+        fetch_settings.url = search_url;
+        auto response = Get_Html_Of_Site(fetch_settings);
+        
+        auto j = nlohmann::json::parse(response);
+        for (auto it: j["webPages"]["value"]){
+            auto result_url = it["url"].get<std::string>();
             if (Google_Result_Url_Is_Valid_For_Exploring(result_url,seen_hosts)){
                 ++stats.sites.total;
                 q.add(result_url);
@@ -593,8 +629,6 @@ def parse_html(path):
     web_words.emplace_back("networkId");
     web_words.emplace_back("O");
     web_words.emplace_back("A");
-    
-    
     return String_In_Vector(web_words,str);
 ❱
 
@@ -612,7 +646,6 @@ def parse_html(path):
     web_words.emplace_back("was");
     web_words.emplace_back("ver");
     web_words.emplace_back("now");
-    
     return String_In_Vector(web_words,As_Lowercase(str));
 ❱
 
