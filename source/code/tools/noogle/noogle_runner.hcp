@@ -325,27 +325,30 @@ def parse_html(path):
     int threadNumbers = 10;
     boost::asio::thread_pool pool(threadNumbers);
     while(!urls_in.is_finished() || !urls_in.is_empty()){
-        auto str = urls_in.get();
-        ++stats.htmls.total;
-        boost::asio::post(pool, [&,str]() {
-            Html_Fetch_Settings fetch_settings;
-            fetch_settings.url = str;
-            auto html = Get_Html_Of_Site(fetch_settings);
-            
-            if (duplicate_htmls.find(html) == duplicate_htmls.end()){
-                html_out.add(html);
-                duplicate_htmls.insert(html);
+        
+        if (!urls_in.is_empty()){
+            auto str = urls_in.get();
+            ++stats.htmls.total;
+            boost::asio::post(pool, [&,str]() {
+                Html_Fetch_Settings fetch_settings;
+                fetch_settings.url = str;
+                auto html = Get_Html_Of_Site(fetch_settings);
                 
-               if (write_html_files){
-                    Write_To_File(dump_html_location + url_as_hostname(fetch_settings.url),html);
+                if (duplicate_htmls.find(html) == duplicate_htmls.end()){
+                    html_out.add(html);
+                    duplicate_htmls.insert(html);
+                    
+                   if (write_html_files){
+                        Write_To_File(dump_html_location + url_as_hostname(fetch_settings.url),html);
+                    }
                 }
-            }
-            ++stats.htmls.current;
-            
-            if (html.empty()){
-                //std::cout << fetch_settings.url << std::endl;
-            }
-        });
+                ++stats.htmls.current;
+                
+                if (html.empty()){
+                    //std::cout << fetch_settings.url << std::endl;
+                }
+            });
+        }
     }
     pool.join();
     html_out.mark_finished();
