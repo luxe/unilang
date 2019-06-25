@@ -8,7 +8,8 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
-❪"code/tools/deskstock/documentation_getter"❫
+❪"code/tools/deskstock/deskstock_documentation_getter"❫
+❪"code/tools/noogle/noogle_documentation_getter"❫
 ❪"code/transcompilers/unilang/main/program_input"❫
 
 ❪"code/utilities/pdf/pdf_settings"❫
@@ -31,7 +32,15 @@ class
       std::string repo_path = Full_Path_To_Desktop() + "luxe.github.com";
       Set_Path(repo_path);
   
-      Deploy_Program(debs,"deskstock");
+      {
+        auto doc_structure = Deskstock_Documentation_Getter::Get();
+        Deploy_Program(debs,doc_structure,"deskstock");
+      }
+      
+      {
+        auto doc_structure = Noogle_Documentation_Getter::Get();
+        Deploy_Program(debs,doc_structure,"noogle");
+      }
       
       Git_Updater::Update_All_Changes("redeploy");
       
@@ -42,7 +51,7 @@ class
     
 ❱
 
-◀private: static▶ void ☀Deploy_Program(std::vector<std::string> const& debs, std::string const& program_name)❰
+◀private: static▶ void ☀Deploy_Program(std::vector<std::string> const& debs, Structure const& doc_structure, std::string const& program_name)❰
 
     std::string folder_name = "releases/" + program_name;
     Create_Path_And_Temporarily_Move_To_It_To_Call_Function(folder_name,[&](){
@@ -56,7 +65,6 @@ class
         
         Create_Path_And_Temporarily_Move_To_It_To_Call_Function("docs",[&](){
           //create pdf documentation
-          auto doc_structure = Documentation_Getter::Get();
           Pdf_Settings pdf_settings;
           pdf_settings.latex_template = "temp_latex.tex";
           pdf_settings.md_format = "temp_markdown.md";

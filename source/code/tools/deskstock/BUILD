@@ -68,7 +68,7 @@ hcp(name = "default_settings_getter", deps = [
 "//code/utilities/web:lib",
 ])
 
-hcp(name = "documentation_getter", deps = [
+hcp(name = "deskstock_documentation_getter", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
     "//code/transcompilers/unilang/structure/model:inlined_structures",
     "//code/utilities/converters:lib",
