@@ -10,10 +10,14 @@ hcp(name = "noogle_settings", deps = [
     "//code/utilities/web/bing:bing_json_url_devise_settings",
     "//code/tools/noogle/settings:query_expand_settings",
     "//code/tools/noogle/settings:word_filter_settings",
+    "//code/tools/noogle/settings:token_identifier_settings",
 ])
 
 hcp(name = "query_expand_settings", deps = [
 ])
 
 hcp(name = "word_filter_settings", deps = [
+])
+
+hcp(name = "token_identifier_settings", deps = [
 ])

@@ -388,21 +388,26 @@ class
 ◀private: static▶ void ☀Decide_If_Token_Is_A_Result(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index,  std::unordered_set<std::string> & local_site_results, Noogle_Settings const& settings)❰
 
     
-    if (Token_Passes_Numeric_Identification(token)){
-        
+    if (Token_Passes_Numeric_Identification(settings.token_identifier,token)){
         auto as_number = English_Number_To_Integral_Converter::Convert(token);
         Add_Window_Phrases(stats,as_number,tokens,index,local_site_results,settings);
     }
 ❱
 
-◀private: static▶ bool ☀Token_Passes_Numeric_Identification(std::string const& token)❰
+◀private: static▶ bool ☀Token_Passes_Numeric_Identification(Token_Identifier_Settings const& settings, std::string const& token)❰
     
-    if (Spirit_Numeric_Checker::Is_Numeric(token)){
-        return true;
+    if (settings.use_spirit_numeric_identity){
+        if (Spirit_Numeric_Checker::Is_Numeric(token)){
+            return true;
+        }
     }
-    if (Is_English_Number_Checker::Check(token)){
-        return true;
+    
+    if (settings.use_english_name_identity){
+        if (Is_English_Number_Checker::Check(token)){
+            return true;
+        }
     }
+    
     return false;
 ❱
 ◀private: static▶ void ☀Add_Window_Phrases(Noogle_Running_Stats & stats, std::string const& token, std::vector<std::string> const& tokens, size_t index, std::unordered_set<std::string> & local_site_results, Noogle_Settings const& settings)❰
