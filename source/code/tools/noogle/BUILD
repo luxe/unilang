@@ -83,6 +83,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/bing:bing_json_url_deviser",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/html:html_raw_text_getter",
+    "//code/tools/noogle:token_adder",
     
 ])
 
@@ -93,6 +94,23 @@ hcp(name = "default_settings_getter", deps = [
     "//code/utilities/secret:secret_getter",
     "//code/tools/noogle/settings:query_expand_settings",
     "//code/utilities/types/vectors/operators:lib",
+])
+
+hcp(name = "token_adder", deps = [
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/tools/noogle:noogle_running_stats",
+    "//code/utilities/types/strings/transformers/search_replace:lib",
+    "//code/utilities/types/strings/transformers/squeeze:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/types/strings/observers/char:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/types/strings/transformers/casing:lib",
+    "//code/utilities/types/strings/observers/characteristic:english_number_to_integral_converter",
+    "//code/utilities/types/strings/observers/characteristic:is_english_number_checker",
+    "//code/utilities/types/strings/observers/characteristic:spirit_numeric_checker",
 ])
 
 distributable_data(name="chrome_drivers",
