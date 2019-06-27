@@ -26,6 +26,10 @@ hcp(name = "noogle_documentation_getter", deps = [
     "//code/utilities/json/functions:lib",
 ])
 
+hcp(name = "query_extender", deps = [
+    "//code/tools/noogle/settings:noogle_settings",
+])
+
 hcp(name = "results_shower", deps = [
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/data_structures/queue:finishable_safe_queue",
@@ -84,6 +88,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/html:html_raw_text_getter",
     "//code/tools/noogle:token_adder",
+    "//code/tools/noogle:query_extender",
     
 ])
 
