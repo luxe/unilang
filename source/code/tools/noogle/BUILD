@@ -89,6 +89,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/types/strings/transformers/html:html_raw_text_getter",
     "//code/tools/noogle:token_adder",
     "//code/tools/noogle:query_extender",
+    "//code/utilities/signals:lib",
     
 ])
 
