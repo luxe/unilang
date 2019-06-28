@@ -52,7 +52,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/automate/browser:browser_creator",
     "//code/utilities/web/automate/browser:browser_settings",
     "//code/utilities/web/automate/navigation:browser_navigator",
-    "//code/tools/noogle:default_settings_getter",
+    "//code/tools/noogle/settings:default_settings_getter",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/types/strings/transformers/squeeze:lib",
     "@pybind11//:pybind11",
@@ -90,16 +90,6 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:token_adder",
     "//code/tools/noogle:query_extender",
     "//code/utilities/signals:lib",
-    
-])
-
-hcp(name = "default_settings_getter", deps = [
-    "//code/tools/noogle/settings:noogle_settings",
-    "//code/utilities/web/chrome/driver:chrome_driver_selector",
-    "//code/utilities/filesystem/paths:lib",
-    "//code/utilities/secret:secret_getter",
-    "//code/tools/noogle/settings:query_expand_settings",
-    "//code/utilities/types/vectors/operators:lib",
 ])
 
 hcp(name = "token_adder", deps = [

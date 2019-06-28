@@ -21,3 +21,12 @@ hcp(name = "word_filter_settings", deps = [
 
 hcp(name = "token_identifier_settings", deps = [
 ])
+
+hcp(name = "default_settings_getter", deps = [
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/utilities/web/chrome/driver:chrome_driver_selector",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/secret:secret_getter",
+    "//code/tools/noogle/settings:query_expand_settings",
+    "//code/utilities/types/vectors/operators:lib",
+])
