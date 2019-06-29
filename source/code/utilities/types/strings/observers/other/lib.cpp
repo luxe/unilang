@@ -21,6 +21,16 @@ bool First_Char_Comes_Before_Second_Char(std::string const& s, char const& c1, c
 bool Begins_With(std::string const& str, std::string const& start_part){
     return boost::algorithm::starts_with(str,start_part);
 }
+bool Begins_With_Any(std::string const& str, std::vector<std::string> const& start_parts)
+{
+    for (auto const& it: start_parts){
+        if (Begins_With(str,it)){
+            return true;
+        }
+    }
+    return false;
+}
+
 bool Ends_With(std::string const& str, std::string const& end_part){
     return boost::algorithm::ends_with(str,end_part);
 }

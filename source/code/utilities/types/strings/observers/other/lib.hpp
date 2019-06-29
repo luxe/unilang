@@ -9,6 +9,7 @@
 //searching
 bool Contains_Character(std::string const& s, char const& c);
 bool Begins_With(std::string const& str, std::string const& start_part);
+bool Begins_With_Any(std::string const& str, std::vector<std::string> const& start_parts);
 bool Ends_With(std::string const& str, std::string const& end_part);
 bool Begins_And_Ends_With(std::string const& str, std::string const& part);
 bool Begins_Or_Ends_With(std::string const& str, std::string const& part);
