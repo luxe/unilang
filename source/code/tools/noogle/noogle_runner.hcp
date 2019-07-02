@@ -165,28 +165,24 @@ class
 ❱
 ◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url,std::unordered_set<std::string> & seen_hosts)❰
    
-   
+   //settings
    std::vector<std::string> blacklist_urls_start_with;
    blacklist_urls_start_with.emplace_back("https://www.google.com/search?");
    blacklist_urls_start_with.emplace_back("mailto:");
-   
    bool dont_traverse_host_more_than_once = true;
    
    
    try {
        std::string new_host_name = url_as_hostname(url);
        
-        if (Begins_With(url,"https://www.google.com/search?")){
+        if (Begins_With_Any(url,blacklist_urls_start_with)){
             return false;
         }
         
-        if (Begins_With(url,"mailto:")){
-            return false;
-        }
-        
-        if (seen_hosts.find(new_host_name) != seen_hosts.end()){
-            //std::cout << "dropping " << new_host_name << std::endl;
-            return false;
+        if (dont_traverse_host_more_than_once){
+            if (seen_hosts.find(new_host_name) != seen_hosts.end()){
+                return false;
+            }
         }
         
         //std::cout << new_host_name << std::endl;

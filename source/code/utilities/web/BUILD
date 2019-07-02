@@ -31,3 +31,9 @@ hcp(name = "web_json_extraction_settings", deps = [
     "//code/utilities/web:html_fetch_settings",
     "//code/utilities/json:json_extraction_settings",
 ])
+
+hcp(name = "search_engine_url_devise_settings", deps = [
+    "//code/utilities/web/google:google_search_url_devise_settings",
+    "//code/utilities/web/google:google_json_url_devise_settings",
+    "//code/utilities/web/bing:bing_json_url_devise_settings",
+])
