@@ -86,6 +86,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:token_adder",
     "//code/tools/noogle:query_extender",
     "//code/utilities/signals:lib",
+    "//code/tools/noogle/state:noogle_state_getter",
 ])
 
 hcp(name = "token_adder", deps = [

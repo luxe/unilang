@@ -5,6 +5,7 @@ class
 ❪"code/utilities/data_structures/queue/safe_queue.h"❫
 ❪"code/utilities/data_structures/queue/finishable_safe_queue.h"❫
 ❪"code/tools/noogle/state/noogle_running_stats"❫
+❪"code/tools/noogle/state/noogle_state_getter"❫
 ❪"code/tools/noogle/noogle_result"❫
 ❪atomic❫
 ❪unordered_set❫
@@ -95,10 +96,9 @@ class
 
     //settings
     auto settings = Default_Settings_Getter::Get();
-    Noogle_Running_Stats stats;
-    stats.sites.name = "sites";
-    stats.htmls.name = "htmls";
-    stats.sanitized.name = "sanitized";
+    
+    //running state across threads
+    auto state = Noogle_State_Getter::Get();
     
     //expand the user's query to many enriched queries to help increase our search
     auto queries = Query_Extender::Expand_Query(settings.query_expand,options.Query());
@@ -132,13 +132,13 @@ class
     
     // construct and run the jobs communicating over shared queues
     std::vector<std::thread> jobs;
-    jobs.emplace_back(Results_Shower::Show_Results,std::cref(stats),std::ref(noogle_results));
-    //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_search_urls,std::ref(result_urls));
-    //jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(stats),google_query_urls,std::ref(result_urls));
-    jobs.emplace_back(Bing_Query_Urls_To_Result_Urls,std::ref(stats),bing_urls,std::ref(result_urls));
-    jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(stats),std::ref(result_urls),std::ref(html_results));
-    jobs.emplace_back(Sanitize_Html,std::ref(stats),std::ref(html_results),std::ref(sanitized_text));
-    jobs.emplace_back(Parse_For_Noogle_Results,std::ref(settings),std::ref(stats),std::ref(sanitized_text),std::ref(noogle_results));
+    jobs.emplace_back(Results_Shower::Show_Results,std::cref(state.stats),std::ref(noogle_results));
+    //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(state.stats),google_search_urls,std::ref(result_urls));
+    //jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(state.stats),google_query_urls,std::ref(result_urls));
+    jobs.emplace_back(Bing_Query_Urls_To_Result_Urls,std::ref(state.stats),bing_urls,std::ref(result_urls));
+    jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
+    jobs.emplace_back(Sanitize_Html,std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
+    jobs.emplace_back(Parse_For_Noogle_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
     for (auto & it: jobs){
         it.join();
     }
