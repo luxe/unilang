@@ -3,10 +3,12 @@ class
 ❪string❫
 ❪"code/utilities/web/search_engines/search_engine_fetch_settings"❫
 ❪"code/utilities/web/search_engines/search_engine_url_devise_settings"❫
+❪"code/utilities/web/search_engines/search_engine_type"❫
+❪"code/utilities/web/bing/bing_json_url_deviser"❫
 ⚯
 ⚞⚟
 
-◀public: static▶ std::vector<Search_Engine_Fetch_Settings> ☀Devise(Search_Engine_Url_Devise_Settings const& settings)❰
+◀public: static▶ std::vector<Search_Engine_Fetch_Settings> ☀Devise(std::vector<std::string> const& queries, Search_Engine_Url_Devise_Settings const& settings)❰
     std::vector<Search_Engine_Fetch_Settings> results;
     
     if (settings.use_google_browser){
@@ -14,6 +16,15 @@ class
     else if (settings.use_google_api){
     }
     else if (settings.use_bing_api){
+        for (auto const& query: queries){
+            auto urls = Bing_Json_Url_Deviser::Devise(settings.bing_api,query);
+            for (auto const& url: urls){
+                Search_Engine_Fetch_Settings x;
+                x.search_provider = Search_Engine_Type::BING_API;
+                x.fetch.url = url;
+                results.emplace_back(x);
+            }
+        }
     }
     
     return results;

@@ -12,6 +12,8 @@ hcp(name = "search_engine_url_devise_settings", deps = [
 hcp(name = "search_engine_url_deviser", deps = [
     "//code/utilities/web/search_engines:search_engine_url_devise_settings",
     "//code/utilities/web/search_engines:search_engine_fetch_settings",
+    "//code/utilities/web/search_engines:search_engine_type",
+    "//code/utilities/web/bing:bing_json_url_deviser",
 ])
 
 hcp(name = "search_engine_fetch_settings", deps = [
