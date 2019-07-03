@@ -17,3 +17,11 @@ hcp(name = "search_engine_url_deviser", deps = [
 hcp(name = "search_engine_fetch_settings", deps = [
     "//code/utilities/web:html_fetch_settings",
 ])
+
+enum_cpp(name = "search_engine_type",
+values = 
+["google_api"
+,"google_browser"
+,"bing_api"
+,"bing_browser"
+])
