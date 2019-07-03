@@ -5,11 +5,4 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@SDL2//:SDL2"],
 )
-
-cpp_main(
-    name = "arrows",
-    deps = ["@SDL2//:SDL2"],
-)
-
