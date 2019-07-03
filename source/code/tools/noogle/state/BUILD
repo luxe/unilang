@@ -6,7 +6,6 @@ hcp(name = "noogle_state_getter", deps = [
     "//code/tools/noogle/state:noogle_state",
 ])
 
-
 hcp(name = "noogle_state", deps = [
     "//code/tools/noogle/state:noogle_running_stats",
 ])
