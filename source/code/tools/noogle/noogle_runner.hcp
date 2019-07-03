@@ -109,31 +109,11 @@ class
     //they fail.
     auto search_engine_uninriched_fetch_settings = Search_Engine_Url_Deviser::Devise(queries,settings.devise);
     
-    Print_Json(search_engine_uninriched_fetch_settings);
-    exit(0);
-    
     //running state across threads
     auto state = Noogle_State_Getter::Get();
     
     
-    //auto search_engine_uninriched_fetch_settings = Search_Engine_Url_Deviser::Devise();
     
-    
-    
-    //auto google_search_urls = Google_Search_Url_Deviser::Devise(settings.devise_google_search_urls,options.Query());
-    //auto google_query_urls = Google_Json_Url_Deviser::Devise(settings.devise_google_query_urls,options.Query());
-    
-    std::vector<std::string> bing_urls;
-    for (auto const& query: queries){
-        bing_urls += Bing_Json_Url_Deviser::Devise(settings.devise.bing_api,query);
-    }
-    
-    
-    
-    //for (auto const& it: bing_urls){
-    //    std::cout << it << std::endl;
-    //}
-    //exit(0);
     
     //all of the shared queues involved in the pipeline of converting
     //queries into noogle results
@@ -143,11 +123,12 @@ class
     FinishableSafeQueue<Noogle_Result> noogle_results;
     
     // construct and run the jobs communicating over shared queues
+    std::vector<std::string> xxx;
     std::vector<std::thread> jobs;
     jobs.emplace_back(Results_Shower::Show_Results,std::cref(state.stats),std::ref(noogle_results));
     //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(state.stats),google_search_urls,std::ref(result_urls));
     //jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(state.stats),google_query_urls,std::ref(result_urls));
-    jobs.emplace_back(Bing_Query_Urls_To_Result_Urls,std::ref(state.stats),bing_urls,std::ref(result_urls));
+    jobs.emplace_back(Bing_Query_Urls_To_Result_Urls,std::ref(state.stats),xxx,std::ref(result_urls));
     jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
     jobs.emplace_back(Sanitize_Html,std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
     jobs.emplace_back(Parse_For_Noogle_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
