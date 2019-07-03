@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include "nlohmann/json.hpp"
 
 //json append for all types that don't derive from an hcp file construct
@@ -35,6 +36,13 @@ void Write_Json_To_File(T const& t, std::string const& path){
     outfile << str;
     outfile.close();
 }
+
+template <typename T>
+void Print_Json(T const& t){
+    auto str = As_JSON_String(t);
+    std::cout << str << std::endl;
+}
+
 
 //validating json
 bool Is_Valid_JSON_File(std::string const& file_name);

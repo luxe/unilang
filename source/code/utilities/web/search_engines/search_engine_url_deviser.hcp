@@ -5,6 +5,7 @@ class
 ❪"code/utilities/web/search_engines/search_engine_url_devise_settings"❫
 ❪"code/utilities/web/search_engines/search_engine_type"❫
 ❪"code/utilities/web/bing/bing_json_url_deviser"❫
+❪"code/utilities/web/google/google_json_url_deviser"❫
 ⚯
 ⚞⚟
 
@@ -21,6 +22,17 @@ class
 ◀private: static▶ void ☀Possibly_Add_Google_Browser_Fetch_Configs(std::vector<std::string> const& queries, Search_Engine_Url_Devise_Settings const& settings, std::vector<Search_Engine_Fetch_Settings> & results)❰
 ❱
 ◀private: static▶ void ☀Possibly_Add_Google_Api_Fetch_Configs(std::vector<std::string> const& queries, Search_Engine_Url_Devise_Settings const& settings, std::vector<Search_Engine_Fetch_Settings> & results)❰
+    if (settings.use_google_api){
+        for (auto const& query: queries){
+            auto urls = Google_Json_Url_Deviser::Devise(settings.google_api,query);
+            for (auto const& url: urls){
+                Search_Engine_Fetch_Settings x;
+                x.search_provider = Search_Engine_Type::GOOGLE_API;
+                x.fetch.url = url;
+                results.emplace_back(x);
+            }
+        }
+    }
 ❱
 
 ◀private: static▶ void ☀Possibly_Add_Bing_Api_Fetch_Configs(std::vector<std::string> const& queries, Search_Engine_Url_Devise_Settings const& settings, std::vector<Search_Engine_Fetch_Settings> & results)❰
