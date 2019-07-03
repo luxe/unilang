@@ -16,6 +16,7 @@ hcp(name = "search_engine_url_deviser", deps = [
 
 hcp(name = "search_engine_fetch_settings", deps = [
     "//code/utilities/web:html_fetch_settings",
+    "//code/utilities/web/search_engines:search_engine_type",
 ])
 
 enum_cpp(name = "search_engine_type",
