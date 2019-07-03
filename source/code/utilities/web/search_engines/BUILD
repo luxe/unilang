@@ -15,4 +15,5 @@ hcp(name = "search_engine_url_deviser", deps = [
 ])
 
 hcp(name = "search_engine_fetch_settings", deps = [
+    "//code/utilities/web:html_fetch_settings",
 ])
