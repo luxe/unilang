@@ -55,11 +55,7 @@ class
     for (auto const& search_url: google_search_urls){
         auto result_urls = Browser_Navigator::Get_Google_Result_Urls(settings,search_url);
         for (auto const& result_url: result_urls){
-            if (Is_Result_Url_Valid_For_Exploring(settings2,result_url,seen_hosts)){
-                ++stats.sites.total;
-                q.add(result_url);
-                ++stats.sites.current;
-            }
+            Possibly_Add_Url(stats,settings2,result_url,q,seen_hosts);
         }
     }
     q.mark_finished();
@@ -81,11 +77,7 @@ class
         auto j = nlohmann::json::parse(response);
         for (auto it: j["items"]){
             auto result_url = it["link"].get<std::string>();
-            if (Is_Result_Url_Valid_For_Exploring(settings2,result_url,seen_hosts)){
-                ++stats.sites.total;
-                q.add(result_url);
-                ++stats.sites.current;
-            }
+            Possibly_Add_Url(stats,settings2,result_url,q,seen_hosts);
         }
     }
     q.mark_finished();
@@ -106,11 +98,7 @@ class
         auto j = nlohmann::json::parse(response);
         for (auto it: j["webPages"]["value"]){
             auto result_url = it["url"].get<std::string>();
-            if (Is_Result_Url_Valid_For_Exploring(settings2,result_url,seen_hosts)){
-                ++stats.sites.total;
-                q.add(result_url);
-                ++stats.sites.current;
-            }
+            Possibly_Add_Url(stats,settings2,result_url,q,seen_hosts);
         }
     }
     q.mark_finished();
@@ -118,6 +106,13 @@ class
 ❱
 
 
+◀private: static▶ void ☀Possibly_Add_Url(Noogle_Running_Stats & stats, Noogle_Settings const& settings, std::string const& url, FinishableSafeQueue<std::string> & q, std::unordered_set<std::string> & seen_hosts)❰
+    if (Is_Result_Url_Valid_For_Exploring(settings,url,seen_hosts)){
+        ++stats.sites.total;
+        q.add(url);
+        ++stats.sites.current;
+    }
+❱
 
 
 ◀private: static▶ bool ☀Is_Result_Url_Valid_For_Exploring(Noogle_Settings const& settings, std::string const& url,std::unordered_set<std::string> & seen_hosts)❰
