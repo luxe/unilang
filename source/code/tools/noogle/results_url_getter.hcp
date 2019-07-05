@@ -60,6 +60,10 @@ class
     while (results.empty()){
         auto enriched_search_url = Enrich_Url(stats,settings,search_url);
         results = Query_And_Extract(enriched_search_url);
+        
+        if (results.empty()){
+            Try_Next_Credential(stats,settings,search_url);
+        }
     }
     return results;
 ❱
@@ -72,10 +76,10 @@ class
         //no need to enrich
     }
     else if (results.search_provider == Search_Engine_Type::GOOGLE_API){
-        results.fetch.url = fmt::format(results.fetch.url,settings.credentials.google_api_credentials[0]);
+        results.fetch.url = fmt::format(results.fetch.url,settings.credentials.google_api_credentials[stats.google_credential_index]);
     }
     else if (results.search_provider == Search_Engine_Type::BING_API){
-        results.fetch.headers.emplace_back("Ocp-Apim-Subscription-Key: " + settings.credentials.bing_api_credentials[0]);
+        results.fetch.headers.emplace_back("Ocp-Apim-Subscription-Key: " + settings.credentials.bing_api_credentials[stats.bing_credential_index]);
     }
     
     return results;
@@ -106,6 +110,19 @@ class
     return results;
 ❱
 
+
+◀private: static▶ void ☀Try_Next_Credential(Noogle_Running_Stats & stats, Noogle_Settings const& settings, Search_Engine_Fetch_Settings const& search_url)❰
+
+    if (search_url.search_provider == Search_Engine_Type::GOOGLE_BROWSER){
+        //no credentials needed (might try proxies though)
+    }
+    else if (search_url.search_provider == Search_Engine_Type::GOOGLE_API){
+        stats.google_credential_index = Next_Index_In_Round_Robin(settings.credentials.google_api_credentials,stats.google_credential_index);
+    }
+    else if (search_url.search_provider == Search_Engine_Type::BING_API){
+        stats.bing_credential_index = Next_Index_In_Round_Robin(settings.credentials.bing_api_credentials,stats.bing_credential_index);
+    }
+❱
 
 
 

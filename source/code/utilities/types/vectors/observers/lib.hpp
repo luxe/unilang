@@ -11,6 +11,15 @@ std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs);
 std::string Table_As_Column_Aligned(std::vector<std::vector<std::string>> table);
 size_t Longest_Element_Size(std::vector<std::string> strs);
 
+
+template <typename T>
+size_t Next_Index_In_Round_Robin(T const& t, size_t i){
+  if (i == t.size()-1){
+    i = 0;
+  }
+  return i;
+}
+
 template <typename T>
 size_t Longest_Element_Size_Of_Pair_First(std::vector<std::pair<std::string,T>> const& strs){
   int size = 0;
