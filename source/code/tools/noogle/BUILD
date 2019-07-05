@@ -100,6 +100,7 @@ hcp(name = "results_url_getter", deps = [
     "//code/utilities/data_structures/queue:finishable_safe_queue",
     "//code/tools/noogle/state:noogle_running_stats",
     "@pybind11//:pybind11",
+    "@fmt//:fmt",
     "//code/utilities/web/automate/browser:browser_creator",
     "//code/utilities/web/automate/navigation:browser_navigator",
     "//code/tools/noogle/settings:default_settings_getter",
