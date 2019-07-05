@@ -39,7 +39,7 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/lib"❫
 ❪"code/utilities/chart/ascii/chart_getter"❫
-❪"url.hpp"❫
+❪"code/utilities/web/url/url_parser"❫
 ❪"code/utilities/types/sets/lib"❫
 ❪"code/utilities/types/strings/observers/characteristic/english_number_to_integral_converter"❫
 ❪"code/utilities/types/strings/observers/characteristic/is_english_number_checker"❫
@@ -51,6 +51,7 @@ class
 ❪"code/utilities/signals/lib"❫
 ❪"code/utilities/web/search_engines/search_engine_url_deviser"❫
 ❪"code/utilities/json/functions/lib"❫
+❪"code/tools/noogle/results_url_getter"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -123,131 +124,19 @@ class
     FinishableSafeQueue<Noogle_Result> noogle_results;
     
     // construct and run the jobs communicating over shared queues
-    std::vector<std::string> xxx;
     std::vector<std::thread> jobs;
     jobs.emplace_back(Results_Shower::Show_Results,std::cref(state.stats),std::ref(noogle_results));
-    //jobs.emplace_back(Google_Search_Urls_To_Google_Result_Urls,settings.browser,std::ref(state.stats),google_search_urls,std::ref(result_urls));
-    //jobs.emplace_back(Google_Query_Urls_To_Google_Result_Urls,settings.browser,std::ref(state.stats),google_query_urls,std::ref(result_urls));
-    jobs.emplace_back(Bing_Query_Urls_To_Result_Urls,std::ref(state.stats),xxx,std::ref(result_urls));
+    
+    //network related tasks
+    jobs.emplace_back(Results_Url_Getter::Derive_From_Search_Engine_Urls,std::ref(state.stats),search_engine_uninriched_fetch_settings,std::ref(result_urls));
     jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
+
+    
     jobs.emplace_back(Sanitize_Html,std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
     jobs.emplace_back(Parse_For_Noogle_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
     for (auto & it: jobs){
         it.join();
     }
-    
-❱
-
-
-//STEP 1 (A)
-◀private: static▶ void ☀Google_Search_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_search_urls, FinishableSafeQueue<std::string> & q)❰
-
-    std::unordered_set<std::string> seen_hosts;
-    for (auto const& search_url: google_search_urls){
-        auto result_urls = Browser_Navigator::Get_Google_Result_Urls(settings,search_url);
-        for (auto const& result_url: result_urls){
-            if (Google_Result_Url_Is_Valid_For_Exploring(result_url,seen_hosts)){
-                ++stats.sites.total;
-                q.add(result_url);
-                ++stats.sites.current;
-            }
-        }
-    }
-    q.mark_finished();
-    stats.sites.finished = true;
-❱
-◀private: static▶ bool ☀Google_Result_Url_Is_Valid_For_Exploring(std::string const& url,std::unordered_set<std::string> & seen_hosts)❰
-   
-   //settings
-   std::vector<std::string> blacklist_urls_start_with;
-   blacklist_urls_start_with.emplace_back("https://www.google.com/search?");
-   blacklist_urls_start_with.emplace_back("mailto:");
-   bool dont_traverse_host_more_than_once = true;
-   
-   
-   try {
-       std::string new_host_name = url_as_hostname(url);
-       
-        if (Begins_With_Any(url,blacklist_urls_start_with)){
-            return false;
-        }
-        
-        if (dont_traverse_host_more_than_once){
-            if (seen_hosts.find(new_host_name) != seen_hosts.end()){
-                return false;
-            }
-        }
-        
-        //std::cout << new_host_name << std::endl;
-        seen_hosts.insert(new_host_name);
-    }
-    catch(...){
-    }
-    return true;
-❱
-◀private: static▶ std::string ☀url_as_hostname(std::string const& url)❰
-       Url parsed_url(url);
-       auto host_name = parsed_url.host();
-       auto parts = Split_Into_Parts_From_Dot(host_name);
-       while (parts.size() > 2){
-            Remove_First_Element(parts);
-       }
-       std::string new_host_name = "";
-       if (!parts.empty()){
-            new_host_name = parts[0];
-       }
-       return new_host_name;
-❱
-
-
-//STEP 1 (B)
-◀private: static▶ void ☀Google_Query_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Running_Stats & stats, std::vector<std::string> const& google_query_urls, FinishableSafeQueue<std::string> & q)❰
-    
-    std::unordered_set<std::string> seen_hosts;
-    for (auto const& search_url: google_query_urls){
-        
-        //query json endpoint
-        Html_Fetch_Settings fetch_settings;
-        fetch_settings.url = search_url;
-        auto response = Get_Html_Of_Site(fetch_settings);
-        
-        auto j = nlohmann::json::parse(response);
-        for (auto it: j["items"]){
-            auto result_url = it["link"].get<std::string>();
-            if (Google_Result_Url_Is_Valid_For_Exploring(result_url,seen_hosts)){
-                ++stats.sites.total;
-                q.add(result_url);
-                ++stats.sites.current;
-            }
-        }
-    }
-    q.mark_finished();
-    stats.sites.finished = true;
-❱
-
-//STEP 1 (C)
-◀private: static▶ void ☀Bing_Query_Urls_To_Result_Urls(Noogle_Running_Stats & stats, std::vector<std::string> const& urls, FinishableSafeQueue<std::string> & q)❰
-    std::unordered_set<std::string> seen_hosts;
-    for (auto const& search_url: urls){
-        
-        //query json endpoint
-        Html_Fetch_Settings fetch_settings;
-        fetch_settings.url = search_url;
-        fetch_settings.headers.emplace_back("Ocp-Apim-Subscription-Key: 20bb843162f847609f93b7f509ba7645"); 
-        auto response = Get_Html_Of_Site(fetch_settings);
-        
-        auto j = nlohmann::json::parse(response);
-        for (auto it: j["webPages"]["value"]){
-            auto result_url = it["url"].get<std::string>();
-            if (Google_Result_Url_Is_Valid_For_Exploring(result_url,seen_hosts)){
-                ++stats.sites.total;
-                q.add(result_url);
-                ++stats.sites.current;
-            }
-        }
-    }
-    q.mark_finished();
-    stats.sites.finished = true;
 ❱
 
 //STEP 2
@@ -277,7 +166,7 @@ class
                     duplicate_htmls.insert(html);
                     
                    if (write_html_files){
-                        Write_To_File(dump_html_location + url_as_hostname(fetch_settings.url),html);
+                        Write_To_File(dump_html_location + Url_Parser::Get_Hostname(fetch_settings.url),html);
                     }
                 }
                 ++stats.htmls.current;

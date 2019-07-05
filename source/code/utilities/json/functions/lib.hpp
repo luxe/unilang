@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <fstream>
 #include "nlohmann/json.hpp"
 
 //json append for all types that don't derive from an hcp file construct

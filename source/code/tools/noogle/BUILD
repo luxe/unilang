@@ -54,7 +54,7 @@ hcp(name = "noogle_runner", deps = [
     "@pybind11//:pybind11",
     "@boost//:asio",
     #"@boost//:stacktrace",
-    "@cxx_url//:cxx_url",
+    "//code/utilities/web/url:url_parser",
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/data_structures/queue:safe_queue",
     "//code/utilities/data_structures/queue:finishable_safe_queue",
@@ -89,6 +89,44 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle/state:noogle_state_getter",
     "//code/utilities/web/search_engines:search_engine_url_deviser",
     "//code/utilities/json/functions:lib",
+    "//code/tools/noogle:results_url_getter",
+])
+
+
+
+hcp(name = "results_url_getter", deps = [
+    "//code/utilities/web/automate/browser:browser_settings",
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/utilities/data_structures/queue:finishable_safe_queue",
+    "//code/tools/noogle/state:noogle_running_stats",
+    "@pybind11//:pybind11",
+    "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/navigation:browser_navigator",
+    "//code/tools/noogle/settings:default_settings_getter",
+    "//code/utilities/types/strings/transformers/search_replace:lib",
+    "//code/utilities/types/strings/transformers/squeeze:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/web/google:google_search_url_deviser",
+    "//code/utilities/web/google:google_json_url_deviser",
+    "//code/utilities/web/bing:bing_json_url_deviser",
+    "//code/utilities/web:lib",
+    "//code/utilities/exits:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/types/strings/observers/char:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/types/strings/transformers/casing:lib",
+    "//code/utilities/chart/ascii:chart_getter",
+    "//code/utilities/web/url:url_parser",
+    "//code/utilities/types/sets:lib",
+    "//code/utilities/types/strings/observers/characteristic:english_number_to_integral_converter",
+    "//code/utilities/types/strings/observers/characteristic:is_english_number_checker",
+    "//code/tools/noogle:results_shower",
+    "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/types/strings/transformers/html:html_raw_text_getter",
+    "//code/utilities/web/search_engines:search_engine_url_deviser",
+    "//code/utilities/json/functions:lib",
+    "//code/utilities/web/search_engines:search_engine_fetch_settings",
 ])
 
 hcp(name = "token_adder", deps = [
