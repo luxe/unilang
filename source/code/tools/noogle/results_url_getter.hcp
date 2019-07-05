@@ -83,49 +83,28 @@ class
 
 ◀private: static▶ std::vector<std::string> ☀Query_And_Extract(Search_Engine_Fetch_Settings const& search_url)❰
     std::vector<std::string> results;
-    return results;
-❱
-
-
-
-//STEP 1 (B)
-◀private: static▶ void ☀Google_Query_Urls_To_Google_Result_Urls(Browser_Settings const& settings, Noogle_Settings const& settings2, Noogle_Running_Stats & stats, std::vector<std::string> const& google_query_urls, FinishableSafeQueue<std::string> & q)❰
     
-    std::unordered_set<std::string> seen_hosts;
-    for (auto const& search_url: google_query_urls){
-        
-        //query json endpoint
-        Html_Fetch_Settings fetch_settings;
-        fetch_settings.url = search_url;
-        auto response = Get_Html_Of_Site(fetch_settings);
-        
-        auto j = nlohmann::json::parse(response);
+    auto response = Get_Html_Of_Site(search_url.fetch);
+    auto j = nlohmann::json::parse(response);
+    
+    if (search_url.search_provider == Search_Engine_Type::GOOGLE_BROWSER){
+        //implemented but not integrated
+    }
+    else if (search_url.search_provider == Search_Engine_Type::GOOGLE_API){
         for (auto it: j["items"]){
             auto result_url = it["link"].get<std::string>();
-            Possibly_Add_Url(stats,settings2,result_url,q,seen_hosts);
+            results.emplace_back(result_url);
         }
     }
-❱
-
-//STEP 1 (C)
-◀private: static▶ void ☀Bing_Query_Urls_To_Result_Urls(Noogle_Running_Stats & stats, Noogle_Settings const& settings2, std::vector<std::string> const& urls, FinishableSafeQueue<std::string> & q)❰
-    std::unordered_set<std::string> seen_hosts;
-    for (auto const& search_url: urls){
-        
-        //query json endpoint
-        Html_Fetch_Settings fetch_settings;
-        fetch_settings.url = search_url;
-        fetch_settings.headers.emplace_back("Ocp-Apim-Subscription-Key: 20bb843162f847609f93b7f509ba7645"); 
-        auto response = Get_Html_Of_Site(fetch_settings);
-        
-        auto j = nlohmann::json::parse(response);
+    else if (search_url.search_provider == Search_Engine_Type::BING_API){
         for (auto it: j["webPages"]["value"]){
             auto result_url = it["url"].get<std::string>();
-            Possibly_Add_Url(stats,settings2,result_url,q,seen_hosts);
+            results.emplace_back(result_url);
         }
     }
+    
+    return results;
 ❱
-
 
 
 
