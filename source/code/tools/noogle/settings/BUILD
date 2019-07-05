@@ -7,6 +7,7 @@ hcp(name = "noogle_settings", deps = [
     "//code/utilities/web/automate/browser:browser_settings",
     "//code/utilities/web/search_engines:search_engine_url_devise_settings",
     "//code/tools/noogle/settings:query_expand_settings",
+    "//code/tools/noogle/settings:url_filter_settings",
     "//code/tools/noogle/settings:word_filter_settings",
     "//code/tools/noogle/settings:token_identifier_settings",
 ])
@@ -18,6 +19,9 @@ hcp(name = "word_filter_settings", deps = [
 ])
 
 hcp(name = "token_identifier_settings", deps = [
+])
+
+hcp(name = "url_filter_settings", deps = [
 ])
 
 hcp(name = "default_settings_getter", deps = [
