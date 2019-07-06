@@ -53,6 +53,7 @@ class
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/tools/noogle/results_url_getter"❫
 ❪"code/tools/noogle/results_url_to_html_converter"❫
+❪"code/tools/noogle/html_sanitizer"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -114,46 +115,11 @@ class
     jobs.emplace_back(Results_Url_To_Html_Converter::Convert,std::cref(settings), std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
 
     
-    jobs.emplace_back(Sanitize_Html,std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
+    jobs.emplace_back(Html_Sanitizer::Extract_Raw_Text,std::cref(settings),std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
     jobs.emplace_back(Parse_For_Noogle_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
     for (auto & it: jobs){
         it.join();
     }
-❱
-
-
-//STEP 3
-◀private: static▶ void ☀Sanitize_Html(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
-
-    int i = 0;
-    bool write_html_files = false;
-    std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
-    
-    while(!html_results.is_finished() || !html_results.is_empty()){
-        auto str = html_results.get();
-            ++stats.sanitized.total;
-            sanitized_text.add(parse_out_text_from_html(str));
-            ++stats.sanitized.current;
-            
-           if (write_html_files){
-                Write_To_File(dump_html_location + std::to_string(i),parse_out_text_from_html(str));
-                ++i;
-            }
-            
-            
-    }
-    sanitized_text.mark_finished();
-    stats.sanitized.finished = true;
-❱
-◀private: static▶ std::string ☀parse_out_text_from_html(std::string str)❰
-    try{
-        auto result = Html_Raw_Text_Getter::parse_away_html_tags(str);
-        return result;
-    }
-    catch(...){
-        //sanitized_text.add(str);
-    }
-    return "empty";
 ❱
 
 

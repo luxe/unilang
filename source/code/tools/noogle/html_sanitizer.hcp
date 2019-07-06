@@ -1,0 +1,49 @@
+class
+❪"code/tools/noogle/settings/noogle_settings"❫
+❪"code/utilities/data_structures/queue/finishable_safe_queue.h"❫
+❪"code/tools/noogle/state/noogle_running_stats"❫
+❪unordered_set❫
+⚯
+❪iostream❫
+❪thread❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/web/url/url_parser"❫
+❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/html/html_raw_text_getter"❫
+⚞⚟
+
+◀public: static▶ void ☀Extract_Raw_Text(Noogle_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
+
+    int i = 0;
+    bool write_html_files = false;
+    std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
+    
+    while(!html_results.is_finished() || !html_results.is_empty()){
+        auto str = html_results.get();
+            ++stats.sanitized.total;
+            sanitized_text.add(parse_out_text_from_html(str));
+            ++stats.sanitized.current;
+            
+           if (write_html_files){
+                Write_To_File(dump_html_location + std::to_string(i),parse_out_text_from_html(str));
+                ++i;
+            }
+            
+            
+    }
+    sanitized_text.mark_finished();
+    stats.sanitized.finished = true;
+❱
+
+◀private: static▶ std::string ☀parse_out_text_from_html(std::string str)❰
+    try{
+        auto result = Html_Raw_Text_Getter::parse_away_html_tags(str);
+        return result;
+    }
+    catch(...){
+        //sanitized_text.add(str);
+    }
+    return "empty";
+❱
