@@ -52,6 +52,7 @@ class
 ❪"code/utilities/web/search_engines/search_engine_url_deviser"❫
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/tools/noogle/results_url_getter"❫
+❪"code/tools/noogle/results_url_to_html_converter"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -110,7 +111,7 @@ class
     
     //network related tasks
     jobs.emplace_back(Results_Url_Getter::Derive_From_Search_Engine_Urls,std::ref(state.stats),std::cref(settings),search_engine_uninriched_fetch_settings,std::ref(result_urls));
-    jobs.emplace_back(Convert_Result_Urls_To_Html,settings.browser,std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
+    jobs.emplace_back(Results_Url_To_Html_Converter::Convert,std::cref(settings), std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
 
     
     jobs.emplace_back(Sanitize_Html,std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
@@ -118,62 +119,6 @@ class
     for (auto & it: jobs){
         it.join();
     }
-❱
-
-//STEP 2
-◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
-    
-    std::unordered_set<std::string> duplicate_htmls;
-    
-    int threadNumbers = 10;
-    bool avoid_duplicate_htmls = true;
-    bool write_html_files = false;
-    std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
-    
-    
-    boost::asio::thread_pool pool(threadNumbers);
-    while(!urls_in.is_finished() || !urls_in.is_empty()){
-        
-        if (!urls_in.is_empty()){
-            auto str = urls_in.get();
-            ++stats.htmls.total;
-            boost::asio::post(pool, [&,str]() {
-                Html_Fetch_Settings fetch_settings;
-                fetch_settings.url = str;
-                auto html = Get_Html_Of_Site(fetch_settings);
-                
-                if (Should_Add_Html(avoid_duplicate_htmls,html,duplicate_htmls)){
-                    html_out.add(html);
-                    duplicate_htmls.insert(html);
-                    
-                   if (write_html_files){
-                        Write_To_File(dump_html_location + Url_Parser::Get_Hostname(fetch_settings.url),html);
-                    }
-                }
-                ++stats.htmls.current;
-                
-                if (html.empty()){
-                    //std::cout << fetch_settings.url << std::endl;
-                }
-            });
-        }
-    }
-    pool.join();
-    html_out.mark_finished();
-    stats.htmls.finished = true;
-❱
-
-
-◀private: static▶ bool ☀Should_Add_Html(const bool dup_check, std::string const& html, std::unordered_set<std::string> const& duplicate_htmls)❰
-    if (!dup_check){
-        return true;
-    }
-    
-    if (duplicate_htmls.find(html) == duplicate_htmls.end()){
-        return true;
-    }
-    
-    return false;
 ❱
 
 

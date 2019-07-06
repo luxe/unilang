@@ -42,6 +42,19 @@ hcp(name = "results_shower", deps = [
     "//code/utilities/colors:lib",
 ])
 
+
+hcp(name = "results_url_to_html_converter", deps = [
+    "@boost//:asio",
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/utilities/data_structures/queue:finishable_safe_queue",
+    "//code/tools/noogle/state:noogle_running_stats",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/web:lib",
+    "//code/utilities/web/url:url_parser",
+    "//code/utilities/types/sets:lib",
+    "//code/utilities/filesystem/files/creating:lib",
+])
+
 hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:meta_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
@@ -90,6 +103,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/web/search_engines:search_engine_url_deviser",
     "//code/utilities/json/functions:lib",
     "//code/tools/noogle:results_url_getter",
+    "//code/tools/noogle:results_url_to_html_converter",
 ])
 
 
