@@ -97,9 +97,6 @@ class
     //running state across threads
     auto state = Noogle_State_Getter::Get();
     
-    
-    
-    
     //all of the shared queues involved in the pipeline of converting
     //queries into noogle results
     FinishableSafeQueue<std::string> result_urls;
@@ -126,14 +123,14 @@ class
 //STEP 2
 ◀private: static▶ void ☀Convert_Result_Urls_To_Html(Browser_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & urls_in, FinishableSafeQueue<std::string> & html_out)❰
     
-    
     std::unordered_set<std::string> duplicate_htmls;
+    
+    int threadNumbers = 10;
+    bool avoid_duplicate_htmls = true;
     bool write_html_files = false;
     std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
     
     
-    //int threadNumbers = std::thread::hardware_concurrency();
-    int threadNumbers = 10;
     boost::asio::thread_pool pool(threadNumbers);
     while(!urls_in.is_finished() || !urls_in.is_empty()){
         
@@ -145,7 +142,7 @@ class
                 fetch_settings.url = str;
                 auto html = Get_Html_Of_Site(fetch_settings);
                 
-                if (duplicate_htmls.find(html) == duplicate_htmls.end()){
+                if (Should_Add_Html(avoid_duplicate_htmls,html,duplicate_htmls)){
                     html_out.add(html);
                     duplicate_htmls.insert(html);
                     
@@ -165,6 +162,20 @@ class
     html_out.mark_finished();
     stats.htmls.finished = true;
 ❱
+
+
+◀private: static▶ bool ☀Should_Add_Html(const bool dup_check, std::string const& html, std::unordered_set<std::string> const& duplicate_htmls)❰
+    if (!dup_check){
+        return true;
+    }
+    
+    if (duplicate_htmls.find(html) == duplicate_htmls.end()){
+        return true;
+    }
+    
+    return false;
+❱
+
 
 //STEP 3
 ◀private: static▶ void ☀Sanitize_Html(Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
