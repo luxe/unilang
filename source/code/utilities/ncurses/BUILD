@@ -9,5 +9,11 @@ cc_library(
     deps = [],
 )
 
+cc_library(
+    name = "scoped_getch",
+    hdrs = ["scoped_getch.hpp"],
+    deps = ["@getch//:ch"],
+)
+
 
 
