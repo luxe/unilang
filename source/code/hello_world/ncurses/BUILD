@@ -9,3 +9,10 @@ cc_binary(
     linkopts = ["-lncurses"],
     deps = [],
 )
+
+cc_binary(
+    name = "arrow_keys",
+    srcs = ["arrow_keys.cpp"],
+    linkopts = ["-lncurses"],
+    deps = [],
+)
