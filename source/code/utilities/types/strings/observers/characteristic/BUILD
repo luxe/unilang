@@ -19,6 +19,16 @@ hcp(name="is_english_number_checker",   deps = [
   "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
+hcp(name="is_month_word_checker",   deps = [
+  "//code/utilities/types/vectors/observers:lib",
+  "//code/utilities/types/strings/transformers/casing:lib",
+])
+
+hcp(name="is_weekday_checker",   deps = [
+  "//code/utilities/types/vectors/observers:lib",
+  "//code/utilities/types/strings/transformers/casing:lib",
+])
+
 hcp(name="spirit_numeric_checker",   deps = [
   "@boost//:spirit",
   "@boost//:phoenix",

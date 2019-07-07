@@ -118,7 +118,8 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:results_url_getter",
     "//code/tools/noogle:results_url_to_html_converter",
     "//code/tools/noogle:html_sanitizer",
-    "//code/utilities/ncurses:scoped_ncurses",
+    "//code/utilities/ncurses:scoped_getch",
+    "@getch//:getch",
 ])
 
 

@@ -5,10 +5,10 @@ def getch():
     http_archive(
         name = "getch",
         build_file = "//bazel/deps/build_files:getch.BUILD",
-        sha256 = "f86ae02feff29ae4ce662d55bb7735015e79fad84b14977ac3b900b5e0ea1cec",
-        strip_prefix = "simple-getch-e86fb3d42e290de31995849025e3474b714d35c7",
+        sha256 = "38f05f2e3d7db2440227a9f55ae0e979a983559ae107d8db6392668ebb81b12d",
+        strip_prefix = "simple-getch-16c0dc6b00c4decb71b82b26ff082ead236a0058",
         urls = [
-            "https://github.com/unilang/simple-getch/archive/e86fb3d42e290de31995849025e3474b714d35c7.tar.gz",
+            "https://github.com/unilang/simple-getch/archive/16c0dc6b00c4decb71b82b26ff082ead236a0058.tar.gz",
             "https://github.com/mouuff/simple-getch/archive/e86fb3d42e290de31995849025e3474b714d35c7.tar.gz",
         ],
     )

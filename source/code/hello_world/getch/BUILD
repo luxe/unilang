@@ -6,3 +6,15 @@ package(
 cpp_main(
     name = "main",
 )
+
+cpp_main(
+    name = "better",
+    deps = ["//code/utilities/ncurses:scoped_getch"],
+)
+
+# cc_binary(
+#     name = "getkey",
+#     srcs = ["getkey.cpp"],
+#     deps = ["@getch//:getch"],
+# )
+
