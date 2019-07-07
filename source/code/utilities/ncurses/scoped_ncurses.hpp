@@ -1,16 +1,29 @@
 #pragma once
+#include<ncurses.h>
+#include <stdio.h>
+#include <term.h>
 
 class ScopedNcurses
 {
 public:
   ScopedNcurses()
   {
-    initscr();
+    //filter();
+    //initscr();
+    //newterm();
+    
+    FILE *fp = fopen("x", "w");
+    SCREEN *s = newterm(NULL, stdin, stdout);
+    
+    
+    //newterm(NULL, stdin, stdout);
     keypad(stdscr, TRUE);
     noecho(); 
+  }
 
   ~ScopedNcurses()
   {
+    //delscreen();
     endwin();
   }
 

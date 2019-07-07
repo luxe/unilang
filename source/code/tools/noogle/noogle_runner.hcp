@@ -54,6 +54,7 @@ class
 ❪"code/tools/noogle/results_url_getter"❫
 ❪"code/tools/noogle/results_url_to_html_converter"❫
 ❪"code/tools/noogle/html_sanitizer"❫
+❪"code/utilities/ncurses/scoped_ncurses"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -78,7 +79,8 @@ class
     signal_SIGINT_to_exit();
     
     //make sure we have a python environment going for the duration of the program (RAII)
-    pybind11::scoped_interpreter guard{};
+    pybind11::scoped_interpreter py_guard{};
+    //ScopedNcurses ncurses_guard{};
     
     //add python implementations for extracting raw text out of a webpage (ignores css,js, and parses html)
     Html_Raw_Text_Getter::add_beautiful_soup_function();
@@ -98,6 +100,8 @@ class
     
     //running state across threads
     auto state = Noogle_State_Getter::Get();
+    
+    //exit(0);
     
     //all of the shared queues involved in the pipeline of converting
     //queries into noogle results
