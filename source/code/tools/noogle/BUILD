@@ -118,7 +118,12 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:results_url_getter",
     "//code/tools/noogle:results_url_to_html_converter",
     "//code/tools/noogle:html_sanitizer",
+    "//code/tools/noogle:input_poller",
     "//code/utilities/ncurses:scoped_getch",
+])
+
+hcp(name = "input_poller", deps = [
+    "//code/tools/noogle/state:noogle_running_stats",
     "@getch//:getch",
 ])
 
