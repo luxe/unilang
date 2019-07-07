@@ -9,7 +9,10 @@ cpp_main(
 
 cpp_main(
     name = "better",
-    deps = ["//code/utilities/ncurses:scoped_getch"],
+    deps = [
+        "//code/utilities/ncurses:scoped_getch",
+        "@getch//:getch"
+    ],
 )
 
 # cc_binary(
