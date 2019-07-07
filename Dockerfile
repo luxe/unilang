@@ -3,13 +3,13 @@
 # I'd like to build everything from source, but that's not always easy.
 # From Cmake to autotools; the world is full of exotic builds and difficult to pin-down dependencies.
 # For non-bazel projects, I usually have to rewrite the tool's build files in skylark.
-# This can be difficult.  For example, when build files generate other build files for the build.
-# We use the docker container when we can't figure out how to build from source.
+# This can be difficult.  For example, when build files generate other build files for the build, it can be too much work.
+# We use the docker container when we can't figure out how to build certain projects.
 # As an aspiration, I'd want to migrate as many package manager-related actions into the build rules.
 # But if it's too hard, they can stay here.
 # It's also nice to have Dockerfiles for CIs and containerized contexts for different tools.
 
-# Other thoughts on reducing the Dockerfile:
+# Other thoughts on reducing this Dockerfile:
 # I think there is a way to include debian packages directly in bazel rules.  We could look into that.
 # Although its a better practice to run all of these commands a a single command since it will create less layers,
 # I'm keeping them separated as it makes debugging easier.
@@ -39,6 +39,8 @@ RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
 RUN apt-get install -y locales
 RUN apt-get install -y libxdo-dev
+RUN apt-get install -y libncurses5-dev
+RUN apt-get install -y libncursesw5-dev
 
 # packages we may or may not need
 # RUN apt-get install -y git-lfs
