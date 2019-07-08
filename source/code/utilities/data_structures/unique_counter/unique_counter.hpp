@@ -37,12 +37,7 @@ class Unique_Counter{
   }
   
   std::vector<std::pair<int,T>> Top_N_Most_Common(int amount) const{
-    std::priority_queue<std::pair<int,T>> q;
-    
-    for (auto const& it: hash_table){
-      auto add = std::make_pair(it.second,it.first);
-      q.push(add);
-    }
+    auto q = Convert_To_P_Queue();
     
     std::vector<std::pair<int,T>> results;
     for (size_t i = 0; i < amount && !q.empty(); ++i){
@@ -52,7 +47,35 @@ class Unique_Counter{
       results.emplace_back(p);
     }
     return results;
+  }
+  
+  template <typename Fun>
+  std::vector<std::pair<int,T>> Top_N_Most_Common_Passing_Predicate(int amount, Fun fun) const{
+    auto q = Convert_To_P_Queue();
     
+    std::vector<std::pair<int,T>> results;
+    for (size_t i = 0; i < amount && !q.empty();){
+      
+      auto p = q.top();
+      q.pop();
+      
+      if (fun(p.second)){
+        results.emplace_back(p);
+        ++i;
+      }
+    }
+    return results;
+  }
+  
+private:
+  std::priority_queue<std::pair<int,T>> Convert_To_P_Queue() const {
+    std::priority_queue<std::pair<int,T>> q;
+    
+    for (auto const& it: hash_table){
+      auto add = std::make_pair(it.second,it.first);
+      q.push(add);
+    }
+    return q;
   }
   
 };

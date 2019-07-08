@@ -20,17 +20,37 @@ class
 //SHOW STEP
 ◀public: static▶ void ☀Show_Results(Noogle_Running_Stats const& stats, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
+    //settings
+    int show_n_results = 40;
+    int refresh_rate_ms = 500;
+
     int chart_height = 0;
     while(!noogle_results.is_finished()){
         Clear_Terminal_Up_N_Lines(chart_height);
         
-        auto results = stats.currated_results.Top_N_Most_Common(40);
+        auto results = stats.currated_results.Top_N_Most_Common(show_n_results);
         auto chart = Chart_Getter::Get(results);
         chart_height = height(chart);
         std::cout << Build_Progress_Message(stats,chart);
         std::cout.flush();
-        Sleep_For_N_Milliseconds(500);
+        Sleep_For_N_Milliseconds(refresh_rate_ms);
     }
+❱
+
+◀public: static▶ std::vector<std::pair<int,std::string>> ☀Get_Results(Noogle_Running_Stats const& stats, int show_n_results)❰
+    switch (stats.style){
+        case Display_Style::ALL:
+        return stats.currated_results.Top_N_Most_Common(show_n_results);
+        break;
+        
+        case Display_Style::DATE:
+        return stats.currated_results.Top_N_Most_Common_Passing_Predicate(show_n_results,[&](std::string const& str){
+            return true;
+        });
+        break;
+    }
+    
+    return stats.currated_results.Top_N_Most_Common(show_n_results);
 ❱
 
 ◀private: static▶ std::string ☀Build_Progress_Message(Noogle_Running_Stats const& stats, std::string const& chart)❰
