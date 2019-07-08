@@ -40,6 +40,8 @@ hcp(name = "results_shower", deps = [
     "//code/utilities/chart/ascii:chart_getter",
     "//code/utilities/printers:lib",
     "//code/utilities/colors:lib",
+    "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/utilities/types/strings/observers/characteristic:is_month_word_checker",
 ])
 
 
