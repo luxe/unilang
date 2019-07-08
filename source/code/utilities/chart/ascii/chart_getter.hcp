@@ -9,35 +9,41 @@ class
 ❪"code/utilities/types/strings/creators/lib"❫
 ❪"code/utilities/math/math"❫
 ❪"code/utilities/colors/lib"❫
+❪"code/utilities/chart/ascii/chart_get_settings"❫
 ⚯
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(std::vector<std::pair<int,std::string>> const & stats)❰
-    
-    int bar_width = 30;
-    char pad_car = ' ';
-    std::string seperator = " | ";
-    std::string bar_portion = "█";
+◀public: static▶ std::string ☀Get(std::vector<std::pair<int,std::string>> const & stats, Chart_Get_Settings const& settings)❰
+
 
 
     std::string drawn;
     auto longest_word = Longest_Element_Size_Of_Pair_Second(stats);
     auto biggest_stat = Largest_Element_Size_Of_Pair_First(stats);
     for (auto const& it: stats){
-        drawn += pad_str_to_length(it.second,longest_word,pad_car);
-        drawn += seperator;
-        drawn += Get_Bar(it.first,biggest_stat,bar_width,bar_portion);
+        drawn += pad_str_to_length(it.second,longest_word,settings.pad_car);
+        drawn += settings.seperator;
+        drawn += Get_Bar(it.first,biggest_stat,settings);
         drawn += "\n";
     }
     return drawn;
 ❱
 
-◀private: static▶ std::string ☀Get_Bar(int val, int max, int bar_width, std::string bar_portion)❰
+◀private: static▶ std::string ☀Get_Bar(int val, int max, Chart_Get_Settings const& settings)❰
+
+    //create ascii bar
     float percentage = static_cast<float>(val) / static_cast<float>(max);
-    auto number_of_bars = Math::map_value_across_range(percentage,0,1,0,bar_width);
-    auto bar = Create_String_Of_N_Strs(number_of_bars,bar_portion);
-    int shade = static_cast<int>(Math::map_value_across_range(percentage,0,1,40,255));
-    auto colorized_bar = colorize_rgb(bar, 0, shade, 0);
-    colorized_bar += " " + std::to_string(val);
-    return colorized_bar;
+    auto number_of_bars = Math::map_value_across_range(percentage,0,1,0,settings.bar_width);
+    auto bar = Create_String_Of_N_Strs(number_of_bars,settings.bar_portion);
+    
+    //colorize the bar
+    if (settings.color_by_percentage){
+        int shade = static_cast<int>(Math::map_value_across_range(percentage,0,1,settings.range.low,settings.range.high));
+        bar = colorize_rgb(bar, 0, shade, 0);
+    }
+    
+    //add the quantity to the end
+    bar += " " + std::to_string(val);
+    return bar;
 ❱
+
