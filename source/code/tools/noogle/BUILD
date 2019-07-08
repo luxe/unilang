@@ -208,5 +208,10 @@ distributable_cpp_main(
     ],
     data = ":debian-data",
     description = "google but numbers",
-    depends = [],
+    depends = [
+        "zlib1g-dev",
+        "unzip",
+        "python3",
+        "python3-bs4",
+    ],
 )
