@@ -22,24 +22,19 @@ class
 //SHOW STEP
 ◀public: static▶ void ☀Show_Results(Noogle_Settings const& settings, Noogle_Running_Stats const& stats,FinishableSafeQueue<Noogle_Result> & noogle_results)❰
 
-    //settings
-    int show_n_results = 40;
-    int refresh_rate_ms = 500;
-    bool clear_terminal_on_refresh = true;
-
     int chart_height = 0;
     while(!noogle_results.is_finished()){
         
-        if (clear_terminal_on_refresh){
+        if (settings.show.clear_terminal_on_refresh){
             Clear_Terminal_Up_N_Lines(chart_height);
         }
         
-        auto results = Get_Results(stats,show_n_results);
+        auto results = Get_Results(stats,settings.show.show_n_results);
         auto chart = Chart_Getter::Get(results,settings.show.chart);
         chart_height = height(chart);
         std::cout << Build_Progress_Message(stats,chart);
         std::cout.flush();
-        Sleep_For_N_Milliseconds(refresh_rate_ms);
+        Sleep_For_N_Milliseconds(settings.show.refresh_rate_ms);
     }
 ❱
 
@@ -62,7 +57,6 @@ class
         break;
     }
     
-    std::cout << "should not happen" << std::endl;
     return stats.currated_results.Top_N_Most_Common(show_n_results);
 ❱
 
