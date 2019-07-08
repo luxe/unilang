@@ -2,7 +2,6 @@ class
 ❪"code/tools/noogle/meta_settings"❫
 ❪"code/utilities/web/automate/browser/browser_settings"❫
 ❪"code/tools/noogle/settings/noogle_settings"❫
-❪"code/utilities/data_structures/queue/safe_queue.h"❫
 ❪"code/utilities/data_structures/queue/finishable_safe_queue.h"❫
 ❪"code/tools/noogle/state/noogle_running_stats"❫
 ❪"code/tools/noogle/state/noogle_state_getter"❫
@@ -46,7 +45,6 @@ class
 ❪"code/tools/noogle/results_shower"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/html/html_raw_text_getter"❫
-❪"code/tools/noogle/token_adder"❫
 ❪"code/tools/noogle/query_extender"❫
 ❪"code/utilities/signals/lib"❫
 ❪"code/utilities/web/search_engines/search_engine_url_deviser"❫
@@ -56,6 +54,7 @@ class
 ❪"code/tools/noogle/html_sanitizer"❫
 ❪"code/tools/noogle/input_poller"❫
 ❪"code/utilities/ncurses/scoped_getch"❫
+❪"code/tools/noogle/noogle_results_extractor"❫
 ⚞⚟
 
 //apt-get install python3-bs4
@@ -102,8 +101,6 @@ class
     //running state across threads
     auto state = Noogle_State_Getter::Get();
     
-    //exit(0);
-    
     //all of the shared queues involved in the pipeline of converting
     //queries into noogle results
     FinishableSafeQueue<std::string> result_urls;
@@ -122,46 +119,11 @@ class
 
     
     jobs.emplace_back(Html_Sanitizer::Extract_Raw_Text,std::cref(settings),std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
-    jobs.emplace_back(Parse_For_Noogle_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
+    jobs.emplace_back(Noogle_Results_Extractor::Extract_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
     for (auto & it: jobs){
         it.join();
     }
 ❱
-
-
-//STEP 4
-◀private: static▶ void ☀Parse_For_Noogle_Results(Noogle_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & sanitized_text, FinishableSafeQueue<Noogle_Result> & noogle_results)❰
-    while(!sanitized_text.is_finished() || !sanitized_text.is_empty()){
-        
-        auto blob = sanitized_text.get();
-        Parse_Html_Blob(blob,stats,noogle_results,settings);
-    }
-    
-    noogle_results.mark_finished();
-❱
-◀private: static▶ void ☀Parse_Html_Blob(std::string const& blob, Noogle_Running_Stats & stats, FinishableSafeQueue<Noogle_Result> & noogle_results, Noogle_Settings const& settings)❰
-
-
-
-    std::unordered_set<std::string> local_site_results;
-    auto tokens = Default_Boost_Tokenize(blob);
-    for (size_t i = 0; i < tokens.size(); ++i){
-        Token_Adder::Decide_If_Token_Is_A_Result(stats,tokens[i],tokens,i,local_site_results,settings);
-    }
-    
-    //add local site results to global
-    for (auto const& it: local_site_results){
-        Noogle_Result result;
-        result.number = it;
-        noogle_results.add(result);
-        stats.currated_results.Add(result.number);
-        ++stats.results;
-        
-    }
-❱
-
-
-
 
 
 

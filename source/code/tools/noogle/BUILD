@@ -57,6 +57,15 @@ hcp(name = "results_url_to_html_converter", deps = [
     "//code/utilities/filesystem/files/creating:lib",
 ])
 
+hcp(name = "noogle_results_extractor", deps = [
+    "//code/tools/noogle/settings:noogle_settings",
+    "//code/utilities/data_structures/queue:finishable_safe_queue",
+    "//code/tools/noogle/state:noogle_running_stats",
+    "//code/tools/noogle:token_adder",
+    "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/tools/noogle:noogle_result",
+])
+
 
 hcp(name = "html_sanitizer", deps = [
     "//code/tools/noogle/settings:noogle_settings",
@@ -122,6 +131,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/tools/noogle:html_sanitizer",
     "//code/tools/noogle:input_poller",
     "//code/utilities/ncurses:scoped_getch",
+    "//code/tools/noogle:noogle_results_extractor",
 ])
 
 hcp(name = "input_poller", deps = [

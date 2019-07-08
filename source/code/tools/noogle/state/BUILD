@@ -17,6 +17,11 @@ hcp(name = "noogle_running_stats", deps = [
     "//code/tools/noogle/state:display_style",
 ])
 
+hcp(name = "message_queues", deps = [
+    "//code/utilities/data_structures/queue:finishable_safe_queue",
+    "//code/tools/noogle:noogle_result",
+])
+
 enum_cpp(
     name = "display_style",
     values = ["all","date"]
