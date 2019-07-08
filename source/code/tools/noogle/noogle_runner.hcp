@@ -9,6 +9,7 @@ class
 ❪atomic❫
 ❪unordered_set❫
 ❪"code/tools/noogle/program_options/program_options"❫
+❪"code/utilities/web/search_engines/search_engine_url_deviser"❫
 ⚯
 ❪iostream❫
 ❪thread❫
@@ -47,7 +48,6 @@ class
 ❪"code/utilities/types/strings/transformers/html/html_raw_text_getter"❫
 ❪"code/tools/noogle/query_extender"❫
 ❪"code/utilities/signals/lib"❫
-❪"code/utilities/web/search_engines/search_engine_url_deviser"❫
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/tools/noogle/results_url_getter"❫
 ❪"code/tools/noogle/results_url_to_html_converter"❫
@@ -88,6 +88,29 @@ class
     //settings
     auto settings = Default_Settings_Getter::Get();
     
+    auto search_engine_uninriched_fetch_settings = Get_Search_Engine_Uninriched_Fetch_Settings(settings,options);
+    
+    //running state across threads
+    auto state = Noogle_State_Getter::Get();
+    
+    // construct and run the jobs communicating over shared queues
+    std::vector<std::thread> jobs;
+    jobs.emplace_back(Input_Poller::Poll_User_Input,std::ref(state.stats));
+    jobs.emplace_back(Results_Shower::Show_Results,std::cref(state.stats),std::ref(state.queues.noogle_results));
+    
+    //network related tasks
+    jobs.emplace_back(Results_Url_Getter::Derive_From_Search_Engine_Urls,std::ref(state.stats),std::cref(settings),search_engine_uninriched_fetch_settings,std::ref(state.queues.result_urls));
+    jobs.emplace_back(Results_Url_To_Html_Converter::Convert,std::cref(settings), std::ref(state.stats),std::ref(state.queues.result_urls),std::ref(state.queues.html_results));
+
+    jobs.emplace_back(Html_Sanitizer::Extract_Raw_Text,std::cref(settings),std::ref(state.stats),std::ref(state.queues.html_results),std::ref(state.queues.sanitized_text));
+    jobs.emplace_back(Noogle_Results_Extractor::Extract_Results,std::cref(settings),std::ref(state.stats),std::ref(state.queues.sanitized_text),std::ref(state.queues.noogle_results));
+    for (auto & it: jobs){
+        it.join();
+    }
+❱
+
+◀public: static▶ std::vector<Search_Engine_Fetch_Settings> ☀Get_Search_Engine_Uninriched_Fetch_Settings(Noogle_Settings const& settings, Program_Options const& options)❰
+
     //expand the user's query to many enriched queries to help increase our search
     auto queries = Query_Extender::Expand_Query(settings.query_expand,options.Query());
     
@@ -97,35 +120,13 @@ class
     //there are usage limits and restrictions, and we want the ability to round-robin different credentials when
     //they fail.
     auto search_engine_uninriched_fetch_settings = Search_Engine_Url_Deviser::Devise(queries,settings.devise);
-    
-    //running state across threads
-    auto state = Noogle_State_Getter::Get();
-    
-    //all of the shared queues involved in the pipeline of converting
-    //queries into noogle results
-    FinishableSafeQueue<std::string> result_urls;
-    FinishableSafeQueue<std::string> html_results;
-    FinishableSafeQueue<std::string> sanitized_text;
-    FinishableSafeQueue<Noogle_Result> noogle_results;
-    
-    // construct and run the jobs communicating over shared queues
-    std::vector<std::thread> jobs;
-    jobs.emplace_back(Input_Poller::Poll_User_Input,std::ref(state.stats));
-    jobs.emplace_back(Results_Shower::Show_Results,std::cref(state.stats),std::ref(noogle_results));
-    
-    //network related tasks
-    jobs.emplace_back(Results_Url_Getter::Derive_From_Search_Engine_Urls,std::ref(state.stats),std::cref(settings),search_engine_uninriched_fetch_settings,std::ref(result_urls));
-    jobs.emplace_back(Results_Url_To_Html_Converter::Convert,std::cref(settings), std::ref(state.stats),std::ref(result_urls),std::ref(html_results));
+    return search_engine_uninriched_fetch_settings;
 
-    
-    jobs.emplace_back(Html_Sanitizer::Extract_Raw_Text,std::cref(settings),std::ref(state.stats),std::ref(html_results),std::ref(sanitized_text));
-    jobs.emplace_back(Noogle_Results_Extractor::Extract_Results,std::ref(settings),std::ref(state.stats),std::ref(sanitized_text),std::ref(noogle_results));
-    for (auto & it: jobs){
-        it.join();
-    }
 ❱
 
+◀public: static▶ void ☀Run_Jobs(Noogle_Settings const& settings, std::vector<Search_Engine_Fetch_Settings> const& search_engine_uninriched_fetch_settings)❰
 
+❱
 
 
 
