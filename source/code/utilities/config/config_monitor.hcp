@@ -8,6 +8,8 @@ class
 ❪"code/utilities/config/config_monitor_settings.hpp"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib.hpp"❫
 ❪"code/utilities/json/functions/lib"❫
+❪"code/utilities/diagnostic/diagnostic_settings"❫
+❪"code/utilities/diagnostic/diagnostic_printer"❫
 ⚯
 ⚞⚟
 
@@ -16,16 +18,34 @@ class
 ◀public: template <typename T>
 static bool Monitor_Changes(Config_Monitor_Settings & ms, T & settings, T const& default_settings){
     
+    //diagnostic settings
+    Diagnostic_Settings creating_config_message;
+    creating_config_message.message = "Config does not exist.  Creating\n";
+    creating_config_message.color = Diagnostic_Color::REGULAR;
+    creating_config_message.stream = Diagnostic_Stream::STDOUT;
+    creating_config_message.print = true;
+    creating_config_message.flush = true;
+    creating_config_message.exit = false;
+    
+    Diagnostic_Settings reloading_config_message;
+    reloading_config_message.message = "Config is newer.  Reloading\n";
+    reloading_config_message.color = Diagnostic_Color::REGULAR;
+    reloading_config_message.stream = Diagnostic_Stream::STDOUT;
+    reloading_config_message.print = true;
+    reloading_config_message.flush = true;
+    reloading_config_message.exit = false;
+    
+    
     // Make sure file exists first
     if (!File_Exists(ms.config_path)){
-        std::cout << "Config does not exist.  Creating" << std::endl;
+        Diagnostic_Printer::Report(creating_config_message);
         Write_Json_To_File(default_settings,ms.config_path);
         ms.was_updated = true;
     }
     
     // Update settings if needed
     if (Config_File_Newer(ms)){
-        std::cout << "Config is newer.  Reloading" << std::endl;
+        Diagnostic_Printer::Report(reloading_config_message);
         ms.was_updated = true;
         
         try{
