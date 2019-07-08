@@ -11,6 +11,7 @@ cc_library(
 )
 
 hcp(name="english_number_to_integral_converter",   deps = [
+  "//code/utilities/types/vectors/observers:lib",
   "//code/utilities/types/strings/transformers/casing:lib"
 ])
 
