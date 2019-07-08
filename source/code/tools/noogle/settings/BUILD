@@ -12,6 +12,7 @@ hcp(name = "noogle_settings", deps = [
     "//code/tools/noogle/settings:token_identifier_settings",
     "//code/tools/noogle/settings:search_engine_credentials",
     "//code/tools/noogle/settings:result_to_html_settings",
+    "//code/tools/noogle/settings:html_sanitize_settings",
 ])
 
 hcp(name = "query_expand_settings", deps = [
@@ -30,6 +31,9 @@ hcp(name = "search_engine_credentials", deps = [
 ])
 
 hcp(name = "result_to_html_settings", deps = [
+])
+
+hcp(name = "html_sanitize_settings", deps = [
 ])
 
 hcp(name = "default_settings_getter", deps = [

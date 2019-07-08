@@ -16,25 +16,61 @@ class
 
 ◀public: static▶ void ☀Extract_Raw_Text(Noogle_Settings const& settings, Noogle_Running_Stats & stats, FinishableSafeQueue<std::string> & html_results, FinishableSafeQueue<std::string> & sanitized_text)❰
 
+    //settings
+    bool store_failed_parsed_pages = false;
+    bool write_failed_html_files = false;
+    std::string dump_failed_html_location = "/home/laptop/Desktop/html_dump/";
+    
+    bool store_sucessful_parsed_pages = true;
+    bool write_successful_html_files = false;
+    std::string dump_successful_html_location = "/home/laptop/Desktop/html_dump/";
+    
     int i = 0;
-    bool write_html_files = false;
-    std::string dump_html_location = "/home/laptop/Desktop/html_dump/";
     
     while(!html_results.is_finished() || !html_results.is_empty()){
+        
+        //try to sanitize the html
         auto str = html_results.get();
-            ++stats.sanitized.total;
-            sanitized_text.add(parse_out_text_from_html(str));
-            ++stats.sanitized.current;
+        auto parsed = parse_out_text_from_html(str);
+        
+        //sanitize failed
+        if (parsed.empty()){
             
-           if (write_html_files){
-                Write_To_File(dump_html_location + std::to_string(i),parse_out_text_from_html(str));
-                ++i;
+            //possibly store
+            if (store_failed_parsed_pages){
+                Add_Results(sanitized_text,stats,str);
             }
             
+            //possibly save
+           if (write_failed_html_files){
+                Write_To_File(dump_failed_html_location + std::to_string(i),str);
+                ++i;
+            }
+        }
+        
+        //sanitize success
+        else{
             
+            //possibly store
+            if (store_sucessful_parsed_pages){
+                Add_Results(sanitized_text,stats,parsed);
+            }
+            
+            //possibly save
+           if (write_successful_html_files){
+                Write_To_File(dump_successful_html_location + std::to_string(i),parsed);
+                ++i;
+            }
+        }
     }
     sanitized_text.mark_finished();
     stats.sanitized.finished = true;
+❱
+
+◀private: static▶ void ☀Add_Results(FinishableSafeQueue<std::string> & sanitized_text, Noogle_Running_Stats & stats, std::string const& parsed)❰
+    ++stats.sanitized.total;
+    sanitized_text.add(parsed);
+    ++stats.sanitized.current;
 ❱
 
 ◀private: static▶ std::string ☀parse_out_text_from_html(std::string str)❰
@@ -43,7 +79,7 @@ class
         return result;
     }
     catch(...){
-        //sanitized_text.add(str);
+        //we couldn't sanitize the page
     }
-    return "empty";
+    return "";
 ❱
