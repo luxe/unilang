@@ -13,9 +13,9 @@ size_t Longest_Element_Size(std::vector<std::string> strs);
 
 
 template <typename T>
-size_t Next_Index_In_Round_Robin(T const& t, size_t i){
+size_t Next_Index_In_Round_Robin(T const& t, size_t const& i){
   if (i == t.size()-1){
-    i = 0;
+    return 0;
   }
   return i+1;
 }
