@@ -18,6 +18,8 @@ class Program_Options {
 	//| USER FLAGS                                               |
 	//+----------------------------------------------------------+
         std::string Query() const;
+        
+        std::string Get_Help_Message();
 
 
 	private:

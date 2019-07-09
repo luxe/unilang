@@ -2,6 +2,7 @@
 #include "program_options.hpp"
 #include <string>
 #include <iostream>
+#include <sstream>
 
 //constructor
 Program_Options::Program_Options(int const& argc, char** const& argv){
@@ -45,6 +46,11 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	;
 
     return desc;
+}
+std::string Program_Options::Get_Help_Message(){
+	std::stringstream ss;
+	ss << Get_Options_Description();
+	return ss.str();
 }
 void Program_Options::Build_Variable_Map(int const& argc, char** const& argv, boost::program_options::options_description const& desc, boost::program_options::positional_options_description const& pod){
 	using namespace boost::program_options;
