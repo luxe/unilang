@@ -30,5 +30,5 @@ hcp(name = "message_queues", deps = [
 
 enum_cpp(
     name = "display_style",
-    values = ["all","date"]
+    values = ["all","date","no_date"]
 )
