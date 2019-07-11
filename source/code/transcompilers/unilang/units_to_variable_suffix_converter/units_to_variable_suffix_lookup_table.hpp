@@ -4,6 +4,12 @@
 #include <unordered_map>
 
 //TODO: include measurement information LENGTH,VELOCITY, etc
+//we'll have to think about rates.
+//also look at what the units tool does in linux.  It says:
+//```
+//Currency exchange rates from finance.yahoo.com on 2017-10-31 
+//3045 units, 109 prefixes, 109 nonlinear units
+//```
 static const std::unordered_map<std::string,std::string> UNITS_TO_VARIABLE_SUFFIX_LOOKUP_TABLE
 
   //length
