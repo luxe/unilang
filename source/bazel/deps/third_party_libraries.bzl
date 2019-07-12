@@ -43,6 +43,7 @@ load("//bazel/deps/get:python3.bzl", "python3")
 load("//bazel/deps/get:tippecanoe.bzl", "tippecanoe")
 load("//bazel/deps/get:cxx_url.bzl", "cxx_url")
 load("//bazel/deps/get:getch.bzl", "getch")
+load("//bazel/deps/get:libpng.bzl", "libpng")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -114,6 +115,7 @@ def third_party_libraries():
     glfw()
     imgui()
     cairo()
+    libpng()
     gd()
     open_cv()
     open_cv_testdata()
