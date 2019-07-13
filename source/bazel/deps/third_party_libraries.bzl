@@ -45,6 +45,7 @@ load("//bazel/deps/get:cxx_url.bzl", "cxx_url")
 load("//bazel/deps/get:getch.bzl", "getch")
 load("//bazel/deps/get:libpng.bzl", "libpng")
 load("//bazel/deps/get:libjpeg.bzl", "libjpeg")
+load("//bazel/deps/get:freetype2.bzl", "freetype2")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -123,6 +124,9 @@ def third_party_libraries():
     open_cv_testdata()
     pixman()
     plant_uml()
+    
+    # Font
+    freetype2()
     
     # Database
     sqlite3()
