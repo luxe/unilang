@@ -46,6 +46,7 @@ load("//bazel/deps/get:getch.bzl", "getch")
 load("//bazel/deps/get:libpng.bzl", "libpng")
 load("//bazel/deps/get:libjpeg.bzl", "libjpeg")
 load("//bazel/deps/get:freetype2.bzl", "freetype2")
+load("//bazel/deps/get:fontconfig.bzl", "fontconfig")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -127,6 +128,7 @@ def third_party_libraries():
     
     # Font
     freetype2()
+    fontconfig()
     
     # Database
     sqlite3()
