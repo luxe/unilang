@@ -4,26 +4,26 @@
 
 licenses(["notice"])  # BSD-like
 
-genrule(
-    name = "config_h",
-    srcs = ["@//bazel/deps/build_files/fontconfig:config.h"],
-    outs = ["fontconfig_internal/config.h"],
-    cmd = "cp $< $@",
-)
+# genrule(
+#     name = "config_h",
+#     srcs = ["@//bazel/deps/build_files/fontconfig:config.h"],
+#     outs = ["fontconfig_internal/config.h"],
+#     cmd = "cp $< $@",
+# )
 
-genrule(
-    name = "fcstdint_h",
-    srcs = ["@//bazel/deps/build_files/fontconfig:fcstdint.h"],
-    outs = ["fontconfig_internal/fcstdint.h"],
-    cmd = "cp $< $@",
-)
+# genrule(
+#     name = "fcstdint_h",
+#     srcs = ["@//bazel/deps/build_files/fontconfig:fcstdint.h"],
+#     outs = ["fontconfig_internal/fcstdint.h"],
+#     cmd = "cp $< $@",
+# )
 
-genrule(
-    name = "fcobjshash_h",
-    srcs = ["@//bazel/deps/build_files/fontconfig:fcobjshash.h"],
-    outs = ["fontconfig_internal/fcobjshash.h"],
-    cmd = "cp $< $@",
-)
+# genrule(
+#     name = "fcobjshash_h",
+#     srcs = ["@//bazel/deps/build_files/fontconfig:fcobjshash.h"],
+#     outs = ["fontconfig_internal/fcobjshash.h"],
+#     cmd = "cp $< $@",
+# )
 
 genrule(
     name = "fcalias",
@@ -65,14 +65,14 @@ cc_library(
         #"fc-blanks/fcblanks.h",
         "fc-case/fccase.h",
         #"fc-glyphname/fcglyphname.hfcstdint_h",
-        #"fc-lang/fclang.h",
+        "fc-lang/fclang.h",
         "fontconfig/fcfreetype.h",
         "fontconfig/fcprivate.h",
         "src/fcarch.h",
         "src/fcatomic.c",
         "src/fcatomic.h",
         #"src/fcblanks.c",
-        #"src/fcstdint.h",
+        "src/fcstdint.h",
         "src/fccache.c",
         "src/fccfg.c",
         "src/fccharset.c",
@@ -95,20 +95,22 @@ cc_library(
         "src/fcname.c",
         "src/fcobjs.c",
         "src/fcobjs.h",
-        #"src/fcobjshash.h",
+        "src/fcobjshash.h",
         "src/fcpat.c",
         "src/fcrange.c",
         "src/fcserialize.c",
         "src/fcstat.c",
-        #"src/fcstdint.h",
         "src/fcstr.c",
         "src/fcweight.c",
         "src/fcxml.c",
+        "src/fcptrlist.c",
         "src/ftglue.c",
         "src/ftglue.h",
-        ":config_h",
-        ":fcstdint_h",
-        ":fcobjshash_h",
+        "config.h",
+        "config-fixups.h",
+        #":config_h",
+        # ":fcstdint_h",
+        # ":fcobjshash_h",
         ":fcalias",
         ":fcftalias",
     ],
@@ -119,6 +121,7 @@ cc_library(
         "-I$(GENDIR)/external/fontconfig/fontconfig_internal",
         "-DFC_CACHEDIR='\"/var/cache/fontconfig\"'",
         "-DFONTCONFIG_PATH='\"/etc/fonts\"'",
+        "-DFC_TEMPLATEDIR='\"/WHAT_SHOULD_THIS_BE\"'",
         "-DHAVE_CONFIG_H",
         "-Wno-everything",
     ],
