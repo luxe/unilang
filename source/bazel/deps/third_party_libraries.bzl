@@ -124,7 +124,6 @@ def third_party_libraries():
     open_cv()
     open_cv_testdata()
     pixman()
-    plant_uml()
     
     # Font
     freetype2()
