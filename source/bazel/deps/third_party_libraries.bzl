@@ -47,6 +47,9 @@ load("//bazel/deps/get:libpng.bzl", "libpng")
 load("//bazel/deps/get:libjpeg.bzl", "libjpeg")
 load("//bazel/deps/get:freetype2.bzl", "freetype2")
 load("//bazel/deps/get:fontconfig.bzl", "fontconfig")
+load("//bazel/deps/get:flatbuffers.bzl", "flatbuffers")
+load("//bazel/deps/get:ncurses.bzl", "ncurses")
+load("//bazel/deps/get:snappy.bzl", "snappy")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -106,6 +109,8 @@ def third_party_libraries():
     apache_thrift()
     cereal()
     expat()
+    flatbuffers()
+    snappy()
     
     # Data Structures
     andres_graph()
@@ -124,6 +129,7 @@ def third_party_libraries():
     open_cv()
     open_cv_testdata()
     pixman()
+    ncurses()
     
     # Font
     freetype2()

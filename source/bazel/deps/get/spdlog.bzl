@@ -5,10 +5,10 @@ def spdlog():
     http_archive(
         name = "spdlog",
         build_file = "//bazel/deps/build_files:spdlog.BUILD",
-        sha256 = "867a4b7cedf9805e6f76d3ca41889679054f7e5a3b67722fe6d0eae41852a767",
-        strip_prefix = "spdlog-1.2.1",
+        sha256 = "160845266e94db1d4922ef755637f6901266731c4cb3b30b45bf41efa0e6ab70",
+        strip_prefix = "spdlog-1.3.1",
         urls = [
-            "https://github.com/unilang/spdlog/releases/tag/v1.2.1",
-            "https://github.com/gabime/spdlog/releases/tag/v1.2.1",
+            "https://github.com/unilang/spdlog/archive/v1.3.1.tar.gz",
+            "https://github.com/gabime/spdlog/archive/v1.3.1.tar.gz",
         ],
     )
