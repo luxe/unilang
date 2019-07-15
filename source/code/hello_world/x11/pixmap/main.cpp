@@ -59,9 +59,9 @@ create_gc(Display* display, Window win, int reverse_video)
   int screen_num = DefaultScreen(display);
 
   gc = XCreateGC(display, win, valuemask, &values);
-  if (gc < 0) {
-    fprintf(stderr, "XCreateGC: \n");
-  }
+  //if (gc < 0) {
+  //  fprintf(stderr, "XCreateGC: \n");
+  //}
 
   /* allocate foreground and background colors for this GC. */
   if (reverse_video) {
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
     /* containing its data in the server, and put its ID in the 'bitmap' */
     /* variable.                                                         */
     int rc = XReadBitmapFile(display, win,
-                             "icon.bmp",
+                             "/home/thickey/Desktop/icon.bmp",
                              &bitmap_width, &bitmap_height,
                              &bitmap,
                              &hotspot_x, &hotspot_y);
