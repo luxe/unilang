@@ -5,6 +5,7 @@ def cpr():
     http_archive(
         name = "cpr",
         build_file = "//bazel/deps/build_files:cpr.BUILD",
+        patches = ["//bazel/deps/build_files:cpr.patch"],
         sha256 = "82597627e8b2aef1f0482631c9b11595c63a7565bb462a5995d126da4419ac99",
         strip_prefix = "cpr-1.3.0",
         urls = [
