@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-    cairo_surface_t *surface = cairo_svg_surface_create("Cairo_example.svg", 100.0, 100.0);
+    cairo_surface_t *surface = cairo_svg_surface_create("/home/laptop/Desktop/Cairo_example.svg", 100.0, 100.0);
     cairo_t *cr = cairo_create(surface);
 
     /* Draw the squares in the background */
@@ -23,7 +23,7 @@ int main(int argc, char **argv) {
     cairo_set_source_rgb (cr, 0, 0, 0);
 
     cairo_move_to(cr, 10, 25);
-    cairo_show_text(cr, "Hallo");
+    cairo_show_text(cr, "Hello");
 
     cairo_move_to(cr, 10, 75);
     cairo_show_text(cr, "Wikipedia!");
