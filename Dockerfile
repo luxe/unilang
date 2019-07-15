@@ -41,6 +41,8 @@ RUN apt-get install -y locales
 RUN apt-get install -y libxdo-dev
 RUN apt-get install -y libncurses5-dev
 RUN apt-get install -y libncursesw5-dev
+RUN apt-get install -y libxtst-dev
+RUN apt-get install -y libxaw7-dev
 
 # packages we may or may not need
 # RUN apt-get install -y git-lfs

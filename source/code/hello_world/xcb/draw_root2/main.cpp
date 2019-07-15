@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <xcb/xcb.h>
 
 int
@@ -35,7 +36,13 @@ main (){
 
     while(1)
     {
-        xcb_poly_rectangle (c, win, foreground, 1, rectangles);
+        for (size_t i =0; i < 1000; ++i){
+            rectangles[0].width = i;
+            xcb_poly_rectangle (c, win, foreground, 1, rectangles);
+            xcb_flush ( c );
+            usleep(1000);
+        }
+        xcb_clear_area(c, 1, win, 50, 50, 600,400);
         xcb_flush ( c );
     }
 }
