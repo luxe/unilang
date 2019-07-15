@@ -5,9 +5,10 @@ def cairo():
     http_archive(
         name = "cairo",
         build_file = "//bazel/deps/build_files:cairo.BUILD",
-        sha256 = "8c90f00c500b2299c0a323dd9beead2a00353752b2092ead558139bd67f7bf16",
-        strip_prefix = "cairo-1.14.12",
+        sha256 = "b1d1344b33f72fc239227e58d98acbe500946a520671e239ae3de89c7a72027d",
+        strip_prefix = "cairo-cbc241d338ca7bf927a7cfe23cb15c58491373e0",
         urls = [
-            "https://www.cairographics.org/releases/cairo-1.14.12.tar.xz",
+            "https://github.com/unilang/cairo/archive/cbc241d338ca7bf927a7cfe23cb15c58491373e0.tar.gz",
+            "https://github.com/freedesktop/cairo/archive/cbc241d338ca7bf927a7cfe23cb15c58491373e0.tar.gz",
         ],
     )
