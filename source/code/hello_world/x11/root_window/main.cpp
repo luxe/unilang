@@ -20,6 +20,7 @@ int main() {
 
     int s = DefaultScreen(d);
     Window w = RootWindow(d, s);
+    //Window w = (Window) 0x1e0000a;
     width = DisplayWidth(d, s);
     height = DisplayHeight(d, s);
 

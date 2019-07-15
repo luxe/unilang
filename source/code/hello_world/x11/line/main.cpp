@@ -15,13 +15,11 @@
 #include <assert.h>   // I include this to test return values the lazy way
 #include <unistd.h>   // So we got the profile for 10 seconds
 
-#define NIL (0)       // A name for the void pointer
-
 int main()
 {
       // Open the display
 
-      Display *dpy = XOpenDisplay(NIL);
+      Display *dpy = XOpenDisplay(NULL);
       assert(dpy);
 
       // Get some colors
@@ -30,9 +28,10 @@ int main()
       int whiteColor = WhitePixel(dpy, DefaultScreen(dpy));
 
       // Create the window
+    int s = DefaultScreen(dpy);
+    Window w2 = RootWindow(dpy, s);
 
-      Window w = XCreateSimpleWindow(dpy, DefaultRootWindow(dpy), 0, 0, 
-                     200, 100, 0, blackColor, blackColor);
+      Window w = XCreateSimpleWindow(dpy, w2, 0, 0, 200, 100, 0, blackColor, blackColor);
 
       // We want to get MapNotify events
 
@@ -44,7 +43,7 @@ int main()
 
       // Create a "Graphics Context"
 
-      GC gc = XCreateGC(dpy, w, 0, NIL);
+      GC gc = XCreateGC(dpy, w, 0, NULL);
 
       // Tell the GC we draw using the white color
 
