@@ -32,7 +32,16 @@ Display * open_display(){
     return theDisplay;
 }
 
-//void check_shape_extension
+void check_shape_extension(Display * theDisplay){
+
+    //check that we can do shape stuff
+    int event_base = 0;
+    int error_base = 0;
+    auto supported = XShapeQueryExtension(theDisplay,&event_base, &error_base);
+    if (!supported){
+        std::cout << "doesn't support shapes" << std::endl;
+    }
+}
 
 
 int main(){
@@ -40,6 +49,7 @@ int main(){
     //settings
     bool syncronize_debug_mode = false;
     bool set_error_handler = true;
+    bool check_for_shape_extension = true;
     
     if (set_error_handler){
         set_typical_x11_error_handler();
@@ -52,18 +62,16 @@ int main(){
     if (syncronize_debug_mode) {
         XSynchronize(theDisplay,true);
     }
-
-    //check that we can do shape stuff
-    int event_base = 0;
-    int error_base = 0;
-    auto supported = XShapeQueryExtension(theDisplay,&event_base, &error_base);
-    if (!supported){
-        std::cout << "doesn't support shapes" << std::endl;
+    
+    //feature check
+    if (check_for_shape_extension){
+        check_shape_extension(theDisplay);
     }
 
     //create the screen and depth
     int theScreen = DefaultScreen(theDisplay);
     unsigned int theDepth = DefaultDepth(theDisplay, theScreen);
+    //std::cout << theDepth << std::endl;
 
     //create the root window
     Window theRoot = RootWindow(theDisplay, theScreen);
@@ -79,6 +87,8 @@ int main(){
                &WindowPointX, &WindowPointY,
                &WindowWidth, &WindowHeight,
                &BorderWidth, &theDepth);
+    std::cout << WindowHeight << std::endl;
+    std::cout << WindowWidth << std::endl;
 
     //setup colors
     Colormap theColormap = DefaultColormap(theDisplay, theScreen);
@@ -112,7 +122,7 @@ int main(){
     
     //create main window
     unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
-    int BITMAP_WIDTH = 32;
+    int BITMAP_WIDTH = 16;
     int BITMAP_HEIGHT = 32;
     Window theWindow = XCreateWindow(theDisplay, theRoot, 0, 0,
                             BITMAP_WIDTH, BITMAP_HEIGHT,
@@ -205,18 +215,20 @@ int main(){
         //draw it
       XWindowChanges    theChanges;
 
-      theChanges.x = 100;
-      theChanges.y = 100;
-      XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
-    XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
-                      0, 0, BitmapMasksPtr, ShapeSet);
-      XMapWindow(theDisplay, theWindow);
-      XFillRectangle(theDisplay, theWindow, GCCreatePtr,
-                     0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
+       static int x_c = 200;
+       static int y_c = 100;
+       theChanges.x = x_c;
+       theChanges.y = y_c;
+       XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
+    // XShapeCombineMask(theDisplay, theWindow, ShapeBounding,
+    //                   0, 0, BitmapMasksPtr, ShapeSet);
+       XMapWindow(theDisplay, theWindow);
+    //   XFillRectangle(theDisplay, theWindow, GCCreatePtr,
+    //                  0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
       
       //mona lisa
       XImage *img;
-      XpmReadFileToImage (theDisplay, "/home/laptop/Desktop/monalisa.xpm", &img, NULL, NULL);
+      XpmReadFileToImage (theDisplay, "/home/laptop/Desktop/mario1.xpm", &img, NULL, NULL);
       
       std::cout << XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
                 0,
