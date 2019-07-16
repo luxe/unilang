@@ -6,7 +6,7 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    linkopts = ["-lX11", "-lXext"],
+    linkopts = ["-lX11", "-lXext", "-lXpm"],
     copts = [
         "-Wno-everything",
     ],

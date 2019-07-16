@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include<X11/xpm.h>
 #include <X11/extensions/shape.h>
 
 
@@ -196,10 +197,20 @@ int main(){
       XMapWindow(theDisplay, theWindow);
       XFillRectangle(theDisplay, theWindow, GCCreatePtr,
                      0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
-      XFlush(theDisplay);
+      
+      //mona lisa
+      XImage *img;
+      XpmReadFileToImage (theDisplay, "/home/laptop/Desktop/monalisa.xpm", &img, NULL, NULL);
+      
+      std::cout << XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
+                0,
+                0,
+                img->width, img->height ) << std::endl;
+      
+    XFlush(theDisplay);
       
       sleep(1);
-      std::cout << "sdf" << std::endl;
+      //std::cout << "sdf" << std::endl;
     }
     
     
