@@ -9,11 +9,7 @@
 
 
 
-
-int main(){
-    
-    //settings
-    bool syncronize_debug_mode = false;
+void set_typical_x11_error_handler(){
     
     //error handler
     XSetErrorHandler([](Display *dpy, XErrorEvent *err){
@@ -23,14 +19,34 @@ int main(){
             exit(1);
             return 0;
     });
+}
 
+Display * open_display(){
+    
     //create the main display
     Display *theDisplay = nullptr;
     if ((theDisplay = XOpenDisplay(NULL)) == NULL) {
         std::cerr << "can't create display" << std::endl;
         exit(1);
     }
+    return theDisplay;
+}
 
+//void check_shape_extension
+
+
+int main(){
+    
+    //settings
+    bool syncronize_debug_mode = false;
+    bool set_error_handler = true;
+    
+    if (set_error_handler){
+        set_typical_x11_error_handler();
+    }
+
+    //create the main display
+    auto theDisplay = open_display();
 
     //turn on debug sync mode
     if (syncronize_debug_mode) {
