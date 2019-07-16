@@ -569,8 +569,7 @@ MakeMouseCursor()
  *      色を初期設定する
  */
 
-void
-SetupColors()
+void SetupColors()
 {
     XColor      theExactColor;
     Colormap    theColormap;
