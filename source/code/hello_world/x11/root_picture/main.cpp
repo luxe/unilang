@@ -8,6 +8,20 @@
 #include <X11/extensions/shape.h>
 
 
+struct x11_window_geometry {
+  int x = 0;
+  int y = 0;
+  unsigned int width = 0;
+  unsigned int height = 0;
+  unsigned int border_width = 0;
+  unsigned int depth = 0;
+};
+
+struct x11_bg_fg_colors {
+  XColor bg;
+  XColor fg;
+};
+
 
 void set_typical_x11_error_handler(){
     
@@ -41,6 +55,55 @@ void check_shape_extension(Display * theDisplay){
     if (!supported){
         std::cout << "doesn't support shapes" << std::endl;
     }
+}
+
+x11_window_geometry get_geometry(Display * theDisplay, Window theRoot){
+    x11_window_geometry geo;
+    Window theTempRoot;
+    XGetGeometry(theDisplay, theRoot, &theTempRoot,
+               &geo.x, &geo.y,
+               &geo.width, &geo.height,
+               &geo.border_width, &geo.depth);
+  return geo;
+}
+
+x11_bg_fg_colors setup_colors(Display * theDisplay, int theScreen, unsigned int theDepth)
+{
+    x11_bg_fg_colors colors;
+    
+    Colormap theColormap = DefaultColormap(theDisplay, theScreen);
+    std::string Foreground = "black";
+    std::string Background = "white";
+    if (theDepth == 1) {
+        Foreground = "black";
+        Background = "white";
+    }
+
+    XColor      theExactColor;
+    if (!XAllocNamedColor(theDisplay, theColormap,
+                Foreground.c_str(), &colors.fg, &theExactColor)) {
+        std::cerr << "Can't XAllocNamedColor" << std::endl;
+        exit(1);
+    }
+
+    if (!XAllocNamedColor(theDisplay, theColormap,
+                Background.c_str(), &colors.bg, &theExactColor)) {
+        std::cerr << "Can't XAllocNamedColor" << std::endl;
+        exit(1);
+    }
+    
+    return colors;
+}
+
+XImage *Load_Image(Display * theDisplay, std::string const& file_name){
+
+      XImage *img;
+      auto failed = XpmReadFileToImage (theDisplay, file_name.c_str(), &img, NULL, NULL);
+      if (failed){
+        std::cout << "could not load image" << std::endl;
+        exit(0);
+      }
+      return img;
 }
 
 
@@ -77,48 +140,18 @@ int main(){
     Window theRoot = RootWindow(theDisplay, theScreen);
 
     //builds geometry
-    Window theTempRoot;
-    int WindowPointX = 0;
-    int WindowPointY = 0;
-    unsigned int WindowWidth = 0;
-    unsigned int WindowHeight = 0;
-    unsigned int BorderWidth = 0;
-    XGetGeometry(theDisplay, theRoot, &theTempRoot,
-               &WindowPointX, &WindowPointY,
-               &WindowWidth, &WindowHeight,
-               &BorderWidth, &theDepth);
-    std::cout << WindowHeight << std::endl;
-    std::cout << WindowWidth << std::endl;
+    auto geo = get_geometry(theDisplay, theRoot);
 
     //setup colors
-    Colormap theColormap = DefaultColormap(theDisplay, theScreen);
-    std::string Foreground = "black";
-    std::string Background = "white";
-    if (theDepth == 1) {
-        Foreground = "black";
-        Background = "white";
-    }
-
-    XColor      theExactColor;
-    XColor  theForegroundColor;
-    XColor  theBackgroundColor;
-    if (!XAllocNamedColor(theDisplay, theColormap,
-                Foreground.c_str(), &theForegroundColor, &theExactColor)) {
-        std::cerr << "Can't XAllocNamedColor" << std::endl;
-        exit(1);
-    }
-
-    if (!XAllocNamedColor(theDisplay, theColormap,
-                Background.c_str(), &theBackgroundColor, &theExactColor)) {
-        std::cerr << "Can't XAllocNamedColor" << std::endl;
-        exit(1);
-    }
+    auto colors = setup_colors(theDisplay, theScreen, theDepth);
     
     //set window attributes
     XSetWindowAttributes  theWindowAttributes;
-    theWindowAttributes.background_pixel = theBackgroundColor.pixel;
+    theWindowAttributes.background_pixel = colors.bg.pixel;
     theWindowAttributes.override_redirect = true;
-    XChangeWindowAttributes(theDisplay, theRoot, CWCursor, &theWindowAttributes);
+    
+    //change the cursor. no thanks.
+    //XChangeWindowAttributes(theDisplay, theRoot, CWCursor, &theWindowAttributes);
     
     //create main window
     unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
@@ -142,14 +175,13 @@ int main(){
 
     while (true){
         
-        //I don't think this is necessary
+        //I think we need to wait until the server is ready?
+        //this is how we do that.
         while (XPending(theDisplay)) {
-            std::cout << "sdfsdf2   " << std::endl;
             XNextEvent(theDisplay,&theEvent);
             switch (theEvent.type) {
                 case Expose:
                 if (theEvent.xexpose.count == 0) {
-                    std::cout << "sdfsdf!!" << std::endl;
                 }
                 break;
             }
@@ -190,16 +222,16 @@ int main(){
     Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(theDisplay, theRoot,
                     awake_bsd_bits,
                     BITMAP_WIDTH, BITMAP_HEIGHT,
-                    theForegroundColor.pixel,
-                    theBackgroundColor.pixel,
+                    colors.fg.pixel,
+                    colors.bg.pixel,
                     DefaultDepth(theDisplay, theScreen));
 
     Pixmap BitmapMasksPtr = XCreateBitmapFromData(theDisplay, theRoot, awake_bsd_mask_bits, BITMAP_WIDTH, BITMAP_HEIGHT);
 
     XGCValues           theGCValues;
     theGCValues.function = GXcopy;
-    theGCValues.foreground = theForegroundColor.pixel;
-    theGCValues.background = theBackgroundColor.pixel;
+    theGCValues.foreground = colors.fg.pixel;
+    theGCValues.background = colors.bg.pixel;
     theGCValues.fill_style = FillTiled;
     theGCValues.ts_x_origin = 0;
     theGCValues.ts_y_origin = 0;
@@ -226,14 +258,12 @@ int main(){
     //   XFillRectangle(theDisplay, theWindow, GCCreatePtr,
     //                  0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
       
-      //mona lisa
-      XImage *img;
-      XpmReadFileToImage (theDisplay, "/home/laptop/Desktop/mario1.xpm", &img, NULL, NULL);
+      auto img = Load_Image(theDisplay, "/home/thickey/Desktop/mario1.xpm");
       
-      std::cout << XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
+      XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
                 0,
                 0,
-                img->width, img->height ) << std::endl;
+                img->width, img->height );
       
     XFlush(theDisplay);
       
