@@ -249,6 +249,7 @@ int main(){
 
        static int x_c = 200;
        static int y_c = 100;
+       ++x_c;
        theChanges.x = x_c;
        theChanges.y = y_c;
        XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
