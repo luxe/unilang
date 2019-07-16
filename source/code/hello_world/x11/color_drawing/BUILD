@@ -10,4 +10,4 @@ cc_binary(
     copts = [
         "-Wno-everything",
     ],
-)
+) 
