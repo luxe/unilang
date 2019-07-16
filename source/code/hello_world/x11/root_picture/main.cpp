@@ -6,6 +6,8 @@
 #include <X11/Xutil.h>
 #include<X11/xpm.h>
 #include <X11/extensions/shape.h>
+#include <sys/time.h>
+#include <signal.h>
 
 
 struct x11_window_geometry {
@@ -106,6 +108,63 @@ XImage *Load_Image(Display * theDisplay, std::string const& file_name){
       return img;
 }
 
+static void InterruptNullFunctionCatcher(int x)
+{
+  /* No Operation */
+#if defined(SYSV) || defined(SVR4)
+  signal(SIGALRM, InterruptNullFunctionCatcher);
+#endif /* SYSV || SVR4 */
+}
+
+void set_interrupt_timer(unsigned long usec_delay){
+  struct itimerval      x;
+  timerclear(&x.it_interval);
+  timerclear(&x.it_value);
+  x.it_interval.tv_usec = usec_delay;
+  x.it_value.tv_usec = usec_delay;
+  setitimer(ITIMER_REAL, &x, 0);
+}
+
+
+template <typename Fun>
+void within_interrupt_timer(unsigned long usec_delay, Fun f){
+  set_interrupt_timer(usec_delay);
+  f();
+  pause();
+}
+
+template <typename Fun>
+void infinite_interrupt_loop(unsigned long usec_delay, Fun f){
+  
+  signal(SIGALRM, InterruptNullFunctionCatcher);
+  while (true){
+    within_interrupt_timer(usec_delay,[&](){
+      f();
+    });
+  }
+}
+
+
+
+void process_x11_events(Display * theDisplay){
+  
+    //I think we need to wait until the server is ready?
+    //this is how we do that.
+  XEvent theEvent;
+    while (XPending(theDisplay)) {
+        XNextEvent(theDisplay,&theEvent);
+        switch (theEvent.type) {
+            case Expose:
+              if (theEvent.xexpose.count == 0) {
+              }
+              break;
+            case KeyPress:
+              std::cout << "key pressed" << std::endl;
+              break;
+        }
+    }
+}
+
 
 int main(){
     
@@ -171,21 +230,10 @@ int main(){
     
     
     //main looping logic
-    XEvent      theEvent;
-
-    while (true){
+    auto img = Load_Image(theDisplay, "/home/thickey/Desktop/mario1.xpm");
+    infinite_interrupt_loop(10000L,[&](){
         
-        //I think we need to wait until the server is ready?
-        //this is how we do that.
-        while (XPending(theDisplay)) {
-            XNextEvent(theDisplay,&theEvent);
-            switch (theEvent.type) {
-                case Expose:
-                if (theEvent.xexpose.count == 0) {
-                }
-                break;
-            }
-        }
+        process_x11_events(theDisplay);
         
         
 
@@ -259,8 +307,6 @@ int main(){
     //   XFillRectangle(theDisplay, theWindow, GCCreatePtr,
     //                  0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
       
-      auto img = Load_Image(theDisplay, "/home/thickey/Desktop/mario1.xpm");
-      
       XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
                 0,
                 0,
@@ -268,9 +314,9 @@ int main(){
       
     XFlush(theDisplay);
       
-      sleep(1);
+      //sleep(9000);
       //std::cout << "sdf" << std::endl;
-    }
+    });
     
     
     

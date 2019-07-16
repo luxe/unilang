@@ -1418,8 +1418,7 @@ ProcessNeko()
  *      SIGALRM シグナル処理
  */
 
-static void
-NullFunction(int x)
+static void NullFunction(int x)
 {
   /* No Operation */
 #if defined(SYSV) || defined(SVR4)
