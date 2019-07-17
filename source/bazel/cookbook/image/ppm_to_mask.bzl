@@ -1,8 +1,10 @@
+
+
 def ppm_to_mask(name):
     
     target_name = name + "_ppm_mask"
     ppm_name = name + ".ppm"
-    ppm_name_two = name + "-mask.ppm"
+    ppm_name_two = name + "_mask.ppm"
     
     native.genrule(
         name = target_name,

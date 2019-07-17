@@ -272,7 +272,7 @@ static char mario_bitmask_bits[] = {
                     colors.bg.pixel,
                     DefaultDepth(theDisplay, theScreen));
 
-    Pixmap BitmapMasksPtr = XCreateBitmapFromData(theDisplay, theRoot, mario_bitmask_bits, BITMAP_WIDTH, BITMAP_HEIGHT);
+    Pixmap BitmapMasksPtr = XCreateBitmapFromData(theDisplay, theRoot, bitmask->    data, BITMAP_WIDTH, BITMAP_HEIGHT);
 
     XGCValues           theGCValues;
     theGCValues.function = GXcopy;

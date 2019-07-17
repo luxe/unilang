@@ -1,16 +1,15 @@
 
-
-def png_to_xpm(name):
+def ppm_to_xpm(name):
     
     target_name = name + "_xpm"
-    png_name = name + ".png"
+    ppm_name = name + ".ppm"
     xpm_name = name + ".xpm"
     
     native.genrule(
         name = target_name,
-        srcs = [png_name],
+        srcs = [ppm_name],
         outs = [xpm_name],
         cmd = """
-              convert $(SRCS) $(OUTS)
+              ppmtoxpm $(SRCS) > $(OUTS)
               """
     )
