@@ -176,30 +176,90 @@ void process_x11_events(Display * theDisplay){
     }
 }
 
+GC Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow, Window theRoot, x11_bg_fg_colors colors, int width, int height){
+  
+    static char garbage[] = {};
+    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(theDisplay, theRoot,
+                    garbage,
+                    width, height,
+                    colors.fg.pixel,
+                    colors.bg.pixel,
+                    DefaultDepth(theDisplay, theScreen));
+  
+  
+    XGCValues           theGCValues;
+    memset(&theGCValues,0,sizeof(XGCValues));
+    theGCValues.function = GXcopy;
+    theGCValues.foreground = colors.fg.pixel;
+    theGCValues.background = colors.bg.pixel;
+    theGCValues.fill_style = FillTiled;
+    theGCValues.ts_x_origin = 0;
+    theGCValues.ts_y_origin = 0;
+    theGCValues.tile = BitmapCreatePtr;
 
-int main(){
+    GC GCCreatePtr = XCreateGC(theDisplay, theWindow,
+                    GCFunction | GCForeground | GCBackground | GCTile |
+                    GCTileStipXOrigin | GCTileStipYOrigin | GCFillStyle,
+                    &theGCValues);
+    return GCCreatePtr;
     
-    //settings
+}
+
+
+
+struct setup_display_settings {
     bool syncronize_debug_mode = false;
     bool set_error_handler = false;
     bool check_for_shape_extension = true;
-    
-    if (set_error_handler){
+};
+
+
+Display * setup_display(setup_display_settings const& settings){
+  
+    if (settings.set_error_handler){
         set_typical_x11_error_handler();
     }
 
     //create the main display
-    auto theDisplay = open_display();
+    auto d = open_display();
 
     //turn on debug sync mode
-    if (syncronize_debug_mode) {
-        XSynchronize(theDisplay,true);
+    if (settings.syncronize_debug_mode) {
+        XSynchronize(d,true);
     }
     
     //feature check
-    if (check_for_shape_extension){
-        check_shape_extension(theDisplay);
+    if (settings.check_for_shape_extension){
+        check_shape_extension(d);
     }
+    
+    return d;
+}
+
+
+struct main_x11_state {
+  
+  //some display/screen info
+  Display * d;
+  int screen;
+  unsigned int depth;
+  
+  //root window info
+  Window root;
+  x11_window_geometry root_geo;
+  
+  x11_bg_fg_colors colors;
+};
+
+
+int main(){
+    
+    //create the main display
+    setup_display_settings settings;
+    settings.syncronize_debug_mode = false;
+    settings.set_error_handler = false;
+    settings.check_for_shape_extension = true;
+    auto theDisplay = setup_display(settings);
 
     //create the screen and depth
     int theScreen = DefaultScreen(theDisplay);
@@ -224,25 +284,23 @@ int main(){
     //XChangeWindowAttributes(theDisplay, theRoot, CWCursor, &theWindowAttributes);
     
     //create main window
+    auto img = Load_Xpm_Image(theDisplay, "/usr/local/share/mario/mario-stand.xpm");
     unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
-    int BITMAP_WIDTH = 16;
-    int BITMAP_HEIGHT = 32;
     Window theWindow = XCreateWindow(theDisplay, theRoot, 0, 0,
-                            BITMAP_WIDTH, BITMAP_HEIGHT,
+                            img->width, img->height,
                             0, theDepth, InputOutput, CopyFromParent,
                             theWindowMask, &theWindowAttributes);
     XStoreName(theDisplay, theWindow, "window_name");
     XSelectInput(theDisplay, theWindow,
                ExposureMask|VisibilityChangeMask|KeyPressMask);
     
-    //  XUndefineCursor(theDisplay,theRoot);
-    //XUndefineCursor(theDisplay,theWindow);
     XFlush(theDisplay);
     
     
     
     
-    auto img = Load_Xpm_Image(theDisplay, "/usr/local/share/mario/mario-stand.xpm");
+    
+    auto gc = Create_Graphics_Context(theDisplay,theScreen,theWindow,theRoot,colors,img->width, img->height);
     
     //some garbage boilerplate for loading images
     //we need this pixmap for some reason so we can load other pixmaps?
@@ -266,21 +324,6 @@ int main(){
         
 
     //create the image
-
-    XGCValues           theGCValues;
-    memset(&theGCValues,0,sizeof(XGCValues));
-    theGCValues.function = GXcopy;
-    theGCValues.foreground = colors.fg.pixel;
-    theGCValues.background = colors.bg.pixel;
-    theGCValues.fill_style = FillTiled;
-    theGCValues.ts_x_origin = 0;
-    theGCValues.ts_y_origin = 0;
-    theGCValues.tile = BitmapCreatePtr;
-
-    GC GCCreatePtr = XCreateGC(theDisplay, theWindow,
-                    GCFunction | GCForeground | GCBackground | GCTile |
-                    GCTileStipXOrigin | GCTileStipYOrigin | GCFillStyle,
-                    &theGCValues);
     
     
         //draw it
@@ -294,9 +337,9 @@ int main(){
        XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
        XShapeCombineMask(theDisplay, theWindow, ShapeBounding, 0, 0, bitmask, ShapeSet);
        XMapWindow(theDisplay, theWindow);
-       XFillRectangle(theDisplay, theWindow, GCCreatePtr, 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
+       XFillRectangle(theDisplay, theWindow, gc, 0, 0, img->width, img->height);
       
-      XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
+      XPutImage(theDisplay, theWindow, gc, img, 0, 0,
                 0,
                 0,
                 img->width, img->height );
