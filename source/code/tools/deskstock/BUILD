@@ -86,7 +86,6 @@ distributable_cpp_main(
         "//code/tools/deskstock:deskstock_runner",
         "//code/tools/deskstock:meta_settings"
     ],
-    data = ":debian-data",
     description = "Feel the stock market while you work",
     depends = [
         "zlib1g-dev",

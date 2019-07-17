@@ -1,0 +1,41 @@
+package(default_visibility = ["//visibility:public"])
+load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
+load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
+load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
+
+cpp_main("mario")
+package_binaries(name = "mario", binary_targets = [":mario"])
+
+pkg_tar(
+    name = "mario_all_deb_data",
+    extension = "tar.gz",
+    deps = [
+        ":mario-data",
+        "//code/tools/mario/assets:mario-data"
+    ],
+)
+
+
+
+
+
+
+MAINTAINER = "Trevor Hickey <TrevorJamesHickey@gmail.com>"
+DEFAULT_VERSION = "1.0"
+DEFAULT_HOMEPAGE = "none"
+
+pkg_deb(
+    name = "mario-debian-amd64",
+    data = ":mario_all_deb_data",
+    package = "mario",
+    architecture = "amd64",
+    maintainer = MAINTAINER,
+    version = DEFAULT_VERSION,
+    description = "mario on your desktop",
+    homepage = DEFAULT_HOMEPAGE,
+    depends = [],
+)

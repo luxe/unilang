@@ -9,3 +9,8 @@ def png_to_x11_artifacts(name):
     xpm_to_ppm(name)
     ppm_to_mask(name)
     ppm_to_xpm(name + "_mask")
+    
+    native.filegroup(
+        name = name + "_data",
+        srcs = [name + ".xpm", name + "_mask.xpm"],
+    )

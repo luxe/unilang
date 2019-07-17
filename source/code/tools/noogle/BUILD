@@ -207,7 +207,6 @@ distributable_cpp_main(
         "//code/tools/noogle:meta_settings",
         "//code/tools/noogle/program_options:lib",
     ],
-    data = ":debian-data",
     description = "google but numbers",
     depends = [
         "zlib1g-dev",
