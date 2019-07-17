@@ -284,63 +284,74 @@ main_x11_state create_main_x11_state(setup_display_settings const& settings){
 }
 
 struct x11_image_sprite{
+  XImage *main;
+  Pixmap bitmap_mask;
+  std::string name;
 };
+
+
+x11_image_sprite load_image_sprite(main_x11_state const& state, std::string const& path, std::string const& name){
+  x11_image_sprite sprite;
+  sprite.name = name;
+  sprite.main = Load_Xpm_Image(state.d, path + name + ".xpm");
+  sprite.bitmap_mask = Load_Xbm_Image(state,sprite.main->width, sprite.main->height,path + name + "_mask.xbm");
+  return sprite;
+}
+
+
+Window create_window_from_sprite(main_x11_state const& state, x11_image_sprite const& sprite){
+  
+  //set window attributes
+  XSetWindowAttributes  theWindowAttributes;
+  memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
+  theWindowAttributes.background_pixel = state.colors.bg.pixel;
+  theWindowAttributes.override_redirect = 1;
+    
+  unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
+  Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
+                          sprite.main->width, sprite.main->height,
+                          0, state.depth, InputOutput, CopyFromParent,
+                          theWindowMask, &theWindowAttributes);
+  
+    XStoreName(state.d, theWindow, sprite.name.c_str());
+    XSelectInput(state.d, theWindow,
+               ExposureMask|VisibilityChangeMask|KeyPressMask);
+    
+    XFlush(state.d);
+    return theWindow;
+}
+
+template <typename Fun>
+void x11_game_loop(main_x11_state const& state, Fun fun){
+
+  infinite_interrupt_loop(5000L,[&](){
+    
+    //necessary wait for XServer I think
+    process_x11_events(state.d);
+    
+    //what the use wants to do each cycle
+    fun();
+    
+    //do we need to flush?
+    //XFlush(state.d);
+    
+  });
+}
 
 
 int main(){
     
     //create the main display
+    //this is typical x11 boilerplate setup stuff
     setup_display_settings settings;
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
     settings.check_for_shape_extension = true;
-    
     auto state = create_main_x11_state(settings);
     
     
-    
-    
-    
-    //set window attributes
-    XSetWindowAttributes  theWindowAttributes;
-    memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
-    theWindowAttributes.background_pixel = state.colors.bg.pixel;
-    theWindowAttributes.override_redirect = 1;
-    
-    //change the cursor. no thanks.
-    //XChangeWindowAttributes(theDisplay, state.root, CWCursor, &theWindowAttributes);
-    
-    //create main window
-    auto img = Load_Xpm_Image(state.d, "/usr/local/share/mario/mario-stand.xpm");
-    unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
-    Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
-                            img->width, img->height,
-                            0, state.depth, InputOutput, CopyFromParent,
-                            theWindowMask, &theWindowAttributes);
-    XStoreName(state.d, theWindow, "window_name");
-    XSelectInput(state.d, theWindow,
-               ExposureMask|VisibilityChangeMask|KeyPressMask);
-    
-    XFlush(state.d);
-    
-    
-    
-    
-    
-    auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,img->width, img->height);
-    
-    //some garbage boilerplate for loading images
-    //we need this pixmap for some reason so we can load other pixmaps?
-    static char garbage[] = {};
-    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(state.d, state.root,
-                    garbage,
-                    img->width, img->height,
-                    state.colors.fg.pixel,
-                    state.colors.bg.pixel,
-                    DefaultDepth(state.d, state.screen));
-    
-    
-    auto bitmask = Load_Xbm_Image(state,img->width, img->height,"/usr/local/share/mario/mario-stand_mask.xbm");
+    auto sprite = load_image_sprite(state,"/usr/local/share/mario/","mario-stand");
+    auto theWindow = create_window_from_sprite(state,sprite);
     
     //main looping logic
     //why not just use a timer/sleep?
@@ -348,48 +359,31 @@ int main(){
     //c interrupt loop, and thought it might be better for x11.
     //especially because I had an infinite while(true) before and
     //it made my computer freeze
-    infinite_interrupt_loop(10000L,[&](){
-        
-        //necessary wait for XServer I think
-        process_x11_events(state.d);
-        
+    x11_game_loop(state,[&](){
         
 
     //create the image
     
     
         //draw it
-      XWindowChanges    theChanges;
-
+        XWindowChanges    theChanges;
        static int x_c = 200;
        static int y_c = 100;
        ++x_c;
        theChanges.x = x_c;
        theChanges.y = y_c;
+       
+       
        XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
-       XShapeCombineMask(state.d, theWindow, ShapeBounding, 0, 0, bitmask, ShapeSet);
+       XShapeCombineMask(state.d, theWindow, ShapeBounding, 0, 0, sprite.bitmap_mask, ShapeSet);
        XMapWindow(state.d, theWindow);
-       XFillRectangle(state.d, theWindow, gc, 0, 0, img->width, img->height);
+       auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,sprite.main->width, sprite.main->height);
+       XFillRectangle(state.d, theWindow, gc, 0, 0, sprite.main->width, sprite.main->height);
       
-      XPutImage(state.d, theWindow, gc, img, 0, 0,
+      XPutImage(state.d, theWindow, gc, sprite.main, 0, 0,
                 0,
                 0,
-                img->width, img->height );
-      
-    XFlush(state.d);
+                sprite.main->width, sprite.main->height );
     });
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
 }
