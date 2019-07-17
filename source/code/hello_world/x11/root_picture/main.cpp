@@ -299,7 +299,7 @@ x11_image_sprite load_image_sprite(main_x11_state const& state, std::string cons
 }
 
 
-Window create_window_from_sprite(main_x11_state const& state, x11_image_sprite const& sprite){
+Window create_game_window(main_x11_state const& state){
   
   //set window attributes
   XSetWindowAttributes  theWindowAttributes;
@@ -309,11 +309,11 @@ Window create_window_from_sprite(main_x11_state const& state, x11_image_sprite c
     
   unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
   Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
-                          sprite.main->width, sprite.main->height,
+                          state.root_geo.width, state.root_geo.height,
                           0, state.depth, InputOutput, CopyFromParent,
                           theWindowMask, &theWindowAttributes);
   
-    XStoreName(state.d, theWindow, sprite.name.c_str());
+    XStoreName(state.d, theWindow, "mario game");
     XSelectInput(state.d, theWindow,
                ExposureMask|VisibilityChangeMask|KeyPressMask);
     
@@ -343,15 +343,24 @@ int main(){
     
     //create the main display
     //this is typical x11 boilerplate setup stuff
+    //hopefully customizable enough that you don't have to dig into this
     setup_display_settings settings;
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
     settings.check_for_shape_extension = true;
     auto state = create_main_x11_state(settings);
     
+    //load all the sprites
+    //we assume that the file names match what is necessary for rendering xpm and xbm files in x11
+    auto mario_stand = load_image_sprite(state,"/usr/local/share/mario/","mario-stand");
+    auto mario_walk_1 = load_image_sprite(state,"/usr/local/share/mario/","mario-walk1");
+    auto mario_walk_2 = load_image_sprite(state,"/usr/local/share/mario/","mario-walk2");
+    auto mario_walk_3 = load_image_sprite(state,"/usr/local/share/mario/","mario-walk3");
     
-    auto sprite = load_image_sprite(state,"/usr/local/share/mario/","mario-stand");
-    auto theWindow = create_window_from_sprite(state,sprite);
+    
+    auto theWindow = create_game_window(state);
+    XMapWindow(state.d, theWindow);
+    auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,mario_stand.main->width, mario_stand.main->height);
     
     //main looping logic
     //why not just use a timer/sleep?
@@ -360,9 +369,6 @@ int main(){
     //especially because I had an infinite while(true) before and
     //it made my computer freeze
     x11_game_loop(state,[&](){
-        
-
-    //create the image
     
     
         //draw it
@@ -374,16 +380,14 @@ int main(){
        theChanges.y = y_c;
        
        
-       XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
-       XShapeCombineMask(state.d, theWindow, ShapeBounding, 0, 0, sprite.bitmap_mask, ShapeSet);
-       XMapWindow(state.d, theWindow);
-       auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,sprite.main->width, sprite.main->height);
-       XFillRectangle(state.d, theWindow, gc, 0, 0, sprite.main->width, sprite.main->height);
+       //XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
+       XShapeCombineMask(state.d, theWindow, ShapeBounding, x_c , y_c, mario_stand.bitmap_mask, ShapeSet);
+       //XFillRectangle(state.d, theWindow, gc, 0, 0, mario_stand.main->width, mario_stand.main->height);
       
-      XPutImage(state.d, theWindow, gc, sprite.main, 0, 0,
-                0,
-                0,
-                sprite.main->width, sprite.main->height );
+      XPutImage(state.d, theWindow, gc, mario_stand.main, 0, 0,
+                x_c ,
+                y_c,
+                mario_stand.main->width, mario_stand.main->height );
     });
     
 }
