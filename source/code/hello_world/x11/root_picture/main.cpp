@@ -24,6 +24,21 @@ struct x11_bg_fg_colors {
   XColor fg;
 };
 
+struct main_x11_state {
+  
+  //some display/screen info
+  Display * d;
+  int screen;
+  unsigned int depth;
+  
+  //root window info
+  Window root;
+  x11_window_geometry root_geo;
+  
+  //colors
+  x11_bg_fg_colors colors;
+};
+
 
 void set_typical_x11_error_handler(){
     
@@ -108,14 +123,24 @@ XImage *Load_Xpm_Image(Display * theDisplay, std::string const& file_name){
       return img;
 }
 
-Pixmap Load_Xbm_Image(Display * theDisplay, int x, std::string const& file_name){
-  
+Pixmap Load_Xbm_Image(main_x11_state const& state, int x, int y, std::string const& file_name){
+
+    //some garbage boilerplate for loading images
+    //we need this pixmap for some reason so we can load other pixmaps?
+    static char garbage[] = {};
+    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(state.d, state.root,
+                    garbage,
+                    x, y,
+                    state.colors.fg.pixel,
+                    state.colors.bg.pixel,
+                    DefaultDepth(state.d, state.screen));
+    
   Pixmap p;
   unsigned int w;
   unsigned int h;
   int hot_x;
   int hot_y;
-  auto failed = XReadBitmapFile(theDisplay,x,file_name.c_str(),&w,&h,&p,&hot_x,&hot_y);
+  auto failed = XReadBitmapFile(state.d,BitmapCreatePtr,file_name.c_str(),&w,&h,&p,&hot_x,&hot_y);
   return p;
 }
 
@@ -237,22 +262,6 @@ Display * setup_display(setup_display_settings const& settings){
 }
 
 
-struct main_x11_state {
-  
-  //some display/screen info
-  Display * d;
-  int screen;
-  unsigned int depth;
-  
-  //root window info
-  Window root;
-  x11_window_geometry root_geo;
-  
-  //colors
-  x11_bg_fg_colors colors;
-};
-
-
 main_x11_state create_main_x11_state(setup_display_settings const& settings){
   
   main_x11_state state;
@@ -274,6 +283,9 @@ main_x11_state create_main_x11_state(setup_display_settings const& settings){
   return state;
 }
 
+struct x11_image_sprite{
+};
+
 
 int main(){
     
@@ -282,9 +294,6 @@ int main(){
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
     settings.check_for_shape_extension = true;
-    
-    
-    
     
     auto state = create_main_x11_state(settings);
     
@@ -331,7 +340,7 @@ int main(){
                     DefaultDepth(state.d, state.screen));
     
     
-    auto bitmask = Load_Xbm_Image(state.d,BitmapCreatePtr,"/usr/local/share/mario/mario-stand_mask.xbm");
+    auto bitmask = Load_Xbm_Image(state,img->width, img->height,"/usr/local/share/mario/mario-stand_mask.xbm");
     
     //main looping logic
     //why not just use a timer/sleep?
