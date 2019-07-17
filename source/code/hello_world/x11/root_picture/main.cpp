@@ -170,7 +170,7 @@ int main(){
     
     //settings
     bool syncronize_debug_mode = false;
-    bool set_error_handler = true;
+    bool set_error_handler = false;
     bool check_for_shape_extension = true;
     
     if (set_error_handler){
@@ -206,8 +206,9 @@ int main(){
     
     //set window attributes
     XSetWindowAttributes  theWindowAttributes;
+    memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
     theWindowAttributes.background_pixel = colors.bg.pixel;
-    theWindowAttributes.override_redirect = true;
+    theWindowAttributes.override_redirect = 1;
     
     //change the cursor. no thanks.
     //XChangeWindowAttributes(theDisplay, theRoot, CWCursor, &theWindowAttributes);
@@ -223,15 +224,18 @@ int main(){
     XStoreName(theDisplay, theWindow, "window_name");
     XSelectInput(theDisplay, theWindow,
                ExposureMask|VisibilityChangeMask|KeyPressMask);
+    
+    //  XUndefineCursor(theDisplay,theRoot);
+    //XUndefineCursor(theDisplay,theWindow);
     XFlush(theDisplay);
     
     
     
-    
+    std::cout << "oo" << std::endl;
     
     //main looping logic
-    auto img = Load_Image(theDisplay, "/home/thickey/Desktop/mario1.xpm");
-    auto bitmask = Load_Image(theDisplay, "/home/thickey/Desktop/mario_bitmask2.xpm");
+    auto img = Load_Image(theDisplay, "/home/laptop/Desktop/mario1.xpm");
+    //auto bitmask = Load_Image(theDisplay, "/home/thickey/Desktop/mario_bitmask2.xpm");
     infinite_interrupt_loop(10000L,[&](){
         
         process_x11_events(theDisplay);
