@@ -97,7 +97,7 @@ x11_bg_fg_colors setup_colors(Display * theDisplay, int theScreen, unsigned int 
     return colors;
 }
 
-XImage *Load_Image(Display * theDisplay, std::string const& file_name){
+XImage *Load_Xpm_Image(Display * theDisplay, std::string const& file_name){
 
       XImage *img;
       auto failed = XpmReadFileToImage (theDisplay, file_name.c_str(), &img, NULL, NULL);
@@ -106,6 +106,17 @@ XImage *Load_Image(Display * theDisplay, std::string const& file_name){
         exit(0);
       }
       return img;
+}
+
+Pixmap Load_Xbm_Image(Display * theDisplay, int x, std::string const& file_name){
+  
+  Pixmap p;
+  unsigned int w;
+  unsigned int h;
+  int hot_x;
+  int hot_y;
+  auto failed = XReadBitmapFile(theDisplay,x,file_name.c_str(),&w,&h,&p,&hot_x,&hot_y);
+  return p;
 }
 
 static void InterruptNullFunctionCatcher(int x)
@@ -193,7 +204,6 @@ int main(){
     //create the screen and depth
     int theScreen = DefaultScreen(theDisplay);
     unsigned int theDepth = DefaultDepth(theDisplay, theScreen);
-    //std::cout << theDepth << std::endl;
 
     //create the root window
     Window theRoot = RootWindow(theDisplay, theScreen);
@@ -231,29 +241,11 @@ int main(){
     
     
     
-    std::cout << "oo" << std::endl;
     
-    //main looping logic
-    auto img = Load_Image(theDisplay, "/usr/local/share/mario/mario-stand.xpm");
-    auto bitmask = Load_Image(theDisplay, "/usr/local/share/mario/mario-stand_mask.xpm");
-    infinite_interrupt_loop(10000L,[&](){
-        
-        process_x11_events(theDisplay);
-        
-        
-
-    //create the image
-       
-    int awake_bsd_mask_width = 16;
-    int awake_bsd_mask_height = 32;
-static char mario_bitmask_bits[] = {
-  0xC0, 0x07, 0xF0, 0x07, 0xF8, 0x07, 0xF8, 0x3F, 0xF8, 0x0F, 0xFC, 0x3F, 
-  0xFC, 0x7F, 0xFE, 0x7F, 0xFE, 0x3F, 0xFE, 0x3F, 0xF8, 0x1F, 0xF0, 0x07, 
-  0xF0, 0x0F, 0xF8, 0x1F, 0xFC, 0x3F, 0xFE, 0x7F, 0xFE, 0x7F, 0xFF, 0xFF, 
-  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0x7F, 0xFE, 0x7F, 
-  0xFC, 0x3F, 0x7E, 0x7E, 0x3E, 0x7C, 0x3E, 0x7C, 0x3C, 0x3C, 0x3C, 0x3C, 
-  0x3F, 0xFC, 0x3F, 0xFC, };
-
+    auto img = Load_Xpm_Image(theDisplay, "/usr/local/share/mario/mario-stand.xpm");
+    
+    //some garbage boilerplate for loading images
+    //we need this pixmap for some reason so we can load other pixmaps?
     static char garbage[] = {};
     Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(theDisplay, theRoot,
                     garbage,
@@ -261,8 +253,19 @@ static char mario_bitmask_bits[] = {
                     colors.fg.pixel,
                     colors.bg.pixel,
                     DefaultDepth(theDisplay, theScreen));
+    
+    
+    auto bitmask = Load_Xbm_Image(theDisplay,BitmapCreatePtr,"/usr/local/share/mario/mario-stand_mask.xbm");
+    
+    //main looping logic
+    infinite_interrupt_loop(10000L,[&](){
+        
+        //necessary wait for XServer I think
+        process_x11_events(theDisplay);
+        
+        
 
-    Pixmap BitmapMasksPtr = XCreateBitmapFromData(theDisplay, theRoot, mario_bitmask_bits, BITMAP_WIDTH, BITMAP_HEIGHT);
+    //create the image
 
     XGCValues           theGCValues;
     memset(&theGCValues,0,sizeof(XGCValues));
@@ -289,9 +292,9 @@ static char mario_bitmask_bits[] = {
        theChanges.x = x_c;
        theChanges.y = y_c;
        XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
-       XShapeCombineMask(theDisplay, theWindow, ShapeBounding, 0, 0, BitmapMasksPtr, ShapeSet);
+       XShapeCombineMask(theDisplay, theWindow, ShapeBounding, 0, 0, bitmask, ShapeSet);
        XMapWindow(theDisplay, theWindow);
-       //XFillRectangle(theDisplay, theWindow, GCCreatePtr, 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
+       XFillRectangle(theDisplay, theWindow, GCCreatePtr, 0, 0, BITMAP_WIDTH, BITMAP_HEIGHT);
       
       XPutImage(theDisplay, theWindow, GCCreatePtr, img, 0, 0,
                 0,
@@ -299,9 +302,6 @@ static char mario_bitmask_bits[] = {
                 img->width, img->height );
       
     XFlush(theDisplay);
-      
-      //sleep(9000);
-      //std::cout << "sdf" << std::endl;
     });
     
     
