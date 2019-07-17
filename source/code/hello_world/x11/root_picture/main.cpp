@@ -316,6 +316,11 @@ int main(){
     auto bitmask = Load_Xbm_Image(theDisplay,BitmapCreatePtr,"/usr/local/share/mario/mario-stand_mask.xbm");
     
     //main looping logic
+    //why not just use a timer/sleep?
+    //I don't know.  I saw some similar examples using the older
+    //c interrupt loop, and thought it might be better for x11.
+    //especially because I had an infinite while(true) before and
+    //it made my computer freeze
     infinite_interrupt_loop(10000L,[&](){
         
         //necessary wait for XServer I think
