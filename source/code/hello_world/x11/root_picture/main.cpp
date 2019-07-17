@@ -248,8 +248,31 @@ struct main_x11_state {
   Window root;
   x11_window_geometry root_geo;
   
+  //colors
   x11_bg_fg_colors colors;
 };
+
+
+main_x11_state create_main_x11_state(setup_display_settings const& settings){
+  
+  main_x11_state state;
+  
+    //create the main display
+    state.d = setup_display(settings);
+    
+    //create the screen and depth
+    state.screen = DefaultScreen(state.d);
+    state.depth = DefaultDepth(state.d, state.screen);
+    
+    //create the root window
+    state.root = RootWindow(state.d, state.screen);
+    state.root_geo = get_geometry(state.d, state.root);
+    
+    //colors
+    state.colors = setup_colors(state.d, state.screen, state.depth);
+    
+  return state;
+}
 
 
 int main(){
@@ -259,61 +282,56 @@ int main(){
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
     settings.check_for_shape_extension = true;
-    auto theDisplay = setup_display(settings);
-
-    //create the screen and depth
-    int theScreen = DefaultScreen(theDisplay);
-    unsigned int theDepth = DefaultDepth(theDisplay, theScreen);
-
-    //create the root window
-    Window theRoot = RootWindow(theDisplay, theScreen);
-
-    //builds geometry
-    auto geo = get_geometry(theDisplay, theRoot);
-
-    //setup colors
-    auto colors = setup_colors(theDisplay, theScreen, theDepth);
+    
+    
+    
+    
+    auto state = create_main_x11_state(settings);
+    
+    
+    
+    
     
     //set window attributes
     XSetWindowAttributes  theWindowAttributes;
     memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
-    theWindowAttributes.background_pixel = colors.bg.pixel;
+    theWindowAttributes.background_pixel = state.colors.bg.pixel;
     theWindowAttributes.override_redirect = 1;
     
     //change the cursor. no thanks.
-    //XChangeWindowAttributes(theDisplay, theRoot, CWCursor, &theWindowAttributes);
+    //XChangeWindowAttributes(theDisplay, state.root, CWCursor, &theWindowAttributes);
     
     //create main window
-    auto img = Load_Xpm_Image(theDisplay, "/usr/local/share/mario/mario-stand.xpm");
+    auto img = Load_Xpm_Image(state.d, "/usr/local/share/mario/mario-stand.xpm");
     unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
-    Window theWindow = XCreateWindow(theDisplay, theRoot, 0, 0,
+    Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
                             img->width, img->height,
-                            0, theDepth, InputOutput, CopyFromParent,
+                            0, state.depth, InputOutput, CopyFromParent,
                             theWindowMask, &theWindowAttributes);
-    XStoreName(theDisplay, theWindow, "window_name");
-    XSelectInput(theDisplay, theWindow,
+    XStoreName(state.d, theWindow, "window_name");
+    XSelectInput(state.d, theWindow,
                ExposureMask|VisibilityChangeMask|KeyPressMask);
     
-    XFlush(theDisplay);
+    XFlush(state.d);
     
     
     
     
     
-    auto gc = Create_Graphics_Context(theDisplay,theScreen,theWindow,theRoot,colors,img->width, img->height);
+    auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,img->width, img->height);
     
     //some garbage boilerplate for loading images
     //we need this pixmap for some reason so we can load other pixmaps?
     static char garbage[] = {};
-    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(theDisplay, theRoot,
+    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(state.d, state.root,
                     garbage,
                     img->width, img->height,
-                    colors.fg.pixel,
-                    colors.bg.pixel,
-                    DefaultDepth(theDisplay, theScreen));
+                    state.colors.fg.pixel,
+                    state.colors.bg.pixel,
+                    DefaultDepth(state.d, state.screen));
     
     
-    auto bitmask = Load_Xbm_Image(theDisplay,BitmapCreatePtr,"/usr/local/share/mario/mario-stand_mask.xbm");
+    auto bitmask = Load_Xbm_Image(state.d,BitmapCreatePtr,"/usr/local/share/mario/mario-stand_mask.xbm");
     
     //main looping logic
     //why not just use a timer/sleep?
@@ -324,7 +342,7 @@ int main(){
     infinite_interrupt_loop(10000L,[&](){
         
         //necessary wait for XServer I think
-        process_x11_events(theDisplay);
+        process_x11_events(state.d);
         
         
 
@@ -339,17 +357,17 @@ int main(){
        ++x_c;
        theChanges.x = x_c;
        theChanges.y = y_c;
-       XConfigureWindow(theDisplay, theWindow, CWX | CWY, &theChanges);
-       XShapeCombineMask(theDisplay, theWindow, ShapeBounding, 0, 0, bitmask, ShapeSet);
-       XMapWindow(theDisplay, theWindow);
-       XFillRectangle(theDisplay, theWindow, gc, 0, 0, img->width, img->height);
+       XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
+       XShapeCombineMask(state.d, theWindow, ShapeBounding, 0, 0, bitmask, ShapeSet);
+       XMapWindow(state.d, theWindow);
+       XFillRectangle(state.d, theWindow, gc, 0, 0, img->width, img->height);
       
-      XPutImage(theDisplay, theWindow, gc, img, 0, 0,
+      XPutImage(state.d, theWindow, gc, img, 0, 0,
                 0,
                 0,
                 img->width, img->height );
       
-    XFlush(theDisplay);
+    XFlush(state.d);
     });
     
     
