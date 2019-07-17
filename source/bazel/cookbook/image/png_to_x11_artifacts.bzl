@@ -2,6 +2,7 @@ load("//bazel/cookbook/image:png_to_xpm.bzl", "png_to_xpm")
 load("//bazel/cookbook/image:xpm_to_ppm.bzl", "xpm_to_ppm")
 load("//bazel/cookbook/image:ppm_to_mask.bzl", "ppm_to_mask")
 load("//bazel/cookbook/image:ppm_to_xpm.bzl", "ppm_to_xpm")
+load("//bazel/cookbook/image:xpm_to_xbm.bzl", "xpm_to_xbm")
 
 def png_to_x11_artifacts(name):
     
@@ -9,8 +10,9 @@ def png_to_x11_artifacts(name):
     xpm_to_ppm(name)
     ppm_to_mask(name)
     ppm_to_xpm(name + "_mask")
+    xpm_to_xbm(name + "_mask")
     
     native.filegroup(
         name = name + "_data",
-        srcs = [name + ".xpm", name + "_mask.xpm"],
+        srcs = [name + ".xpm", name + "_mask.xbm"],
     )
