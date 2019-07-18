@@ -8,6 +8,6 @@ cc_library(
     hdrs = glob(["include/SDL2/*.h"]),
     defines = ["_REENTRANT"],
     includes = ["include/SDL2"],
-    linkopts = ["-lSDL2", "-lSDL_mixer"],
+    linkopts = ["-lSDL2", "-lSDL2_mixer"],
     visibility = ["//visibility:public"],
 )
