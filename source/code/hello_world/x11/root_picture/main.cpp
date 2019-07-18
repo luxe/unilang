@@ -334,9 +334,28 @@ void x11_game_loop(main_x11_state const& state, Fun fun){
     fun();
     
     //do we need to flush?
-    //XFlush(state.d);
+    XFlush(state.d);
     
   });
+}
+
+void Draw_Image(main_x11_state const& state, Window theWindow, GC gc, x11_image_sprite const& sprite, int x, int y){
+  
+  int relative_x = 0;
+  int relative_y = 0;
+  
+  //position the window instead of the sprite inside the window
+  XWindowChanges    theChanges;
+  theChanges.x = x;
+  theChanges.y = y;
+  XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
+  
+  XShapeCombineMask(state.d, theWindow, ShapeBounding, relative_x , relative_y, sprite.bitmap_mask, ShapeSet);
+  
+       //oneko did this.  I don't think its necessary
+       //XFillRectangle(state.d, theWindow, gc, 0, 0, sprite.main->width, sprite.main->height);
+  
+  XPutImage(state.d, theWindow, gc, sprite.main, 0,0,relative_x, relative_y,sprite.main->width, sprite.main->height );
 }
 
 
@@ -380,28 +399,12 @@ int main(){
     
     
         //draw it
-        XWindowChanges    theChanges;
        static int x_c = 200;
        static int y_c = 100;
        ++x_c;
        ++y_c;
-       theChanges.x = x_c;
-       theChanges.y = y_c;
-       
-       int image_x = 0;
-       int image_y = 0;
-       XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
-       
-       
-       XShapeCombineMask(state.d, theWindow, ShapeBounding, image_x , image_y, mario_stand.bitmap_mask, ShapeSet);
-       
-       //oneko did this.  I don't think its necessary
-       //XFillRectangle(state.d, theWindow, gc, 0, 0, mario_stand.main->width, mario_stand.main->height);
       
-      XPutImage(state.d, theWindow, gc, mario_stand.main, 0, 0,
-                image_x ,
-                image_y,
-                mario_stand.main->width, mario_stand.main->height );
+      Draw_Image(state,theWindow,gc,mario_stand,x_c,y_c);
     });
     
 }
