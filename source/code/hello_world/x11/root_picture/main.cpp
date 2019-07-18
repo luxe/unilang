@@ -318,13 +318,14 @@ Window create_game_window(main_x11_state const& state){
                ExposureMask|VisibilityChangeMask|KeyPressMask);
     
     XFlush(state.d);
+    XMapWindow(state.d, theWindow);
     return theWindow;
 }
 
 template <typename Fun>
 void x11_game_loop(main_x11_state const& state, Fun fun){
 
-  infinite_interrupt_loop(5000L,[&](){
+  infinite_interrupt_loop(8000L,[&](){
     
     //necessary wait for XServer I think
     process_x11_events(state.d);
@@ -359,7 +360,6 @@ int main(){
     
     
     auto theWindow = create_game_window(state);
-    XMapWindow(state.d, theWindow);
     auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,mario_stand.main->width, mario_stand.main->height);
     
     //main looping logic
@@ -368,6 +368,14 @@ int main(){
     //c interrupt loop, and thought it might be better for x11.
     //especially because I had an infinite while(true) before and
     //it made my computer freeze
+    
+    
+    //X11 is notorious for image tearing
+    //originally, I had one giant window, and I used PutImage each cycle to put the sprite in a different place.
+    //this flickered and looked bad.  So Now I make little windows for each sprite, and place the sprite in the window at 0,0.
+    //instead of moving the images each cycle, we move their window instead.  This looks clean.  I'm not sure if there are any ramifications to this
+    //or if i totally missed something in terms of writing images, but this is the best I can do.
+    //fwiw, I see everyone on the internet talking about how X11 tears because its old, and its one of the reasons for wayland.
     x11_game_loop(state,[&](){
     
     
@@ -376,17 +384,23 @@ int main(){
        static int x_c = 200;
        static int y_c = 100;
        ++x_c;
+       ++y_c;
        theChanges.x = x_c;
        theChanges.y = y_c;
        
+       int image_x = 0;
+       int image_y = 0;
+       XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
        
-       //XConfigureWindow(state.d, theWindow, CWX | CWY, &theChanges);
-       XShapeCombineMask(state.d, theWindow, ShapeBounding, x_c , y_c, mario_stand.bitmap_mask, ShapeSet);
+       
+       XShapeCombineMask(state.d, theWindow, ShapeBounding, image_x , image_y, mario_stand.bitmap_mask, ShapeSet);
+       
+       //oneko did this.  I don't think its necessary
        //XFillRectangle(state.d, theWindow, gc, 0, 0, mario_stand.main->width, mario_stand.main->height);
       
       XPutImage(state.d, theWindow, gc, mario_stand.main, 0, 0,
-                x_c ,
-                y_c,
+                image_x ,
+                image_y,
                 mario_stand.main->width, mario_stand.main->height );
     });
     
