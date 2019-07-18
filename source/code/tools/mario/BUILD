@@ -7,7 +7,19 @@ load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
-cpp_main("mario")
+
+
+hcp(name = "mario_runner", deps = [
+    "//code/utilities/sound:music_player",
+])
+
+
+
+
+#build main and deploy stuff
+cpp_main("mario", deps = [
+         "//code/tools/mario:mario_runner",
+])
 package_binaries(name = "mario", binary_targets = [":mario"])
 
 pkg_tar(
@@ -18,11 +30,6 @@ pkg_tar(
         "//code/tools/mario/assets:mario-data"
     ],
 )
-
-
-
-
-
 
 MAINTAINER = "Trevor Hickey <TrevorJamesHickey@gmail.com>"
 DEFAULT_VERSION = "1.0"

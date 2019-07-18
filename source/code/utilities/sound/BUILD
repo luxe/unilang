@@ -5,3 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "system_sound_adjuster",deps=[
 "//code/utilities/shell:lib",
 ])
+
+hcp(name = "music_player",deps=[
+"@SDL2//:SDL2",
+])
