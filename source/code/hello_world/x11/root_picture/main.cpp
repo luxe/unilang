@@ -145,7 +145,8 @@ int main(){
     
     //create the main display
     //this is typical x11 boilerplate setup stuff
-    //hopefully customizable enough that you don't have to dig into this
+    //I'm not sure I did it all correctly, but wanted to abstract it away.
+    //hopefully customizable enough that you don't have to dig into this.
     Setup_Display_Settings settings;
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
