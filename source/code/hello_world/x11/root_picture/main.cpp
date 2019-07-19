@@ -9,8 +9,47 @@
 #include <sys/time.h>
 #include <signal.h>
 #include "code/utilities/x11/main_state/x11_main_state_creator.hpp"
+#include "code/utilities/x11/loop/x11_looper.hpp"
 
 
+
+
+
+
+
+
+
+
+
+Window create_game_window(Main_X11_State const& state){
+  
+  //set window attributes
+  XSetWindowAttributes  theWindowAttributes;
+  memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
+  theWindowAttributes.background_pixel = state.colors.bg.pixel;
+  theWindowAttributes.override_redirect = 1;
+  
+  //unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
+  unsigned long theWindowMask = CWOverrideRedirect;
+  Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
+                          state.root_geo.width, state.root_geo.height,
+                          0, state.depth, InputOutput, CopyFromParent,
+                          theWindowMask, &theWindowAttributes);
+  
+    //XStoreName(state.d, theWindow, "mario game");
+    XSelectInput(state.d, theWindow,
+               ExposureMask|VisibilityChangeMask|KeyPressMask);
+    
+    //XFlush(state.d);
+    XMapWindow(state.d, theWindow);
+    return theWindow;
+}
+
+struct x11_image_sprite{
+  XImage *main;
+  Pixmap bitmap_mask;
+  std::string name;
+};
 
 XImage *Load_Xpm_Image(Display * theDisplay, std::string const& file_name){
 
@@ -44,61 +83,13 @@ Pixmap Load_Xbm_Image(Main_X11_State const& state, int x, int y, std::string con
   return p;
 }
 
-static void InterruptNullFunctionCatcher(int x)
-{
-  /* No Operation */
-#if defined(SYSV) || defined(SVR4)
-  signal(SIGALRM, InterruptNullFunctionCatcher);
-#endif /* SYSV || SVR4 */
-}
 
-void set_interrupt_timer(unsigned long usec_delay){
-  struct itimerval      x;
-  timerclear(&x.it_interval);
-  timerclear(&x.it_value);
-  x.it_interval.tv_usec = usec_delay;
-  x.it_value.tv_usec = usec_delay;
-  setitimer(ITIMER_REAL, &x, 0);
-}
-
-
-template <typename Fun>
-void within_interrupt_timer(unsigned long usec_delay, Fun f){
-  set_interrupt_timer(usec_delay);
-  f();
-  pause();
-}
-
-template <typename Fun>
-void infinite_interrupt_loop(unsigned long usec_delay, Fun f){
-  
-  signal(SIGALRM, InterruptNullFunctionCatcher);
-  while (true){
-    within_interrupt_timer(usec_delay,[&](){
-      f();
-    });
-  }
-}
-
-
-
-void process_x11_events(Display * theDisplay){
-  
-    //I think we need to wait until the server is ready?
-    //this is how we do that.
-  XEvent theEvent;
-    while (XPending(theDisplay)) {
-        XNextEvent(theDisplay,&theEvent);
-        switch (theEvent.type) {
-            case Expose:
-              if (theEvent.xexpose.count == 0) {
-              }
-              break;
-            case KeyPress:
-              std::cout << "key pressed" << std::endl;
-              break;
-        }
-    }
+x11_image_sprite load_image_sprite(Main_X11_State const& state, std::string const& path, std::string const& name){
+  x11_image_sprite sprite;
+  sprite.name = name;
+  sprite.main = Load_Xpm_Image(state.d, path + name + ".xpm");
+  sprite.bitmap_mask = Load_Xbm_Image(state,sprite.main->width, sprite.main->height,path + name + "_mask.xbm");
+  return sprite;
 }
 
 GC Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow, Window theRoot, X11_Bg_Fg_Colors colors, int width, int height){
@@ -128,63 +119,6 @@ GC Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow
                     &theGCValues);
     return GCCreatePtr;
     
-}
-
-struct x11_image_sprite{
-  XImage *main;
-  Pixmap bitmap_mask;
-  std::string name;
-};
-
-
-x11_image_sprite load_image_sprite(Main_X11_State const& state, std::string const& path, std::string const& name){
-  x11_image_sprite sprite;
-  sprite.name = name;
-  sprite.main = Load_Xpm_Image(state.d, path + name + ".xpm");
-  sprite.bitmap_mask = Load_Xbm_Image(state,sprite.main->width, sprite.main->height,path + name + "_mask.xbm");
-  return sprite;
-}
-
-
-Window create_game_window(Main_X11_State const& state){
-  
-  //set window attributes
-  XSetWindowAttributes  theWindowAttributes;
-  memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
-  theWindowAttributes.background_pixel = state.colors.bg.pixel;
-  theWindowAttributes.override_redirect = 1;
-  
-  //unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
-  unsigned long theWindowMask = CWOverrideRedirect;
-  Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
-                          state.root_geo.width, state.root_geo.height,
-                          0, state.depth, InputOutput, CopyFromParent,
-                          theWindowMask, &theWindowAttributes);
-  
-    //XStoreName(state.d, theWindow, "mario game");
-    XSelectInput(state.d, theWindow,
-               ExposureMask|VisibilityChangeMask|KeyPressMask);
-    
-    //XFlush(state.d);
-    XMapWindow(state.d, theWindow);
-    return theWindow;
-}
-
-template <typename Fun>
-void x11_game_loop(Main_X11_State const& state, Fun fun){
-
-  infinite_interrupt_loop(8000L,[&](){
-    
-    //necessary wait for XServer I think
-    process_x11_events(state.d);
-    
-    //what the use wants to do each cycle
-    fun();
-    
-    //do we need to flush?
-    XFlush(state.d);
-    
-  });
 }
 
 void Draw_Image(Main_X11_State const& state, Window theWindow, GC gc, x11_image_sprite const& sprite, int x, int y){
@@ -244,7 +178,7 @@ int main(){
     //or if i totally missed something in terms of writing images, but this is the best I can do,
     //and based on the various complaints I've heard about X this may actually be a correct way to go about this.
     //fwiw, I see everyone on the internet talking about how X11 tears because its old, and its one of the reasons for wayland.
-    x11_game_loop(state,[&](){
+    X11_Looper::typical_x11_game_loop(state,[&](){
     
     
         //draw it

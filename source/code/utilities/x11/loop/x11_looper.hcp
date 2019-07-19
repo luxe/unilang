@@ -1,0 +1,93 @@
+class
+❪string❫
+❪cstdlib❫
+❪iostream❫
+❪X11/Xlib.h❫
+❪X11/Xutil.h❫
+❪X11/xpm.h❫
+❪X11/extensions/shape.h❫
+❪sys/time.h❫
+❪signal.h❫
+❪"code/utilities/x11/data/main_x11_state"❫
+❪"code/utilities/x11/data/x11_window_geometry"❫
+❪"code/utilities/x11/data/x11_bg_fg_colors"❫
+⚯
+⚞⚟
+
+◀private:
+static void InterruptNullFunctionCatcher(int x)
+{
+  /* No Operation */
+#if defined(SYSV) || defined(SVR4)
+  signal(SIGALRM, InterruptNullFunctionCatcher);
+#endif /* SYSV || SVR4 */
+}
+
+private:
+static void set_interrupt_timer(unsigned long usec_delay){
+  struct itimerval      x;
+  timerclear(&x.it_interval);
+  timerclear(&x.it_value);
+  x.it_interval.tv_usec = usec_delay;
+  x.it_value.tv_usec = usec_delay;
+  setitimer(ITIMER_REAL, &x, 0);
+}
+
+private:
+template <typename Fun>
+static void within_interrupt_timer(unsigned long usec_delay, Fun f){
+  set_interrupt_timer(usec_delay);
+  f();
+  pause();
+}
+
+private:
+template <typename Fun>
+static void infinite_interrupt_loop(unsigned long usec_delay, Fun f){
+  
+  signal(SIGALRM, InterruptNullFunctionCatcher);
+  while (true){
+    within_interrupt_timer(usec_delay,[&](){
+      f();
+    });
+  }
+}
+
+private:
+static void process_x11_events(Display * theDisplay){
+  
+  //I think we need to wait until the server is ready?
+  //this is how we do that.
+  XEvent theEvent;
+    while (XPending(theDisplay)) {
+        XNextEvent(theDisplay,&theEvent);
+        switch (theEvent.type) {
+            case Expose:
+              if (theEvent.xexpose.count == 0) {
+              }
+              break;
+            case KeyPress:
+              std::cout << "key pressed" << std::endl;
+              break;
+        }
+    }
+}
+
+public:
+template <typename Fun>
+static void typical_x11_game_loop(Main_X11_State const& state, Fun fun){
+
+  infinite_interrupt_loop(8000L,[&](){
+    
+    //necessary wait for XServer I think
+    process_x11_events(state.d);
+    
+    //what the use wants to do each cycle
+    fun();
+    
+    //do we need to flush?
+    XFlush(state.d);
+    
+  });
+}
+▶ 
