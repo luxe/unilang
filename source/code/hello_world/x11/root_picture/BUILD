@@ -10,4 +10,7 @@ cc_binary(
     copts = [
         "-Wno-everything",
     ],
+    deps = [
+        "//code/utilities/x11/main_state:x11_main_state_creator"
+    ]
 )
