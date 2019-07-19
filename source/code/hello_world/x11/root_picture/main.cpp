@@ -307,7 +307,7 @@ Window create_game_window(main_x11_state const& state){
   theWindowAttributes.background_pixel = state.colors.bg.pixel;
   theWindowAttributes.override_redirect = 1;
     
-  unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
+  unsigned long theWindowMask = CWOverrideRedirect;
   Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
                           state.root_geo.width, state.root_geo.height,
                           0, state.depth, InputOutput, CopyFromParent,
@@ -317,7 +317,7 @@ Window create_game_window(main_x11_state const& state){
     XSelectInput(state.d, theWindow,
                ExposureMask|VisibilityChangeMask|KeyPressMask);
     
-    XFlush(state.d);
+    //XFlush(state.d);
     XMapWindow(state.d, theWindow);
     return theWindow;
 }
@@ -356,6 +356,7 @@ void Draw_Image(main_x11_state const& state, Window theWindow, GC gc, x11_image_
        //XFillRectangle(state.d, theWindow, gc, 0, 0, sprite.main->width, sprite.main->height);
   
   XPutImage(state.d, theWindow, gc, sprite.main, 0,0,relative_x, relative_y,sprite.main->width, sprite.main->height );
+  while(true){}
 }
 
 
