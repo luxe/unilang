@@ -4,10 +4,9 @@ package(
 
 cc_library(
      name = "lib",
-     srcs = glob(["*.cpp"]),
-     hdrs = glob(["*.hpp"]),
+     srcs = ["lib.cpp"],
+     hdrs = ["lib.hpp"],
      deps = [
-         #"@xdo//:main",
      ],
-     linkopts = ["-lxdo"],
+     linkopts = ["-lX11", "-lXext", "-lXpm"],
  )

@@ -11,15 +11,28 @@ load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
 hcp(name = "mario_runner", deps = [
     "//code/utilities/sound:music_player",
+    "//code/utilities/x11/main_state:x11_main_state_creator",
+    "//code/utilities/x11/sprite:sprite_loader",
+    "//code/utilities/x11/sprite:sprite_window_creator",
+    "//code/utilities/x11/sprite:sprite_window_drawer",
+    "//code/utilities/x11/loop:x11_looper",
+    "//code/utilities/x11:lib",
 ])
-
-
 
 
 #build main and deploy stuff
-cpp_main("mario", deps = [
-         "//code/tools/mario:mario_runner",
-])
+cc_binary(
+    name = "mario",
+    srcs = ["mario.cpp"],
+    linkopts = ["-lX11", "-lXext", "-lXpm"],
+    copts = [
+        "-Wno-everything",
+    ],
+    deps = [
+        "//code/tools/mario:mario_runner",
+    ]
+)
+
 package_binaries(name = "mario", binary_targets = [":mario"])
 
 pkg_tar(
