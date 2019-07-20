@@ -1,0 +1,56 @@
+class
+❪string❫
+❪X11/Xlib.h❫
+❪X11/Xutil.h❫
+❪X11/xpm.h❫
+❪"code/utilities/x11/sprite/sprite"❫
+❪"code/utilities/x11/data/main_x11_state"❫
+⚯
+❪iostream❫
+⚞⚟
+
+
+◀private: static▶ XImage* ☀Load_Xpm_Image(Display * theDisplay, std::string const& file_name)❰
+
+      XImage *img;
+      auto failed = XpmReadFileToImage (theDisplay, file_name.c_str(), &img, NULL, NULL);
+      if (failed){
+        std::cout << "could not load image" << std::endl;
+        exit(0);
+      }
+      return img;
+❱
+
+◀private: static▶ Pixmap ☀Load_Xbm_Image(Main_X11_State const& state, int x, int y, std::string const& file_name)❰
+
+    //some garbage boilerplate for loading images
+    //we need this pixmap for some reason so we can load other pixmaps?
+    static char garbage[] = {};
+    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(state.d, state.root,
+                    garbage,
+                    x, y,
+                    state.colors.fg.pixel,
+                    state.colors.bg.pixel,
+                    DefaultDepth(state.d, state.screen));
+    
+  Pixmap p;
+  unsigned int w;
+  unsigned int h;
+  int hot_x;
+  int hot_y;
+  auto failed = XReadBitmapFile(state.d,BitmapCreatePtr,file_name.c_str(),&w,&h,&p,&hot_x,&hot_y);
+  if (failed){
+    std::cout << "could not load image" << std::endl;
+    exit(0);
+  }
+  return p;
+❱
+
+
+◀public: static▶ Sprite ☀Load(Main_X11_State const& state, std::string const& path, std::string const& name)❰
+  Sprite sprite;
+  sprite.name = name;
+  sprite.main = Load_Xpm_Image(state.d, path + name + ".xpm");
+  sprite.bitmap_mask = Load_Xbm_Image(state,sprite.main->width, sprite.main->height,path + name + "_mask.xbm");
+  return sprite;
+❱

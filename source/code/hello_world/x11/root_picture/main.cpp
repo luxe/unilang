@@ -10,6 +10,7 @@
 #include <signal.h>
 #include "code/utilities/x11/main_state/x11_main_state_creator.hpp"
 #include "code/utilities/x11/loop/x11_looper.hpp"
+#include "code/utilities/x11/sprite/sprite_loader.hpp"
 
 
 
@@ -45,52 +46,7 @@ Window create_game_window(Main_X11_State const& state){
     return theWindow;
 }
 
-struct x11_image_sprite{
-  XImage *main;
-  Pixmap bitmap_mask;
-  std::string name;
-};
 
-XImage *Load_Xpm_Image(Display * theDisplay, std::string const& file_name){
-
-      XImage *img;
-      auto failed = XpmReadFileToImage (theDisplay, file_name.c_str(), &img, NULL, NULL);
-      if (failed){
-        std::cout << "could not load image" << std::endl;
-        exit(0);
-      }
-      return img;
-}
-
-Pixmap Load_Xbm_Image(Main_X11_State const& state, int x, int y, std::string const& file_name){
-
-    //some garbage boilerplate for loading images
-    //we need this pixmap for some reason so we can load other pixmaps?
-    static char garbage[] = {};
-    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(state.d, state.root,
-                    garbage,
-                    x, y,
-                    state.colors.fg.pixel,
-                    state.colors.bg.pixel,
-                    DefaultDepth(state.d, state.screen));
-    
-  Pixmap p;
-  unsigned int w;
-  unsigned int h;
-  int hot_x;
-  int hot_y;
-  auto failed = XReadBitmapFile(state.d,BitmapCreatePtr,file_name.c_str(),&w,&h,&p,&hot_x,&hot_y);
-  return p;
-}
-
-
-x11_image_sprite load_image_sprite(Main_X11_State const& state, std::string const& path, std::string const& name){
-  x11_image_sprite sprite;
-  sprite.name = name;
-  sprite.main = Load_Xpm_Image(state.d, path + name + ".xpm");
-  sprite.bitmap_mask = Load_Xbm_Image(state,sprite.main->width, sprite.main->height,path + name + "_mask.xbm");
-  return sprite;
-}
 
 GC Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow, Window theRoot, X11_Bg_Fg_Colors colors, int width, int height){
   
@@ -121,7 +77,7 @@ GC Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow
     
 }
 
-void Draw_Image(Main_X11_State const& state, Window theWindow, GC gc, x11_image_sprite const& sprite, int x, int y){
+void Draw_Image(Main_X11_State const& state, Window theWindow, GC gc, Sprite const& sprite, int x, int y){
   
   int relative_x = 0;
   int relative_y = 0;
@@ -155,10 +111,10 @@ int main(){
     
     //load all the sprites
     //we assume that the file names match what is necessary for rendering xpm and xbm files in x11
-    auto mario_stand = load_image_sprite(state,"/usr/local/share/mario/","mario-stand");
-    auto mario_walk_1 = load_image_sprite(state,"/usr/local/share/mario/","mario-walk1");
-    auto mario_walk_2 = load_image_sprite(state,"/usr/local/share/mario/","mario-walk2");
-    auto mario_walk_3 = load_image_sprite(state,"/usr/local/share/mario/","mario-walk3");
+    auto mario_stand = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-stand");
+    auto mario_walk_1 = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-walk1");
+    auto mario_walk_2 = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-walk2");
+    auto mario_walk_3 = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-walk3");
     
     
     auto theWindow = create_game_window(state);
