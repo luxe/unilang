@@ -111,10 +111,11 @@ int main(){
     
     //load all the sprites
     //we assume that the file names match what is necessary for rendering xpm and xbm files in x11
-    auto mario_stand = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-stand");
-    auto mario_walk_1 = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-walk1");
-    auto mario_walk_2 = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-walk2");
-    auto mario_walk_3 = Sprite_Loader::Load(state,"/usr/local/share/mario/","mario-walk3");
+    std::string share_directory = "/usr/local/share/mario/";
+    auto mario_stand = Sprite_Loader::Load(state,share_directory,"mario-stand");
+    auto mario_walk_1 = Sprite_Loader::Load(state,share_directory,"mario-walk1");
+    auto mario_walk_2 = Sprite_Loader::Load(state,share_directory,"mario-walk2");
+    auto mario_walk_3 = Sprite_Loader::Load(state,share_directory,"mario-walk3");
     
     
     auto theWindow = create_game_window(state);
