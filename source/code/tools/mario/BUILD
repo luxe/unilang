@@ -24,10 +24,6 @@ hcp(name = "mario_runner", deps = [
 cc_binary(
     name = "mario",
     srcs = ["mario.cpp"],
-    linkopts = ["-lX11", "-lXext", "-lXpm"],
-    copts = [
-        "-Wno-everything",
-    ],
     deps = [
         "//code/tools/mario:mario_runner",
     ]
