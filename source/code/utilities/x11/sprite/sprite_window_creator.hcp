@@ -1,0 +1,81 @@
+class
+❪iostream❫
+❪string❫
+❪cstdlib❫
+❪unistd.h❫
+❪X11/Xlib.h❫
+❪X11/Xutil.h❫
+❪X11/xpm.h❫
+❪X11/extensions/shape.h❫
+❪sys/time.h❫
+❪signal.h❫
+❪"code/utilities/x11/sprite/sprite_window"❫
+❪"code/utilities/x11/sprite/sprite"❫
+❪"code/utilities/x11/data/main_x11_state"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ Sprite_Window ☀Create(Main_X11_State & state, Sprite const& sprite)❰
+    Sprite_Window win;
+    win.sprite = sprite;
+    win.w = create_sprite_window(state);
+    win.gc = Create_Graphics_Context(state.d,state.screen,win.w,state.root,state.colors,sprite.main->width, sprite.main->height);
+    return win;
+❱
+
+◀private: static▶ Window ☀create_sprite_window(Main_X11_State const& state)❰
+  
+  //set window attributes
+  XSetWindowAttributes  theWindowAttributes;
+  memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
+  theWindowAttributes.background_pixel = state.colors.bg.pixel;
+  theWindowAttributes.override_redirect = 1;
+  
+  //unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
+  unsigned long theWindowMask = CWOverrideRedirect;
+  Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
+                          state.root_geo.width, state.root_geo.height,
+                          0, state.depth, InputOutput, CopyFromParent,
+                          theWindowMask, &theWindowAttributes);
+  
+    //XStoreName(state.d, theWindow, "mario game");
+    XSelectInput(state.d, theWindow,
+               ExposureMask|VisibilityChangeMask|KeyPressMask);
+    
+    //XFlush(state.d);
+    XMapWindow(state.d, theWindow);
+    return theWindow;
+❱
+
+
+
+◀private: static▶ GC ☀Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow, Window theRoot, X11_Bg_Fg_Colors colors, int width, int height)❰
+  
+    static char garbage[] = {};
+    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(theDisplay, theRoot,
+                    garbage,
+                    width, height,
+                    colors.fg.pixel,
+                    colors.bg.pixel,
+                    DefaultDepth(theDisplay, theScreen));
+  
+  
+    XGCValues           theGCValues;
+    memset(&theGCValues,0,sizeof(XGCValues));
+    theGCValues.function = GXcopy;
+    theGCValues.foreground = colors.fg.pixel;
+    theGCValues.background = colors.bg.pixel;
+    theGCValues.fill_style = FillTiled;
+    theGCValues.ts_x_origin = 0;
+    theGCValues.ts_y_origin = 0;
+    theGCValues.tile = BitmapCreatePtr;
+
+    GC GCCreatePtr = XCreateGC(theDisplay, theWindow,
+                    GCFunction | GCForeground | GCBackground | GCTile |
+                    GCTileStipXOrigin | GCTileStipYOrigin | GCFillStyle,
+                    &theGCValues);
+    return GCCreatePtr;
+    
+❱
+

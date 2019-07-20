@@ -11,71 +11,8 @@
 #include "code/utilities/x11/main_state/x11_main_state_creator.hpp"
 #include "code/utilities/x11/loop/x11_looper.hpp"
 #include "code/utilities/x11/sprite/sprite_loader.hpp"
+#include "code/utilities/x11/sprite/sprite_window_creator.hpp"
 
-
-
-
-
-
-
-
-
-
-
-Window create_game_window(Main_X11_State const& state){
-  
-  //set window attributes
-  XSetWindowAttributes  theWindowAttributes;
-  memset(&theWindowAttributes,0,sizeof(XSetWindowAttributes));
-  theWindowAttributes.background_pixel = state.colors.bg.pixel;
-  theWindowAttributes.override_redirect = 1;
-  
-  //unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
-  unsigned long theWindowMask = CWOverrideRedirect;
-  Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
-                          state.root_geo.width, state.root_geo.height,
-                          0, state.depth, InputOutput, CopyFromParent,
-                          theWindowMask, &theWindowAttributes);
-  
-    //XStoreName(state.d, theWindow, "mario game");
-    XSelectInput(state.d, theWindow,
-               ExposureMask|VisibilityChangeMask|KeyPressMask);
-    
-    //XFlush(state.d);
-    XMapWindow(state.d, theWindow);
-    return theWindow;
-}
-
-
-
-GC Create_Graphics_Context(Display * theDisplay, int theScreen, Window theWindow, Window theRoot, X11_Bg_Fg_Colors colors, int width, int height){
-  
-    static char garbage[] = {};
-    Pixmap BitmapCreatePtr = XCreatePixmapFromBitmapData(theDisplay, theRoot,
-                    garbage,
-                    width, height,
-                    colors.fg.pixel,
-                    colors.bg.pixel,
-                    DefaultDepth(theDisplay, theScreen));
-  
-  
-    XGCValues           theGCValues;
-    memset(&theGCValues,0,sizeof(XGCValues));
-    theGCValues.function = GXcopy;
-    theGCValues.foreground = colors.fg.pixel;
-    theGCValues.background = colors.bg.pixel;
-    theGCValues.fill_style = FillTiled;
-    theGCValues.ts_x_origin = 0;
-    theGCValues.ts_y_origin = 0;
-    theGCValues.tile = BitmapCreatePtr;
-
-    GC GCCreatePtr = XCreateGC(theDisplay, theWindow,
-                    GCFunction | GCForeground | GCBackground | GCTile |
-                    GCTileStipXOrigin | GCTileStipYOrigin | GCFillStyle,
-                    &theGCValues);
-    return GCCreatePtr;
-    
-}
 
 void Draw_Image(Main_X11_State const& state, Window theWindow, GC gc, Sprite const& sprite, int x, int y){
   
@@ -99,10 +36,10 @@ void Draw_Image(Main_X11_State const& state, Window theWindow, GC gc, Sprite con
 
 int main(){
     
-    //create the main display
-    //this is typical x11 boilerplate setup stuff
+    //create the main display (connect to the X Server).  Just get everything setup to use X11.
+    //hoping this is all typical x11 boilerplate.
     //I'm not sure I did it all correctly, but wanted to abstract it away.
-    //hopefully customizable enough that you don't have to dig into this.
+    //hopefully customizable enough for most use cases and you don't have to dig into this.
     Setup_Display_Settings settings;
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
@@ -118,8 +55,11 @@ int main(){
     auto mario_walk_3 = Sprite_Loader::Load(state,share_directory,"mario-walk3");
     
     
-    auto theWindow = create_game_window(state);
-    auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,mario_stand.main->width, mario_stand.main->height);
+    auto mario = Sprite_Window_Creator::Create(state,mario_stand);
+    
+    
+    //auto theWindow = create_sprite_window(state);
+    //auto gc = Create_Graphics_Context(state.d,state.screen,theWindow,state.root,state.colors,mario_stand.main->width, mario_stand.main->height);
     
     //main looping logic
     //why not just use a timer/sleep?
@@ -145,7 +85,7 @@ int main(){
        ++x_c;
        ++y_c;
       
-      Draw_Image(state,theWindow,gc,mario_stand,x_c,y_c);
+      Draw_Image(state,mario.w,mario.gc,mario.sprite,x_c,y_c);
     });
     
 }

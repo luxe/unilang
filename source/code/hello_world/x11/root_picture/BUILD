@@ -13,6 +13,7 @@ cc_binary(
     deps = [
         "//code/utilities/x11/main_state:x11_main_state_creator",
         "//code/utilities/x11/sprite:sprite_loader",
+        "//code/utilities/x11/sprite:sprite_window_creator",
         "//code/utilities/x11/loop:x11_looper",
     ]
 )
