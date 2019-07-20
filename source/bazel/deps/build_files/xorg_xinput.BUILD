@@ -19,3 +19,13 @@ cc_library(
         "-DHAVE_CONFIG_H",
     ],
 )
+
+cc_binary(
+    name = "xinput",
+    srcs = ["src/xinput.c"],
+    includes = [".","src/"],
+    deps = [":lib"],
+    copts = [
+        "-DHAVE_CONFIG_H",
+    ],
+)
