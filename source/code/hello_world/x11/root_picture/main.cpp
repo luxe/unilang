@@ -12,26 +12,7 @@
 #include "code/utilities/x11/loop/x11_looper.hpp"
 #include "code/utilities/x11/sprite/sprite_loader.hpp"
 #include "code/utilities/x11/sprite/sprite_window_creator.hpp"
-
-
-void Draw_Image(Main_X11_State const& state, Sprite_Window const& sp){
-  
-  int relative_x = 0;
-  int relative_y = 0;
-  
-  //position the window instead of the sprite inside the window
-  XWindowChanges    theChanges;
-  theChanges.x = sp.x;
-  theChanges.y = sp.y;
-  XConfigureWindow(state.d, sp.w, CWX | CWY, &theChanges);
-  
-  XShapeCombineMask(state.d, sp.w, ShapeBounding, relative_x , relative_y, sp.sprite.bitmap_mask, ShapeSet);
-  
-       //oneko did this.  I don't think its necessary
-       //XFillRectangle(state.d, theWindow, gc, 0, 0, sprite.main->width, sprite.main->height);
-  
-  XPutImage(state.d, sp.w, sp.gc, sp.sprite.main, 0,0,relative_x, relative_y,sp.sprite.main->width, sp.sprite.main->height );
-}
+#include "code/utilities/x11/sprite/sprite_window_drawer.hpp"
 
 
 int main(){
@@ -57,13 +38,6 @@ int main(){
     
     auto mario = Sprite_Window_Creator::Create(state,mario_stand);
     
-    //main looping logic
-    //why not just use a timer/sleep?
-    //I don't know.  I saw some similar examples using the older
-    //c interrupt loop, and thought it might be better for x11.
-    //especially because I had an infinite while(true) before and
-    //it made my computer freeze
-    
     
     //X11 is notorious for image tearing
     //originally, I had one giant window, and I used PutImage each cycle to put the sprite in a different place.
@@ -78,7 +52,7 @@ int main(){
        ++mario.x;
        ++mario.y;
       
-      Draw_Image(state,mario);
+      Sprite_Window_Drawer::Draw(state,mario);
     });
     
 }

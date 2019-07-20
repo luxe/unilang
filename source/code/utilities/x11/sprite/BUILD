@@ -20,3 +20,8 @@ hcp(name = "sprite_window_creator", deps = [
     "//code/utilities/x11/sprite:sprite",
     "//code/utilities/x11/data:main_x11_state",
 ])
+
+hcp(name = "sprite_window_drawer", deps = [
+    "//code/utilities/x11/data:main_x11_state",
+    "//code/utilities/x11/sprite:sprite_window",
+])
