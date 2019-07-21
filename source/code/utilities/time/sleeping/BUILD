@@ -8,6 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/gmp:lib"
+        "//code/utilities/gmp:lib",
+        "//code/utilities/time/clock:clock",
     ]
 )

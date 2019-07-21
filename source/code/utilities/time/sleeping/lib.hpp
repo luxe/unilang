@@ -3,6 +3,7 @@
 #include <thread>
 #include <gmpxx.h>
 #include <iostream>
+#include "code/utilities/time/clock/clock.hpp"
 
 // sleep functions
 void Sleep_For_N_Nanoseconds(unsigned int const& number_of_nanoseconds);
@@ -13,6 +14,18 @@ void Sleep_For_N_Minutes(unsigned int const& number_of_minutes);
 void Sleep_For_N_Hours(unsigned int const& number_of_hours);
 void Sleep_For_N_Days(unsigned int const& number_of_days);
 void Sleep_For_N_Years(unsigned int const& number_of_years);
+
+
+template <typename Function>
+void Steady_Ms_Execute(unsigned int const& delay_amount, Function f){
+  Clock<> clock;
+  while(true){
+    if (clock.getMilliseconds() >= delay_amount) {
+      clock.reset();
+      f();
+    }
+  }
+}
 
 template <typename Function>
 auto Sleep_For_N_Nanoseconds_Then_Call_Function(unsigned int const& delay_amount, Function f) -> decltype(f) {
