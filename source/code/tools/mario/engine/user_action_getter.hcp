@@ -1,0 +1,146 @@
+class
+❪"code/utilities/x11/events/global_event_listener"❫
+❪"code/tools/mario/engine/user_action"❫
+❪"code/utilities/x11/data/main_x11_state"❫
+⚯
+❪iostream❫
+❪string❫
+❪cstdlib❫
+❪unistd.h❫
+❪X11/Xlib.h❫
+❪X11/Xutil.h❫
+❪X11/xpm.h❫
+❪X11/extensions/shape.h❫
+❪"code/utilities/types/booleans/lib"❫
+⚞⚟
+
+
+◀public: static▶ User_Action ☀Get(User_Action const& previous_action, Main_X11_State & state)❰
+    User_Action action = previous_action;
+    auto cookie = Global_Event_Listener::Get_Cookie(state);
+     if (cookie){
+        //std::cout << "handling" << std::endl;
+        Handle_Events(cookie,action.right_button,action.left_button);
+        XFreeEventData(state.d, cookie);
+     }
+     else{
+        //std::cout << "skipped" << std::endl;
+     }
+     //XFreeEventData(state.d, cookie);
+     return action;
+❱
+     
+◀private: static▶ void ☀Handle_Events(XGenericEventCookie* cookie, bool &right_button, bool &left_button) ❰
+
+    //printf("EVENT type %d \n", cookie->evtype);
+            switch (cookie->evtype)
+            {
+                case XI_DeviceChanged:
+                std::cout << "qqqq" << std::endl;
+                    //print_devicechangedevent(display, cookie->data);
+                    break;
+                case XI_HierarchyChanged:
+                std::cout << "qqqq2" << std::endl;
+                    //print_hierarchychangedevent(cookie->data);
+                    break;
+                case XI_RawKeyPress:
+                case XI_RawKeyRelease:
+                case XI_RawButtonPress:
+                case XI_RawButtonRelease:
+                case XI_RawMotion:
+                case XI_RawTouchBegin:
+                case XI_RawTouchUpdate:
+                case XI_RawTouchEnd:
+                    //std::cout << cookie->evtype << std::endl;
+                    //Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
+                break;
+                case XI_Enter:
+                case XI_Leave:
+                case XI_FocusIn:
+                case XI_FocusOut:
+                std::cout << "qqqq4" << std::endl;
+                    //print_enterleave(cookie->data);
+                    break;
+                case XI_PropertyEvent:
+                     std::cout << "pp" << std::endl;
+                    //print_propertyevent(display, cookie->data);
+                    break;
+                default:
+                //std::cout << "OOO" << std::endl;
+                    Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
+                break;
+            }
+❱
+
+
+◀private: static▶ void ☀Handle_Raw_Event(XIRawEvent *event, int const& evtype, bool &right_button, bool &left_button)❰
+
+
+    if (event->detail == 114){
+        if (evtype == 2){
+            //std::cout << "right down" << std::endl;
+            Make_True(right_button);
+        }
+        else{
+            //std::cout << "right dup" << std::endl;
+            Make_False(right_button);
+        }
+    }
+    else if (event->detail == 113){
+        if (evtype == 2){
+            //std::cout << "left down" << std::endl;
+            Make_True(left_button);
+        }
+        else{
+            //std::cout << "left dup" << std::endl;
+            Make_False(left_button);
+        }
+    }
+    //std::cout << "sss" << std::endl;
+    return ;
+    
+    
+    /*
+    if (event->detail == 114){
+        std::cout << event->evtype << std::endl;
+        switch(event->evtype) {
+            case XI_RawButtonPress:
+            case XI_RawButtonRelease:
+            case XI_RawMotion:
+            default:
+            if (evtype == 2){
+                //std::cout << "down" << std::endl;
+                Make_True(right_button);
+                return;
+            }
+            Make_False(right_button);
+            //std::cout << "up" << std::endl;
+            return;
+        }
+    }
+    else{
+        //Make_False(right_button);
+    }
+    
+    if (event->detail == 113){
+        std::cout << event->evtype << std::endl;
+        switch(event->evtype) {
+            case XI_RawButtonPress:
+            case XI_RawButtonRelease:
+            case XI_RawMotion:
+            default:
+            if (evtype == 2){
+                //std::cout << "down" << std::endl;
+                Make_True(left_button);
+                return;
+            }
+            Make_False(left_button);
+            //std::cout << "up" << std::endl;
+            return;
+        }
+    }
+    else{
+        //Make_False(left_button);
+    }
+    */
+❱

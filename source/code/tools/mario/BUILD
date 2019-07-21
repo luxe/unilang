@@ -20,6 +20,7 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/mario/sprites:sprites_loader",
     "//code/utilities/x11/events:global_event_listener",
     "//code/utilities/types/booleans:lib",
+    "//code/tools/mario/engine:user_action_getter",
 ])
 
 
