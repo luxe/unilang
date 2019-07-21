@@ -11,20 +11,23 @@ class
 
 ◀public: static▶ XGenericEventCookie* ☀Get_Cookie(Main_X11_State & state)❰
 
-    XEvent ev;
-    XGenericEventCookie *cookie = (XGenericEventCookie*)&ev.xcookie;
-    XNextEvent(state.d, (XEvent*)&ev);
+    if (XPending(state.d)){
+        XEvent ev;
+        XGenericEventCookie *cookie = (XGenericEventCookie*)&ev.xcookie;
+        XNextEvent(state.d, (XEvent*)&ev);
+            
+        if (!XGetEventData(state.d, cookie)){
+            XFreeEventData(state.d, cookie);
+            return nullptr;
+        }
+        if (cookie->type != GenericEvent){
+            XFreeEventData(state.d, cookie);
+            return nullptr;
+        }
         
-    if (!XGetEventData(state.d, cookie)){
-        XFreeEventData(state.d, cookie);
-        return nullptr;
+        return cookie;
     }
-    if (cookie->type != GenericEvent){
-        XFreeEventData(state.d, cookie);
-        return nullptr;
-    }
-    
-    return cookie;
+    return nullptr;
     
 ❱
 

@@ -60,28 +60,27 @@ class
     mario.x = 100;
     mario.y = 200;
     X11_Looper::typical_x11_game_loop(state,[&](){
-        std::cout << "start" << std::endl;
-     auto cookie = Global_Event_Listener::Get_Cookie(state);
-     std::cout << "gotten" << std::endl;
+    auto cookie = Global_Event_Listener::Get_Cookie(state);
      if (cookie){
-        std::cout << "handling" << std::endl;
+        //std::cout << "handling" << std::endl;
         Handle_Events(cookie,right_button,left_button);
-        XFreeEventData(state.d, cookie);
+        //XFreeEventData(state.d, cookie);
      }
      else{
-        std::cout << "skipped" << std::endl;
+        //std::cout << "skipped" << std::endl;
      }
      //XFreeEventData(state.d, cookie);
      
      if (right_button){
         mario.x += 4;
-        //std::cout.flush();
-        //std::cout << std::endl;
+     }
+     if (left_button){
+        mario.x -= 4;
      }
       
-      std::cout << "do" << std::endl;
+      //std::cout << "do" << std::endl;
       Sprite_Window_Drawer::Draw(state,mario);
-      std::cout << "finish" << std::endl;
+      //std::cout << "finish" << std::endl;
     });
 ❱
 
@@ -106,7 +105,7 @@ class
                 case XI_RawTouchBegin:
                 case XI_RawTouchUpdate:
                 case XI_RawTouchEnd:
-                    std::cout << cookie->evtype << std::endl;
+                    //std::cout << cookie->evtype << std::endl;
                     //Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
                 break;
                 case XI_Enter:
@@ -122,7 +121,7 @@ class
                     break;
                 default:
                 //std::cout << "OOO" << std::endl;
-                    //Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
+                    Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
                 break;
             }
 ❱
@@ -131,13 +130,14 @@ class
 ◀private: static▶ void ☀Handle_Raw_Event(XIRawEvent *event, int const& evtype, bool &right_button, bool &left_button)❰
     
     if (event->detail == 114){
+        std::cout << event->evtype << std::endl;
         switch(event->evtype) {
             case XI_RawButtonPress:
             case XI_RawButtonRelease:
             case XI_RawMotion:
             default:
-            if (evtype == 13){
-                std::cout << "down" << std::endl;
+            if (evtype == 2){
+                //std::cout << "down" << std::endl;
                 Make_True(right_button);
                 return;
             }
@@ -147,7 +147,28 @@ class
         }
     }
     else{
-        Make_False(right_button);
+        //Make_False(right_button);
+    }
+    
+    if (event->detail == 113){
+        std::cout << event->evtype << std::endl;
+        switch(event->evtype) {
+            case XI_RawButtonPress:
+            case XI_RawButtonRelease:
+            case XI_RawMotion:
+            default:
+            if (evtype == 2){
+                //std::cout << "down" << std::endl;
+                Make_True(left_button);
+                return;
+            }
+            Make_False(left_button);
+            //std::cout << "up" << std::endl;
+            return;
+        }
+    }
+    else{
+        //Make_False(left_button);
     }
 ❱
 
