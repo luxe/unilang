@@ -7,4 +7,5 @@ hcp(name = "x11_looper", deps = [
     "//code/utilities/x11/data:main_x11_state",
     "//code/utilities/x11/data:x11_window_geometry",
     "//code/utilities/x11/data:x11_bg_fg_colors",
+    "//code/utilities/time/sleeping:lib",
 ])
