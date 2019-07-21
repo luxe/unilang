@@ -14,10 +14,10 @@ def toolchains():
 
     http_archive(
         name = "com_grail_bazel_toolchain",
-        strip_prefix = "bazel-toolchain-master",
+        strip_prefix = "bazel-toolchain-ca946fdef6234fcdf0fefb4b87d9b8e9f0ecee45",
         urls = [
-            "https://github.com/unilang/bazel-toolchain/archive/master.tar.gz",
-            "https://github.com/grailbio/bazel-toolchain/archive/master.tar.gz"
+            "https://github.com/unilang/bazel-toolchain/archive/ca946fdef6234fcdf0fefb4b87d9b8e9f0ecee45.tar.gz",
+            "https://github.com/grailbio/bazel-toolchain/archive/ca946fdef6234fcdf0fefb4b87d9b8e9f0ecee45.tar.gz",
         ],
     )
 
