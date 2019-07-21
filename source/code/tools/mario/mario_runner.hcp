@@ -1,4 +1,5 @@
 class
+❪"code/utilities/x11/events/global_event_listener"❫
 ⚯
 ❪"code/utilities/sound/music_player"❫
 ❪iostream❫
@@ -36,6 +37,7 @@ class
     //load all the sprites
     auto sprites = Sprites_Loader::Load(state);
     
+    Global_Event_Listener::Enable_Events(state);
     
     auto mario = Sprite_Window_Creator::Create(state,sprites.mario_stand);
     
@@ -50,13 +52,84 @@ class
     //And based on the various complaints I've heard about X this may actually be a correct way to go about this.
     //fwiw, I see everyone on the internet talking about how X11 tears because its old, and its one of the reasons for wayland.
     //so I don't know. This model can be revised later.
+    
+    
+    bool right_button = false;
+    bool left_button = false;
     X11_Looper::typical_x11_game_loop(state,[&](){
-
-        //draw it
-        mario.y = 40;
-       ++mario.x;
-       //++mario.y;
+        
+     auto cookie = Global_Event_Listener::Get_Cookie(state);
+     if (cookie){
+        Handle_Events(cookie,right_button,left_button);
+        XFreeEventData(state.d, cookie);
+     }
+     
+     if (right_button){
+        mario.x += 4;
+        //std::cout.flush();
+        //std::cout << std::endl;
+     }
       
       Sprite_Window_Drawer::Draw(state,mario);
     });
 ❱
+
+◀private: static▶ void ☀Handle_Events(XGenericEventCookie* cookie, bool &right_button, bool &left_button) ❰
+
+    //printf("EVENT type %d \n", cookie->evtype);
+            switch (cookie->evtype)
+            {
+                case XI_DeviceChanged:
+                std::cout << "qqqq" << std::endl;
+                    //print_devicechangedevent(display, cookie->data);
+                    break;
+                case XI_HierarchyChanged:
+                std::cout << "qqqq2" << std::endl;
+                    //print_hierarchychangedevent(cookie->data);
+                    break;
+                case XI_RawKeyPress:
+                case XI_RawKeyRelease:
+                case XI_RawButtonPress:
+                case XI_RawButtonRelease:
+                case XI_RawMotion:
+                case XI_RawTouchBegin:
+                case XI_RawTouchUpdate:
+                case XI_RawTouchEnd:
+                    Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
+                break;
+                case XI_Enter:
+                case XI_Leave:
+                case XI_FocusIn:
+                case XI_FocusOut:
+                std::cout << "qqqq4" << std::endl;
+                    //print_enterleave(cookie->data);
+                    break;
+                case XI_PropertyEvent:
+                     std::cout << "pp" << std::endl;
+                    //print_propertyevent(display, cookie->data);
+                    break;
+                default:;
+            }
+❱
+
+
+◀private: static▶ void ☀Handle_Raw_Event(XIRawEvent *event, int const& evtype, bool &right_button, bool &left_button)❰
+    
+
+    if (event->detail == 114){
+        switch(event->evtype) {
+            case XI_RawButtonPress:
+            case XI_RawButtonRelease:
+            case XI_RawMotion:
+            default:
+            if (evtype == 13){
+                right_button = true;
+            }
+            else if (evtype == 14){
+                right_button = false;
+            }
+            break;
+        }
+    }
+❱
+

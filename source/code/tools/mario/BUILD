@@ -18,6 +18,7 @@ hcp(name = "mario_runner", deps = [
     "//code/utilities/x11/loop:x11_looper",
     "//code/utilities/x11:lib",
     "//code/tools/mario/sprites:sprites_loader",
+    "//code/utilities/x11/events:global_event_listener",
 ])
 
 

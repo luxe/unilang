@@ -1,0 +1,74 @@
+class
+❪string❫
+❪X11/Xlib.h❫
+❪X11/Xutil.h❫
+❪X11/extensions/XInput.h❫
+❪X11/extensions/XInput2.h❫
+❪"code/utilities/x11/data/main_x11_state"❫
+⚯
+❪iostream❫
+⚞⚟
+
+◀public: static▶ XGenericEventCookie* ☀Get_Cookie(Main_X11_State const& state)❰
+
+    XEvent ev;
+    XGenericEventCookie *cookie = (XGenericEventCookie*)&ev.xcookie;
+    XNextEvent(state.d, (XEvent*)&ev);
+        
+    XGetEventData(state.d, cookie);
+    if (cookie->type == GenericEvent){
+        return cookie;
+    }
+    
+    XFreeEventData(state.d, cookie);
+    return nullptr;
+    
+❱
+
+◀public: static▶ void ☀Enable_Events(Main_X11_State const& state)❰
+
+    /* Select for motion events */
+    XIEventMask mask[2];
+    XIEventMask *m;
+    m = &mask[0];
+    m->deviceid = XIAllDevices;
+    m->mask_len = XIMaskLen(XI_LASTEVENT);
+    m->mask = static_cast<unsigned char *>(calloc(m->mask_len, sizeof(char)));
+    XISetMask(m->mask, XI_ButtonPress);
+    XISetMask(m->mask, XI_ButtonRelease);
+    XISetMask(m->mask, XI_KeyPress);
+    XISetMask(m->mask, XI_KeyRelease);
+    XISetMask(m->mask, XI_Motion);
+    XISetMask(m->mask, XI_DeviceChanged);
+    XISetMask(m->mask, XI_Enter);
+    XISetMask(m->mask, XI_Leave);
+    XISetMask(m->mask, XI_FocusIn);
+    XISetMask(m->mask, XI_FocusOut);
+    XISetMask(m->mask, XI_TouchBegin);
+    XISetMask(m->mask, XI_TouchUpdate);
+    XISetMask(m->mask, XI_TouchEnd);
+    
+    m = &mask[1];
+    m->deviceid = XIAllMasterDevices;
+    m->mask_len = XIMaskLen(XI_LASTEVENT);
+    m->mask = static_cast<unsigned char *>(calloc(m->mask_len, sizeof(char)));
+    XISetMask(m->mask, XI_RawKeyPress);
+    XISetMask(m->mask, XI_RawKeyRelease);
+    XISetMask(m->mask, XI_RawButtonPress);
+    XISetMask(m->mask, XI_RawButtonRelease);
+    XISetMask(m->mask, XI_RawMotion);
+    XISetMask(m->mask, XI_RawTouchBegin);
+    XISetMask(m->mask, XI_RawTouchUpdate);
+    XISetMask(m->mask, XI_RawTouchEnd);
+    
+    XISelectEvents(state.d, state.root, &mask[0], 2);
+    XSync(state.d, false);
+    
+    free(mask[0].mask);
+    free(mask[1].mask);
+❱
+
+
+
+
+
