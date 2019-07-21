@@ -9,25 +9,26 @@ class
 ❪iostream❫
 ⚞⚟
 
-◀public: static▶ XGenericEventCookie* ☀Get_Cookie(Main_X11_State const& state)❰
+◀public: static▶ XGenericEventCookie* ☀Get_Cookie(Main_X11_State & state)❰
 
     XEvent ev;
     XGenericEventCookie *cookie = (XGenericEventCookie*)&ev.xcookie;
     XNextEvent(state.d, (XEvent*)&ev);
         
     if (!XGetEventData(state.d, cookie)){
+        XFreeEventData(state.d, cookie);
         return nullptr;
     }
-    if (cookie->type == GenericEvent){
-        return cookie;
+    if (cookie->type != GenericEvent){
+        XFreeEventData(state.d, cookie);
+        return nullptr;
     }
     
-    XFreeEventData(state.d, cookie);
-    return nullptr;
+    return cookie;
     
 ❱
 
-◀public: static▶ void ☀Enable_Events(Main_X11_State const& state)❰
+◀public: static▶ void ☀Enable_Events(Main_X11_State & state)❰
 
     /* Select for motion events */
     XIEventMask mask[2];

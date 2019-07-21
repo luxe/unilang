@@ -18,6 +18,7 @@ class
 ❪"code/utilities/x11/sprite/sprite_window_creator"❫
 ❪"code/utilities/x11/sprite/sprite_window_drawer"❫
 ❪"code/tools/mario/sprites/sprites_loader"❫
+❪"code/utilities/types/booleans/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run() ❰
@@ -42,7 +43,7 @@ class
     auto mario = Sprite_Window_Creator::Create(state,sprites.mario_stand);
     
     
-    //X11 is notorious for image tearing
+    //X11 is notorious for image tearing i guess
     //originally, I had one giant window, and I used PutImage each cycle to put the sprite in a different place.
     //this flickered and looked bad.  So Now I make little windows for each sprite, and place the sprite in the window at 0,0 always.
     //instead of moving the images each cycle, we move the entire window instead.  This looks clean but feels wrong.
@@ -56,13 +57,21 @@ class
     
     bool right_button = false;
     bool left_button = false;
+    mario.x = 100;
+    mario.y = 200;
     X11_Looper::typical_x11_game_loop(state,[&](){
-        
+        std::cout << "start" << std::endl;
      auto cookie = Global_Event_Listener::Get_Cookie(state);
+     std::cout << "gotten" << std::endl;
      if (cookie){
+        std::cout << "handling" << std::endl;
         Handle_Events(cookie,right_button,left_button);
         XFreeEventData(state.d, cookie);
      }
+     else{
+        std::cout << "skipped" << std::endl;
+     }
+     //XFreeEventData(state.d, cookie);
      
      if (right_button){
         mario.x += 4;
@@ -70,7 +79,9 @@ class
         //std::cout << std::endl;
      }
       
+      std::cout << "do" << std::endl;
       Sprite_Window_Drawer::Draw(state,mario);
+      std::cout << "finish" << std::endl;
     });
 ❱
 
@@ -95,7 +106,8 @@ class
                 case XI_RawTouchBegin:
                 case XI_RawTouchUpdate:
                 case XI_RawTouchEnd:
-                    Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
+                    std::cout << cookie->evtype << std::endl;
+                    //Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
                 break;
                 case XI_Enter:
                 case XI_Leave:
@@ -108,14 +120,16 @@ class
                      std::cout << "pp" << std::endl;
                     //print_propertyevent(display, cookie->data);
                     break;
-                default:;
+                default:
+                //std::cout << "OOO" << std::endl;
+                    //Handle_Raw_Event(static_cast<XIRawEvent *>(cookie->data),cookie->evtype,right_button,left_button);
+                break;
             }
 ❱
 
 
 ◀private: static▶ void ☀Handle_Raw_Event(XIRawEvent *event, int const& evtype, bool &right_button, bool &left_button)❰
     
-
     if (event->detail == 114){
         switch(event->evtype) {
             case XI_RawButtonPress:
@@ -123,13 +137,17 @@ class
             case XI_RawMotion:
             default:
             if (evtype == 13){
-                //std::cout << "r" << std::endl;
-                right_button = true;
+                std::cout << "down" << std::endl;
+                Make_True(right_button);
                 return;
             }
-            right_button = false;
+            Make_False(right_button);
+            //std::cout << "up" << std::endl;
             return;
         }
+    }
+    else{
+        Make_False(right_button);
     }
 ❱
 
