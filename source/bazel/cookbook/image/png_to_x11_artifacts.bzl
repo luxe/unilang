@@ -13,6 +13,6 @@ def png_to_x11_artifacts(name):
     xpm_to_xbm(name + "_mask")
     
     native.filegroup(
-        name = name + "_data",
+        name = name + "_image_data",
         srcs = [name + ".xpm", name + "_mask.xbm"],
     )
