@@ -60,10 +60,13 @@ class
     
     //create mario at a starting position
     Physics_State phys;
+    phys.pos_x = 700;
+    phys.pos_y = 100;
+    phys.facing = Compass_Direction::EAST;
+    
+    
+    
     auto mario = Sprite_Window_Creator::Create(state,sprites.mario_stand_right);
-    mario.x = 700;
-    mario.y = 100;
-    bool facing_right = true;
     
     
     //X11 is notorious for image tearing i guess
@@ -78,7 +81,9 @@ class
     //so I don't know. This model can be revised later.
     User_Action action;
     X11_Looper::typical_x11_game_loop(state,[&](){
-        
+    
+    mario.x = phys.pos_x;
+    mario.y = phys.pos_y;
     Sprite_Window_Drawer::Draw(state,mario);
     
     // what does the user want to do
@@ -86,24 +91,29 @@ class
     
      // adjust the actors based on user's request
      if (action.right_button){
-        mario.x += 1;
-        facing_right = true;
+        phys.horizontal_speed = 1;
+        phys.facing = Compass_Direction::EAST;
      }
-     if (action.left_button){
-        mario.x -= 1;
-        facing_right = false;
+     else if (action.left_button){
+        phys.horizontal_speed = -1;
+        phys.facing = Compass_Direction::WEST;
+     }
+     else{
+        phys.horizontal_speed = 0;
      }
      
+     phys.pos_x += phys.horizontal_speed;
+     
      // change the way things look based on action and curent actor's state
-     Decide_Mario_Look(action,mario.sprite,sprites,facing_right);
+     Decide_Mario_Look(action,mario.sprite,sprites,phys);
      
       
     });
 ❱
 
-◀public: static▶ void ☀Decide_Mario_Look(User_Action const& action, Sprite & sprite, Sprites const& sprites, bool facing_right) ❰
+◀public: static▶ void ☀Decide_Mario_Look(User_Action const& action, Sprite & sprite, Sprites const& sprites, Physics_State const& phys) ❰
     
-    if (facing_right){
+    if (phys.facing == Compass_Direction::EAST){
         if (action.down_button){
             sprite = sprites.mario_duck_right;
             //sprite = sprites.mario_stand;
