@@ -4,7 +4,7 @@ package(
 
 cc_library(
     name = "lib",
-    srcs = glob(["*.cpp"]),
-    hdrs = glob(["*.hpp"]),
+    srcs = ["lib.cpp"],
+    hdrs = ["lib.hpp"],
     deps = ["//code/utilities/types/strings/observers/converting:lib"]
 )
