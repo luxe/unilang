@@ -16,3 +16,11 @@ values = [
 ,"y"
 ,"none"
 ])
+
+enum_cpp(name = "compass_direction",
+values = [
+"north"
+,"west"
+,"south"
+,"east"
+])
