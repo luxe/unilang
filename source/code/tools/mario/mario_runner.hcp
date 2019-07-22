@@ -122,6 +122,24 @@ class
      }
      
      
+     //adjust mario sprite index
+     if (trying_to_go_right || trying_to_go_left){
+        ++phys.sprite_times;
+        
+         if (phys.sprite_times >= phys.total_sprite_times){
+            phys.sprite_times = 0;
+             if (phys.sprite_index == 2){
+                phys.sprite_index = 0;
+             }
+             else{
+                ++phys.sprite_index;
+             }
+         }
+     }
+     else{
+        phys.sprite_times = 0;
+     }
+     
      
      //track current jump
      if (phys.jump_count != 0){
@@ -157,6 +175,7 @@ class
      
      //has mario landed?
      if (phys.pos_y >= 700){
+        phys.pos_y = 700;
         phys.vertical_speed = 0;
         phys.jump_count = 0;
         phys.in_a_jump = false;
@@ -176,8 +195,19 @@ class
             sprite = sprites.mario_duck_right;
             //sprite = sprites.mario_stand;
         }
-        else{
-            //figure out
+        else if (action.right_button){
+            if (phys.sprite_index == 0){
+                sprite = sprites.mario_walk_1_right;
+            }
+            else if (phys.sprite_index == 1){
+                sprite = sprites.mario_walk_2_right;
+            }
+            else if (phys.sprite_index == 2){
+                sprite = sprites.mario_walk_3_right;
+            }
+        }
+        else
+        {
             sprite = sprites.mario_stand_right;
         }
     }
@@ -185,6 +215,17 @@ class
         if (action.down_button){
             sprite = sprites.mario_duck_left;
             //sprite = sprites.mario_stand;
+        }
+        else if (action.left_button){
+            if (phys.sprite_index == 0){
+                sprite = sprites.mario_walk_1_left;
+            }
+            else if (phys.sprite_index == 1){
+                sprite = sprites.mario_walk_2_left;
+            }
+            else if (phys.sprite_index == 2){
+                sprite = sprites.mario_walk_3_left;
+            }
         }
         else{
             //figure out
