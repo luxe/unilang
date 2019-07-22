@@ -54,6 +54,7 @@ class
     auto mario = Sprite_Window_Creator::Create(state,sprites.mario_stand_right);
     mario.x = 100;
     mario.y = 200;
+    bool facing_right = true;
     
     
     //X11 is notorious for image tearing i guess
@@ -77,27 +78,41 @@ class
      // adjust the actors based on user's request
      if (action.right_button){
         mario.x += 1;
+        facing_right = true;
      }
      if (action.left_button){
         mario.x -= 1;
+        facing_right = false;
      }
      
      // change the way things look based on action and curent actor's state
-     Decide_Mario_Look(action,mario.sprite,sprites);
+     Decide_Mario_Look(action,mario.sprite,sprites,facing_right);
      
       
     });
 ❱
 
-◀public: static▶ void ☀Decide_Mario_Look(User_Action const& action, Sprite & sprite, Sprites const& sprites) ❰
+◀public: static▶ void ☀Decide_Mario_Look(User_Action const& action, Sprite & sprite, Sprites const& sprites, bool facing_right) ❰
     
-    if (action.down_button){
-        sprite = sprites.mario_duck_right;
-        //sprite = sprites.mario_stand;
+    if (facing_right){
+        if (action.down_button){
+            sprite = sprites.mario_duck_right;
+            //sprite = sprites.mario_stand;
+        }
+        else{
+            //figure out
+            sprite = sprites.mario_stand_right;
+        }
     }
     else{
-        //figure out
-        sprite = sprites.mario_stand_right;
+        if (action.down_button){
+            sprite = sprites.mario_duck_left;
+            //sprite = sprites.mario_stand;
+        }
+        else{
+            //figure out
+            sprite = sprites.mario_stand_left;
+        }
     }
 ❱
 
