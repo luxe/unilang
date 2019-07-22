@@ -21,6 +21,7 @@ hcp(name = "noogle_documentation_getter", deps = [
     "//code/utilities/converters:lib",
     "//code/utilities/json/functions:lib",
     "//code/tools/noogle/program_options:lib",
+    "//code/utilities/documentation:common_documentation_getter",
 ])
 
 hcp(name = "query_extender", deps = [

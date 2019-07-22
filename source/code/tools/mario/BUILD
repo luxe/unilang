@@ -30,6 +30,7 @@ hcp(name = "mario_documentation_getter", deps = [
     "//code/transcompilers/unilang/structure/model:inlined_structures",
     "//code/utilities/converters:lib",
     "//code/utilities/json/functions:lib",
+    "//code/utilities/documentation:common_documentation_getter",
 ])
 
 

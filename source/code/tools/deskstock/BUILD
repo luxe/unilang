@@ -75,6 +75,7 @@ hcp(name = "deskstock_documentation_getter", deps = [
     "//code/tools/deskstock/settings:startup_settings",
     "//code/utilities/json/functions:lib",
     "//code/tools/deskstock:default_settings_getter",
+    "//code/utilities/documentation:common_documentation_getter",
 ])
 
 hcp(name = "meta_settings", deps = [
