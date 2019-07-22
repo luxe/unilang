@@ -15,6 +15,18 @@ class
 ⚞⚟
 
 
+// the problem with most keyboard event library code and such is that it listens in a window.
+// the mario game is basically windowless... or it has a lot of windows
+// I don't want people to try and click on mario first in order to move him.
+// additionally, I don't want some dumb empty control window that people have to click in /
+// keep focused in order to move mario.  So I think we can listen all events regardless of the window.
+
+//essentially a x11 keylogger.  kinda brute forced this out xinput.
+// I think its riddled with UB and leaks everywhere.
+// TODO(thickey): run a sanitizer and fix this sometime
+// needs cleaned up in general, but the main API should be sufficient for me frame by frame.
+//./user_run @xorg_xinput//:xinput -- test-xi2 --root
+
 ◀public: static▶ User_Action ☀Get(User_Action const& previous_action, Main_X11_State & state)❰
     User_Action action = previous_action;
     auto cookie = Global_Event_Listener::Get_Cookie(state);
