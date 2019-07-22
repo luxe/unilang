@@ -25,6 +25,13 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/mario/sprites:sprites",
 ])
 
+hcp(name = "mario_documentation_getter", deps = [
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/utilities/converters:lib",
+    "//code/utilities/json/functions:lib",
+])
+
 
 #build main and deploy stuff
 cc_binary(
