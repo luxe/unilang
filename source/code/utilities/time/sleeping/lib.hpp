@@ -20,6 +20,7 @@ template <typename Function>
 void Steady_Ms_Execute(unsigned int const& delay_amount, Function f){
   Clock<> clock;
   while(true){
+    //std::cout << clock.getMilliseconds() << " >= " << delay_amount << std::endl;
     if (clock.getMilliseconds() >= delay_amount) {
       clock.reset();
       f();
