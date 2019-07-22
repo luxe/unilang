@@ -16,9 +16,17 @@ class
 ❪"code/utilities/pdf/latex_template_getter"❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/filesystem/files/temp_file"❫
+❪"code/utilities/shell/process_spawn/process_spawner"❫
 ⚞⚟
 
-//sudo apt install pandoc
+//garbage deps (needs fixed)
+//sudo apt install texlive-latex-base
+//sudo apt-get install pandoc
+//sudo apt-get install texlive-fonts-recommended
+//sudo apt-get install xzdec
+//tlmgr install xzdec
+//sudo tlmgr option repository ftp://tug.org/historic/systems/texlive/2017/tlnet-final
+//tlmgr install xcolor
 
 ◀public: static▶ void ☀Create_Pdf(Structure const& structure, Pdf_Settings const& pdf_settings)❰
 
@@ -70,8 +78,10 @@ class
     command += pdf_settings.resulting_pdf;
     command += " ";
     command += pdf_settings.md_format;
-    if (Unsuccessful_Run_Of_Command(command)){
-        std::cerr << command << std::endl;
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    if (results.return_code != 0){
+        std::cerr << results.stderr << std::endl;
         Exit_With_Error("failed to create pdf");
     }
 ❱
