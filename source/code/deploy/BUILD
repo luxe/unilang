@@ -29,4 +29,5 @@ hcp(name = "software_deployer", deps = [
     "//code/transcompilers/unilang/structure/model:structure",
     "//code/transcompilers/unilang/main/root_settings:root_settings_getter",
     "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
+    "//code/tools/mario:mario_documentation_getter",
 ])
