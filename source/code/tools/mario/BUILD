@@ -23,6 +23,7 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/mario/engine:user_action_getter",
     "//code/tools/mario/engine:user_action",
     "//code/tools/mario/sprites:sprites",
+    "//code/tools/mario/sound:sounds_loader",
 ])
 
 hcp(name = "mario_documentation_getter", deps = [
