@@ -19,12 +19,12 @@ class
 ◀public: static▶ Sprite_Window ☀Create(Main_X11_State & state, Sprite const& sprite)❰
     Sprite_Window win;
     win.sprite = sprite;
-    win.w = create_sprite_window(state);
+    win.w = create_sprite_window(state,sprite.main->width, sprite.main->height);
     win.gc = Create_Graphics_Context(state.d,state.screen,win.w,state.root,state.colors,sprite.main->width, sprite.main->height);
     return win;
 ❱
 
-◀private: static▶ Window ☀create_sprite_window(Main_X11_State const& state)❰
+◀private: static▶ Window ☀create_sprite_window(Main_X11_State const& state, int width, int height)❰
   
   //set window attributes
   XSetWindowAttributes  theWindowAttributes;
@@ -35,7 +35,7 @@ class
   //unsigned long theWindowMask = CWBackPixel | CWCursor | CWOverrideRedirect;
   unsigned long theWindowMask = CWOverrideRedirect;
   Window theWindow = XCreateWindow(state.d, state.root, 0, 0,
-                          state.root_geo.width, state.root_geo.height,
+                          width, height,
                           0, state.depth, InputOutput, CopyFromParent,
                           theWindowMask, &theWindowAttributes);
   
