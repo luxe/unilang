@@ -61,7 +61,8 @@ class
     //create mario at a starting position
     Physics_State phys;
     phys.pos_x = 700;
-    phys.pos_y = 100;
+    phys.pos_y = 700;
+    phys.total_jump_count = 60;
     phys.facing = Compass_Direction::EAST;
     
     
@@ -89,12 +90,30 @@ class
     // what does the user want to do
     action = User_Action_Getter::Get(action,state);
     
+    
+    
+    //get user intentions
+    bool trying_to_go_right = false;
+    bool trying_to_go_left = false;
+    bool trying_to_jump = false;
+    if (action.right_button){
+        trying_to_go_right = true;
+    }
+    if (action.left_button){
+        trying_to_go_left = true;
+    }
+    if (action.up_button){
+        trying_to_jump = true;
+    }
+    else{
+    }
+    
      // adjust the actors based on user's request
-     if (action.right_button){
+     if (trying_to_go_right){
         phys.horizontal_speed = 1;
         phys.facing = Compass_Direction::EAST;
      }
-     else if (action.left_button){
+     else if (trying_to_go_left){
         phys.horizontal_speed = -1;
         phys.facing = Compass_Direction::WEST;
      }
@@ -102,7 +121,46 @@ class
         phys.horizontal_speed = 0;
      }
      
+     
+     
+     //track current jump
+     if (phys.jump_count != 0){
+        ++phys.jump_count;
+     }
+     
+     //jump only if we haven't jumped yet
+     if (trying_to_jump){
+        if (phys.jump_count == 0){
+            auto jump_sound = Music_Player::Play(sounds.mario_jump.full_path,false);
+            phys.vertical_speed = -2;
+            phys.jump_count = 1;
+            phys.in_a_jump = true;
+        }
+     }
+     
+     //not trying to jump
+     else{
+        if (phys.in_a_jump){
+            phys.jump_count = phys.total_jump_count;
+            phys.vertical_speed = +2;
+        }
+     }
+     
+     //are we failling yet?
+     if (phys.jump_count >= phys.total_jump_count){
+        phys.vertical_speed = +2;
+     }
+     
+     //update mario's momentum
      phys.pos_x += phys.horizontal_speed;
+     phys.pos_y += phys.vertical_speed;
+     
+     //has mario landed?
+     if (phys.pos_y >= 700){
+        phys.vertical_speed = 0;
+        phys.jump_count = 0;
+        phys.in_a_jump = false;
+     }
      
      // change the way things look based on action and curent actor's state
      Decide_Mario_Look(action,mario.sprite,sprites,phys);
