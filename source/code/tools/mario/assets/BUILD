@@ -1,6 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/image:png_to_x11_artifacts.bzl", "png_to_x11_artifacts")
 load("//bazel/cookbook/sound:mp3_artifact.bzl", "mp3_artifact")
+load("//bazel/cookbook/sound:wav_artifact.bzl", "wav_artifact")
+load("//bazel/cookbook/sound:mp3_to_wav.bzl", "mp3_to_wav")
 load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
 
 # https://downloads.khinsider.com/game-soundtracks/album/super-mario-bros.-1-3-anthology
@@ -13,7 +15,8 @@ png_to_x11_artifacts("mario-walk3")
 png_to_x11_artifacts("mario-duck")
 
 mp3_artifact("main_theme")
-mp3_artifact("mario_jump")
+mp3_to_wav("mario_jump")
+wav_artifact("mario_jump")
 
 
 distributable_data(name="mario",
@@ -25,6 +28,6 @@ distributable_data(name="mario",
                         ":mario-walk3_image_data",
                         ":mario-duck_image_data",
                         ":main_theme_mp3_data",
-                        ":mario_jump_mp3_data",
+                        ":mario_jump_wav_data",
                    ]
 )

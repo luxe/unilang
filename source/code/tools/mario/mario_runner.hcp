@@ -25,6 +25,7 @@ class
 ❪"code/utilities/x11/sprite/sprite_window_drawer"❫
 ❪"code/tools/mario/engine/user_input/user_action_getter"❫
 ❪"code/utilities/types/booleans/lib"❫
+❪"code/utilities/sound/sdl/sdl_audio.h"❫
 ⚞⚟
 
 
@@ -50,6 +51,12 @@ class
     settings.syncronize_debug_mode = false;
     settings.set_error_handler = false;
     settings.check_for_shape_extension = true;
+    
+    bool play_music = true;
+    bool play_sound_effects = true;
+    
+    
+    
     auto state = X11_Main_State_Creator::Create(settings);
     
     //we intend to spy on keyboard/mouse events everywhere.
@@ -62,7 +69,9 @@ class
     auto sounds = Sounds_Loader::Load();
     
     //start some music
-    //auto m = Music_Player::Play(sounds.main_theme.full_path);
+    if (play_music){
+        Music_Player::Play(sounds.main_theme.full_path);
+    }
     
     auto phys = Initial_Mario_Physics();
     
@@ -311,7 +320,9 @@ class
      //jump only if we haven't jumped yet
      if (trying_to_jump){
         if (phys.jump_count == 0){
-            //auto jump_sound = Music_Player::Play(sounds.mario_jump.full_path,false);
+            
+            //Music_Player::Play(sounds.mario_jump.full_path,false);
+            playSound(sounds.mario_jump.full_path.c_str(),128);
             phys.vertical_speed = -2;
             phys.jump_count = 1;
             phys.in_a_jump = true;
