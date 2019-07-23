@@ -17,6 +17,8 @@ png_to_x11_artifacts("mario-duck")
 mp3_artifact("main_theme")
 mp3_to_wav("mario_jump")
 wav_artifact("mario_jump")
+mp3_to_wav("mario_death")
+wav_artifact("mario_death")
 
 
 distributable_data(name="mario",
@@ -29,5 +31,6 @@ distributable_data(name="mario",
                         ":mario-duck_image_data",
                         ":main_theme_mp3_data",
                         ":mario_jump_wav_data",
+                        ":mario_death_wav_data",
                    ]
 )
