@@ -30,17 +30,14 @@ class
 ◀public: static▶ User_Action ☀Get(User_Action const& previous_action, Main_X11_State const& state)❰
     User_Action action = previous_action;
     auto cookie = Global_Event_Listener::Get_Cookie(state);
-     if (cookie){
-        //std::cout << "handling" << std::endl;
+     while (cookie){
         Handle_Events(cookie,action);
+        cookie = Global_Event_Listener::Get_Cookie(state);
         
         
         //I see other code do this, but I get segfaulted when I do.
         //we'll have to wrap all this bs in RAII at some point, run sanitizers and test it all
         //XFreeEventData(state.d, cookie);
-     }
-     else{
-        //std::cout << "skipped" << std::endl;
      }
      //XFreeEventData(state.d, cookie);
      return action;
