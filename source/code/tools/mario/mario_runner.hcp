@@ -3,6 +3,9 @@ class
 ❪"code/tools/mario/engine/user_input/user_action"❫
 ❪"code/tools/mario/sprites/sprites"❫
 ❪"code/tools/mario/engine/physics_state"❫
+❪"code/utilities/x11/sprite/sprite_window_creator"❫
+❪"code/tools/mario/sprites/sprites_loader"❫
+❪"code/tools/mario/sound/sounds_loader"❫
 ⚯
 ❪"code/utilities/sound/music_player"❫
 ❪iostream❫
@@ -18,10 +21,7 @@ class
 ❪"code/utilities/x11/main_state/x11_main_state_creator"❫
 ❪"code/utilities/x11/loop/x11_looper"❫
 ❪"code/utilities/x11/sprite/sprite_loader"❫
-❪"code/utilities/x11/sprite/sprite_window_creator"❫
 ❪"code/utilities/x11/sprite/sprite_window_drawer"❫
-❪"code/tools/mario/sprites/sprites_loader"❫
-❪"code/tools/mario/sound/sounds_loader"❫
 ❪"code/tools/mario/engine/user_input/user_action_getter"❫
 ❪"code/utilities/types/booleans/lib"❫
 ⚞⚟
@@ -81,12 +81,37 @@ class
     //fwiw, I see everyone on the internet talking about how X11 tears because its old, and its one of the reasons for wayland.
     //so I don't know. This model can be revised later.
     User_Action action;
-    X11_Looper::typical_x11_game_loop(state,[&](){
     
+    
+    // using namespace std::chrono;
+    // using Framerate = duration<steady_clock::rep, std::ratio<1, 60>>;
+    // auto next = steady_clock::now() + Framerate{1};
+    // int i = 0;
+    // while(true)
+    // {
+    //     std::cout << ++i << std::endl;
+    //     //update();
+    //     while (steady_clock::now() < next)
+    //         ;
+    //     next += Framerate{1};
+    //     //render();
+    // }
+    
+    
+    
+    X11_Looper::typical_x11_game_loop(state,[&](){
+     
+        Update(state,action,mario,phys,sprites,sounds);
+        Render(state,phys,mario);
+      
+    });
+❱
+
+
+◀private: static▶ void ☀Update(Main_X11_State const& state, User_Action & action, Sprite_Window & mario, Physics_State & phys, Sprites const& sprites, Sounds const& sounds)❰
+
     // what does the user want to do
     action = User_Action_Getter::Get(action,state);
-    
-    
     
     //get user intentions
     bool trying_to_go_right = false;
@@ -179,17 +204,19 @@ class
      
      // change the way things look based on action and curent actor's state
      Decide_Mario_Look(action,mario.sprite,sprites,phys);
-     
-     
-     //DISPLAY
+❱
+
+◀private: static▶ void ☀Render(Main_X11_State const& state, Physics_State const& phys, Sprite_Window & mario)❰
+
+    //DISPLAY
     mario.x = phys.pos_x;
     mario.y = phys.pos_y;
     Sprite_Window_Drawer::Draw(state,mario);
-      
-    });
 ❱
 
-◀public: static▶ void ☀Decide_Mario_Look(User_Action const& action, Sprite & sprite, Sprites const& sprites, Physics_State const& phys) ❰
+
+
+◀private: static▶ void ☀Decide_Mario_Look(User_Action const& action, Sprite & sprite, Sprites const& sprites, Physics_State const& phys) ❰
     
     if (phys.facing == Compass_Direction::EAST){
         if (action.down_button){
