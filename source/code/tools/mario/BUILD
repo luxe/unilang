@@ -71,5 +71,5 @@ pkg_deb(
     version = DEFAULT_VERSION,
     description = "mario on your desktop",
     homepage = DEFAULT_HOMEPAGE,
-    depends = [],
+    depends = ["libsdl2-mixer-2.0-0"],
 )
