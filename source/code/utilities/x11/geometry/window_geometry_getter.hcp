@@ -10,7 +10,7 @@ class
 ⚞⚟
 
 
-◀public: static▶ std::vector<X11_Window_Geometry> ☀Get_All_Window_Geometry(Main_X11_State const& state, Display * display, Window w)❰
+◀public: static▶ std::vector<X11_Window_Geometry> ☀Get_All_Window_Geometry(Main_X11_State const& state)❰
     std::vector<X11_Window_Geometry> geos;
     unsigned long len=0;
     auto list = (Window*)winlist(state.d,&len);
@@ -26,10 +26,21 @@ class
     X11_Window_Geometry geo;
     Window theTempRoot;
     Window child;
-    XGetGeometry(display, w, &theTempRoot,
+    
+    
+    //catch the error on getting geometry because someone may have closed the window
+    XSetErrorHandler([](Display *dpy, XErrorEvent *err){
+        return 0;
+    });
+    
+    auto result = XGetGeometry(display, w, &theTempRoot,
                &geo.x, &geo.y,
                &geo.width, &geo.height,
                &geo.border_width, &geo.depth);
+    
+    if (result == 0){
+        return geo;
+    }
     
     XTranslateCoordinates(display, w, theTempRoot, geo.x, geo.y, &geo.x, &geo.y, &child);
   return geo;

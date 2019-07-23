@@ -26,6 +26,7 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/mario/sound:sounds_loader",
     "//code/tools/mario/engine:physics_state",
     "//code/utilities/sound/sdl:sdl_audio",
+    "//code/utilities/x11/geometry:window_geometry_getter",
 ])
 
 hcp(name = "mario_documentation_getter", deps = [
