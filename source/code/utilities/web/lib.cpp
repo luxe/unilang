@@ -5,6 +5,13 @@
 #include <iostream>
 #include "code/utilities/json/json_extractor.hpp"
 
+
+nlohmann::json Extract_Web_Json(Html_Fetch_Settings const& settings){
+    auto str = Get_Html_Of_Site(settings);
+    auto j = nlohmann::json::parse(str);
+    return j;
+}
+
 float Extract_Web_Json_Float(Web_Json_Extraction_Settings const& settings){
   
   auto str = Get_Html_Of_Site(settings.fetch);
@@ -79,7 +86,7 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
       return "";
     }
  
-    possibly_show_error("error: could not initalize curl",settings.show_errors);
+    possibly_show_error("error: could not initialize curl",settings.show_errors);
     return "";
 }
 
