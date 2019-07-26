@@ -1,5 +1,6 @@
 #include <iostream>
+#include "code/tools/gcalviz/gcalviz_runner.hpp"
 
 int main(int const argc, char** const argv){
-    std::cout << "hello world" << std::endl;
+    Gcalviz_Runner::Run();
 }

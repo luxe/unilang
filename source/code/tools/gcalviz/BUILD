@@ -11,5 +11,10 @@ cc_binary(
     name = "gcalviz",
     srcs = ["gcalviz.cpp"],
     deps = [
+        "//code/tools/gcalviz:gcalviz_runner",
     ]
 )
+
+hcp(name = "gcalviz_runner", deps = [
+    "//code/utilities/gcal:gcal_getter",
+])
