@@ -17,4 +17,5 @@ cc_binary(
 
 hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/gcal:gcal_getter",
+    "//code/utilities/secret:secret_getter",
 ])
