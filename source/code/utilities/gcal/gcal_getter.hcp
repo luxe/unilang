@@ -1,15 +1,17 @@
 class
 ❪string❫
 ❪iostream❫
+❪set❫
 ⚯
-❪"code/utilities/shell/lib.hpp"❫
-❪"code/utilities/web/lib.hpp"❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
 
 
 ◀public: static▶ void ☀Test(std::string const& access_token)❰
-    std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?access_token=";
+    std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True&access_token=";
     url += access_token;
     Html_Fetch_Settings settings;
     settings.url = url;
@@ -20,6 +22,47 @@ class
         std::cout << j << std::endl;
     }
     
+    
+    std::set<nlohmann::json> rooms;
+    Insert_Rooms_That_Start_With(rooms,j,"PIT");
+    
+    while (j.find("nextPageToken") != j.end()) {
+        settings.url = url;
+        settings.url += "&pageToken=";
+        settings.url += j["nextPageToken"];
+        
+        std::cout << settings.url << std::endl;
+        j = Extract_Web_Json(settings);
+        Insert_Rooms_That_Start_With(rooms,j,"PIT");
+        
+    }
+    
+    std::cout << rooms.size() << std::endl;
+❱
+
+◀private: static▶ void ☀Insert_Rooms_That_Start_With(std::set<nlohmann::json> & rooms, nlohmann::json const& j, std::string const& prefix)❰
+    for (auto const& it: j["items"]){
+        if (Begins_With(it["summary"],prefix)){
+            rooms.insert(it);
+        }
+    }
+❱
+
+
+◀public: static▶ void ☀Refresh_Token()❰
+
+   std::string url = "https://www.googleapis.com/oauth2/v4/token?";
+   url += "client_id=";
+   url += "X";
+   url += "&client_secret=";
+   url += "X";
+   url += "&refresh_token=";
+   url += "X";
+   
+    Html_Fetch_Settings settings;
+    settings.url = url;
+    std::cout << settings.url << std::endl;
+    auto j = Extract_Web_Json(settings);
     std::cout << j.dump(4) << std::endl;
 ❱
 
