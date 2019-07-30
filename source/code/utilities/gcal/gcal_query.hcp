@@ -1,0 +1,65 @@
+class
+❪string❫
+❪iostream❫
+❪set❫
+❪"code/utilities/gcal/gcal_credentials"❫
+⚯
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+⚞⚟
+
+
+
+//query, and do all of the access_token refreshing as necessary to make sure the query goes through
+◀public: static▶ nlohmann::json ☀Token_Refreshing_Query(std::string const& url, Gcal_Credentials & creds)❰
+    Html_Fetch_Settings settings;
+    settings.url = url;
+    Add_Access_Token(settings.url,creds);
+    auto j = Extract_Web_Json(settings);
+    
+    //error (assume the token has expired)
+    while (j.find("error") != j.end() || j.find("err") != j.end()) {
+        Refresh_Token(creds);
+        settings.url = url;
+        Add_Access_Token(settings.url,creds);
+        j = Extract_Web_Json(settings);
+    }
+    return j;
+❱
+
+◀private: static▶ void ☀Add_Access_Token(std::string & url, Gcal_Credentials const& creds)❰
+    url += "&access_token=";
+    url += creds.access_token;
+❱
+
+
+◀private: static▶ void ☀Refresh_Token(Gcal_Credentials & creds)❰
+
+    //construct the url for refreshing our access token
+   std::string url = "https://www.googleapis.com/oauth2/v4/token?";
+   url += "refresh_token=";
+   url += creds.refresh_token;
+   url += "&client_id=";
+   url += creds.client_id;
+   url += "&client_secret=";
+   url += creds.client_secret;
+   url += "&grant_type=refresh_token";
+   
+    //query endpoint for new access token
+    Html_Fetch_Settings settings;
+    settings.url = url;
+    settings.post = true;
+    auto j = Extract_Web_Json(settings);
+    
+    //handle cases when we don't get an access token back
+    if (j.find("access_token") == j.end()) {
+        std::string message = "failed to refresh token\n";
+        message += j.dump(4);
+        Exit_With_Error(message);
+    }
+    
+    //assuming it works, assign our new access token
+    creds.access_token = j["access_token"];
+❱

@@ -8,6 +8,7 @@ class
 ❪"code/utilities/web/lib"❫
 ❪"code/utilities/exits/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/gcal/gcal_query"❫
 ⚞⚟
 
 
@@ -19,11 +20,11 @@ class
     return Get_Cals_Whose_Description_Starts_With(creds,"SFO");
 ❱
 
-◀public: static▶ std::set<nlohmann::json> ☀Get_Cals_Whose_Description_Starts_With(Gcal_Credentials & creds, std::string const& prefix)❰
+◀private: static▶ std::set<nlohmann::json> ☀Get_Cals_Whose_Description_Starts_With(Gcal_Credentials & creds, std::string const& prefix)❰
 
     std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True";
     
-    auto j = Token_Refreshing_Gcal_Query(url,creds);
+    auto j = Gcal_Query::Token_Refreshing_Query(url,creds);
     
     
     std::set<nlohmann::json> rooms;
@@ -35,7 +36,7 @@ class
         settings.url = url;
         settings.url += "&pageToken=";
         settings.url += j["nextPageToken"];
-        j = Token_Refreshing_Gcal_Query(settings.url,creds);
+        j = Gcal_Query::Token_Refreshing_Query(settings.url,creds);
         Insert_Rooms_That_Start_With(rooms,j,prefix);
     }
     
@@ -49,58 +50,6 @@ class
             rooms.insert(it);
         }
     }
-❱
-
-
-◀private: static▶ nlohmann::json ☀Token_Refreshing_Gcal_Query(std::string const& url, Gcal_Credentials & creds)❰
-    Html_Fetch_Settings settings;
-    settings.url = url;
-    Add_Access_Token(settings.url,creds);
-    auto j = Extract_Web_Json(settings);
-    
-    //error (assume the token has expired)
-    while (j.find("error") != j.end() || j.find("err") != j.end()) {
-        Refresh_Token(creds);
-        settings.url = url;
-        Add_Access_Token(settings.url,creds);
-        j = Extract_Web_Json(settings);
-    }
-    return j;
-❱
-
-◀private: static▶ void ☀Add_Access_Token(std::string & url, Gcal_Credentials const& creds)❰
-    url += "&access_token=";
-    url += creds.access_token;
-❱
-
-
-◀private: static▶ void ☀Refresh_Token(Gcal_Credentials & creds)❰
-
-    //construct the url for refreshing our access token
-   std::string url = "https://www.googleapis.com/oauth2/v4/token?";
-   url += "refresh_token=";
-   url += creds.refresh_token;
-   url += "&client_id=";
-   url += creds.client_id;
-   url += "&client_secret=";
-   url += creds.client_secret;
-   url += "&grant_type=refresh_token";
-   
-    //query endpoint for new access token
-    Html_Fetch_Settings settings;
-    settings.url = url;
-    settings.post = true;
-    auto j = Extract_Web_Json(settings);
-    
-    //handle cases when we don't get an access token back
-    if (j.find("access_token") == j.end()) {
-        std::string message = "failed to refresh token\n";
-        message += j.dump(4);
-        Exit_With_Error(message);
-    }
-    
-    //assuming it works, assign our new access token
-    creds.access_token = j["access_token"];
 ❱
 
 
