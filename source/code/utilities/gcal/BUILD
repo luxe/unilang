@@ -5,6 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name="gcal_getter", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/web:lib",
+    "//code/utilities/exits:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/gcal:gcal_credentials",
 ])

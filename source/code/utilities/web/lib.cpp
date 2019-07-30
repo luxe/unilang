@@ -71,6 +71,10 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
         list = curl_slist_append(list, it.c_str());
       }
       curl_easy_setopt(curl, CURLOPT_HTTPHEADER, list);
+      
+      if (settings.post){
+        curl_easy_setopt(curl, CURLOPT_POST, 1L);
+      }
  
       result = curl_easy_perform(curl);//http get performed
       curl_slist_free_all(list); /* free the list again */
