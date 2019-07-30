@@ -13,8 +13,7 @@ class
 
 
 ◀public: static▶ std::set<nlohmann::json> ☀Get_Pittsburgh_Rooms(Gcal_Credentials & creds)❰
-    std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True&access_token=";
-    url += creds.access_token;
+    std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True";
     
     auto j = Token_Refreshing_Gcal_Query(url,creds);
     
@@ -28,8 +27,7 @@ class
         settings.url = url;
         settings.url += "&pageToken=";
         settings.url += j["nextPageToken"];
-        
-        auto j = Token_Refreshing_Gcal_Query(url,creds);
+        j = Token_Refreshing_Gcal_Query(settings.url,creds);
         Insert_Rooms_That_Start_With(rooms,j,"PIT");
     }
     
@@ -48,14 +46,22 @@ class
 ◀private: static▶ nlohmann::json ☀Token_Refreshing_Gcal_Query(std::string const& url, Gcal_Credentials & creds)❰
     Html_Fetch_Settings settings;
     settings.url = url;
+    Add_Access_Token(settings.url,creds);
     auto j = Extract_Web_Json(settings);
     
     //error (assume the token has expired)
-    while (j.find("err") != j.end()) {
+    while (j.find("error") != j.end() || j.find("err") != j.end()) {
         Refresh_Token(creds);
+        settings.url = url;
+        Add_Access_Token(settings.url,creds);
         j = Extract_Web_Json(settings);
     }
     return j;
+❱
+
+◀private: static▶ void ☀Add_Access_Token(std::string & url, Gcal_Credentials const& creds)❰
+    url += "&access_token=";
+    url += creds.access_token;
 ❱
 
 
@@ -78,7 +84,7 @@ class
     auto j = Extract_Web_Json(settings);
     
     //handle cases when we don't get an access token back
-    if (j.find("access_token") != j.end()) {
+    if (j.find("access_token") == j.end()) {
         std::string message = "failed to refresh token\n";
         message += j.dump(4);
         Exit_With_Error(message);
