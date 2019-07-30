@@ -13,13 +13,21 @@ class
 
 
 ◀public: static▶ std::set<nlohmann::json> ☀Get_Pittsburgh_Rooms(Gcal_Credentials & creds)❰
+    return Get_Cals_Whose_Description_Starts_With(creds,"PIT");
+❱
+◀public: static▶ std::set<nlohmann::json> ☀Get_San_Francisco_Rooms(Gcal_Credentials & creds)❰
+    return Get_Cals_Whose_Description_Starts_With(creds,"SFO");
+❱
+
+◀public: static▶ std::set<nlohmann::json> ☀Get_Cals_Whose_Description_Starts_With(Gcal_Credentials & creds, std::string const& prefix)❰
+
     std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True";
     
     auto j = Token_Refreshing_Gcal_Query(url,creds);
     
     
     std::set<nlohmann::json> rooms;
-    Insert_Rooms_That_Start_With(rooms,j,"PIT");
+    Insert_Rooms_That_Start_With(rooms,j,prefix);
     
     while (j.find("nextPageToken") != j.end()) {
         
@@ -28,11 +36,12 @@ class
         settings.url += "&pageToken=";
         settings.url += j["nextPageToken"];
         j = Token_Refreshing_Gcal_Query(settings.url,creds);
-        Insert_Rooms_That_Start_With(rooms,j,"PIT");
+        Insert_Rooms_That_Start_With(rooms,j,prefix);
     }
     
     return rooms;
 ❱
+
 
 ◀private: static▶ void ☀Insert_Rooms_That_Start_With(std::set<nlohmann::json> & rooms, nlohmann::json const& j, std::string const& prefix)❰
     for (auto const& it: j["items"]){
