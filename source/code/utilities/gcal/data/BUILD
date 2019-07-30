@@ -4,3 +4,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="gcal_room", deps = [
 ])
+hcp(name="gcal_rooms", deps = [
+    "//code/utilities/gcal/data:gcal_room"
+])

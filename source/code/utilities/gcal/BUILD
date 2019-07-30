@@ -10,6 +10,7 @@ hcp(name="gcal_getter", deps = [
     "//code/utilities/gcal:gcal_credentials",
     "//code/utilities/gcal:gcal_query",
     "//code/utilities/gcal/data:gcal_room",
+    "//code/utilities/gcal/data:gcal_rooms",
 ])
 
 hcp(name="gcal_query", deps = [

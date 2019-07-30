@@ -4,6 +4,7 @@ class
 ❪set❫
 ❪"code/utilities/gcal/gcal_credentials"❫
 ❪"code/utilities/gcal/data/gcal_room"❫
+❪"code/utilities/gcal/data/gcal_rooms"❫
 ⚯
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/web/lib"❫
@@ -14,11 +15,36 @@ class
 
 
 
+//Get calendars that we subscribe to.
+//This is essentially what people see on the side of their google calendar where they can toggle the visibility
+//when user's spy on people, they are using these calendars.  Meeting rooms themselves are represented as calendars
+//I had to manually add a ton of calendars for every room (and then disable their visibility so it was still useable in the browser).  
+//Since I've added these room calendars, they are accessible through the API (regardless of whether they are visible in my browser)
+//These functions returns those rooms in different ways
 ◀public: static▶ std::set<nlohmann::json> ☀Get_Pittsburgh_Rooms(Gcal_Credentials & creds)❰
     return Get_Cals_Whose_Description_Starts_With(creds,"PIT");
 ❱
 ◀public: static▶ std::set<nlohmann::json> ☀Get_San_Francisco_Rooms(Gcal_Credentials & creds)❰
     return Get_Cals_Whose_Description_Starts_With(creds,"SFO");
+❱
+
+
+//Given a calendar ID (which could be retrieved from getting all specific rooms),
+//we can query all of the events that took place in this calendar.
+//if its a user calendar this would tell use every meeting they've gone to.
+//if its a room calendar this would tell us every meeting that took place there (and who attended it)
+◀public: static▶ Gcal_Rooms ☀Get_All_Pittsburgh_Room_Events(Gcal_Credentials & creds)❰
+    
+    //get all pit room names
+    auto pit_rooms = Gcal_Getter::Get_Pittsburgh_Rooms(creds);
+    
+    //get events from all of these events
+    Gcal_Rooms all;
+    for (auto const& it: pit_rooms){
+        auto room = Get_All_Events_Of_Calendar(creds, it["id"]);
+        all.rooms.emplace_back(room);
+    }
+    return all;
 ❱
 
 ◀public: static▶ Gcal_Room ☀Get_All_Events_Of_Calendar(Gcal_Credentials & creds, std::string const& cal_id)❰
@@ -71,7 +97,6 @@ class
         settings.url += j["nextPageToken"];
         j = Gcal_Query::Token_Refreshing_Query(settings.url,creds);
         results.emplace_back(j);
-        std::cout << "page #" << results.size() << std::endl;
     }
     return results;
 ❱

@@ -15,9 +15,19 @@ class
 
     //load in google creds
     auto settings = Default_Settings_Getter::Get();
-
-    auto pit_rooms = Gcal_Getter::Get_Pittsburgh_Rooms(settings.credentials);
     
+    
+
+    auto pit_rooms = Gcal_Getter::Get_All_Pittsburgh_Room_Events(settings.credentials);
+    Write_Json_To_File(pit_rooms,"/home/thickey/Desktop/pit_room_events.json");
+    
+    size_t total_events = 0;
+    for (auto const& it: pit_rooms.rooms){
+        total_events += it.events.size();
+    }
+    std::cout << "total events: " << total_events << std::endl;
+    
+    /*
     for (auto const& it: pit_rooms){
         auto events = Gcal_Getter::Get_All_Events_Of_Calendar(settings.credentials, it["id"]);
         std::string file_name = "/home/thickey/Desktop/events/";
@@ -29,6 +39,7 @@ class
         //Write_To_File(file_name,events);
         Write_Json_To_File(events,file_name);
     }
+    */
     
     //auto sfo_rooms = Gcal_Getter::Get_San_Francisco_Rooms(creds);
     //std::cout << sfo_rooms.size() << std::endl;
