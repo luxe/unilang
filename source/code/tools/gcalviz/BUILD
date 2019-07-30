@@ -12,11 +12,16 @@ cc_binary(
     srcs = ["gcalviz.cpp"],
     deps = [
         "//code/tools/gcalviz:gcalviz_runner",
+        "//code/tools/gcalviz:meta_settings",
     ]
 )
+
+hcp(name = "meta_settings", deps = [
+])
 
 hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/gcal:gcal_getter",
     "//code/utilities/gcal:gcal_credentials",
-    "//code/utilities/secret:secret_getter",
+    "//code/tools/gcalviz/settings:default_settings_getter",
+    "//code/tools/gcalviz:meta_settings",
 ])
