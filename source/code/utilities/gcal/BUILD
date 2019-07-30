@@ -9,7 +9,7 @@ hcp(name="gcal_getter", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/gcal:gcal_credentials",
     "//code/utilities/gcal:gcal_query",
-    "//code/utilities/gcal:gcal_events",
+    "//code/utilities/gcal/data:gcal_room",
 ])
 
 hcp(name="gcal_query", deps = [
@@ -21,7 +21,4 @@ hcp(name="gcal_query", deps = [
 ])
 
 hcp(name="gcal_credentials", deps = [
-])
-
-hcp(name="gcal_events", deps = [
 ])

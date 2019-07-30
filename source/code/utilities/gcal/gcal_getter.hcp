@@ -3,7 +3,7 @@ class
 ❪iostream❫
 ❪set❫
 ❪"code/utilities/gcal/gcal_credentials"❫
-❪"code/utilities/gcal/gcal_events"❫
+❪"code/utilities/gcal/data/gcal_room"❫
 ⚯
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/web/lib"❫
@@ -21,13 +21,27 @@ class
     return Get_Cals_Whose_Description_Starts_With(creds,"SFO");
 ❱
 
-◀public: static▶ Gcal_Events ☀Get_All_Events_Of_Calendar(Gcal_Credentials & creds, std::string const& cal_id)❰
+◀public: static▶ Gcal_Room ☀Get_All_Events_Of_Calendar(Gcal_Credentials & creds, std::string const& cal_id)❰
     std::string url = "https://www.googleapis.com/calendar/v3/calendars/";
     url += cal_id;
     url += "/events?maxResults=250&showDeleted=True&showHiddenInvitations=True&singleEvents=False";
-    Gcal_Events events;
-    events.events = Query_All_Pages(url,creds);
-    return events;
+    Gcal_Room room;
+    
+    //do all pagination
+    auto x = Query_All_Pages(url,creds);
+    
+    //extract events as individual json
+    if (!x.empty()){
+        room.summary = x[0]["summary"];
+        room.timeZone = x[0]["timeZone"];
+        room.updated = x[0]["updated"];
+        for (auto const& it: x){
+            for (auto const& e: it["items"]){
+                room.events.emplace_back(e);
+            }
+        }
+    }
+    return room;
 ❱
 
 ◀private: static▶ std::set<nlohmann::json> ☀Get_Cals_Whose_Description_Starts_With(Gcal_Credentials & creds, std::string const& prefix)❰
