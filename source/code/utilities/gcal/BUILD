@@ -6,4 +6,8 @@ hcp(name="gcal_getter", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/web:lib",
     "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/gcal:gcal_credentials",
+])
+
+hcp(name="gcal_credentials", deps = [
 ])
