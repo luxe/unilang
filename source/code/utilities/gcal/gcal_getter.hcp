@@ -12,34 +12,28 @@ class
 
 
 
-◀public: static▶ void ☀Test(Gcal_Credentials & creds)❰
+◀public: static▶ std::set<nlohmann::json> ☀Get_Pittsburgh_Rooms(Gcal_Credentials & creds)❰
     std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True&access_token=";
     url += creds.access_token;
-    Html_Fetch_Settings settings;
-    settings.url = url;
-    std::cout << settings.url << std::endl;
-    auto j = Extract_Web_Json(settings);
-    if (j.find("err") != j.end()) {
-        std::cerr << "error" << std::endl;
-        std::cout << j << std::endl;
-    }
+    
+    auto j = Token_Refreshing_Gcal_Query(url,creds);
     
     
     std::set<nlohmann::json> rooms;
     Insert_Rooms_That_Start_With(rooms,j,"PIT");
     
     while (j.find("nextPageToken") != j.end()) {
+        
+        Html_Fetch_Settings settings;
         settings.url = url;
         settings.url += "&pageToken=";
         settings.url += j["nextPageToken"];
         
-        std::cout << settings.url << std::endl;
-        j = Extract_Web_Json(settings);
+        auto j = Token_Refreshing_Gcal_Query(url,creds);
         Insert_Rooms_That_Start_With(rooms,j,"PIT");
-        
     }
     
-    std::cout << rooms.size() << std::endl;
+    return rooms;
 ❱
 
 ◀private: static▶ void ☀Insert_Rooms_That_Start_With(std::set<nlohmann::json> & rooms, nlohmann::json const& j, std::string const& prefix)❰
@@ -51,7 +45,21 @@ class
 ❱
 
 
-◀public: static▶ void ☀Refresh_Token(Gcal_Credentials & creds)❰
+◀private: static▶ nlohmann::json ☀Token_Refreshing_Gcal_Query(std::string const& url, Gcal_Credentials & creds)❰
+    Html_Fetch_Settings settings;
+    settings.url = url;
+    auto j = Extract_Web_Json(settings);
+    
+    //error (assume the token has expired)
+    while (j.find("err") != j.end()) {
+        Refresh_Token(creds);
+        j = Extract_Web_Json(settings);
+    }
+    return j;
+❱
+
+
+◀private: static▶ void ☀Refresh_Token(Gcal_Credentials & creds)❰
 
     //construct the url for refreshing our access token
    std::string url = "https://www.googleapis.com/oauth2/v4/token?";
