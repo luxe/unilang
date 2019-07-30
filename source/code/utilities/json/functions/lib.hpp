@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include "nlohmann/json.hpp"
+#include "code/utilities/streams/filestreams/lib.hpp"
+#include "code/utilities/streams/filestreams/read_all/lib.hpp"
 
 //json append for all types that don't derive from an hcp file construct
 //so we assume the json library can handle all basic types and std containers
@@ -36,6 +38,12 @@ void Write_Json_To_File(T const& t, std::string const& path){
     std::ofstream outfile(path);
     outfile << str;
     outfile.close();
+}
+template <typename T>
+void Read_Json_From_File(T & t, std::string const& path){
+    auto str = Read_Entire_File_Into_String(path);
+    auto j = nlohmann::json::parse(str);
+    t = j.get<T>();
 }
 
 template <typename T>
