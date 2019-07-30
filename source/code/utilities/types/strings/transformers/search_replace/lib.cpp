@@ -47,6 +47,9 @@ std::string string_replace_all( std::string src, std::string const& target, std:
 std::string& replace_spaces_with_plus( std::string & str){
     return replace_all(str,' ','+');
 }
+std::string& replace_spaces_with_underscore( std::string & str){
+    return replace_all(str,' ','_');
+}
 
 std::string& replace_all( std::string & src, char const& c1, char const& c2) {
     for (auto & it: src) {

@@ -4,6 +4,9 @@ class
 ❪"code/utilities/gcal/gcal_getter"❫
 ❪"code/utilities/gcal/gcal_credentials"❫
 ❪"code/tools/gcalviz/settings/default_settings_getter"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/json/functions/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
@@ -14,7 +17,18 @@ class
     auto settings = Default_Settings_Getter::Get();
 
     auto pit_rooms = Gcal_Getter::Get_Pittsburgh_Rooms(settings.credentials);
-    std::cout << pit_rooms.size() << std::endl;
+    
+    for (auto const& it: pit_rooms){
+        auto events = Gcal_Getter::Get_All_Events_Of_Calendar(settings.credentials, it["id"]);
+        std::string file_name = "/home/thickey/Desktop/events/";
+        std::string summary = it["summary"];
+        replace_spaces_with_underscore(summary);
+        file_name += summary;
+        
+        std::cout << "writing " << file_name << std::endl;
+        //Write_To_File(file_name,events);
+        Write_Json_To_File(events,file_name);
+    }
     
     //auto sfo_rooms = Gcal_Getter::Get_San_Francisco_Rooms(creds);
     //std::cout << sfo_rooms.size() << std::endl;

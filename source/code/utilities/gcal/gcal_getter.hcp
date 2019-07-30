@@ -3,6 +3,7 @@ class
 ❪iostream❫
 ❪set❫
 ❪"code/utilities/gcal/gcal_credentials"❫
+❪"code/utilities/gcal/gcal_events"❫
 ⚯
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/web/lib"❫
@@ -20,27 +21,45 @@ class
     return Get_Cals_Whose_Description_Starts_With(creds,"SFO");
 ❱
 
+◀public: static▶ Gcal_Events ☀Get_All_Events_Of_Calendar(Gcal_Credentials & creds, std::string const& cal_id)❰
+    std::string url = "https://www.googleapis.com/calendar/v3/calendars/";
+    url += cal_id;
+    url += "/events?maxResults=250&showDeleted=True&showHiddenInvitations=True&singleEvents=False";
+    Gcal_Events events;
+    events.events = Query_All_Pages(url,creds);
+    return events;
+❱
+
 ◀private: static▶ std::set<nlohmann::json> ☀Get_Cals_Whose_Description_Starts_With(Gcal_Credentials & creds, std::string const& prefix)❰
 
     std::string url = "https://www.googleapis.com/calendar/v3/users/me/calendarList?maxResults=250&showDeleted=True&showHidden=True";
     
-    auto j = Gcal_Query::Token_Refreshing_Query(url,creds);
+    //get all of the calendars we subscribe to
+    auto results = Query_All_Pages(url,creds);
     
-    
+    //filter them by the prefix
     std::set<nlohmann::json> rooms;
-    Insert_Rooms_That_Start_With(rooms,j,prefix);
+    for (auto const& it: results){
+        Insert_Rooms_That_Start_With(rooms,it,prefix);
+    }
     
+    return rooms;
+❱
+
+◀private: static▶ std::vector<nlohmann::json> ☀Query_All_Pages(std::string const& url, Gcal_Credentials & creds)❰
+    std::vector<nlohmann::json> results;
+    auto j = Gcal_Query::Token_Refreshing_Query(url,creds);
+    results.emplace_back(j);
     while (j.find("nextPageToken") != j.end()) {
-        
         Html_Fetch_Settings settings;
         settings.url = url;
         settings.url += "&pageToken=";
         settings.url += j["nextPageToken"];
         j = Gcal_Query::Token_Refreshing_Query(settings.url,creds);
-        Insert_Rooms_That_Start_With(rooms,j,prefix);
+        results.emplace_back(j);
+        std::cout << "page #" << results.size() << std::endl;
     }
-    
-    return rooms;
+    return results;
 ❱
 
 

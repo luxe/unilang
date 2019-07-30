@@ -24,4 +24,7 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/gcal:gcal_credentials",
     "//code/tools/gcalviz/settings:default_settings_getter",
     "//code/tools/gcalviz:meta_settings",
+    "//code/utilities/types/strings/transformers/search_replace:lib",
+    "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/json/functions:lib",
 ])
