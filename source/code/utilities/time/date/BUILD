@@ -11,4 +11,6 @@ cc_library(
 "//code/utilities/time/calendar/months:lib"
 ])
 
-hcp(name="rfc333_datetime_to_epoch_converter")
+hcp(name="rfc333_datetime_to_epoch_converter", deps=[
+    "@date//:date",
+])

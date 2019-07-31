@@ -27,4 +27,5 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/json/functions:lib",
+    "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
 ])
