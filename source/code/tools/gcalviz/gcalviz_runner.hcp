@@ -3,6 +3,7 @@ class
 ⚯
 ❪"code/utilities/gcal/gcal_getter"❫
 ❪"code/utilities/gcal/gcal_credentials"❫
+❪"code/utilities/gcal/data/gcal_sorted_events"❫
 ❪"code/tools/gcalviz/settings/default_settings_getter"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
@@ -13,7 +14,9 @@ class
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
     bool download_and_scrape_all_pit_room_events = false;
+    bool convert_pit_room_events_into_sorted_events = true;
     std::string all_pit_room_events_file = "/home/thickey/Desktop/pit_room_events.json";
+    std::string sorted_room_events_file = "/home/thickey/Desktop/pit_room_events_sorted.json";
     
     //load in google creds
     auto settings = Default_Settings_Getter::Get();
@@ -30,13 +33,41 @@ class
         Write_Json_To_File(pit_rooms,all_pit_room_events_file);
     }
     
-    Gcal_Rooms pit_rooms;
-    Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+    if (convert_pit_room_events_into_sorted_events){
+        
+        //read in data
+        Gcal_Rooms pit_rooms;
+        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+        
+        //flatten it
+        Gcal_Sorted_Events sorted;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                sorted.events.emplace_back(y);
+            }
+        }
+        
+        //sort it
+        std::sort(sorted.events.begin(),sorted.events.end(),[](nlohmann::json const& a, nlohmann::json const& b){
+            
+            auto result = Rfc333_Datetime_To_Epoch_Converter::Convert(a["originalStartTime"]["dateTime"])
+            < Rfc333_Datetime_To_Epoch_Converter::Convert(b["originalStartTime"]["dateTime"]);
+            
+            return result;
+        });
+        
+        //write it
+        Write_Json_To_File(sorted.events,sorted_room_events_file);
+    }
+    
+    
+    /*
     size_t total_events = 0;
     for (auto const& it: pit_rooms.rooms){
         total_events += it.events.size();
     }
     std::cout << "total events: " << total_events << std::endl;
+    */
     
     /*
     for (auto const& it: pit_rooms){

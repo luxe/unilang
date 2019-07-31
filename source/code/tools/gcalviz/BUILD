@@ -28,4 +28,5 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/json/functions:lib",
     "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
+    "//code/utilities/gcal/data:gcal_sorted_events",
 ])

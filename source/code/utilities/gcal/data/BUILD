@@ -7,3 +7,5 @@ hcp(name="gcal_room", deps = [
 hcp(name="gcal_rooms", deps = [
     "//code/utilities/gcal/data:gcal_room"
 ])
+hcp(name="gcal_sorted_events", deps = [
+])
