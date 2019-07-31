@@ -1,5 +1,6 @@
 class
 ❪"code/tools/gcalviz/meta_settings"❫
+❪iostream❫
 ⚯
 ❪"code/utilities/gcal/gcal_getter"❫
 ❪"code/utilities/gcal/gcal_credentials"❫
@@ -37,9 +38,11 @@ class
         
         //read in data
         Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
         Read_Json_From_File(pit_rooms,all_pit_room_events_file);
         
         //flatten it
+        std::cout << "flattening..." << std::endl;
         Gcal_Sorted_Events sorted;
         for (auto const& x: pit_rooms.rooms){
             for (auto const& y: x.events){
@@ -48,6 +51,7 @@ class
         }
         
         //sort it
+        std::cout << "sorting..." << std::endl;
         std::sort(sorted.events.begin(),sorted.events.end(),[](nlohmann::json const& a, nlohmann::json const& b){
             
             auto result = Rfc333_Datetime_To_Epoch_Converter::Convert(a["originalStartTime"]["dateTime"])
@@ -57,6 +61,7 @@ class
         });
         
         //write it
+        std::cout << "writing..." << std::endl;
         Write_Json_To_File(sorted.events,sorted_room_events_file);
     }
     
