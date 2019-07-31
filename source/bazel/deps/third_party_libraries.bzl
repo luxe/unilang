@@ -51,6 +51,7 @@ load("//bazel/deps/get:flatbuffers.bzl", "flatbuffers")
 load("//bazel/deps/get:ncurses.bzl", "ncurses")
 load("//bazel/deps/get:snappy.bzl", "snappy")
 load("//bazel/deps/get:xorg_xinput.bzl", "xorg_xinput")
+load("//bazel/deps/get:date.bzl", "date")
 
 # TODO(thickey): we can't trust that these git repos will always exist.  
 # make copies and store them somewhere else.  Give multiple mirrors
@@ -115,6 +116,7 @@ def third_party_libraries():
     
     # Data Structures
     andres_graph()
+    date()
     
     # Math
     gmp()
