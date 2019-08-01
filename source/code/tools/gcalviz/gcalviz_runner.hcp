@@ -10,12 +10,13 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
+❪"code/utilities/data_structures/unique_counter/unique_counter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
     bool download_and_scrape_all_pit_room_events = false;
-    bool convert_pit_room_events_into_sorted_events = true;
+    bool convert_pit_room_events_into_sorted_events = false;
     std::string all_pit_room_events_file = "/home/thickey/Desktop/pit_room_events.json";
     std::string sorted_room_events_file = "/home/thickey/Desktop/pit_room_events_sorted.json";
     
@@ -35,7 +36,43 @@ class
     }
     
     if (convert_pit_room_events_into_sorted_events){
+        Filter_Sort_By_Original_Start_Time(all_pit_room_events_file,sorted_room_events_file);
+    }
+    
+    //Collect_Status_Metrics(all_pit_room_events_file);
+    Collect_Atendee_Metrics(all_pit_room_events_file);
+    
+    
+    /*
+    size_t total_events = 0;
+    for (auto const& it: pit_rooms.rooms){
+        total_events += it.events.size();
+    }
+    std::cout << "total events: " << total_events << std::endl;
+    */
+    
+    /*
+    for (auto const& it: pit_rooms){
+        auto events = Gcal_Getter::Get_All_Events_Of_Calendar(settings.credentials, it["id"]);
+        std::string file_name = "/home/thickey/Desktop/events/";
+        std::string summary = it["summary"];
+        replace_spaces_with_underscore(summary);
+        file_name += summary;
         
+        std::cout << "writing " << file_name << std::endl;
+        //Write_To_File(file_name,events);
+        Write_Json_To_File(events,file_name);
+    }
+    */
+    
+    //auto sfo_rooms = Gcal_Getter::Get_San_Francisco_Rooms(creds);
+    //std::cout << sfo_rooms.size() << std::endl;
+    
+    //https://gephi.org/
+❱
+
+◀public: static▶ void ☀Filter_Sort_By_Original_Start_Time(std::string const& all_pit_room_events_file, std::string const& sorted_room_events_file) ❰
+
         //read in data
         Gcal_Rooms pit_rooms;
         std::cout << "loading..." << std::endl;
@@ -67,33 +104,50 @@ class
         //write it
         std::cout << "writing..." << std::endl;
         Write_Json_To_File(sorted.events,sorted_room_events_file);
-    }
-    
-    
-    /*
-    size_t total_events = 0;
-    for (auto const& it: pit_rooms.rooms){
-        total_events += it.events.size();
-    }
-    std::cout << "total events: " << total_events << std::endl;
-    */
-    
-    /*
-    for (auto const& it: pit_rooms){
-        auto events = Gcal_Getter::Get_All_Events_Of_Calendar(settings.credentials, it["id"]);
-        std::string file_name = "/home/thickey/Desktop/events/";
-        std::string summary = it["summary"];
-        replace_spaces_with_underscore(summary);
-        file_name += summary;
+❱
+
+◀public: static▶ void ☀Collect_Status_Metrics(std::string const& all_pit_room_events_file) ❰
+
+        //read in data
+        Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
+        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
         
-        std::cout << "writing " << file_name << std::endl;
-        //Write_To_File(file_name,events);
-        Write_Json_To_File(events,file_name);
-    }
-    */
-    
-    //auto sfo_rooms = Gcal_Getter::Get_San_Francisco_Rooms(creds);
-    //std::cout << sfo_rooms.size() << std::endl;
-    
-    //https://gephi.org/
+        //flatten it
+        Unique_Counter<std::string> counter;
+        std::cout << "collecting..." << std::endl;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                if (y.find("status") != y.end()){
+                    counter.Add(y["status"]);
+                }
+            }
+        }
+        
+        for (auto const& it: counter.hash_table){
+            std::cout << it.second << " " << it.first << std::endl;
+        }
+❱
+◀public: static▶ void ☀Collect_Atendee_Metrics(std::string const& all_pit_room_events_file) ❰
+
+        //read in data
+        Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
+        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+        
+        //flatten it
+        Unique_Counter<std::string> counter;
+        std::cout << "collecting..." << std::endl;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                if (y.find("attendees") != y.end()){
+                    counter.Add("total");
+                    counter.Add(std::to_string(y["attendees"].size()));
+                }
+            }
+        }
+        
+        for (auto const& it: counter.hash_table){
+            std::cout << it.second << " " << it.first << std::endl;
+        }
 ❱

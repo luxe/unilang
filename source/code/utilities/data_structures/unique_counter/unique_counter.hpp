@@ -9,9 +9,10 @@
 
 template <typename T>
 class Unique_Counter{
-  std::map<T,int> hash_table;
   
   public:
+  std::map<T,int> hash_table;
+  
   void Add(T const& t){
     auto search = hash_table.find(t);
     if(search != hash_table.end()) {
