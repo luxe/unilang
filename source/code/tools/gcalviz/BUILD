@@ -31,4 +31,5 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/gcal/data:gcal_sorted_events",
     "//code/utilities/data_structures/unique_counter:unique_counter",
     "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/filesystem/paths:lib",
 ])
