@@ -11,6 +11,8 @@ class
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
 ❪"code/utilities/data_structures/unique_counter/unique_counter"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
@@ -19,6 +21,7 @@ class
     bool convert_pit_room_events_into_sorted_events = false;
     std::string all_pit_room_events_file = "/home/thickey/Desktop/pit_room_events.json";
     std::string sorted_room_events_file = "/home/thickey/Desktop/pit_room_events_sorted.json";
+    std::string sorted_room_event_connections_file = "/home/thickey/Desktop/pit_room_events_sorted_connections.xml";
     
     //load in google creds
     auto settings = Default_Settings_Getter::Get();
@@ -40,8 +43,9 @@ class
     }
     
     //Collect_Status_Metrics(all_pit_room_events_file);
-    Collect_Atendee_Metrics(all_pit_room_events_file);
+    //Collect_Atendee_Metrics(all_pit_room_events_file);
     
+    CreateGraphGML(all_pit_room_events_file,sorted_room_event_connections_file);
     
     /*
     size_t total_events = 0;
@@ -141,8 +145,8 @@ class
         for (auto const& x: pit_rooms.rooms){
             for (auto const& y: x.events){
                 if (y.find("attendees") != y.end()){
-                    counter.Add("total");
-                    counter.Add(std::to_string(y["attendees"].size()));
+                    counter.Add("total")
+;                    counter.Add(std::to_string(y["attendees"].size()));
                 }
             }
         }
@@ -150,4 +154,54 @@ class
         for (auto const& it: counter.hash_table){
             std::cout << it.second << " " << it.first << std::endl;
         }
+❱
+
+◀public: static▶ void ☀CreateGraphGML(std::string const& all_pit_room_events_file, std::string const& sorted_room_event_connections_file) ❰
+
+        //read in data
+        Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
+        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+        
+        //std::ofstream outfile(sorted_room_event_connections_file);
+        std::string file_results;
+        Append_With_Newline(file_results,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        Append_With_Newline(file_results,"<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\""); 
+        Append_With_Newline(file_results,"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+        Append_With_Newline(file_results,"xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns");
+        Append_With_Newline(file_results,"http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
+        Append_With_Newline(file_results,"<graph id=\"G\" edgedefault=\"undirected\">");
+        Append_With_Newline(file_results,"</graph>");
+        Append_With_Newline(file_results,"</graphml>");
+        
+        std::set<std::string> nodes;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                if (y.find("attendees") != y.end()){
+                    for (size_t i = 0; i < y["attendees"].size(); ++i){
+                        std::string str = y["attendees"][i]["email"];
+                        nodes.insert(str);
+                        for (size_t j = i+1; j < y["attendees"].size(); ++j){
+                            Add_Edge(file_results,y["attendees"][i]["email"],y["attendees"][j]["email"]);
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (auto const& node: nodes){
+            Append(file_results,"<node id=\"");
+            Append(file_results,node);
+            Append_With_Newline(file_results,"\"/>");
+        }
+        
+        Write_To_File(sorted_room_event_connections_file,file_results);
+❱
+
+◀public: static▶ void ☀Add_Edge(std::string & file_results, std::string const& a, std::string const& b)❰
+    Append(file_results,"<edge source=\"");
+    Append(file_results,a);
+    Append(file_results,"\" target=\"");
+    Append(file_results,b);
+    Append_With_Newline(file_results,"\"/>");
 ❱
