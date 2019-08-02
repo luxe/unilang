@@ -32,6 +32,7 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/tools/gcalviz/exporters:metrics_exporter",
     "//code/utilities/web/automate/browser:browser_settings",
     "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/browser:default_browser_settings_getter",
 ])
 
 hcp(name = "gcalviz_documentation_getter", deps = [
