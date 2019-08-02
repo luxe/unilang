@@ -54,7 +54,7 @@ pkg_tar(
     extension = "tar.gz",
     deps = [
         ":mario-data",
-        "//code/tools/mario/assets:mario-data"
+        "//code/tools/mario/assets:mario_assets-data"
     ],
 )
 
