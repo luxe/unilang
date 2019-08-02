@@ -36,7 +36,8 @@ class
 ◀public: static▶ Gcal_Rooms ☀Get_All_Pittsburgh_Room_Events(Gcal_Credentials & creds)❰
     
     //get all pit room names
-    auto pit_rooms = Gcal_Getter::Get_Pittsburgh_Rooms(creds);
+    auto pit_rooms = Get_Pittsburgh_Rooms(creds);
+    std::cout << "got pit rooms" << std::endl;
     
     //get events from all of these events
     Gcal_Rooms all;
@@ -54,16 +55,27 @@ class
     Gcal_Room room;
     
     //do all pagination
+    std::cout << "getting pages" << std::endl;
     auto x = Query_All_Pages(url,creds);
+    std::cout << "got pages" << std::endl;
     
     //extract events as individual json
     if (!x.empty()){
-        room.summary = x[0]["summary"];
-        room.timeZone = x[0]["timeZone"];
-        room.updated = x[0]["updated"];
+        
+        if (x[0].find("summary") != x[0].end()){
+            room.summary = x[0]["summary"];
+        }
+        if (x[0].find("timeZone") != x[0].end()){
+            room.timeZone = x[0]["timeZone"];
+        }
+        if (x[0].find("updated") != x[0].end()){
+            room.updated = x[0]["updated"];
+        }
         for (auto const& it: x){
-            for (auto const& e: it["items"]){
-                room.events.emplace_back(e);
+            if (it.find("items") != it.end()){
+                for (auto const& e: it["items"]){
+                    room.events.emplace_back(e);
+                }
             }
         }
     }

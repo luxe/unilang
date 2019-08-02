@@ -10,6 +10,7 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
+❪"code/utilities/time/date/rfc333_datetime_within_range_checker"❫
 ❪"code/utilities/data_structures/unique_counter/unique_counter"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
@@ -18,7 +19,7 @@ class
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
-    bool download_and_scrape_all_pit_room_events = true;
+    bool download_and_scrape_all_pit_room_events = false;
     bool convert_pit_room_events_into_sorted_events = true;
     std::string all_pit_room_events_file = Full_Path_To_Desktop() + "pit_room_events.json";
     std::string sorted_room_events_file = Full_Path_To_Desktop() + "pit_room_events_sorted.json";
@@ -31,6 +32,9 @@ class
     //std::cout << Rfc333_Datetime_To_Epoch_Converter::Convert("2016-05-17T08:00:00-07:00") << std::endl;
     //exit(0);
     
+    
+    //"2019-07-1T08:00:00-07:00"
+    //"2019-08-1T08:00:00-07:00"
     
     
     //scrape all the meetings
@@ -46,7 +50,7 @@ class
     //Collect_Status_Metrics(all_pit_room_events_file);
     //Collect_Atendee_Metrics(all_pit_room_events_file);
     
-    CreateGraphGML(all_pit_room_events_file,sorted_room_event_connections_file);
+    CreateGraphGML(sorted_room_events_file,sorted_room_event_connections_file);
     
     /*
     size_t total_events = 0;
@@ -123,7 +127,7 @@ class
         
         //write it
         std::cout << "writing..." << std::endl;
-        Write_Json_To_File(sorted.events,sorted_room_events_file);
+        Write_Json_To_File(sorted,sorted_room_events_file);
 ❱
 
 ◀public: static▶ void ☀Collect_Status_Metrics(std::string const& all_pit_room_events_file) ❰
@@ -162,7 +166,7 @@ class
             for (auto const& y: x.events){
                 if (y.find("attendees") != y.end()){
                     counter.Add("total")
-;                    counter.Add(std::to_string(y["attendees"].size()));
+;                   counter.Add(std::to_string(y["attendees"].size()));
                 }
             }
         }
@@ -172,12 +176,12 @@ class
         }
 ❱
 
-◀public: static▶ void ☀CreateGraphGML(std::string const& all_pit_room_events_file, std::string const& sorted_room_event_connections_file) ❰
+◀public: static▶ void ☀CreateGraphGML(std::string const& sorted_room_events_file, std::string const& sorted_room_event_connections_file) ❰
 
         //read in data
-        Gcal_Rooms pit_rooms;
+        Gcal_Sorted_Events pit_rooms;
         std::cout << "loading..." << std::endl;
-        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
+        Read_Json_From_File(pit_rooms,sorted_room_events_file);
         
         //std::ofstream outfile(sorted_room_event_connections_file);
         std::string file_results;
@@ -190,9 +194,16 @@ class
         Append_With_Newline(file_results,"</graph>");
         Append_With_Newline(file_results,"</graphml>");
         
+        Rfc333_Datetime_Range range;
+        range.start = "2019-07-1T08:00:00-07:00";
+        range.end = "2019-08-1T08:00:00-07:00";
+        
         std::set<std::string> nodes;
-        for (auto const& x: pit_rooms.rooms){
-            for (auto const& y: x.events){
+        for (auto const& y: pit_rooms.events){
+            
+            std::string event_time = y["originalStartTime"]["dateTime"];
+            std::cout << "got event time" << std::endl;
+            if (Rfc333_Datetime_Within_Range_Checker::Is_Within(event_time,range)){
                 if (y.find("attendees") != y.end()){
                     for (size_t i = 0; i < y["attendees"].size(); ++i){
                         std::string str = y["attendees"][i]["email"];

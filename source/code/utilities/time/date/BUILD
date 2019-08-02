@@ -14,3 +14,11 @@ cc_library(
 hcp(name="rfc333_datetime_to_epoch_converter", deps=[
     "@date//:date",
 ])
+
+hcp(name="rfc333_datetime_range", deps=[
+])
+
+hcp(name="rfc333_datetime_within_range_checker", deps=[
+    ":rfc333_datetime_range",
+    ":rfc333_datetime_to_epoch_converter",
+])
