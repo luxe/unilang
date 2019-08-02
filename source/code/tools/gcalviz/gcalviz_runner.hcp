@@ -29,34 +29,29 @@ class
     //load in all of the settings
     auto settings = Default_Settings_Getter::Get();
     
-    //scrape all the meetings
+    //scrape all the meetings (this will connect directly to gcal and make rest calls)
+    //unless we decide to only scrape the top and append it to an onshore copy somewhere.
     if (settings.exports.pit_rooms.do_export){
         auto pit_rooms = Gcal_Getter::Get_All_Pittsburgh_Room_Events(settings.credentials);
         Write_Json_To_File(pit_rooms,settings.exports.pit_rooms.path);
     }
     
+    //we got a lot of data, but in terms of employee interaction, there is a lot of "junk data".
+    //junk data being "hidden meetings", "meetings without start times", "meetings without attendees".
     if (settings.exports.pit_events.do_export){
         Filter_Sort_By_Original_Start_Time(settings.exports.pit_rooms.path,settings.exports.pit_events.path);
     }
     
+    //all of the events we have are valid for social network analysis, and organized chronologically
+    //now we can build a social network out of it in various ways
     if (settings.exports.pit_connections.do_export){
         Connections_Exporter::CreateGraphML(settings.exports.pit_events.path,settings.exports.pit_connections.path);
     }
     
+    //in terms of all the data we scraped, lets just get some various metrics about it
     if (settings.exports.pit_metrics.do_export){
         Metrics_Exporter::Export_Metrics(settings.exports.pit_rooms.path,settings.exports.pit_metrics.path);
     }
-    
-    //Collect_Status_Metrics(all_pit_room_events_file);
-    //Collect_Atendee_Metrics(all_pit_room_events_file);
-    
-    /*
-    size_t total_events = 0;
-    for (auto const& it: pit_rooms.rooms){
-        total_events += it.events.size();
-    }
-    std::cout << "total events: " << total_events << std::endl;
-    */
     
     //auto sfo_rooms = Gcal_Getter::Get_San_Francisco_Rooms(creds);
     //std::cout << sfo_rooms.size() << std::endl;
