@@ -24,13 +24,7 @@ class
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
-    bool download_and_scrape_all_pit_room_events = false;
-    bool convert_pit_room_events_into_sorted_events = false;
-    std::string all_pit_room_events_file = Full_Path_To_Desktop() + "pit_room_events.json";
-    std::string sorted_room_events_file = Full_Path_To_Desktop() + "pit_room_events_sorted.json";
-    std::string sorted_room_event_connections_file = Full_Path_To_Desktop() + "pit_room_events_sorted_connections.gml";
-    
-    //load in google creds
+    //load in all of the settings
     auto settings = Default_Settings_Getter::Get();
     
     //std::cout << Rfc333_Datetime_To_Epoch_Converter::Convert("2016-03-29T08:00:00-07:00") << std::endl;
@@ -43,19 +37,21 @@ class
     
     
     //scrape all the meetings
-    if (download_and_scrape_all_pit_room_events){
+    if (settings.exports.pit_rooms.do_export){
         auto pit_rooms = Gcal_Getter::Get_All_Pittsburgh_Room_Events(settings.credentials);
-        Write_Json_To_File(pit_rooms,all_pit_room_events_file);
+        Write_Json_To_File(pit_rooms,settings.exports.pit_rooms.path);
     }
     
-    if (convert_pit_room_events_into_sorted_events){
-        Filter_Sort_By_Original_Start_Time(all_pit_room_events_file,sorted_room_events_file);
+    if (settings.exports.pit_events.do_export){
+        Filter_Sort_By_Original_Start_Time(settings.exports.pit_rooms.path,settings.exports.pit_events.path);
+    }
+    
+    if (settings.exports.pit_connections.do_export){
+        CreateGraphGML(settings.exports.pit_events.path,settings.exports.pit_connections.path);
     }
     
     //Collect_Status_Metrics(all_pit_room_events_file);
     //Collect_Atendee_Metrics(all_pit_room_events_file);
-    
-    CreateGraphGML(sorted_room_events_file,sorted_room_event_connections_file);
     
     /*
     size_t total_events = 0;
