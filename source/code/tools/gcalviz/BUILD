@@ -38,4 +38,5 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/json/attribute_check:json_attribute_check_settings",
     "//code/utilities/json/attribute_check:json_attribute_checker",
     "//code/tools/gcalviz/exporters:connections_exporter",
+    "//code/tools/gcalviz/exporters:metrics_exporter",
 ])

@@ -21,21 +21,13 @@ class
 ❪"code/utilities/json/attribute_check/json_attribute_check_settings"❫
 ❪"code/utilities/json/attribute_check/json_attribute_checker"❫
 ❪"code/tools/gcalviz/exporters/connections_exporter"❫
+❪"code/tools/gcalviz/exporters/metrics_exporter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
     //load in all of the settings
     auto settings = Default_Settings_Getter::Get();
-    
-    //std::cout << Rfc333_Datetime_To_Epoch_Converter::Convert("2016-03-29T08:00:00-07:00") << std::endl;
-    //std::cout << Rfc333_Datetime_To_Epoch_Converter::Convert("2016-05-17T08:00:00-07:00") << std::endl;
-    //exit(0);
-    
-    
-    //"2019-07-1T08:00:00-07:00"
-    //"2019-08-1T08:00:00-07:00"
-    
     
     //scrape all the meetings
     if (settings.exports.pit_rooms.do_export){
@@ -51,6 +43,10 @@ class
         Connections_Exporter::CreateGraphML(settings.exports.pit_events.path,settings.exports.pit_connections.path);
     }
     
+    if (settings.exports.pit_metrics.do_export){
+        Metrics_Exporter::Export_Metrics(settings.exports.pit_rooms.path,settings.exports.pit_metrics.path);
+    }
+    
     //Collect_Status_Metrics(all_pit_room_events_file);
     //Collect_Atendee_Metrics(all_pit_room_events_file);
     
@@ -62,24 +58,15 @@ class
     std::cout << "total events: " << total_events << std::endl;
     */
     
-    /*
-    for (auto const& it: pit_rooms){
-        auto events = Gcal_Getter::Get_All_Events_Of_Calendar(settings.credentials, it["id"]);
-        std::string file_name = "/home/thickey/Desktop/events/";
-        std::string summary = it["summary"];
-        replace_spaces_with_underscore(summary);
-        file_name += summary;
-        
-        std::cout << "writing " << file_name << std::endl;
-        //Write_To_File(file_name,events);
-        Write_Json_To_File(events,file_name);
-    }
-    */
-    
     //auto sfo_rooms = Gcal_Getter::Get_San_Francisco_Rooms(creds);
     //std::cout << sfo_rooms.size() << std::endl;
     
     //https://gephi.org/
+    
+    //automating gephi:
+    //https://gephi.org/toolkit/
+    //https://github.com/kwonoh/gephi-cli
+    
     //socnetv
     
     
@@ -105,6 +92,7 @@ class
     
     //gephi require Java 8.  Anything higher seems to not work
     //sudo apt install openjdk-8-jdk-headless
+    //sudo apt install oracle-java8-set-default
     //worked for me when
     //javac -version
     //javac 1.8.0_222
@@ -149,48 +137,4 @@ class
         //write the events back
         std::cout << "writing..." << std::endl;
         Write_Json_To_File(sorted,sorted_room_events_file);
-❱
-
-◀public: static▶ void ☀Collect_Status_Metrics(std::string const& all_pit_room_events_file) ❰
-
-        //read in data
-        Gcal_Rooms pit_rooms;
-        std::cout << "loading..." << std::endl;
-        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
-        
-        //flatten it
-        Unique_Counter<std::string> counter;
-        std::cout << "collecting..." << std::endl;
-        for (auto const& x: pit_rooms.rooms){
-            for (auto const& y: x.events){
-                if (y.find("status") != y.end()){
-                    counter.Add(y["status"]);
-                }
-            }
-        }
-        
-        for (auto const& it: counter.hash_table){
-            std::cout << it.second << " " << it.first << std::endl;
-        }
-❱
-◀public: static▶ void ☀Collect_Atendee_Metrics(std::string const& all_pit_room_events_file) ❰
-
-        //read in data
-        Gcal_Rooms pit_rooms;
-        std::cout << "loading..." << std::endl;
-        Read_Json_From_File(pit_rooms,all_pit_room_events_file);
-        
-        //flatten it
-        Unique_Counter<std::string> counter;
-        std::cout << "collecting..." << std::endl;
-        for (auto const& x: pit_rooms.rooms){
-            for (auto const& y: x.events){
-                    counter.Add("total");
-                    counter.Add(std::to_string(y["attendees"].size()));
-            }
-        }
-        
-        for (auto const& it: counter.hash_table){
-            std::cout << it.second << " " << it.first << std::endl;
-        }
 ❱
