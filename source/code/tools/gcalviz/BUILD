@@ -35,4 +35,6 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/time/date:rfc333_datetime_within_range_checker",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/json/attribute_check:json_attribute_check_settings",
+    "//code/utilities/json/attribute_check:json_attribute_checker",
 ])
