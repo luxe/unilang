@@ -33,4 +33,5 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/time/date:rfc333_datetime_within_range_checker",
+    "//code/utilities/types/strings/observers/comparing:lib",
 ])

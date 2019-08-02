@@ -1,6 +1,7 @@
 class
 ❪"code/tools/gcalviz/meta_settings"❫
 ❪iostream❫
+❪set❫
 ⚯
 ❪"code/utilities/gcal/gcal_getter"❫
 ❪"code/utilities/gcal/gcal_credentials"❫
@@ -15,15 +16,16 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run(Meta_Settings const& meta) ❰
     
     bool download_and_scrape_all_pit_room_events = false;
-    bool convert_pit_room_events_into_sorted_events = true;
+    bool convert_pit_room_events_into_sorted_events = false;
     std::string all_pit_room_events_file = Full_Path_To_Desktop() + "pit_room_events.json";
     std::string sorted_room_events_file = Full_Path_To_Desktop() + "pit_room_events_sorted.json";
-    std::string sorted_room_event_connections_file = Full_Path_To_Desktop() + "pit_room_events_sorted_connections.xml";
+    std::string sorted_room_event_connections_file = Full_Path_To_Desktop() + "pit_room_events_sorted_connections.gml";
     
     //load in google creds
     auto settings = Default_Settings_Getter::Get();
@@ -191,29 +193,32 @@ class
         Append_With_Newline(file_results,"xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns");
         Append_With_Newline(file_results,"http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
         Append_With_Newline(file_results,"<graph id=\"G\" edgedefault=\"undirected\">");
-        Append_With_Newline(file_results,"</graph>");
-        Append_With_Newline(file_results,"</graphml>");
         
         Rfc333_Datetime_Range range;
         range.start = "2019-07-1T08:00:00-07:00";
-        range.end = "2019-08-1T08:00:00-07:00";
+        range.end = "2019-07-4T08:00:00-07:00";
+        //range.end = "2019-08-1T08:00:00-07:00";
         
         std::set<std::string> nodes;
+        std::set<std::string> edges;
         for (auto const& y: pit_rooms.events){
             
             std::string event_time = y["originalStartTime"]["dateTime"];
-            std::cout << "got event time" << std::endl;
             if (Rfc333_Datetime_Within_Range_Checker::Is_Within(event_time,range)){
                 if (y.find("attendees") != y.end()){
                     for (size_t i = 0; i < y["attendees"].size(); ++i){
                         std::string str = y["attendees"][i]["email"];
                         nodes.insert(str);
                         for (size_t j = i+1; j < y["attendees"].size(); ++j){
-                            Add_Edge(file_results,y["attendees"][i]["email"],y["attendees"][j]["email"]);
+                            Add_Edge(edges,y["attendees"][i]["email"],y["attendees"][j]["email"]);
                         }
                     }
                 }
             }
+        }
+        
+        for (auto const& edge: edges){
+            Append(file_results,edge);
         }
         
         for (auto const& node: nodes){
@@ -222,13 +227,27 @@ class
             Append_With_Newline(file_results,"\"/>");
         }
         
+        Append_With_Newline(file_results,"</graph>");
+        Append_With_Newline(file_results,"</graphml>");
+        
         Write_To_File(sorted_room_event_connections_file,file_results);
 ❱
 
-◀public: static▶ void ☀Add_Edge(std::string & file_results, std::string const& a, std::string const& b)❰
+◀public: static▶ void ☀Add_Edge(std::set<std::string> & edges, std::string a, std::string b)❰
+
+    if (Case_Insensitive_String_Compare(a,b)){
+        std::swap(a,b);
+    }
+
+    std::string file_results = "";
     Append(file_results,"<edge source=\"");
     Append(file_results,a);
     Append(file_results,"\" target=\"");
     Append(file_results,b);
     Append_With_Newline(file_results,"\"/>");
+    edges.insert(file_results);
+❱
+
+◀public: static▶ std::string ☀Adjust_Node_Name(std::string str)❰
+    return str;
 ❱
