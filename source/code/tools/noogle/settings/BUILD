@@ -48,4 +48,5 @@ hcp(name = "default_settings_getter", deps = [
     "//code/utilities/secret:secret_getter",
     "//code/tools/noogle/settings:query_expand_settings",
     "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/web/automate/browser:default_browser_settings_getter",
 ])

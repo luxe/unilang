@@ -12,3 +12,10 @@ hcp(name = "browser_creator", deps = [
 hcp(name = "browser_settings", deps = [
     "//code/utilities/web/chrome/driver:chrome_driver_selection_settings"
 ])
+
+hcp(name = "default_browser_settings_getter", deps = [
+    "//code/utilities/web/automate/browser:browser_settings",
+    "//code/utilities/web/chrome/driver:chrome_driver_selector",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/vectors/operators:lib",
+])

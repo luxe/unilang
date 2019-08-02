@@ -30,6 +30,8 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/json/attribute_check:json_attribute_checker",
     "//code/tools/gcalviz/exporters:connections_exporter",
     "//code/tools/gcalviz/exporters:metrics_exporter",
+    "//code/utilities/web/automate/browser:browser_settings",
+    "//code/utilities/web/automate/browser:browser_creator",
 ])
 
 hcp(name = "gcalviz_documentation_getter", deps = [
