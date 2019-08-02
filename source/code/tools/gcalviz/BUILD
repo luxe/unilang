@@ -7,15 +7,6 @@ load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
 
-cc_binary(
-    name = "gcalviz",
-    srcs = ["gcalviz.cpp"],
-    deps = [
-        "//code/tools/gcalviz:gcalviz_runner",
-        "//code/tools/gcalviz:meta_settings",
-    ]
-)
-
 hcp(name = "meta_settings", deps = [
 ])
 
@@ -48,3 +39,14 @@ hcp(name = "gcalviz_documentation_getter", deps = [
     "//code/utilities/json/functions:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])
+
+distributable_cpp_main(
+    name = "gcalviz",
+    deps = [
+        "//code/tools/gcalviz:gcalviz_runner",
+        "//code/tools/gcalviz:meta_settings",
+    ],
+    description = "visualize your google calendars as a social network",
+    depends = [
+    ],
+)

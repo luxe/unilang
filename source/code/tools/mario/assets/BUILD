@@ -21,7 +21,7 @@ mp3_to_wav("mario_death")
 wav_artifact("mario_death")
 
 
-distributable_data(name="mario",
+distributable_data(name="mario_assets",
                    description="sprites for mario",
                    file_groups=[
                         ":mario-stand_image_data",
