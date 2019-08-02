@@ -112,6 +112,11 @@ class
         std::cout << "loading..." << std::endl;
         Read_Json_From_File(pit_rooms,all_pit_room_events_file);
         
+        std::vector<std::vector<std::string>> attributes_to_check = {
+            {"originalStartTime","dateTime"},
+            {"attendees"}
+        };
+        
         //flatten it
         std::cout << "flattening..." << std::endl;
         Gcal_Sorted_Events sorted;
@@ -242,11 +247,16 @@ class
 ❱
 
 ◀public: static▶ void ☀Add_Edge(std::set<std::string> & edges, std::string a, std::string b)❰
-
-    if (Begins_With(a,"uber.com_") || Begins_With(b,"uber.com_")){
+    
+    //make sure we aren't adding rooms and other miscellaneous node data
+    //(things that might show up that aren't people)
+    if (!Valid_Node_Name(a)){
         return;
     }
-
+    if (!Valid_Node_Name(b)){
+        return;
+    }
+    
     if (Case_Insensitive_String_Compare(a,b)){
         std::swap(a,b);
     }
@@ -260,6 +270,13 @@ class
     edges.insert(file_results);
 ❱
 
-◀public: static▶ std::string ☀Adjust_Node_Name(std::string str)❰
+◀private: static▶ bool ☀Valid_Node_Name(std::string const& name)❰
+    if (Begins_With(name,"uber.com_")){
+        return false;
+    }
+    return true;
+❱
+
+◀private: static▶ std::string ☀Adjust_Node_Name(std::string str)❰
     return str;
 ❱
