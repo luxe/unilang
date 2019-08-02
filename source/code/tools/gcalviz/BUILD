@@ -40,3 +40,11 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/tools/gcalviz/exporters:connections_exporter",
     "//code/tools/gcalviz/exporters:metrics_exporter",
 ])
+
+hcp(name = "gcalviz_documentation_getter", deps = [
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/utilities/converters:lib",
+    "//code/utilities/json/functions:lib",
+    "//code/utilities/documentation:common_documentation_getter",
+])
