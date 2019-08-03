@@ -25,14 +25,7 @@ class
         std::cout << "loading..." << std::endl;
         Read_Json_From_File(pit_rooms,sorted_room_events_file);
         
-        //std::ofstream outfile(sorted_room_event_connections_file);
-        std::string file_results;
-        Append_With_Newline(file_results,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        Append_With_Newline(file_results,"<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\""); 
-        Append_With_Newline(file_results,"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        Append_With_Newline(file_results,"xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns");
-        Append_With_Newline(file_results,"http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
-        Append_With_Newline(file_results,"<graph id=\"G\" edgedefault=\"undirected\">");
+        std::string file_results = GraphML_Start();
         
         Rfc333_Datetime_Range range;
         range.start = "2019-07-1T08:00:00-07:00";
@@ -68,10 +61,27 @@ class
             Append_With_Newline(file_results,"\"/>");
         }
         
-        Append_With_Newline(file_results,"</graph>");
-        Append_With_Newline(file_results,"</graphml>");
-        
+        Append(file_results,GraphML_End());
         Write_To_File(sorted_room_event_connections_file,file_results);
+❱
+
+◀public: static▶ std::string ☀GraphML_Start()❰
+
+        std::string str;
+        Append_With_Newline(str,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+        Append_With_Newline(str,"<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\""); 
+        Append_With_Newline(str,"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+        Append_With_Newline(str,"xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns");
+        Append_With_Newline(str,"http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
+        Append_With_Newline(str,"<graph id=\"G\" edgedefault=\"undirected\">");
+        return str;
+❱
+
+◀public: static▶ std::string ☀GraphML_End()❰
+    std::string str;
+    Append_With_Newline(str,"</graph>");
+    Append_With_Newline(str,"</graphml>");
+    return str;
 ❱
 
 ◀private: static▶ void ☀Add_Edge(std::set<std::string> & edges, std::string a, std::string b)❰

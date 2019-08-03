@@ -1,0 +1,53 @@
+class
+❪iostream❫
+❪string❫
+❪set❫
+⚯
+❪"code/utilities/gcal/data/gcal_sorted_events"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/json/functions/lib"❫
+❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
+❪"code/utilities/time/date/rfc333_datetime_within_range_checker"❫
+❪"code/utilities/data_structures/unique_counter/unique_counter"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/gcal/data/gcal_rooms"❫
+❪"code/utilities/json/attribute_check/json_attribute_check_settings"❫
+❪"code/utilities/json/attribute_check/json_attribute_checker"❫
+⚞⚟
+
+◀public: static▶ void ☀Export_Emails(std::string const& all_file, std::string const& emails_file) ❰
+
+        //read in data
+        Gcal_Rooms pit_rooms;
+        std::cout << "loading..." << std::endl;
+        Read_Json_From_File(pit_rooms,all_file);
+        
+        
+        //filter out anything that doesn't have these attributes
+        Json_Attribute_Check_Settings check_settings;
+        check_settings.attributes = {
+            {"attendees"}
+        };
+        
+        //flatten away the rooms and only keep events that have certain attributes
+        std::cout << "gathering..." << std::endl;
+        std::set<std::string> emails;
+        for (auto const& x: pit_rooms.rooms){
+            for (auto const& y: x.events){
+                if (Json_Attribute_Checker::Has_Attributes(y,check_settings)){
+                    for (auto const& it: y["attendees"]){
+                        std::string email = it["email"];
+                        emails.insert(email);
+                    }
+                }
+            }
+        }
+        
+        std::cout << "amount: " << emails.size() << std::endl;
+        Write_Json_To_File(emails,emails_file);
+        
+❱
