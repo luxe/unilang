@@ -15,6 +15,8 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/strings/observers/comparing/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/tools/gcalviz/exporters/formatters/gexf_formatter"❫
+❪"code/tools/gcalviz/exporters/formatters/graphml_formatter"❫
 ⚞⚟
 
 
@@ -33,57 +35,8 @@ class
         range.end = "2019-07-7T08:00:00-07:00";
         
         auto node_edge_data = Extract_Node_Edge_Data(pit_rooms,range);
-        auto file_results = GraphML_Format(node_edge_data);
+        auto file_results = Gexf_Formatter::Format(node_edge_data);
         Write_To_File(sorted_room_event_connections_file,file_results);
-❱
-
-◀public: static▶ std::string ☀GraphML_Format(Node_Edge_Data const& node_edge_data)❰
-    std::string file_results = GraphML_Start();
-    for (auto const& edge: node_edge_data.edges){
-        Append(file_results,edge);
-    }
-        
-    for (auto const& node: node_edge_data.nodes){
-        Append(file_results,"<node id=\"");
-        Append(file_results,node);
-        Append_With_Newline(file_results,"\"/>");
-    }
-    
-    Append(file_results,GraphML_End());
-    return file_results;
-❱
-
-◀public: static▶ std::string ☀Gexf_Start()❰
-        std::string str;
-        Append_With_Newline(str,"<gexf xmlns=\"http://www.gexf.net/1.1draft\"");
-        Append_With_Newline(str,"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        Append_With_Newline(str,"xsi:schemaLocation=\"http://www.gexf.net/1.1draft");
-        Append_With_Newline(str,"http://www.gexf.net/1.1draft/gexf.xsd\"");
-        Append_With_Newline(str,"version=\"1.1\">");
-        return str;
-❱
-◀public: static▶ std::string ☀GraphML_Start()❰
-        std::string str;
-        Append_With_Newline(str,"<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-        Append_With_Newline(str,"<graphml xmlns=\"http://graphml.graphdrawing.org/xmlns\""); 
-        Append_With_Newline(str,"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
-        Append_With_Newline(str,"xsi:schemaLocation=\"http://graphml.graphdrawing.org/xmlns");
-        Append_With_Newline(str,"http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd\">");
-        Append_With_Newline(str,"<graph id=\"G\" edgedefault=\"undirected\">");
-        return str;
-❱
-
-◀public: static▶ std::string ☀GraphML_End()❰
-    std::string str;
-    Append_With_Newline(str,"</graph>");
-    Append_With_Newline(str,"</graphml>");
-    return str;
-❱
-◀public: static▶ std::string ☀Gexf_End()❰
-    std::string str;
-    Append_With_Newline(str,"</graph>");
-    Append_With_Newline(str,"</gexf>");
-    return str;
 ❱
 
 
