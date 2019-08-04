@@ -53,48 +53,46 @@ class
         
         std::string event_time = y["originalStartTime"]["dateTime"];
         if (Rfc333_Datetime_Within_Range_Checker::Is_Within(event_time,range)){
-            for (size_t i = 0; i < y["attendees"].size(); ++i){
-                
-                std::string str = y["attendees"][i]["email"];
-                if (Valid_Node_Name(str)){
-                    result.nodes.insert(str);
-                    for (size_t j = i+1; j < y["attendees"].size(); ++j){
-                        
-                        Connection connection;
-                        connection.source = y["attendees"][i]["email"];
-                        connection.target = y["attendees"][j]["email"];
-                        
-                        Event_Interval interval;
-                        interval.start = event_time;
-                        interval.end = y["end"]["dateTime"];
-                        
-                        
-                        Add_Undirected_Edge(result.edges,connection,interval);
-                    }
-                }
-            }
+            Add_Event_Data(result,y);
         }
     }
     
     return result;
 ❱
 
+◀private: static▶ void ☀Add_Event_Data(Node_Edge_Data & result, nlohmann::json const& y)❰
+
+    for (size_t i = 0; i < y["attendees"].size(); ++i){
+        
+        std::string str = y["attendees"][i]["email"];
+        if (Valid_Node_Name(str)){
+            result.nodes.insert(str);
+            for (size_t j = i+1; j < y["attendees"].size(); ++j){
+                
+                Connection connection;
+                connection.source = y["attendees"][i]["email"];
+                connection.target = y["attendees"][j]["email"];
+                
+                Event_Interval interval;
+                interval.start = y["originalStartTime"]["dateTime"];
+                interval.end = y["end"]["dateTime"];
+                
+                
+                Add_Undirected_Edge(result.edges,connection,interval);
+            }
+        }
+    }
+❱
+
+
 ◀private: static▶ void ☀Add_Undirected_Edge(Unique_Counter<std::string> & edges, Connection connection, Event_Interval const& interval)❰
     
-    //make sure we aren't adding rooms and other miscellaneous node data
-    //(things that might show up that aren't people)
-    if (!Valid_Node_Name(connection.source)){
-        return;
-    }
-    if (!Valid_Node_Name(connection.target)){
+    if (!Valid_Connection(connection)){
         return;
     }
     
-    //you can't connect with yourself (in the context of this analysis)
-    if (connection.source == connection.target){
-        return;
-    }
-    
+    //since the connection is undirected, we should force a source/destination order before storing
+    //this decision is to ensure we don't count undirected A-B as a different connection than undirected B-A.
     if (Case_Insensitive_String_Compare(connection.source,connection.target)){
         std::swap(connection.source,connection.target);
     }
@@ -106,6 +104,28 @@ class
     edges.Add(As_Minified_JSON_String(edge));
 ❱
 
+
+
+◀private: static▶ bool ☀Valid_Connection(Connection const& connection)❰
+
+    //make sure we aren't adding rooms and other miscellaneous node data
+    //(things that might show up that aren't people)
+    if (!Valid_Node_Name(connection.source)){
+        return false;
+    }
+    if (!Valid_Node_Name(connection.target)){
+        return false;
+    }
+    
+    //you can't connect with yourself (in the context of this analysis)
+    if (connection.source == connection.target){
+        return false;
+    }
+    
+    return true;
+❱
+
+
 ◀private: static▶ bool ☀Valid_Node_Name(std::string const& name)❰
     if (Begins_With(name,"uber.com_")){
         return false;
@@ -114,5 +134,7 @@ class
 ❱
 
 ◀private: static▶ std::string ☀Adjust_Node_Name(std::string str)❰
+    //I had a hunch that weird emails might break gephi or something downstream
+    //leaving this function in case I want to adjust the unique IDs (emails) of nodes before they are inserted
     return str;
 ❱
