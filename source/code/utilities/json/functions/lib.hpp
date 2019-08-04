@@ -19,6 +19,14 @@ std::string As_JSON_String(T const& t){
     nlohmann::json r = j;
     return r.dump(2);
 }
+
+template<typename T>
+T From_JSON_String(std::string const& str){
+    auto j = nlohmann::json::parse(str);
+    auto t = j.get<T>();
+    return t;
+}
+
 template <typename T>
 std::string As_JSON_String_Indented_N_Spaces(T const& t, unsigned int const& number_of_spaces){
     auto j = As_JSON_Assignable(t);

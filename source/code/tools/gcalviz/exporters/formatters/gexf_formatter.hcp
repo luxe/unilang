@@ -2,7 +2,7 @@ class
 ❪iostream❫
 ❪string❫
 ❪set❫
-❪"code/tools/gcalviz/exporters/node_edge_data"❫
+❪"code/tools/gcalviz/exporters/data/node_edge_data"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
 ❪"code/utilities/time/date/rfc333_datetime_within_range_checker"❫
 ❪"code/utilities/gcal/data/gcal_sorted_events"❫
@@ -19,18 +19,33 @@ class
 
 ◀public: static▶ std::string ☀Format(Node_Edge_Data const& node_edge_data)❰
     std::string file_results = Start();
+    
+    //nodes
+    Append_With_Newline(file_results,"<nodes>");
+    for (auto const& node: node_edge_data.nodes){
+        Append(file_results,"<node ");
+        Append_Key_Value(file_results,"id",node);
+        Append_Key_Value(file_results,"label",node);
+        Append_With_Newline(file_results,"/>");
+    }
+    Append_With_Newline(file_results,"</nodes>");
+    
+    //edges
+    Append_With_Newline(file_results,"<edges>");
     for (auto const& edge: node_edge_data.edges.hash_table){
         Append(file_results,edge.first);
     }
-        
-    for (auto const& node: node_edge_data.nodes){
-        Append(file_results,"<node id=\"");
-        Append(file_results,node);
-        Append_With_Newline(file_results,"\"/>");
-    }
+    Append_With_Newline(file_results,"</edges>");
     
     Append(file_results,End());
     return file_results;
+❱
+
+◀private: static▶ void ☀Append_Key_Value(std::string & str, std::string const& key, std::string const& val)❰
+        Append(str,key);
+        Append(str,"=\"");
+        Append(str,val);
+        Append(str,"\" ");
 ❱
 
 ◀private: static▶ std::string ☀Start()❰
@@ -40,6 +55,10 @@ class
         Append_With_Newline(str,"xsi:schemaLocation=\"http://www.gexf.net/1.1draft");
         Append_With_Newline(str,"http://www.gexf.net/1.1draft/gexf.xsd\"");
         Append_With_Newline(str,"version=\"1.1\">");
+        Append(str,"<graph ");
+        Append_Key_Value(str,"mode","static");
+        Append_Key_Value(str,"defaultedgetype","undirected");
+        Append_With_Newline(str,">");
         return str;
 ❱
 ◀private: static▶ std::string ☀End()❰

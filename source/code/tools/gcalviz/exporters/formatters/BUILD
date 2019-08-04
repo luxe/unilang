@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name="gexf_formatter", deps = [
-    "//code/tools/gcalviz/exporters:node_edge_data",
+    "//code/tools/gcalviz/exporters/data:node_edge_data",
     "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
     "//code/utilities/time/date:rfc333_datetime_within_range_checker",
     "//code/utilities/gcal/data:gcal_sorted_events",
@@ -19,7 +19,7 @@ hcp(name="gexf_formatter", deps = [
 ])
 
 hcp(name="graphml_formatter", deps = [
-    "//code/tools/gcalviz/exporters:node_edge_data",
+    "//code/tools/gcalviz/exporters/data:node_edge_data",
     "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
     "//code/utilities/time/date:rfc333_datetime_within_range_checker",
     "//code/utilities/gcal/data:gcal_sorted_events",

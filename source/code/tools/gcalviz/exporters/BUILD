@@ -15,9 +15,10 @@ hcp(name="connections_exporter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/tools/gcalviz/exporters:node_edge_data",
+    "//code/tools/gcalviz/exporters/data:node_edge_data",
     "//code/tools/gcalviz/exporters/formatters:gexf_formatter",
     "//code/tools/gcalviz/exporters/formatters:graphml_formatter",
+    "//code/tools/gcalviz/exporters/data:edge_data",
 ])
 
 hcp(name="metrics_exporter", deps = [
@@ -50,8 +51,4 @@ hcp(name="email_exporter", deps = [
     "//code/utilities/gcal/data:gcal_rooms",
     "//code/utilities/json/attribute_check:json_attribute_check_settings",
     "//code/utilities/json/attribute_check:json_attribute_checker",
-])
-
-hcp(name="node_edge_data", deps = [
-    "//code/utilities/data_structures/unique_counter:unique_counter",
 ])
