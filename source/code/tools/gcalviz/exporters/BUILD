@@ -19,6 +19,8 @@ hcp(name="connections_exporter", deps = [
     "//code/tools/gcalviz/exporters/formatters:gexf_formatter",
     "//code/tools/gcalviz/exporters/formatters:graphml_formatter",
     "//code/tools/gcalviz/exporters/data:edge_data",
+    "//code/utilities/json/attribute_check:json_attribute_check_settings",
+    "//code/utilities/json/attribute_check:json_attribute_checker",
 ])
 
 hcp(name="metrics_exporter", deps = [

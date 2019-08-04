@@ -19,9 +19,16 @@ class
 ⚞⚟
 
 ◀public: static▶ std::string ☀Format(Node_Edge_Data const& node_edge_data)❰
-    std::string file_results = Start();
-    
-    //nodes
+    std::string file_results = Start(node_edge_data);
+    Append(file_results,Build_Node_Section(node_edge_data));
+    Append(file_results,Build_Edge_Section(node_edge_data));
+    Append(file_results,End());
+    return file_results;
+❱
+
+◀private: static▶ std::string ☀Build_Node_Section(Node_Edge_Data const& node_edge_data)❰
+
+    std::string file_results;
     Append_With_Newline(file_results,"<nodes>");
     for (auto const& node: node_edge_data.nodes){
         Append(file_results,"<node ");
@@ -30,12 +37,14 @@ class
         Append_With_Newline(file_results,"/>");
     }
     Append_With_Newline(file_results,"</nodes>");
-    
-    
-    
+    return file_results;
+❱
+
+◀private: static▶ std::string ☀Build_Edge_Section(Node_Edge_Data const& node_edge_data)❰
+
     bool record_weight = false;
     
-    //edges
+    std::string file_results;
     Append_With_Newline(file_results,"<edges>");
     for (auto const& edge: node_edge_data.edges.hash_table){
         auto e = From_JSON_String<Edge_Data>(edge.first);
@@ -64,9 +73,9 @@ class
     }
     Append_With_Newline(file_results,"</edges>");
     
-    Append(file_results,End());
     return file_results;
 ❱
+
 
 ◀private: static▶ std::string ☀Epoch_To_YYY_MM_DD(unsigned long epoch)❰
     time_t rawtime = epoch;
@@ -85,10 +94,10 @@ class
         Append(str,"\" ");
 ❱
 
-◀private: static▶ std::string ☀Start()❰
+◀private: static▶ std::string ☀Start(Node_Edge_Data const& node_edge_data)❰
 
-        std::string graph_mode = "dynamic";
-        std::string edge_type = "undirected";
+        std::string graph_mode = Derive_Graph_Mode(node_edge_data);
+        std::string edge_type = Derive_Edge_Type(node_edge_data);
         std::string time_format = "date";
 
         std::string str;
@@ -104,6 +113,40 @@ class
         Append_With_Newline(str,">");
         return str;
 ❱
+
+◀private: static▶ std::string ☀Derive_Graph_Mode(Node_Edge_Data const& node_edge_data)❰
+    for (auto const& edge: node_edge_data.edges.hash_table){
+        auto e = From_JSON_String<Edge_Data>(edge.first);
+        if (!e.interval.start.empty() && !e.interval.end.empty()){
+            return "dynamic";
+        }
+        else{
+            return "static";
+        }
+    }
+    
+    //not sure
+    return "unknown";
+❱
+◀private: static▶ std::string ☀Derive_Edge_Type(Node_Edge_Data const& node_edge_data)❰
+
+    for (auto const& edge: node_edge_data.edges.hash_table){
+        auto e = From_JSON_String<Edge_Data>(edge.first);
+        if (e.connection.type == Edge_Type::DIRECTED){
+            return "directed";
+        }
+        else if (e.connection.type == Edge_Type::UNDIRECTED){
+            return "undirected";
+        }
+    }
+
+    //not sure
+    return "mixed";
+❱
+
+
+
+
 ◀private: static▶ std::string ☀End()❰
     std::string str;
     Append_With_Newline(str,"</graph>");

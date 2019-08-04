@@ -18,6 +18,8 @@ class
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/tools/gcalviz/exporters/formatters/gexf_formatter"❫
 ❪"code/tools/gcalviz/exporters/formatters/graphml_formatter"❫
+❪"code/utilities/json/attribute_check/json_attribute_check_settings"❫
+❪"code/utilities/json/attribute_check/json_attribute_checker"❫
 ⚞⚟
 
 
@@ -62,7 +64,8 @@ class
 
 ◀private: static▶ void ☀Add_Event_Data(Node_Edge_Data & result, nlohmann::json const& y)❰
 
-    Add_Undirected_Nodes_And_Edges_From_Event_Attendance(result,y);
+    //Add_Undirected_Nodes_And_Edges_From_Event_Attendance(result,y);
+    Add_Directed_Nodes_And_Edges_From_Event_Attendance(result,y);
 ❱
 
 ◀private: static▶ void ☀Add_Undirected_Nodes_And_Edges_From_Event_Attendance(Node_Edge_Data & result, nlohmann::json const& y)❰
@@ -89,6 +92,62 @@ class
     }
 ❱
 
+◀private: static▶ void ☀Add_Directed_Nodes_And_Edges_From_Event_Attendance(Node_Edge_Data & result, nlohmann::json const& y)❰
+
+    Json_Attribute_Check_Settings check_settings;
+        
+    std::string creator = "";
+    std::string organizer = "";
+    
+    check_settings.attributes = {{"creator"}};
+    if (Json_Attribute_Checker::Has_Attributes(y,check_settings)){
+        creator = y["creator"]["email"];
+    }
+    
+    check_settings.attributes = {{"organizer"}};
+    if (Json_Attribute_Checker::Has_Attributes(y,check_settings)){
+        organizer = y["organizer"]["email"];
+    }
+    
+    if (creator.empty() && organizer.empty()){
+        return;
+    }
+    
+    //for some reason google calendar has meta information for both creator and organizer
+    //these seem like the same thing to me.  We will extract both (I'm not sure if they are both always present or not)
+    //and warn when they are different
+    if (creator != organizer){
+        //std::cout << "different " << creator << " != " << organizer << std::endl;
+    }
+    else{
+        //std::cout << "same " << creator << " == " << organizer << std::endl;
+    }
+    
+    std::string event_starter = organizer;
+    if (Valid_Node_Name(event_starter)){
+        result.nodes.insert(event_starter);
+        for (size_t i = 0; i < y["attendees"].size(); ++i){
+            std::string attendee = y["attendees"][i]["email"];
+            if (Valid_Node_Name(attendee)){
+                
+                result.nodes.insert(attendee);
+                
+                Connection connection;
+                connection.source = attendee;
+                connection.target = event_starter;
+                
+                Event_Interval interval;
+                interval.start = y["originalStartTime"]["dateTime"];
+                interval.end = y["end"]["dateTime"];
+                
+                
+                Add_Directed_Edge(result.edges,connection,interval);
+            }
+        }
+    }
+    
+❱
+
 
 ◀private: static▶ void ☀Add_Undirected_Edge(Unique_Counter<std::string> & edges, Connection connection, Event_Interval const& interval)❰
     
@@ -106,6 +165,19 @@ class
     edge.connection = connection;
     edge.interval = interval;
     edge.connection.type = Edge_Type::UNDIRECTED;
+    edges.Add(As_Minified_JSON_String(edge));
+❱
+
+◀private: static▶ void ☀Add_Directed_Edge(Unique_Counter<std::string> & edges, Connection connection, Event_Interval const& interval)❰
+    
+    if (!Valid_Connection(connection)){
+        return;
+    }
+
+    Edge_Data edge;
+    edge.connection = connection;
+    edge.interval = interval;
+    edge.connection.type = Edge_Type::DIRECTED;
     edges.Add(As_Minified_JSON_String(edge));
 ❱
 
