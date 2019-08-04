@@ -53,4 +53,5 @@ hcp(name="email_exporter", deps = [
 ])
 
 hcp(name="node_edge_data", deps = [
+    "//code/utilities/data_structures/unique_counter:unique_counter",
 ])
