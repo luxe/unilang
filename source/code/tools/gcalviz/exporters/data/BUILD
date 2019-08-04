@@ -15,4 +15,11 @@ hcp(name="edge_data", deps = [
 hcp(name="event_interval", deps = [
 ])
 hcp(name="connection", deps = [
+    ":edge_type",
+])
+
+enum_cpp(name = "edge_type",
+values = [
+"directed"
+,"undirected"
 ])

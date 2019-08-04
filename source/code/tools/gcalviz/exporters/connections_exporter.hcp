@@ -30,14 +30,19 @@ class
         Read_Json_From_File(pit_rooms,sorted_room_events_file);
         
         
-        Rfc333_Datetime_Range range;
-        range.start = "2019-06-1T08:00:00-07:00";
-        //range.end = "2019-07-4T08:00:00-07:00";
-        range.end = "2019-07-31T08:00:00-07:00";
+        auto range = Analyzed_Time_Range();
         
         auto node_edge_data = Extract_Node_Edge_Data(pit_rooms,range);
         auto file_results = Gexf_Formatter::Format(node_edge_data);
         Write_To_File(gexf_file,file_results);
+❱
+
+◀private: static▶ Rfc333_Datetime_Range ☀Analyzed_Time_Range()❰
+        Rfc333_Datetime_Range range;
+        range.start = "2019-06-1T08:00:00-07:00";
+        //range.end = "2019-07-4T08:00:00-07:00";
+        range.end = "2019-07-31T08:00:00-07:00";
+        return range;
 ❱
 
 
@@ -64,7 +69,7 @@ class
                         interval.end = y["end"]["dateTime"];
                         
                         
-                        Add_Edge(result.edges,connection,interval);
+                        Add_Undirected_Edge(result.edges,connection,interval);
                     }
                 }
             }
@@ -74,7 +79,7 @@ class
     return result;
 ❱
 
-◀private: static▶ void ☀Add_Edge(Unique_Counter<std::string> & edges, Connection connection, Event_Interval const& interval)❰
+◀private: static▶ void ☀Add_Undirected_Edge(Unique_Counter<std::string> & edges, Connection connection, Event_Interval const& interval)❰
     
     //make sure we aren't adding rooms and other miscellaneous node data
     //(things that might show up that aren't people)
@@ -97,6 +102,7 @@ class
     Edge_Data edge;
     edge.connection = connection;
     edge.interval = interval;
+    edge.connection.type = Edge_Type::UNDIRECTED;
     edges.Add(As_Minified_JSON_String(edge));
 ❱
 
