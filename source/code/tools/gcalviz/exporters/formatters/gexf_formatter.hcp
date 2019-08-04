@@ -3,6 +3,7 @@ class
 ❪string❫
 ❪set❫
 ❪"code/tools/gcalviz/exporters/data/node_edge_data"❫
+❪"code/tools/gcalviz/exporters/data/edge_data"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
 ❪"code/utilities/time/date/rfc333_datetime_within_range_checker"❫
 ❪"code/utilities/gcal/data/gcal_sorted_events"❫
@@ -33,7 +34,12 @@ class
     //edges
     Append_With_Newline(file_results,"<edges>");
     for (auto const& edge: node_edge_data.edges.hash_table){
-        Append(file_results,edge.first);
+        auto e = From_JSON_String<Edge_Data>(edge.first);
+        Append(file_results,"<edge ");
+        Append_Key_Value(file_results,"source",e.source);
+        Append_Key_Value(file_results,"target",e.target);
+        Append_Key_Value(file_results,"weight",std::to_string(edge.second));
+        Append_With_Newline(file_results,"/>");
     }
     Append_With_Newline(file_results,"</edges>");
     
