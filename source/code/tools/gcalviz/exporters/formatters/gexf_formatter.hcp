@@ -31,6 +31,10 @@ class
     }
     Append_With_Newline(file_results,"</nodes>");
     
+    
+    
+    bool record_weight = false;
+    
     //edges
     Append_With_Newline(file_results,"<edges>");
     for (auto const& edge: node_edge_data.edges.hash_table){
@@ -39,17 +43,39 @@ class
         Append_Key_Value(file_results,"source",e.connection.source);
         Append_Key_Value(file_results,"target",e.connection.target);
         
-        auto start_epoch = std::to_string(Rfc333_Datetime_To_Epoch_Converter::Convert(e.interval.start));
-        auto end_epoch = std::to_string(Rfc333_Datetime_To_Epoch_Converter::Convert(e.interval.end));
-        Append_Key_Value(file_results,"start",start_epoch);
-        Append_Key_Value(file_results,"end",end_epoch);
-        Append_Key_Value(file_results,"weight",std::to_string(edge.second));
+        auto start_epoch = Rfc333_Datetime_To_Epoch_Converter::Convert(e.interval.start);
+        auto end_epoch = Rfc333_Datetime_To_Epoch_Converter::Convert(e.interval.end);
+        
+        //why is google inconsistent about when a meeting started / ended?
+        //i.e. why does google say a meeting ended before it even started?
+        //not sure. but gephi needs it to be consistent so we'll flip them.
+        if (end_epoch < start_epoch){
+            std::swap(start_epoch,end_epoch);
+        }
+        
+        
+        Append_Key_Value(file_results,"start",Epoch_To_YYY_MM_DD(start_epoch));
+        Append_Key_Value(file_results,"end",Epoch_To_YYY_MM_DD(end_epoch));
+        
+        if (record_weight){
+            Append_Key_Value(file_results,"weight",std::to_string(edge.second));
+        }
         Append_With_Newline(file_results,"/>");
     }
     Append_With_Newline(file_results,"</edges>");
     
     Append(file_results,End());
     return file_results;
+❱
+
+◀private: static▶ std::string ☀Epoch_To_YYY_MM_DD(unsigned long epoch)❰
+    time_t rawtime = epoch;
+    struct tm  ts;
+    char       buf[80];
+    ts = *localtime(&rawtime);
+    strftime(buf, sizeof(buf), "%Y-%m-%d", &ts);
+    std::string result = buf;
+    return result;
 ❱
 
 ◀private: static▶ void ☀Append_Key_Value(std::string & str, std::string const& key, std::string const& val)❰
@@ -63,6 +89,7 @@ class
 
         std::string graph_mode = "dynamic";
         std::string edge_type = "undirected";
+        std::string time_format = "date";
 
         std::string str;
         Append_With_Newline(str,"<gexf xmlns=\"http://www.gexf.net/1.1draft\"");
@@ -73,6 +100,7 @@ class
         Append(str,"<graph ");
         Append_Key_Value(str,"mode",graph_mode);
         Append_Key_Value(str,"defaultedgetype",edge_type);
+        Append_Key_Value(str,"timeformat",time_format);
         Append_With_Newline(str,">");
         return str;
 ❱
