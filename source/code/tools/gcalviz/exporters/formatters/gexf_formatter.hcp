@@ -36,8 +36,13 @@ class
     for (auto const& edge: node_edge_data.edges.hash_table){
         auto e = From_JSON_String<Edge_Data>(edge.first);
         Append(file_results,"<edge ");
-        Append_Key_Value(file_results,"source",e.source);
-        Append_Key_Value(file_results,"target",e.target);
+        Append_Key_Value(file_results,"source",e.connection.source);
+        Append_Key_Value(file_results,"target",e.connection.target);
+        
+        auto start_epoch = std::to_string(Rfc333_Datetime_To_Epoch_Converter::Convert(e.interval.start));
+        auto end_epoch = std::to_string(Rfc333_Datetime_To_Epoch_Converter::Convert(e.interval.end));
+        Append_Key_Value(file_results,"start",start_epoch);
+        Append_Key_Value(file_results,"end",end_epoch);
         Append_Key_Value(file_results,"weight",std::to_string(edge.second));
         Append_With_Newline(file_results,"/>");
     }

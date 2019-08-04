@@ -54,7 +54,17 @@ class
                 if (Valid_Node_Name(str)){
                     result.nodes.insert(str);
                     for (size_t j = i+1; j < y["attendees"].size(); ++j){
-                        Add_Edge(result.edges,y["attendees"][i]["email"],y["attendees"][j]["email"]);
+                        
+                        Connection connection;
+                        connection.source = y["attendees"][i]["email"];
+                        connection.target = y["attendees"][j]["email"];
+                        
+                        Event_Interval interval;
+                        interval.start = event_time;
+                        interval.end = y["end"]["dateTime"];
+                        
+                        
+                        Add_Edge(result.edges,connection,interval);
                     }
                 }
             }
@@ -64,30 +74,29 @@ class
     return result;
 ❱
 
-◀private: static▶ void ☀Add_Edge(Unique_Counter<std::string> & edges, std::string a, std::string b)❰
+◀private: static▶ void ☀Add_Edge(Unique_Counter<std::string> & edges, Connection connection, Event_Interval const& interval)❰
     
     //make sure we aren't adding rooms and other miscellaneous node data
     //(things that might show up that aren't people)
-    if (!Valid_Node_Name(a)){
+    if (!Valid_Node_Name(connection.source)){
         return;
     }
-    if (!Valid_Node_Name(b)){
+    if (!Valid_Node_Name(connection.target)){
         return;
     }
     
     //you can't connect with yourself (in the context of this analysis)
-    if (a == b){
+    if (connection.source == connection.target){
         return;
     }
     
-    if (Case_Insensitive_String_Compare(a,b)){
-        std::swap(a,b);
+    if (Case_Insensitive_String_Compare(connection.source,connection.target)){
+        std::swap(connection.source,connection.target);
     }
 
-    std::string file_results = "";
     Edge_Data edge;
-    edge.source = a;
-    edge.target = b;
+    edge.connection = connection;
+    edge.interval = interval;
     edges.Add(As_Minified_JSON_String(edge));
 ❱
 

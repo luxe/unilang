@@ -8,4 +8,11 @@ hcp(name="node_edge_data", deps = [
 ])
 
 hcp(name="edge_data", deps = [
+    ":event_interval",
+    ":connection",
+])
+
+hcp(name="event_interval", deps = [
+])
+hcp(name="connection", deps = [
 ])
