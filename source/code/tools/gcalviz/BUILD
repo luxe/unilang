@@ -34,9 +34,7 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/web/automate/browser:browser_creator",
     "//code/utilities/web/automate/browser:default_browser_settings_getter",
     "//code/tools/gcalviz/exporters:email_exporter",
-    "@pybind11//:pybind11",
-    "//code/utilities/signals:lib",
-    "//code/utilities/web/automate/navigation:browser_navigator",
+    "//code/tools/gcalviz/exporters:email_user_info_exporter",
 ])
 
 hcp(name = "gcalviz_documentation_getter", deps = [

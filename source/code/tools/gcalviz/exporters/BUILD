@@ -55,7 +55,7 @@ hcp(name="email_exporter", deps = [
     "//code/utilities/json/attribute_check:json_attribute_checker",
 ])
 
-hcp(name="email_whober_exporter", deps = [
+hcp(name="email_user_info_exporter", deps = [
     "//code/utilities/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
@@ -70,4 +70,10 @@ hcp(name="email_whober_exporter", deps = [
     "//code/utilities/gcal/data:gcal_rooms",
     "//code/utilities/json/attribute_check:json_attribute_check_settings",
     "//code/utilities/json/attribute_check:json_attribute_checker",
+    "@pybind11//:pybind11",
+    "//code/utilities/signals:lib",
+    "//code/utilities/web/automate/navigation:browser_navigator",
+    "//code/utilities/web/automate/browser:browser_settings",
+    "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/browser:default_browser_settings_getter",
 ])
