@@ -68,7 +68,6 @@ class
         pybind11::exec("chrome_options.add_argument('--headless')");
     }
     
-    
     Set_Execution_Path(settings);
     pybind11::exec(settings.browser_name + " = webdriver.Chrome(chrome_options=chrome_options,executable_path=executable_path)");
     
@@ -83,13 +82,13 @@ class
 
 ◀private: static▶ void ☀Set_Execution_Path(Browser_Settings const& settings) ❰
 
-    //use hard-coded
-    if (settings.use_direct_driver_path){
-        pybind11::exec("executable_path = \"" + settings.direct_driver_path + "\"");
+    //decide the path to the driver.  This can be a hard-coded or a derived value
+    std::string path_to_driver = settings.direct_driver_path;
+    if (!settings.use_direct_driver_path){
+        path_to_driver = Chrome_Driver_Selector::Get_Driver_Path(settings.chrome_driver_derive);
     }
     
-    //derive it
-    else{
-        pybind11::exec("executable_path = \"" + Chrome_Driver_Selector::Get_Driver_Path(settings.chrome_driver_derive) + "\"");
-    }
+    //set it
+    pybind11::exec("executable_path = \"" + path_to_driver + "\"");
+
 ❱
