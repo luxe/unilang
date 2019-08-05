@@ -25,24 +25,31 @@ class
 ◀public: static▶ std::optional<nlohmann::json> ☀Get_React_State_Of_Page(Browser_Settings const& settings, std::string const& url)❰
     Go_To_Url(settings,url);
     auto title = Get_Page_Title(settings);
-    if (title == "Whober"){
+    if (title == "Whober" || title == "Unauthorized"){
         return std::nullopt;
     }
     
-    pybind11::exec("elements = " + settings.browser_name + ".find_elements_by_tag_name(\"script\")");
-    pybind11::exec("scriptText = " + settings.browser_name + ".execute_script(\"return arguments[0].innerHTML\", elements[6])");
-    std::string gross_json = pybind11::eval("scriptText").cast<std::string>();
-    auto json_str = string_replace_all(gross_json,"\\u0022","\"");
-    json_str = string_replace_all(json_str,"\\u002F","/");
-    
-    char line_feed = 10;
-    std::string line_feed_str;
-    line_feed_str += line_feed;
-    json_str = string_replace_all(json_str,line_feed_str,"\n");
-    //json_str = string_replace_all(json_str,"''","'empty'");
-    trim(json_str);
-    auto j = nlohmann::json::parse(json_str);
-    return j;
+    try{
+        pybind11::exec("elements = " + settings.browser_name + ".find_elements_by_tag_name(\"script\")");
+        pybind11::exec("scriptText = " + settings.browser_name + ".execute_script(\"return arguments[0].innerHTML\", elements[6])");
+        std::string gross_json = pybind11::eval("scriptText").cast<std::string>();
+        auto json_str = string_replace_all(gross_json,"\\u0022","\"");
+        json_str = string_replace_all(json_str,"\\u002F","/");
+        
+        char line_feed = 10;
+        std::string line_feed_str;
+        line_feed_str += line_feed;
+        json_str = string_replace_all(json_str,line_feed_str,"\n");
+        //json_str = string_replace_all(json_str,"''","'empty'");
+        trim(json_str);
+        auto j = nlohmann::json::parse(json_str);
+        return j;
+    }
+    catch(std::exception e){
+        std::cout << "error trying to parse json. skipping" << std::endl;
+        std::cout << e.what() << std::endl;
+    }
+    return std::nullopt;
 ❱
 
 

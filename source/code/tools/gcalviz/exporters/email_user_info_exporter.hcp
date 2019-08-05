@@ -2,6 +2,7 @@ class
 ❪iostream❫
 ❪string❫
 ❪set❫
+❪utility❫
 ⚯
 ❪"code/utilities/gcal/data/gcal_sorted_events"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
@@ -32,25 +33,38 @@ class
         std::cout << "loading..." << std::endl;
         Read_Json_From_File(emails,email_file);
         
-        
-        std::map<std::string,nlohmann::json> whober_data;
-        
-        
         //make sure we have a python environment going for the duration of the program (RAII)
+        //enable signal handle so we can ctrl+C exit
         signal_SIGINT_to_exit();
         pybind11::scoped_interpreter py_guard{};
-
+        
+        //create a selenium browser
         Browser_Settings b_settings = Default_Browser_Settings_Getter::Get();
         b_settings.headless = false;
         b_settings.start_maximized = false;
         Browser_Creator::Create(b_settings);
-        auto source = Browser_Navigator::Get_React_State_Of_Page(b_settings,"https://whober.uberinternal.com/thickeyuber.com");
-        if (source){
-            source->erase("badges");
-            std::cout << source->dump(2) << std::endl;
+        
+        //loop over each email, and try to bind it to user data
+        std::map<std::string,nlohmann::json> user_data;
+        int count = 1;
+        for (auto const& email: emails){
+            std::cout << count << " / " << emails.size() << " ";
+            ++count;
+            
+            //add entry if we can find it
+            std::string url = "https://whober.uberinternal.com/";
+            auto source = Browser_Navigator::Get_React_State_Of_Page(b_settings,url + email);
+            if (source){
+                source->erase("badges");
+                user_data.insert(std::make_pair(email,*source));
+                std::cout << "found: " << email << std::endl;
+            }
+            else{
+                std::cout << "not found: " << email << std::endl;
+            }
         }
-        else{
-            std::cout << "not found" << std::endl;
-        }
+        
+        std::cout << "amount: " << user_data.size() << std::endl;
+        Write_Json_To_File(user_data,whober_file);
         
 ❱
