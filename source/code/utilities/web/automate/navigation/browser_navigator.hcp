@@ -1,11 +1,13 @@
 class
 ❪"code/utilities/web/automate/browser/browser_settings"❫
+❪"code/utilities/json/functions/lib"❫
 ⚯
 ❪iostream❫
 ❪thread❫
 ❪pybind11/embed.h❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ❪"code/utilities/types/strings/transformers/squeeze/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
 ❪"code/utilities/time/sleeping/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/web/lib"❫
@@ -19,6 +21,23 @@ class
     Go_To_Url(settings,url);
     auto page_source = Get_Page_Source(settings);
     return page_source;
+❱
+◀public: static▶ nlohmann::json ☀Get_React_State_Of_Page(Browser_Settings const& settings, std::string const& url)❰
+    Go_To_Url(settings,url);
+    pybind11::exec("elements = " + settings.browser_name + ".find_elements_by_tag_name(\"script\")");
+    pybind11::exec("scriptText = " + settings.browser_name + ".execute_script(\"return arguments[0].innerHTML\", elements[6])");
+    std::string gross_json = pybind11::eval("scriptText").cast<std::string>();
+    auto json_str = string_replace_all(gross_json,"\\u0022","\"");
+    json_str = string_replace_all(json_str,"\\u002F","/");
+    
+    char line_feed = 10;
+    std::string line_feed_str;
+    line_feed_str += line_feed;
+    json_str = string_replace_all(json_str,line_feed_str,"\n");
+    //json_str = string_replace_all(json_str,"''","'empty'");
+    trim(json_str);
+    auto j = nlohmann::json::parse(json_str);
+    return j;
 ❱
 
 

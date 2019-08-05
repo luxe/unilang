@@ -8,9 +8,11 @@ hcp(name = "browser_navigator", deps = [
     "//code/utilities/web/automate/browser:browser_settings",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/types/strings/transformers/squeeze:lib",
+    "//code/utilities/types/strings/transformers/trimming:lib",
     "//code/utilities/time/sleeping:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/web:lib",
     "//code/utilities/exits:lib",
     "//code/utilities/printers:lib",
+    "//code/utilities/json/functions:lib",
 ])

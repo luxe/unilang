@@ -36,6 +36,7 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/tools/gcalviz/exporters:email_exporter",
     "@pybind11//:pybind11",
     "//code/utilities/signals:lib",
+    "//code/utilities/web/automate/navigation:browser_navigator",
 ])
 
 hcp(name = "gcalviz_documentation_getter", deps = [
