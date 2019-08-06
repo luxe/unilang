@@ -17,6 +17,7 @@ hcp(name="gexf_formatter", deps = [
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/tools/gcalviz/exporters/data:edge_data",
+    "//code/tools/gcalviz/exporters/formatters:gexf_attribute",
 ])
 
 hcp(name="graphml_formatter", deps = [
@@ -32,4 +33,7 @@ hcp(name="graphml_formatter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
+])
+
+hcp(name="gexf_attribute", deps = [
 ])
