@@ -19,6 +19,7 @@ class
 ❪"code/utilities/types/strings/observers/comparing/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/json/extraction/json_extractor"❫
+❪"code/utilities/xml/xml_string_escaper"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Format(Node_Edge_Data const& node_edge_data, std::map<std::string,nlohmann::json> const& user_data)❰
@@ -56,20 +57,12 @@ class
         
         //get the json blob (while stepping into the first object name)
         auto json_blob = found->second;
-        // std::string id_name = json_blob.begin().key();
-        // // for (auto it = json_blob.begin(); it != json_blob.end(); ++it){
-        // //     id_name = it.key();
-        // // }
-        // // json_blob = json_blob[id_name];
-        // std::cout << json_blob.dump(2) << std::endl;
-        // exit(0);
         
         for (size_t i = 0; i < attrs.size(); ++i){
             auto attr_value = Json_Extractor::Extract_String(json_blob,attrs[i].extract);
             if (!attr_value.empty()){
                 
-                //attr_value = string_replace_all(attr_value,"\"","\\\"");
-                attr_value = string_replace_all(attr_value,"\"","");
+                attr_value = Xml_String_Escaper::As_Escaped(attr_value);
                 Append(result,"<attvalue ");
                 Append_Key_Value(result,"for",std::to_string(i));
                 Append_Key_Value(result,"value",attr_value);
