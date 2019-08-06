@@ -2,6 +2,7 @@ class
 ❪iostream❫
 ❪string❫
 ❪set❫
+❪map❫
 ❪"code/tools/gcalviz/exporters/data/node_edge_data"❫
 ❪"code/tools/gcalviz/exporters/data/edge_data"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
@@ -24,7 +25,7 @@ class
 
 
 
-◀public: static▶ void ☀CreateGraphML(std::string const& sorted_room_events_file, std::string const& sorted_room_event_connections_file, std::string const& gexf_file) ❰
+◀public: static▶ void ☀CreateGraphML(std::string const& sorted_room_events_file, std::string const& sorted_room_event_connections_file, std::string const& gexf_file, std::string const& user_info_path) ❰
 
         //read in data
         Gcal_Sorted_Events pit_rooms;
@@ -34,8 +35,16 @@ class
         
         auto range = Analyzed_Time_Range();
         
+        
         auto node_edge_data = Extract_Node_Edge_Data(pit_rooms,range);
-        auto file_results = Gexf_Formatter::Format(node_edge_data);
+        
+        
+        //load user data
+        std::map<std::string,nlohmann::json> user_data;
+        std::cout << "loading user data..." << std::endl;
+        Read_Json_From_File(user_data,user_info_path);
+        
+        auto file_results = Gexf_Formatter::Format(node_edge_data,user_data);
         Write_To_File(gexf_file,file_results);
 ❱
 

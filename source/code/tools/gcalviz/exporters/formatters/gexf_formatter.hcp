@@ -2,6 +2,7 @@ class
 ❪iostream❫
 ❪string❫
 ❪set❫
+❪map❫
 ❪"code/tools/gcalviz/exporters/data/node_edge_data"❫
 ❪"code/tools/gcalviz/exporters/data/edge_data"❫
 ❪"code/utilities/time/date/rfc333_datetime_to_epoch_converter"❫
@@ -17,18 +18,17 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/strings/observers/comparing/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
-❪"code/tools/gcalviz/exporters/formatters/gexf_attribute"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Format(Node_Edge_Data const& node_edge_data)❰
+◀public: static▶ std::string ☀Format(Node_Edge_Data const& node_edge_data, std::map<std::string,nlohmann::json> const& user_data)❰
     std::string file_results = Start(node_edge_data);
-    Append(file_results,Build_Node_Section(node_edge_data));
+    Append(file_results,Build_Node_Section(node_edge_data,user_data));
     Append(file_results,Build_Edge_Section(node_edge_data));
     Append(file_results,End());
     return file_results;
 ❱
 
-◀private: static▶ std::string ☀Build_Node_Section(Node_Edge_Data const& node_edge_data)❰
+◀private: static▶ std::string ☀Build_Node_Section(Node_Edge_Data const& node_edge_data, std::map<std::string,nlohmann::json> const& user_data)❰
 
     std::string file_results;
     Append_With_Newline(file_results,"<nodes>");
@@ -38,12 +38,24 @@ class
         Append_Key_Value(file_results,"label",node);
         Append_With_Newline(file_results,">");
         
-        //todo: add attrs
+        Append_With_Newline(file_results,Get_Node_Attributes_For_User(node,user_data));
         
         Append_With_Newline(file_results,"</node>");
     }
     Append_With_Newline(file_results,"</nodes>");
     return file_results;
+❱
+
+◀private: static▶ std::string ☀Get_Node_Attributes_For_User(std::string const& id, std::map<std::string,nlohmann::json> const& user_data)❰
+    std::string result;
+    
+    auto found = user_data.find(id);
+    if (found != user_data.end()){
+        auto json_blob = found->second;
+        Append_With_Newline(result,"<attvalues>");
+        Append_With_Newline(result,"</attvalues>");
+    }
+    return result;
 ❱
 
 ◀private: static▶ std::string ☀Build_Edge_Section(Node_Edge_Data const& node_edge_data)❰
@@ -174,222 +186,276 @@ class
         std::vector<Gexf_Attribute> attributes;
         
         Gexf_Attribute temp;
+        Json_Extraction_Step step;
+        
         temp.title = "agency";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"agency");
         attributes.emplace_back(temp);
         
         temp.title = "buildingAddress";
         temp.type = "string";
         temp.default_value = "unknown";
         attributes.emplace_back(temp);
+        Set_Employee_Extraction_Step(temp,"buildingAddress");
+        attributes.emplace_back(temp);
         
         temp.title = "buildingCode";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"buildingCode");
         attributes.emplace_back(temp);
         
         temp.title = "businessTitle";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"businessTitle");
         attributes.emplace_back(temp);
 
         temp.title = "city";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"city1");
         attributes.emplace_back(temp);
         
         temp.title = "costCenter";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"costCenter");
         attributes.emplace_back(temp);
         
         temp.title = "costCenterId";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"costCenterId");
         attributes.emplace_back(temp);
         
         temp.title = "dribbleUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"dribbleUrl");
         attributes.emplace_back(temp);
         
         temp.title = "duoPhoneNumber";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"duoPhoneNumber");
         attributes.emplace_back(temp);
         
         temp.title = "employeeId";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"employeeId");
         attributes.emplace_back(temp);
         
         temp.title = "employeeType";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"employeeType");
         attributes.emplace_back(temp);
         
         temp.title = "endDate";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"endDate");
         attributes.emplace_back(temp);
         
         temp.title = "facebookProfileUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"facebookProfileUrl");
         attributes.emplace_back(temp);
         
         temp.title = "floorNumber";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"floorNumber");
         attributes.emplace_back(temp);
         
         temp.title = "githubUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"githubUrl");
         attributes.emplace_back(temp);
         
         temp.title = "instagramProfileUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"instagramProfileUrl");
         attributes.emplace_back(temp);
         
         temp.title = "isActive";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"isActive");
         attributes.emplace_back(temp);
         
         temp.title = "isEaadmin";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"isEaadmin");
         attributes.emplace_back(temp);
         
         temp.title = "isManager";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"isManager");
         attributes.emplace_back(temp);
         
         temp.title = "jobProfile";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"jobProfile");
         attributes.emplace_back(temp);
         
         temp.title = "linkedinProfileUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"linkedinProfileUrl");
         attributes.emplace_back(temp);
         
         temp.title = "managerId";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"managerId");
         attributes.emplace_back(temp);
         
         temp.title = "months";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"months");
         attributes.emplace_back(temp);
         
         temp.title = "nickName";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"nickName");
         attributes.emplace_back(temp);
         
         temp.title = "numExtReports";
         temp.type = "integer";
         temp.default_value = "0";
+        Set_Employee_Extraction_Step(temp,"numExtReports");
         attributes.emplace_back(temp);
         
         temp.title = "numFteReports";
         temp.type = "integer";
         temp.default_value = "0";
+        Set_Employee_Extraction_Step(temp,"numFteReports");
         attributes.emplace_back(temp);
         
         temp.title = "numTotalReports";
         temp.type = "integer";
         temp.default_value = "0";
+        Set_Employee_Extraction_Step(temp,"numTotalReports");
         attributes.emplace_back(temp);
         
         temp.title = "personalEmail";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"personalEmail");
         attributes.emplace_back(temp);
         
         temp.title = "phoneNumber";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"phoneNumber");
         attributes.emplace_back(temp);
         
         temp.title = "phoneNumberFlag";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"phoneNumberFlag");
         attributes.emplace_back(temp);
         
         temp.title = "preferredFirstName";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"preferredFirstName");
         attributes.emplace_back(temp);
         
         temp.title = "preferredLastName";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"preferredLastName");
         attributes.emplace_back(temp);
         
         temp.title = "pronoun";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"pronoun");
         attributes.emplace_back(temp);
         
         temp.title = "pronunciationTips";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"pronunciationTips");
         attributes.emplace_back(temp);
         
         temp.title = "quote";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"quote");
         attributes.emplace_back(temp);
         
         temp.title = "seatNumber";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"seatNumber");
         attributes.emplace_back(temp);
         
         temp.title = "startDate";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"startDate");
         attributes.emplace_back(temp);
         
         temp.title = "supervisoryOrg";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"supervisoryOrg");
         attributes.emplace_back(temp);
         
         temp.title = "twitterProfileUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"twitterProfileUrl");
         attributes.emplace_back(temp);
         
         temp.title = "unixName";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"unixName");
         attributes.emplace_back(temp);
         
         temp.title = "upPhotoUrl";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"upPhotoUrl");
         attributes.emplace_back(temp);
         
         temp.title = "years";
         temp.type = "integer";
         temp.default_value = "0";
+        Set_Employee_Extraction_Step(temp,"years");
         attributes.emplace_back(temp);
         
         temp.title = "zipcode";
         temp.type = "string";
         temp.default_value = "unknown";
+        Set_Employee_Extraction_Step(temp,"zipcode");
         attributes.emplace_back(temp);
         
         return attributes;
+❱
+
+◀private: static▶ void ☀Set_Employee_Extraction_Step(Gexf_Attribute& attr, std::string name)❰
+    Json_Extraction_Step step;
+    step.key = "employee";
+    step.index = false;
+    attr.extract.desired_key = name;
+    attr.extract.steps.emplace_back(step);
 ❱
 
 

@@ -36,4 +36,5 @@ hcp(name="graphml_formatter", deps = [
 ])
 
 hcp(name="gexf_attribute", deps = [
+    "//code/utilities/json/extraction:json_extraction_settings",
 ])
