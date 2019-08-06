@@ -18,6 +18,7 @@ hcp(name="gexf_formatter", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/tools/gcalviz/exporters/data:edge_data",
     "//code/tools/gcalviz/exporters/formatters:gexf_attribute",
+    "//code/utilities/json/extraction:json_extractor",
 ])
 
 hcp(name="graphml_formatter", deps = [
