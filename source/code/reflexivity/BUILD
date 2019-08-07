@@ -6,8 +6,9 @@ load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 cpp_main(
     name = "reflexive_refresh",
     deps = [
-        "//code/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/reflexivity/docker:dockerfile_refresher",
+        "//code/reflexivity/deps_define:deps_definition_refresher",
+        "//code/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/utilities/locale:lib"
     ],
 )
