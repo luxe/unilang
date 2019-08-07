@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "code/reflexivity/bazel_refresher.hpp"
+#include "code/reflexivity/tool_chain_conversion/tool_chain_conversion_refresher.hpp"
 #include "code/reflexivity/docker/dockerfile_refresher.hpp"
 #include "code/utilities/locale/lib.hpp"
 
@@ -12,6 +12,6 @@ int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
     //things within the repository to regenerate
-    Bazel_Refresher::Refresh();
+    Tool_Chain_Conversion_Refresher::Refresh();
     Dockerfile_Refresher::Refresh();
 }
