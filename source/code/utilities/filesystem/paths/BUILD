@@ -1,6 +1,7 @@
 package(
     default_visibility = ["//visibility:public"],
 )
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 cc_library(
     name = "lib",
@@ -15,26 +16,22 @@ cc_library(
 )
 
 
-cc_binary(
+cpp_main(
   name = "path_to_desktop",
-  srcs = ["path_to_desktop.cpp"],
   deps = ["//code/utilities/filesystem/paths:lib"]
 )
 
-cc_binary(
+cpp_main(
   name = "current_path",
-  srcs = ["current_path.cpp"],
   deps = ["//code/utilities/filesystem/paths:lib"]
 )
 
-cc_binary(
+cpp_main(
   name = "bazel_workspace_directory",
-  srcs = ["bazel_workspace_directory.cpp"],
   deps = ["//code/utilities/filesystem/paths:lib"]
 )
 
-cc_binary(
+cpp_main(
   name = "bazel_derived_root",
-  srcs = ["bazel_derived_root.cpp"],
   deps = ["//code/utilities/filesystem/paths:lib"]
 )

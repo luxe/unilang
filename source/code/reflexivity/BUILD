@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name = "bazel_refresher", deps = [
 "//code/utilities/filesystem/paths:lib",
@@ -21,10 +22,11 @@ hcp(name = "readme_creator", deps = [
 "//code/utilities/filesystem/files/creating:lib",
 ])
 
-cc_binary(
-    name = "bazel_refresh",
-    srcs = ["main.cc"],
-    deps = ["//code/reflexivity:bazel_refresher",
-    "//code/reflexivity/docker:dockerfile_refresher",
-    "//code/utilities/locale:lib"],
+cpp_main(
+    name = "reflexive_refresh",
+    deps = [
+        "//code/reflexivity:bazel_refresher",
+        "//code/reflexivity/docker:dockerfile_refresher",
+        "//code/utilities/locale:lib"
+    ],
 )
