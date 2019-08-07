@@ -39,14 +39,24 @@ RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
 RUN apt-get install -y locales
 RUN apt-get install -y libxdo-dev
+RUN apt-get install -y xutils-dev
 RUN apt-get install -y libncurses5-dev
 RUN apt-get install -y libncursesw5-dev
 RUN apt-get install -y libxtst-dev
 RUN apt-get install -y libxaw7-dev
-
-# packages we may or may not need
-# RUN apt-get install -y git-lfs
-# RUN apt-get install -y openjdk-8-jdk
+RUN apt-get install -y imagemagick
+RUN apt-get install -y netpbm
+RUN apt-get install -y libmikmod-dev
+RUN apt-get install -y libfishsound1-dev
+RUN apt-get install -y libsmpeg-dev
+RUN apt-get install -y liboggz2-dev
+RUN apt-get install -y libflac-dev
+RUN apt-get install -y libfluidsynth-dev
+RUN apt-get install -y libsdl2-mixer-dev
+RUN apt-get install -y libsdl2-mixer-2.0-0
+RUN apt-get install -y libsdl-mixer1.2-dev
+RUN apt-get install -y git-lfs
+RUN apt-get install -y openjdk-8-jdk
 
 # The build runs certain tools that need a particular locale to be available
 # I had to do this differently when transitioning from Ubuntu 14.04 to 18.04

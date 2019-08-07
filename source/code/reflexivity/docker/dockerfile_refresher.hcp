@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪vector❫
 ❪"code/reflexivity/conversion_test/bazel_conversion_tests"❫
+❪"code/reflexivity/docker/apt_get_command"❫
 ⚯
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
@@ -21,13 +22,185 @@ class
     f += "Dockerfile";
     
     
-    
-    Write_To_File(f,Create_Dockerfile());
+    auto apt_get_commands = Get_Apt_Get_Commands();
+    Write_To_File(f,Create_Dockerfile(apt_get_commands));
 
 ❱
 
 
-◀public: static▶ std::string ☀Create_Dockerfile()❰
+◀private: static▶ std::vector<Apt_Get_Command> ☀Get_Apt_Get_Commands()❰
+    std::vector<Apt_Get_Command> commands;
+    {
+        Apt_Get_Command command;
+        command.name = "git";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "patch";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "python";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "zip";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "wget";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "m4";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libgmp-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libgmp3-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "xorg";
+        command.defines.emplace_back("DEBIAN_FRONTEND","noninteractive");
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsdl2-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsfml-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsdl2-image-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsdl2-image-2.0-0";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "locales";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libxdo-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "xutils-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libncurses5-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libncursesw5-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libxtst-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libxaw7-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "imagemagick";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "netpbm";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libmikmod-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libfishsound1-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsmpeg-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "liboggz2-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libflac-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libfluidsynth-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsdl2-mixer-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsdl2-mixer-2.0-0";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "libsdl-mixer1.2-dev";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "git-lfs";
+        commands.emplace_back(command);
+    }
+    {
+        Apt_Get_Command command;
+        command.name = "openjdk-8-jdk";
+        commands.emplace_back(command);
+    }
+    
+    return commands;
+❱
+
+◀private: static▶ std::string ☀Docker_Intro_Comments()❰
 std::string str = R"RAW(
 # Why does this docker container exist?
 # I'd like to build everything from source, but that's not always easy.
@@ -54,45 +227,12 @@ FROM ubuntu:18.04
 # With the transition from Ubuntu 14.04 to 18.04, installing xorg would pause for user input on country
 # This has been mitigated using the "noninteractive".
 RUN apt-get update --fix-missing
-RUN apt-get install -y git
-RUN apt-get install -y patch
-RUN apt-get install -y python
-RUN apt-get install -y zip
-RUN apt-get install -y wget
-RUN apt-get install -y m4
-RUN apt-get install -y libgmp-dev
-RUN apt-get install -y libgmp3-dev
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y xorg
-RUN apt-get install -y libsdl2-dev
-RUN apt-get install -y libsfml-dev
-RUN apt-get install -y libsdl2-image-dev
-RUN apt-get install -y libsdl2-image-2.0-0
-RUN apt-get install -y locales
-RUN apt-get install -y libxdo-dev
-RUN apt-get install -y xutils-dev
-RUN apt-get install -y libncurses5-dev
-RUN apt-get install -y libncursesw5-dev
-RUN apt-get install -y libxtst-dev
-RUN apt-get install -y libxaw7-dev
-RUN apt-get install -y imagemagick
-RUN apt-get install -y netpbm
+)RAW";
+return str;
+❱
 
-# sound in SDL
-RUN apt-get install -y libmikmod-dev
-RUN apt-get install -y libfishsound1-dev
-RUN apt-get install -y libsmpeg-dev
-RUN apt-get install -y liboggz2-dev
-RUN apt-get install -y libflac-dev
-RUN apt-get install -y libfluidsynth-dev
-RUN apt-get install -y libsdl2-mixer-dev
-RUN apt-get install -y libsdl2-mixer-2.0-0
-RUN apt-get install -y libsdl-mixer1.2-dev
-
-
-# packages we may or may not need
-# RUN apt-get install -y git-lfs
-# RUN apt-get install -y openjdk-8-jdk
-
+◀private: static▶ std::string ☀Docker_End_Stuff()❰
+std::string str = R"RAW(
 # The build runs certain tools that need a particular locale to be available
 # I had to do this differently when transitioning from Ubuntu 14.04 to 18.04
 # This will ensure the en_US.UTF-8 locale is available.
@@ -105,6 +245,23 @@ RUN dpkg-reconfigure --frontend noninteractive locales
 # Copy the content of your repository into the image
 COPY . ./
 )RAW";
-
 return str;
+❱
+
+
+
+◀public: static▶ std::string ☀Create_Dockerfile(std::vector<Apt_Get_Command> const& apt_commands)❰
+
+    auto str = Docker_Intro_Comments();
+    for (auto const& it: apt_commands){
+        str += "RUN ";
+        for (auto const& def: it.defines){
+            str += def.first + "=" + def.second + " ";
+        }
+        str += "apt-get install -y ";
+        str += it.name;
+        str += "\n";
+    }
+    str += Docker_End_Stuff();
+    return str;
 ❱
