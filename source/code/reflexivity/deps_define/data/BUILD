@@ -8,3 +8,6 @@ hcp(name = "dependency_specifications", deps = [
 ])
 hcp(name = "dependency_specification", deps = [
 ])
+hcp(name = "dependency_specifications_getter", deps = [
+    "//code/reflexivity/deps_define/data:dependency_specifications"
+])
