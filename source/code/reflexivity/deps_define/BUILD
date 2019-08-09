@@ -14,4 +14,5 @@ hcp(name = "deps_definition_refresher", deps = [
     "//code/reflexivity/tool_chain_conversion/conversion_test_data:test_getter",
     "//code/reflexivity/tool_chain_conversion:readme_creator",
     "//code/transcompilers/unilang/file_extension_getter:file_extension_getter",
+    "//code/reflexivity/deps_define/data:dependency_specifications_getter",
 ])
