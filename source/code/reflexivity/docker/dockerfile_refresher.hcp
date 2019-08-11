@@ -20,7 +20,8 @@ class
     
     
     auto apt_get_commands = Get_Apt_Get_Commands();
-    Write_To_File(f,Create_Dockerfile(apt_get_commands));
+    std::string base_container = "ubuntu:18.04";
+    Write_To_File(f,Create_Dockerfile(apt_get_commands,base_container));
 
 ❱
 
@@ -197,7 +198,7 @@ class
     return commands;
 ❱
 
-◀private: static▶ std::string ☀Docker_Intro_Comments()❰
+◀private: static▶ std::string ☀Docker_Intro_Comments(std::string const& base_container)❰
 std::string str = R"RAW(
 # Why does this docker container exist?
 # I'd like to build everything from source, but that's not always easy.
@@ -215,8 +216,11 @@ std::string str = R"RAW(
 # I'm keeping them separated as it makes debugging easier.
 
 # We try to upgrade to the latest Ubuntu when available
-FROM ubuntu:18.04
+)RAW";
+str += "FROM ";
+str += base_container;
 
+std::string other = R"RAW(
 # All of the necessary apt-get installs
 # Strangely, wget was not working on a different machine??
 # Which is confusing because I was building a docker container; why would the host machine matter.
@@ -225,6 +229,7 @@ FROM ubuntu:18.04
 # This has been mitigated using the "noninteractive".
 RUN apt-get update --fix-missing
 )RAW";
+str+= other;
 return str;
 ❱
 
@@ -247,9 +252,9 @@ return str;
 
 
 
-◀private: static▶ std::string ☀Create_Dockerfile(std::vector<Apt_Get_Command> const& apt_commands)❰
+◀private: static▶ std::string ☀Create_Dockerfile(std::vector<Apt_Get_Command> const& apt_commands, std::string const& base_container)❰
 
-    auto str = Docker_Intro_Comments();
+    auto str = Docker_Intro_Comments(base_container);
     for (auto const& it: apt_commands){
         str += "RUN ";
         for (auto const& def: it.defines){
