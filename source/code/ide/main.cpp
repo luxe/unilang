@@ -6,6 +6,10 @@
 #include "code/ide/frame/frame_renderer.hpp"
 
 
+//other programming editors for inspiration:
+// fructure (racket): https://github.com/disconcision/fructure
+// lambdu: https://www.lamdu.org/
+
 int main()
 {
     auto s = Ide_Settings_Getter::Get();
