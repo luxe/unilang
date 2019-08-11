@@ -3,7 +3,9 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-#cpp_main(
+# cc_binary(
 #    name = "main",
+#    srcs = ["main.cpp"],
 #    deps = ["@opengl//:opengl"],
-#)
+#    linkopts = ["-lglut", "-lGLU", "-lGL"]
+# )
