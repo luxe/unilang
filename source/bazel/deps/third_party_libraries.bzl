@@ -1,5 +1,3 @@
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
-load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 load("//bazel/deps/get:boost.bzl", "boost")
 load("//bazel/deps/get:abseil.bzl", "abseil")
 load("//bazel/deps/get:gtest.bzl", "gtest")
@@ -7,102 +5,58 @@ load("//bazel/deps/get:lcov.bzl", "lcov")
 load("//bazel/deps/get:google_benchmark.bzl", "google_benchmark")
 load("//bazel/deps/get:gperf.bzl", "gperf")
 load("//bazel/deps/get:spdlog.bzl", "spdlog")
-load("//bazel/deps/get:rapidjson.bzl", "rapid_json")
+load("//bazel/deps/get:rapid_json.bzl", "rapid_json")
 load("//bazel/deps/get:nlohmann_json.bzl", "nlohmann_json")
 load("//bazel/deps/get:yaml_cpp.bzl", "yaml_cpp")
 load("//bazel/deps/get:captnproto.bzl", "captnproto")
 load("//bazel/deps/get:protobuf.bzl", "protobuf")
 load("//bazel/deps/get:apache_thrift.bzl", "apache_thrift")
+load("//bazel/deps/get:cereal.bzl", "cereal")
+load("//bazel/deps/get:expat.bzl", "expat")
+load("//bazel/deps/get:flat_buffers.bzl", "flat_buffers")
+load("//bazel/deps/get:snappy.bzl", "snappy")
 load("//bazel/deps/get:andres_graph.bzl", "andres_graph")
+load("//bazel/deps/get:date.bzl", "date")
 load("//bazel/deps/get:gmp.bzl", "gmp")
-load("//bazel/deps/get:tbb.bzl", "tbb")
-load("//bazel/deps/get:cpp_taskflow.bzl", "cpp_taskflow")
 load("//bazel/deps/get:sdl2.bzl", "sdl2")
+load("//bazel/deps/get:glfw.bzl", "glfw")
 load("//bazel/deps/get:imgui.bzl", "imgui")
 load("//bazel/deps/get:cairo.bzl", "cairo")
+load("//bazel/deps/get:libpng.bzl", "libpng")
+load("//bazel/deps/get:libjpeg.bzl", "libjpeg")
 load("//bazel/deps/get:gd.bzl", "gd")
 load("//bazel/deps/get:open_cv.bzl", "open_cv")
 load("//bazel/deps/get:open_cv_testdata.bzl", "open_cv_testdata")
 load("//bazel/deps/get:pixman.bzl", "pixman")
-load("//bazel/deps/get:plant_uml.bzl", "plant_uml")
+load("//bazel/deps/get:ncurses.bzl", "ncurses")
+load("//bazel/deps/get:freetype2.bzl", "freetype2")
+load("//bazel/deps/get:fontconfig.bzl", "fontconfig")
 load("//bazel/deps/get:sqlite3.bzl", "sqlite3")
 load("//bazel/deps/get:cpr.bzl", "cpr")
 load("//bazel/deps/get:zlib.bzl", "zlib")
 load("//bazel/deps/get:openssl.bzl", "openssl")
 load("//bazel/deps/get:curl.bzl", "curl")
+load("//bazel/deps/get:chrome_drivers.bzl", "chrome_drivers")
+load("//bazel/deps/get:cxx_url.bzl", "cxx_url")
 load("//bazel/deps/get:cli11.bzl", "cli11")
 load("//bazel/deps/get:pybind11.bzl", "pybind11")
+load("//bazel/deps/get:cpp_taskflow.bzl", "cpp_taskflow")
+load("//bazel/deps/get:tbb.bzl", "tbb")
 load("//bazel/deps/get:grpc.bzl", "grpc")
 load("//bazel/deps/get:fmt.bzl", "fmt")
-load("//bazel/deps/get:glfw.bzl", "glfw")
-load("//bazel/deps/get:cereal.bzl", "cereal")
 load("//bazel/deps/get:xdo.bzl", "xdo")
-load("//bazel/deps/get:expat.bzl", "expat")
-load("//bazel/deps/get:chrome_drivers.bzl", "chrome_drivers")
 load("//bazel/deps/get:python3.bzl", "python3")
 load("//bazel/deps/get:tippecanoe.bzl", "tippecanoe")
-load("//bazel/deps/get:cxx_url.bzl", "cxx_url")
 load("//bazel/deps/get:getch.bzl", "getch")
-load("//bazel/deps/get:libpng.bzl", "libpng")
-load("//bazel/deps/get:libjpeg.bzl", "libjpeg")
-load("//bazel/deps/get:freetype2.bzl", "freetype2")
-load("//bazel/deps/get:fontconfig.bzl", "fontconfig")
-load("//bazel/deps/get:flatbuffers.bzl", "flatbuffers")
-load("//bazel/deps/get:ncurses.bzl", "ncurses")
-load("//bazel/deps/get:snappy.bzl", "snappy")
 load("//bazel/deps/get:xorg_xinput.bzl", "xorg_xinput")
-load("//bazel/deps/get:date.bzl", "date")
-
-# TODO(thickey): we can't trust that these git repos will always exist.  
-# make copies and store them somewhere else.  Give multiple mirrors
-# for the urls.  the first url can be where we host it.
-# Also, github is a single source of failure here.  
-# Its probably okay to clone on github and use that as a mirror,
-# but we may also want additional hosting elsewhere (ex: buildfactory)
-# we may want to set up our own servers in case of another world war and we lose github
-
-# TODO(thickey): as a rule of thumb, we do not want patch files.  
-# when a patch file is created, we need to work with the original author to merge it back.
-# In the worst case scenarios where an agreement cannot be made with the author, or
-# the original author is unresponsive, we can fork the project.
-
-#other dependencies needed:
-#gmp (this was hard)
-#pretty_printers
-#pstreams
-#add-range-v3 library
-#add klmr-cpp11-range
-
-#need to make hermetic
-#sudo apt-get install xdotool
-#sudo apt-get install libxdo-dev
-#sudo apt-get install libxtst-dev
-# http_archive(
-#     name = "xdo",
-#     build_file = "//bazel/deps/build_files/xdo:xdo.BUILD",
-#     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
-#     remote = "https://github.com/jordansissel/xdotool.git",
-# )
-
 def third_party_libraries():
-    
-    # C++
-    # General Libraries
     boost()
     abseil()
-    
-    # Testing
     gtest()
     lcov()
-    
-    # Benchmarking
     google_benchmark()
     gperf()
-    
-    # Logging
     spdlog()
-    
-    # Serialization / Parsers
     rapid_json()
     nlohmann_json()
     yaml_cpp()
@@ -111,17 +65,11 @@ def third_party_libraries():
     apache_thrift()
     cereal()
     expat()
-    flatbuffers()
+    flat_buffers()
     snappy()
-    
-    # Data Structures
     andres_graph()
     date()
-    
-    # Math
     gmp()
-    
-    # Graphics
     sdl2()
     glfw()
     imgui()
@@ -133,42 +81,23 @@ def third_party_libraries():
     open_cv_testdata()
     pixman()
     ncurses()
-    
-    # Font
     freetype2()
     fontconfig()
-    
-    # Database
     sqlite3()
-    
-    # Web Query
     cpr()
     zlib()
     openssl()
     curl()
     chrome_drivers()
     cxx_url()
-    
-    # CLI
     cli11()
-    
-    # Language Interop
     pybind11()
-    
-    # Threading / Workflow
     cpp_taskflow()
     tbb()
-    
-    # Other
     grpc()
     fmt()
     xdo()
     python3()
     tippecanoe()
-    
-    #device inputs
     getch()
     xorg_xinput()
-    
-    # https://github.com/jupp0r/prometheus-cpp
-    
