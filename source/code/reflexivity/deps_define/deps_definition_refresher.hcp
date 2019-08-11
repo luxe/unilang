@@ -11,8 +11,30 @@ class
     auto path = Bazel_Deps_Directory();
     Set_Path(path);
     
+    
+    auto source_data = Create_Main_Third_Party_Sourcing_File(all_specs);
+    
 ❱
 
 ◀private: static▶ std::string ☀Bazel_Deps_Directory()❰
     return Bazel_Workspace_Directory() + "/bazel/deps/";
+❱
+
+◀private: static▶ std::string ☀Create_Main_Third_Party_Sourcing_File(Dependency_Specifications const& all_specs)❰
+    std::string result;
+    
+    //add load statements
+    for (auto const& it: all_specs.specs){
+        result += "load(\"//bazel/deps/get:";
+        result += it.lib_name;
+        result += ".bzl";
+        result += "\"";
+        result += ", \"";
+        result += it.lib_name;
+        result += "\")";
+    }
+    
+    result += "def third_party_libraries():";
+    
+    return result;
 ❱
