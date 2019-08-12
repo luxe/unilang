@@ -3,6 +3,7 @@
 #include "code/reflexivity/docker/dockerfile_refresher.hpp"
 #include "code/reflexivity/deps_define/deps_definition_refresher.hpp"
 #include "code/reflexivity/tool_chain_conversion/tool_chain_conversion_refresher.hpp"
+#include "code/reflexivity/settings/reflexive_refresh_settings.hpp"
 #include "code/utilities/locale/lib.hpp"
 
 
@@ -12,13 +13,21 @@
 int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
+    Reflexive_Refresh_Settings settings;
+    
     //things within the repository that need regenerated
-    std::cout << "generating Dockerfile..." << std::endl;
-    Dockerfile_Refresher::Refresh();
+    if (settings.refresh_dockerfile){
+        std::cout << "generating Dockerfile..." << std::endl;
+        Dockerfile_Refresher::Refresh();
+    }
     
-    std::cout << "Definition Refresher..." << std::endl;
-    Deps_Definition_Refresher::Refresh();
+    if (settings.refresh_deps_definitions){
+        std::cout << "Definition Refresher..." << std::endl;
+        Deps_Definition_Refresher::Refresh();
+    }
     
-    std::cout << "Tool Chain Conversion Refresher..." << std::endl;
-    Tool_Chain_Conversion_Refresher::Refresh();
+    if (settings.refresh_toolchain_conversion_tests){
+        std::cout << "Tool Chain Conversion Refresher..." << std::endl;
+        Tool_Chain_Conversion_Refresher::Refresh();
+    }
 }
