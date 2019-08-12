@@ -16,7 +16,6 @@
 
 # We try to upgrade to the latest Ubuntu when available
 FROM ubuntu:18.04
-
 # All of the necessary apt-get installs
 # Strangely, wget was not working on a different machine??
 # Which is confusing because I was building a docker container; why would the host machine matter.
@@ -57,6 +56,8 @@ RUN apt-get install -y libsdl2-mixer-2.0-0
 RUN apt-get install -y libsdl-mixer1.2-dev
 RUN apt-get install -y git-lfs
 RUN apt-get install -y openjdk-8-jdk
+RUN apt-get install -y mesa-utils
+RUN apt-get install -y freeglut3-dev
 
 # The build runs certain tools that need a particular locale to be available
 # I had to do this differently when transitioning from Ubuntu 14.04 to 18.04

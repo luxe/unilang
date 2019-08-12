@@ -13,7 +13,12 @@ int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
     //things within the repository that need regenerated
+    std::cout << "generating Dockerfile..." << std::endl;
     Dockerfile_Refresher::Refresh();
+    
+    std::cout << "Definition Refresher..." << std::endl;
     Deps_Definition_Refresher::Refresh();
+    
+    std::cout << "Tool Chain Conversion Refresher..." << std::endl;
     Tool_Chain_Conversion_Refresher::Refresh();
 }
