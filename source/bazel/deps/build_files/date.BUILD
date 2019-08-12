@@ -12,5 +12,6 @@ cc_library(
         "include/date",
         "include",
     ],
+    deps = ["@curl"],
     visibility = ["//visibility:public"],
 )

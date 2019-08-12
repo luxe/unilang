@@ -22,7 +22,10 @@ FROM ubuntu:18.04
 # The fix was to use --fix-missing on the update.
 # With the transition from Ubuntu 14.04 to 18.04, installing xorg would pause for user input on country
 # This has been mitigated using the "noninteractive".
-RUN apt-get update --fix-missing
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+# RUN add-apt-repository ppa:mc3man/trusty-media
+RUN add-apt-repository ppa:jonathonf/ffmpeg-4
 RUN apt-get install -y git
 RUN apt-get install -y patch
 RUN apt-get install -y python
@@ -55,9 +58,9 @@ RUN apt-get install -y libsdl2-mixer-dev
 RUN apt-get install -y libsdl2-mixer-2.0-0
 RUN apt-get install -y libsdl-mixer1.2-dev
 RUN apt-get install -y git-lfs
-RUN apt-get install -y openjdk-8-jdk
 RUN apt-get install -y mesa-utils
 RUN apt-get install -y freeglut3-dev
+RUN apt-get install -y ffmpeg
 
 # The build runs certain tools that need a particular locale to be available
 # I had to do this differently when transitioning from Ubuntu 14.04 to 18.04
