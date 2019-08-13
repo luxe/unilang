@@ -3,3 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "math",deps=[])
+
+hcp(name = "pi_calculator", deps = [
+    "//code/utilities/gmp:lib"
+])
