@@ -40,7 +40,7 @@ cc_library(
         "lib/curl_addrinfo.c",
         "lib/curl_addrinfo.h",
         "lib/curl_base64.h",
-        "lib/curl_config.h",  # note this is included from curl.patch
+        "lib/curl_config.h",
         "lib/curl_ctype.c",
         "lib/curl_ctype.h",
         "lib/curl_des.c",

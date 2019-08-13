@@ -1,3 +1,7 @@
+package(
+    default_visibility = ["//visibility:public"],
+)
+
 licenses(["notice"])  # BSD 3-Clause like
 
 cc_library(
@@ -15,7 +19,6 @@ cc_library(
     ]),
     copts = ["-Wno-everything"],
     includes = ["include"],
-    visibility = ["//visibility:public"],
 )
 
 [cc_test(
