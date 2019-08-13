@@ -33,9 +33,8 @@ mpz_class Factorial(mpz_class n){
 
 //observers
 std::string to_string(mpz_class const& num){
-	std::stringstream ss;
-	ss << num;
-	return ss.str();
+	
+	return num.get_str(10);
 }
 mpz_class to_mpz_class(char c){
 
