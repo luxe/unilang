@@ -7,3 +7,8 @@ cpp_main(
     name = "main",
     deps = ["@forest//:forest"],
 )
+
+cpp_main(
+    name = "custom_node",
+    deps = ["@forest//:forest"],
+)
