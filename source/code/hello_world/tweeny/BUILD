@@ -7,3 +7,8 @@ cpp_main(
     name = "main",
     deps = ["@tweeny//:tweeny"],
 )
+
+cpp_main(
+    name = "in_out",
+    deps = ["@tweeny//:tweeny"],
+)
