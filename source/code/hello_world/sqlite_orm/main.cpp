@@ -19,7 +19,7 @@ struct UserType {
 int main(){
 
   using namespace sqlite_orm;
-  auto storage = make_storage("db.sqlite",
+  auto storage = make_storage("/home/laptop/Desktop/db.sqlite",
                               make_table("users",
                                          make_column("id", &User::id, autoincrement(), primary_key()),
                                          make_column("first_name", &User::firstName),
@@ -30,4 +30,5 @@ int main(){
                               make_table("user_types",
                                          make_column("id", &UserType::id, autoincrement(), primary_key()),
                                          make_column("name", &UserType::name, default_value("name_placeholder"))));
+  //storage.sync_schema();
 }
