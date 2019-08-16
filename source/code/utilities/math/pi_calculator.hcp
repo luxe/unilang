@@ -4,6 +4,7 @@ class
 ❪stdbool.h❫
 ❪string.h❫
 ❪assert.h❫
+❪iostream❫
 ❪string❫
 ❪"code/utilities/gmp/lib"❫
 ⚯
@@ -21,18 +22,27 @@ class
     
     for (int i = 0; i <= n; i++)
     {
+        auto precision = n*2;
         mpz_class r; 
         mpz_ui_pow_ui(r.get_mpz_t(),16,i);
-        my_pi += ( mpf_class(1.0) / r) * ((mpf_class(4.0) / (mpf_class(8.0) * i + mpf_class(1.0))) -
-                                           (mpf_class(2.0) / (mpf_class(8.0) * i + mpf_class(4.0))) -
-                                           (mpf_class(1.0) / (mpf_class(8.0) * i + mpf_class(5.0))) -
-                                           (mpf_class(1.0) / (mpf_class(8.0) * i + mpf_class(6.0))));
+        
+        mpf_class dec = 0;
+        dec.set_prec(precision);
+        
+        dec = ( mpf_class(1.0,precision) / r) * ((mpf_class(4.0,precision) / (mpf_class(8.0,precision) * i + mpf_class(1.0,precision))) -
+                                           (mpf_class(2.0,precision) / (mpf_class(8.0,precision) * i + mpf_class(4.0,precision))) -
+                                           (mpf_class(1.0,precision) / (mpf_class(8.0,precision) * i + mpf_class(5.0,precision))) -
+                                           (mpf_class(1.0,precision) / (mpf_class(8.0,precision) * i + mpf_class(6.0,precision))));
+        
+        my_pi.set_prec(precision);
+        my_pi += dec;
+        
+        
+        //mp_exp_t ex = 10;
+        //std::cout << my_pi.get_str(ex) << std::endl;
     }
     return my_pi;
 ❱
-
-
-
 
 
 
