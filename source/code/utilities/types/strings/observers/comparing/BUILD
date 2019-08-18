@@ -9,5 +9,6 @@ cc_library(
     deps = ["//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/transformers/casing:lib",
     "@boost//:algorithm",
+    "@levenshtein//:levenshtein",
     ]
 )

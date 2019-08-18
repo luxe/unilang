@@ -2,6 +2,7 @@
 #include "code/utilities/types/strings/transformers/casing/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "boost/algorithm/string/predicate.hpp"
+#include "levenshtein.h"
 
 //comparing two string
 bool Case_Insensitive_String_Compare(std::string const& str1, std::string const& str2){
@@ -30,4 +31,8 @@ bool Non_Case_Sensitive_Compare(std::string str1, std::string str2){
 }
 bool Case_Sensitive_Compare(std::string const& str1, std::string const& str2){
 	return (str1 == str2);
+}
+
+size_t Levenshtein_Distance(std::string const& str1, std::string const& str2){
+	return levenshtein_n(str1.c_str(), str1.size(), str2.c_str(), str2.size());
 }

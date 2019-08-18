@@ -84,6 +84,7 @@ load("//bazel/deps/get:semver.bzl", "semver")
 load("//bazel/deps/get:cpp_console_table.bzl", "cpp_console_table")
 load("//bazel/deps/get:tweeny.bzl", "tweeny")
 load("//bazel/deps/get:mustache.bzl", "mustache")
+load("//bazel/deps/get:levenshtein.bzl", "levenshtein")
 def third_party_libraries():
     boost()
     abseil()
@@ -171,3 +172,4 @@ def third_party_libraries():
     cpp_console_table()
     tweeny()
     mustache()
+    levenshtein()
