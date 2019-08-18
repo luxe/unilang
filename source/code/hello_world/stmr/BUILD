@@ -7,6 +7,5 @@ cpp_main(
     name = "main",
     deps = [
         "//code/utilities/types/strings/observers/natural_language:word_stemer",
-        "@stmr//:stmr",
     ],
 )
