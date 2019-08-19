@@ -13,7 +13,23 @@ hcp(name="ide_settings", deps = [
     "//code/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/window:window_settings",
+    "//code/ide/settings:background_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
+])
+
+hcp(name="background_settings", deps = [
+    "//code/utilities/graphics/imgui/ui/draw:color",
+    "//code/utilities/graphics/imgui/ui/draw:position",
+    "//code/utilities/graphics/imgui/ui/draw:cursor",
+    "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
+    "//code/utilities/graphics/imgui/ui/draw:cursor_mouse_connector",
+    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/graphics/imgui:sdl_init_settings",
+    "//code/transcompilers/unilang/tokens:get_tokens",
+    "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+    "//code/utilities/graphics/imgui/ui/window:window_settings",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
+    "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_settings",
 ])
 
 hcp(name="ide_settings_getter", deps = [
