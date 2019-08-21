@@ -9,5 +9,6 @@ cc_library(
     
     srcs = glob([
      "*.c",
-    ])
+    ]),
+    strip_include_prefix = "",
 )
