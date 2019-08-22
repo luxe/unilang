@@ -16,7 +16,11 @@ cc_library(
   srcs = glob([
             "xkbcommon/**/*.h",
             "src/**/*.c",
-         ]),
+         ],
+    exclude = [
+        "src/config.h",
+    ]
+),
   includes = ["src","xkbcommon"],
   copts = [
     '-DXLOCALEDIR=\\\"/usr/share/X11/locale\\\"',
@@ -25,8 +29,4 @@ cc_library(
     '-DDEFAULT_XKB_MODEL=\\\"pc105\\"',
     '-DDEFAULT_XKB_LAYOUT=\\\"us\\"',
   ],
-  # copts = [
-  #   "-DXLOCALEDIR=\"/usr/share/X11/locale\"",
-  #   "-DDEFAULT_XKB_RULES='evdev'",
-  #   ],
 )
