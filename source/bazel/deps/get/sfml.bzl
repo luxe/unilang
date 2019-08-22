@@ -5,10 +5,10 @@ def sfml():
     http_archive(
         name = "sfml",
         build_file = "//bazel/deps/build_files:sfml.BUILD",
-        sha256 = "fc015c546724244ac753d34d54ad5cc65722a18292a60ecd0d0e8b0c681fd014",
-        strip_prefix = "SFML-86672a37246100f40077e692bc7130a8e4e87d2c",
+        sha256 = "6b013624aa9a916da2d37180772031e963098494538f59a14f40e00db23c9077",
+        strip_prefix = "SFML-257e50beb886f1edebeebbde1903169da4eca39f",
         urls = [
-            "https://github.com/unilang/SFML/archive/86672a37246100f40077e692bc7130a8e4e87d2c.tar.gz",
+            "https://github.com/unilang/SFML/archive/257e50beb886f1edebeebbde1903169da4eca39f.tar.gz",
             "https://github.com/SFML/SFML/archive/86672a37246100f40077e692bc7130a8e4e87d2c.tar.gz",
         ],
     )
