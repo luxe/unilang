@@ -42,6 +42,7 @@ values =
 ,"Scheme"
 ,"Swift"
 ,"HolyC"
+,"Futhark"
 
 #IDLs
 ,"hidl"
