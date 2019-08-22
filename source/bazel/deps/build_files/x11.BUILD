@@ -11,8 +11,8 @@ cc_library(
         "src/**/*.h",
         "src/**/*.c",
     ]),
-    copts = ["-DXLOCALELIBDIR=/usr/local/lib/X11/locale"],
+    copts = ["-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\""],
     includes = ["include/X11","src"],
     linkstatic = True,
+    deps = ["@xkbcommon//:xkbcommon"],
 )
-#deps needs libxkbcommon
