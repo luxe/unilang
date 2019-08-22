@@ -14,6 +14,7 @@ cc_library(
     ]
 ),
   srcs = glob([
+            "xkbcommon/**/*.h",
             "src/**/*.c",
          ]),
   includes = ["src","xkbcommon"],
