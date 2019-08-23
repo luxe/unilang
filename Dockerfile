@@ -61,6 +61,7 @@ RUN apt-get install -y git-lfs
 RUN apt-get install -y mesa-utils
 RUN apt-get install -y freeglut3-dev
 RUN apt-get install -y ffmpeg
+RUN apt-get install -y uuid-dev
 
 # The build runs certain tools that need a particular locale to be available
 # I had to do this differently when transitioning from Ubuntu 14.04 to 18.04
