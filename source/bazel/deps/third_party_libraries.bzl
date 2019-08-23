@@ -92,6 +92,7 @@ load("//bazel/deps/get:tweeny.bzl", "tweeny")
 load("//bazel/deps/get:mustache.bzl", "mustache")
 load("//bazel/deps/get:levenshtein.bzl", "levenshtein")
 load("//bazel/deps/get:rang.bzl", "rang")
+load("//bazel/deps/get:crossguid.bzl", "crossguid")
 def third_party_libraries():
     boost()
     abseil()
@@ -187,3 +188,4 @@ def third_party_libraries():
     mustache()
     levenshtein()
     rang()
+    crossguid()
