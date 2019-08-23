@@ -12,4 +12,6 @@ cc_library(
         "src/**/*.cpp",
         
     ]),
+    copts = ["-DGUID_LIBUUID"],
+    linkopts = ["-luuid"]
 )
