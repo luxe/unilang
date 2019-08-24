@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML/Window/Joystick.hpp>
 
+//jstest-gtk to toy visually
 int main(){
     
     while (true){
