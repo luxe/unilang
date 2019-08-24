@@ -17,6 +17,8 @@ int main(){
         state.right = sf::Joystick::isButtonPressed(0, 1);
         state.left = sf::Joystick::isButtonPressed(0, 2);
         state.up = sf::Joystick::isButtonPressed(0, 3);
+        state.sl = sf::Joystick::isButtonPressed(0, 4);
+        state.sr = sf::Joystick::isButtonPressed(0, 5);
         std::cout << As_JSON_String(state) << std::endl;
         
         
