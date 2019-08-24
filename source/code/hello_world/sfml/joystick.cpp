@@ -25,5 +25,6 @@ int main(){
         // What's the current position of the Y axis on joystick #0?
         float position = sf::Joystick::getAxisPosition(0, sf::Joystick::Y);
         std::cout << position << " " << std::endl;
+        sf::Joystick::update();
     }
 }
