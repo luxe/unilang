@@ -4,4 +4,16 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "joycon_horizontal_state", deps = [
+    "//code/utilities/keyboard/joycons:joycon_joystick",
+])
+
+hcp(name = "joycon_joystick", deps = [
+])
+
+hcp(name = "joycons", deps = [
+    "//code/utilities/keyboard/joycons:joycon_horizontal_state",
+])
+
+hcp(name = "joycon_state_getter", deps = [
+    "//code/utilities/keyboard/joycons:joycons",
 ])
