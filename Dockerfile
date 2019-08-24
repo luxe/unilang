@@ -39,6 +39,7 @@ RUN apt-get install -y libsdl2-dev
 RUN apt-get install -y libsfml-dev
 RUN apt-get install -y libsdl2-image-dev
 RUN apt-get install -y libsdl2-image-2.0-0
+RUN apt-get install -y libsdl2-net-dev
 RUN apt-get install -y locales
 RUN apt-get install -y libxdo-dev
 RUN apt-get install -y xutils-dev
