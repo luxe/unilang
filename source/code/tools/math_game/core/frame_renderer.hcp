@@ -22,6 +22,35 @@ class
     //make decisions based on user action
     state.joycons_current = Joycon_State_Getter::Get();
     
+    
+    if (state.screen == Current_Screen::MAIN){
+        
+        Handle_Player_Status(state,assets);
+        
+        //draw everything
+        window.draw(assets.main_bg.sprite);
+        window.draw(assets.title_text);
+        window.draw(assets.player1_status);
+        window.draw(assets.player2_status);
+        
+        //Move_Cursors(state.joycons_current,assets);
+        //window.draw(assets.player1_mouse);
+        //window.draw(assets.player2_mouse);
+        
+        
+        //decide whether to leave main screen
+        if (state.player1_ready && state.player2_ready){
+            state.screen = Current_Screen::CHARACTER_SELECT;
+        }
+    }
+    
+    state.joycons_previous = state.joycons_current;
+    
+    window.display();
+❱
+
+◀private: static▶ void ☀Handle_Player_Status(Game_State & state, Assets & assets)❰
+
     bool redraw_status = false;
     
     //is player 1 ready?
@@ -60,55 +89,37 @@ class
     if (redraw_status){
         Set_Connection_Status(state,assets);
     }
-    
-    window.draw(assets.main_bg.sprite);
-    window.draw(assets.title_text);
-    
-    window.draw(assets.player1_status);
-    window.draw(assets.player2_status);
-    
-    //Move_Cursors(state.joycons_current,assets);
-    //window.draw(assets.player1_mouse);
-    //window.draw(assets.player2_mouse);
-    
-    
-    //decide whether to leave main screen
-    if (state.joycons_current.left.active && state.joycons_current.right.active){
-        if (state.joycons_current.left.right ||state.joycons_current.right.right){
-            exit(0);
-        }
-    }
-    
-    state.joycons_previous = state.joycons_current;
-    
-    window.display();
 ❱
-
-
 
 ◀private: static▶ void ☀Set_Connection_Status(Game_State const& state, Assets & assets)❰
 
     if (!state.joycons_current.left.active){
         assets.player1_status.setString("Player 1 not connected");
+        assets.player1_status.setFillColor(sf::Color::Red);
     }
     else{
         if (state.player1_ready){
             assets.player1_status.setString("Player 1 READY");
+            assets.player1_status.setFillColor(sf::Color::White);
         }
         else{
             assets.player1_status.setString("Player 1 connected");
+            assets.player1_status.setFillColor(sf::Color::White);
         }
     }
     
     if (!state.joycons_current.right.active){
         assets.player2_status.setString("Player 2 not connected");
+        assets.player2_status.setFillColor(sf::Color::Red);
     }
     else{
         if (state.player2_ready){
             assets.player2_status.setString("Player 2 READY");
+            assets.player2_status.setFillColor(sf::Color::White);
         }
         else{
             assets.player2_status.setString("Player 2 connected");
+            assets.player2_status.setFillColor(sf::Color::White);
         }
     }
     

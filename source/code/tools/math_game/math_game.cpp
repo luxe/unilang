@@ -9,6 +9,7 @@
 #include "code/utilities/json/functions/lib.hpp"
 #include "code/tools/math_game/assets/assets_loader.hpp"
 #include "code/tools/math_game/state/game_state.hpp"
+#include "code/tools/math_game/state/game_state_getter.hpp"
 #include "code/tools/math_game/core/frame_renderer.hpp"
 
 
@@ -79,7 +80,7 @@ int main()
     //window.setFramerateLimit(60);
     
     auto assets = Assets_Loader::Load(window);
-    Game_State state;
+    Game_State state = Game_State_Getter::Get();
 
     // run the program as long as the window is open
     while (window.isOpen())
