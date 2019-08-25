@@ -8,12 +8,8 @@
 #include "code/utilities/json/functions/lib.hpp"
 #include "code/tools/math_game/assets/assets_loader.hpp"
 
-void Frame_Logic(sf::RenderWindow & window, Assets & assets){
-    
-    window.clear(sf::Color(50, 127, 168));
-    
-    auto joys = Joycon_State_Getter::Get();
-    
+void Set_Connection_Status(Joycons const& joys, Assets & assets){
+
     if (!joys.left.active){
         assets.player1_status.setString("Player 1 Not Connected");
     }
@@ -28,6 +24,21 @@ void Frame_Logic(sf::RenderWindow & window, Assets & assets){
         assets.player2_status.setString("Player 2 Connected");
     }
     
+    int buffer_space_x = 15;
+    int buffer_space_y = 5;
+    assets.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
+    assets.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(assets.player2_status.getLocalBounds().left + assets.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
+
+}
+
+void Frame_Logic(sf::RenderWindow & window, Assets & assets){
+    
+    window.clear(sf::Color(50, 127, 168));
+    
+    auto joys = Joycon_State_Getter::Get();
+    
+    Set_Connection_Status(joys,assets);
+    
     
     // std::cout << As_JSON_String(joys) << std::endl;
     //texture.update(window,0,0);
@@ -41,6 +52,8 @@ void Frame_Logic(sf::RenderWindow & window, Assets & assets){
     
     window.display();
 }
+
+
 
 
 void Print_All_Video_Modes(){
