@@ -47,6 +47,19 @@ void Move_Cursors(Joycons const& joys, Assets & assets){
     if (joys.left.joystick.down){
         assets.player1_mouse.move(0,speed);
     }
+    
+    if (joys.right.joystick.left){
+        assets.player2_mouse.move(speed * -1,0);
+    }
+    if (joys.right.joystick.right){
+        assets.player2_mouse.move(speed,0);
+    }
+    if (joys.right.joystick.up){
+        assets.player2_mouse.move(0,speed * -1);
+    }
+    if (joys.right.joystick.down){
+        assets.player2_mouse.move(0,speed);
+    }
 }
 
 void Frame_Logic(sf::RenderWindow & window, Game_State & state, Assets & assets){
@@ -73,6 +86,7 @@ void Frame_Logic(sf::RenderWindow & window, Game_State & state, Assets & assets)
     window.draw(assets.player2_status);
     
     window.draw(assets.player1_mouse);
+    window.draw(assets.player2_mouse);
     
     //decide whether to leave main screen
     if (state.joycons_current.left.active && state.joycons_current.right.active){
