@@ -6,15 +6,14 @@
 #include "code/utilities/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/json/functions/lib.hpp"
 
-//jstest-gtk to toy visually
-void Main_Logic(sf::Clock const& clock){
+void Main_Logic(){
     //std::cout << "sdfsdf" << std::endl;
         // auto joys = Joycon_State_Getter::Get();
         // std::cout << As_JSON_String(joys) << std::endl;
     
-    if (clock.getElapsedTime().asSeconds() > 10){
-        exit(0);
-    }
+    // if (clock.getElapsedTime().asSeconds() > 10){
+    //     exit(0);
+    // }
 }
 
 
@@ -30,49 +29,64 @@ void Print_All_Video_Modes(){
     }
 }
 
+void Handle_Events(sf::Window & window){
+    // check all the window's events that were triggered since the last iteration of the loop
+    sf::Event event;
+    while (window.pollEvent(event))
+    {
+        
+        switch(event.type){
+           // window closed
+            case sf::Event::Closed:
+                window.close();
+                break;
+
+            // key pressed
+            case sf::Event::KeyPressed:
+                if (event.key.code == sf::Keyboard::Escape){
+                    window.close();
+                }
+                break;
+
+            // we don't process other types of events
+            default:
+                break;
+        }
+    }
+}
+
 
 int main()
 {
-    //Print_All_Video_Modes();
-    //exit(0);
     
-    //create window
-    sf::Window window(sf::VideoMode::getDesktopMode(), "My window"/*,sf::Style::Fullscreen*/);
+    //Create the main window.
+    //note: if you do a bad (possibly unsupported resolution), it will go fullscreen but freeze
+    //and then you have just a black screen and you have to restart the machine.
+    //I don't even know if the application ends up exiting and my OS just never recovers.
+    //But I can't even go to a different ubuntu session.  I couldn't figure out anything but
+    //restarting the machine.  Not good.  Probably the best thing to do, is go with the desktop mode for now.
+    //Another idea would be to make sure the desired resolution is supported by the machine.
+    sf::Window window(sf::VideoMode::getDesktopMode(), "Math Game",sf::Style::Fullscreen);
     
     //avoid graphics tearing
+    //Sometimes, when your application runs fast, you may notice visual artifacts such as tearing.
+    //The reason is that your application's refresh rate is not synchronized with the vertical frequency of the monitor,
+    //and as a result, the bottom of the previous frame is mixed with the top of the next one.
+    //The solution to this problem is to activate vertical synchronization.
+    //It is automatically handled by the graphics card,
+    //and can easily be switched on and off with the setVerticalSyncEnabled function.
+    //After this call, your application will run at the same frequency as the monitor's refresh rate.
+    //Sometimes setVerticalSyncEnabled will have no effect:
+    //this is most likely because vertical synchronization is forced to "off" in your graphics driver's settings.
+    //It should be set to "controlled by application" instead.
     window.setVerticalSyncEnabled(true);
-    
-    sf::Clock clock;
 
     // run the program as long as the window is open
     while (window.isOpen())
     {
-        // check all the window's events that were triggered since the last iteration of the loop
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            
-            switch(event.type){
-               // window closed
-                case sf::Event::Closed:
-                    window.close();
-                    break;
-
-                // key pressed
-                case sf::Event::KeyPressed:
-                    if (event.key.code == sf::Keyboard::Escape){
-                        std::cout << "leaving" << std::endl;
-                        window.close();
-                    }
-                    break;
-
-                // we don't process other types of events
-                default:
-                    break;
-            }
-        }
         
-        Main_Logic(clock);
+        Handle_Events(window);
+        Main_Logic();
     }
 
     return 0;
