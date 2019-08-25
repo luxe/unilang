@@ -12,7 +12,8 @@ hcp(name = "sound", deps = [
 
 hcp(name = "assets", deps = [
     "//code/tools/math_game/assets:textured_sprite",
-    "//code/tools/math_game/assets:sound"
+    "//code/tools/math_game/assets:sound",
+    "@sfml//:sfml",
 ])
 
 hcp(name = "assets_loader", deps = [

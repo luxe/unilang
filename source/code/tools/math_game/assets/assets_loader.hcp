@@ -3,6 +3,7 @@ class
 ❪iostream❫
 ❪"code/tools/math_game/assets/assets"❫
 ❪SFML/Window.hpp❫
+❪SFML/Audio.hpp❫
 ⚯
 ⚞⚟
 
@@ -10,8 +11,12 @@ class
     Assets x;
     
     //load title text
-    Load_Font(x.main_font,"/home/laptop/Desktop/math_game/fonts/Archistico_Bold.ttf");
-    x.title_text.setString("Math Game");
+    //Load_Font(x.main_font,"/home/laptop/Desktop/math_game/fonts/Archistico_Bold.ttf");
+    Load_Font(x.main_font,"/home/laptop/Desktop/math_game/fonts/Right_Chalk.ttf");
+    Load_Font(x.sub_font,"/home/laptop/Desktop/math_game/fonts/chalkmars_regular_sample.ttf");
+    //Load_Font(x.main_font,"/home/laptop/Desktop/math_game/fonts/Chalk_Stick.otf");
+    //x.title_text.setString("Math Game");
+    x.title_text.setString("MATH GAME");
     x.title_text.setFont(x.main_font);
     x.title_text.setCharacterSize(150);
     x.title_text.setPosition(sf::VideoMode::getDesktopMode().width/2.0f,sf::VideoMode::getDesktopMode().height/2.0f);
@@ -31,31 +36,28 @@ class
     //load player statuses
     int buffer_space_x = 15;
     int buffer_space_y = 5;
-    x.player1_status.setString("Player 1 Not Connected");
-    x.player1_status.setFont(x.main_font);
+    x.player1_status.setString("Player 1 not connected");
+    x.player1_status.setFont(x.sub_font);
     x.player1_status.setCharacterSize(50);
     x.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
     
-    x.player2_status.setString("Player 2 Not Connected");
-    x.player2_status.setFont(x.main_font);
+    x.player2_status.setString("Player 2 not connected");
+    x.player2_status.setFont(x.sub_font);
     x.player2_status.setCharacterSize(50);
     x.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(x.player2_status.getLocalBounds().left
                                 + x.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
     
     
     //load sounds
-    Load_Sound(x.snd_selection,"/home/laptop/Desktop/math_game/snd/select.ogg");
+    Load_Sound(x.snd_selection,"/home/laptop/Desktop/math_game/snd/chalk_hit.ogg");
+    Load_Sound(x.snd_select_back,"/home/laptop/Desktop/math_game/snd/erase.ogg");
+    
+    x.mus_main = std::make_shared<sf::Music>();
+    Load_Music(*x.mus_main,"/home/laptop/Desktop/math_game/snd/chrono_song.ogg");
+    x.mus_main->play();
+    
     
     return x;
-
-
-    // sf::Texture texture;
-    // if (!texture.loadFromFile("/home/laptop/Desktop/bg.png"))
-    // {
-    //     std::cerr << "failed to load texture" << std::endl;
-    //     exit(0);
-    // }
-    // sf::Sprite sprite(texture);
     
     
     //penguin
@@ -125,6 +127,12 @@ class
         exit(0);
     }
     s.sound.setBuffer(s.buffer);
+❱
+◀private: static▶ void ☀Load_Music(sf::Music & mus, std::string const& file_name)❰
+    if (!mus.openFromFile(file_name)){
+        std::cerr << "failed to load " << file_name << std::endl;
+        exit(0);
+    }
 ❱
 
 ◀private: static▶ void ☀Make_Sprite_Fullscreen(Textured_Sprite & ts, sf::RenderWindow const& window)❰
