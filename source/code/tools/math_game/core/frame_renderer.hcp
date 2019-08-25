@@ -18,14 +18,47 @@ class
 
     window.clear(sf::Color(50, 127, 168));
     
+    
+    //make decisions based on user action
     state.joycons_current = Joycon_State_Getter::Get();
     
+    bool redraw_status = false;
     
-    //decide the connection status
+    //is player 1 ready?
+    if (state.joycons_current.left.right && !state.player1_ready){
+        state.player1_ready = true;
+        redraw_status = true;
+        assets.snd_selection.sound.play();
+    }
+    if (state.joycons_current.left.left && state.player1_ready){
+        state.player1_ready = false;
+        redraw_status = true;
+        assets.snd_selection.sound.play();
+    }
+    
+    //is player 2 ready?
+    if (state.joycons_current.right.right && !state.player2_ready){
+        state.player2_ready = true;
+        redraw_status = true;
+        assets.snd_selection.sound.play();
+    }
+    if (state.joycons_current.right.left && !state.player2_ready){
+        state.player2_ready = false;
+        redraw_status = true;
+        assets.snd_selection.sound.play();
+    }
+    
+    //are the joycons connected?
     bool player1_status_changed = state.joycons_current.left.active != state.joycons_previous.left.active;
     bool player2_status_changed = state.joycons_current.right.active != state.joycons_previous.right.active;
     if (player1_status_changed || player2_status_changed){
-        Set_Connection_Status(state.joycons_current,assets);
+        redraw_status = true;
+    }
+    
+    
+    //show status
+    if (redraw_status){
+        Set_Connection_Status(state,assets);
     }
     
     window.draw(assets.main_bg.sprite);
@@ -38,17 +71,11 @@ class
     //window.draw(assets.player1_mouse);
     //window.draw(assets.player2_mouse);
     
-    if (state.joycons_current.left.right){
-            std::cout << "sfsdf" << std::endl;
-            assets.snd_selection.sound.play();
-    }
     
     //decide whether to leave main screen
     if (state.joycons_current.left.active && state.joycons_current.right.active){
         if (state.joycons_current.left.right ||state.joycons_current.right.right){
-            //exit(0);
-            std::cout << "sfsdf" << std::endl;
-            assets.snd_selection.sound.play();
+            exit(0);
         }
     }
     
@@ -59,20 +86,30 @@ class
 
 
 
-◀private: static▶ void ☀Set_Connection_Status(Joycons const& joys, Assets & assets)❰
+◀private: static▶ void ☀Set_Connection_Status(Game_State const& state, Assets & assets)❰
 
-    if (!joys.left.active){
+    if (!state.joycons_current.left.active){
         assets.player1_status.setString("Player 1 Not Connected");
     }
     else{
-        assets.player1_status.setString("Player 1 Connected");
+        if (state.player1_ready){
+            assets.player1_status.setString("Player 1 READY");
+        }
+        else{
+            assets.player1_status.setString("Player 1 Connected");
+        }
     }
     
-    if (!joys.right.active){
+    if (!state.joycons_current.right.active){
         assets.player2_status.setString("Player 2 Not Connected");
     }
     else{
-        assets.player2_status.setString("Player 2 Connected");
+        if (state.player2_ready){
+            assets.player2_status.setString("Player 2 READY");
+        }
+        else{
+            assets.player2_status.setString("Player 2 Connected");
+        }
     }
     
     int buffer_space_x = 15;
