@@ -150,9 +150,9 @@ int main()
     //Sometimes setVerticalSyncEnabled will have no effect:
     //this is most likely because vertical synchronization is forced to "off" in your graphics driver's settings.
     //It should be set to "controlled by application" instead.
-    //window.setVerticalSyncEnabled(true);
+    window.setVerticalSyncEnabled(true);
     
-    window.setFramerateLimit(60);
+    //window.setFramerateLimit(60);
     
     auto assets = Assets_Loader::Load(window);
     Game_State state;
