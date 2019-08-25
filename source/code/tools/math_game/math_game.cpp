@@ -62,10 +62,6 @@ void Handle_Events(sf::RenderWindow & window){
 int main()
 {
     
-    std::cout << sf::VideoMode::getDesktopMode().width << std::endl;
-    std::cout << sf::VideoMode::getDesktopMode().height << std::endl;
-    std::cout << sf::VideoMode::getDesktopMode().bitsPerPixel << std::endl;
-    
     //Create the main window.
     //note: if you do a bad (possibly unsupported resolution), it will go fullscreen but freeze
     //and then you have just a black screen and you have to restart the machine.
@@ -95,8 +91,6 @@ int main()
         exit(0);
     }
     sf::Sprite sprite(texture);
-    std::cout << texture.getSize().x << std::endl;
-    std::cout << texture.getSize().y << std::endl;
 
     // run the program as long as the window is open
     while (window.isOpen())
