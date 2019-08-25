@@ -6,15 +6,19 @@
 #include <SFML/Graphics.hpp>
 #include "code/utilities/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/json/functions/lib.hpp"
+#include "code/tools/math_game/assets/assets_loader.hpp"
 
-void Frame_Logic(sf::RenderWindow & window, sf::Sprite & sprite){
+void Frame_Logic(sf::RenderWindow & window, Assets & assets){
     
     window.clear(sf::Color(50, 127, 168));
     
     // auto joys = Joycon_State_Getter::Get();
     // std::cout << As_JSON_String(joys) << std::endl;
     //texture.update(window,0,0);
-    window.draw(sprite);
+    //window.draw(sprite);
+    
+    window.draw(assets.main_bg.sprite);
+    window.draw(assets.title_text);
     
     window.display();
 }
@@ -52,8 +56,7 @@ void Handle_Events(sf::RenderWindow & window){
                 break;
 
             // we don't process other types of events
-            default:
-                break;
+            default: break;
         }
     }
 }
@@ -84,19 +87,13 @@ int main()
     //It should be set to "controlled by application" instead.
     window.setVerticalSyncEnabled(true);
     
-    sf::Texture texture;
-    if (!texture.loadFromFile("/home/laptop/Desktop/bg.png"))
-    {
-        std::cerr << "failed to load texture" << std::endl;
-        exit(0);
-    }
-    sf::Sprite sprite(texture);
+    auto assets = Assets_Loader::Load(window);
 
     // run the program as long as the window is open
     while (window.isOpen())
     {
         Handle_Events(window);
-        Frame_Logic(window,sprite);
+        Frame_Logic(window,assets);
     }
 
     return 0;

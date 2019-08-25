@@ -1,8 +1,37 @@
 class
+❪string❫
+❪iostream❫
+❪"code/tools/math_game/assets/assets"❫
+❪SFML/Window.hpp❫
 ⚯
 ⚞⚟
 
-◀public: static▶ void ☀Load() ❰
+◀public: static▶ Assets ☀Load(sf::RenderWindow const& window) ❰
+    Assets x;
+    
+    //load title text
+    Load_Font(x.main_font,"/home/laptop/Desktop/math_game/fonts/Archistico_Bold.ttf");
+    x.title_text.setString("Math Game");
+    x.title_text.setFont(x.main_font);
+    x.title_text.setCharacterSize(100);
+    x.title_text.setPosition(sf::VideoMode::getDesktopMode().width/2.0f,sf::VideoMode::getDesktopMode().height/2.0f);
+    x.title_text.setOrigin(x.title_text.getLocalBounds().left/2.0f,x.title_text.getLocalBounds().top/2.0f);
+    x.title_text.setOrigin(x.title_text.getLocalBounds().left + x.title_text.getLocalBounds().width / 2.0f, x.title_text.getLocalBounds().top + x.title_text.getLocalBounds().height / 2.0f);
+    
+    //load background
+    Load_Textured_Sprite(x.main_bg,"/home/laptop/Desktop/math_game/img/chalkboard_bg.jpg");
+    x.main_bg.sprite.setPosition(0,0);
+    
+    return x;
+
+
+    // sf::Texture texture;
+    // if (!texture.loadFromFile("/home/laptop/Desktop/bg.png"))
+    // {
+    //     std::cerr << "failed to load texture" << std::endl;
+    //     exit(0);
+    // }
+    // sf::Sprite sprite(texture);
     
     
     //penguin
@@ -51,4 +80,28 @@ class
         //play again
         //back to game type select
     
+❱
+
+◀private: static▶ void ☀Load_Font(sf::Font & font, std::string const& file_name)❰
+    if (!font.loadFromFile(file_name)){
+        std::cerr << "failed to load " << file_name << std::endl;
+        exit(0);
+    }
+❱
+◀private: static▶ void ☀Load_Textured_Sprite(Textured_Sprite & ts, std::string const& file_name)❰
+    if (!ts.texture.loadFromFile(file_name)){
+        std::cerr << "failed to load " << file_name << std::endl;
+        exit(0);
+    }
+    ts.sprite.setTexture(ts.texture);
+❱
+◀private: static▶ void ☀Make_Sprite_Fullscreen(Textured_Sprite & ts, sf::RenderWindow const& window)❰
+
+    auto TextureSize = ts.texture.getSize(); //Get size of texture.
+    auto WindowSize = window.getSize();             //Get size of window.
+
+    float ScaleX = (float) WindowSize.x / TextureSize.x;
+    float ScaleY = (float) WindowSize.y / TextureSize.y;     //Calculate scale.
+    
+    ts.sprite.setScale(ScaleX, ScaleY);
 ❱
