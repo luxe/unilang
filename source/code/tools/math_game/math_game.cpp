@@ -3,17 +3,20 @@
 #include <vector>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window.hpp>
+#include <SFML/Graphics.hpp>
 #include "code/utilities/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/json/functions/lib.hpp"
 
-void Main_Logic(){
-    //std::cout << "sdfsdf" << std::endl;
-        // auto joys = Joycon_State_Getter::Get();
-        // std::cout << As_JSON_String(joys) << std::endl;
+void Frame_Logic(sf::RenderWindow & window, sf::Sprite & sprite){
     
-    // if (clock.getElapsedTime().asSeconds() > 10){
-    //     exit(0);
-    // }
+    window.clear(sf::Color(50, 127, 168));
+    
+    // auto joys = Joycon_State_Getter::Get();
+    // std::cout << As_JSON_String(joys) << std::endl;
+    //texture.update(window,0,0);
+    window.draw(sprite);
+    
+    window.display();
 }
 
 
@@ -29,7 +32,7 @@ void Print_All_Video_Modes(){
     }
 }
 
-void Handle_Events(sf::Window & window){
+void Handle_Events(sf::RenderWindow & window){
     // check all the window's events that were triggered since the last iteration of the loop
     sf::Event event;
     while (window.pollEvent(event))
@@ -59,6 +62,10 @@ void Handle_Events(sf::Window & window){
 int main()
 {
     
+    std::cout << sf::VideoMode::getDesktopMode().width << std::endl;
+    std::cout << sf::VideoMode::getDesktopMode().height << std::endl;
+    std::cout << sf::VideoMode::getDesktopMode().bitsPerPixel << std::endl;
+    
     //Create the main window.
     //note: if you do a bad (possibly unsupported resolution), it will go fullscreen but freeze
     //and then you have just a black screen and you have to restart the machine.
@@ -66,7 +73,7 @@ int main()
     //But I can't even go to a different ubuntu session.  I couldn't figure out anything but
     //restarting the machine.  Not good.  Probably the best thing to do, is go with the desktop mode for now.
     //Another idea would be to make sure the desired resolution is supported by the machine.
-    sf::Window window(sf::VideoMode::getDesktopMode(), "Math Game",sf::Style::Fullscreen);
+    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Math Game",sf::Style::Fullscreen);
     
     //avoid graphics tearing
     //Sometimes, when your application runs fast, you may notice visual artifacts such as tearing.
@@ -80,14 +87,42 @@ int main()
     //this is most likely because vertical synchronization is forced to "off" in your graphics driver's settings.
     //It should be set to "controlled by application" instead.
     window.setVerticalSyncEnabled(true);
+    
+    sf::Texture texture;
+    if (!texture.loadFromFile("/home/laptop/Desktop/bg.png"))
+    {
+        std::cerr << "failed to load texture" << std::endl;
+        exit(0);
+    }
+    sf::Sprite sprite(texture);
+    std::cout << texture.getSize().x << std::endl;
+    std::cout << texture.getSize().y << std::endl;
 
     // run the program as long as the window is open
     while (window.isOpen())
     {
-        
         Handle_Events(window);
-        Main_Logic();
+        Frame_Logic(window,sprite);
     }
 
     return 0;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
