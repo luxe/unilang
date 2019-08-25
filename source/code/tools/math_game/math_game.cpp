@@ -12,13 +12,32 @@ void Frame_Logic(sf::RenderWindow & window, Assets & assets){
     
     window.clear(sf::Color(50, 127, 168));
     
-    // auto joys = Joycon_State_Getter::Get();
+    auto joys = Joycon_State_Getter::Get();
+    
+    if (!joys.left.active){
+        assets.player1_status.setString("Player 1 Not Connected");
+    }
+    else{
+        assets.player1_status.setString("Player 1 Connected");
+    }
+    
+    if (!joys.right.active){
+        assets.player2_status.setString("Player 2 Not Connected");
+    }
+    else{
+        assets.player2_status.setString("Player 2 Connected");
+    }
+    
+    
     // std::cout << As_JSON_String(joys) << std::endl;
     //texture.update(window,0,0);
     //window.draw(sprite);
     
     window.draw(assets.main_bg.sprite);
     window.draw(assets.title_text);
+    
+    window.draw(assets.player1_status);
+    window.draw(assets.player2_status);
     
     window.display();
 }
