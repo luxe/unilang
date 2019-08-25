@@ -44,5 +44,6 @@ cc_library(
         "@stb//:stb",
         "@freetype2//:freetype2",
     ],
-    copts = ["-UNone"]
+    copts = ["-UNone"],
+    linkopts = ["-lopenal","-lFLAC","-lvorbis", "-lvorbisenc","-logg","-lvorbisfile"]
 )

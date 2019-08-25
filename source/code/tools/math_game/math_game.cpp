@@ -9,96 +9,7 @@
 #include "code/utilities/json/functions/lib.hpp"
 #include "code/tools/math_game/assets/assets_loader.hpp"
 #include "code/tools/math_game/state/game_state.hpp"
-
-void Set_Connection_Status(Joycons const& joys, Assets & assets){
-
-    if (!joys.left.active){
-        assets.player1_status.setString("Player 1 Not Connected");
-    }
-    else{
-        assets.player1_status.setString("Player 1 Connected");
-    }
-    
-    if (!joys.right.active){
-        assets.player2_status.setString("Player 2 Not Connected");
-    }
-    else{
-        assets.player2_status.setString("Player 2 Connected");
-    }
-    
-    int buffer_space_x = 15;
-    int buffer_space_y = 5;
-    assets.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
-    assets.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(assets.player2_status.getLocalBounds().left + assets.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
-}
-
-void Move_Cursors(Joycons const& joys, Assets & assets){
-    
-    int speed = 10;
-    if (joys.left.joystick.left){
-        assets.player1_mouse.move(speed * -1,0);
-    }
-    if (joys.left.joystick.right){
-        assets.player1_mouse.move(speed,0);
-    }
-    if (joys.left.joystick.up){
-        assets.player1_mouse.move(0,speed * -1);
-    }
-    if (joys.left.joystick.down){
-        assets.player1_mouse.move(0,speed);
-    }
-    
-    if (joys.right.joystick.left){
-        assets.player2_mouse.move(speed * -1,0);
-    }
-    if (joys.right.joystick.right){
-        assets.player2_mouse.move(speed,0);
-    }
-    if (joys.right.joystick.up){
-        assets.player2_mouse.move(0,speed * -1);
-    }
-    if (joys.right.joystick.down){
-        assets.player2_mouse.move(0,speed);
-    }
-}
-
-void Frame_Logic(sf::RenderWindow & window, Game_State & state, Assets & assets){
-    
-    window.clear(sf::Color(50, 127, 168));
-    
-    state.joycons_current = Joycon_State_Getter::Get();
-    
-    
-    //decide the connection status
-    bool player1_status_changed = state.joycons_current.left.active != state.joycons_previous.left.active;
-    bool player2_status_changed = state.joycons_current.right.active != state.joycons_previous.right.active;
-    if (player1_status_changed || player2_status_changed){
-        Set_Connection_Status(state.joycons_current,assets);
-    }
-    
-    
-    Move_Cursors(state.joycons_current,assets);
-    
-    window.draw(assets.main_bg.sprite);
-    window.draw(assets.title_text);
-    
-    window.draw(assets.player1_status);
-    window.draw(assets.player2_status);
-    
-    window.draw(assets.player1_mouse);
-    window.draw(assets.player2_mouse);
-    
-    //decide whether to leave main screen
-    if (state.joycons_current.left.active && state.joycons_current.right.active){
-        if (state.joycons_current.left.right ||state.joycons_current.right.right){
-            exit(0);
-        }
-    }
-    
-    state.joycons_previous = state.joycons_current;
-    
-    window.display();
-}
+#include "code/tools/math_game/core/frame_renderer.hpp"
 
 
 
@@ -140,7 +51,6 @@ void Handle_Events(sf::RenderWindow & window){
     }
 }
 
-
 int main()
 {
     
@@ -175,7 +85,7 @@ int main()
     while (window.isOpen())
     {
         Handle_Events(window);
-        Frame_Logic(window,state,assets);
+        Frame_Renderer::Run_Frame(window,state,assets);
     }
 
     return 0;

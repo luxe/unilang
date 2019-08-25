@@ -1,0 +1,113 @@
+class
+❪string❫
+❪iostream❫
+❪vector❫
+❪"code/tools/math_game/assets/assets"❫
+❪SFML/Window.hpp❫
+❪SFML/Window/Joystick.hpp❫
+❪SFML/Graphics.hpp❫
+❪SFML/Graphics/Transformable.hpp❫
+❪"code/utilities/keyboard/joycons/joycon_state_getter"❫
+❪"code/utilities/json/functions/lib"❫
+❪"code/tools/math_game/assets/assets_loader"❫
+❪"code/tools/math_game/state/game_state"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Run_Frame(sf::RenderWindow & window, Game_State & state, Assets & assets) ❰
+
+    window.clear(sf::Color(50, 127, 168));
+    
+    state.joycons_current = Joycon_State_Getter::Get();
+    
+    
+    //decide the connection status
+    bool player1_status_changed = state.joycons_current.left.active != state.joycons_previous.left.active;
+    bool player2_status_changed = state.joycons_current.right.active != state.joycons_previous.right.active;
+    if (player1_status_changed || player2_status_changed){
+        Set_Connection_Status(state.joycons_current,assets);
+    }
+    
+    window.draw(assets.main_bg.sprite);
+    window.draw(assets.title_text);
+    
+    window.draw(assets.player1_status);
+    window.draw(assets.player2_status);
+    
+    //Move_Cursors(state.joycons_current,assets);
+    //window.draw(assets.player1_mouse);
+    //window.draw(assets.player2_mouse);
+    
+    if (state.joycons_current.left.right){
+            std::cout << "sfsdf" << std::endl;
+            assets.snd_selection.sound.play();
+    }
+    
+    //decide whether to leave main screen
+    if (state.joycons_current.left.active && state.joycons_current.right.active){
+        if (state.joycons_current.left.right ||state.joycons_current.right.right){
+            //exit(0);
+            std::cout << "sfsdf" << std::endl;
+            assets.snd_selection.sound.play();
+        }
+    }
+    
+    state.joycons_previous = state.joycons_current;
+    
+    window.display();
+❱
+
+
+
+◀private: static▶ void ☀Set_Connection_Status(Joycons const& joys, Assets & assets)❰
+
+    if (!joys.left.active){
+        assets.player1_status.setString("Player 1 Not Connected");
+    }
+    else{
+        assets.player1_status.setString("Player 1 Connected");
+    }
+    
+    if (!joys.right.active){
+        assets.player2_status.setString("Player 2 Not Connected");
+    }
+    else{
+        assets.player2_status.setString("Player 2 Connected");
+    }
+    
+    int buffer_space_x = 15;
+    int buffer_space_y = 5;
+    assets.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
+    assets.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(assets.player2_status.getLocalBounds().left
+                                                                             +assets.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
+❱
+
+◀private: static▶ void ☀Move_Cursors(Joycons const& joys, Assets & assets)❰
+    
+    int speed = 10;
+    if (joys.left.joystick.left){
+        assets.player1_mouse.move(speed * -1,0);
+    }
+    if (joys.left.joystick.right){
+        assets.player1_mouse.move(speed,0);
+    }
+    if (joys.left.joystick.up){
+        assets.player1_mouse.move(0,speed * -1);
+    }
+    if (joys.left.joystick.down){
+        assets.player1_mouse.move(0,speed);
+    }
+    
+    if (joys.right.joystick.left){
+        assets.player2_mouse.move(speed * -1,0);
+    }
+    if (joys.right.joystick.right){
+        assets.player2_mouse.move(speed,0);
+    }
+    if (joys.right.joystick.up){
+        assets.player2_mouse.move(0,speed * -1);
+    }
+    if (joys.right.joystick.down){
+        assets.player2_mouse.move(0,speed);
+    }
+❱
