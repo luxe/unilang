@@ -8,6 +8,7 @@
 #include "code/utilities/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/json/functions/lib.hpp"
 #include "code/tools/math_game/assets/assets_loader.hpp"
+#include "code/tools/math_game/state/game_state.hpp"
 
 void Set_Connection_Status(Joycons const& joys, Assets & assets){
 
@@ -33,13 +34,13 @@ void Set_Connection_Status(Joycons const& joys, Assets & assets){
 
 void Move_Cursors(Joycons const& joys, Assets & assets){
     
-    int speed = 20;
+    int speed = 10;
     if (joys.left.joystick.left){
         assets.player1_mouse.move(speed * -1,0);
     }
-    //if (joys.left.joystick.right){
+    if (joys.left.joystick.right){
         assets.player1_mouse.move(speed,0);
-    //}
+    }
     if (joys.left.joystick.up){
         assets.player1_mouse.move(0,speed * -1);
     }
@@ -48,20 +49,24 @@ void Move_Cursors(Joycons const& joys, Assets & assets){
     }
 }
 
-void Frame_Logic(sf::RenderWindow & window, Assets & assets){
+void Frame_Logic(sf::RenderWindow & window, Game_State & state, Assets & assets){
     
     window.clear(sf::Color(50, 127, 168));
     
-    auto joys = Joycon_State_Getter::Get();
-    Set_Connection_Status(joys,assets);
-    Move_Cursors(joys,assets);
+    state.joycons_current = Joycon_State_Getter::Get();
     
     
-    // std::cout << As_JSON_String(joys) << std::endl;
-    //texture.update(window,0,0);
-    //window.draw(sprite);
+    //decide the connection status
+    bool player1_status_changed = state.joycons_current.left.active != state.joycons_previous.left.active;
+    bool player2_status_changed = state.joycons_current.right.active != state.joycons_previous.right.active;
+    if (player1_status_changed || player2_status_changed){
+        Set_Connection_Status(state.joycons_current,assets);
+    }
     
-    //window.draw(assets.main_bg.sprite);
+    
+    Move_Cursors(state.joycons_current,assets);
+    
+    window.draw(assets.main_bg.sprite);
     window.draw(assets.title_text);
     
     window.draw(assets.player1_status);
@@ -70,11 +75,13 @@ void Frame_Logic(sf::RenderWindow & window, Assets & assets){
     window.draw(assets.player1_mouse);
     
     //decide whether to leave main screen
-    if (joys.left.active && joys.right.active){
-        if (joys.left.right || joys.right.right){
+    if (state.joycons_current.left.active && state.joycons_current.right.active){
+        if (state.joycons_current.left.right ||state.joycons_current.right.right){
             exit(0);
         }
     }
+    
+    state.joycons_previous = state.joycons_current;
     
     window.display();
 }
@@ -145,15 +152,16 @@ int main()
     //It should be set to "controlled by application" instead.
     //window.setVerticalSyncEnabled(true);
     
-    //window.setFramerateLimit(200);
+    window.setFramerateLimit(60);
     
     auto assets = Assets_Loader::Load(window);
+    Game_State state;
 
     // run the program as long as the window is open
     while (window.isOpen())
     {
         Handle_Events(window);
-        Frame_Logic(window,assets);
+        Frame_Logic(window,state,assets);
     }
 
     return 0;

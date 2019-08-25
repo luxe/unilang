@@ -11,6 +11,7 @@ cc_binary(
     "//code/utilities/keyboard/joycons:joycons",
     "//code/utilities/keyboard/joycons:joycon_state_getter",
     "//code/tools/math_game/assets:assets_loader",
+    "//code/tools/math_game/state:game_state",
     "@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
    linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
 )
