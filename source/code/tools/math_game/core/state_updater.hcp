@@ -29,6 +29,20 @@ class
     state.joycons_previous = state.joycons_current;
 ❱
 
+◀public:
+template <typename Fun>
+static void Timer_Transition(Transition_Clock & x, Fun fun){
+    if (!x.is_transitioning){
+        x.is_transitioning = true;
+        x.clock.restart();
+    }
+    if (x.is_transitioning && x.clock.getElapsedTime().asMilliseconds() > x.transition_duration_ms){
+        fun();
+        x.is_transitioning = false;
+    }
+}
+▶
+
 ◀private: static▶ void ☀Handle_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
 
         Handle_Player_Status(state,assets);
@@ -38,14 +52,9 @@ class
         //decide whether to leave main screen
         if (state.player1_ready && state.player2_ready){
             
-            if (!state.transitioning_clock){
-                state.transitioning_clock = true;
-                state.next_page_clock.restart();
-            }
-            
-            if (state.transitioning_clock && state.next_page_clock.getElapsedTime().asSeconds() > 1){
+            Timer_Transition(state.transition_clock,[&](){
                 state.screen = Current_Screen::CHARACTER_SELECT;
-            }
+            });
         }
 ❱
 
