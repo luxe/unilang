@@ -14,21 +14,6 @@
 #include "code/tools/math_game/core/frame_renderer.hpp"
 #include "code/tools/math_game/core/state_updater.hpp"
 
-
-
-
-void Print_All_Video_Modes(){
-    // Display the list of all the video modes available for fullscreen
-    std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
-    for (std::size_t i = 0; i < modes.size(); ++i)
-    {
-        sf::VideoMode mode = modes[i];
-        std::cout << "Mode #" << i << ": "
-                  << mode.width << "x" << mode.height << " - "
-                  << mode.bitsPerPixel << " bpp" << std::endl;
-    }
-}
-
 void Handle_Events(sf::RenderWindow & window){
     
     // check all the window's events that were triggered since the last iteration of the loop
