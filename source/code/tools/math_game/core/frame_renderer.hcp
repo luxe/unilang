@@ -23,8 +23,28 @@ class
     state.joycons_current = Joycon_State_Getter::Get();
     
     
+    
+    
     if (state.screen == Current_Screen::MAIN){
-        
+        Draw_Main(window,state,assets);
+    }
+    else if (state.screen == Current_Screen::CHARACTER_SELECT){
+        Draw_Character_Select(window,state,assets);
+    }
+    
+    state.joycons_previous = state.joycons_current;
+    
+    window.display();
+❱
+
+
+
+◀private: static▶ void ☀Draw_Character_Select(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+❱
+
+
+◀private: static▶ void ☀Draw_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+
         Handle_Player_Status(state,assets);
         
         //draw everything
@@ -40,13 +60,16 @@ class
         
         //decide whether to leave main screen
         if (state.player1_ready && state.player2_ready){
-            state.screen = Current_Screen::CHARACTER_SELECT;
+            
+            if (!state.transitioning_clock){
+                state.transitioning_clock = true;
+                state.next_page_clock.restart();
+            }
+            
+            if (state.transitioning_clock && state.next_page_clock.getElapsedTime().asSeconds() > 1){
+                state.screen = Current_Screen::CHARACTER_SELECT;
+            }
         }
-    }
-    
-    state.joycons_previous = state.joycons_current;
-    
-    window.display();
 ❱
 
 ◀private: static▶ void ☀Handle_Player_Status(Game_State & state, Assets & assets)❰
@@ -94,40 +117,41 @@ class
 ◀private: static▶ void ☀Set_Connection_Status(Game_State const& state, Assets & assets)❰
 
     if (!state.joycons_current.left.active){
-        assets.player1_status.setString("Player 1 not connected");
+        assets.player1_status.setString("PLAYER 1 ...");
         assets.player1_status.setFillColor(sf::Color::Red);
     }
     else{
         if (state.player1_ready){
-            assets.player1_status.setString("Player 1 READY");
+            assets.player1_status.setString("PLAYER 1    READY");
             assets.player1_status.setFillColor(sf::Color::White);
         }
         else{
-            assets.player1_status.setString("Player 1 connected");
+            assets.player1_status.setString("PLAYER 1 ...");
             assets.player1_status.setFillColor(sf::Color::White);
         }
     }
     
     if (!state.joycons_current.right.active){
-        assets.player2_status.setString("Player 2 not connected");
+        assets.player2_status.setString("PLAYER 2 ...");
         assets.player2_status.setFillColor(sf::Color::Red);
     }
     else{
         if (state.player2_ready){
-            assets.player2_status.setString("Player 2 READY");
+            assets.player2_status.setString("PLAYER 2    READY");
             assets.player2_status.setFillColor(sf::Color::White);
         }
         else{
-            assets.player2_status.setString("Player 2 connected");
+            assets.player2_status.setString("PLAYER 2 ...");
             assets.player2_status.setFillColor(sf::Color::White);
         }
     }
     
-    int buffer_space_x = 15;
-    int buffer_space_y = 5;
-    assets.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
-    assets.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(assets.player2_status.getLocalBounds().left
-                                                                             +assets.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
+    //reposition to center
+    // int buffer_space_x = 15;
+    // int buffer_space_y = 5;
+    // assets.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
+    // assets.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(assets.player2_status.getLocalBounds().left
+    //                                                                          +assets.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
 ❱
 
 ◀private: static▶ void ☀Move_Cursors(Joycons const& joys, Assets & assets)❰

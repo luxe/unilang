@@ -15,7 +15,8 @@ enum_cpp(
 
 hcp(name = "game_state", deps = [
     "//code/utilities/keyboard/joycons:joycons",
-    "//code/tools/math_game/state:current_screen"
+    "//code/tools/math_game/state:current_screen",
+    "@sfml//:sfml",
 ])
 
 hcp(name = "game_state_getter", deps = [
