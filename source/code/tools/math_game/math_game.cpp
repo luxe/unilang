@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <memory>
 #include <SFML/Window/Joystick.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -28,18 +29,20 @@ void Print_All_Video_Modes(){
 }
 
 void Handle_Events(sf::RenderWindow & window){
+    
     // check all the window's events that were triggered since the last iteration of the loop
     sf::Event event;
     while (window.pollEvent(event))
     {
-        
         switch(event.type){
-           // window closed
+            
+            
+           // window closed (probably not relevant for fullscreen)
             case sf::Event::Closed:
                 window.close();
                 break;
 
-            // key pressed
+            // window closed because of a key press
             case sf::Event::KeyPressed:
                 if (event.key.code == sf::Keyboard::Escape){
                     window.close();
@@ -52,8 +55,7 @@ void Handle_Events(sf::RenderWindow & window){
     }
 }
 
-int main()
-{
+std::unique_ptr<sf::RenderWindow> Create_Render_Window(){
     
     //Create the main window.
     //note: if you do a bad (possibly unsupported resolution), it will go fullscreen but freeze
@@ -62,7 +64,7 @@ int main()
     //But I can't even go to a different ubuntu session.  I couldn't figure out anything but
     //restarting the machine.  Not good.  Probably the best thing to do, is go with the desktop mode for now.
     //Another idea would be to make sure the desired resolution is supported by the machine.
-    sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Math Game",sf::Style::Fullscreen);
+    auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Math Game",sf::Style::Fullscreen);
     
     //avoid graphics tearing
     //Sometimes, when your application runs fast, you may notice visual artifacts such as tearing.
@@ -75,18 +77,35 @@ int main()
     //Sometimes setVerticalSyncEnabled will have no effect:
     //this is most likely because vertical synchronization is forced to "off" in your graphics driver's settings.
     //It should be set to "controlled by application" instead.
-    window.setVerticalSyncEnabled(true);
+    window->setVerticalSyncEnabled(true);
     
     //window.setFramerateLimit(60);
     
-    auto assets = Assets_Loader::Load(window);
+    return window;
+}
+
+int main()
+{
+    
+    //get the rendering window
+    auto window = Create_Render_Window();
+    
+    auto assets = Assets_Loader::Load(*window);
     Game_State state = Game_State_Getter::Get();
 
     // run the program as long as the window is open
-    while (window.isOpen())
+    sf::Clock clock;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
+    while (window->isOpen())
     {
-        Handle_Events(window);
-        Frame_Renderer::Run_Frame(window,state,assets);
+        timeSinceLastUpdate += clock.restart();
+        while (timeSinceLastUpdate > TimePerFrame){
+            timeSinceLastUpdate -= TimePerFrame;
+            Handle_Events(*window);
+            Frame_Renderer::Run_Frame_Logic(*window,TimePerFrame,state,assets);
+        }
+        Frame_Renderer::Run_Frame_Render(*window,state,assets);
     }
 
     return 0;
@@ -101,7 +120,26 @@ int main()
 
 
 
-
+//from book:
+/*
+const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
+void Game::run()
+{
+    sf::Clock clock;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    while (mWindow.isOpen())
+    {
+        processEvents();
+        timeSinceLastUpdate += clock.restart();
+        while (timeSinceLastUpdate > TimePerFrame)
+        {
+            timeSinceLastUpdate -= TimePerFrame;
+            processEvents();
+            update(TimePerFrame);
+        }
+    render();
+}
+*/
 
 
 

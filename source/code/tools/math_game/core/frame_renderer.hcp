@@ -14,16 +14,23 @@ class
 ⚯
 ⚞⚟
 
-◀public: static▶ void ☀Run_Frame(sf::RenderWindow & window, Game_State & state, Assets & assets) ❰
-
-    window.clear(sf::Color(50, 127, 168));
-    
+◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
     
     //make decisions based on user action
     state.joycons_current = Joycon_State_Getter::Get();
     
+    if (state.screen == Current_Screen::MAIN){
+        Handle_Main(window,state,assets);
+    }
+    else if (state.screen == Current_Screen::CHARACTER_SELECT){
+        Handle_Character_Select(window,state,assets);
+    }
     
-    
+    state.joycons_previous = state.joycons_current;
+❱
+
+◀public: static▶ void ☀Run_Frame_Render(sf::RenderWindow & window, Game_State & state, Assets & assets) ❰
+    window.clear(sf::Color(50, 127, 168));
     
     if (state.screen == Current_Screen::MAIN){
         Draw_Main(window,state,assets);
@@ -32,31 +39,24 @@ class
         Draw_Character_Select(window,state,assets);
     }
     
-    state.joycons_previous = state.joycons_current;
-    
     window.display();
 ❱
 
 
 
+
+
+◀private: static▶ void ☀Handle_Character_Select(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+❱
+
 ◀private: static▶ void ☀Draw_Character_Select(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
 ❱
 
-
-◀private: static▶ void ☀Draw_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+◀private: static▶ void ☀Handle_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
 
         Handle_Player_Status(state,assets);
         
-        //draw everything
-        window.draw(assets.main_bg.sprite);
-        window.draw(assets.title_text);
-        window.draw(assets.player1_status);
-        window.draw(assets.player2_status);
-        
         //Move_Cursors(state.joycons_current,assets);
-        //window.draw(assets.player1_mouse);
-        //window.draw(assets.player2_mouse);
-        
         
         //decide whether to leave main screen
         if (state.player1_ready && state.player2_ready){
@@ -70,6 +70,18 @@ class
                 state.screen = Current_Screen::CHARACTER_SELECT;
             }
         }
+❱
+
+◀private: static▶ void ☀Draw_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+        
+        //draw everything
+        window.draw(assets.main_bg.sprite);
+        window.draw(assets.title_text);
+        window.draw(assets.player1_status);
+        window.draw(assets.player2_status);
+
+        //window.draw(assets.player1_mouse);
+        //window.draw(assets.player2_mouse);
 ❱
 
 ◀private: static▶ void ☀Handle_Player_Status(Game_State & state, Assets & assets)❰
