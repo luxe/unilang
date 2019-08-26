@@ -9,10 +9,16 @@ hcp(name = "sound", deps = [
     "@sfml//:sfml"
 ])
 
+hcp(name = "title_screen_assets", deps = [
+    "//code/tools/math_game/assets:textured_sprite",
+    "//code/tools/math_game/assets:sound",
+    "@sfml//:sfml",
+])
 
 hcp(name = "assets", deps = [
     "//code/tools/math_game/assets:textured_sprite",
     "//code/tools/math_game/assets:sound",
+    "//code/tools/math_game/assets:title_screen_assets",
     "@sfml//:sfml",
 ])
 
