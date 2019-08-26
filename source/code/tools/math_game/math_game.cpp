@@ -79,6 +79,7 @@ std::unique_ptr<sf::RenderWindow> Create_Render_Window(){
     //It should be set to "controlled by application" instead.
     window->setVerticalSyncEnabled(true);
     
+    //WARNING: setVerticalSync and set FrameLimit SHOULD NOT be mixed.
     //window.setFramerateLimit(60);
     
     return window;
@@ -90,10 +91,13 @@ int main()
     //get the rendering window
     auto window = Create_Render_Window();
     
+    //get all the assets and game state
     auto assets = Assets_Loader::Load(*window);
     Game_State state = Game_State_Getter::Get();
 
     // run the program as long as the window is open
+    // this is a common game loop and it was taken
+    // from the SFML Game Development Book.
     sf::Clock clock;
     sf::Time timeSinceLastUpdate = sf::Time::Zero;
     const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
@@ -110,41 +114,5 @@ int main()
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-//from book:
-/*
-const sf::Time Game::TimePerFrame = sf::seconds(1.f/60.f);
-void Game::run()
-{
-    sf::Clock clock;
-    sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    while (mWindow.isOpen())
-    {
-        processEvents();
-        timeSinceLastUpdate += clock.restart();
-        while (timeSinceLastUpdate > TimePerFrame)
-        {
-            timeSinceLastUpdate -= TimePerFrame;
-            processEvents();
-            update(TimePerFrame);
-        }
-    render();
-}
-*/
-
-
-
-
-
-
 
 
