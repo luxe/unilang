@@ -14,21 +14,6 @@ class
 ⚯
 ⚞⚟
 
-◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
-    
-    //make decisions based on user action
-    state.joycons_current = Joycon_State_Getter::Get();
-    
-    if (state.screen == Current_Screen::MAIN){
-        Handle_Main(window,state,assets);
-    }
-    else if (state.screen == Current_Screen::CHARACTER_SELECT){
-        Handle_Character_Select(window,state,assets);
-    }
-    
-    state.joycons_previous = state.joycons_current;
-❱
-
 ◀public: static▶ void ☀Run_Frame_Render(sf::RenderWindow & window, Game_State & state, Assets & assets) ❰
     window.clear(sf::Color(50, 127, 168));
     
@@ -42,34 +27,7 @@ class
     window.display();
 ❱
 
-
-
-
-
-◀private: static▶ void ☀Handle_Character_Select(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
-❱
-
 ◀private: static▶ void ☀Draw_Character_Select(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
-❱
-
-◀private: static▶ void ☀Handle_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
-
-        Handle_Player_Status(state,assets);
-        
-        //Move_Cursors(state.joycons_current,assets);
-        
-        //decide whether to leave main screen
-        if (state.player1_ready && state.player2_ready){
-            
-            if (!state.transitioning_clock){
-                state.transitioning_clock = true;
-                state.next_page_clock.restart();
-            }
-            
-            if (state.transitioning_clock && state.next_page_clock.getElapsedTime().asSeconds() > 1){
-                state.screen = Current_Screen::CHARACTER_SELECT;
-            }
-        }
 ❱
 
 ◀private: static▶ void ☀Draw_Main(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
@@ -82,116 +40,4 @@ class
 
         //window.draw(assets.player1_mouse);
         //window.draw(assets.player2_mouse);
-❱
-
-◀private: static▶ void ☀Handle_Player_Status(Game_State & state, Assets & assets)❰
-
-    bool redraw_status = false;
-    
-    //is player 1 ready?
-    if (state.joycons_current.left.right && !state.player1_ready){
-        state.player1_ready = true;
-        redraw_status = true;
-        assets.snd_selection.sound.play();
-    }
-    if (state.joycons_current.left.left && state.player1_ready){
-        state.player1_ready = false;
-        redraw_status = true;
-        assets.snd_select_back.sound.play();
-    }
-    
-    //is player 2 ready?
-    if (state.joycons_current.right.right && !state.player2_ready){
-        state.player2_ready = true;
-        redraw_status = true;
-        assets.snd_selection.sound.play();
-    }
-    if (state.joycons_current.right.left && !state.player2_ready){
-        state.player2_ready = false;
-        redraw_status = true;
-        assets.snd_select_back.sound.play();
-    }
-    
-    //are the joycons connected?
-    bool player1_status_changed = state.joycons_current.left.active != state.joycons_previous.left.active;
-    bool player2_status_changed = state.joycons_current.right.active != state.joycons_previous.right.active;
-    if (player1_status_changed || player2_status_changed){
-        redraw_status = true;
-    }
-    
-    
-    //show status
-    if (redraw_status){
-        Set_Connection_Status(state,assets);
-    }
-❱
-
-◀private: static▶ void ☀Set_Connection_Status(Game_State const& state, Assets & assets)❰
-
-    if (!state.joycons_current.left.active){
-        assets.player1_status.setString("PLAYER 1 ...");
-        assets.player1_status.setFillColor(sf::Color::Red);
-    }
-    else{
-        if (state.player1_ready){
-            assets.player1_status.setString("PLAYER 1   READY");
-            assets.player1_status.setFillColor(sf::Color::White);
-        }
-        else{
-            assets.player1_status.setString("PLAYER 1 ...");
-            assets.player1_status.setFillColor(sf::Color::White);
-        }
-    }
-    
-    if (!state.joycons_current.right.active){
-        assets.player2_status.setString("PLAYER 2 ...");
-        assets.player2_status.setFillColor(sf::Color::Red);
-    }
-    else{
-        if (state.player2_ready){
-            assets.player2_status.setString("PLAYER 2   READY");
-            assets.player2_status.setFillColor(sf::Color::White);
-        }
-        else{
-            assets.player2_status.setString("PLAYER 2 ...");
-            assets.player2_status.setFillColor(sf::Color::White);
-        }
-    }
-    
-    //reposition to center
-    // int buffer_space_x = 15;
-    // int buffer_space_y = 5;
-    // assets.player1_status.setPosition(0+buffer_space_x,0+buffer_space_y);
-    // assets.player2_status.setPosition(sf::VideoMode::getDesktopMode().width-(assets.player2_status.getLocalBounds().left
-    //                                                                          +assets.player2_status.getLocalBounds().width)-buffer_space_x,0+buffer_space_y);
-❱
-
-◀private: static▶ void ☀Move_Cursors(Joycons const& joys, Assets & assets)❰
-    
-    int speed = 10;
-    if (joys.left.joystick.left){
-        assets.player1_mouse.move(speed * -1,0);
-    }
-    if (joys.left.joystick.right){
-        assets.player1_mouse.move(speed,0);
-    }
-    if (joys.left.joystick.up){
-        assets.player1_mouse.move(0,speed * -1);
-    }
-    if (joys.left.joystick.down){
-        assets.player1_mouse.move(0,speed);
-    }
-    
-    if (joys.right.joystick.left){
-        assets.player2_mouse.move(speed * -1,0);
-    }
-    if (joys.right.joystick.right){
-        assets.player2_mouse.move(speed,0);
-    }
-    if (joys.right.joystick.up){
-        assets.player2_mouse.move(0,speed * -1);
-    }
-    if (joys.right.joystick.down){
-        assets.player2_mouse.move(0,speed);
-    }
 ❱

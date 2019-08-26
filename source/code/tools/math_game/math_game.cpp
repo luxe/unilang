@@ -12,6 +12,7 @@
 #include "code/tools/math_game/state/game_state.hpp"
 #include "code/tools/math_game/state/game_state_getter.hpp"
 #include "code/tools/math_game/core/frame_renderer.hpp"
+#include "code/tools/math_game/core/state_updater.hpp"
 
 
 
@@ -107,7 +108,7 @@ int main()
         while (timeSinceLastUpdate > TimePerFrame){
             timeSinceLastUpdate -= TimePerFrame;
             Handle_Events(*window);
-            Frame_Renderer::Run_Frame_Logic(*window,TimePerFrame,state,assets);
+            State_Updater::Run_Frame_Logic(*window,TimePerFrame,state,assets);
         }
         Frame_Renderer::Run_Frame_Render(*window,state,assets);
     }
