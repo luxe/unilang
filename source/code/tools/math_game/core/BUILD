@@ -19,4 +19,15 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/keyboard/joycons:joycon_state_getter",
     "//code/tools/math_game/assets:assets_loader",
     "//code/tools/math_game/state:game_state",
+    "//code/tools/math_game/core:main_screen_handler",
+])
+
+hcp(name = "main_screen_handler", deps = [
+    "@sfml//:sfml",
+    "//code/utilities/keyboard/joycons:joycon_horizontal_state",
+    "//code/utilities/json/functions:lib",
+    "//code/utilities/keyboard/joycons:joycons",
+    "//code/utilities/keyboard/joycons:joycon_state_getter",
+    "//code/tools/math_game/assets:assets_loader",
+    "//code/tools/math_game/state:game_state",
 ])
