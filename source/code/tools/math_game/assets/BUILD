@@ -21,11 +21,18 @@ hcp(name = "character_selection_assets", deps = [
     "@sfml//:sfml",
 ])
 
+hcp(name = "character", deps = [
+    "//code/tools/math_game/assets:textured_sprite",
+    "//code/tools/math_game/assets:sound",
+    "@sfml//:sfml",
+])
+
 hcp(name = "assets", deps = [
     "//code/tools/math_game/assets:textured_sprite",
     "//code/tools/math_game/assets:sound",
     "//code/tools/math_game/assets:title_screen_assets",
     "//code/tools/math_game/assets:character_selection_assets",
+    "//code/tools/math_game/assets:character",
     "@sfml//:sfml",
 ])
 
