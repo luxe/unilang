@@ -47,7 +47,7 @@ static void Timer_Transition(Transition_Clock & x, Fun fun){
 
         Handle_Player_Status(state,assets);
         
-        //Move_Cursors(state.joycons_current,assets);
+        Move_Cursors(state.joycons_current,assets);
         
         //decide whether to leave main screen
         if (state.player1_ready && state.player2_ready){
@@ -55,7 +55,9 @@ static void Timer_Transition(Transition_Clock & x, Fun fun){
             Timer_Transition(state.transition_clock,[&](){
                 state.player1_ready = false;
                 state.player2_ready = false;
+                Set_Connection_Status(state,assets);
                 state.screen = Current_Screen::CHARACTER_SELECT;
+                assets.snd_lets_go_fast.sound.play();
             });
         }
 ❱
@@ -91,9 +93,9 @@ static void Timer_Transition(Transition_Clock & x, Fun fun){
     //are the joycons connected?
     bool player1_status_changed = state.joycons_current.left.active != state.joycons_previous.left.active;
     bool player2_status_changed = state.joycons_current.right.active != state.joycons_previous.right.active;
-    if (player1_status_changed || player2_status_changed){
+    //if (player1_status_changed || player2_status_changed){
         redraw_status = true;
-    }
+    //}
     
     
     //show status
@@ -174,4 +176,22 @@ static void Timer_Transition(Transition_Clock & x, Fun fun){
 
 
 ◀private: static▶ void ☀Handle_Character_Select(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+
+    if (state.joycons_current.left.left || state.joycons_current.right.left){
+        state.screen = Current_Screen::MAIN;
+    }
 ❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
