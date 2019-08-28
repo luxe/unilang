@@ -25,6 +25,10 @@ function find_all_acronyms() {
     return all_acronyms;
 }
 
+function tokenize_node_value(nodeValue) {
+    return nodeValue.split(" ");
+}
+
 function tooltipify(found_acronyms) {
     for (var i = 0; i < found_acronyms.length; i++) {
         
