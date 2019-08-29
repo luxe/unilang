@@ -1,0 +1,97 @@
+class
+❪string❫
+❪iostream❫
+❪vector❫
+❪"code/tools/math_game/assets/assets"❫
+❪SFML/Window.hpp❫
+❪SFML/Window/Joystick.hpp❫
+❪SFML/Graphics.hpp❫
+❪SFML/Graphics/Transformable.hpp❫
+❪"code/utilities/keyboard/joycons/joycon_state_getter"❫
+❪"code/utilities/json/functions/lib"❫
+❪"code/tools/math_game/assets/assets_loader"❫
+❪"code/tools/math_game/state/game_state"❫
+⚯
+⚞⚟
+
+◀public: static▶ void ☀Handle(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+
+    Player_Hits_Back(window,state,assets);
+    Players_Want_To_Change_Character(window,state,assets);
+    Player_Hits_Accept(window,state,assets);
+    Players_Are_Ready_To_Play(window,state,assets);
+❱
+
+◀private: static▶ void ☀Player_Hits_Back(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+
+    //one of the players wants to go back a page
+    if (state.joycons_current.left.left || state.joycons_current.right.left){
+        state.screen = Current_Screen::MAIN;
+    }
+❱
+◀private: static▶ void ☀Player_Hits_Accept(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+❱
+◀private: static▶ void ☀Players_Are_Ready_To_Play(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+❱
+
+◀private: static▶ void ☀Players_Want_To_Change_Character(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+
+    //player 1 wants to see the next player
+    if (state.joycons_current.left.joystick.right && !state.joycons_previous.left.joystick.right){
+        
+        //switch their character
+        state.player1_selected_character += 1;
+        if (state.player1_selected_character == assets.characters.size()){
+            state.player1_selected_character = 0;
+        }
+        
+        Show_Player1_Character_Change(state,assets);
+        
+    }
+    
+    //player 1 wants to see the previous player
+    if (state.joycons_current.left.joystick.left && !state.joycons_previous.left.joystick.left){
+        if (state.player1_selected_character == 0){
+            state.player1_selected_character = assets.characters.size()-1;
+        }
+        else{
+            state.player1_selected_character -= 1;
+        }
+        
+        Show_Player1_Character_Change(state,assets);
+    }
+    
+    //player 2 wants to see the next player
+    if (state.joycons_current.right.joystick.right && !state.joycons_previous.right.joystick.right){
+        
+        state.player2_selected_character += 1;
+        if (state.player2_selected_character == assets.characters.size()){
+            state.player2_selected_character = 0;
+        }
+        
+        Show_Player2_Character_Change(state,assets);
+        
+    }
+    
+    //player 2 wants to see the previous player
+    if (state.joycons_current.right.joystick.left && !state.joycons_previous.right.joystick.left){
+        if (state.player2_selected_character == 0){
+            state.player2_selected_character = assets.characters.size()-1;
+        }
+        else{
+            state.player2_selected_character -= 1;
+        }
+        
+        Show_Player2_Character_Change(state,assets);
+    }
+❱
+
+
+◀private: static▶ void ☀Show_Player1_Character_Change(Game_State & state, Assets & assets)❰
+        assets.character_selection.player1_character_title.setString(assets.characters[state.player1_selected_character].name);
+        assets.character_selection.player1_character_selection = assets.characters[state.player1_selected_character].normal.sprite;
+❱
+◀private: static▶ void ☀Show_Player2_Character_Change(Game_State & state, Assets & assets)❰
+        assets.character_selection.player2_character_title.setString(assets.characters[state.player2_selected_character].name);
+        assets.character_selection.player2_character_selection = assets.characters[state.player2_selected_character].normal.sprite;
+❱
