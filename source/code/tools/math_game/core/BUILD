@@ -31,6 +31,7 @@ hcp(name = "main_screen_handler", deps = [
     "//code/utilities/keyboard/joycons:joycon_state_getter",
     "//code/tools/math_game/assets:assets_loader",
     "//code/tools/math_game/state:game_state",
+    "//code/utilities/time:timer_transition",
 ])
 
 hcp(name = "character_select_screen_handler", deps = [
