@@ -19,6 +19,23 @@ size_t Next_Index_In_Round_Robin(T const& t, size_t const& i){
   }
   return i+1;
 }
+template <typename T>
+size_t Previous_Index_In_Round_Robin(T const& t, size_t const& i){
+  if (i == 0){
+    return t.size()-1;
+  }
+  return i-1;
+}
+template <typename T>
+void Set_Next_Index_In_Round_Robin(T const& t, size_t & i){
+  i = Next_Index_In_Round_Robin(t,i);
+}
+template <typename T>
+void Set_Previous_Index_In_Round_Robin(T const& t, size_t & i){
+  i = Previous_Index_In_Round_Robin(t,i);
+  
+}
+
 
 template <typename T>
 size_t Longest_Element_Size_Of_Pair_First(std::vector<std::pair<std::string,T>> const& strs){

@@ -11,6 +11,7 @@ class
 ❪"code/utilities/json/functions/lib"❫
 ❪"code/tools/math_game/assets/assets_loader"❫
 ❪"code/tools/math_game/state/game_state"❫
+❪"code/utilities/time/timer_transition"❫
 ⚯
 ⚞⚟
 
@@ -25,13 +26,27 @@ class
 ◀private: static▶ void ☀Player_Hits_Back(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
 
     //one of the players wants to go back a page
-    if (state.joycons_current.left.left || state.joycons_current.right.left){
+    if (state.joycons_current.left.left && !state.player1_ready){
+        state.screen = Current_Screen::MAIN;
+    }
+    if (state.joycons_current.right.left && !state.player2_ready){
         state.screen = Current_Screen::MAIN;
     }
 ❱
 ◀private: static▶ void ☀Player_Hits_Accept(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
 ❱
 ◀private: static▶ void ☀Players_Are_Ready_To_Play(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+
+    //decide whether to leave main screen
+    if (state.player1_ready && state.player2_ready){
+        
+        Timer_Transition::Handle_Transition(state.transition_clock,[&](){
+            state.player1_ready = false;
+            state.player2_ready = false;
+            state.screen = Current_Screen::GAME_SELECT;
+            assets.snd_lets_go_fast.sound.play();
+        });
+    }
 ❱
 
 ◀private: static▶ void ☀Players_Want_To_Change_Character(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
