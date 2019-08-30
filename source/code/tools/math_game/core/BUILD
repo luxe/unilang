@@ -43,4 +43,5 @@ hcp(name = "character_select_screen_handler", deps = [
     "//code/tools/math_game/assets:assets_loader",
     "//code/tools/math_game/state:game_state",
     "//code/utilities/time:timer_transition",
+    "//code/utilities/types/vectors/observers:lib",
 ])
