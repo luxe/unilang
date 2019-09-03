@@ -41,7 +41,7 @@ void Handle_Events(sf::RenderWindow & window){
     }
 }
 
-std::unique_ptr<sf::RenderWindow> Create_Render_Window(){
+std::unique_ptr<sf::RenderWindow> Create_Render_Window(std::string const& name){
     
     //Create the main window.
     //note: if you do a bad (possibly unsupported resolution), it will go fullscreen but freeze
@@ -50,7 +50,7 @@ std::unique_ptr<sf::RenderWindow> Create_Render_Window(){
     //But I can't even go to a different ubuntu session.  I couldn't figure out anything but
     //restarting the machine.  Not good.  Probably the best thing to do, is go with the desktop mode for now.
     //Another idea would be to make sure the desired resolution is supported by the machine.
-    auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(), "Math Game",sf::Style::Fullscreen);
+    auto window = std::make_unique<sf::RenderWindow>(sf::VideoMode::getDesktopMode(),name,sf::Style::Fullscreen);
     
     //avoid graphics tearing
     //Sometimes, when your application runs fast, you may notice visual artifacts such as tearing.
@@ -75,7 +75,7 @@ int main()
 {
     
     //get the rendering window
-    auto window = Create_Render_Window();
+    auto window = Create_Render_Window("Math Game");
     
     //get all the assets and game state
     auto assets = Assets_Loader::Load(*window);
