@@ -5,6 +5,7 @@
 #include "code/utilities/printers/lib.hpp"
 #include "code/utilities/data_structures/tree/binary_node.hpp"
 #include "code/utilities/types/tree/tree_traversal.hpp"
+#include "code/utilities/types/tree/tree_node_properties.hpp"
 
 //printing utility
 template <typename T>
@@ -15,101 +16,13 @@ std::string as_str(T* t){
     return std::to_string(t->val);
 }
 
-//parent utility
-//check if parent is really a parent of child
-template <typename T>
-bool is_right_child(T* parent, T* child){
-    if (parent->right){
-        if (parent->right->val == child->val){
-            return true;
-        }
-    }
-    return false;
-}
-
-template <typename T>
-bool is_left_child(T* parent, T* child){
-    if (parent->left){
-        if (parent->left->val == child->val){
-            return true;
-        }
-    }
-    return false;
-}
-
-
-template <typename T>
-bool is_parent_of(T* parent, T* child){
-    return is_right_child(parent,child) || is_left_child(parent,child);
-}
-
-
-
-template <typename T>
-bool are_adjacent(T* node1, T* node2){
-    return is_parent_of(node1,node2) || is_parent_of(node2,node1);
-}
-
-template <typename T>
-T* get_parent(T* node1, T* node2){
-    if (is_parent_of(node1,node2)){
-        return node1;
-    }
-    if (is_parent_of(node2,node1)){
-        return node2;
-    }
-    return nullptr;
-}
-
-
-template <typename T>
-bool left_child_breaks_bst_constraint(T* parent)
-{
-    if (parent->left){
-        if (parent->left->val > parent->val){
-            return true;
-        }
-    }
-    return false;
-}
-
-template <typename T>
-bool right_child_breaks_bst_constraint(T* parent)
-{
-    if (parent->right){
-        if (parent->right->val < parent->val){
-            return true;
-        }
-    }
-    return false;
-}
-
-//given a parent node,
-//return the immediate child that invalidates a BST structure
-template <typename T>
-T* find_invalid_child(T* parent){
-    
-    if (left_child_breaks_bst_constraint(parent)){
-        return parent->left;
-    }
-    if (right_child_breaks_bst_constraint(parent)){
-        return parent->right;
-    }
-    return nullptr;
-}
-
-template <typename T>
-bool both_children_are_invalid(T* parent){
-    return left_child_breaks_bst_constraint(parent) && right_child_breaks_bst_constraint(parent);
-}
-
 //algorithm specific
 //how to choose the first node when finding a broken constraint
 template <typename T>
 T* choose_first_node(T* previous, T* t){
     
-    if (are_adjacent(t,previous)){
-        return get_parent(t,previous);
+    if (Tree_Node_Properties::are_adjacent(t,previous)){
+        return Tree_Node_Properties::get_parent(t,previous);
     }
     return previous;
 }
@@ -119,8 +32,8 @@ T* choose_first_node(T* previous, T* t){
 template <typename T>
 T* choose_second_node(T* previous, T* t){
     
-    if (are_adjacent(t,previous)){
-        return get_parent(t,previous);
+    if (Tree_Node_Properties::are_adjacent(t,previous)){
+        return Tree_Node_Properties::get_parent(t,previous);
     }
     return t;
 }
@@ -139,7 +52,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     //there is a problem with adjacent nodes
     //luckily we stored the parent, and can
     //rediscover which node needs swapped
-    if (both_children_are_invalid(finds.first)){
+    if (Tree_Node_Properties::both_children_are_invalid(finds.first)){
         std::swap(finds.first->left->val,finds.first->right->val);
         return;
     }
@@ -147,15 +60,15 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
     
     if (!finds.second){
-        auto child = find_invalid_child(finds.first);
+        auto child = Tree_Node_Properties::find_invalid_child(finds.first);
         std::swap(finds.first->val,child->val);
         return;
     }
     
     //non-adjacent nodes need swapped,
     //and they are stored correctly.
-    auto child1 = find_invalid_child(finds.first);
-    auto child2 = find_invalid_child(finds.second);
+    auto child1 = Tree_Node_Properties::find_invalid_child(finds.first);
+    auto child2 = Tree_Node_Properties::find_invalid_child(finds.second);
     
     if (child1 && child2){
         
@@ -164,7 +77,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
             return;
         }
         
-        if (is_right_child(finds.first,child1) && is_right_child(finds.second,child2)){
+        if (Tree_Node_Properties::is_right_child(finds.first,child1) && Tree_Node_Properties::is_right_child(finds.second,child2)){
             std::swap(finds.first->val,child2->val);
             return;
         }

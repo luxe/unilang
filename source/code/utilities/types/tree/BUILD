@@ -5,3 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "tree_traversal",deps=[
 "//code/utilities/data_structures/tree:binary_node",
 ])
+
+hcp(name = "tree_node_properties",deps=[
+"//code/utilities/data_structures/tree:binary_node",
+])

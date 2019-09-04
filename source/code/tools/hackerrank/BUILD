@@ -16,5 +16,6 @@ cc_library(
         "//code/utilities/printers:lib",
         "//code/utilities/data_structures/tree:binary_node",
         "//code/utilities/types/tree:tree_traversal",
+        "//code/utilities/types/tree:tree_node_properties",
     ]
 )
