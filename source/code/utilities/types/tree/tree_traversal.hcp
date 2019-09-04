@@ -1,0 +1,65 @@
+class
+❪iostream❫
+❪string❫
+⚯
+⚞⚟
+
+//core traversals
+◀public:
+template <typename T, typename Fun>
+static void perform_preorder(T *root, Fun fun){
+    
+    if(root == NULL) return;
+    fun(root);
+    perform_preorder(root->left,fun);
+    perform_preorder(root->right,fun);
+}
+▶
+
+
+◀public:
+template <typename T, typename Fun>
+static void perform_inorder(T *root, Fun fun){
+    
+    if(root == NULL) return;
+    perform_inorder(root->left,fun);
+    fun(root);
+    perform_inorder(root->right,fun);
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_inorder_with_previous(T *root, Fun fun){
+    T *previous = nullptr;
+    perform_inorder(root,[&](T* t){
+        if (previous){
+            fun(previous,t);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_postorder(T *root, Fun fun){
+    
+    if(root == NULL) return;
+    perform_postorder(root->left,fun);
+    perform_postorder(root->right,fun);
+    fun(root);
+}
+▶
+
+//utility traversals
+◀public:
+template <typename T>
+static std::vector<decltype(T::val)> inorder_traversal_as_list(T *root){
+    std::vector<decltype(T::val)> result;
+    Tree_Traversal::perform_inorder(root,[&](T* t){
+        result.emplace_back(t->val);
+    });
+    return result;
+}
+▶
