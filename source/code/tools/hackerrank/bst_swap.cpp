@@ -76,7 +76,21 @@ void fix_bst(T *root){
         if (previous->val > t->val){
             
             if (!node1){
-                node1 = previous;
+                
+                //store the parent
+                if (previous->left){
+                    if (previous->left->val == t->val){
+                        node1 = previous;
+                    }
+                }
+                else if (previous->right){
+                    if (previous->right->val == t->val){
+                        node1 = previous;
+                    }
+                }
+                else{
+                    node1 = t;
+                }
             }
             else{
                 node2 = t;
@@ -129,9 +143,9 @@ int main(){
         root.left->right = &r4;
         root.right->left = &r5;
         root.right->right = &r6;
-        std::cout << inorder_traversal_list(&root) << std::endl;
-        fix_bst(&root);
-        std::cout << inorder_traversal_list(&root) << std::endl;
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+        //fix_bst(&root);
+        //std::cout << inorder_traversal_list(&root) << std::endl;
     }
     {
          //     10
@@ -149,9 +163,9 @@ int main(){
         root.right = &r2;
         root.left->left = &r3;
         root.left->right = &r4;
-        std::cout << inorder_traversal_list(&root) << std::endl;
-        fix_bst(&root);
-        std::cout << inorder_traversal_list(&root) << std::endl;
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+        //fix_bst(&root);
+        //std::cout << inorder_traversal_list(&root) << std::endl;
     }
     
     {
@@ -173,5 +187,26 @@ int main(){
         //std::cout << inorder_traversal_list(&root) << std::endl;
         //fix_bst(&root);
         //std::cout << inorder_traversal_list(&root) << std::endl;
+    }
+    
+    {
+         //     10
+         //    /  \
+         //   4    20
+         //  / \
+         // 5   7
+        //4 and 5 are swapped(non-adjacent)
+        BinaryNode<int> root(10);
+        BinaryNode<int> r1(4);
+        BinaryNode<int> r2(20);
+        BinaryNode<int> r3(5);
+        BinaryNode<int> r4(7);
+        root.left = &r1;
+        root.right = &r2;
+        root.left->left = &r3;
+        root.left->right = &r4;
+        std::cout << inorder_traversal_list(&root) << std::endl;
+        fix_bst(&root);
+        std::cout << inorder_traversal_list(&root) << std::endl;
     }
 }
