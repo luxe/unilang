@@ -34,7 +34,7 @@ TEST(BST_Fix, NonAdjacent_1) {
        10   2 
       /  \ /  \ 
      1   3 7  12 
-     10 and 2 are swapped (non-adjacent)
+     10 and 2 are swapped
      */
     BinaryNode<int> root(6);
     BinaryNode<int> r1(10);
@@ -59,7 +59,7 @@ TEST(BST_Fix, NonAdjacent_2) {
         5    8
        / \
       2   20
-    20 and 8 are swapped (non-adjacent)
+    20 and 8 are swapped
     */
     BinaryNode<int> root(10);
     BinaryNode<int> r1(5);
@@ -78,7 +78,7 @@ TEST(BST_Fix, NonAdjacent_3) {
            2
          /  \
         3    1
-    3 and 1 are swapped (non-adjacent)
+    3 and 1 are swapped
     */
     BinaryNode<int> root(2);
     BinaryNode<int> r1(3);
@@ -94,7 +94,7 @@ TEST(BST_Fix, NonAdjacent_4) {
         1    3
        /      \
       4        0
-    4 and 0 are swapped (non-adjacent)
+    4 and 0 are swapped
     */
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
@@ -116,7 +116,7 @@ TEST(BST_Fix, NonAdjacent_5) {
       2        6
      /          \
     7            1
-    7 and 1 are swapped (non-adjacent)
+    7 and 1 are swapped
     */
     BinaryNode<int> root(4);
     BinaryNode<int> r1(3);
@@ -142,7 +142,7 @@ TEST(BST_Fix, NonAdjacent_6) {
       2        6
      /          \
     1            4
-    7 and 4 are swapped (non-adjacent)
+    7 and 4 are swapped
     */
     BinaryNode<int> root(7);
     BinaryNode<int> r1(3);
@@ -167,7 +167,7 @@ TEST(BST_Fix, Adjacent_1) {
         6    20
        / \
       2   5
-    5 and 6 are swapped(adjacent)
+    5 and 6 are swapped
     */
     BinaryNode<int> root(10);
     BinaryNode<int> r1(6);
@@ -188,7 +188,7 @@ TEST(BST_Fix, Adjacent_2) {
         4    20
        / \
       5   7
-    4 and 5 are swapped(adjacent)
+    4 and 5 are swapped
     */
     BinaryNode<int> root(10);
     BinaryNode<int> r1(4);
@@ -209,7 +209,7 @@ TEST(BST_Fix, Adjacent_3) {
         10    20
        / \
       4   7
-    5 and 10 are swapped(adjacent)
+    5 and 10 are swapped
     */
     BinaryNode<int> root(5);
     BinaryNode<int> r1(10);
@@ -222,3 +222,46 @@ TEST(BST_Fix, Adjacent_3) {
     root.left->right = &r4;
     check_tree_fix(root);
 }
+TEST(BST_Fix, Adjacent_4) {
+    /*
+           1
+         /  \
+        2    3
+    2 and 1 are swapped
+    */
+    BinaryNode<int> root(1);
+    BinaryNode<int> r1(2);
+    BinaryNode<int> r2(3);
+    root.left = &r1;
+    root.right = &r2;
+    check_tree_fix(root);
+}
+TEST(BST_Fix, Adjacent_5) {
+    /*
+           3
+         /  \
+        1    2
+    3 and 2 are swapped
+    */
+    BinaryNode<int> root(3);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(2);
+    root.left = &r1;
+    root.right = &r2;
+    check_tree_fix(root);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
