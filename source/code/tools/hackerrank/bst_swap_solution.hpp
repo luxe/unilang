@@ -103,14 +103,11 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
         if (!finds.first){
             finds.first = choose_first_node(previous,t);
         }
-        
-        //handle storing non-first discrepancies
+        else if (!finds.second){
+            finds.second = choose_second_node(previous,t);
+        }
         else{
-            
-            if (finds.second){
-                finds.first = finds.second;
-            }
-            
+            finds.first = finds.second;
             finds.second = choose_second_node(previous,t);
         }
     }
@@ -121,13 +118,15 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
 template <typename T>
 void fix_bst(T *root){
     
-    //store only two nodes 
+    //store only two node pointers 
+    //we want to prove that this can be done without an additional third pointer
+    //(as many online solutions show)
     std::pair<T*,T*> finds {nullptr,nullptr};
     
     Tree_Traversal::perform_inorder_with_previous(root,[&](T* previous, T* t){
         store_nodes_for_swapping(finds,previous,t);
     });
     
-    //fix the tree
+    //fix the tree based on the two node pointers captured
     swap_found_nodes(finds);
 }
