@@ -79,7 +79,8 @@ void fix_bst(T *root){
             //handle first found
             if (!node1){
                 
-                //store the parent
+                //store the current if it exists as the parent to the previous
+                //otherwise store the previous.
                 node1 = previous;
                 if (t->left){
                     if (t->left->val == previous->val){
