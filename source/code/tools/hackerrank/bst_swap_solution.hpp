@@ -6,6 +6,14 @@
 #include "code/utilities/data_structures/tree/binary_node.hpp"
 #include "code/utilities/types/tree/tree_traversal.hpp"
 
+template <typename T>
+std::string as_str(T* t){
+    if (!t){
+        return "null";
+    }
+    return std::to_string(t->val);
+}
+
 //check if parent is really a parent of child
 template <typename T>
 bool is_parent_of(T* parent, T* child){
@@ -95,6 +103,10 @@ T* choose_first_node(T* previous, T* t){
 //how to choose the second node when finding a broken constraint
 template <typename T>
 T* choose_second_node(T* previous, T* t){
+    
+    if (are_adjacent(t,previous)){
+        return get_parent(t,previous);
+    }
     return t;
 }
 
@@ -108,17 +120,17 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
         return;
     }
     
-    std::cout << finds.first->val << " " << finds.second->val << std::endl;
-    
     //only one node was stored
     //there is a problem with adjacent nodes
     //luckily we stored the parent, and can
     //rediscover which node needs swapped
     if (both_children_are_invalid(finds.first)){
-        std::cout << "this" << std::endl;
         std::swap(finds.first->left->val,finds.first->right->val);
         return;
     }
+    
+    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
+    
     if (!finds.second){
         auto child = find_invalid_child(finds.first);
         std::swap(finds.first->val,child->val);
@@ -130,10 +142,21 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     auto child1 = find_invalid_child(finds.first);
     auto child2 = find_invalid_child(finds.second);
     
+    if (child1 && child2){
+        
+        if (finds.first->val < finds.second->val){
+            std::swap(child1->val,child2->val);
+            return;
+        }
+        
+        std::swap(finds.first->val,finds.second->val);
+        return;
+    }
+    
     auto to_swap1 = child1 ? child1 : finds.first;
     auto to_swap2 = child2 ? child2 : finds.second;
     
-    std::cout << "actual: " << to_swap1->val << " " << to_swap2->val << std::endl;
+    //std::cout << "actual: " << to_swap1->val << " " << to_swap2->val << std::endl;
     
     std::swap(to_swap1->val,to_swap2->val);
 }
@@ -155,7 +178,7 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
                 finds.first = finds.second;
             }
             
-            finds.second = choose_first_node(previous,t);
+            finds.second = choose_second_node(previous,t);
         }
     }
 }
