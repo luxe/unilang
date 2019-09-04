@@ -75,23 +75,27 @@ void fix_bst(T *root){
     perform_inorder_with_previous(root,[&](T* previous, T* t){
         if (previous->val > t->val){
             
+            
+            //handle first found
             if (!node1){
                 
                 //store the parent
+                node1 = t;
                 if (previous->left){
                     if (previous->left->val == t->val){
                         node1 = previous;
                     }
                 }
-                else if (previous->right){
+                if (previous->right){
                     if (previous->right->val == t->val){
                         node1 = previous;
                     }
                 }
-                else{
-                    node1 = t;
-                }
+                
+                std::cout << node1->val << std::endl;
             }
+            
+            //handle 2nd found
             else{
                 node2 = t;
             }
@@ -110,6 +114,7 @@ void fix_bst(T *root){
         if (node1->right){
             if (node1->right->val < node1->val){
                 std::swap(node1->val,node1->right->val);
+                return;
             }
         }
     }
@@ -163,9 +168,9 @@ int main(){
         root.right = &r2;
         root.left->left = &r3;
         root.left->right = &r4;
-        //std::cout << inorder_traversal_list(&root) << std::endl;
-        //fix_bst(&root);
-        //std::cout << inorder_traversal_list(&root) << std::endl;
+        std::cout << inorder_traversal_list(&root) << std::endl;
+        fix_bst(&root);
+        std::cout << inorder_traversal_list(&root) << std::endl;
     }
     
     {
@@ -205,8 +210,8 @@ int main(){
         root.right = &r2;
         root.left->left = &r3;
         root.left->right = &r4;
-        std::cout << inorder_traversal_list(&root) << std::endl;
-        fix_bst(&root);
-        std::cout << inorder_traversal_list(&root) << std::endl;
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+        //fix_bst(&root);
+        //std::cout << inorder_traversal_list(&root) << std::endl;
     }
 }
