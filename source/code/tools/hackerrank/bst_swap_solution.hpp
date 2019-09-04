@@ -144,7 +144,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
         return;
     }
     
-    std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
+    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
     
     if (!finds.second){
         auto child = find_invalid_child(finds.first);
