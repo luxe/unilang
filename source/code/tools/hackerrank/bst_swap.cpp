@@ -129,9 +129,9 @@ int main(){
         root.left->right = &r4;
         root.right->left = &r5;
         root.right->right = &r6;
-        //std::cout << inorder_traversal_list(&root) << std::endl;
-        //fix_bst(&root);
-        //std::cout << inorder_traversal_list(&root) << std::endl;
+        std::cout << inorder_traversal_list(&root) << std::endl;
+        fix_bst(&root);
+        std::cout << inorder_traversal_list(&root) << std::endl;
     }
     {
          //     10
@@ -149,9 +149,9 @@ int main(){
         root.right = &r2;
         root.left->left = &r3;
         root.left->right = &r4;
-        //std::cout << inorder_traversal_list(&root) << std::endl;
-        //fix_bst(&root);
-        //std::cout << inorder_traversal_list(&root) << std::endl;
+        std::cout << inorder_traversal_list(&root) << std::endl;
+        fix_bst(&root);
+        std::cout << inorder_traversal_list(&root) << std::endl;
     }
     
     {
@@ -170,8 +170,8 @@ int main(){
         root.right = &r2;
         root.left->left = &r3;
         root.left->right = &r4;
-        std::cout << inorder_traversal_list(&root) << std::endl;
-        fix_bst(&root);
-        std::cout << inorder_traversal_list(&root) << std::endl;
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+        //fix_bst(&root);
+        //std::cout << inorder_traversal_list(&root) << std::endl;
     }
 }
