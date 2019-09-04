@@ -84,12 +84,23 @@ void fix_bst(T *root){
         }
     });
     
-    //non-adjacent
+    //adjacent
     if (!node2){
-        std::swap(node1->val,node1->left->val);
+        
+        if (node1->left){
+            if (node1->left->val > node1->val){
+                std::swap(node1->val,node1->left->val);
+                return;
+            }
+        }
+        if (node1->right){
+            if (node1->right->val < node1->val){
+                std::swap(node1->val,node1->right->val);
+            }
+        }
     }
     
-    //adjacent
+    //non-adjacent
     else{
         std::swap(node1->val,node2->val);
     }
@@ -97,27 +108,70 @@ void fix_bst(T *root){
 
 int main(){
     
-    /*   6 
-        /  \ 
-       10    2 
-      / \   / \ 
-     1   3 7  12 
-     10 and 2 are swapped 
-    */
-    BinaryNode<int> root(6);
-    BinaryNode<int> r1(10);
-    BinaryNode<int> r2(2);
-    BinaryNode<int> r3(1);
-    BinaryNode<int> r4(3);
-    BinaryNode<int> r5(7);
-    BinaryNode<int> r6(12);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    root.right->left = &r5;
-    root.right->right = &r6;
-    std::cout << inorder_traversal_list(&root) << std::endl;
-    fix_bst(&root);
-    std::cout << inorder_traversal_list(&root) << std::endl;
+    {
+        /*   6 
+            /  \ 
+           10    2 
+          / \   / \ 
+         1   3 7  12 
+         10 and 2 are swapped (non-adjacent)
+        */
+        BinaryNode<int> root(6);
+        BinaryNode<int> r1(10);
+        BinaryNode<int> r2(2);
+        BinaryNode<int> r3(1);
+        BinaryNode<int> r4(3);
+        BinaryNode<int> r5(7);
+        BinaryNode<int> r6(12);
+        root.left = &r1;
+        root.right = &r2;
+        root.left->left = &r3;
+        root.left->right = &r4;
+        root.right->left = &r5;
+        root.right->right = &r6;
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+        //fix_bst(&root);
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+    }
+    {
+         //     10
+         //    /  \
+         //   5    8
+         //  / \
+         // 2   20
+        //20 and 8 are swapped (non-adjacent)
+        BinaryNode<int> root(10);
+        BinaryNode<int> r1(5);
+        BinaryNode<int> r2(8);
+        BinaryNode<int> r3(2);
+        BinaryNode<int> r4(20);
+        root.left = &r1;
+        root.right = &r2;
+        root.left->left = &r3;
+        root.left->right = &r4;
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+        //fix_bst(&root);
+        //std::cout << inorder_traversal_list(&root) << std::endl;
+    }
+    
+    {
+         //     10
+         //    /  \
+         //   6    20
+         //  / \
+         // 2   5
+        //5 and 6 are swapped(non-adjacent)
+        BinaryNode<int> root(10);
+        BinaryNode<int> r1(6);
+        BinaryNode<int> r2(20);
+        BinaryNode<int> r3(2);
+        BinaryNode<int> r4(5);
+        root.left = &r1;
+        root.right = &r2;
+        root.left->left = &r3;
+        root.left->right = &r4;
+        std::cout << inorder_traversal_list(&root) << std::endl;
+        fix_bst(&root);
+        std::cout << inorder_traversal_list(&root) << std::endl;
+    }
 }
