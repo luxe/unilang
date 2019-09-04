@@ -107,6 +107,32 @@ TEST(BST_Fix, NonAdjacent_4) {
         root.right->right = &r4;
         check_tree_fix(root);
 }
+TEST(BST_Fix, NonAdjacent_5) {
+        /*
+              4
+             /  \
+            3    5
+           /      \
+          2        6
+         /          \
+        7            1
+        7 and 1 are swapped (non-adjacent)
+        */
+        BinaryNode<int> root(4);
+        BinaryNode<int> r1(3);
+        BinaryNode<int> r2(5);
+        BinaryNode<int> r3(2);
+        BinaryNode<int> r4(6);
+        BinaryNode<int> r5(7);
+        BinaryNode<int> r6(1);
+        root.left = &r1;
+        root.right = &r2;
+        root.left->left = &r3;
+        root.right->right = &r4;
+        root.left->left->left = &r5;
+        root.right->right->right = &r6;
+        check_tree_fix(root);
+}
 
 TEST(BST_Fix, Adjacent_1) {
         /*
