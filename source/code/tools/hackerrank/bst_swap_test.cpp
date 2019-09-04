@@ -238,6 +238,62 @@ TEST(BST_Fix, Adjacent_4) {
 }
 TEST(BST_Fix, Adjacent_5) {
     /*
+           1
+         /  \
+        2    3
+       /
+      0
+    2 and 1 are swapped
+    */
+    BinaryNode<int> root(1);
+    BinaryNode<int> r1(2);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(0);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->left = &r3;
+    check_tree_fix(root);
+}
+TEST(BST_Fix, Adjacent_6) {
+    /*
+           1
+         /  \
+        2    3
+              \
+               4
+    2 and 1 are swapped
+    */
+    BinaryNode<int> root(1);
+    BinaryNode<int> r1(2);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(4);
+    root.left = &r1;
+    root.right = &r2;
+    root.right->right = &r3;
+    check_tree_fix(root);
+}
+TEST(BST_Fix, Adjacent_7) {
+    /*
+           1
+         /  \
+        2    3
+      /       \
+     0         4
+    2 and 1 are swapped
+    */
+    BinaryNode<int> root(1);
+    BinaryNode<int> r1(2);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(0);
+    BinaryNode<int> r4(4);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->left = &r3;
+    root.right->right = &r4;
+    check_tree_fix(root);
+}
+TEST(BST_Fix, Adjacent_8) {
+    /*
            3
          /  \
         1    2
