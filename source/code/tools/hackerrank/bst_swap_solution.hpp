@@ -57,7 +57,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
         return;
     }
     
-    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
+    std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
     
     if (!finds.second){
         auto child = Tree_Node_Properties::find_invalid_child(finds.first);
@@ -69,6 +69,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     //and they are stored correctly.
     auto child1 = Tree_Node_Properties::find_invalid_child(finds.first);
     auto child2 = Tree_Node_Properties::find_invalid_child(finds.second);
+    
     
     if (child1 && child2){
         
@@ -82,6 +83,47 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
             return;
         }
         
+        if (Tree_Node_Properties::is_left_child(finds.first,child1) && Tree_Node_Properties::is_left_child(finds.second,child2)){
+            std::swap(finds.second->val,child1->val);
+            return;
+        }
+        
+
+        
+        std::swap(finds.first->val,finds.second->val);
+        return;
+    }
+    
+    if (!Tree_Node_Properties::are_adjacent(finds.first,finds.second)){
+        
+        if (child1){
+            
+            if (finds.first->val > child1->val && child1->val < finds.second->val){
+                std::swap(child1->val,finds.second->val);
+                return;
+            }
+            if (finds.first->val < child1->val && child1->val > finds.second->val){
+                std::swap(child1->val,finds.second->val);
+                return;
+            }
+            
+            std::swap(finds.first->val,finds.second->val);
+            return;
+        }
+        if (child2){
+            
+            if (finds.second->val > child2->val && child2->val < finds.first->val){
+                std::swap(finds.second->val,finds.first->val);
+                return;
+            }
+            if (finds.second->val < child2->val && child2->val > finds.first->val){
+                std::swap(finds.second->val,finds.first->val);
+                return;
+            }
+            
+            std::swap(child1->val,finds.second->val);
+            return;
+        }
         std::swap(finds.first->val,finds.second->val);
         return;
     }
