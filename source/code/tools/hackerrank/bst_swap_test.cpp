@@ -160,6 +160,31 @@ TEST(BST_Fix, NonAdjacent_6) {
     check_tree_fix(root);
 }
 
+TEST(BST_Fix, NonAdjacent_7) {
+        /*
+         6 
+        /  \ 
+       2    10 
+      /  \ /  \ 
+     12   3 7  1 
+     12 and 1 are swapped
+     */
+    BinaryNode<int> root(6);
+    BinaryNode<int> r1(2);
+    BinaryNode<int> r2(10);
+    BinaryNode<int> r3(12);
+    BinaryNode<int> r4(3);
+    BinaryNode<int> r5(7);
+    BinaryNode<int> r6(1);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->left = &r3;
+    root.left->right = &r4;
+    root.right->left = &r5;
+    root.right->right = &r6;
+    check_tree_fix(root);
+}
+
 TEST(BST_Fix, Adjacent_1) {
     /*
           10
