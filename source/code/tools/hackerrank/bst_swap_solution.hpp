@@ -30,7 +30,7 @@ void handle_first_discrepancy(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& 
 //how to choose the second node when finding a broken constraint
 template <typename T>
 void handle_second_discrepancy(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& window){
-    nodes.second = min(window);
+    nodes.second = window.second;
 }
 
 template <typename T>
