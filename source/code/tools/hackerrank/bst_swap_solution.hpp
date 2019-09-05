@@ -41,19 +41,21 @@ T* choose_second_node(T* previous, T* t){
 //algorithm specific
 //how to swap based on the two node pointers you have
 template <typename T>
-void swap_found_nodes(std::pair<T*,T*> & finds){
+void decide_swap(std::pair<T*,T*> & finds){
     
     //tree is already fixed
-    if (!finds.first && !finds.second){
-        return;
-    }
+    //if (!finds.first && !finds.second){
+    //    return;
+    //}
     
     //only one node was stored
     //there is a problem with adjacent nodes
     //luckily we stored the parent, and can
     //rediscover which node needs swapped
     if (Tree_Node_Properties::both_children_break_bst_constraint(finds.first)){
-        std::swap(finds.first->left->val,finds.first->right->val);
+        finds.second = finds.first->left;
+        finds.first = finds.first->right;
+        //std::swap(finds.first->left->val,finds.first->right->val);
         return;
     }
     
@@ -68,25 +70,30 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     if (child1 && child2){
         
         if (finds.first->val < finds.second->val){
-            std::swap(child1->val,child2->val);
+            finds.first = child1;
+            finds.second = child2;
+            //std::swap(child1->val,child2->val);
             return;
         }
     }
         
     if (child1){
         if (finds.first->val < child1->val && child1->val > finds.second->val){
-            std::swap(child1->val,finds.second->val);
+            finds.first = child1;
+            //std::swap(child1->val,finds.second->val);
             return;
         }
     }
     if (child2){
         if (finds.second->val > child2->val && child2->val < finds.first->val){
-            std::swap(finds.first->val,child2->val);
+            
+            finds.second = child2;
+            //std::swap(finds.first->val,child2->val);
             return;
         }
     }
     
-    std::swap(finds.first->val,finds.second->val);
+    //std::swap(finds.first->val,finds.second->val);
     return;
 }
 
@@ -134,5 +141,6 @@ void fix_bst(T *root){
     });
     
     //fix the tree based on the two node pointers captured
-    swap_found_nodes(finds);
+    decide_swap(finds);
+    std::swap(finds.first->val,finds.second->val);
 }
