@@ -20,21 +20,13 @@ bool discrepancy_found(std::pair<T*,T*> const& window){
 //how to choose the first node when finding a broken constraint
 template <typename T>
 void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
-    
     finds = window;
-    if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
-        finds = Tree_Node_Properties::as_parent_child(window);
-    }
 }
 
 //how to choose the second node when finding a broken constraint
 template <typename T>
 void handle_second_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
-    
-    finds.second = window.second;
-    if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
-        finds.second = min(window.first,window.second);
-    }
+    finds.second = min(window.first,window.second);
 }
 
 //algorithm specific
