@@ -8,6 +8,11 @@
 #include "code/utilities/types/tree/tree_node_properties.hpp"
 
 template <typename T>
+T* min(T* a, T* b){
+    return a->val < b->val ? a : b;
+}
+
+template <typename T>
 bool discrepancy_found(std::pair<T*,T*> const& window){
     return window.first->val > window.second->val;
 }
@@ -28,7 +33,7 @@ void handle_second_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const&
     
     finds.second = window.second;
     if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
-        finds.second = window.first->val < window.second->val ? window.first : window.second;
+        finds.second = min(window.first,window.second);
     }
 }
 
