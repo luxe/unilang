@@ -63,14 +63,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     
     if (!finds.second){
         auto child = Tree_Node_Properties::find_invalid_child(finds.first);
-        //std::cout << "AHHHHHHHHHHH" << std::endl;
-        if (!child){
-            std::cout << "NOTHING TO SWAP" << std::endl;
-            //std::swap(finds.first->val,finds.second->val);
-        }
-        else{
-            std::swap(finds.first->val,child->val);
-        }
+        std::swap(finds.first->val,child->val);
         return;
     }
     
@@ -86,61 +79,23 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
             std::swap(child1->val,child2->val);
             return;
         }
-        
-        if (Tree_Node_Properties::is_right_child(finds.first,child1) && Tree_Node_Properties::is_right_child(finds.second,child2)){
-            std::swap(finds.first->val,child2->val);
-            return;
-        }
-        
-        if (Tree_Node_Properties::is_left_child(finds.first,child1) && Tree_Node_Properties::is_left_child(finds.second,child2)){
-            std::swap(finds.second->val,child1->val);
-            return;
-        }
-        
-
-        
-        std::swap(finds.first->val,finds.second->val);
-        return;
     }
-    if (!Tree_Node_Properties::are_adjacent(finds.first,finds.second)){
         
         if (child1){
-            
-            if (finds.first->val > child1->val && child1->val < finds.second->val){
-                std::swap(child1->val,finds.second->val);
-                return;
-            }
             if (finds.first->val < child1->val && child1->val > finds.second->val){
                 std::swap(child1->val,finds.second->val);
                 return;
             }
-            
-            std::swap(finds.first->val,finds.second->val);
-            return;
         }
         if (child2){
             if (finds.second->val > child2->val && child2->val < finds.first->val){
                 std::swap(child2->val,finds.first->val);
                 return;
             }
-            if (finds.second->val < child2->val && child2->val > finds.first->val){
-                std::swap(finds.second->val,finds.first->val);
-                return;
-            }
-            std::swap(finds.first->val,finds.second->val);
-            return;
         }
+        
         std::swap(finds.first->val,finds.second->val);
         return;
-    }
-    
-    std::cout << "sfdd" << std::endl;
-    auto to_swap1 = child1 ? child1 : finds.first;
-    auto to_swap2 = child2 ? child2 : finds.second;
-    
-    //std::cout << "actual: " << to_swap1->val << " " << to_swap2->val << std::endl;
-    
-    std::swap(to_swap1->val,to_swap2->val);
 }
 
 template <typename T>
