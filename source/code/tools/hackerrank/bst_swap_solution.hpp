@@ -111,28 +111,20 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
             
             //in the case we dont actually find another
             //store this in the second
-            if (!Tree_Node_Properties::are_adjacent(previous,t)){
-                if (finds.first->val == previous->val){
-                    finds.second = t;
-                }
-                else{
-                    finds.second = previous;
-                }
+            if (finds.first->val == previous->val){
+                finds.second = t;
+            }
+            else{
+                finds.second = previous;
             }
             
             
             
         }
-        else if (!finds.second){
-            finds.second = choose_second_node(previous,t);
-        }
         else{
-            //finds.first = finds.second;
             finds.second = choose_second_node(previous,t);
         }
     }
-    
-    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
 }
 
 
@@ -151,5 +143,4 @@ void fix_bst(T *root){
     
     //fix the tree based on the two node pointers captured
     swap_found_nodes(finds);
-    //std::cout << "----" << std::endl;
 }
