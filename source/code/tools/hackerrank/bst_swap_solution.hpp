@@ -42,27 +42,15 @@ void decide_swap(std::pair<T*,T*> & finds){
     
     auto child1 = Tree_Node_Properties::find_invalid_child(finds.first);
     auto child2 = Tree_Node_Properties::find_invalid_child(finds.second);
-    
-    
-    if (child1 && child2){
-        
-        if (finds.first->val < finds.second->val){
-            finds.first = child1;
-            finds.second = child2;
-            return;
-        }
-    }
         
     if (child1){
         if (child1->val > finds.first->val && child1->val > finds.second->val){
             finds.first = child1;
-            return;
         }
     }
     if (child2){
         if (child2->val < finds.second->val && child2->val < finds.first->val){
             finds.second = child2;
-            return;
         }
     }
 }
