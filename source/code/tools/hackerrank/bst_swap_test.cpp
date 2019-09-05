@@ -32,6 +32,7 @@ void check_every_combination(BinaryNode<int> & root){
       for (size_t j = 0; j < ordered.size(); ++j){
         if (ordered[i]->val != ordered[j]->val){
           std::swap(ordered[i]->val,ordered[j]->val);
+          //std::cout << "swapped " << ordered[i]->val << " " << ordered[j]->val << std::endl;
           check_tree_fix(root);
         }
       }
@@ -82,7 +83,7 @@ TEST(BST_Fix, NonAdjacent_2) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    //check_tree_fix(root);
+    check_tree_fix(root);
 }
 
 TEST(BST_Fix, NonAdjacent_3) {
@@ -406,7 +407,7 @@ TEST(BST_Fix, Every_Swap_1) {
       /  \ /  \ 
      1   3 7  12 
      */
-  //[1,2,6,3,7,10,12]
+  //[1,2,10,6,7,3,12]
     BinaryNode<int> root(6);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(10);
@@ -420,7 +421,7 @@ TEST(BST_Fix, Every_Swap_1) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    //check_every_combination(root);
+    check_every_combination(root);
 }
 TEST(BST_Fix, Every_Swap_2) {
     /*

@@ -102,7 +102,6 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
         std::swap(finds.first->val,finds.second->val);
         return;
     }
-    
     if (!Tree_Node_Properties::are_adjacent(finds.first,finds.second)){
         
         if (child1){
@@ -128,7 +127,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
                 std::swap(finds.second->val,finds.first->val);
                 return;
             }
-            std::swap(child2->val,finds.first->val);
+            std::swap(finds.first->val,finds.second->val);
             return;
         }
         std::swap(finds.first->val,finds.second->val);
@@ -172,10 +171,12 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
             finds.second = choose_second_node(previous,t);
         }
         else{
-            finds.first = finds.second;
+            //finds.first = finds.second;
             finds.second = choose_second_node(previous,t);
         }
     }
+    
+    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
 }
 
 
