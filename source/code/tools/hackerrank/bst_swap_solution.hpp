@@ -7,7 +7,11 @@
 #include "code/utilities/types/tree/tree_traversal.hpp"
 #include "code/utilities/types/tree/tree_node_properties.hpp"
 
-//algorithm specific
+template <typename T>
+bool discrepancy_found(std::pair<T*,T*> const& window){
+    return window.first->val > window.second->val;
+}
+
 //how to choose the first node when finding a broken constraint
 template <typename T>
 void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
@@ -18,15 +22,14 @@ void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& 
     }
 }
 
-//algorithm specific
 //how to choose the second node when finding a broken constraint
 template <typename T>
-T* choose_second_node(T* previous, T* t){
+void handle_next_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
     
-    if (Tree_Node_Properties::are_adjacent(t,previous)){
-        return Tree_Node_Properties::get_parent(t,previous);
+    finds.second = window.second;
+    if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
+        finds.second = Tree_Node_Properties::get_parent(window.first,window.second);
     }
-    return t;
 }
 
 //algorithm specific
@@ -57,15 +60,15 @@ void decide_swap(std::pair<T*,T*> & finds){
 
 template <typename T>
 void store_nodes_for_swapping(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
-    if (window.first->val > window.second->val){
-        
+    
+    if (discrepancy_found(window)){
         
         //handle storing first discrepancy
         if (!finds.first){
             handle_first_discrepancy(finds,window);
         }
         else{
-            finds.second = choose_second_node(window.first,window.second);
+            handle_next_discrepancy(finds,window);
         }
     }
 }
