@@ -24,7 +24,18 @@ void check_tree_fix(BinaryNode<int> & root){
   EXPECT_FALSE(std::is_sorted(before.begin(),before.end()));
   wrong_by_only_two_nodes(before);
   EXPECT_TRUE(std::is_sorted(after.begin(),after.end()));
-  
+}
+
+void check_every_combination(BinaryNode<int> & root){
+    auto ordered = Tree_Traversal::inorder_traversal_as_node_list(&root);
+    for (size_t i = 0; i < ordered.size(); ++i){
+      for (size_t j = 0; j < ordered.size(); ++j){
+        if (ordered[i]->val != ordered[j]->val){
+          std::swap(ordered[i]->val,ordered[j]->val);
+          check_tree_fix(root);
+        }
+      }
+    }
 }
 
 TEST(BST_Fix, NonAdjacent_1) {
@@ -71,7 +82,7 @@ TEST(BST_Fix, NonAdjacent_2) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_tree_fix(root);
+    //check_tree_fix(root);
 }
 
 TEST(BST_Fix, NonAdjacent_3) {
@@ -395,6 +406,7 @@ TEST(BST_Fix, Every_Swap_1) {
       /  \ /  \ 
      1   3 7  12 
      */
+  //[1,2,6,3,7,10,12]
     BinaryNode<int> root(6);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(10);
@@ -408,19 +420,40 @@ TEST(BST_Fix, Every_Swap_1) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    
-    auto ordered = Tree_Traversal::inorder_traversal_as_node_list(&root);
-    for (size_t i = 0; i < ordered.size(); ++i){
-      for (size_t j = 0; j < ordered.size(); ++j){
-        if (ordered[i]->val != ordered[j]->val){
-          //std::cout << "swapped " << ordered[i]->val << " " << ordered[j]->val << std::endl;
-          std::swap(ordered[i]->val,ordered[j]->val);
-          check_tree_fix(root);
-        }
-      }
-    }
+    //check_every_combination(root);
 }
-
+TEST(BST_Fix, Every_Swap_2) {
+    /*
+           2
+         /  \
+        1    3
+    */
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(3);
+    root.left = &r1;
+    root.right = &r2;
+    check_every_combination(root);
+}
+TEST(BST_Fix, Every_Swap_3) {
+    /*
+           2
+         /  \
+        1    3
+      /       \
+     0         4
+    */
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(0);
+    BinaryNode<int> r4(4);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->left = &r3;
+    root.right->right = &r4;
+    check_every_combination(root);
+}
 
 
 

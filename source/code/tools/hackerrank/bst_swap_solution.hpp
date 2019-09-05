@@ -52,16 +52,25 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
     //there is a problem with adjacent nodes
     //luckily we stored the parent, and can
     //rediscover which node needs swapped
-    if (Tree_Node_Properties::both_children_are_invalid(finds.first)){
+    if (Tree_Node_Properties::both_children_break_bst_constraint(finds.first)){
         std::swap(finds.first->left->val,finds.first->right->val);
         return;
     }
     
     //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
     
+    //std::cout << "sdfsdf" << std::endl;
+    
     if (!finds.second){
         auto child = Tree_Node_Properties::find_invalid_child(finds.first);
-        std::swap(finds.first->val,child->val);
+        //std::cout << "AHHHHHHHHHHH" << std::endl;
+        if (!child){
+            std::cout << "NOTHING TO SWAP" << std::endl;
+            //std::swap(finds.first->val,finds.second->val);
+        }
+        else{
+            std::swap(finds.first->val,child->val);
+        }
         return;
     }
     
@@ -142,6 +151,22 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
         //handle storing first discrepancy
         if (!finds.first){
             finds.first = choose_first_node(previous,t);
+            
+            
+            
+            //in the case we dont actually find another
+            //store this in the second
+            if (!Tree_Node_Properties::are_adjacent(previous,t)){
+                if (finds.first->val == previous->val){
+                    finds.second = t;
+                }
+                else{
+                    finds.second = previous;
+                }
+            }
+            
+            
+            
         }
         else if (!finds.second){
             finds.second = choose_second_node(previous,t);
@@ -169,4 +194,5 @@ void fix_bst(T *root){
     
     //fix the tree based on the two node pointers captured
     swap_found_nodes(finds);
+    //std::cout << "----" << std::endl;
 }
