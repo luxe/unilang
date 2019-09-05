@@ -16,7 +16,7 @@ void wrong_by_only_two_nodes(std::vector<int> nodes){
   EXPECT_EQ(discrepency_count,2);
 }
 
-void check_tree_fix(BinaryNode<int> & root){
+void check_algorithm_fixes_tree(BinaryNode<int> & root){
   auto before = Tree_Traversal::inorder_traversal_as_list(&root);
   fix_bst(&root);
   auto after = Tree_Traversal::inorder_traversal_as_list(&root);
@@ -26,14 +26,14 @@ void check_tree_fix(BinaryNode<int> & root){
   EXPECT_TRUE(std::is_sorted(after.begin(),after.end()));
 }
 
-void check_every_combination(BinaryNode<int> & root){
+void check_every_swap_combination(BinaryNode<int> & root){
     auto ordered = Tree_Traversal::inorder_traversal_as_node_list(&root);
     for (size_t i = 0; i < ordered.size(); ++i){
       for (size_t j = 0; j < ordered.size(); ++j){
         if (ordered[i]->val != ordered[j]->val){
           std::swap(ordered[i]->val,ordered[j]->val);
           //std::cout << "swapped " << ordered[i]->val << " " << ordered[j]->val << std::endl;
-          check_tree_fix(root);
+          check_algorithm_fixes_tree(root);
         }
       }
     }
@@ -61,7 +61,7 @@ TEST(BST_Fix, NonAdjacent_1) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 
 TEST(BST_Fix, NonAdjacent_2) {
@@ -83,7 +83,7 @@ TEST(BST_Fix, NonAdjacent_2) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 
 TEST(BST_Fix, NonAdjacent_3) {
@@ -98,7 +98,7 @@ TEST(BST_Fix, NonAdjacent_3) {
     BinaryNode<int> r2(1);
     root.left = &r1;
     root.right = &r2;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, NonAdjacent_4) {
     /*
@@ -118,7 +118,7 @@ TEST(BST_Fix, NonAdjacent_4) {
     root.right = &r2;
     root.left->left = &r3;
     root.right->right = &r4;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, NonAdjacent_5) {
     /*
@@ -144,7 +144,7 @@ TEST(BST_Fix, NonAdjacent_5) {
     root.right->right = &r4;
     root.left->left->left = &r5;
     root.right->right->right = &r6;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, NonAdjacent_6) {
     /*
@@ -170,7 +170,7 @@ TEST(BST_Fix, NonAdjacent_6) {
     root.right->right = &r4;
     root.left->left->left = &r5;
     root.right->right->right = &r6;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 
 TEST(BST_Fix, NonAdjacent_7) {
@@ -195,7 +195,7 @@ TEST(BST_Fix, NonAdjacent_7) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 
 TEST(BST_Fix, Adjacent_1) {
@@ -216,7 +216,7 @@ TEST(BST_Fix, Adjacent_1) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 
 TEST(BST_Fix, Adjacent_2) {
@@ -237,7 +237,7 @@ TEST(BST_Fix, Adjacent_2) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 
 TEST(BST_Fix, Adjacent_3) {
@@ -258,7 +258,7 @@ TEST(BST_Fix, Adjacent_3) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_4) {
     /*
@@ -272,7 +272,7 @@ TEST(BST_Fix, Adjacent_4) {
     BinaryNode<int> r2(3);
     root.left = &r1;
     root.right = &r2;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_5) {
     /*
@@ -290,7 +290,7 @@ TEST(BST_Fix, Adjacent_5) {
     root.left = &r1;
     root.right = &r2;
     root.left->left = &r3;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_6) {
     /*
@@ -308,7 +308,7 @@ TEST(BST_Fix, Adjacent_6) {
     root.left = &r1;
     root.right = &r2;
     root.right->right = &r3;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_7) {
     /*
@@ -328,7 +328,7 @@ TEST(BST_Fix, Adjacent_7) {
     root.right = &r2;
     root.left->left = &r3;
     root.right->right = &r4;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_8) {
     /*
@@ -355,7 +355,7 @@ TEST(BST_Fix, Adjacent_8) {
     root.left->left->left = &r3;
     root.left->left->left->left = &r4;
     root.left->left->left->right = &r5;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_9) {
     /*
@@ -382,7 +382,7 @@ TEST(BST_Fix, Adjacent_9) {
     root.left->left->left = &r3;
     root.left->left->left->left = &r4;
     root.left->left->left->right = &r5;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_10) {
     /*
@@ -396,7 +396,7 @@ TEST(BST_Fix, Adjacent_10) {
     BinaryNode<int> r2(2);
     root.left = &r1;
     root.right = &r2;
-    check_tree_fix(root);
+    check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_11) {
   /*
@@ -408,7 +408,7 @@ TEST(BST_Fix, Adjacent_11) {
   BinaryNode<int> root(2);
   BinaryNode<int> r1(1);
   root.right = &r1;
-  check_tree_fix(root);
+  check_algorithm_fixes_tree(root);
 }
 TEST(BST_Fix, Adjacent_12) {
   /*
@@ -420,7 +420,7 @@ TEST(BST_Fix, Adjacent_12) {
   BinaryNode<int> root(1);
   BinaryNode<int> r1(2);
   root.left = &r1;
-  check_tree_fix(root);
+  check_algorithm_fixes_tree(root);
 }
 
 
@@ -446,7 +446,7 @@ TEST(BST_Fix, Every_Swap_1) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_2) {
     /*
@@ -459,7 +459,7 @@ TEST(BST_Fix, Every_Swap_2) {
     BinaryNode<int> r2(3);
     root.left = &r1;
     root.right = &r2;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_3) {
     /*
@@ -478,7 +478,7 @@ TEST(BST_Fix, Every_Swap_3) {
     root.right = &r2;
     root.left->left = &r3;
     root.right->right = &r4;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_4) {
     /*
@@ -503,7 +503,7 @@ TEST(BST_Fix, Every_Swap_4) {
     root.left->left->left->left->left->left->left = &r7;
     root.left->left->left->left->left->left->left->left = &r8;
     root.left->left->left->left->left->left->left->left->left = &r9;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_5) {
     /*
@@ -528,7 +528,7 @@ TEST(BST_Fix, Every_Swap_5) {
     root.right->right->right->right->right->right->right = &r7;
     root.right->right->right->right->right->right->right->right = &r8;
     root.right->right->right->right->right->right->right->right->right = &r9;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_6) {
     /*
@@ -539,7 +539,7 @@ TEST(BST_Fix, Every_Swap_6) {
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     root.left = &r1;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_7) {
     /*
@@ -550,7 +550,7 @@ TEST(BST_Fix, Every_Swap_7) {
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     root.right = &r1;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_8) {
     /*
@@ -573,7 +573,7 @@ TEST(BST_Fix, Every_Swap_8) {
     root.right->right = &r3;
     root.right->right->left = &r4;
     root.right->right->right = &r5;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_9) {
     /*
@@ -596,7 +596,7 @@ TEST(BST_Fix, Every_Swap_9) {
     root.left->left = &r3;
     root.left->left->left = &r4;
     root.left->left->right = &r5;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 
 TEST(BST_Fix, Every_Swap_10) {
@@ -621,7 +621,7 @@ TEST(BST_Fix, Every_Swap_10) {
     root.left->right = &r2;
     root.left->right->left = &r3;
     root.left->right->left->right = &r4;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 
 TEST(BST_Fix, Every_Swap_11) {
@@ -647,7 +647,7 @@ TEST(BST_Fix, Every_Swap_11) {
     root.right->left = &r2;
     root.right->left->right = &r3;
     root.right->left->right->left = &r4;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_12) {
         /*
@@ -678,7 +678,7 @@ TEST(BST_Fix, Every_Swap_12) {
     root.left->right->right = &r7;
     root.right->left->right = &r8;
     root.right->right->left = &r9;
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 TEST(BST_Fix, Every_Swap_13) {
     /*
@@ -723,10 +723,7 @@ TEST(BST_Fix, Every_Swap_13) {
     root.right->right->right->left->left = &r10;
     root.left->left->left->right->right->right = &r11;
     root.right->right->right->left->left->left = &r12;
-    
-    
-    
-    check_every_combination(root);
+    check_every_swap_combination(root);
 }
 
 
