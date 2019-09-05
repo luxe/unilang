@@ -134,6 +134,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
         return;
     }
     
+    std::cout << "sfdd" << std::endl;
     auto to_swap1 = child1 ? child1 : finds.first;
     auto to_swap2 = child2 ? child2 : finds.second;
     
