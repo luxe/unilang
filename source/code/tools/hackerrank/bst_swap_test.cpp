@@ -398,6 +398,31 @@ TEST(BST_Fix, Adjacent_10) {
     root.right = &r2;
     check_tree_fix(root);
 }
+TEST(BST_Fix, Adjacent_11) {
+  /*
+  2
+   \
+    1
+    1 and 2 are swapped
+  */
+  BinaryNode<int> root(2);
+  BinaryNode<int> r1(1);
+  root.right = &r1;
+  check_tree_fix(root);
+}
+TEST(BST_Fix, Adjacent_12) {
+  /*
+   1
+  /
+  2
+    2 and 1 are swapped
+  */
+  BinaryNode<int> root(1);
+  BinaryNode<int> r1(2);
+  root.left = &r1;
+  check_tree_fix(root);
+}
+
 
 TEST(BST_Fix, Every_Swap_1) {
         /*

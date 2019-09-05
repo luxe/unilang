@@ -10,12 +10,14 @@
 //algorithm specific
 //how to choose the first node when finding a broken constraint
 template <typename T>
-T* handle_first_discrepancy(T* previous, T* t){
+void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
     
-    if (Tree_Node_Properties::are_adjacent(t,previous)){
-        return Tree_Node_Properties::get_parent(t,previous);
+    if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
+        finds.first = Tree_Node_Properties::get_parent(window.first,window.second);
+        finds.second = Tree_Node_Properties::get_child(window.first,window.second);
+        return;
     }
-    return previous;
+    finds = window;
 }
 
 //algorithm specific
@@ -56,30 +58,30 @@ void decide_swap(std::pair<T*,T*> & finds){
 }
 
 template <typename T>
-void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
-    if (previous->val > t->val){
+void store_nodes_for_swapping(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
+    if (window.first->val > window.second->val){
         
         
         //handle storing first discrepancy
         if (!finds.first){
-            finds.first = handle_first_discrepancy(previous,t);
+            handle_first_discrepancy(finds,window);
             
             
             
-            //in the case we dont actually find another
-            //store this in the second
-            if (finds.first->val == previous->val){
-                finds.second = t;
-            }
-            else{
-                finds.second = previous;
-            }
+            // //in the case we dont actually find another
+            // //store this in the second
+            // if (finds.first->val == window.first->val){
+            //     finds.second = window.second;
+            // }
+            // else{
+            //     finds.second = window.first;
+            // }
             
             
             
         }
         else{
-            finds.second = choose_second_node(previous,t);
+            finds.second = choose_second_node(window.first,window.second);
         }
     }
 }
@@ -95,7 +97,7 @@ void fix_bst(T *root){
     std::pair<T*,T*> finds {nullptr,nullptr};
     
     Tree_Traversal::perform_inorder_with_previous(root,[&](std::pair<T*,T*> window){
-        store_nodes_for_swapping(finds,window.first,window.second);
+        store_nodes_for_swapping(finds,window);
     });
     
     //fix the tree based on the two node pointers captured
