@@ -10,7 +10,7 @@
 //algorithm specific
 //how to choose the first node when finding a broken constraint
 template <typename T>
-T* choose_first_node(T* previous, T* t){
+T* handle_first_discrepancy(T* previous, T* t){
     
     if (Tree_Node_Properties::are_adjacent(t,previous)){
         return Tree_Node_Properties::get_parent(t,previous);
@@ -62,7 +62,7 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, T* previous, T* t){
         
         //handle storing first discrepancy
         if (!finds.first){
-            finds.first = choose_first_node(previous,t);
+            finds.first = handle_first_discrepancy(previous,t);
             
             
             
@@ -94,8 +94,8 @@ void fix_bst(T *root){
     //(as many online solutions show)
     std::pair<T*,T*> finds {nullptr,nullptr};
     
-    Tree_Traversal::perform_inorder_with_previous(root,[&](T* previous, T* t){
-        store_nodes_for_swapping(finds,previous,t);
+    Tree_Traversal::perform_inorder_with_previous(root,[&](std::pair<T*,T*> window){
+        store_nodes_for_swapping(finds,window.first,window.second);
     });
     
     //fix the tree based on the two node pointers captured
