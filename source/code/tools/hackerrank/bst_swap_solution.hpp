@@ -21,18 +21,6 @@ bool discrepancy_found(std::pair<T*,T*> const& window){
     return window.first->val > window.second->val;
 }
 
-//how to choose the first node when finding a broken constraint
-template <typename T>
-void handle_first_discrepancy(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& window){
-    nodes = window;
-}
-
-//how to choose the second node when finding a broken constraint
-template <typename T>
-void handle_second_discrepancy(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& window){
-    nodes.second = window.second;
-}
-
 template <typename T>
 void store_nodes_for_swapping(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& window){
     
@@ -40,10 +28,10 @@ void store_nodes_for_swapping(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& 
         
         //handle storing first discrepancy
         if (!nodes.first){
-            handle_first_discrepancy(nodes,window);
+            nodes = window;
         }
         else{
-            handle_second_discrepancy(nodes,window);
+            nodes.second = window.second;
         }
     }
 }
