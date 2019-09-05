@@ -7,15 +7,6 @@
 #include "code/utilities/types/tree/tree_traversal.hpp"
 #include "code/utilities/types/tree/tree_node_properties.hpp"
 
-//printing utility
-template <typename T>
-std::string as_str(T* t){
-    if (!t){
-        return "null";
-    }
-    return std::to_string(t->val);
-}
-
 //algorithm specific
 //how to choose the first node when finding a broken constraint
 template <typename T>
@@ -63,13 +54,13 @@ void decide_swap(std::pair<T*,T*> & finds){
     }
         
     if (child1){
-        if (finds.first->val < child1->val && child1->val > finds.second->val){
+        if (child1->val > finds.first->val && child1->val > finds.second->val){
             finds.first = child1;
             return;
         }
     }
     if (child2){
-        if (finds.second->val > child2->val && child2->val < finds.first->val){
+        if (child2->val < finds.second->val && child2->val < finds.first->val){
             finds.second = child2;
             return;
         }
