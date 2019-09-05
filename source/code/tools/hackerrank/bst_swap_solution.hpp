@@ -37,18 +37,6 @@ void handle_second_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const&
     }
 }
 
-//algorithm specific
-//how to swap based on the two node pointers you have
-template <typename T>
-void decide_swap(std::pair<T*,T*> & finds){
-    
-    if (Tree_Node_Properties::both_children_break_bst_constraint(finds.first)){
-        finds.second = finds.first->left;
-        finds.first = finds.first->right;
-        return;
-    }
-}
-
 template <typename T>
 void store_nodes_for_swapping(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
     
@@ -79,6 +67,5 @@ void fix_bst(T *root){
     });
     
     //fix the tree based on the two node pointers captured
-    decide_swap(finds);
     std::swap(finds.first->val,finds.second->val);
 }
