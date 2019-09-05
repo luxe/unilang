@@ -8,8 +8,8 @@
 #include "code/utilities/types/tree/tree_node_properties.hpp"
 
 template <typename T>
-T* min(T* a, T* b){
-    return a->val < b->val ? a : b;
+T* min(std::pair<T*,T*> const& nodes){
+    return nodes.first->val < nodes.second->val ? nodes.first : nodes.second;
 }
 template <typename T>
 void swap_values(std::pair<T*,T*> & nodes){
@@ -30,7 +30,7 @@ void handle_first_discrepancy(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& 
 //how to choose the second node when finding a broken constraint
 template <typename T>
 void handle_second_discrepancy(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& window){
-    nodes.second = min(window.first,window.second);
+    nodes.second = min(window);
 }
 
 template <typename T>
