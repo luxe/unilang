@@ -24,11 +24,11 @@ void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& 
 
 //how to choose the second node when finding a broken constraint
 template <typename T>
-void handle_next_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
+void handle_second_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
     
     finds.second = window.second;
     if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
-        finds.second = Tree_Node_Properties::get_parent(window.first,window.second);
+        finds.second = window.first->val < window.second->val ? window.first : window.second;
     }
 }
 
@@ -44,16 +44,10 @@ void decide_swap(std::pair<T*,T*> & finds){
     }
     
     auto child1 = Tree_Node_Properties::find_invalid_child(finds.first);
-    auto child2 = Tree_Node_Properties::find_invalid_child(finds.second);
         
     if (child1){
         if (child1->val > finds.first->val && child1->val > finds.second->val){
             finds.first = child1;
-        }
-    }
-    if (child2){
-        if (child2->val < finds.second->val && child2->val < finds.first->val){
-            finds.second = child2;
         }
     }
 }
@@ -68,7 +62,7 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, std::pair<T*,T*> const& 
             handle_first_discrepancy(finds,window);
         }
         else{
-            handle_next_discrepancy(finds,window);
+            handle_second_discrepancy(finds,window);
         }
     }
 }
