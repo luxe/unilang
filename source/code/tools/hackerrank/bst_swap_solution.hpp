@@ -12,12 +12,10 @@
 template <typename T>
 void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
     
-    if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
-        finds.first = Tree_Node_Properties::get_parent(window.first,window.second);
-        finds.second = Tree_Node_Properties::get_child(window.first,window.second);
-        return;
-    }
     finds = window;
+    if (Tree_Node_Properties::are_adjacent(window.first,window.second)){
+        finds = Tree_Node_Properties::as_parent_child(window);
+    }
 }
 
 //algorithm specific
