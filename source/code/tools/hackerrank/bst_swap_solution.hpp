@@ -27,14 +27,6 @@ void handle_first_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& 
 template <typename T>
 void handle_second_discrepancy(std::pair<T*,T*> & finds, std::pair<T*,T*> const& window){
     finds.second = min(window.first,window.second);
-    
-    auto child1 = Tree_Node_Properties::find_invalid_child(finds.first);
-        
-    if (child1){
-        if (child1->val > finds.first->val && child1->val > finds.second->val){
-            finds.first = child1;
-        }
-    }
 }
 
 template <typename T>
