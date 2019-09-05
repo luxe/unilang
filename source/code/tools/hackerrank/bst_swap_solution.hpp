@@ -43,25 +43,12 @@ T* choose_second_node(T* previous, T* t){
 template <typename T>
 void decide_swap(std::pair<T*,T*> & finds){
     
-    //tree is already fixed
-    //if (!finds.first && !finds.second){
-    //    return;
-    //}
-    
-    //only one node was stored
-    //there is a problem with adjacent nodes
-    //luckily we stored the parent, and can
-    //rediscover which node needs swapped
     if (Tree_Node_Properties::both_children_break_bst_constraint(finds.first)){
         finds.second = finds.first->left;
         finds.first = finds.first->right;
         return;
     }
     
-    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
-    
-    //non-adjacent nodes need swapped,
-    //and they are stored correctly.
     auto child1 = Tree_Node_Properties::find_invalid_child(finds.first);
     auto child2 = Tree_Node_Properties::find_invalid_child(finds.second);
     
