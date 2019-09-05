@@ -55,7 +55,6 @@ void decide_swap(std::pair<T*,T*> & finds){
     if (Tree_Node_Properties::both_children_break_bst_constraint(finds.first)){
         finds.second = finds.first->left;
         finds.first = finds.first->right;
-        //std::swap(finds.first->left->val,finds.first->right->val);
         return;
     }
     
@@ -72,7 +71,6 @@ void decide_swap(std::pair<T*,T*> & finds){
         if (finds.first->val < finds.second->val){
             finds.first = child1;
             finds.second = child2;
-            //std::swap(child1->val,child2->val);
             return;
         }
     }
@@ -80,21 +78,15 @@ void decide_swap(std::pair<T*,T*> & finds){
     if (child1){
         if (finds.first->val < child1->val && child1->val > finds.second->val){
             finds.first = child1;
-            //std::swap(child1->val,finds.second->val);
             return;
         }
     }
     if (child2){
         if (finds.second->val > child2->val && child2->val < finds.first->val){
-            
             finds.second = child2;
-            //std::swap(finds.first->val,child2->val);
             return;
         }
     }
-    
-    //std::swap(finds.first->val,finds.second->val);
-    return;
 }
 
 template <typename T>
