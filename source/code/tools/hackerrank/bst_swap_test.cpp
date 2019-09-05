@@ -504,7 +504,18 @@ TEST(BST_Fix, Every_Swap_5) {
     root.right->right->right->right->right->right->right->right->right = &r9;
     check_every_combination(root);
 }
-
+TEST(BST_Fix, Every_Swap_6) {
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    root.left = &r1;
+    check_every_combination(root);
+}
+TEST(BST_Fix, Every_Swap_7) {
+    BinaryNode<int> root(1);
+    BinaryNode<int> r1(2);
+    root.right = &r1;
+    check_every_combination(root);
+}
 
 
 
