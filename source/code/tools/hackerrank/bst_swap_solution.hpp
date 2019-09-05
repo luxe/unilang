@@ -63,20 +63,6 @@ void store_nodes_for_swapping(std::pair<T*,T*> & finds, std::pair<T*,T*> const& 
         //handle storing first discrepancy
         if (!finds.first){
             handle_first_discrepancy(finds,window);
-            
-            
-            
-            // //in the case we dont actually find another
-            // //store this in the second
-            // if (finds.first->val == window.first->val){
-            //     finds.second = window.second;
-            // }
-            // else{
-            //     finds.second = window.first;
-            // }
-            
-            
-            
         }
         else{
             finds.second = choose_second_node(window.first,window.second);
