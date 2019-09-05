@@ -506,18 +506,73 @@ TEST(BST_Fix, Every_Swap_5) {
     check_every_combination(root);
 }
 TEST(BST_Fix, Every_Swap_6) {
+    /*
+     2
+    /
+    1
+    */
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     root.left = &r1;
     check_every_combination(root);
 }
 TEST(BST_Fix, Every_Swap_7) {
+    /*
+     1
+     \
+      2
+    */
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     root.right = &r1;
     check_every_combination(root);
 }
-
+TEST(BST_Fix, Every_Swap_8) {
+    /*
+           2
+         /  \
+        1    3
+              \
+               5
+              / \
+             4   6
+    */
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(5);
+    BinaryNode<int> r4(4);
+    BinaryNode<int> r5(6);
+    root.left = &r1;
+    root.right = &r2;
+    root.right->right = &r3;
+    root.right->right->left = &r4;
+    root.right->right->right = &r5;
+    check_every_combination(root);
+}
+TEST(BST_Fix, Every_Swap_9) {
+    /*
+            5
+           / \
+          4   6
+         /
+        2
+       / \
+      1   3
+    */
+    BinaryNode<int> root(5);
+    BinaryNode<int> r1(4);
+    BinaryNode<int> r2(6);
+    BinaryNode<int> r3(2);
+    BinaryNode<int> r4(1);
+    BinaryNode<int> r5(3);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->left = &r3;
+    root.left->left->left = &r4;
+    root.left->left->right = &r5;
+    check_every_combination(root);
+}
 
 
 
