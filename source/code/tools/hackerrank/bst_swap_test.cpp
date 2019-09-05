@@ -60,6 +60,7 @@ TEST(BST_Fix, NonAdjacent_2) {
        / \
       2   20
     20 and 8 are swapped
+    [2,5,20,10,8]
     */
     BinaryNode<int> root(10);
     BinaryNode<int> r1(5);

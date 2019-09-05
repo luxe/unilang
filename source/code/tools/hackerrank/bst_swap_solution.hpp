@@ -57,7 +57,7 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
         return;
     }
     
-    std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
+    //std::cout << as_str(finds.first) << " " << as_str(finds.second) << std::endl;
     
     if (!finds.second){
         auto child = Tree_Node_Properties::find_invalid_child(finds.first);
@@ -111,17 +111,15 @@ void swap_found_nodes(std::pair<T*,T*> & finds){
             return;
         }
         if (child2){
-            
             if (finds.second->val > child2->val && child2->val < finds.first->val){
-                std::swap(finds.second->val,finds.first->val);
+                std::swap(child2->val,finds.first->val);
                 return;
             }
             if (finds.second->val < child2->val && child2->val > finds.first->val){
                 std::swap(finds.second->val,finds.first->val);
                 return;
             }
-            
-            std::swap(child1->val,finds.second->val);
+            std::swap(child2->val,finds.first->val);
             return;
         }
         std::swap(finds.first->val,finds.second->val);
