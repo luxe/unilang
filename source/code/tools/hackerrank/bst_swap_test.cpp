@@ -574,6 +574,30 @@ TEST(BST_Fix, Every_Swap_9) {
     check_every_combination(root);
 }
 
+TEST(BST_Fix, Every_Swap_10) {
+  
+  /*
+  13
+  /
+  11
+  \
+   12
+   /
+   9
+   \
+    10
+  */
+    BinaryNode<int> root(13);
+    BinaryNode<int> r1(11);
+    BinaryNode<int> r2(12);
+    BinaryNode<int> r3(9);
+    BinaryNode<int> r4(10);
+    root.left = &r1;
+    root.left->right = &r2;
+    root.left->right->left = &r3;
+    root.left->right->left->right = &r4;
+    check_every_combination(root);
+}
 
 
 
