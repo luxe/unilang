@@ -9,6 +9,113 @@ class
 //core traversals
 ◀public:
 template <typename T, typename Fun>
+static void morris_traversal(T *root, Fun fun){
+    
+    T* current = nullptr;
+    T* pre = nullptr; 
+  
+    if (root == nullptr){
+        return; 
+    }
+  
+    current = root; 
+    while (current != nullptr) {
+  
+        if (current->left == nullptr) { 
+            fun(current);
+            current = current->right; 
+        } 
+        else { 
+  
+            /* Find the inorder predecessor of current */
+            pre = current->left; 
+            while (pre->right != nullptr && pre->right != current) 
+                pre = pre->right; 
+  
+            /* Make current as the right child of its inorder  
+               predecessor */
+            if (pre->right == nullptr) { 
+                pre->right = current; 
+                current = current->left; 
+            } 
+  
+            /* Revert the changes made in the 'if' part to restore  
+               the original tree i.e., fix the right child 
+               of predecessor */
+            else { 
+                pre->right = nullptr; 
+                fun(current);
+                current = current->right; 
+            }
+        }
+    }
+} 
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void morris_traversal2(T *root, Fun fun){
+    
+    T* pre = nullptr; 
+  
+    if (root == nullptr){
+        return; 
+    }
+    
+    //a full in order traversal (no stack or recursion)
+    while (root != nullptr) {
+  
+        if (root->left == nullptr) { 
+            fun(pre,root,"reg");
+            root = root->right;
+        } 
+        else { 
+  
+            /* Find the inorder predecessor of root */
+            pre = root->left; 
+            while (pre->right != nullptr && pre->right != root) 
+                pre = pre->right; 
+  
+            /* Make root as the right child of its inorder  
+               predecessor */
+            if (pre->right == nullptr) { 
+                pre->right = root; 
+                root = root->left; 
+            } 
+  
+            /* Revert the changes made in the 'if' part to restore  
+               the original tree i.e., fix the right child 
+               of predecessor */
+            else { 
+                pre->right = nullptr; 
+                fun(pre,root,"fix");
+                root = root->right; 
+            }
+        }
+    }
+    
+    if (root){
+        std::cout << "{" << root->val << "} ";
+    }
+    else{
+        std::cout << "{null} ";
+    }
+    if (pre){
+        std::cout << "{" << pre->val << "} ";
+    }
+    else{
+        std::cout << "{null} ";
+    }
+    
+} 
+▶
+
+
+
+
+
+◀public:
+template <typename T, typename Fun>
 static void perform_preorder(T *root, Fun fun){
     
     if(root == nullptr) return;

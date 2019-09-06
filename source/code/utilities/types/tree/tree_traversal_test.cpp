@@ -27,16 +27,17 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     root.right->left = &r5;
     root.right->right = &r6;
     
+    // Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
+    //     std::cout << n->val << " ";
+    // });
+    // std::cout << std::endl;
+    // std::cout << root.val << std::endl;
     
-    BinaryNode<int>* ptr2 = &root;
-    
-    
-    try { Tree_Traversal::bst_inorder_throw_discrepancy(&root); }
-    catch (BinaryNode<int>* root){
-            std::cout << root->val << std::endl;
-        try { Tree_Traversal::bst_outorder_throw_discrepancy(ptr2); }
-        catch (BinaryNode<int>* ptr2){
-            std::cout << ptr2->val << std::endl;
-        }
-    }
+    Tree_Traversal::morris_traversal2(&root,[&](BinaryNode<int>* prev, BinaryNode<int>* n, std::string const& message){
+        std::cout << prev->val << " ";
+        std::cout << n->val << " " << message;
+        std::cout << std::endl;
+    });
+    // std::cout << std::endl;
+    // std::cout << root.val << std::endl;
 }
