@@ -35,3 +35,10 @@ hcp(name = "bst_swap_solution_in_out", deps = [
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
+
+hcp(name = "bst_swap_solution_geeks", deps = [
+    "//code/utilities/printers:lib",
+    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/types/tree:tree_traversal",
+    "//code/utilities/types/tree:tree_node_properties",
+])
