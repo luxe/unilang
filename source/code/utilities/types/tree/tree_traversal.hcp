@@ -2,6 +2,7 @@ class
 ❪iostream❫
 ❪string❫
 ❪utility❫
+❪"code/utilities/types/tree/tree_node_properties.hpp"❫
 ⚯
 ⚞⚟
 
@@ -10,7 +11,7 @@ class
 template <typename T, typename Fun>
 static void perform_preorder(T *root, Fun fun){
     
-    if(root == NULL) return;
+    if(root == nullptr) return;
     fun(root);
     perform_preorder(root->left,fun);
     perform_preorder(root->right,fun);
@@ -22,7 +23,7 @@ static void perform_preorder(T *root, Fun fun){
 template <typename T, typename Fun>
 static void perform_inorder(T *root, Fun fun){
     
-    if(root == NULL) return;
+    if(root == nullptr) return;
     perform_inorder(root->left,fun);
     fun(root);
     perform_inorder(root->right,fun);
@@ -47,7 +48,7 @@ static void perform_inorder_with_previous(T *root, Fun fun){
 template <typename T, typename Fun>
 static void perform_outorder(T *root, Fun fun){
     
-    if(root == NULL) return;
+    if(root == nullptr) return;
     perform_outorder(root->right,fun);
     fun(root);
     perform_outorder(root->left,fun);
@@ -56,9 +57,23 @@ static void perform_outorder(T *root, Fun fun){
 
 ◀public:
 template <typename T, typename Fun>
+static void perform_outorder_with_previous(T *root, Fun fun){
+    T *previous = nullptr;
+    perform_outorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
 static void perform_postorder(T *root, Fun fun){
     
-    if(root == NULL) return;
+    if(root == nullptr) return;
     perform_postorder(root->left,fun);
     perform_postorder(root->right,fun);
     fun(root);
@@ -69,24 +84,50 @@ static void perform_postorder(T *root, Fun fun){
 //bst traversal utilities
 ◀public:
 template <typename T>
-static bool bst_inorder_until_discrepancy(T *root){
-    if(root == NULL) return true;
-    if (bst_inorder_until_discrepancy(root->left)){
-        if (root->val > root->right->val){ return false; }
-        bst_inorder_until_discrepancy(root->right);
+static void bst_inorder_throw_discrepancy(T * root){
+    if(root == nullptr) return;
+    if (root->left && root->val < root->left->val){
+        std::cout << "{" << root->val << " " << root->left->val << "}" << std::endl;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        root = root->left;
+        throw root;
     }
-    return false;
+    bst_inorder_throw_discrepancy(root->left);
+    if (root->right && root->val < root->right->val){
+        std::cout << "{" << root->val << " " << root->right->val << "}" << std::endl;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        root = root->right;
+        throw root;
+    }
+    bst_inorder_throw_discrepancy(root->right);
 }
 ▶
 ◀public:
 template <typename T>
-static bool bst_outorder_until_discrepancy(T *root){
-    if(root == NULL) return true;
-    if (bst_outorder_until_discrepancy(root->right)){
-        if (root->val < root->left->val){ return false; }
-        bst_outorder_until_discrepancy(root->left);
+static void bst_outorder_throw_discrepancy(T *root){
+    if(root == nullptr) return;
+    if (root->right && root->val > root->right->val){
+        std::cout << "<" << root->val << " " << root->right->val << ">" << std::endl;
+        root = root->right;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        throw root;
     }
-    return true;
+    bst_inorder_throw_discrepancy(root->right);
+    if (root->left && root->val > root->left->val){
+        std::cout << "<" << root->val << " " << root->left->val << ">" << std::endl;
+        root = root->left;
+        //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
+        //    root = Tree_Node_Properties::find_invalid_child(root);
+        //}
+        throw root;
+    }
+    bst_inorder_throw_discrepancy(root->left);
 }
 ▶
 
