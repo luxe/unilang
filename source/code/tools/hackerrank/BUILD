@@ -7,6 +7,7 @@ gtest(
     deps = [
         "//code/tools/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_in_out",
+        "//code/tools/hackerrank:bst_swap_solution_geeks",
         "//code/utilities/types/tree:tree_traversal",
     ]
 )
