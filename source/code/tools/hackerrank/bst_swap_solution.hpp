@@ -59,9 +59,8 @@ void fix_bst_with_sliding_window_and_two_ptr_storage(T *root){
 template <typename T>
 void fix_bst_with_2_ptrs(T *root){
     
-    T* previous = nullptr;
     try {
-        Tree_Traversal::perform_inorder_with_previous(previous,root,[&](std::pair<T*,T*> window){
+        Tree_Traversal::perform_inorder_with_previous(Tree_Traversal::get_earliest_nullptr_inorder(root),root,[&](std::pair<T*,T*> window){
             if (inorder_discrepancy_found(window)){
                 throw window.first;
             }
@@ -70,7 +69,7 @@ void fix_bst_with_2_ptrs(T *root){
     catch(T* ptr1){
         
         try {
-            Tree_Traversal::perform_outorder_with_previous(previous,root,[&](std::pair<T*,T*> window){
+            Tree_Traversal::perform_outorder_with_previous(Tree_Traversal::get_earliest_nullptr_outorder(root),root,[&](std::pair<T*,T*> window){
                 if (outorder_discrepancy_found(window)){
                     throw window.first;
                 }
@@ -79,7 +78,6 @@ void fix_bst_with_2_ptrs(T *root){
         catch(T* ptr2){
             std::swap(ptr1->val,ptr2->val);
         }
-        
     }
     
     // T* ptr2 = root;
