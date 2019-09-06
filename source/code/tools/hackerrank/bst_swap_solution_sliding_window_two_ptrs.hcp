@@ -1,0 +1,68 @@
+class
+❪iostream❫
+❪vector❫
+❪string❫
+❪"code/utilities/printers/lib.hpp"❫
+❪"code/utilities/data_structures/tree/binary_node.hpp"❫
+❪"code/utilities/types/tree/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/tree_node_properties.hpp"❫
+⚯
+⚞⚟
+
+
+
+◀private:
+template <typename T>
+static T* min(std::pair<T*,T*> const& nodes){
+    return nodes.first->val < nodes.second->val ? nodes.first : nodes.second;
+}
+▶
+
+◀private:
+template <typename T>
+static void swap_values(std::pair<T*,T*> & nodes){
+    std::swap(nodes.first->val,nodes.second->val);
+}
+▶
+
+◀private:
+template <typename T>
+static bool inorder_discrepancy_found(std::pair<T*,T*> const& window){
+    return window.first->val > window.second->val;
+}
+▶
+
+◀private:
+template <typename T>
+static void store_nodes_for_swapping(std::pair<T*,T*> & nodes, std::pair<T*,T*> const& window){
+    
+    if (inorder_discrepancy_found(window)){
+        
+        //handle storing first discrepancy
+        if (!nodes.first){
+            nodes = window;
+        }
+        else{
+            nodes.second = window.second;
+        }
+    }
+}
+▶
+
+◀public:
+template <typename T>
+static void fix_bst(T *root){
+    
+    //store only two node pointers 
+    //we want to prove that this can be done without an additional third pointer
+    //(as many online solutions show)
+    std::pair<T*,T*> nodes {nullptr,nullptr};
+    
+    Tree_Traversal::perform_inorder_with_previous(root,[&](std::pair<T*,T*> window){
+        store_nodes_for_swapping(nodes,window);
+    });
+    
+    //fix the tree based on the two node pointers captured
+    swap_values(nodes);
+}
+▶

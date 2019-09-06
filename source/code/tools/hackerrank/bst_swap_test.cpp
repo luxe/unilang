@@ -1,5 +1,6 @@
-#include "code/tools/hackerrank/bst_swap_solution.hpp"
 #include "code/utilities/types/tree/tree_traversal.hpp"
+#include "code/tools/hackerrank/bst_swap_solution_sliding_window_two_ptrs.hpp"
+#include "code/tools/hackerrank/bst_swap_solution_in_out.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 
@@ -18,7 +19,7 @@ void wrong_by_only_two_nodes(std::vector<int> nodes){
 
 void check_algorithm_fixes_tree(BinaryNode<int> & root){
   auto before = Tree_Traversal::inorder_traversal_as_list(&root);
-  fix_bst_with_2_ptrs(&root);
+  Bst_Swap_Solution_Sliding_Window_Two_Ptrs::fix_bst(&root);
   auto after = Tree_Traversal::inorder_traversal_as_list(&root);
   
   EXPECT_FALSE(std::is_sorted(before.begin(),before.end()));
