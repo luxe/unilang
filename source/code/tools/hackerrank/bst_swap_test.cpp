@@ -19,7 +19,11 @@ void wrong_by_only_two_nodes(std::vector<int> nodes){
 
 void check_algorithm_fixes_tree(BinaryNode<int> & root){
   auto before = Tree_Traversal::inorder_traversal_as_list(&root);
-  Bst_Swap_Solution_Sliding_Window_Two_Ptrs::fix_bst(&root);
+  
+  //Bst_Swap_Solution_Sliding_Window_Two_Ptrs::fix_bst(&root);
+  Bst_Swap_Solution_In_Out::fix_bst(&root);
+  
+  
   auto after = Tree_Traversal::inorder_traversal_as_list(&root);
   
   EXPECT_FALSE(std::is_sorted(before.begin(),before.end()));
