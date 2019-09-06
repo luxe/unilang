@@ -20,6 +20,29 @@ static void perform_preorder(T *root, Fun fun){
 
 
 ◀public:
+template <typename T>
+static T* set_to_earliest_inorder_nullptr(T *root){
+    
+    if(root == nullptr) return;
+    while (root->left){
+        root = root->left;
+    }
+}
+▶
+
+◀public:
+template <typename T>
+static T* set_to_earliest_outorder_nullptr(T *root){
+    
+    if(root == nullptr) return;
+    while (root->right){
+        root = root->right;
+    }
+}
+▶
+
+
+◀public:
 template <typename T, typename Fun>
 static void perform_inorder(T *root, Fun fun){
     
@@ -46,6 +69,19 @@ static void perform_inorder_with_previous(T *root, Fun fun){
 
 ◀public:
 template <typename T, typename Fun>
+static void perform_inorder_with_previous(T *previous, T *root, Fun fun){
+    perform_inorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
 static void perform_outorder(T *root, Fun fun){
     
     if(root == nullptr) return;
@@ -59,6 +95,19 @@ static void perform_outorder(T *root, Fun fun){
 template <typename T, typename Fun>
 static void perform_outorder_with_previous(T *root, Fun fun){
     T *previous = nullptr;
+    perform_outorder(root,[&](T* t){
+        if (previous){
+            std::pair<T*,T*> window{previous,t};
+            fun(window);
+        }
+        previous = t;
+    });
+}
+▶
+
+◀public:
+template <typename T, typename Fun>
+static void perform_outorder_with_previous(T *previous, T *root, Fun fun){
     perform_outorder(root,[&](T* t){
         if (previous){
             std::pair<T*,T*> window{previous,t};
