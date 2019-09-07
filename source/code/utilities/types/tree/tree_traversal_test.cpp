@@ -33,7 +33,8 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     // std::cout << std::endl;
     // std::cout << root.val << std::endl;
     
-    Tree_Traversal::morris_traversal2(&root,[&](BinaryNode<int>* prev, BinaryNode<int>* n, std::string const& message){
+    BinaryNode<int>* pre = nullptr; 
+    Tree_Traversal::morris_traversal2(&root,pre,[&](BinaryNode<int>* prev, BinaryNode<int>* n, std::string const& message){
         std::cout << prev->val << " ";
         std::cout << n->val << " " << message;
         std::cout << std::endl;

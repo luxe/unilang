@@ -54,58 +54,117 @@ static void morris_traversal(T *root, Fun fun){
 
 ◀public:
 template <typename T, typename Fun>
-static void morris_traversal2(T *root, Fun fun){
-    
-    T* pre = nullptr; 
+static void morris_traversal2(T *curr, T* pre, Fun fun){
   
-    if (root == nullptr){
+    if (curr == nullptr){
         return; 
     }
     
+    
+    std::cout << "connect end to root" << std::endl;
+    pre = curr;
+    while (curr->right != nullptr){
+        curr = curr->right;
+    }
+    curr->right = pre;
+    curr->left = (T*)&(curr->left);
+    curr = pre;
+    
+    
+    std::cout << "start" << std::endl;
+    
+    Tree_Node_Properties::print_local_bst_constraint(curr);
+    Tree_Node_Properties::print_local_bst_constraint(pre);
+    std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+    
     //a full in order traversal (no stack or recursion)
-    while (root != nullptr) {
+    while (curr != nullptr) {
   
-        if (root->left == nullptr) { 
-            fun(pre,root,"reg");
-            root = root->right;
+        if (curr->left == nullptr) { 
+            
+            //fun(pre,curr,"reg");
+            
+            std::cout << "inorder good" << std::endl;
+            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+    
+            curr = curr->right;
+            
+            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
         } 
         else { 
   
-            /* Find the inorder predecessor of root */
-            pre = root->left; 
-            while (pre->right != nullptr && pre->right != root) 
-                pre = pre->right; 
+            /* Find the inorder predecessor of curr */
+            std::cout << "finding the bridge" << std::endl;
+            if (Tree_Node_Properties::left_node_points_to_itself(curr)){
+                std::cout << "FULL TRAVERSAL DONE" << std::endl;
+                curr->left = nullptr;
+                pre = curr->right;
+                curr->right = nullptr;
+                curr = pre;
+            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            break;
+                
+                
+                
+            }
+            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            
+            pre = curr->left; 
+            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            
+            while (pre->right != nullptr && pre->right != curr){
+                pre = pre->right;
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            }
+            std::cout << "found" << std::endl;
   
-            /* Make root as the right child of its inorder  
+            /* Make curr as the right child of its inorder  
                predecessor */
             if (pre->right == nullptr) { 
-                pre->right = root; 
-                root = root->left; 
+                
+                std::cout << "change curr" << std::endl;
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                pre->right = curr;
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]*" << std::endl;
+                curr = curr->left; 
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
             } 
   
             /* Revert the changes made in the 'if' part to restore  
                the original tree i.e., fix the right child 
                of predecessor */
             else { 
-                pre->right = nullptr; 
-                fun(pre,root,"fix");
-                root = root->right; 
+
+                std::cout << "revert changes" << std::endl;
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                pre->right = nullptr;
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]*" << std::endl;
+                //fun(pre,curr,"fix");
+                curr = curr->right; 
+                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
             }
         }
     }
     
-    if (root){
-        std::cout << "{" << root->val << "} ";
-    }
-    else{
-        std::cout << "{null} ";
-    }
-    if (pre){
-        std::cout << "{" << pre->val << "} ";
-    }
-    else{
-        std::cout << "{null} ";
-    }
+    std::cout << "done" << std::endl;
+    Tree_Node_Properties::print_local_bst_constraint(curr);
+    Tree_Node_Properties::print_local_bst_constraint(pre);
+    std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+    
     
 } 
 ▶
@@ -270,7 +329,7 @@ template <typename T>
 static void bst_inorder_throw_discrepancy(T * root){
     if(root == nullptr) return;
     if (root->left && root->val < root->left->val){
-        std::cout << "{" << root->val << " " << root->left->val << "}" << std::endl;
+        std::cout << "{" << root->val << "]" << root->left->val << "}" << std::endl;
         //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
         //    root = Tree_Node_Properties::find_invalid_child(root);
         //}
@@ -279,7 +338,7 @@ static void bst_inorder_throw_discrepancy(T * root){
     }
     bst_inorder_throw_discrepancy(root->left);
     if (root->right && root->val < root->right->val){
-        std::cout << "{" << root->val << " " << root->right->val << "}" << std::endl;
+        std::cout << "{" << root->val << "]" << root->right->val << "}" << std::endl;
         //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
         //    root = Tree_Node_Properties::find_invalid_child(root);
         //}
@@ -294,7 +353,7 @@ template <typename T>
 static void bst_outorder_throw_discrepancy(T *root){
     if(root == nullptr) return;
     if (root->right && root->val > root->right->val){
-        std::cout << "<" << root->val << " " << root->right->val << ">" << std::endl;
+        std::cout << "<" << root->val << "]" << root->right->val << ">" << std::endl;
         root = root->right;
         //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
         //    root = Tree_Node_Properties::find_invalid_child(root);
@@ -303,7 +362,7 @@ static void bst_outorder_throw_discrepancy(T *root){
     }
     bst_inorder_throw_discrepancy(root->right);
     if (root->left && root->val > root->left->val){
-        std::cout << "<" << root->val << " " << root->left->val << ">" << std::endl;
+        std::cout << "<" << root->val << "]" << root->left->val << ">" << std::endl;
         root = root->left;
         //if (Tree_Node_Properties::child_breaks_bst_constraint(root)){
         //    root = Tree_Node_Properties::find_invalid_child(root);

@@ -4,6 +4,21 @@ class
 ⚯
 ⚞⚟
 
+
+◀public:
+template <typename T>
+static bool left_node_points_to_itself(T* node){
+    if (node){
+        if (node->left){
+            if ((node->left) == (T*)&(node->left)){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+▶
+
 //parent utility
 //check if parent is really a parent of child
 ◀public:
@@ -104,10 +119,12 @@ static std::pair<T*,T*> as_parent_child(std::pair<T*,T*> const& nodes){
 ◀public:
 template <typename T>
 static bool left_child_breaks_bst_constraint(T* parent)
-{
-    if (parent->left){
-        if (parent->left->val > parent->val){
-            return true;
+{   
+    if (parent){
+        if (parent->left){
+            if (parent->left->val > parent->val){
+                return true;
+            }
         }
     }
     return false;
@@ -118,9 +135,11 @@ static bool left_child_breaks_bst_constraint(T* parent)
 template <typename T>
 static bool right_child_breaks_bst_constraint(T* parent)
 {
-    if (parent->right){
-        if (parent->right->val < parent->val){
-            return true;
+    if (parent){
+        if (parent->right){
+            if (parent->right->val < parent->val){
+                return true;
+            }
         }
     }
     return false;
@@ -143,6 +162,19 @@ static T* find_invalid_child(T* parent){
 }
 ▶
 
+
+◀public:
+template <typename T>
+static void print_local_bst_constraint(T* parent){
+    if (left_child_breaks_bst_constraint(parent)){
+        std::cout << "broken constraint: " << "[" << parent->val << "] L [" << parent->left->val << "]" << std::endl;
+    }
+    if (right_child_breaks_bst_constraint(parent)){
+        std::cout << "broken constraint: " << "[" << parent->val << "] R [" << parent->right->val << "]" << std::endl;
+    }
+}
+▶
+
 ◀public:
 template <typename T>
 static bool child_breaks_bst_constraint(T* parent){
@@ -160,7 +192,7 @@ static bool both_children_break_bst_constraint(T* parent){
 ◀public:
 //printing utility
 template <typename T>
-std::string as_str(T* t){
+static std::string as_str(T* t){
     if (!t){
         return "null";
     }
