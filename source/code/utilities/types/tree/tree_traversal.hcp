@@ -53,6 +53,16 @@ static void morris_traversal(T *root, Fun fun){
 ▶
 
 ◀public:
+template <typename T>
+static void state_check(T* curr, T* pre){
+    //Tree_Node_Properties::print_local_bst_constraint(curr);
+    //Tree_Node_Properties::print_local_bst_constraint(pre);
+    std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
+    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+}
+▶
+
+◀public:
 template <typename T, typename Fun>
 static void morris_traversal2(T *curr, T* pre, Fun fun){
   
@@ -72,56 +82,43 @@ static void morris_traversal2(T *curr, T* pre, Fun fun){
     
     
     std::cout << "start" << std::endl;
-    
-    Tree_Node_Properties::print_local_bst_constraint(curr);
-    Tree_Node_Properties::print_local_bst_constraint(pre);
-    std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+    state_check(curr,pre);
     
     //a full in order traversal (no stack or recursion)
     while (curr != nullptr) {
   
         if (curr->left == nullptr) { 
             
-            //fun(pre,curr,"reg");
+            fun(pre,curr,"reg");
             
             std::cout << "inorder good" << std::endl;
-            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            state_check(curr,pre);
     
             curr = curr->right;
             
-            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            state_check(curr,pre);
         } 
         else { 
   
             /* Find the inorder predecessor of curr */
             std::cout << "finding the bridge" << std::endl;
-            if (Tree_Node_Properties::left_node_points_to_itself(curr)){
-                std::cout << "FULL TRAVERSAL DONE" << std::endl;
-                curr->left = nullptr;
-                pre = curr->right;
-                curr->right = nullptr;
-                curr = pre;
-            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
-            break;
-                
-                
-                
-            }
-            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            // if (Tree_Node_Properties::left_node_points_to_itself(curr)){
+            //     std::cout << "FULL TRAVERSAL DONE" << std::endl;
+            //     curr->left = nullptr;
+            //     pre = curr->right;
+            //     curr->right = nullptr;
+            //     curr = pre;
+            //     state_check(curr,pre);
+            //     break;
+            // }
+            state_check(curr,pre);
             
             pre = curr->left; 
-            std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-            std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+            state_check(curr,pre);
             
             while (pre->right != nullptr && pre->right != curr){
                 pre = pre->right;
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                state_check(curr,pre);
             }
             std::cout << "found" << std::endl;
   
@@ -130,14 +127,11 @@ static void morris_traversal2(T *curr, T* pre, Fun fun){
             if (pre->right == nullptr) { 
                 
                 std::cout << "change curr" << std::endl;
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                state_check(curr,pre);
                 pre->right = curr;
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]*" << std::endl;
+                state_check(curr,pre);
                 curr = curr->left; 
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                state_check(curr,pre);
             } 
   
             /* Revert the changes made in the 'if' part to restore  
@@ -146,15 +140,12 @@ static void morris_traversal2(T *curr, T* pre, Fun fun){
             else { 
 
                 std::cout << "revert changes" << std::endl;
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                state_check(curr,pre);
                 pre->right = nullptr;
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]*" << std::endl;
-                //fun(pre,curr,"fix");
+                state_check(curr,pre);
+                fun(pre,curr,"fix");
                 curr = curr->right; 
-                std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-                std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+                state_check(curr,pre);
             }
         }
     }
@@ -162,8 +153,7 @@ static void morris_traversal2(T *curr, T* pre, Fun fun){
     std::cout << "done" << std::endl;
     Tree_Node_Properties::print_local_bst_constraint(curr);
     Tree_Node_Properties::print_local_bst_constraint(pre);
-    std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+    state_check(curr,pre);
     
     
 } 
