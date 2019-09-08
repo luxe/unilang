@@ -12,6 +12,8 @@ gtest(
         "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
         "//code/utilities/types/tree:tree_traversal",
+        "//code/tools/hackerrank:bst_swap_algorithm",
+        "//code/tools/hackerrank:bst_swap_solution"
     ]
 )
 

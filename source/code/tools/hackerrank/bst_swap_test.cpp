@@ -4,6 +4,8 @@
 #include "code/tools/hackerrank/bst_swap_solution_geeks_five_ptrs.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_geeks_four_ptrs.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_geeks_three_ptrs.hpp"
+#include "code/tools/hackerrank/bst_swap_algorithm.hpp"
+#include "code/tools/hackerrank/bst_swap_solution.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 
@@ -20,7 +22,7 @@ void wrong_by_only_two_nodes(std::vector<int> nodes){
   EXPECT_EQ(discrepency_count,2);
 }
 
-void check_algorithm_fixes_tree(BinaryNode<int> & root){
+void check_algorithm_fixes_tree(BinaryNode<int> & root, Bst_Swap_Algorithm const& algo){
   
   //the tree SHOULD NOT be sorted before we start
   auto before = Tree_Traversal::inorder_traversal_as_list(&root);
@@ -31,22 +33,33 @@ void check_algorithm_fixes_tree(BinaryNode<int> & root){
   wrong_by_only_two_nodes(before);
   
   //Time to fix the tree, and confirm that we actually fixed it.
-  Bst_Swap_Solution_Geeks_Three_Ptrs::fix_bst(&root);
+  Bst_Swap_Solution::fix_bst(&root,algo);
   auto after = Tree_Traversal::inorder_traversal_as_list(&root);
   EXPECT_TRUE(std::is_sorted(after.begin(),after.end()));
 }
 
-void check_every_swap_combination(BinaryNode<int> & root){
+void check_every_swap_combination(BinaryNode<int> & root, Bst_Swap_Algorithm const& algo){
     auto ordered = Tree_Traversal::inorder_traversal_as_node_list(&root);
     for (size_t i = 0; i < ordered.size(); ++i){
       for (size_t j = 0; j < ordered.size(); ++j){
         if (ordered[i]->val != ordered[j]->val){
           std::swap(ordered[i]->val,ordered[j]->val);
           //std::cout << "swapped " << ordered[i]->val << " " << ordered[j]->val << std::endl;
-          check_algorithm_fixes_tree(root);
+          check_algorithm_fixes_tree(root,algo);
         }
       }
     }
+}
+
+
+std::vector<Bst_Swap_Algorithm> algorithms_to_test(){
+  std::vector<Bst_Swap_Algorithm> x;
+  x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_FIVE);
+  x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_FOUR);
+  x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_THREE);
+  x.emplace_back(Bst_Swap_Algorithm::SLIDING_WINDOW_AND_PAIR);
+  x.emplace_back(Bst_Swap_Algorithm::INORDER_OUTORDER_THREE);
+  return x;
 }
 
 TEST(BST_Fix, NonAdjacent_1) {
@@ -57,21 +70,22 @@ TEST(BST_Fix, NonAdjacent_1) {
      //  /  \ /  \ 
      // 1   3 7  12 
      // 10 and 2 are swapped
-     
-    BinaryNode<int> root(6);
-    BinaryNode<int> r1(10);
-    BinaryNode<int> r2(2);
-    BinaryNode<int> r3(1);
-    BinaryNode<int> r4(3);
-    BinaryNode<int> r5(7);
-    BinaryNode<int> r6(12);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    root.right->left = &r5;
-    root.right->right = &r6;
-    check_algorithm_fixes_tree(root);
+    
+    for (auto algo: algorithms_to_test()){
+      BinaryNode<int> root(6);
+      BinaryNode<int> r1(10);
+      BinaryNode<int> r2(2);
+      BinaryNode<int> r3(1);
+      BinaryNode<int> r4(3);
+      BinaryNode<int> r5(7);
+      BinaryNode<int> r6(12);
+      root.left = &r1;
+      root.right = &r2;
+      root.left->left = &r3;
+      root.left->right = &r4;
+      root.right->left = &r5;
+      root.right->right = &r6;
+      check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, NonAdjacent_2) {
@@ -83,6 +97,7 @@ TEST(BST_Fix, NonAdjacent_2) {
     //   2   20
     // 20 and 8 are swapped
     
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(10);
     BinaryNode<int> r1(5);
     BinaryNode<int> r2(8);
@@ -92,7 +107,7 @@ TEST(BST_Fix, NonAdjacent_2) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, NonAdjacent_3) {
@@ -101,13 +116,13 @@ TEST(BST_Fix, NonAdjacent_3) {
     //      /  \
     //     3    1
     // 3 and 1 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(2);
     BinaryNode<int> r1(3);
     BinaryNode<int> r2(1);
     root.left = &r1;
     root.right = &r2;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, NonAdjacent_4) {
@@ -119,6 +134,7 @@ TEST(BST_Fix, NonAdjacent_4) {
     //   4        0
     // 4 and 0 are swapped
     
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(3);
@@ -128,7 +144,7 @@ TEST(BST_Fix, NonAdjacent_4) {
     root.right = &r2;
     root.left->left = &r3;
     root.right->right = &r4;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, NonAdjacent_5) {
@@ -141,7 +157,7 @@ TEST(BST_Fix, NonAdjacent_5) {
     //  /          \
     // 7            1
     // 7 and 1 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(4);
     BinaryNode<int> r1(3);
     BinaryNode<int> r2(5);
@@ -155,7 +171,7 @@ TEST(BST_Fix, NonAdjacent_5) {
     root.right->right = &r4;
     root.left->left->left = &r5;
     root.right->right->right = &r6;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, NonAdjacent_6) {
     
@@ -167,7 +183,7 @@ TEST(BST_Fix, NonAdjacent_6) {
     //  /          \
     // 1            4
     // 7 and 4 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(7);
     BinaryNode<int> r1(3);
     BinaryNode<int> r2(5);
@@ -181,7 +197,7 @@ TEST(BST_Fix, NonAdjacent_6) {
     root.right->right = &r4;
     root.left->left->left = &r5;
     root.right->right->right = &r6;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, NonAdjacent_7) {
@@ -192,7 +208,7 @@ TEST(BST_Fix, NonAdjacent_7) {
      //  /  \ /  \ 
      // 12   3 7  1 
      // 12 and 1 are swapped
-     
+     for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(6);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(10);
@@ -206,7 +222,7 @@ TEST(BST_Fix, NonAdjacent_7) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, Adjacent_1) {
@@ -217,7 +233,7 @@ TEST(BST_Fix, Adjacent_1) {
     //    / \
     //   2   5
     // 5 and 6 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(10);
     BinaryNode<int> r1(6);
     BinaryNode<int> r2(20);
@@ -227,7 +243,7 @@ TEST(BST_Fix, Adjacent_1) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, Adjacent_2) {
@@ -238,7 +254,7 @@ TEST(BST_Fix, Adjacent_2) {
     //    / \
     //   5   7
     // 4 and 5 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(10);
     BinaryNode<int> r1(4);
     BinaryNode<int> r2(20);
@@ -248,7 +264,7 @@ TEST(BST_Fix, Adjacent_2) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 
 TEST(BST_Fix, Adjacent_3) {
@@ -259,7 +275,7 @@ TEST(BST_Fix, Adjacent_3) {
     //    / \
     //   4   7
     // 5 and 10 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(5);
     BinaryNode<int> r1(10);
     BinaryNode<int> r2(20);
@@ -269,7 +285,7 @@ TEST(BST_Fix, Adjacent_3) {
     root.right = &r2;
     root.left->left = &r3;
     root.left->right = &r4;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_4) {
     
@@ -277,13 +293,13 @@ TEST(BST_Fix, Adjacent_4) {
     //      /  \
     //     2    3
     // 2 and 1 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(3);
     root.left = &r1;
     root.right = &r2;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_5) {
     
@@ -293,7 +309,7 @@ TEST(BST_Fix, Adjacent_5) {
     //    /
     //   0
     // 2 and 1 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(3);
@@ -301,7 +317,7 @@ TEST(BST_Fix, Adjacent_5) {
     root.left = &r1;
     root.right = &r2;
     root.left->left = &r3;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_6) {
     
@@ -311,7 +327,7 @@ TEST(BST_Fix, Adjacent_6) {
     //           \
     //            4
     // 2 and 1 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(3);
@@ -319,7 +335,7 @@ TEST(BST_Fix, Adjacent_6) {
     root.left = &r1;
     root.right = &r2;
     root.right->right = &r3;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_7) {
     
@@ -329,7 +345,7 @@ TEST(BST_Fix, Adjacent_7) {
     //   /       \
     //  0         4
     // 2 and 1 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(3);
@@ -339,7 +355,7 @@ TEST(BST_Fix, Adjacent_7) {
     root.right = &r2;
     root.left->left = &r3;
     root.right->right = &r4;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_8) {
     
@@ -354,7 +370,7 @@ TEST(BST_Fix, Adjacent_8) {
  // 6   7
    
  //    6 and 5 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(20);
     BinaryNode<int> r1(19);
     BinaryNode<int> r2(18);
@@ -366,7 +382,7 @@ TEST(BST_Fix, Adjacent_8) {
     root.left->left->left = &r3;
     root.left->left->left->left = &r4;
     root.left->left->left->right = &r5;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_9) {
     
@@ -381,7 +397,7 @@ TEST(BST_Fix, Adjacent_9) {
  // 5   6
    
  //    7 and 6 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(20);
     BinaryNode<int> r1(19);
     BinaryNode<int> r2(18);
@@ -393,7 +409,7 @@ TEST(BST_Fix, Adjacent_9) {
     root.left->left->left = &r3;
     root.left->left->left->left = &r4;
     root.left->left->left->right = &r5;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_10) {
     
@@ -401,13 +417,13 @@ TEST(BST_Fix, Adjacent_10) {
     //      /  \
     //     1    2
     // 3 and 2 are swapped
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(3);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(2);
     root.left = &r1;
     root.right = &r2;
-    check_algorithm_fixes_tree(root);
+    check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_11) {
   
@@ -415,11 +431,11 @@ TEST(BST_Fix, Adjacent_11) {
   //  \
   //   1
   //   1 and 2 are swapped
-  
+  for (auto algo: algorithms_to_test()){
   BinaryNode<int> root(2);
   BinaryNode<int> r1(1);
   root.right = &r1;
-  check_algorithm_fixes_tree(root);
+  check_algorithm_fixes_tree(root,algo);}
 }
 TEST(BST_Fix, Adjacent_12) {
   
@@ -427,11 +443,11 @@ TEST(BST_Fix, Adjacent_12) {
   // /
   // 2
   //   2 and 1 are swapped
-  
+  for (auto algo: algorithms_to_test()){
   BinaryNode<int> root(1);
   BinaryNode<int> r1(2);
   root.left = &r1;
-  check_algorithm_fixes_tree(root);
+  check_algorithm_fixes_tree(root,algo);}
 }
 
 
@@ -442,7 +458,7 @@ TEST(BST_Fix, Every_Swap_1) {
      //   2    10 
      //  /  \ /  \ 
      // 1   3 7  12 
-     
+     for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(6);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(10);
@@ -456,20 +472,20 @@ TEST(BST_Fix, Every_Swap_1) {
     root.left->right = &r4;
     root.right->left = &r5;
     root.right->right = &r6;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_2) {
     
         //    2
         //  /  \
         // 1    3
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(3);
     root.left = &r1;
     root.right = &r2;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_3) {
     
@@ -478,7 +494,7 @@ TEST(BST_Fix, Every_Swap_3) {
      //    1    3
      //  /       \
      // 0         4
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(3);
@@ -488,12 +504,12 @@ TEST(BST_Fix, Every_Swap_3) {
     root.right = &r2;
     root.left->left = &r3;
     root.right->right = &r4;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_4) {
     
      // 1-2-3-4-5-6-7-8-9-10
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(10);
     BinaryNode<int> r1(9);
     BinaryNode<int> r2(8);
@@ -513,12 +529,12 @@ TEST(BST_Fix, Every_Swap_4) {
     root.left->left->left->left->left->left->left = &r7;
     root.left->left->left->left->left->left->left->left = &r8;
     root.left->left->left->left->left->left->left->left->left = &r9;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_5) {
     
      // 1-2-3-4-5-6-7-8-9-10
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(3);
@@ -538,29 +554,29 @@ TEST(BST_Fix, Every_Swap_5) {
     root.right->right->right->right->right->right->right = &r7;
     root.right->right->right->right->right->right->right->right = &r8;
     root.right->right->right->right->right->right->right->right->right = &r9;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_6) {
     
     //  2
     // /
     // 1
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     root.left = &r1;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_7) {
     
      // 1
      // \
      //  2
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(2);
     root.right = &r1;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_8) {
     
@@ -571,7 +587,7 @@ TEST(BST_Fix, Every_Swap_8) {
         //        5
         //       / \
         //      4   6
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(2);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(3);
@@ -583,7 +599,7 @@ TEST(BST_Fix, Every_Swap_8) {
     root.right->right = &r3;
     root.right->right->left = &r4;
     root.right->right->right = &r5;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_9) {
     
@@ -594,7 +610,7 @@ TEST(BST_Fix, Every_Swap_9) {
       //   2
       //  / \
       // 1   3
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(5);
     BinaryNode<int> r1(4);
     BinaryNode<int> r2(6);
@@ -606,7 +622,7 @@ TEST(BST_Fix, Every_Swap_9) {
     root.left->left = &r3;
     root.left->left->left = &r4;
     root.left->left->right = &r5;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 
 TEST(BST_Fix, Every_Swap_10) {
@@ -621,7 +637,7 @@ TEST(BST_Fix, Every_Swap_10) {
   //  9
   //  \
   //   10
-  
+  for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(13);
     BinaryNode<int> r1(11);
     BinaryNode<int> r2(12);
@@ -631,7 +647,7 @@ TEST(BST_Fix, Every_Swap_10) {
     root.left->right = &r2;
     root.left->right->left = &r3;
     root.left->right->left->right = &r4;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 
 TEST(BST_Fix, Every_Swap_11) {
@@ -647,7 +663,7 @@ TEST(BST_Fix, Every_Swap_11) {
    //   /
    //  4
     
-  
+  for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(1);
     BinaryNode<int> r1(6);
     BinaryNode<int> r2(3);
@@ -657,7 +673,7 @@ TEST(BST_Fix, Every_Swap_11) {
     root.right->left = &r2;
     root.right->left->right = &r3;
     root.right->left->right->left = &r4;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_12) {
         
@@ -668,7 +684,7 @@ TEST(BST_Fix, Every_Swap_12) {
      // 1   3 7     12
      //      \  \   /
      //      4  8  11
-     
+     for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(6);
     BinaryNode<int> r1(2);
     BinaryNode<int> r2(10);
@@ -688,7 +704,7 @@ TEST(BST_Fix, Every_Swap_12) {
     root.left->right->right = &r7;
     root.right->left->right = &r8;
     root.right->right->left = &r9;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 TEST(BST_Fix, Every_Swap_13) {
     
@@ -707,7 +723,7 @@ TEST(BST_Fix, Every_Swap_13) {
    //        3  17
     
     
-    
+    for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(10);
     BinaryNode<int> r1(9);
     BinaryNode<int> r2(11);
@@ -733,7 +749,7 @@ TEST(BST_Fix, Every_Swap_13) {
     root.right->right->right->left->left = &r10;
     root.left->left->left->right->right->right = &r11;
     root.right->right->right->left->left->left = &r12;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 
 TEST(BST_Fix, Every_Swap_14) {
@@ -760,6 +776,7 @@ TEST(BST_Fix, Every_Swap_14) {
        //   7  17
        //  /    \
        // 6      18
+  for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(12);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(23);
@@ -805,7 +822,7 @@ TEST(BST_Fix, Every_Swap_14) {
     root.right->left->right->left->right->left->right->left->right->left = &r20;
     root.left->right->left->right->left->right->left->right->left->right->left = &r21;
     root.right->left->right->left->right->left->right->left->right->left->right = &r22;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 
 TEST(BST_Fix, Every_Swap_15) {
@@ -832,6 +849,7 @@ TEST(BST_Fix, Every_Swap_15) {
        //   7  17
        //  /    \
        // 6      18
+  for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(12);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(23);
@@ -889,7 +907,7 @@ TEST(BST_Fix, Every_Swap_15) {
     root.right->right->right->right = &r25;
     root.right->right->right->right->right = &r26;
     root.right->right->right->right->right->right = &r27;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 
 TEST(BST_Fix, Every_Swap_16) {
@@ -916,6 +934,7 @@ TEST(BST_Fix, Every_Swap_16) {
        //   7  17
        //  /    \
        // 6      18
+  for (auto algo: algorithms_to_test()){
     BinaryNode<int> root(12);
     BinaryNode<int> r1(1);
     BinaryNode<int> r2(23);
@@ -979,7 +998,7 @@ TEST(BST_Fix, Every_Swap_16) {
     root.right->right->right->right->right->right->left = &r28;
     root.right->right->right->right->right->right->left->right = &r29;
     root.right->right->right->right->right->right->left->right->left = &r30;
-    check_every_swap_combination(root);
+    check_every_swap_combination(root,algo);}
 }
 
 
