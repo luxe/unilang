@@ -8,7 +8,7 @@ gtest(
     deps = [
         "//code/tools/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_in_out",
-        "//code/tools/hackerrank:bst_swap_solution_geeks",
+        "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
         "//code/utilities/types/tree:tree_traversal",
@@ -25,7 +25,7 @@ enum_cpp(
     "inorder_outorder_three",
     ]
 )
-hcp(name = "bst_swap_solution_geeks", deps = [
+hcp(name = "bst_swap_solution_geeks_five_ptrs", deps = [
     "//code/utilities/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
