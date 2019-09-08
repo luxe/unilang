@@ -806,7 +806,180 @@ TEST(BST_Fix, Every_Swap_14) {
     root.left->right->left->right->left->right->left->right->left->right->left = &r21;
     root.right->left->right->left->right->left->right->left->right->left->right = &r22;
     check_every_swap_combination(root);
+}
 
+TEST(BST_Fix, Every_Swap_15) {
+       //    12
+       //  /    \
+       // 1      23
+       //  \    /  \
+       //   11 13   24
+       //  /    \    \
+       // 2      22   25
+       //  \    /      \
+       //   10 14       26
+       //  /    \        \
+       // 3      21      27
+       //  \    /         \
+       //   9  15         28
+       //  /    \
+       // 4      20
+       //  \    /
+       //   8  16
+       //  /    \
+       // 5      19
+       //  \    /
+       //   7  17
+       //  /    \
+       // 6      18
+    BinaryNode<int> root(12);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(23);
+    BinaryNode<int> r3(11);
+    BinaryNode<int> r4(13);
+    BinaryNode<int> r5(2);
+    BinaryNode<int> r6(22);
+    BinaryNode<int> r7(10);
+    BinaryNode<int> r8(14);
+    BinaryNode<int> r9(3);
+    BinaryNode<int> r10(21);
+    BinaryNode<int> r11(9);
+    BinaryNode<int> r12(15);
+    BinaryNode<int> r13(4);
+    BinaryNode<int> r14(20);
+    BinaryNode<int> r15(8);
+    BinaryNode<int> r16(16);
+    BinaryNode<int> r17(5);
+    BinaryNode<int> r18(19);
+    BinaryNode<int> r19(7);
+    BinaryNode<int> r20(17);
+    BinaryNode<int> r21(6);
+    BinaryNode<int> r22(18);
+    
+    BinaryNode<int> r23(24);
+    BinaryNode<int> r24(25);
+    BinaryNode<int> r25(26);
+    BinaryNode<int> r26(27);
+    BinaryNode<int> r27(28);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->right = &r3;
+    root.right->left = &r4;
+    root.left->right->left = &r5;
+    root.right->left->right = &r6;
+    root.left->right->left->right = &r7;
+    root.right->left->right->left = &r8;
+    root.left->right->left->right->left = &r9;
+    root.right->left->right->left->right = &r10;
+    root.left->right->left->right->left->right = &r11;
+    root.right->left->right->left->right->left = &r12;
+    root.left->right->left->right->left->right->left = &r13;
+    root.right->left->right->left->right->left->right = &r14;
+    root.left->right->left->right->left->right->left->right = &r15;
+    root.right->left->right->left->right->left->right->left = &r16;
+    root.left->right->left->right->left->right->left->right->left = &r17;
+    root.right->left->right->left->right->left->right->left->right = &r18;
+    root.left->right->left->right->left->right->left->right->left->right = &r19;
+    root.right->left->right->left->right->left->right->left->right->left = &r20;
+    root.left->right->left->right->left->right->left->right->left->right->left = &r21;
+    root.right->left->right->left->right->left->right->left->right->left->right = &r22;
+    
+    root.right->right = &r23;
+    root.right->right->right = &r24;
+    root.right->right->right->right = &r25;
+    root.right->right->right->right->right = &r26;
+    root.right->right->right->right->right->right = &r27;
+    check_every_swap_combination(root);
+}
+
+TEST(BST_Fix, Every_Swap_16) {
+       //    12
+       //  /    \
+       // 1      23
+       //  \    /  \
+       //   11 13   24
+       //  /    \    \
+       // 2      22   25
+       //  \    /      \
+       //   10 14       26
+       //  /    \        \
+       // 3      21      27
+       //  \    /         \
+       //   9  15         31
+       //  /    \        /
+       // 4      20     28
+       //  \    /        \
+       //   8  16         30
+       //  /    \        /
+       // 5      19     29
+       //  \    /
+       //   7  17
+       //  /    \
+       // 6      18
+    BinaryNode<int> root(12);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(23);
+    BinaryNode<int> r3(11);
+    BinaryNode<int> r4(13);
+    BinaryNode<int> r5(2);
+    BinaryNode<int> r6(22);
+    BinaryNode<int> r7(10);
+    BinaryNode<int> r8(14);
+    BinaryNode<int> r9(3);
+    BinaryNode<int> r10(21);
+    BinaryNode<int> r11(9);
+    BinaryNode<int> r12(15);
+    BinaryNode<int> r13(4);
+    BinaryNode<int> r14(20);
+    BinaryNode<int> r15(8);
+    BinaryNode<int> r16(16);
+    BinaryNode<int> r17(5);
+    BinaryNode<int> r18(19);
+    BinaryNode<int> r19(7);
+    BinaryNode<int> r20(17);
+    BinaryNode<int> r21(6);
+    BinaryNode<int> r22(18);
+    
+    BinaryNode<int> r23(24);
+    BinaryNode<int> r24(25);
+    BinaryNode<int> r25(26);
+    BinaryNode<int> r26(27);
+    BinaryNode<int> r27(31);
+    BinaryNode<int> r28(28);
+    BinaryNode<int> r29(30);
+    BinaryNode<int> r30(29);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->right = &r3;
+    root.right->left = &r4;
+    root.left->right->left = &r5;
+    root.right->left->right = &r6;
+    root.left->right->left->right = &r7;
+    root.right->left->right->left = &r8;
+    root.left->right->left->right->left = &r9;
+    root.right->left->right->left->right = &r10;
+    root.left->right->left->right->left->right = &r11;
+    root.right->left->right->left->right->left = &r12;
+    root.left->right->left->right->left->right->left = &r13;
+    root.right->left->right->left->right->left->right = &r14;
+    root.left->right->left->right->left->right->left->right = &r15;
+    root.right->left->right->left->right->left->right->left = &r16;
+    root.left->right->left->right->left->right->left->right->left = &r17;
+    root.right->left->right->left->right->left->right->left->right = &r18;
+    root.left->right->left->right->left->right->left->right->left->right = &r19;
+    root.right->left->right->left->right->left->right->left->right->left = &r20;
+    root.left->right->left->right->left->right->left->right->left->right->left = &r21;
+    root.right->left->right->left->right->left->right->left->right->left->right = &r22;
+    
+    root.right->right = &r23;
+    root.right->right->right = &r24;
+    root.right->right->right->right = &r25;
+    root.right->right->right->right->right = &r26;
+    root.right->right->right->right->right->right = &r27;
+    root.right->right->right->right->right->right->left = &r28;
+    root.right->right->right->right->right->right->left->right = &r29;
+    root.right->right->right->right->right->right->left->right->left = &r30;
+    check_every_swap_combination(root);
 }
 
 
