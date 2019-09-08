@@ -1,6 +1,17 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+
+enum_cpp(
+    name = "bst_swap_algorithm",
+    values = [
+    "hackerrank_recursive_five",
+    "hackerrank_recursive_four",
+    "sliding_window_and_pair",
+    "inorder_outorder_three",
+    ]
+)
 
 gtest(
     name = "bst_swap_test",
