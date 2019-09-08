@@ -1,0 +1,71 @@
+class
+❪iostream❫
+❪vector❫
+❪string❫
+❪utility❫
+❪"code/utilities/printers/lib.hpp"❫
+❪"code/utilities/data_structures/tree/binary_node.hpp"❫
+❪"code/utilities/types/tree/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/tree_node_properties.hpp"❫
+⚯
+⚞⚟
+
+// This function does inorder traversal to find out the two swapped nodes. 
+// It sets three pointers, first, middle and last.  If the swapped nodes are 
+// adjacent to each other, then first and middle contain the resultant nodes 
+// Else, first and last contain the resultant nodes
+◀private:
+template <typename T>
+static void correctBSTUtil( T* root, T** first,
+                     T** last,
+                     T** prev )
+{ 
+    if( root )
+    { 
+        // Recur for the left subtree 
+        correctBSTUtil( root->left, first, last, prev );
+  
+        // If this node is smaller than the previous node, it's violating 
+        // the BST rule. 
+        if (*prev && root->val < (*prev)->val)
+        { 
+            // If this is first violation, mark these two nodes as 
+            // 'first' and 'middle' 
+            if ( !*first )
+            { 
+                *first = *prev;
+                *last = root;
+            } 
+  
+            // If this is second violation, mark this node as last 
+            else
+                *last = root;
+        } 
+  
+        // Mark this node as previous 
+        *prev = root;
+  
+        // Recur for the right subtree 
+        correctBSTUtil( root->right, first, last, prev ); 
+    }
+}
+▶
+
+// A function to fix a given BST where two nodes are swapped.  This 
+// function uses correctBSTUtil() to find out two nodes and swaps the 
+// nodes to fix the BST 
+◀public:
+template <typename T>
+static void fix_bst(T* root ) 
+{ 
+    // Initialize pointers needed for correctBSTUtil() 
+    T *first, *last, *prev; 
+    first = last = prev = NULL; 
+  
+    // Set the poiters to find out two nodes 
+    correctBSTUtil( root, &first, &last, &prev ); 
+  
+    // Fix (or correct) the tree 
+    std::swap( first->val, last->val ); 
+}
+▶

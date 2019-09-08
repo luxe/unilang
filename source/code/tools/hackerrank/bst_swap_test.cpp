@@ -2,6 +2,7 @@
 #include "code/tools/hackerrank/bst_swap_solution_sliding_window_two_ptrs.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_in_out.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_geeks.hpp"
+#include "code/tools/hackerrank/bst_swap_solution_geeks_four_ptrs.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 
@@ -22,7 +23,7 @@ void check_algorithm_fixes_tree(BinaryNode<int> & root){
   auto before = Tree_Traversal::inorder_traversal_as_list(&root);
   
   //Bst_Swap_Solution_Sliding_Window_Two_Ptrs::fix_bst(&root);
-  Bst_Swap_Solution_Geeks::fix_bst(&root);
+  Bst_Swap_Solution_Geeks_Four_Ptrs::fix_bst(&root);
   
   
   auto after = Tree_Traversal::inorder_traversal_as_list(&root);
