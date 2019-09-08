@@ -407,3 +407,38 @@ static std::vector<decltype(T::val)> outorder_traversal_as_list(T *root){
     return result;
 }
 ▶
+
+
+◀public:
+template <typename T>
+static std::vector<std::pair<std::optional<decltype(T::val)>,std::optional<decltype(T::val)>>> get_all_directed_relationships(T *root){
+    auto all_nodes = inorder_traversal_as_node_list(root);
+    
+    std::vector<std::pair<std::optional<decltype(T::val)>,std::optional<decltype(T::val)>>> results;
+    for (auto node: all_nodes){
+        std::pair<std::optional<decltype(T::val)>,std::optional<decltype(T::val)>> temp;
+        temp.first = node->val;
+        
+        //add left
+        if (node->left){
+            temp.second = node->left->val;
+        }
+        else{
+            temp.second = std::nullopt;
+        }
+        results.emplace_back(temp);
+        
+        //add right
+        if (node->right){
+            temp.second = node->right->val;
+        }
+        else{
+            temp.second = std::nullopt;
+        }
+        results.emplace_back(temp);
+    }
+    
+    return results;
+}
+
+

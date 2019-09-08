@@ -1,11 +1,69 @@
 class
 ❪iostream❫
 ❪string❫
+❪utility❫
+❪cstdlib❫
+❪fstream❫
 ❪"code/utilities/types/tree/bst/annotated_bst_state.hpp"❫
+❪"code/utilities/types/tree/tree_traversal.hpp"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/shell/lib"❫
 ⚯
 ⚞⚟
 
 ◀public:
 static void fix(Annotated_Bst_State & state){
+    state.b = state.a;
+    
+    make_image(state);
+}
+▶
+
+
+
+◀private:
+static void make_image(Annotated_Bst_State & state){
+    auto text = as_graphviz(state);
+    std::string file_name = "/home/laptop/Desktop/bst_run/" + std::to_string(state.current_photo);
+    std::ofstream outfile(file_name);
+    outfile << text;
+    outfile.close();
+    ++state.current_photo;
+    
+    std::string command;
+    command = "dot ";
+    command += file_name;
+    command += " -Tpng -O";
+    execute(command);
+}
+▶
+
+◀private:
+static std::string as_graphviz(Annotated_Bst_State const& state){
+    std::string str;
+    Append_With_Newline(str,"digraph BST {");
+    Append_With_Newline(str,"node [fontname=\"Arial\"];");
+    auto directions = Tree_Traversal::get_all_directed_relationships(state.root);
+    for (auto p: directions){
+        
+        if (p.first && p.second){
+            Append(str,std::to_string(p.first.value()));
+            Append(str, " -> ");
+            Append_With_Newline(str,std::to_string(p.second.value()));
+        }
+    }
+    
+    if (state.a){
+        Append(str,"a");
+        Append(str, " -> ");
+        Append(str,std::to_string(state.a->val));
+    }
+    if (state.b){
+        Append(str,"b");
+        Append(str, " -> ");
+        Append(str,std::to_string(state.b->val));
+    }
+    Append_With_Newline(str,"}");
+    return str;
 }
 ▶
