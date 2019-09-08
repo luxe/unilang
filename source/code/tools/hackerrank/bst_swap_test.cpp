@@ -21,16 +21,18 @@ void wrong_by_only_two_nodes(std::vector<int> nodes){
 }
 
 void check_algorithm_fixes_tree(BinaryNode<int> & root){
+  
+  //the tree SHOULD NOT be sorted before we start
   auto before = Tree_Traversal::inorder_traversal_as_list(&root);
-  
-  //Bst_Swap_Solution_Sliding_Window_Two_Ptrs::fix_bst(&root);
-  Bst_Swap_Solution_Geeks_Three_Ptrs::fix_bst(&root);
-  
-  
-  auto after = Tree_Traversal::inorder_traversal_as_list(&root);
-  
   EXPECT_FALSE(std::is_sorted(before.begin(),before.end()));
+  
+  //in fact, it should only be wrong by two nodes
+  //we don't accept trees that are already fixed or broken beyond two nodes out of place
   wrong_by_only_two_nodes(before);
+  
+  //Time to fix the tree, and confirm that we actually fixed it.
+  Bst_Swap_Solution_Geeks_Three_Ptrs::fix_bst(&root);
+  auto after = Tree_Traversal::inorder_traversal_as_list(&root);
   EXPECT_TRUE(std::is_sorted(after.begin(),after.end()));
 }
 
@@ -734,6 +736,78 @@ TEST(BST_Fix, Every_Swap_13) {
     check_every_swap_combination(root);
 }
 
+TEST(BST_Fix, Every_Swap_14) {
+       //    12
+       //  /    \
+       // 1      23
+       //  \    /
+       //   11 13
+       //  /    \
+       // 2      22
+       //  \    /
+       //   10 14
+       //  /    \
+       // 3      21
+       //  \    /
+       //   9  15
+       //  /    \
+       // 4      20
+       //  \    /
+       //   8  16
+       //  /    \
+       // 5      19
+       //  \    /
+       //   7  17
+       //  /    \
+       // 6      18
+    BinaryNode<int> root(12);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(23);
+    BinaryNode<int> r3(11);
+    BinaryNode<int> r4(13);
+    BinaryNode<int> r5(2);
+    BinaryNode<int> r6(22);
+    BinaryNode<int> r7(10);
+    BinaryNode<int> r8(14);
+    BinaryNode<int> r9(3);
+    BinaryNode<int> r10(21);
+    BinaryNode<int> r11(9);
+    BinaryNode<int> r12(15);
+    BinaryNode<int> r13(4);
+    BinaryNode<int> r14(20);
+    BinaryNode<int> r15(8);
+    BinaryNode<int> r16(16);
+    BinaryNode<int> r17(5);
+    BinaryNode<int> r18(19);
+    BinaryNode<int> r19(7);
+    BinaryNode<int> r20(17);
+    BinaryNode<int> r21(6);
+    BinaryNode<int> r22(18);
+    root.left = &r1;
+    root.right = &r2;
+    root.left->right = &r3;
+    root.right->left = &r4;
+    root.left->right->left = &r5;
+    root.right->left->right = &r6;
+    root.left->right->left->right = &r7;
+    root.right->left->right->left = &r8;
+    root.left->right->left->right->left = &r9;
+    root.right->left->right->left->right = &r10;
+    root.left->right->left->right->left->right = &r11;
+    root.right->left->right->left->right->left = &r12;
+    root.left->right->left->right->left->right->left = &r13;
+    root.right->left->right->left->right->left->right = &r14;
+    root.left->right->left->right->left->right->left->right = &r15;
+    root.right->left->right->left->right->left->right->left = &r16;
+    root.left->right->left->right->left->right->left->right->left = &r17;
+    root.right->left->right->left->right->left->right->left->right = &r18;
+    root.left->right->left->right->left->right->left->right->left->right = &r19;
+    root.right->left->right->left->right->left->right->left->right->left = &r20;
+    root.left->right->left->right->left->right->left->right->left->right->left = &r21;
+    root.right->left->right->left->right->left->right->left->right->left->right = &r22;
+    check_every_swap_combination(root);
+
+}
 
 
 
