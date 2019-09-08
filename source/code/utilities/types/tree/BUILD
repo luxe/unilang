@@ -18,6 +18,8 @@ gtest(
     name = "tree_traversal_test",
     deps = [
         "//code/utilities/types/tree:tree_traversal",
-        "//code/utilities/data_structures/tree:binary_node"
+        "//code/utilities/data_structures/tree:binary_node",
+        "//code/utilities/types/tree/bst:annotated_bst_fix",
+        "//code/utilities/types/tree/bst:annotated_bst_state",
     ]
 )

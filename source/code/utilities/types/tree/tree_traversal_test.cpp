@@ -1,5 +1,7 @@
 #include "code/utilities/types/tree/tree_traversal.hpp"
 #include "code/utilities/data_structures/tree/binary_node.hpp"
+#include "code/utilities/types/tree/bst/annotated_bst_fix.hpp"
+#include "code/utilities/types/tree/bst/annotated_bst_state.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 #include <iostream>
@@ -31,10 +33,13 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     root.right->right = &r6;
     root.left->right->right = &r7;
     
-    BinaryNode<int>* pre = nullptr; 
-    Tree_Traversal::morris_traversal2(&root,pre,[&](BinaryNode<int>* prev, BinaryNode<int>* n, std::string const& message){
-        std::cout << prev->val << " ";
-        std::cout << n->val << " " << message;
-        std::cout << std::endl;
-    });
+    
+    //setup state
+    Annotated_Bst_State state;
+    state.a = &root;
+    state.b = nullptr;
+    state.root = &root;
+    state.current_photo = 0;
+    
+    Annotated_Bst_Fix::fix(state);
 }
