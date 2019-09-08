@@ -21,6 +21,7 @@ enum_cpp(
     values = [
     "hackerrank_recursive_five",
     "hackerrank_recursive_four",
+    "hackerrank_recursive_three",
     "sliding_window_and_pair",
     "inorder_outorder_three",
     ]
@@ -56,4 +57,14 @@ hcp(name = "bst_swap_solution_in_out", deps = [
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
+])
+
+hcp(name = "bst_swap_solution", deps = [
+    "//code/tools/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
+    "//code/tools/hackerrank:bst_swap_solution_in_out",
+    "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
+    "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
+    "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
+    "//code/tools/hackerrank:bst_swap_algorithm",
+    "//code/utilities/types/tree:tree_traversal",
 ])
