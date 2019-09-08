@@ -10,6 +10,7 @@ gtest(
         "//code/tools/hackerrank:bst_swap_solution_in_out",
         "//code/tools/hackerrank:bst_swap_solution_geeks",
         "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
+        "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
         "//code/utilities/types/tree:tree_traversal",
     ]
 )
@@ -31,6 +32,12 @@ hcp(name = "bst_swap_solution_geeks", deps = [
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_four_ptrs", deps = [
+    "//code/utilities/printers:lib",
+    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/types/tree:tree_traversal",
+    "//code/utilities/types/tree:tree_node_properties",
+])
+hcp(name = "bst_swap_solution_geeks_three_ptrs", deps = [
     "//code/utilities/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",

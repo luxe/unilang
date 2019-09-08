@@ -1,0 +1,128 @@
+class
+❪iostream❫
+❪vector❫
+❪string❫
+❪utility❫
+❪"code/utilities/printers/lib.hpp"❫
+❪"code/utilities/data_structures/tree/binary_node.hpp"❫
+❪"code/utilities/types/tree/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/tree_node_properties.hpp"❫
+⚯
+⚞⚟
+
+◀private:
+template <typename T>
+static void checkAdjacent( T* root, T** first,
+                     T** prev )
+{ 
+    if( root )
+    { 
+        // Recur for the left subtree 
+        checkAdjacent( root->left, first, prev );
+  
+        // If this node is smaller than the previous node, it's violating 
+        // the BST rule. 
+        if (*prev && root->val < (*prev)->val)
+        { 
+            if ( !*first )
+            { 
+                *first = *prev;
+            } 
+  
+            // If this is second violation, mark this node as last 
+            else
+                *first = nullptr;
+        } 
+  
+        // Mark this node as previous 
+        *prev = root;
+  
+        // Recur for the right subtree 
+        checkAdjacent( root->right, first, prev ); 
+    }
+}
+▶
+
+◀private:
+template <typename T>
+static void fixAdjacent( T* root,
+                     T** prev )
+{ 
+    if( root )
+    { 
+        // Recur for the left subtree 
+        fixAdjacent( root->left, prev );
+  
+        // If this node is smaller than the previous node, it's violating 
+        // the BST rule. 
+        if (*prev && root->val < (*prev)->val)
+        { 
+            std::swap( (*prev)->val, root->val ); 
+        }
+  
+        // Mark this node as previous 
+        *prev = root;
+  
+        // Recur for the right subtree 
+        fixAdjacent( root->right, prev ); 
+    }
+}
+▶
+
+◀private:
+template <typename T>
+static void fixNonadjacent( T* root, T** first,
+                     T** prev )
+{ 
+    if( root )
+    { 
+        // Recur for the left subtree 
+        fixNonadjacent( root->left, first, prev );
+  
+        // If this node is smaller than the previous node, it's violating 
+        // the BST rule. 
+        if (*prev && root->val < (*prev)->val)
+        { 
+            if ( !*first )
+            { 
+                *first = *prev;
+            } 
+  
+            // If this is second violation, mark this node as last 
+            else
+                std::swap( (*first)->val, root->val ); 
+        } 
+  
+        // Mark this node as previous 
+        *prev = root;
+  
+        // Recur for the right subtree 
+        fixNonadjacent( root->right, first, prev ); 
+    }
+}
+▶
+
+// A function to fix a given BST where two nodes are swapped.  This 
+// function uses correctBSTUtil() to find out two nodes and swaps the 
+// nodes to fix the BST 
+◀public:
+template <typename T>
+static void fix_bst(T* root ) 
+{ 
+    // Initialize pointers needed for correctBSTUtil() 
+    T *first, *prev; 
+    first = prev = NULL;
+  
+    // Set the poiters to find out two nodes 
+    checkAdjacent( root, &first, &prev ); 
+    
+    if (first){
+        first = prev = NULL;
+        fixAdjacent( root, &prev );
+    }
+    else{
+        first = prev = NULL;
+        fixNonadjacent( root, &first, &prev );
+    }
+}
+▶
