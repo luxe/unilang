@@ -6,11 +6,15 @@ class
 ❪fstream❫
 ❪"code/utilities/types/tree/bst/annotated_bst_state.hpp"❫
 ❪"code/utilities/types/tree/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/tree_node_properties.hpp"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ⚯
 ⚞⚟
+
+//maybe animate
+//https://bl.ocks.org/magjac/4acffdb3afbc4f71b448a210b5060bca
 
 ◀public:
 static void fix(Annotated_Bst_State & state){
@@ -20,14 +24,34 @@ static void fix(Annotated_Bst_State & state){
     state.b = state.a;
     make_image(state);
     
-    perform_the_hickey_shuffle(state);
-        
-    //they are both at the start of the root
+    perform_the_hickey_shuffle_and_stay(state);
+    
+    
+    move_b_all_the_way_left(state);
+    if (Tree_Node_Properties::left_node_points_to_itself(state.a)){
+        set_node_b_left_to_itself(state);
+        make_image(state);
+    }
+    else if (Tree_Node_Properties::left_node_points_to_its_sibling(state.a)){
+        set_node_b_left_to_sibling(state);
+        make_image(state);
+    }
+    state.a->left = state.b;
+    make_image(state);
 }
 ▶
 
 ◀public:
 static void perform_the_hickey_shuffle(Annotated_Bst_State & state){
+    
+    perform_the_hickey_shuffle_and_stay(state);
+    state.a = state.b;
+    make_image(state);
+}
+▶
+
+◀public:
+static void perform_the_hickey_shuffle_and_stay(Annotated_Bst_State & state){
     
     //set the loop back
     move_a_all_the_way_right(state);
@@ -37,7 +61,7 @@ static void perform_the_hickey_shuffle(Annotated_Bst_State & state){
     //no tail?
     //set the left pointer equal to itself
     if (!state.a->left){
-        state.a->left = (BinaryNode<int> *)&(state.a->left);
+        set_node_a_left_to_itself(state);
         make_image(state);
     }
     
@@ -60,16 +84,13 @@ static void perform_the_hickey_shuffle(Annotated_Bst_State & state){
         
         state.b = state.b->right;
         make_image(state);
-        state.a = state.b;
-        make_image(state);
-        
     }
 }
 ▶
 
 
 
-    
+//basic traversing
 ◀public:
 static void move_a_all_the_way_right(Annotated_Bst_State & state){
     
@@ -79,6 +100,33 @@ static void move_a_all_the_way_right(Annotated_Bst_State & state){
     }
 }
 ▶
+◀public:
+static void move_b_all_the_way_left(Annotated_Bst_State & state){
+    
+    while (state.b->left){
+        state.b = state.b->left;
+        make_image(state);
+    }
+}
+▶
+
+
+//node hacking
+◀public:
+static void set_node_a_left_to_itself(Annotated_Bst_State & state){
+    state.a->left = (BinaryNode<int> *)&(state.a->left);
+}
+▶
+◀public:
+static void set_node_b_left_to_itself(Annotated_Bst_State & state){
+    state.b->left = (BinaryNode<int> *)&(state.b->left);
+}
+▶
+◀public:
+static void set_node_b_left_to_sibling(Annotated_Bst_State & state){
+    state.b->left = (BinaryNode<int> *)&(state.b->right);
+}
+▶
 
 
 
@@ -108,10 +156,7 @@ static void move_a_all_the_way_right(Annotated_Bst_State & state){
 
 
 
-
-
-
-
+//visualizing
 ◀private:
 static void make_image(Annotated_Bst_State & state){
     auto text = as_graphviz_v3(state);
