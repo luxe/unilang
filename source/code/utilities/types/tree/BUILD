@@ -7,6 +7,7 @@ load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
 hcp(name = "tree_traversal",deps=[
 "//code/utilities/data_structures/tree:binary_node",
 "//code/utilities/types/tree:tree_node_properties",
+"//code/utilities/data_structures/tree:binary_node_with_height",
 ])
 
 hcp(name = "tree_node_properties",deps=[

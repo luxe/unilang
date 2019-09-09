@@ -17,3 +17,11 @@ cc_library(
     deps = [
     ]
 )
+
+cc_library(
+    name = "binary_node_with_height",
+    hdrs = ["binary_node_with_height.hpp"],
+    deps = [
+        "//code/utilities/data_structures/tree:binary_node"
+    ]
+)

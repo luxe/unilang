@@ -5,6 +5,9 @@ struct BinaryNode {
     
     BinaryNode(T val):
     val(val) {}
+    
+    BinaryNode()
+    {}
         
     T val;
     struct BinaryNode *left = nullptr;

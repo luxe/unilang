@@ -15,7 +15,6 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
      1   3 7   12
    /      \    /
   0        4  11
-     10 and 2 are swapped
      */
     BinaryNode<int> root(6);
     BinaryNode<int> r1(2);
@@ -73,19 +72,24 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     
     // Annotated_Bst_Fix::fix(state);
     
-    Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
-        std::cout << n->val << " ";
-        std::cout.flush();
-    });
-    std::cout << std::endl;
-    Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
-        std::cout << n->val << " ";
-        std::cout.flush();
-    });
-    std::cout << std::endl;
-    Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
-        std::cout << n->val << " ";
-        std::cout.flush();
-    });
-    std::cout << std::endl;
+    // Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
+    //     std::cout << n->val << " ";
+    //     std::cout.flush();
+    // });
+    // std::cout << std::endl;
+    // Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
+    //     std::cout << n->val << " ";
+    //     std::cout.flush();
+    // });
+    // std::cout << std::endl;
+    // Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
+    //     std::cout << n->val << " ";
+    //     std::cout.flush();
+    // });
+    // std::cout << std::endl;
+    
+    auto x = Tree_Traversal::get_binary_node_heights(&root);
+    for (auto const& it: x){
+      std::cout << it.height << " " << it.node.val << std::endl;
+    }
 }
