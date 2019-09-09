@@ -6,46 +6,90 @@ class
 ⚯
 ⚞⚟
 
+
+◀public:
+template <typename T>
+static void go_all_the_way_left(T* & node){
+    if (node){
+        if (node->left){
+            node = node->left;
+        }
+    }
+}
+▶
+
 //core traversals
 ◀public:
 template <typename T, typename Fun>
 static void morris_traversal(T *root, Fun fun){
-    
-    T* current = nullptr;
-    T* pre = nullptr; 
-  
+
     if (root == nullptr){
         return; 
     }
-  
-    current = root; 
+    
+    T* current = nullptr;
+    T* pre = nullptr; 
+    current = root;
+    
+    //if (current != nullptr && current->left != nullptr) { 
+    //    find_the_inorder_predecessor_of_current(pre,current);
+    //}
+    
     while (current != nullptr) {
   
         if (current->left == nullptr) { 
             fun(current);
+            std::cout << current->val << " " << current->right->val << std::endl;
             current = current->right; 
-        } 
-        else { 
+        }
+        else {
+            
+            find_the_inorder_predecessor_of_current(pre,current);
   
-            /* Find the inorder predecessor of current */
-            pre = current->left; 
-            while (pre->right != nullptr && pre->right != current) 
-                pre = pre->right; 
+            //find_the_inorder_predecessor_of_current(pre,current);
   
             /* Make current as the right child of its inorder  
                predecessor */
-            if (pre->right == nullptr) { 
-                pre->right = current; 
-                current = current->left; 
+            if (pre->right == nullptr) {
+                pre->right = current;
+                //state_check(current,pre);
+                current = current->left;
+                
+                // if (current != nullptr && current->left != nullptr) {
+                //     find_the_inorder_predecessor_of_current(pre,current);
+                // }
             } 
   
             /* Revert the changes made in the 'if' part to restore  
                the original tree i.e., fix the right child 
                of predecessor */
-            else { 
-                pre->right = nullptr; 
+            else {
+
                 fun(current);
-                current = current->right; 
+                //std::cout << current->val << "-" << current->right->val << std::endl;
+                //find_the_inorder_predecessor_of_current(pre,current);
+                
+                if (current){
+                    //pre = current->right;
+                    //go_all_the_way_left(pre);
+                    if (current->right){
+                        pre->right = current->right;
+                        go_all_the_way_left(pre->right);
+                        //state_check(current,pre);
+                        
+                        if (current->val != pre->right->val){
+                            std::cout << current->val << " " << pre->right->val << std::endl;
+                        }
+                    }
+                }
+                
+                current = current->right;
+                pre->right = nullptr;
+                
+                // if (current != nullptr && current->left != nullptr) { 
+                //     find_the_inorder_predecessor_of_current(pre,current);
+                // }
+
             }
         }
     }
@@ -54,11 +98,32 @@ static void morris_traversal(T *root, Fun fun){
 
 ◀public:
 template <typename T>
+static void find_the_inorder_predecessor_of_current(T* & pre, T* & current){
+    /* Find the inorder predecessor of current */
+    //state_check(current,pre);
+    pre = current->left;
+    //state_check(current,pre);
+    while (pre->right != nullptr && pre->right != current)
+        pre = pre->right;
+    //state_check(current,pre);
+    //std::cout << "----" << std::endl;
+} 
+▶
+
+
+
+◀public:
+template <typename T>
 static void state_check(T* curr, T* pre){
     //Tree_Node_Properties::print_local_bst_constraint(curr);
     //Tree_Node_Properties::print_local_bst_constraint(pre);
     std::cout << "[" << Tree_Node_Properties::as_str(curr) << "]";
-    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]" << std::endl;
+    std::cout << "{" << Tree_Node_Properties::left_as_str(curr) << "}";
+    std::cout << "<" << Tree_Node_Properties::right_as_str(curr) << ">";
+    std::cout << "[" << Tree_Node_Properties::as_str(pre) << "]";
+    std::cout << "{" << Tree_Node_Properties::left_as_str(pre) << "}";
+    std::cout << "<" << Tree_Node_Properties::right_as_str(pre) << ">";
+    std::cout << std::endl;
 }
 ▶
 
