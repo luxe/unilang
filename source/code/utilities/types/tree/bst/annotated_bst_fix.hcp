@@ -10,6 +10,7 @@ class
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/types/char/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
 ⚯
 ⚞⚟
 
@@ -24,10 +25,13 @@ static void fix(Annotated_Bst_State & state){
     state.b = state.a;
     make_image(state);
     
+    //b remains at the top
+    //a remains on the double null
     perform_the_hickey_shuffle_and_stay(state);
     
     
-    move_b_all_the_way_left(state);
+    //steal double null, so we have an extra storage space
+    move_b_to_the_leftest_double_null(state);
     if (Tree_Node_Properties::left_node_points_to_itself(state.a)){
         set_node_b_left_to_itself(state);
         make_image(state);
@@ -38,6 +42,8 @@ static void fix(Annotated_Bst_State & state){
     }
     state.a->left = state.b;
     make_image(state);
+    
+    //take b back home
 }
 ▶
 
@@ -110,6 +116,20 @@ static void move_b_all_the_way_left(Annotated_Bst_State & state){
 }
 ▶
 
+◀public:
+static void move_b_to_the_leftest_double_null(Annotated_Bst_State & state){
+    
+    move_b_all_the_way_left(state);
+    while (state.b->right){
+        state.b = state.b->right;
+        move_b_all_the_way_left(state);
+    }
+    
+}
+▶
+
+
+
 
 //node hacking
 ◀public:
@@ -160,7 +180,7 @@ static void set_node_b_left_to_sibling(Annotated_Bst_State & state){
 ◀private:
 static void make_image(Annotated_Bst_State & state){
     auto text = as_graphviz_v3(state);
-    std::string file_name = "/home/laptop/Desktop/bst_run/" + std::to_string(state.current_photo);
+    std::string file_name = Full_Path_To_Desktop() + "bst_run/" + std::to_string(state.current_photo);
     std::ofstream outfile(file_name);
     outfile << text;
     outfile.close();
