@@ -17,21 +17,46 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
            4
      10 and 2 are swapped
      */
-    BinaryNode<int> root(6);
-    BinaryNode<int> r1(10);
-    BinaryNode<int> r2(2);
-    BinaryNode<int> r3(1);
-    BinaryNode<int> r4(3);
-    BinaryNode<int> r5(7);
-    BinaryNode<int> r6(12);
-    BinaryNode<int> r7(4);
+    // BinaryNode<int> root(6);
+    // BinaryNode<int> r1(10);
+    // BinaryNode<int> r2(2);
+    // BinaryNode<int> r3(1);
+    // BinaryNode<int> r4(3);
+    // BinaryNode<int> r5(7);
+    // BinaryNode<int> r6(12);
+    // BinaryNode<int> r7(4);
+    // root.left = &r1;
+    // root.right = &r2;
+    // root.left->left = &r3;
+    // root.left->right = &r4;
+    // root.right->left = &r5;
+    // root.right->right = &r6;
+    // root.left->right->right = &r7;
+  
+  
+    
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(11);
+    BinaryNode<int> r4(5);
+    BinaryNode<int> r5(4);
+    BinaryNode<int> r6(7);
+    BinaryNode<int> r7(6);
+    BinaryNode<int> r8(10);
+    BinaryNode<int> r9(8);
+    BinaryNode<int> r10(9);
+    
     root.left = &r1;
     root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    root.right->left = &r5;
-    root.right->right = &r6;
-    root.left->right->right = &r7;
+    root.right->right = &r3;
+    root.right->right->left = &r4;
+    root.right->right->left->left = &r5;
+    root.right->right->left->right = &r6;
+    root.right->right->left->right->left = &r7;
+    root.right->right->left->right->right = &r8;
+    root.right->right->left->right->right->left = &r9;
+    root.right->right->left->right->right->left->right = &r10;
     
     
     //setup state
