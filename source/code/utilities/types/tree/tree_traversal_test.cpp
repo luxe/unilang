@@ -40,6 +40,7 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     state.b = nullptr;
     state.root = &root;
     state.current_photo = 0;
+    state.all_nodes = Tree_Traversal::inorder_traversal_as_node_list(state.root);
     
     Annotated_Bst_Fix::fix(state);
 }

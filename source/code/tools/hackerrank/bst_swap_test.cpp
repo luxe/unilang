@@ -1001,6 +1001,20 @@ TEST(BST_Fix, Every_Swap_16) {
     check_every_swap_combination(root,algo);}
 }
 
+TEST(BST_Fix, Example_Hickey_Shuffle) {
+
+        //    X
+        //  /  \
+        // X    X
+        //       \
+        //        X
+        //       /
+        //      X
+        //     / \
+        //    X   X
+        //         \
+        //          X
+}
 
 
 

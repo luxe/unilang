@@ -8,22 +8,87 @@ class
 ❪"code/utilities/types/tree/tree_traversal.hpp"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/shell/lib"❫
+❪"code/utilities/types/char/lib"❫
 ⚯
 ⚞⚟
 
 ◀public:
 static void fix(Annotated_Bst_State & state){
-    state.b = state.a;
     
+    //they both start at the root
     make_image(state);
+    state.b = state.a;
+    make_image(state);
+    
+    //the hickey shuffle
+        
+        //set the loop back
+        move_a_all_the_way_right(state);
+        state.a->right = state.b;
+        make_image(state);
+        
+        //no tail?
+        //set the left pointer equal to itself
+        if (!state.a->left){
+            state.a->left = (BinaryNode<int> *)&(state.a->left);
+            make_image(state);
+        }
+        
+        //find the tail
+        else{
+            state.b = state.a;
+            make_image(state);
+            
+            
+        }
+}
+▶
+    
+◀public:
+static void move_a_all_the_way_right(Annotated_Bst_State & state){
+    
+    while (state.a->right){
+        state.a = state.a->right;
+        make_image(state);
+    }
 }
 ▶
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ◀private:
 static void make_image(Annotated_Bst_State & state){
-    auto text = as_graphviz_v2(state);
+    auto text = as_graphviz_v3(state);
     std::string file_name = "/home/laptop/Desktop/bst_run/" + std::to_string(state.current_photo);
     std::ofstream outfile(file_name);
     outfile << text;
@@ -73,8 +138,7 @@ static std::string as_graphviz_v2(Annotated_Bst_State const& state){
     std::string str;
     Append_With_Newline(str,"digraph BST {");
     Append_With_Newline(str,"node [fontname=\"Arial\"];");
-    auto nodes = Tree_Traversal::inorder_traversal_as_node_list(state.root);
-    for (auto const& node: nodes){
+    for (auto const& node: state.all_nodes){
         if (node->left){
             Append(str,std::to_string(node->val));
             Append(str, " -> ");
@@ -99,6 +163,85 @@ static std::string as_graphviz_v2(Annotated_Bst_State const& state){
         Append(str,"b");
         Append(str, " -> ");
         Append_With_Newline(str,std::to_string(state.b->val));
+    }
+    Append_With_Newline(str,"}");
+    return str;
+}
+▶
+
+◀private:
+static std::string as_graphviz_v3(Annotated_Bst_State const& state){
+    std::string str;
+    Append_With_Newline(str,"digraph BST {");
+    Append_With_Newline(str,"node [fontname=\"Arial\", shape = record, height=.1];");
+    
+    //create nodes
+    for (auto const& node: state.all_nodes){
+        Append(str, "node");
+        Append(str, std::to_string(node->val));
+        Append(str, "[label = \"<f0> L|<f1> ");
+        Append(str, std::to_string(node->val));
+        Append_With_Newline(str, "|<f2> R\"];");
+    }
+    
+    
+    
+    for (auto const& node: state.all_nodes){
+        if (node->left){
+            Append(str, "\"node");
+            Append(str,std::to_string(node->val) + "\"");
+            Append(str, ":f0");
+            Append(str, " -> ");
+            
+            
+            //special cases
+            if (Tree_Node_Properties::left_node_points_to_its_sibling(node)){
+                Append(str, "\"node");
+                Append(str,std::to_string(node->val) + "\"");
+                Append(str, ":f2");
+            }
+            else if (Tree_Node_Properties::left_node_points_to_itself(node)){
+                Append(str, "\"node");
+                Append(str,std::to_string(node->val) + "\"");
+                Append(str, ":f0");
+            }
+            
+            //normal case
+            else{
+                Append(str, "\"node");
+                Append(str,std::to_string(node->left->val) + "\"");
+                Append(str, ":f1");
+            }
+            Append_With_Newline(str," [color=\"red\"]");
+        }
+        if (node->right){
+            Append(str, "\"node");
+            Append(str,std::to_string(node->val) + "\"");
+            Append(str, ":f2");
+            Append(str, " -> ");
+            Append(str, "\"node");
+            Append(str,std::to_string(node->right->val) + "\"");
+            Append(str, ":f1");
+            Append_With_Newline(str," [color=\"blue\"]");
+        }
+    }
+    
+    
+    if (state.a){
+        Append(str,"a");
+        Append(str, " -> ");
+        Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.a->val));
+        Append_With_Newline(str,Get_Double_Quote());
+    }
+    if (state.b){
+        Append(str,"b");
+        Append(str, " -> ");
+        Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.b->val));
+        Append_With_Newline(str,Get_Double_Quote());
     }
     Append_With_Newline(str,"}");
     return str;

@@ -7,6 +7,7 @@ hcp(name = "annotated_bst_fix", deps = [
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/shell:lib",
+    "//code/utilities/types/char:lib",
 ])
 
 hcp(name = "annotated_bst_state", deps = [
