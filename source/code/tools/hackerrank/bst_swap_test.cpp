@@ -1001,19 +1001,73 @@ TEST(BST_Fix, Every_Swap_16) {
     check_every_swap_combination(root,algo);}
 }
 
-TEST(BST_Fix, Example_Hickey_Shuffle) {
-
-        //    X
+TEST(BST_Fix, Example_Hickey_Shuffle_Easy) {
+        //    2
         //  /  \
-        // X    X
-        //       \
-        //        X
-        //       /
-        //      X
+        // 1    4
         //     / \
-        //    X   X
+        //    3   5
+  for (auto algo: algorithms_to_test()){
+    
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(4);
+    BinaryNode<int> r3(3);
+    BinaryNode<int> r4(5);
+    
+    root.left = &r1;
+    root.right = &r2;
+    root.right->left = &r3;
+    root.right->right = &r4;
+    
+    check_every_swap_combination(root,algo);
+  }
+}
+
+TEST(BST_Fix, Example_Hickey_Shuffle_Hard) {
+
+        //    2
+        //  /  \
+        // 1    3
+        //       \
+        //        11
+        //       /
+        //      5
+        //     / \
+        //    4   7
+        //       / \
+        //      6   10
+        //         /
+        //        8
         //         \
-        //          X
+        //          9
+  for (auto algo: algorithms_to_test()){
+    
+    BinaryNode<int> root(2);
+    BinaryNode<int> r1(1);
+    BinaryNode<int> r2(3);
+    BinaryNode<int> r3(11);
+    BinaryNode<int> r4(5);
+    BinaryNode<int> r5(4);
+    BinaryNode<int> r6(7);
+    BinaryNode<int> r7(6);
+    BinaryNode<int> r8(10);
+    BinaryNode<int> r9(8);
+    BinaryNode<int> r10(9);
+    
+    root.left = &r1;
+    root.right = &r2;
+    root.right->right = &r3;
+    root.right->right->left = &r4;
+    root.right->right->left->left = &r5;
+    root.right->right->left->right = &r6;
+    root.right->right->left->right->left = &r7;
+    root.right->right->left->right->right = &r8;
+    root.right->right->left->right->right->left = &r9;
+    root.right->right->left->right->right->left->right = &r10;
+    
+    check_every_swap_combination(root,algo);
+  }
 }
 
 
