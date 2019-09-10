@@ -1,0 +1,206 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪cstdlib❫
+❪fstream❫
+❪"code/utilities/types/tree/bst/annotated_bst_state.hpp"❫
+❪"code/utilities/types/tree/tree_traversal.hpp"❫
+❪"code/utilities/types/tree/tree_node_properties.hpp"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/types/char/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚯
+⚞⚟
+
+//visualizing
+◀public:
+static void make_image(Annotated_Bst_State & state){
+    auto text = as_graphviz(state);
+    std::string file_name = Full_Path_To_Desktop() + "bst_run/" + std::to_string(state.current_photo);
+    std::ofstream outfile(file_name);
+    outfile << text;
+    outfile.close();
+    ++state.current_photo;
+    
+    std::string command;
+    command = "dot ";
+    command += file_name;
+    command += " -Tpng -O";
+    execute(command);
+}
+▶
+
+◀private:
+static std::string as_graphviz(Annotated_Bst_State const& state){
+    std::string str;
+    Append_With_Newline(str,"digraph BST {");
+    Append_With_Newline(str,"node [fontname=\"Arial\", shape = record, height=.1];");
+    
+    //create nodes
+    for (auto const& node: state.all_nodes){
+        Append(str, "node");
+        Append(str, std::to_string(node->val));
+        Append(str, "[label = ");
+        Append(str,node_label(node->val));
+        Append_With_Newline(str, "];");
+    }
+    
+    
+    
+    for (auto const& node: state.all_nodes){
+        if (node->left){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node->val));
+            //Append(str,Get_Double_Quote());
+            Append(str, ":f0");
+            Append(str, " -> ");
+            
+            
+            //special cases
+            if (Tree_Node_Properties::left_node_points_to_its_sibling(node)){
+                //Append(str,Get_Double_Quote());
+                Append(str, "node");
+                Append(str,std::to_string(node->val));
+                //Append(str,Get_Double_Quote());
+                Append(str, ":f2");
+            }
+            else if (Tree_Node_Properties::left_node_points_to_itself(node)){
+                //Append(str,Get_Double_Quote());
+                Append(str, "node");
+                Append(str,std::to_string(node->val));
+                //Append(str,Get_Double_Quote());
+                Append(str, ":f0");
+            }
+            
+            //normal case
+            else{
+                //Append(str,Get_Double_Quote());
+                Append(str, "node");
+                Append(str,std::to_string(node->left->val));
+                //Append(str,Get_Double_Quote());
+                Append(str, ":f1");
+            }
+            Append_With_Newline(str," [color=\"red\", constraint=false]");
+        }
+        if (node->right){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node->val));
+            //Append(str,Get_Double_Quote());
+            Append(str, ":f2");
+            Append(str, " -> ");
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node->right->val));
+            //Append(str,Get_Double_Quote());
+            Append(str, ":f1");
+            Append_With_Newline(str," [color=\"blue\", constraint=false]");
+        }
+    }
+    
+    
+    //this is for nice formatting only
+    //it keeps the nodes in the same place when the arrows go crazy
+    for (auto const& node: state.original_connections){
+        if (node.first && node.second){
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node.first.value()));
+            //Append(str,Get_Double_Quote());
+            Append(str, " -> ");
+            //Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(node.second.value()));
+            //Append(str,Get_Double_Quote());
+            Append_With_Newline(str," [style=invis]");
+        }
+    }
+    
+        Append(str,"a");
+        Append(str, " -> ");
+        //Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.root->val));
+        //Append(str,Get_Double_Quote());
+        Append_With_Newline(str," [style=invis]");
+        
+        Append(str,"b");
+        Append(str, " -> ");
+        //Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.root->val));
+        //Append(str,Get_Double_Quote());
+        Append_With_Newline(str," [style=invis]");
+    
+    
+    
+    //the special pointers
+    if (state.a){
+        Append(str,"a");
+        Append(str, " -> ");
+        Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.a->val));
+        Append_With_Newline(str,Get_Double_Quote());
+        Append_With_Newline(str," [color=\"green\", constraint=false]");
+    }
+    if (state.b){
+        Append(str,"b");
+        Append(str, " -> ");
+        Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.b->val));
+        Append_With_Newline(str,Get_Double_Quote());
+        Append_With_Newline(str," [color=\"purple\", constraint=false]");
+    }
+    
+    //the ranking
+    for (auto levels: state.val_heights){
+        Append(str, "{ rank=same; ");
+        for (auto val: levels){
+            Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(val));
+            Append(str,Get_Double_Quote());
+            Append(str, " ");
+        }
+        Append_With_Newline(str,"}");
+    }
+    Append_With_Newline(str, "{ rank=same; a b }");
+    
+    
+    Append_With_Newline(str,"}");
+    return str;
+}
+▶
+
+◀private:
+static std::string node_label(int val){
+    std::string str;
+    Append(str, "\"<f0> |<f1> ");
+    Append(str, std::to_string(val));
+    Append_With_Newline(str, "|<f2> \"");
+    return str;
+}
+▶
+
+◀private:
+static std::string node_label_as_table(int val){
+    std::string str;
+    
+    
+    Append_With_Newline(str,"<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"> <TR>");
+    Append_With_Newline(str,"<TD PORT=\"f0\"></TD>");
+    Append(str,"<TD PORT=\"f1\">");
+    Append(str, std::to_string(val));
+    Append_With_Newline(str,"</TD>");
+    Append_With_Newline(str,"<TD PORT=\"f2\"></TD>");
+    Append_With_Newline(str,"</TR> </TABLE>>");
+    
+    
+    return str;
+}
+▶

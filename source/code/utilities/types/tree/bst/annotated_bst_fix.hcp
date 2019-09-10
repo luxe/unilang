@@ -11,6 +11,7 @@ class
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/tree/bst/annotated_bst_visualizer"❫
 ⚯
 ⚞⚟
 
@@ -21,9 +22,9 @@ class
 static void fix(Annotated_Bst_State & state){
     
     //they both start at the root
-    make_image(state);
+    Annotated_Bst_Visualizer::make_image(state);
     state.b = state.a;
-    make_image(state);
+    Annotated_Bst_Visualizer::make_image(state);
     
     //b remains at the top
     //a remains on the double null
@@ -36,40 +37,134 @@ static void fix(Annotated_Bst_State & state){
     //mirror the jumper
     if (Tree_Node_Properties::left_node_points_to_itself(state.a)){
         set_node_b_left_to_itself(state);
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
     }
     else if (Tree_Node_Properties::left_node_points_to_its_sibling(state.a)){
         set_node_b_left_to_sibling(state);
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
     }
     
     //a controls the new block indirectly
     state.a->left = state.b;
-    make_image(state);
+    Annotated_Bst_Visualizer::make_image(state);
     
     //take b back home
     if (Tree_Node_Properties::left_node_points_to_itself(state.a->left)){
-        state.b = state.a->right;
-        make_image(state);
+        set_b_to_a_right(state);
     }
     else{
-        state.b = state.a->right->right;
-        make_image(state);
+        set_b_to_a_right_right(state);
     }
     
+    modified_morris_traversal(state);
+}
+▶
+
+◀public:
+static void modified_morris_traversal(Annotated_Bst_State & state){
     
     //we've given A an additional storage location so it can participate indirectly
     //in a morris traversal
-    
+    if (state.b == nullptr){
+        return; 
+    }
+    std::cout << "start" << std::endl;
+    while (state.b != nullptr) {
+        
+        if (state.b->left == nullptr) {
+            std::cout << "a" << std::endl;
+            std::cout << state.b->val << " " << state.b->right->val << std::endl;
+            std::cout << "b" << std::endl;
+            state.b = state.b->right;
+            std::cout << "c" << std::endl;
+            Annotated_Bst_Visualizer::make_image(state);
+            std::cout << "d" << std::endl;
+        }
+        else{
+            
+            find_the_inorder_predecessor_of_current_using_a_proxy(state);
+            
+            /* Make current as the right child of its inorder  
+               predecessor */
+            if (state.a->left->right->right == nullptr) {
+                state.a->left->right->right = state.b;
+                Annotated_Bst_Visualizer::make_image(state);
+                state.b = state.b->left;
+                Annotated_Bst_Visualizer::make_image(state);
+            } 
+            
+            /* Revert the changes made in the 'if' part to restore  
+               the original tree i.e., fix the right child 
+               of predecessor */
+            else{
+                if (state.b){
+                    if (state.b->right){
+                        
+                        state.a->left->right->right = state.b;
+                        Annotated_Bst_Visualizer::make_image(state);
+                        state.a->left->right->right = state.b->right;
+                        Annotated_Bst_Visualizer::make_image(state);
+                        move_a_proxy_pointer_all_the_way_left(state);
+                        observe_a_prev_current_state(state);
+                    }
+                }
+                state.b = state.b->right;
+                Annotated_Bst_Visualizer::make_image(state);
+                state.a->left->right->right = nullptr;
+                Annotated_Bst_Visualizer::make_image(state);
+            }
+        }
+    }
 }
 ▶
+
+◀public:
+static void find_the_inorder_predecessor_of_current_using_a_proxy(Annotated_Bst_State & state){
+    /* Find the inorder predecessor of current */
+    state.a->left->right = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.a->left->right = state.b->left;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    while (state.a->left->right->right != nullptr && state.a->left->right->right != state.b){
+        std::cout << "stuck" << std::endl;
+        state.a->left->right = state.a->left->right->right;
+        Annotated_Bst_Visualizer::make_image(state);
+    }
+    std::cout << "out" << std::endl;
+}
+▶
+
+◀public:
+static void observe_a_prev_current_state(Annotated_Bst_State & state){
+    if (state.b->val != state.a->left->right->right->val){
+        std::cout << state.b->val << " " << state.a->left->right->right->val << std::endl;
+    }
+    else{
+        std::cout << state.b->val << " " << state.b->right->val << std::endl;
+    }
+}
+▶
+
+◀public:
+static void move_a_proxy_pointer_all_the_way_left(Annotated_Bst_State & state){
+    if (state.a->left->right->right){
+        if (state.a->left->right->right->left){
+            state.a->left->right->right = state.a->left->right->right->left;
+            Annotated_Bst_Visualizer::make_image(state);
+        }
+    }
+}
+▶
+
+
 
 ◀public:
 static void perform_the_hickey_shuffle(Annotated_Bst_State & state){
     
     perform_the_hickey_shuffle_and_stay(state);
     state.a = state.b;
-    make_image(state);
+    Annotated_Bst_Visualizer::make_image(state);
 }
 ▶
 
@@ -79,34 +174,34 @@ static void perform_the_hickey_shuffle_and_stay(Annotated_Bst_State & state){
     //set the loop back
     move_a_all_the_way_right(state);
     state.a->right = state.b;
-    make_image(state);
+    Annotated_Bst_Visualizer::make_image(state);
     
     //no tail?
     //set the left pointer equal to itself
     if (!state.a->left){
         set_node_a_left_to_itself(state);
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
     }
     
     //find the tail
     else{
         state.b = state.a;
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
         
         while (state.a->left){
             
             state.a = state.a->left;
-            make_image(state);
+            Annotated_Bst_Visualizer::make_image(state);
             move_a_all_the_way_right(state);
         }
         
         state.a->right = state.b;
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
         state.a->left = (BinaryNode<int> *)&(state.a->right);
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
         
         state.b = state.b->right;
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
     }
 }
 ▶
@@ -119,7 +214,7 @@ static void move_a_all_the_way_right(Annotated_Bst_State & state){
     
     while (state.a->right){
         state.a = state.a->right;
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
     }
 }
 ▶
@@ -128,7 +223,7 @@ static void move_b_all_the_way_left(Annotated_Bst_State & state){
     
     while (state.b->left){
         state.b = state.b->left;
-        make_image(state);
+        Annotated_Bst_Visualizer::make_image(state);
     }
 }
 ▶
@@ -142,6 +237,26 @@ static void move_b_to_the_leftest_double_null(Annotated_Bst_State & state){
         move_b_all_the_way_left(state);
     }
     
+}
+▶
+
+◀public:
+static void set_b_to_a_right(Annotated_Bst_State & state){
+        state.b = state.a;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void set_b_to_a_right_right(Annotated_Bst_State & state){
+        state.b = state.a;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
 }
 ▶
 
@@ -166,246 +281,3 @@ static void set_node_b_left_to_sibling(Annotated_Bst_State & state){
 ▶
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//visualizing
-◀private:
-static void make_image(Annotated_Bst_State & state){
-    auto text = as_graphviz_v3(state);
-    std::string file_name = Full_Path_To_Desktop() + "bst_run/" + std::to_string(state.current_photo);
-    std::ofstream outfile(file_name);
-    outfile << text;
-    outfile.close();
-    ++state.current_photo;
-    
-    std::string command;
-    command = "dot ";
-    command += file_name;
-    command += " -Tpng -O";
-    execute(command);
-}
-▶
-
-◀private:
-static std::string as_graphviz(Annotated_Bst_State const& state){
-    std::string str;
-    Append_With_Newline(str,"digraph BST {");
-    Append_With_Newline(str,"node [fontname=\"Arial\"];");
-    
-    //the connections
-    auto directions = Tree_Traversal::get_all_directed_relationships(state.root);
-    for (auto p: directions){
-        
-        if (p.first && p.second){
-            Append(str,std::to_string(p.first.value()));
-            Append(str, " -> ");
-            Append_With_Newline(str,std::to_string(p.second.value()));
-        }
-    }
-    
-    // the special pointers
-    if (state.a){
-        Append(str,"a");
-        Append(str, " -> ");
-        Append_With_Newline(str,std::to_string(state.a->val));
-    }
-    if (state.b){
-        Append(str,"b");
-        Append(str, " -> ");
-        Append_With_Newline(str,std::to_string(state.b->val));
-    }
-    
-    Append_With_Newline(str,"}");
-    return str;
-}
-▶
-
-◀private:
-static std::string as_graphviz_v2(Annotated_Bst_State const& state){
-    std::string str;
-    Append_With_Newline(str,"digraph BST {");
-    Append_With_Newline(str,"node [fontname=\"Arial\"];");
-    for (auto const& node: state.all_nodes){
-        if (node->left){
-            Append(str,std::to_string(node->val));
-            Append(str, " -> ");
-            Append(str,std::to_string(node->left->val));
-            Append_With_Newline(str," [color=\"red\"]");
-        }
-        if (node->right){
-            Append(str,std::to_string(node->val));
-            Append(str, " -> ");
-            Append(str,std::to_string(node->right->val));
-            Append_With_Newline(str," [color=\"blue\"]");
-        }
-    }
-    
-    
-    if (state.a){
-        Append(str,"a");
-        Append(str, " -> ");
-        Append_With_Newline(str,std::to_string(state.a->val));
-    }
-    if (state.b){
-        Append(str,"b");
-        Append(str, " -> ");
-        Append_With_Newline(str,std::to_string(state.b->val));
-    }
-    Append_With_Newline(str,"}");
-    return str;
-}
-▶
-
-◀private:
-static std::string as_graphviz_v3(Annotated_Bst_State const& state){
-    std::string str;
-    Append_With_Newline(str,"digraph BST {");
-    Append_With_Newline(str,"node [fontname=\"Arial\", shape = record, height=.1];");
-    
-    //create nodes
-    for (auto const& node: state.all_nodes){
-        Append(str, "node");
-        Append(str, std::to_string(node->val));
-        Append(str, "[label = \"<f0> |<f1> ");
-        Append(str, std::to_string(node->val));
-        Append_With_Newline(str, "|<f2> \"];");
-    }
-    
-    
-    
-    for (auto const& node: state.all_nodes){
-        if (node->left){
-            Append(str, "\"node");
-            Append(str,std::to_string(node->val) + "\"");
-            Append(str, ":f0");
-            Append(str, " -> ");
-            
-            
-            //special cases
-            if (Tree_Node_Properties::left_node_points_to_its_sibling(node)){
-                Append(str, "\"node");
-                Append(str,std::to_string(node->val) + "\"");
-                Append(str, ":f2");
-            }
-            else if (Tree_Node_Properties::left_node_points_to_itself(node)){
-                Append(str, "\"node");
-                Append(str,std::to_string(node->val) + "\"");
-                Append(str, ":f0");
-            }
-            
-            //normal case
-            else{
-                Append(str, "\"node");
-                Append(str,std::to_string(node->left->val) + "\"");
-                Append(str, ":f1");
-            }
-            Append_With_Newline(str," [color=\"red\", constraint=false]");
-        }
-        if (node->right){
-            Append(str, "\"node");
-            Append(str,std::to_string(node->val) + "\"");
-            Append(str, ":f2");
-            Append(str, " -> ");
-            Append(str, "\"node");
-            Append(str,std::to_string(node->right->val) + "\"");
-            Append(str, ":f1");
-            Append_With_Newline(str," [color=\"blue\", constraint=false]");
-        }
-    }
-    
-    
-    //this is for nice formatting only
-    //it keeps the nodes in the same place when the arrows go crazy
-    for (auto const& node: state.original_connections){
-        if (node.first && node.second){
-            Append(str, "\"node");
-            Append(str,std::to_string(node.first.value()) + "\"");
-            Append(str, " -> ");
-            Append(str, "\"node");
-            Append(str,std::to_string(node.second.value()) + "\"");
-            Append_With_Newline(str," [style=invis]");
-        }
-    }
-    
-        Append(str,"a");
-        Append(str, " -> ");
-        Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.root->val));
-        Append(str,Get_Double_Quote());
-        Append_With_Newline(str," [style=invis]");
-        
-        Append(str,"b");
-        Append(str, " -> ");
-        Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.root->val));
-        Append(str,Get_Double_Quote());
-        Append_With_Newline(str," [style=invis]");
-    
-    
-    
-    //the special pointers
-    if (state.a){
-        Append(str,"a");
-        Append(str, " -> ");
-        Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.a->val));
-        Append_With_Newline(str,Get_Double_Quote());
-        Append_With_Newline(str," [color=\"green\", constraint=false]");
-    }
-    if (state.b){
-        Append(str,"b");
-        Append(str, " -> ");
-        Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.b->val));
-        Append_With_Newline(str,Get_Double_Quote());
-        Append_With_Newline(str," [color=\"purple\", constraint=false]");
-    }
-    
-    //the ranking
-    for (auto levels: state.val_heights){
-        Append(str, "{ rank=same; ");
-        for (auto val: levels){
-            Append(str,Get_Double_Quote());
-            Append(str, "node");
-            Append(str,std::to_string(val));
-            Append(str,Get_Double_Quote());
-            Append(str, " ");
-        }
-        Append_With_Newline(str,"}");
-    }
-    Append_With_Newline(str, "{ rank=same; a b }");
-    
-    
-    Append_With_Newline(str,"}");
-    return str;
-}
-▶
