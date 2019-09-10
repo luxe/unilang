@@ -17,6 +17,7 @@ class
 
 //maybe animate
 //https://bl.ocks.org/magjac/4acffdb3afbc4f71b448a210b5060bca
+// convert -loop 0 -delay 100 001.png -delay 20 *.png -delay 200 019.png animation.gif
 
 ◀public:
 static void fix(Annotated_Bst_State & state){
@@ -56,6 +57,16 @@ static void fix(Annotated_Bst_State & state){
         set_b_to_a_right_right(state);
     }
     
+    //go back home
+    //dont actually do this
+    //only exists to make a nice animation for a complete hickey traversal
+    // if (Tree_Node_Properties::left_node_points_to_itself(state.a->left)){
+    //     move_a_right(state);
+    // }
+    // else{
+    //     move_a_right_right(state);
+    // }
+    
     modified_morris_traversal(state);
 }
 ▶
@@ -68,17 +79,19 @@ static void modified_morris_traversal(Annotated_Bst_State & state){
     if (state.b == nullptr){
         return; 
     }
-    std::cout << "start" << std::endl;
     while (state.b != nullptr) {
         
-        if (state.b->left == nullptr) {
-            std::cout << "a" << std::endl;
+        
+        //the hack discrepancy
+        if (state.b->left && (state.b->left->left == (BinaryNode<int>*)&state.b->left->right || state.b->left->left == (BinaryNode<int>*)&state.b->left->left)){
+            std::cout << "hack" << std::endl;
+            std::cout << state.b->left->val << " " << state.b->left->right->val << std::endl;
+            exit(0);
+        }
+        else if (state.b->left == nullptr) {
             std::cout << state.b->val << " " << state.b->right->val << std::endl;
-            std::cout << "b" << std::endl;
             state.b = state.b->right;
-            std::cout << "c" << std::endl;
             Annotated_Bst_Visualizer::make_image(state);
-            std::cout << "d" << std::endl;
         }
         else{
             
@@ -127,11 +140,9 @@ static void find_the_inorder_predecessor_of_current_using_a_proxy(Annotated_Bst_
     Annotated_Bst_Visualizer::make_image(state);
     
     while (state.a->left->right->right != nullptr && state.a->left->right->right != state.b){
-        std::cout << "stuck" << std::endl;
         state.a->left->right = state.a->left->right->right;
         Annotated_Bst_Visualizer::make_image(state);
     }
-    std::cout << "out" << std::endl;
 }
 ▶
 
@@ -237,6 +248,22 @@ static void move_b_to_the_leftest_double_null(Annotated_Bst_State & state){
         move_b_all_the_way_left(state);
     }
     
+}
+▶
+
+◀public:
+static void move_a_right(Annotated_Bst_State & state){
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
+}
+▶
+
+◀public:
+static void move_a_right_right(Annotated_Bst_State & state){
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.a = state.a->right;
+        Annotated_Bst_Visualizer::make_image(state);
 }
 ▶
 
