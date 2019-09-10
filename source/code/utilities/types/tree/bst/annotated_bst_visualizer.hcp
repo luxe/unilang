@@ -40,7 +40,20 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
     //Append_With_Newline(str,"node [fontname=\"Arial\", shape = record, height=.1];");
     //Append_With_Newline(str,"node [fontname=\"Arial\", height=.1];");
     //Append_With_Newline(str,"rankdir=LR");
-    //create nodes
+    
+    //create pointer nodes
+    Append(str, "a");
+    Append(str, "[label = ");
+    Append(str,empty_table("a"));
+    Append_With_Newline(str, "];");
+
+    Append(str, "b");
+    Append(str, "[label = ");
+    Append(str,empty_table("b"));
+    Append_With_Newline(str, "];");
+
+    
+    //create tree nodes
     for (auto const& node: state.all_nodes){
         Append(str, "node");
         Append(str, std::to_string(node->val));
@@ -103,6 +116,28 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         }
     }
     
+    //the special pointers
+    if (state.a){
+        Append(str,"a:main");
+        Append(str, " -> ");
+        //Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.a->val));
+        //Append(str,Get_Double_Quote());
+        Append(str, ":f1");
+        Append_With_Newline(str," [color=\"green\", constraint=false]");
+    }
+    if (state.b){
+        Append(str,"b:main");
+        Append(str, " -> ");
+        //Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.b->val));
+        //Append(str,Get_Double_Quote());
+        Append(str, ":f1");
+        Append_With_Newline(str," [color=\"purple\", constraint=false]");
+    }
+    
     
     //this is for nice formatting only
     //it keeps the nodes in the same place when the arrows go crazy
@@ -121,7 +156,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         }
     }
     
-        Append(str,"a");
+        Append(str,"a:main");
         Append(str, " -> ");
         //Append(str,Get_Double_Quote());
         Append(str, "node");
@@ -129,7 +164,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         //Append(str,Get_Double_Quote());
         Append_With_Newline(str," [style=invis]");
         
-        Append(str,"b");
+        Append(str,"b:main");
         Append(str, " -> ");
         //Append(str,Get_Double_Quote());
         Append(str, "node");
@@ -138,40 +173,19 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         Append_With_Newline(str," [style=invis]");
     
     
-    
-    //the special pointers
-    if (state.a){
-        Append(str,"a");
-        Append(str, " -> ");
-        Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.a->val));
-        Append_With_Newline(str,Get_Double_Quote());
-        Append_With_Newline(str," [color=\"green\", constraint=false]");
-    }
-    if (state.b){
-        Append(str,"b");
-        Append(str, " -> ");
-        Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.b->val));
-        Append_With_Newline(str,Get_Double_Quote());
-        Append_With_Newline(str," [color=\"purple\", constraint=false]");
-    }
-    
     //the ranking
+    Append_With_Newline(str, "{ rank=same; a b }");
     for (auto levels: state.val_heights){
         Append(str, "{ rank=same; ");
         for (auto val: levels){
-            Append(str,Get_Double_Quote());
+            //Append(str,Get_Double_Quote());
             Append(str, "node");
             Append(str,std::to_string(val));
-            Append(str,Get_Double_Quote());
+            //Append(str,Get_Double_Quote());
             Append(str, " ");
         }
         Append_With_Newline(str,"}");
     }
-    Append_With_Newline(str, "{ rank=same; a b }");
     
     
     Append_With_Newline(str,"}");
@@ -192,8 +206,6 @@ static std::string node_label(int val){
 ◀private:
 static std::string node_label_as_table(int val){
     std::string str;
-    
-    
     Append_With_Newline(str,"<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"> <TR>");
     Append_With_Newline(str,"<TD PORT=\"f0\"></TD>");
     Append(str,"<TD PORT=\"f1\">");
@@ -201,8 +213,18 @@ static std::string node_label_as_table(int val){
     Append_With_Newline(str,"</TD>");
     Append_With_Newline(str,"<TD PORT=\"f2\"></TD>");
     Append_With_Newline(str,"</TR> </TABLE>>");
-    
-    
+    return str;
+}
+▶
+
+◀private:
+static std::string empty_table(std::string const& name){
+    std::string str;
+    Append_With_Newline(str,"<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"> <TR>");
+    Append(str,"<TD PORT=\"main\">");
+    Append(str, name);
+    Append_With_Newline(str,"</TD>");
+    Append_With_Newline(str,"</TR> </TABLE>>");
     return str;
 }
 ▶
