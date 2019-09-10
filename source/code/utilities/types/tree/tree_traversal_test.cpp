@@ -63,14 +63,16 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     
     
     //setup state
-    // Annotated_Bst_State state;
-    // state.a = &root;
-    // state.b = nullptr;
-    // state.root = &root;
-    // state.current_photo = 0;
-    // state.all_nodes = Tree_Traversal::inorder_traversal_as_node_list(state.root);
+    Annotated_Bst_State state;
+    state.a = &root;
+    state.b = nullptr;
+    state.root = &root;
+    state.current_photo = 0;
+    state.all_nodes = Tree_Traversal::inorder_traversal_as_node_list(state.root);
+    state.val_heights = Tree_Traversal::get_binary_node_levels(&root);
+    state.original_connections = Tree_Traversal::get_all_directed_relationships(&root);
     
-    // Annotated_Bst_Fix::fix(state);
+    Annotated_Bst_Fix::fix(state);
     
     // Tree_Traversal::morris_traversal(&root,[&](BinaryNode<int>* n){
     //     std::cout << n->val << " ";
@@ -87,9 +89,9 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     //     std::cout.flush();
     // });
     // std::cout << std::endl;
-    
-    auto x = Tree_Traversal::get_binary_node_heights(&root);
-    for (auto const& it: x){
-      std::cout << it.height << " " << it.node.val << std::endl;
-    }
 }
+
+
+
+
+

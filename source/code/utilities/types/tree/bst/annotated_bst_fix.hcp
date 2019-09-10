@@ -216,6 +216,8 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
     std::string str;
     Append_With_Newline(str,"digraph BST {");
     Append_With_Newline(str,"node [fontname=\"Arial\"];");
+    
+    //the connections
     auto directions = Tree_Traversal::get_all_directed_relationships(state.root);
     for (auto p: directions){
         
@@ -226,6 +228,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         }
     }
     
+    // the special pointers
     if (state.a){
         Append(str,"a");
         Append(str, " -> ");
@@ -236,6 +239,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         Append(str, " -> ");
         Append_With_Newline(str,std::to_string(state.b->val));
     }
+    
     Append_With_Newline(str,"}");
     return str;
 }
@@ -287,9 +291,9 @@ static std::string as_graphviz_v3(Annotated_Bst_State const& state){
     for (auto const& node: state.all_nodes){
         Append(str, "node");
         Append(str, std::to_string(node->val));
-        Append(str, "[label = \"<f0> L|<f1> ");
+        Append(str, "[label = \"<f0> |<f1> ");
         Append(str, std::to_string(node->val));
-        Append_With_Newline(str, "|<f2> R\"];");
+        Append_With_Newline(str, "|<f2> \"];");
     }
     
     
@@ -320,7 +324,7 @@ static std::string as_graphviz_v3(Annotated_Bst_State const& state){
                 Append(str,std::to_string(node->left->val) + "\"");
                 Append(str, ":f1");
             }
-            Append_With_Newline(str," [color=\"red\"]");
+            Append_With_Newline(str," [color=\"red\", constraint=false]");
         }
         if (node->right){
             Append(str, "\"node");
@@ -330,11 +334,43 @@ static std::string as_graphviz_v3(Annotated_Bst_State const& state){
             Append(str, "\"node");
             Append(str,std::to_string(node->right->val) + "\"");
             Append(str, ":f1");
-            Append_With_Newline(str," [color=\"blue\"]");
+            Append_With_Newline(str," [color=\"blue\", constraint=false]");
         }
     }
     
     
+    //this is for nice formatting only
+    //it keeps the nodes in the same place when the arrows go crazy
+    for (auto const& node: state.original_connections){
+        if (node.first && node.second){
+            Append(str, "\"node");
+            Append(str,std::to_string(node.first.value()) + "\"");
+            Append(str, " -> ");
+            Append(str, "\"node");
+            Append(str,std::to_string(node.second.value()) + "\"");
+            Append_With_Newline(str," [style=invis]");
+        }
+    }
+    
+        Append(str,"a");
+        Append(str, " -> ");
+        Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.root->val));
+        Append(str,Get_Double_Quote());
+        Append_With_Newline(str," [style=invis]");
+        
+        Append(str,"b");
+        Append(str, " -> ");
+        Append(str,Get_Double_Quote());
+        Append(str, "node");
+        Append(str,std::to_string(state.root->val));
+        Append(str,Get_Double_Quote());
+        Append_With_Newline(str," [style=invis]");
+    
+    
+    
+    //the special pointers
     if (state.a){
         Append(str,"a");
         Append(str, " -> ");
@@ -342,6 +378,7 @@ static std::string as_graphviz_v3(Annotated_Bst_State const& state){
         Append(str, "node");
         Append(str,std::to_string(state.a->val));
         Append_With_Newline(str,Get_Double_Quote());
+        Append_With_Newline(str," [color=\"green\", constraint=false]");
     }
     if (state.b){
         Append(str,"b");
@@ -350,7 +387,24 @@ static std::string as_graphviz_v3(Annotated_Bst_State const& state){
         Append(str, "node");
         Append(str,std::to_string(state.b->val));
         Append_With_Newline(str,Get_Double_Quote());
+        Append_With_Newline(str," [color=\"purple\", constraint=false]");
     }
+    
+    //the ranking
+    for (auto levels: state.val_heights){
+        Append(str, "{ rank=same; ");
+        for (auto val: levels){
+            Append(str,Get_Double_Quote());
+            Append(str, "node");
+            Append(str,std::to_string(val));
+            Append(str,Get_Double_Quote());
+            Append(str, " ");
+        }
+        Append_With_Newline(str,"}");
+    }
+    Append_With_Newline(str, "{ rank=same; a b }");
+    
+    
     Append_With_Newline(str,"}");
     return str;
 }
