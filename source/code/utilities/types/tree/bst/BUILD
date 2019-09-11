@@ -20,7 +20,8 @@ hcp(name = "annotated_bst_visualizer", deps = [
     "//code/utilities/types/tree:tree_node_properties",
     "//code/utilities/shell:lib",
     "//code/utilities/types/char:lib",
-    "//code/utilities/filesystem/paths:lib"
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/filesystem/files/deleting:lib",
 ])
 
 hcp(name = "annotated_bst_state", deps = [

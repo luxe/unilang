@@ -13,25 +13,22 @@ class
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/deleting/lib"❫
 ⚯
 ⚞⚟
 
 //visualizing
 
-
 ◀public:
-static std::string to_zero_lead(const int value, const unsigned precision)
-{
-     std::ostringstream oss;
-     oss << std::setw(precision) << std::setfill('0') << value;
-     return oss.str();
+static void clean_output_folder(){
+    Empty_Out_Folder_But_Keep_Folder(Output_Folder());
 }
 ▶
 
 ◀public:
 static void make_image(Annotated_Bst_State & state){
     auto text = as_graphviz(state);
-    std::string file_name = Full_Path_To_Desktop() + "bst_run/" + to_zero_lead(state.current_photo,3);
+    std::string file_name = Output_Folder() + to_zero_lead(state.current_photo,3);
     std::ofstream outfile(file_name);
     outfile << text;
     outfile.close();
@@ -42,6 +39,22 @@ static void make_image(Annotated_Bst_State & state){
     command += file_name;
     command += " -Tpng -O";
     execute(command);
+}
+▶
+
+
+◀private:
+static std::string Output_Folder(){
+    return Full_Path_To_Desktop() + "bst_run/";
+}
+▶
+
+◀private:
+static std::string to_zero_lead(const int value, const unsigned precision)
+{
+     std::ostringstream oss;
+     oss << std::setw(precision) << std::setfill('0') << value;
+     return oss.str();
 }
 ▶
 
