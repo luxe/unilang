@@ -126,7 +126,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
                 //Append(str,Get_Double_Quote());
                 Append(str, ":f1");
             }
-            Append_With_Newline(str," [color=\"red\", constraint=false]");
+            Append_With_Newline(str,edge_description("red",true));
         }
         if (node->right){
             //Append(str,Get_Double_Quote());
@@ -140,7 +140,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
             Append(str,std::to_string(node->right->val));
             //Append(str,Get_Double_Quote());
             Append(str, ":f1");
-            Append_With_Newline(str," [color=\"blue\", constraint=false]");
+            Append_With_Newline(str,edge_description("blue",true));
         }
     }
     
@@ -153,7 +153,7 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         Append(str,std::to_string(state.a->val));
         //Append(str,Get_Double_Quote());
         Append(str, ":f1");
-        Append_With_Newline(str," [color=\"green\", constraint=false]");
+        Append_With_Newline(str,edge_description("green",false));
     }
     if (state.b){
         Append(str,"b:main");
@@ -163,12 +163,46 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         Append(str,std::to_string(state.b->val));
         //Append(str,Get_Double_Quote());
         Append(str, ":f1");
-        Append_With_Newline(str," [color=\"purple\", constraint=false]");
+        Append_With_Newline(str,edge_description("purple",false));
     }
     
+    Append(str,graphviz_for_structuring_picture(state));
+    
+    
+    Append_With_Newline(str,"}");
+    return str;
+}
+▶
+
+
+◀private:
+static std::string edge_description(std::string const& color, bool constraint){
+    std::string str;
+    Append(str, "[");
+    if (!color.empty()){
+        Append(str, "color=\"");
+        Append(str,color);
+        Append(str, "\"");
+    }
+    Append(str,"constraint=");
+    if (constraint){
+        Append(str,"true");
+    }
+    else{
+        Append(str,"false");
+    }
+    Append(str, "]");
+    return str;
+}
+▶
+
+◀private:
+static std::string graphviz_for_structuring_picture(Annotated_Bst_State const& state){
     
     //this is for nice formatting only
     //it keeps the nodes in the same place when the arrows go crazy
+    //main node connections
+    std::string str;
     for (auto const& node: state.original_connections){
         if (node.first && node.second){
             //Append(str,Get_Double_Quote());
@@ -184,21 +218,22 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         }
     }
     
-        Append(str,"a:main");
-        Append(str, " -> ");
-        //Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.root->val));
-        //Append(str,Get_Double_Quote());
-        Append_With_Newline(str," [style=invis]");
-        
-        Append(str,"b:main");
-        Append(str, " -> ");
-        //Append(str,Get_Double_Quote());
-        Append(str, "node");
-        Append(str,std::to_string(state.root->val));
-        //Append(str,Get_Double_Quote());
-        Append_With_Newline(str," [style=invis]");
+    //helper pointers
+    Append(str,"a:main");
+    Append(str, " -> ");
+    //Append(str,Get_Double_Quote());
+    Append(str, "node");
+    Append(str,std::to_string(state.root->val));
+    //Append(str,Get_Double_Quote());
+    Append_With_Newline(str," [style=invis]");
+    
+    Append(str,"b:main");
+    Append(str, " -> ");
+    //Append(str,Get_Double_Quote());
+    Append(str, "node");
+    Append(str,std::to_string(state.root->val));
+    //Append(str,Get_Double_Quote());
+    Append_With_Newline(str," [style=invis]");
     
     
     //the ranking
@@ -214,9 +249,6 @@ static std::string as_graphviz(Annotated_Bst_State const& state){
         }
         Append_With_Newline(str,"}");
     }
-    
-    
-    Append_With_Newline(str,"}");
     return str;
 }
 ▶
