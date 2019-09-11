@@ -74,7 +74,12 @@ static void Single_Hop_Implementation(Annotated_Bst_State & state){
     //take b back home
     set_b_to_a_right(state);
     
-    modified_LR_morris_traversal(state);
+    modified_LR_morris_traversal_looking_for_discrepancy(state);
+    
+    //we didn't find the discrepancy, but there's gotta be one
+    //but were only 1 hope away, so this doesn't make any sense
+    if (!state.a->left->right){
+    }
 }
 ▶
 
@@ -89,17 +94,26 @@ static void Double_Hop_Implementation(Annotated_Bst_State & state){
     //take b back home
     set_b_to_a_right_right(state);
     
-    modified_LR_morris_traversal(state);
+    modified_LR_morris_traversal_looking_for_discrepancy(state);
     
     //we didn't find the discrepancy, but there's gotta be one
     //so we can fix it quick and cleanup
     if (!state.a->left->right){
+        std::cout << "full traversal and no discrepancy was found" << std::endl;
+        //TODO: fix tree when no discrepancy was found
+    }
+    else{
+        
+        //we found a discrepancy, but we still have to finish the morris traversal because the tree may still be threaded in places
+        //and probably needs cleaned up since we'll need to do a reverse morris later.
+        std::cout << "we found the discrepancy and need to finish the traversal" << std::endl;
+        
     }
 }
 ▶
 
 ◀public:
-static void modified_LR_morris_traversal(Annotated_Bst_State & state){
+static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_State & state){
     
     //we've given A an additional storage location so it can participate indirectly
     //in a morris traversal
@@ -202,10 +216,6 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
                         Annotated_Bst_Visualizer::make_image(state);
                         break;
                     }
-                    
-                    
-                    
-                    
                 }
                 state.b = state.b->right;
                 Annotated_Bst_Visualizer::make_image(state);
@@ -217,6 +227,13 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
     
 }
 ▶
+
+◀public:
+static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotated_Bst_State & state){
+    
+}
+▶
+
 
 ◀public:
 static void find_the_inorder_predecessor_of_current_using_a_proxy(Annotated_Bst_State & state){
