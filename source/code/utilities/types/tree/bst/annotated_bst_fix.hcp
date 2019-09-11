@@ -120,7 +120,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
     if (state.b == nullptr){
         return; 
     }
-    while (state.a->left->right != state.a) {
+    while (!proxy1_points_to_a(state)) {
         
         
         //the hack discrepancy climb
@@ -131,7 +131,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             std::cout << state.b->left->val << "->" << state.b->val << std::endl;
             if (state.b->left->val > state.b->val){
                 std::cout << "FOUND DISCREPENCY" << std::endl;
-                state.a->left->right = state.b->left; //store discrepancy
+                set_proxy1_to_b_left(state); //store discrepancy
                 state.b = state.b->right; //do what you would've done this iteration
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
@@ -141,7 +141,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             std::cout << state.b->val << "->" << state.b->right->val << std::endl;
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY" << std::endl;
-                state.a->left->right = state.b->right; //store discrepancy
+                set_proxy1_to_b_right(state); //store discrepancy
                 state.b = state.b->right; //do what you would've done this iteration
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
@@ -159,7 +159,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             std::cout << state.b->val << "->" << state.b->right->val << std::endl;
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY" << std::endl;
-                state.a->left->right = state.b; //store discrepancy
+                set_proxy1_to_b(state); //store discrepancy
                 state.b = state.b->right; //do what you would've done this iteration
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
@@ -173,9 +173,9 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             find_the_inorder_predecessor_of_current_using_a_proxy(state);
             
             //we've reached the end with no discrepancies found
-            if (state.a->left->right == state.a){
+            if (proxy1_points_to_a(state)){
                 std::cout << "full traversal and no discrepancy was found" << std::endl;
-                state.a->left->right = nullptr;
+                set_proxy1_to_null(state);
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
             }
@@ -186,8 +186,8 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             
             /* Make current as the right child of its inorder  
                predecessor */
-            if (state.a->left->right->right == nullptr) {
-                state.a->left->right->right = state.b;
+            if (proxy1_right_points_to_null(state)) {
+                set_proxy1_right_to_b(state);
                 Annotated_Bst_Visualizer::make_image(state);
                 state.b = state.b->left;
                 Annotated_Bst_Visualizer::make_image(state);
@@ -198,20 +198,20 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
                of predecessor */
             else{
                 if (state.b && state.b->right){
-                    state.a->left->right->right = state.b;
+                    set_proxy1_right_to_b(state);
                     Annotated_Bst_Visualizer::make_image(state);
-                    state.a->left->right->right = state.b->right;
+                    set_proxy1_right_to_b_right(state);
                     Annotated_Bst_Visualizer::make_image(state);
                     move_a_proxy_pointer_all_the_way_left(state);
                     
                     
                     
                     //possible discrepancy 4
-                    std::cout << state.b->val << "->" << state.a->left->right->right->val << std::endl;
-                    if (state.b->val > state.a->left->right->right->val){
+                    std::cout << state.b->val << "->" << proxy1_right_val(state) << std::endl;
+                    if (state.b->val > proxy1_right_val(state)){
                         std::cout << "FOUND DISCREPENCY" << std::endl;
-                        state.a->left->right->right = nullptr; //do what you would've done this iteration
-                        state.a->left->right = state.b; //store discrepancy
+                        set_proxy1_right_to_null(state); //do what you would've done this iteration
+                        set_proxy1_to_b(state); //store discrepancy
                         state.b = state.b->right; //do what you would've done this iteration
                         Annotated_Bst_Visualizer::make_image(state);
                         break;
@@ -219,7 +219,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
                 }
                 state.b = state.b->right;
                 Annotated_Bst_Visualizer::make_image(state);
-                state.a->left->right->right = nullptr;
+                set_proxy1_right_to_null(state);
                 Annotated_Bst_Visualizer::make_image(state);
             }
         }
@@ -228,12 +228,64 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
 }
 ▶
 
+
+
 ◀public:
-static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotated_Bst_State & state){
-    
+static int proxy1_right_val(Annotated_Bst_State & state){
+    return state.a->left->right->right->val;
+}
+▶
+◀public:
+static void set_proxy1_to_null(Annotated_Bst_State & state){
+    state.a->left->right = nullptr;
+}
+▶
+◀public:
+static void set_proxy1_right_to_null(Annotated_Bst_State & state){
+    state.a->left->right = nullptr;
+}
+▶
+◀public:
+static bool proxy1_points_to_a(Annotated_Bst_State & state){
+    return state.a->left->right == state.a;
+}
+▶
+◀public:
+static bool proxy1_right_points_to_null(Annotated_Bst_State & state){
+    return state.a->left->right->right == nullptr;
+}
+▶
+◀public:
+static void set_proxy1_to_b(Annotated_Bst_State & state){
+    state.a->left->right = state.b;
+}
+▶
+◀public:
+static void set_proxy1_right_to_b(Annotated_Bst_State & state){
+    state.a->left->right->right = state.b;
+}
+▶
+◀public:
+static void set_proxy1_to_b_left(Annotated_Bst_State & state){
+    state.a->left->right = state.b->left;
+}
+▶
+◀public:
+static void set_proxy1_to_b_right(Annotated_Bst_State & state){
+    state.a->left->right = state.b->right;
+}
+▶
+◀public:
+static void set_proxy1_right_to_b_right(Annotated_Bst_State & state){
+    state.a->left->right->right = state.b->right;
 }
 ▶
 
+
+◀public:
+static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotated_Bst_State & state){
+}
+▶
 
 ◀public:
 static void find_the_inorder_predecessor_of_current_using_a_proxy(Annotated_Bst_State & state){
