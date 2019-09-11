@@ -82,16 +82,42 @@ static void modified_morris_traversal(Annotated_Bst_State & state){
     while (state.a->left->right != state.a) {
         
         
-        //the hack discrepancy
+        //the hack discrepancy climb
         if (state.b->left && (state.b->left->left == (BinaryNode<int>*)&state.b->left->right || state.b->left->left == (BinaryNode<int>*)&state.b->left->left)){
             std::cout << "hack" << std::endl;
-            std::cout << state.b->left->val << " " << state.b->val << std::endl;
-            std::cout << state.b->val << " " << state.b->right->val << std::endl;
+            
+            std::cout << state.b->left->val << "->" << state.b->val << std::endl;
+            if (state.b->left->val > state.b->val){
+                std::cout << "FOUND DISCREPENCY" << std::endl;
+                state.a->left->right = state.b->left;
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            
+            std::cout << state.b->val << "->" << state.b->right->val << std::endl;
+            if (state.b->val > state.b->right->val){
+                std::cout << "FOUND DISCREPENCY" << std::endl;
+                state.a->left->right = state.b->right;
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            
             state.b = state.b->right;
             Annotated_Bst_Visualizer::make_image(state);
         }
+        
+        //the normal climb
         else if (state.b->left == nullptr) {
-            std::cout << state.b->val << " " << state.b->right->val << std::endl;
+            std::cout << state.b->val << "->" << state.b->right->val << std::endl;
+            if (state.b->val > state.b->right->val){
+                std::cout << "FOUND DISCREPENCY" << std::endl;
+                state.a->left->right = state.b;
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
             state.b = state.b->right;
             Annotated_Bst_Visualizer::make_image(state);
         }
@@ -99,11 +125,12 @@ static void modified_morris_traversal(Annotated_Bst_State & state){
             
             find_the_inorder_predecessor_of_current_using_a_proxy(state);
             
-            if (state.a->left->right == state.a){
-                std::cout << "bad" << std::endl;
-                Annotated_Bst_Visualizer::make_image(state);
-                break;
-            }
+            //we've reached the end
+            // if (state.a->left->right == state.a){
+            //     std::cout << "bad" << std::endl;
+            //     Annotated_Bst_Visualizer::make_image(state);
+            //     break;
+            // }
             
             /* Make current as the right child of its inorder  
                predecessor */
@@ -118,16 +145,27 @@ static void modified_morris_traversal(Annotated_Bst_State & state){
                the original tree i.e., fix the right child 
                of predecessor */
             else{
-                if (state.b){
-                    if (state.b->right){
-                        
-                        state.a->left->right->right = state.b;
+                if (state.b && state.b->right){
+                    state.a->left->right->right = state.b;
+                    Annotated_Bst_Visualizer::make_image(state);
+                    state.a->left->right->right = state.b->right;
+                    Annotated_Bst_Visualizer::make_image(state);
+                    move_a_proxy_pointer_all_the_way_left(state);
+                    
+                    
+                    
+                    //WE MAY HAVE SPOTTED A DISCPREPENCY
+                    std::cout << state.b->val << "->" << state.a->left->right->right->val << std::endl;
+                    if (state.b->val > state.a->left->right->right->val){
+                        std::cout << "FOUND DISCREPENCY" << std::endl;
+                        state.a->left->right = state.b;
                         Annotated_Bst_Visualizer::make_image(state);
-                        state.a->left->right->right = state.b->right;
-                        Annotated_Bst_Visualizer::make_image(state);
-                        move_a_proxy_pointer_all_the_way_left(state);
-                        observe_a_prev_current_state(state);
+                        break;
                     }
+                    
+                    
+                    
+                    
                 }
                 state.b = state.b->right;
                 Annotated_Bst_Visualizer::make_image(state);

@@ -10,15 +10,15 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
         /*
          6 
         /  \ 
-       2   10 
+       10   2 
       /  \ /  \ 
      1   3 7   12
    /      \    /
   0        4  11
      */
     BinaryNode<int> root(6);
-    BinaryNode<int> r1(2);
-    BinaryNode<int> r2(10);
+    BinaryNode<int> r1(10);
+    BinaryNode<int> r2(2);
     BinaryNode<int> r3(1);
     BinaryNode<int> r4(3);
     BinaryNode<int> r5(7);
