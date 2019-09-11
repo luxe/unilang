@@ -4,6 +4,7 @@
 #include "boost/range/adaptor/reversed.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "code/utilities/types/strings/transformers/squeeze/lib.hpp"
+#include "code/utilities/types/strings/transformers/other/lib.hpp"
 
 
 std::vector<std::string>& Remove_First_Elements_That_Are_Whitespace_Elements(std::vector<std::string>& vec){

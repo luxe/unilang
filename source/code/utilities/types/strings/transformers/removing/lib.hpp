@@ -36,7 +36,6 @@ std::string& Remove_All_Chars_From_Back_Until_Char_Is_Seen_A_Number_Of_Times(std
 /**/ std::string As_All_Chars_Removed_From_Back_Until_Char_Is_Seen_A_Number_Of_Times(std::string str, char const& c, unsigned int number_of_times);
 std::string& Remove_Last_N_Chars(std::string & str, unsigned int const& number_of_times);
 std::string As_Last_N_Chars_Removed(std::string str, unsigned int const& number_of_times);
-std::string& Move_First_Word_Of_String_To_The_End(std::string & str);
 std::string As_First_Word_Of_String_Moved_To_The_End(std::string str);
 
 //changing both

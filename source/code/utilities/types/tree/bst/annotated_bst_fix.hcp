@@ -29,47 +29,72 @@ static void fix(Annotated_Bst_State & state){
     state.b = state.a;
     Annotated_Bst_Visualizer::make_image(state);
     
-    //b remains at the top
-    //a remains on the double null
-    perform_the_hickey_shuffle_and_stay(state);
+    //set the loop back
+    move_a_all_the_way_right(state);
+    state.a->right = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
     
+    //single HOP from ROOT implementation
+    if (!state.a->left){
+        
+        Single_Hop_Implementation(state);
+    }
     
-    //steal double null, so we have an extra storage space
+    //double HOP from ROOT implementation
+    //find the tail
+    else{
+        state.b = state.a;
+        Annotated_Bst_Visualizer::make_image(state);
+        
+        while (state.a->left){
+            
+            state.a = state.a->left;
+            Annotated_Bst_Visualizer::make_image(state);
+            move_a_all_the_way_right(state);
+        }
+        
+        state.a->right = state.b;
+        Annotated_Bst_Visualizer::make_image(state);
+        state.b = state.b->right;
+        Annotated_Bst_Visualizer::make_image(state);
+        
+        Double_Hop_Implementation(state);
+    }
+}
+▶
+
+◀public:
+static void Single_Hop_Implementation(Annotated_Bst_State & state){
     move_b_to_the_leftest_double_null(state);
-    
-    //mirror the jumper
-    if (Tree_Node_Properties::left_node_points_to_itself(state.a)){
-        set_node_b_left_to_itself(state);
-        Annotated_Bst_Visualizer::make_image(state);
-    }
-    else if (Tree_Node_Properties::left_node_points_to_its_sibling(state.a)){
-        set_node_b_left_to_sibling(state);
-        Annotated_Bst_Visualizer::make_image(state);
-    }
     
     //a controls the new block indirectly
     state.a->left = state.b;
     Annotated_Bst_Visualizer::make_image(state);
     
     //take b back home
-    if (Tree_Node_Properties::left_node_points_to_itself(state.a->left)){
-        set_b_to_a_right(state);
-    }
-    else{
-        set_b_to_a_right_right(state);
-    }
-    
-    //go back home
-    //dont actually do this
-    //only exists to make a nice animation for a complete hickey traversal
-    // if (Tree_Node_Properties::left_node_points_to_itself(state.a->left)){
-    //     move_a_right(state);
-    // }
-    // else{
-    //     move_a_right_right(state);
-    // }
+    set_b_to_a_right(state);
     
     modified_LR_morris_traversal(state);
+}
+▶
+
+◀public:
+static void Double_Hop_Implementation(Annotated_Bst_State & state){
+    move_b_to_the_leftest_double_null(state);
+    
+    //a controls the new block indirectly
+    state.a->left = state.b;
+    Annotated_Bst_Visualizer::make_image(state);
+    
+    //take b back home
+    set_b_to_a_right_right(state);
+    
+    modified_LR_morris_traversal(state);
+    
+    //we didn't find the discrepancy, but there's gotta be one
+    //so we can fix it quick and cleanup
+    if (!state.a->left->right){
+    }
 }
 ▶
 
@@ -85,22 +110,25 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
         
         
         //the hack discrepancy climb
-        if (state.b->left && (state.b->left->left == (BinaryNode<int>*)&state.b->left->right || state.b->left->left == (BinaryNode<int>*)&state.b->left->left)){
-            std::cout << "hack" << std::endl;
+        if (state.b->left && (state.b->left == state.a->left)){
+            std::cout << "hack climb" << std::endl;
             
+            //possible discrepancy 1
             std::cout << state.b->left->val << "->" << state.b->val << std::endl;
             if (state.b->left->val > state.b->val){
                 std::cout << "FOUND DISCREPENCY" << std::endl;
-                state.a->left->right = state.b->left;
+                state.a->left->right = state.b->left; //store discrepancy
+                state.b = state.b->right; //do what you would've done this iteration
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
             }
             
-            
+            //possible discrepancy 2
             std::cout << state.b->val << "->" << state.b->right->val << std::endl;
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY" << std::endl;
-                state.a->left->right = state.b->right;
+                state.a->left->right = state.b->right; //store discrepancy
+                state.b = state.b->right; //do what you would've done this iteration
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
             }
@@ -112,10 +140,13 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
         
         //the normal climb
         else if (state.b->left == nullptr) {
+            
+            //possible discrepancy 3
             std::cout << state.b->val << "->" << state.b->right->val << std::endl;
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY" << std::endl;
-                state.a->left->right = state.b;
+                state.a->left->right = state.b; //store discrepancy
+                state.b = state.b->right; //do what you would've done this iteration
                 Annotated_Bst_Visualizer::make_image(state);
                 break;
             }
@@ -127,11 +158,16 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
             
             find_the_inorder_predecessor_of_current_using_a_proxy(state);
             
-            //we've reached the end
-            // if (state.a->left->right == state.a){
-            //     std::cout << "bad" << std::endl;
-            //     Annotated_Bst_Visualizer::make_image(state);
-            //     break;
+            //we've reached the end with no discrepancies found
+            if (state.a->left->right == state.a){
+                std::cout << "full traversal and no discrepancy was found" << std::endl;
+                state.a->left->right = nullptr;
+                Annotated_Bst_Visualizer::make_image(state);
+                break;
+            }
+            
+            // if (state.b->left == state.a){
+            //     std::cout << "FULL LOOP" << std::endl;
             // }
             
             /* Make current as the right child of its inorder  
@@ -156,11 +192,13 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
                     
                     
                     
-                    //WE MAY HAVE SPOTTED A DISCPREPENCY
+                    //possible discrepancy 4
                     std::cout << state.b->val << "->" << state.a->left->right->right->val << std::endl;
                     if (state.b->val > state.a->left->right->right->val){
                         std::cout << "FOUND DISCREPENCY" << std::endl;
-                        state.a->left->right = state.b;
+                        state.a->left->right->right = nullptr; //do what you would've done this iteration
+                        state.a->left->right = state.b; //store discrepancy
+                        state.b = state.b->right; //do what you would've done this iteration
                         Annotated_Bst_Visualizer::make_image(state);
                         break;
                     }
@@ -176,6 +214,7 @@ static void modified_LR_morris_traversal(Annotated_Bst_State & state){
             }
         }
     }
+    
 }
 ▶
 

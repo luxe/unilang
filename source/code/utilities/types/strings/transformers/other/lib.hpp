@@ -24,7 +24,7 @@ std::string& Turn_Any_Whitespace_Chars_Into_A_Space(std::string & str);
 
 
 
-
+std::string& Move_First_Word_Of_String_To_The_End(std::string & str);
 
 
 

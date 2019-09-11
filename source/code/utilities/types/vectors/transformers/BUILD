@@ -10,6 +10,7 @@ cc_library(
 "//code/utilities/types/strings/observers/char:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/transformers/squeeze:lib",
+"//code/utilities/types/strings/transformers/other:lib",
 "@boost//:range",
 ]
 )
