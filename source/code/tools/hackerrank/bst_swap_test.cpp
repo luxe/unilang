@@ -55,6 +55,19 @@ void check_every_swap_combination(BinaryNode<int> & root, Bst_Swap_Algorithm con
 }
 
 
+
+// a linked list is a special kind of tree in which there exists only 1 childless node.
+// all other trees have 2 or more childless nodes.
+// the hickey swap requires that 1 pointer capture a childless node, in which the available child storage can be used to connect back to the root,
+// then using the final child storage, connect to another childless node in order to gain two pointers of additional storage during later traversal.
+// this transformation renders the original pointer the ability of two pointers indirectly, tags the both the childless nodes involved, and ensures
+// the original pointer can get back to the root.  From this point, we perform a modified morris traversal in which we capture the first discrepancy,
+// in the first pointers indirected storage.  Using the first pointer's indirected storage, the morris traversal is able to complete, with knowledge of the
+// first node that needs swapped, and knowledge of how to return to the root.  At this point, we perform a modified reverse morris traversal choosing to forget
+// how the first pointer could return to the root,  The second traversal will identify the second node, swap the values, and complete with lost knowledge of the root.
+// as the tree is fixed, deriving the root can be performed by the first pointer.  Pointer A and B work together to repair the tree.
+
+
 std::vector<Bst_Swap_Algorithm> algorithms_to_test(){
   std::vector<Bst_Swap_Algorithm> x;
   x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_FIVE);
@@ -191,6 +204,48 @@ BinaryNodes<int> TwoNodesSwapped_NonAdjecent_Example6(){
   x.nodes[0]->right->right->right = &*x.nodes[6];
   return x;
 }
+BinaryNodes<int> TwoNodesSwapped_NonAdjecent_Example7(){
+  //     6 
+  //    /  \ 
+  //   2    10 
+  //  /  \ /  \ 
+  // 12   3 7  1 
+  // 12 and 1 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->left = &*x.nodes[3];
+  x.nodes[0]->left->right = &*x.nodes[4];
+  x.nodes[0]->right->left = &*x.nodes[5];
+  x.nodes[0]->right->right = &*x.nodes[6];
+  return x;
+}
+BinaryNodes<int> TwoNodesSwapped_Adjecent_Example1(){
+  //       10
+  //      /  \
+  //     6    20
+  //    / \
+  //   2   5
+  // 5 and 6 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->left = &*x.nodes[3];
+  x.nodes[0]->left->right = &*x.nodes[4];
+  return x;
+}
 
 
 TEST(BST_Fix, NonAdjacent_1) {
@@ -242,48 +297,18 @@ TEST(BST_Fix, NonAdjacent_6) {
 
 TEST(BST_Fix, NonAdjacent_7) {
         
-     //     6 
-     //    /  \ 
-     //   2    10 
-     //  /  \ /  \ 
-     // 12   3 7  1 
-     // 12 and 1 are swapped
-     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(6);
-    BinaryNode<int> r1(2);
-    BinaryNode<int> r2(10);
-    BinaryNode<int> r3(12);
-    BinaryNode<int> r4(3);
-    BinaryNode<int> r5(7);
-    BinaryNode<int> r6(1);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    root.right->left = &r5;
-    root.right->right = &r6;
-    check_algorithm_fixes_tree(root,algo);}
+    for (auto algo: algorithms_to_test()){
+      auto tree = TwoNodesSwapped_NonAdjecent_Example7();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 
 TEST(BST_Fix, Adjacent_1) {
     
-    //       10
-    //      /  \
-    //     6    20
-    //    / \
-    //   2   5
-    // 5 and 6 are swapped
     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(10);
-    BinaryNode<int> r1(6);
-    BinaryNode<int> r2(20);
-    BinaryNode<int> r3(2);
-    BinaryNode<int> r4(5);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    check_algorithm_fixes_tree(root,algo);}
+      auto tree = TwoNodesSwapped_Adjecent_Example1();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 
 TEST(BST_Fix, Adjacent_2) {
