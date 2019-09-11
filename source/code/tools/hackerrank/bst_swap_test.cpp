@@ -6,6 +6,7 @@
 #include "code/tools/hackerrank/bst_swap_solution_geeks_three_ptrs.hpp"
 #include "code/tools/hackerrank/bst_swap_algorithm.hpp"
 #include "code/tools/hackerrank/bst_swap_solution.hpp"
+#include "code/utilities/data_structures/tree/binary_nodes.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 
@@ -59,6 +60,12 @@ std::vector<Bst_Swap_Algorithm> algorithms_to_test(){
   x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_THREE);
   x.emplace_back(Bst_Swap_Algorithm::SLIDING_WINDOW_AND_PAIR);
   x.emplace_back(Bst_Swap_Algorithm::INORDER_OUTORDER_THREE);
+  return x;
+}
+
+BinaryNodes<int> NonAdjecent_Example1(){
+  BinaryNodes<int> x;
+  //TODO
   return x;
 }
 
