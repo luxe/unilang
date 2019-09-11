@@ -9,6 +9,8 @@
 #include "code/utilities/data_structures/tree/binary_nodes.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
+#include <vector>
+#include <utility>
 
 void wrong_by_only_two_nodes(std::vector<int> nodes){
   auto sorted = nodes;
@@ -64,72 +66,85 @@ std::vector<Bst_Swap_Algorithm> algorithms_to_test(){
 }
 
 BinaryNodes<int> NonAdjecent_Example1(){
+  
+  //     6 
+  //    /  \ 
+  //   10   2 
+  //  /  \ /  \ 
+  // 1   3 7  12 
+  // 10 and 2 are swapped
   BinaryNodes<int> x;
-  //TODO
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->left = &*x.nodes[3];
+  x.nodes[0]->left->right = &*x.nodes[4];
+  x.nodes[0]->right->left = &*x.nodes[5];
+  x.nodes[0]->right->right = &*x.nodes[6];
+  return x;
+}
+BinaryNodes<int> NonAdjecent_Example2(){
+  
+  //       10
+  //      /  \
+  //     5    8
+  //    / \
+  //   2   20
+  // 20 and 8 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->left = &*x.nodes[3];
+  x.nodes[0]->left->right = &*x.nodes[4];
+  return x;
+}
+BinaryNodes<int> NonAdjecent_Example3(){
+  //        2
+  //      /  \
+  //     3    1
+  // 3 and 1 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
   return x;
 }
 
 TEST(BST_Fix, NonAdjacent_1) {
-        
-     //     6 
-     //    /  \ 
-     //   10   2 
-     //  /  \ /  \ 
-     // 1   3 7  12 
-     // 10 and 2 are swapped
     
     for (auto algo: algorithms_to_test()){
-      BinaryNode<int> root(6);
-      BinaryNode<int> r1(10);
-      BinaryNode<int> r2(2);
-      BinaryNode<int> r3(1);
-      BinaryNode<int> r4(3);
-      BinaryNode<int> r5(7);
-      BinaryNode<int> r6(12);
-      root.left = &r1;
-      root.right = &r2;
-      root.left->left = &r3;
-      root.left->right = &r4;
-      root.right->left = &r5;
-      root.right->right = &r6;
-      check_algorithm_fixes_tree(root,algo);}
+      auto tree = NonAdjecent_Example1();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 
 TEST(BST_Fix, NonAdjacent_2) {
     
-    //       10
-    //      /  \
-    //     5    8
-    //    / \
-    //   2   20
-    // 20 and 8 are swapped
-    
     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(10);
-    BinaryNode<int> r1(5);
-    BinaryNode<int> r2(8);
-    BinaryNode<int> r3(2);
-    BinaryNode<int> r4(20);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    check_algorithm_fixes_tree(root,algo);}
+      auto tree = NonAdjecent_Example2();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 
 TEST(BST_Fix, NonAdjacent_3) {
     
-    //        2
-    //      /  \
-    //     3    1
-    // 3 and 1 are swapped
     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(3);
-    BinaryNode<int> r2(1);
-    root.left = &r1;
-    root.right = &r2;
-    check_algorithm_fixes_tree(root,algo);}
+      auto tree = NonAdjecent_Example3();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 
 TEST(BST_Fix, NonAdjacent_4) {
