@@ -33,3 +33,11 @@ cc_library(
         "//code/utilities/data_structures/tree:binary_node"
     ]
 )
+
+cc_library(
+    name = "bst_tree_example",
+    hdrs = ["bst_tree_example.hpp"],
+    deps = [
+        "//code/utilities/data_structures/tree:binary_node"
+    ]
+)

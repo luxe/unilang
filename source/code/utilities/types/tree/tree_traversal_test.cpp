@@ -4,6 +4,7 @@
 #include "code/utilities/types/tree/bst/annotated_bst_state.hpp"
 #include "code/utilities/data_structures/tree/binary_nodes.hpp"
 #include "code/utilities/types/tree/bst/prebuilt_bst_trees.hpp"
+#include "code/tools/hackerrank/bst_swap_solution_geeks_five_ptrs.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 #include <iostream>
@@ -33,8 +34,9 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     state.root = &real_root;
     state.current_photo = 0;
     state.all_nodes = Tree_Traversal::inorder_traversal_as_node_list(state.root);
-    state.val_heights = Tree_Traversal::get_binary_node_levels(&real_root);
-    state.original_connections = Tree_Traversal::get_all_directed_relationships(&real_root);
+    state.val_heights = Tree_Traversal::get_binary_node_levels(state.root);
+    state.original_connections = Tree_Traversal::get_all_directed_relationships(state.root);
+    state.swapped_vals = Bst_Swap_Solution_Geeks_Five_Ptrs::vals_to_swap(state.root);
     
     Annotated_Bst_Fix::fix(state);
     
