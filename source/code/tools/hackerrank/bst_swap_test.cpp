@@ -435,6 +435,534 @@ BinaryNodes<int> TwoNodesSwapped_Adjecent_Example12(){
   x.nodes[0]->left = &*x.nodes[1];
   return x;
 }
+BinaryNodes<int> Correct_Tree_Example1(){
+     //     6 
+     //    /  \ 
+     //   2    10 
+     //  /  \ /  \ 
+     // 1   3 7  12 
+    BinaryNodes<int> x;
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+    x.nodes[0]->left = &*x.nodes[1];
+    x.nodes[0]->right = &*x.nodes[2];
+    x.nodes[0]->left->left = &*x.nodes[3];
+    x.nodes[0]->left->right = &*x.nodes[4];
+    x.nodes[0]->right->left = &*x.nodes[5];
+    x.nodes[0]->right->right = &*x.nodes[6];
+    return x;
+}
+BinaryNodes<int> Correct_Tree_Example2(){
+    //    2
+    //  /  \
+    // 1    3
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example3(){
+     //       2
+     //     /  \
+     //    1    3
+     //  /       \
+     // 0         4
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(0));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->left = &*x.nodes[3];
+  x.nodes[0]->right->right = &*x.nodes[4];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example4(){
+  // 1-2-3-4-5-6-7-8-9-10
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(9));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->left->left = &*x.nodes[2];
+  x.nodes[0]->left->left->left = &*x.nodes[3];
+  x.nodes[0]->left->left->left->left = &*x.nodes[4];
+  x.nodes[0]->left->left->left->left->left = &*x.nodes[5];
+  x.nodes[0]->left->left->left->left->left->left = &*x.nodes[6];
+  x.nodes[0]->left->left->left->left->left->left->left = &*x.nodes[7];
+  x.nodes[0]->left->left->left->left->left->left->left->left = &*x.nodes[8];
+  x.nodes[0]->left->left->left->left->left->left->left->left->left = &*x.nodes[9];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example5(){
+  // 1-2-3-4-5-6-7-8-9-10
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(9));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes[0]->right = &*x.nodes[1];
+  x.nodes[0]->right->right = &*x.nodes[2];
+  x.nodes[0]->right->right->right = &*x.nodes[3];
+  x.nodes[0]->right->right->right->right = &*x.nodes[4];
+  x.nodes[0]->right->right->right->right->right = &*x.nodes[5];
+  x.nodes[0]->right->right->right->right->right->right = &*x.nodes[6];
+  x.nodes[0]->right->right->right->right->right->right->right = &*x.nodes[7];
+  x.nodes[0]->right->right->right->right->right->right->right->right = &*x.nodes[8];
+  x.nodes[0]->right->right->right->right->right->right->right->right->right = &*x.nodes[9];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example6(){
+    //  2
+    // /
+    // 1
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes[0]->left = &*x.nodes[1];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example7(){
+     // 1
+     // \
+     //  2
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes[0]->right = &*x.nodes[1];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example8(){
+    //    2
+    //  /  \
+    // 1    3
+    //       \
+    //        5
+    //       / \
+    //      4   6
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->right->right = &*x.nodes[3];
+  x.nodes[0]->right->right->left = &*x.nodes[4];
+  x.nodes[0]->right->right->right = &*x.nodes[5];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example9(){
+      //       5
+      //      / \
+      //     4   6
+      //    /
+      //   2
+      //  / \
+      // 1   3
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->left = &*x.nodes[3];
+  x.nodes[0]->left->left->left = &*x.nodes[4];
+  x.nodes[0]->left->left->right = &*x.nodes[5];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example10(){
+  // 13
+  // /
+  // 11
+  // \
+  //  12
+  //  /
+  //  9
+  //  \
+  //   10
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(13));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(11));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(9));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->left->right = &*x.nodes[2];
+  x.nodes[0]->left->right->left = &*x.nodes[3];
+  x.nodes[0]->left->right->left->right = &*x.nodes[4];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example11(){
+   // 1
+   //  \
+   //   6
+   //  /
+   // 3
+   //  \
+   //   5
+   //   /
+   //  4
+   BinaryNodes<int> x;
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+    x.nodes[0]->right = &*x.nodes[1];
+    x.nodes[0]->right->left = &*x.nodes[2];
+    x.nodes[0]->right->left->right = &*x.nodes[3];
+    x.nodes[0]->right->left->right->left = &*x.nodes[4];
+   return x;
+}
+BinaryNodes<int> Correct_Tree_Example12(){
+     //     6 
+     //    /  \ 
+     //   2    10 
+     //  /  \ /   \ 
+     // 1   3 7     12
+     //      \  \   /
+     //      4  8  11
+   BinaryNodes<int> x;
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+   x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(11));
+    x.nodes[0]->left = &*x.nodes[1];
+    x.nodes[0]->right = &*x.nodes[2];
+    x.nodes[0]->left->left = &*x.nodes[3];
+    x.nodes[0]->left->right = &*x.nodes[4];
+    x.nodes[0]->right->left = &*x.nodes[5];
+    x.nodes[0]->right->right = &*x.nodes[6];
+    x.nodes[0]->left->right->right = &*x.nodes[7];
+    x.nodes[0]->right->left->right = &*x.nodes[8];
+    x.nodes[0]->right->right->left = &*x.nodes[9];
+   return x;
+}
+BinaryNodes<int> Correct_Tree_Example13(){
+   //        10
+   //       /  \
+   //      9    11
+   //    /       \
+   //   8         12
+   //  /           \
+   // 0             20
+   //  \            /
+   //   1          19
+   //     \       / 
+   //       2   18
+   //        \  /
+   //        3  17
+   BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(9));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(11));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(0));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(19));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(18));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(17));
+    x.nodes[0]->left = &*x.nodes[1];
+    x.nodes[0]->right = &*x.nodes[2];
+    x.nodes[0]->left->left = &*x.nodes[3];
+    x.nodes[0]->right->right = &*x.nodes[4];
+    x.nodes[0]->left->left->left = &*x.nodes[5];
+    x.nodes[0]->right->right->right =&*x.nodes[6];
+    x.nodes[0]->left->left->left->right = &*x.nodes[7];
+    x.nodes[0]->right->right->right->left = &*x.nodes[8];
+    x.nodes[0]->left->left->left->right->right = &*x.nodes[9];
+    x.nodes[0]->right->right->right->left->left = &*x.nodes[10];
+    x.nodes[0]->left->left->left->right->right->right = &*x.nodes[11];
+    x.nodes[0]->right->right->right->left->left->left = &*x.nodes[12];
+   return x;
+}
+BinaryNodes<int> Correct_Tree_Example14(){
+       //    12
+       //  /    \
+       // 1      23
+       //  \    /
+       //   11 13
+       //  /    \
+       // 2      22
+       //  \    /
+       //   10 14
+       //  /    \
+       // 3      21
+       //  \    /
+       //   9  15
+       //  /    \
+       // 4      20
+       //  \    /
+       //   8  16
+       //  /    \
+       // 5      19
+       //  \    /
+       //   7  17
+       //  /    \
+       // 6      18
+   BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(23));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(11));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(13));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(22));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(14));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(21));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(9));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(15));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(16));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(19));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(17));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(18));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->left->right = &*x.nodes[3];
+  x.nodes[0]->right->left = &*x.nodes[4];
+  x.nodes[0]->left->right->left = &*x.nodes[5];
+  x.nodes[0]->right->left->right = &*x.nodes[6];
+  x.nodes[0]->left->right->left->right = &*x.nodes[7];
+  x.nodes[0]->right->left->right->left = &*x.nodes[8];
+  x.nodes[0]->left->right->left->right->left = &*x.nodes[9];
+  x.nodes[0]->right->left->right->left->right = &*x.nodes[10];
+  x.nodes[0]->left->right->left->right->left->right = &*x.nodes[11];
+  x.nodes[0]->right->left->right->left->right->left = &*x.nodes[12];
+  x.nodes[0]->left->right->left->right->left->right->left = &*x.nodes[13];
+  x.nodes[0]->right->left->right->left->right->left->right = &*x.nodes[14];
+  x.nodes[0]->left->right->left->right->left->right->left->right = &*x.nodes[15];
+  x.nodes[0]->right->left->right->left->right->left->right->left = &*x.nodes[16];
+  x.nodes[0]->left->right->left->right->left->right->left->right->left = &*x.nodes[17];
+  x.nodes[0]->right->left->right->left->right->left->right->left->right = &*x.nodes[18];
+  x.nodes[0]->left->right->left->right->left->right->left->right->left->right = &*x.nodes[19];
+  x.nodes[0]->right->left->right->left->right->left->right->left->right->left = &*x.nodes[20];
+  x.nodes[0]->left->right->left->right->left->right->left->right->left->right->left = &*x.nodes[21];
+  x.nodes[0]->right->left->right->left->right->left->right->left->right->left->right = &*x.nodes[22];
+  return x;
+}
+BinaryNodes<int> Correct_Tree_Example15(){
+       //    12
+       //  /    \
+       // 1      23
+       //  \    /  \
+       //   11 13   24
+       //  /    \    \
+       // 2      22   25
+       //  \    /      \
+       //   10 14       26
+       //  /    \        \
+       // 3      21      27
+       //  \    /         \
+       //   9  15         28
+       //  /    \
+       // 4      20
+       //  \    /
+       //   8  16
+       //  /    \
+       // 5      19
+       //  \    /
+       //   7  17
+       //  /    \
+       // 6      18
+    BinaryNodes<int> x;
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(12));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(23));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(11));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(13));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(22));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(10));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(14));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(21));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(9));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(15));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(4));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(8));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(16));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(19));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(17));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(18));
+    
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(24));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(25));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(26));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(27));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(28));
+    
+    x.nodes[0]->left = &*x.nodes[1];
+    x.nodes[0]->right = &*x.nodes[2];
+    x.nodes[0]->left->right = &*x.nodes[3];
+    x.nodes[0]->right->left = &*x.nodes[4];
+    x.nodes[0]->left->right->left = &*x.nodes[5];
+    x.nodes[0]->right->left->right = &*x.nodes[6];
+    x.nodes[0]->left->right->left->right = &*x.nodes[7];
+    x.nodes[0]->right->left->right->left = &*x.nodes[8];
+    x.nodes[0]->left->right->left->right->left = &*x.nodes[9];
+    x.nodes[0]->right->left->right->left->right = &*x.nodes[10];
+    x.nodes[0]->left->right->left->right->left->right = &*x.nodes[11];
+    x.nodes[0]->right->left->right->left->right->left = &*x.nodes[12];
+    x.nodes[0]->left->right->left->right->left->right->left = &*x.nodes[13];
+    x.nodes[0]->right->left->right->left->right->left->right = &*x.nodes[14];
+    x.nodes[0]->left->right->left->right->left->right->left->right = &*x.nodes[15];
+    x.nodes[0]->right->left->right->left->right->left->right->left = &*x.nodes[16];
+    x.nodes[0]->left->right->left->right->left->right->left->right->left = &*x.nodes[17];
+    x.nodes[0]->right->left->right->left->right->left->right->left->right = &*x.nodes[18];
+    x.nodes[0]->left->right->left->right->left->right->left->right->left->right = &*x.nodes[19];
+    x.nodes[0]->right->left->right->left->right->left->right->left->right->left = &*x.nodes[20];
+    x.nodes[0]->left->right->left->right->left->right->left->right->left->right->left = &*x.nodes[21];
+    x.nodes[0]->right->left->right->left->right->left->right->left->right->left->right = &*x.nodes[22];
+    
+    x.nodes[0]->right->right = &*x.nodes[23];
+    x.nodes[0]->right->right->right = &*x.nodes[24];
+    x.nodes[0]->right->right->right->right = &*x.nodes[25];
+    x.nodes[0]->right->right->right->right->right = &*x.nodes[26];
+    x.nodes[0]->right->right->right->right->right->right = &*x.nodes[27];
+    return x;
+}
+BinaryNodes<int> Correct_Tree_Example16(){
+       //    12
+       //  /    \
+       // 1      23
+       //  \    /  \
+       //   11 13   24
+       //  /    \    \
+       // 2      22   25
+       //  \    /      \
+       //   10 14       26
+       //  /    \        \
+       // 3      21      27
+       //  \    /         \
+       //   9  15         31
+       //  /    \        /
+       // 4      20     28
+       //  \    /        \
+       //   8  16         30
+       //  /    \        /
+       // 5      19     29
+       //  \    /
+       //   7  17
+       //  /    \
+       // 6      18
+    BinaryNodes<int> x;
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (12));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (1));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (23));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (11));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (13));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (2));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (22));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (10));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (14));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (3));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (21));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (9));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (15));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (4));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (20));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (8));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (16));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (5));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (19));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (7));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (17));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (6));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (18));
+    
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (24));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (25));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (26));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (27));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (31));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (28));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (30));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (29));
+    
+    x.nodes[0]->left = &*x.nodes[1];
+    x.nodes[0]->right = &*x.nodes[2];
+    x.nodes[0]->left->right = &*x.nodes[3];
+    x.nodes[0]->right->left = &*x.nodes[4];
+    x.nodes[0]->left->right->left = &*x.nodes[5];
+    x.nodes[0]->right->left->right = &*x.nodes[6];
+    x.nodes[0]->left->right->left->right = &*x.nodes[7];
+    x.nodes[0]->right->left->right->left = &*x.nodes[8];
+    x.nodes[0]->left->right->left->right->left = &*x.nodes[9];
+    x.nodes[0]->right->left->right->left->right = &*x.nodes[10];
+    x.nodes[0]->left->right->left->right->left->right = &*x.nodes[11];
+    x.nodes[0]->right->left->right->left->right->left = &*x.nodes[12];
+    x.nodes[0]->left->right->left->right->left->right->left = &*x.nodes[13];
+    x.nodes[0]->right->left->right->left->right->left->right = &*x.nodes[14];
+    x.nodes[0]->left->right->left->right->left->right->left->right = &*x.nodes[15];
+    x.nodes[0]->right->left->right->left->right->left->right->left = &*x.nodes[16];
+    x.nodes[0]->left->right->left->right->left->right->left->right->left = &*x.nodes[17];
+    x.nodes[0]->right->left->right->left->right->left->right->left->right = &*x.nodes[18];
+    x.nodes[0]->left->right->left->right->left->right->left->right->left->right = &*x.nodes[19];
+    x.nodes[0]->right->left->right->left->right->left->right->left->right->left = &*x.nodes[20];
+    x.nodes[0]->left->right->left->right->left->right->left->right->left->right->left = &*x.nodes[21];
+    x.nodes[0]->right->left->right->left->right->left->right->left->right->left->right = &*x.nodes[22];
+    
+    x.nodes[0]->right->right = &*x.nodes[23];
+    x.nodes[0]->right->right->right = &*x.nodes[24];
+    x.nodes[0]->right->right->right->right = &*x.nodes[25];
+    x.nodes[0]->right->right->right->right->right = &*x.nodes[26];
+    x.nodes[0]->right->right->right->right->right->right = &*x.nodes[27];
+    x.nodes[0]->right->right->right->right->right->right->left = &*x.nodes[28];
+    x.nodes[0]->right->right->right->right->right->right->left->right = &*x.nodes[29];
+    x.nodes[0]->right->right->right->right->right->right->left->right->left = &*x.nodes[30];
+    return x;
+}
 
 TEST(BST_Fix, NonAdjacent_1) {
     
@@ -563,553 +1091,105 @@ TEST(BST_Fix, Adjacent_12) {
 
 
 TEST(BST_Fix, Every_Swap_1) {
-        
-     //     6 
-     //    /  \ 
-     //   2    10 
-     //  /  \ /  \ 
-     // 1   3 7  12 
-     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(6);
-    BinaryNode<int> r1(2);
-    BinaryNode<int> r2(10);
-    BinaryNode<int> r3(1);
-    BinaryNode<int> r4(3);
-    BinaryNode<int> r5(7);
-    BinaryNode<int> r6(12);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    root.right->left = &r5;
-    root.right->right = &r6;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example1();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_2) {
-    
-        //    2
-        //  /  \
-        // 1    3
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(3);
-    root.left = &r1;
-    root.right = &r2;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example2();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_3) {
-    
-     //       2
-     //     /  \
-     //    1    3
-     //  /       \
-     // 0         4
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(3);
-    BinaryNode<int> r3(0);
-    BinaryNode<int> r4(4);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.right->right = &r4;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example3();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_4) {
-    
-     // 1-2-3-4-5-6-7-8-9-10
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(10);
-    BinaryNode<int> r1(9);
-    BinaryNode<int> r2(8);
-    BinaryNode<int> r3(7);
-    BinaryNode<int> r4(6);
-    BinaryNode<int> r5(5);
-    BinaryNode<int> r6(4);
-    BinaryNode<int> r7(3);
-    BinaryNode<int> r8(2);
-    BinaryNode<int> r9(1);
-    root.left = &r1;
-    root.left->left = &r2;
-    root.left->left->left = &r3;
-    root.left->left->left->left = &r4;
-    root.left->left->left->left->left = &r5;
-    root.left->left->left->left->left->left = &r6;
-    root.left->left->left->left->left->left->left = &r7;
-    root.left->left->left->left->left->left->left->left = &r8;
-    root.left->left->left->left->left->left->left->left->left = &r9;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example4();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_5) {
-    
-     // 1-2-3-4-5-6-7-8-9-10
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(1);
-    BinaryNode<int> r1(2);
-    BinaryNode<int> r2(3);
-    BinaryNode<int> r3(4);
-    BinaryNode<int> r4(5);
-    BinaryNode<int> r5(6);
-    BinaryNode<int> r6(7);
-    BinaryNode<int> r7(8);
-    BinaryNode<int> r8(9);
-    BinaryNode<int> r9(10);
-    root.right = &r1;
-    root.right->right = &r2;
-    root.right->right->right = &r3;
-    root.right->right->right->right = &r4;
-    root.right->right->right->right->right = &r5;
-    root.right->right->right->right->right->right = &r6;
-    root.right->right->right->right->right->right->right = &r7;
-    root.right->right->right->right->right->right->right->right = &r8;
-    root.right->right->right->right->right->right->right->right->right = &r9;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example5();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_6) {
-    
-    //  2
-    // /
-    // 1
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(1);
-    root.left = &r1;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example6();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_7) {
-    
-     // 1
-     // \
-     //  2
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(1);
-    BinaryNode<int> r1(2);
-    root.right = &r1;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example7();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_8) {
-    
-        //    2
-        //  /  \
-        // 1    3
-        //       \
-        //        5
-        //       / \
-        //      4   6
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(3);
-    BinaryNode<int> r3(5);
-    BinaryNode<int> r4(4);
-    BinaryNode<int> r5(6);
-    root.left = &r1;
-    root.right = &r2;
-    root.right->right = &r3;
-    root.right->right->left = &r4;
-    root.right->right->right = &r5;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example8();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_9) {
-    
-      //       5
-      //      / \
-      //     4   6
-      //    /
-      //   2
-      //  / \
-      // 1   3
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(5);
-    BinaryNode<int> r1(4);
-    BinaryNode<int> r2(6);
-    BinaryNode<int> r3(2);
-    BinaryNode<int> r4(1);
-    BinaryNode<int> r5(3);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->left->left = &r4;
-    root.left->left->right = &r5;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example9();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 
 TEST(BST_Fix, Every_Swap_10) {
-  
-  
-  // 13
-  // /
-  // 11
-  // \
-  //  12
-  //  /
-  //  9
-  //  \
-  //   10
   for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(13);
-    BinaryNode<int> r1(11);
-    BinaryNode<int> r2(12);
-    BinaryNode<int> r3(9);
-    BinaryNode<int> r4(10);
-    root.left = &r1;
-    root.left->right = &r2;
-    root.left->right->left = &r3;
-    root.left->right->left->right = &r4;
-    check_every_swap_combination(root,algo);}
+    auto tree = Correct_Tree_Example10();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 
 TEST(BST_Fix, Every_Swap_11) {
-  
-  
-   // 1
-   //  \
-   //   6
-   //  /
-   // 3
-   //  \
-   //   5
-   //   /
-   //  4
-    
   for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(1);
-    BinaryNode<int> r1(6);
-    BinaryNode<int> r2(3);
-    BinaryNode<int> r3(5);
-    BinaryNode<int> r4(4);
-    root.right = &r1;
-    root.right->left = &r2;
-    root.right->left->right = &r3;
-    root.right->left->right->left = &r4;
-    check_every_swap_combination(root,algo);}
+    auto tree = Correct_Tree_Example11();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_12) {
-        
-     //     6 
-     //    /  \ 
-     //   2    10 
-     //  /  \ /   \ 
-     // 1   3 7     12
-     //      \  \   /
-     //      4  8  11
-     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(6);
-    BinaryNode<int> r1(2);
-    BinaryNode<int> r2(10);
-    BinaryNode<int> r3(1);
-    BinaryNode<int> r4(3);
-    BinaryNode<int> r5(7);
-    BinaryNode<int> r6(12);
-    BinaryNode<int> r7(4);
-    BinaryNode<int> r8(8);
-    BinaryNode<int> r9(11);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.left->right = &r4;
-    root.right->left = &r5;
-    root.right->right = &r6;
-    root.left->right->right = &r7;
-    root.right->left->right = &r8;
-    root.right->right->left = &r9;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example12();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 TEST(BST_Fix, Every_Swap_13) {
-    
-   //        10
-   //       /  \
-   //      9    11
-   //    /       \
-   //   8         12
-   //  /           \
-   // 0             20
-   //  \            /
-   //   1          19
-   //     \       / 
-   //       2   18
-   //        \  /
-   //        3  17
-    
-    
-    for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(10);
-    BinaryNode<int> r1(9);
-    BinaryNode<int> r2(11);
-    BinaryNode<int> r3(8);
-    BinaryNode<int> r4(12);
-    BinaryNode<int> r5(0);
-    BinaryNode<int> r6(20);
-    BinaryNode<int> r7(1);
-    BinaryNode<int> r8(19);
-    BinaryNode<int> r9(2);
-    BinaryNode<int> r10(18);
-    BinaryNode<int> r11(3);
-    BinaryNode<int> r12(17);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->left = &r3;
-    root.right->right = &r4;
-    root.left->left->left = &r5;
-    root.right->right->right = &r6;
-    root.left->left->left->right = &r7;
-    root.right->right->right->left = &r8;
-    root.left->left->left->right->right = &r9;
-    root.right->right->right->left->left = &r10;
-    root.left->left->left->right->right->right = &r11;
-    root.right->right->right->left->left->left = &r12;
-    check_every_swap_combination(root,algo);}
+  for (auto algo: algorithms_to_test()){
+    auto tree = Correct_Tree_Example13();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 
 TEST(BST_Fix, Every_Swap_14) {
-       //    12
-       //  /    \
-       // 1      23
-       //  \    /
-       //   11 13
-       //  /    \
-       // 2      22
-       //  \    /
-       //   10 14
-       //  /    \
-       // 3      21
-       //  \    /
-       //   9  15
-       //  /    \
-       // 4      20
-       //  \    /
-       //   8  16
-       //  /    \
-       // 5      19
-       //  \    /
-       //   7  17
-       //  /    \
-       // 6      18
   for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(12);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(23);
-    BinaryNode<int> r3(11);
-    BinaryNode<int> r4(13);
-    BinaryNode<int> r5(2);
-    BinaryNode<int> r6(22);
-    BinaryNode<int> r7(10);
-    BinaryNode<int> r8(14);
-    BinaryNode<int> r9(3);
-    BinaryNode<int> r10(21);
-    BinaryNode<int> r11(9);
-    BinaryNode<int> r12(15);
-    BinaryNode<int> r13(4);
-    BinaryNode<int> r14(20);
-    BinaryNode<int> r15(8);
-    BinaryNode<int> r16(16);
-    BinaryNode<int> r17(5);
-    BinaryNode<int> r18(19);
-    BinaryNode<int> r19(7);
-    BinaryNode<int> r20(17);
-    BinaryNode<int> r21(6);
-    BinaryNode<int> r22(18);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->right = &r3;
-    root.right->left = &r4;
-    root.left->right->left = &r5;
-    root.right->left->right = &r6;
-    root.left->right->left->right = &r7;
-    root.right->left->right->left = &r8;
-    root.left->right->left->right->left = &r9;
-    root.right->left->right->left->right = &r10;
-    root.left->right->left->right->left->right = &r11;
-    root.right->left->right->left->right->left = &r12;
-    root.left->right->left->right->left->right->left = &r13;
-    root.right->left->right->left->right->left->right = &r14;
-    root.left->right->left->right->left->right->left->right = &r15;
-    root.right->left->right->left->right->left->right->left = &r16;
-    root.left->right->left->right->left->right->left->right->left = &r17;
-    root.right->left->right->left->right->left->right->left->right = &r18;
-    root.left->right->left->right->left->right->left->right->left->right = &r19;
-    root.right->left->right->left->right->left->right->left->right->left = &r20;
-    root.left->right->left->right->left->right->left->right->left->right->left = &r21;
-    root.right->left->right->left->right->left->right->left->right->left->right = &r22;
-    check_every_swap_combination(root,algo);}
+    auto tree = Correct_Tree_Example14();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 
 TEST(BST_Fix, Every_Swap_15) {
-       //    12
-       //  /    \
-       // 1      23
-       //  \    /  \
-       //   11 13   24
-       //  /    \    \
-       // 2      22   25
-       //  \    /      \
-       //   10 14       26
-       //  /    \        \
-       // 3      21      27
-       //  \    /         \
-       //   9  15         28
-       //  /    \
-       // 4      20
-       //  \    /
-       //   8  16
-       //  /    \
-       // 5      19
-       //  \    /
-       //   7  17
-       //  /    \
-       // 6      18
   for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(12);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(23);
-    BinaryNode<int> r3(11);
-    BinaryNode<int> r4(13);
-    BinaryNode<int> r5(2);
-    BinaryNode<int> r6(22);
-    BinaryNode<int> r7(10);
-    BinaryNode<int> r8(14);
-    BinaryNode<int> r9(3);
-    BinaryNode<int> r10(21);
-    BinaryNode<int> r11(9);
-    BinaryNode<int> r12(15);
-    BinaryNode<int> r13(4);
-    BinaryNode<int> r14(20);
-    BinaryNode<int> r15(8);
-    BinaryNode<int> r16(16);
-    BinaryNode<int> r17(5);
-    BinaryNode<int> r18(19);
-    BinaryNode<int> r19(7);
-    BinaryNode<int> r20(17);
-    BinaryNode<int> r21(6);
-    BinaryNode<int> r22(18);
-    
-    BinaryNode<int> r23(24);
-    BinaryNode<int> r24(25);
-    BinaryNode<int> r25(26);
-    BinaryNode<int> r26(27);
-    BinaryNode<int> r27(28);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->right = &r3;
-    root.right->left = &r4;
-    root.left->right->left = &r5;
-    root.right->left->right = &r6;
-    root.left->right->left->right = &r7;
-    root.right->left->right->left = &r8;
-    root.left->right->left->right->left = &r9;
-    root.right->left->right->left->right = &r10;
-    root.left->right->left->right->left->right = &r11;
-    root.right->left->right->left->right->left = &r12;
-    root.left->right->left->right->left->right->left = &r13;
-    root.right->left->right->left->right->left->right = &r14;
-    root.left->right->left->right->left->right->left->right = &r15;
-    root.right->left->right->left->right->left->right->left = &r16;
-    root.left->right->left->right->left->right->left->right->left = &r17;
-    root.right->left->right->left->right->left->right->left->right = &r18;
-    root.left->right->left->right->left->right->left->right->left->right = &r19;
-    root.right->left->right->left->right->left->right->left->right->left = &r20;
-    root.left->right->left->right->left->right->left->right->left->right->left = &r21;
-    root.right->left->right->left->right->left->right->left->right->left->right = &r22;
-    
-    root.right->right = &r23;
-    root.right->right->right = &r24;
-    root.right->right->right->right = &r25;
-    root.right->right->right->right->right = &r26;
-    root.right->right->right->right->right->right = &r27;
-    check_every_swap_combination(root,algo);}
+    auto tree = Correct_Tree_Example15();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 
 TEST(BST_Fix, Every_Swap_16) {
-       //    12
-       //  /    \
-       // 1      23
-       //  \    /  \
-       //   11 13   24
-       //  /    \    \
-       // 2      22   25
-       //  \    /      \
-       //   10 14       26
-       //  /    \        \
-       // 3      21      27
-       //  \    /         \
-       //   9  15         31
-       //  /    \        /
-       // 4      20     28
-       //  \    /        \
-       //   8  16         30
-       //  /    \        /
-       // 5      19     29
-       //  \    /
-       //   7  17
-       //  /    \
-       // 6      18
   for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(12);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(23);
-    BinaryNode<int> r3(11);
-    BinaryNode<int> r4(13);
-    BinaryNode<int> r5(2);
-    BinaryNode<int> r6(22);
-    BinaryNode<int> r7(10);
-    BinaryNode<int> r8(14);
-    BinaryNode<int> r9(3);
-    BinaryNode<int> r10(21);
-    BinaryNode<int> r11(9);
-    BinaryNode<int> r12(15);
-    BinaryNode<int> r13(4);
-    BinaryNode<int> r14(20);
-    BinaryNode<int> r15(8);
-    BinaryNode<int> r16(16);
-    BinaryNode<int> r17(5);
-    BinaryNode<int> r18(19);
-    BinaryNode<int> r19(7);
-    BinaryNode<int> r20(17);
-    BinaryNode<int> r21(6);
-    BinaryNode<int> r22(18);
-    
-    BinaryNode<int> r23(24);
-    BinaryNode<int> r24(25);
-    BinaryNode<int> r25(26);
-    BinaryNode<int> r26(27);
-    BinaryNode<int> r27(31);
-    BinaryNode<int> r28(28);
-    BinaryNode<int> r29(30);
-    BinaryNode<int> r30(29);
-    root.left = &r1;
-    root.right = &r2;
-    root.left->right = &r3;
-    root.right->left = &r4;
-    root.left->right->left = &r5;
-    root.right->left->right = &r6;
-    root.left->right->left->right = &r7;
-    root.right->left->right->left = &r8;
-    root.left->right->left->right->left = &r9;
-    root.right->left->right->left->right = &r10;
-    root.left->right->left->right->left->right = &r11;
-    root.right->left->right->left->right->left = &r12;
-    root.left->right->left->right->left->right->left = &r13;
-    root.right->left->right->left->right->left->right = &r14;
-    root.left->right->left->right->left->right->left->right = &r15;
-    root.right->left->right->left->right->left->right->left = &r16;
-    root.left->right->left->right->left->right->left->right->left = &r17;
-    root.right->left->right->left->right->left->right->left->right = &r18;
-    root.left->right->left->right->left->right->left->right->left->right = &r19;
-    root.right->left->right->left->right->left->right->left->right->left = &r20;
-    root.left->right->left->right->left->right->left->right->left->right->left = &r21;
-    root.right->left->right->left->right->left->right->left->right->left->right = &r22;
-    
-    root.right->right = &r23;
-    root.right->right->right = &r24;
-    root.right->right->right->right = &r25;
-    root.right->right->right->right->right = &r26;
-    root.right->right->right->right->right->right = &r27;
-    root.right->right->right->right->right->right->left = &r28;
-    root.right->right->right->right->right->right->left->right = &r29;
-    root.right->right->right->right->right->right->left->right->left = &r30;
-    check_every_swap_combination(root,algo);}
+    auto tree = Correct_Tree_Example16();
+    check_every_swap_combination(*tree.nodes[0],algo);
+  }
 }
 
 TEST(BST_Fix, Example_Hickey_Shuffle_Easy) {
