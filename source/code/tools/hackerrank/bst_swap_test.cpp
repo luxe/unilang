@@ -352,7 +352,89 @@ BinaryNodes<int> TwoNodesSwapped_Adjecent_Example7(){
   x.nodes[0]->right->right = &*x.nodes[4];
   return x;
 }
-
+BinaryNodes<int> TwoNodesSwapped_Adjecent_Example8(){
+ //           20
+ //         /
+ //        19
+ //      /
+ //     18
+ //    /
+ //   5
+ //  / \
+ // 6   7
+   
+ //    6 and 5 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(19));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(18));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->left->left = &*x.nodes[2];
+  x.nodes[0]->left->left->left = &*x.nodes[3];
+  x.nodes[0]->left->left->left->left = &*x.nodes[4];
+  x.nodes[0]->left->left->left->right = &*x.nodes[5];
+  return x;
+}
+BinaryNodes<int> TwoNodesSwapped_Adjecent_Example9(){
+ //           20
+ //         /
+ //        19
+ //      /
+ //     18
+ //    /
+ //   7
+ //  / \
+ // 5   6
+   
+ //    7 and 6 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(20));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(19));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(18));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(7));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(5));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(6));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->left->left = &*x.nodes[2];
+  x.nodes[0]->left->left->left = &*x.nodes[3];
+  x.nodes[0]->left->left->left->left = &*x.nodes[4];
+  x.nodes[0]->left->left->left->right = &*x.nodes[5];
+  return x;
+}
+BinaryNodes<int> TwoNodesSwapped_Adjecent_Example10(){
+    //        3
+    //      /  \
+    //     1    2
+    // 3 and 2 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  return x;
+}
+BinaryNodes<int> TwoNodesSwapped_Adjecent_Example11(){
+  // 2
+  //  \
+  //   1
+  //   1 and 2 are swapped
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes[0]->right = &*x.nodes[1];
+  return x;
+}
+BinaryNodes<int> TwoNodesSwapped_Adjecent_Example12(){
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>>(2));
+  x.nodes[0]->left = &*x.nodes[1];
+  return x;
+}
 
 TEST(BST_Fix, NonAdjacent_1) {
     
@@ -449,96 +531,34 @@ TEST(BST_Fix, Adjacent_7) {
     }
 }
 TEST(BST_Fix, Adjacent_8) {
-    
- //           20
- //         /
- //        19
- //      /
- //     18
- //    /
- //   5
- //  / \
- // 6   7
-   
- //    6 and 5 are swapped
     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(20);
-    BinaryNode<int> r1(19);
-    BinaryNode<int> r2(18);
-    BinaryNode<int> r3(5);
-    BinaryNode<int> r4(6);
-    BinaryNode<int> r5(7);
-    root.left = &r1;
-    root.left->left = &r2;
-    root.left->left->left = &r3;
-    root.left->left->left->left = &r4;
-    root.left->left->left->right = &r5;
-    check_algorithm_fixes_tree(root,algo);}
+      auto tree = TwoNodesSwapped_Adjecent_Example8();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 TEST(BST_Fix, Adjacent_9) {
-    
- //           20
- //         /
- //        19
- //      /
- //     18
- //    /
- //   7
- //  / \
- // 5   6
-   
- //    7 and 6 are swapped
     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(20);
-    BinaryNode<int> r1(19);
-    BinaryNode<int> r2(18);
-    BinaryNode<int> r3(7);
-    BinaryNode<int> r4(5);
-    BinaryNode<int> r5(6);
-    root.left = &r1;
-    root.left->left = &r2;
-    root.left->left->left = &r3;
-    root.left->left->left->left = &r4;
-    root.left->left->left->right = &r5;
-    check_algorithm_fixes_tree(root,algo);}
+      auto tree = TwoNodesSwapped_Adjecent_Example9();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 TEST(BST_Fix, Adjacent_10) {
-    
-    //        3
-    //      /  \
-    //     1    2
-    // 3 and 2 are swapped
     for (auto algo: algorithms_to_test()){
-    BinaryNode<int> root(3);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(2);
-    root.left = &r1;
-    root.right = &r2;
-    check_algorithm_fixes_tree(root,algo);}
+      auto tree = TwoNodesSwapped_Adjecent_Example10();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 TEST(BST_Fix, Adjacent_11) {
-  
-  // 2
-  //  \
-  //   1
-  //   1 and 2 are swapped
-  for (auto algo: algorithms_to_test()){
-  BinaryNode<int> root(2);
-  BinaryNode<int> r1(1);
-  root.right = &r1;
-  check_algorithm_fixes_tree(root,algo);}
+    for (auto algo: algorithms_to_test()){
+      auto tree = TwoNodesSwapped_Adjecent_Example11();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 TEST(BST_Fix, Adjacent_12) {
-  
-  //  1
-  // /
-  // 2
-  //   2 and 1 are swapped
-  for (auto algo: algorithms_to_test()){
-  BinaryNode<int> root(1);
-  BinaryNode<int> r1(2);
-  root.left = &r1;
-  check_algorithm_fixes_tree(root,algo);}
+    for (auto algo: algorithms_to_test()){
+      auto tree = TwoNodesSwapped_Adjecent_Example12();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
 }
 
 
