@@ -963,6 +963,64 @@ BinaryNodes<int> Correct_Tree_Example16(){
     x.nodes[0]->right->right->right->right->right->right->left->right->left = &*x.nodes[30];
     return x;
 }
+BinaryNodes<int> Example_Hickey_Hijack_Easy(){
+  //    2
+  //  /  \
+  // 1    4
+  //     / \
+  //    3   5
+  BinaryNodes<int> x;
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (2));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (1));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (4));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (3));
+  x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (5));
+  x.nodes[0]->left = &*x.nodes[1];
+  x.nodes[0]->right = &*x.nodes[2];
+  x.nodes[0]->right->left = &*x.nodes[3];
+  x.nodes[0]->right->right = &*x.nodes[4];
+  return x;
+}
+BinaryNodes<int> Example_Hickey_Hijack_Hard(){
+        //    2
+        //  /  \
+        // 1    3
+        //       \
+        //        11
+        //       /
+        //      5
+        //     / \
+        //    4   7
+        //       / \
+        //      6   10
+        //         /
+        //        8
+        //         \
+        //          9
+    BinaryNodes<int> x;
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (2));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (1));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (3));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (11));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (5));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (4));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (7));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (6));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (10));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (8));
+    x.nodes.emplace_back(std::make_shared<BinaryNode<int>> (9));
+    x.nodes[0]->left = &*x.nodes[1];
+    x.nodes[0]->right = &*x.nodes[2];
+    x.nodes[0]->right->right = &*x.nodes[3];
+    x.nodes[0]->right->right->left = &*x.nodes[4];
+    x.nodes[0]->right->right->left->left = &*x.nodes[5];
+    x.nodes[0]->right->right->left->right = &*x.nodes[6];
+    x.nodes[0]->right->right->left->right->left = &*x.nodes[7];
+    x.nodes[0]->right->right->left->right->right = &*x.nodes[8];
+    x.nodes[0]->right->right->left->right->right->left = &*x.nodes[9];
+    x.nodes[0]->right->right->left->right->right->left->right = &*x.nodes[10];
+  return x;
+}
 
 TEST(BST_Fix, NonAdjacent_1) {
     
@@ -1088,8 +1146,6 @@ TEST(BST_Fix, Adjacent_12) {
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
-
-
 TEST(BST_Fix, Every_Swap_1) {
   for (auto algo: algorithms_to_test()){
     auto tree = Correct_Tree_Example1();
@@ -1192,72 +1248,17 @@ TEST(BST_Fix, Every_Swap_16) {
   }
 }
 
-TEST(BST_Fix, Example_Hickey_Shuffle_Easy) {
-        //    2
-        //  /  \
-        // 1    4
-        //     / \
-        //    3   5
+TEST(BST_Fix, Example_Hickey_Hijack_Easy) {
   for (auto algo: algorithms_to_test()){
-    
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(4);
-    BinaryNode<int> r3(3);
-    BinaryNode<int> r4(5);
-    
-    root.left = &r1;
-    root.right = &r2;
-    root.right->left = &r3;
-    root.right->right = &r4;
-    
-    check_every_swap_combination(root,algo);
+    auto tree = Example_Hickey_Hijack_Easy();
+    check_every_swap_combination(*tree.nodes[0],algo);
   }
 }
 
-TEST(BST_Fix, Example_Hickey_Shuffle_Hard) {
-
-        //    2
-        //  /  \
-        // 1    3
-        //       \
-        //        11
-        //       /
-        //      5
-        //     / \
-        //    4   7
-        //       / \
-        //      6   10
-        //         /
-        //        8
-        //         \
-        //          9
+TEST(BST_Fix, Example_Hickey_Hijack_Hard) {
   for (auto algo: algorithms_to_test()){
-    
-    BinaryNode<int> root(2);
-    BinaryNode<int> r1(1);
-    BinaryNode<int> r2(3);
-    BinaryNode<int> r3(11);
-    BinaryNode<int> r4(5);
-    BinaryNode<int> r5(4);
-    BinaryNode<int> r6(7);
-    BinaryNode<int> r7(6);
-    BinaryNode<int> r8(10);
-    BinaryNode<int> r9(8);
-    BinaryNode<int> r10(9);
-    
-    root.left = &r1;
-    root.right = &r2;
-    root.right->right = &r3;
-    root.right->right->left = &r4;
-    root.right->right->left->left = &r5;
-    root.right->right->left->right = &r6;
-    root.right->right->left->right->left = &r7;
-    root.right->right->left->right->right = &r8;
-    root.right->right->left->right->right->left = &r9;
-    root.right->right->left->right->right->left->right = &r10;
-    
-    check_every_swap_combination(root,algo);
+    auto tree = Example_Hickey_Hijack_Hard();
+    check_every_swap_combination(*tree.nodes[0],algo);
   }
 }
 
