@@ -58,7 +58,7 @@ void check_every_swap_combination(BinaryNode<int> & root, Bst_Swap_Algorithm con
 
 // a linked list is a special kind of tree in which there exists only 1 childless node.
 // all other trees have 2 or more childless nodes.
-// the hickey swap requires that 1 pointer capture a childless node, in which the available child storage can be used to connect back to the root,
+// the hickey hijack requires that 1 pointer capture a childless node, in which the available child storage can be used to connect back to the root,
 // then using the final child storage, connect to another childless node in order to gain two pointers of additional storage during later traversal.
 // this transformation renders the original pointer the ability of two pointers indirectly, tags the both the childless nodes involved, and ensures
 // the original pointer can get back to the root.  From this point, we perform a modified morris traversal in which we capture the first discrepancy,
