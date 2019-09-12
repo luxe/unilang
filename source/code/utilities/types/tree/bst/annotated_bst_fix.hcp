@@ -89,7 +89,6 @@ static void Single_Hop_Implementation(Annotated_Bst_State & state){
         std::cout << "we found the discrepancy and need to finish the traversal" << std::endl;
         std::cout << "we might actually fix the tree by finishing the traversal" << std::endl;
         state.a->left->left = state.a->left->right;
-        exit(0);
         continued_LR_morris_traversal_looking_for_discrepancy_or_end(state);
         cleanup_single_hop(state);
     }
@@ -248,7 +247,9 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
                     Annotated_Bst_Visualizer::make_image(state);
                     set_proxy1_right_to_b_right(state);
                     Annotated_Bst_Visualizer::make_image(state);
+                    std::cout << "STARTING DOWNFALL " << proxy1_val(state) << std::endl;
                     move_a_proxy1_pointer_all_the_way_left(state);
+                    std::cout << "FINISHED DOWNFALL " << proxy1_val(state) << std::endl;
                     
                     
                     
@@ -292,8 +293,8 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
             std::cout << state.b->left->val << "->" << state.b->val << std::endl;
             if (state.b->left->val > state.b->val){
                 std::cout << "FOUND DISCREPENCY A" << std::endl;
-                std::swap(state.b->left->val,state.b->val);
-                record_swap(state,state.b->left->val,state.b->val);
+                std::swap(state.a->left->right->val,state.b->val);
+                record_swap(state,state.a->left->right->val,state.b->val);
                 set_proxy1_to_null(state);
                 //set_proxy2_to_b_left(state); //store discrepancy
                 //state.b = state.b->right; //do what you would've done this iteration
@@ -305,8 +306,8 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
             std::cout << state.b->val << "->" << state.b->right->val << std::endl;
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY B" << std::endl;
-                std::swap(state.b->val,state.b->right->val);
-                record_swap(state,state.b->val,state.b->right->val);
+                std::swap(state.a->left->right->val,state.b->right->val);
+                record_swap(state,state.a->left->right->val,state.b->right->val);
                 set_proxy1_to_null(state);
                 //set_proxy2_to_b_right(state); //store discrepancy
                 //state.b = state.b->right; //do what you would've done this iteration
@@ -326,9 +327,11 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
             std::cout << state.b->val << "->" << state.b->right->val << std::endl;
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY C" << std::endl;
-                std::swap(state.b->val,state.b->right->val);
                 std::cout << "swap happened" << std::endl;
-                record_swap(state,state.b->val,state.b->right->val);
+                std::swap(state.a->left->right->val,state.b->right->val);
+                record_swap(state,state.a->left->right->val,state.b->right->val);
+                std::cout << state.a->left->right->val << " " << state.b->right->val << std::endl;
+                
                 set_proxy1_to_null(state);
                 //set_proxy2_to_b(state); //store discrepancy
                 //state.b = state.b->right; //do what you would've done this iteration
@@ -375,16 +378,21 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
                     Annotated_Bst_Visualizer::make_image(state);
                     set_proxy2_right_to_b_right(state);
                     Annotated_Bst_Visualizer::make_image(state);
+                    std::cout << "STARTING DOWNFALL " << proxy2_val(state) << std::endl;
+                    std::cout << "STARTING DOWNFALL " << proxy2_right_val(state) << std::endl;
+                    state.a->left->left = state.a->left->left->right;
                     move_a_proxy2_pointer_all_the_way_left(state);
-                    
+                    std::cout << "FINISHED DOWNFALL " << proxy2_val(state) << std::endl;
                     
                     
                     //possible discrepancy 4
-                    std::cout << state.b->val << "->" << proxy2_right_val(state) << std::endl;
-                    if (state.b->val > proxy2_right_val(state)){
+                    std::cout << state.b->val << "->" << proxy2_val(state) << std::endl;
+                    if (state.b->val > proxy2_val(state)){
                         std::cout << "FOUND DISCREPENCY D" << std::endl;
-                        std::swap(state.b->val,state.a->left->left->right->val);
-                        record_swap(state,state.b->val,state.a->left->left->right->val);
+                        std::cout << "swap happened" << std::endl;
+                        std::swap(state.a->left->right->val,state.a->left->left->val);
+                        record_swap(state,state.a->left->right->val,state.a->left->left->val);
+                        std::cout << state.a->left->right->val << " " << state.a->left->left->val << std::endl;
                         set_proxy1_to_null(state);
                         //set_proxy2_right_to_null(state); //do what you would've done this iteration
                         //set_proxy2_to_b(state); //store discrepancy
@@ -417,6 +425,11 @@ static void record_swap(Annotated_Bst_State & state, int const& a, int const& b)
 ◀public:
 static int proxy1_right_val(Annotated_Bst_State & state){
     return state.a->left->right->right->val;
+}
+▶
+◀public:
+static int proxy1_val(Annotated_Bst_State & state){
+    return state.a->left->right->val;
 }
 ▶
 ◀public:
@@ -534,6 +547,11 @@ static int proxy2_right_val(Annotated_Bst_State & state){
 }
 ▶
 ◀public:
+static int proxy2_val(Annotated_Bst_State & state){
+    return state.a->left->left->val;
+}
+▶
+◀public:
 static void set_proxy2_to_null(Annotated_Bst_State & state){
     state.a->left->left = nullptr;
 }
@@ -596,14 +614,14 @@ static void find_the_inorder_predecessor_of_current_using_a_proxy2(Annotated_Bst
 ▶
 ◀public:
 static void move_a_proxy2_pointer_all_the_way_left(Annotated_Bst_State & state){
-    std::cout << "bbb4" << std::endl;
+    std::cout << "aaa3" << std::endl;
     if (state.a->left->left->right){
         if (state.a->left->left->right->left){
             state.a->left->left->right = state.a->left->left->right->left;
             Annotated_Bst_Visualizer::make_image(state);
         }
     }
-    std::cout << "ccc4" << std::endl;
+    std::cout << "bbb4" << std::endl;
 }
 ▶
 
