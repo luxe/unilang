@@ -22,5 +22,6 @@ gtest(
         "//code/utilities/data_structures/tree:binary_node",
         "//code/utilities/types/tree/bst:annotated_bst_fix",
         "//code/utilities/types/tree/bst:annotated_bst_state",
+        "//code/utilities/data_structures/tree:binary_nodes",
     ]
 )
