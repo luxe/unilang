@@ -37,6 +37,10 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     state.original_connections = Tree_Traversal::get_all_directed_relationships(&real_root);
     
     Annotated_Bst_Fix::fix(state);
+    
+    //Tree_Traversal::morris_traversal(&real_root,[&](BinaryNode<int>* c){
+    //    
+    //});
 }
 
 
