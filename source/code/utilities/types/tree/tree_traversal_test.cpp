@@ -32,6 +32,7 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     state.a = &real_root;
     state.b = nullptr;
     state.root = &real_root;
+    state.draw_photo = false;
     state.current_photo = 0;
     state.all_nodes = Tree_Traversal::inorder_traversal_as_node_list(state.root);
     state.val_heights = Tree_Traversal::get_binary_node_levels(state.root);
