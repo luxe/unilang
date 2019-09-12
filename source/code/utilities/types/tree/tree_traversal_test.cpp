@@ -62,6 +62,96 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     // root.right->right->left->right->right->left->right = &r10;
     
     
+    // BinaryNode<int> root(2);
+    // BinaryNode<int> r1(1);
+    // BinaryNode<int> r2(3);
+    // BinaryNode<int> r3(11);
+    // BinaryNode<int> r4(5);
+    // BinaryNode<int> r5(4);
+    // BinaryNode<int> r6(7);
+    // BinaryNode<int> r7(6);
+    // BinaryNode<int> r8(10);
+    // BinaryNode<int> r9(8);
+    // BinaryNode<int> r10(9);
+    
+    // root.left = &r1;
+    // root.right = &r2;
+    // root.right->right = &r3;
+    // root.right->right->left = &r4;
+    // root.right->right->left->left = &r5;
+    // root.right->right->left->right = &r6;
+    // root.right->right->left->right->left = &r7;
+    // root.right->right->left->right->right = &r8;
+    // root.right->right->left->right->right->left = &r9;
+    // root.right->right->left->right->right->left->right = &r10;
+    
+    
+    
+    
+    // BinaryNode<int> root(12);
+    // BinaryNode<int> r1(1);
+    // BinaryNode<int> r2(23);
+    // BinaryNode<int> r3(11);
+    // BinaryNode<int> r4(13);
+    // BinaryNode<int> r5(2);
+    // BinaryNode<int> r6(22);
+    // BinaryNode<int> r7(10);
+    // BinaryNode<int> r8(14);
+    // BinaryNode<int> r9(3);
+    // BinaryNode<int> r10(21);
+    // BinaryNode<int> r11(9);
+    // BinaryNode<int> r12(15);
+    // BinaryNode<int> r13(4);
+    // BinaryNode<int> r14(20);
+    // BinaryNode<int> r15(8);
+    // BinaryNode<int> r16(16);
+    // BinaryNode<int> r17(5);
+    // BinaryNode<int> r18(19);
+    // BinaryNode<int> r19(7);
+    // BinaryNode<int> r20(17);
+    // BinaryNode<int> r21(6);
+    // BinaryNode<int> r22(18);
+    
+    // BinaryNode<int> r23(24);
+    // BinaryNode<int> r24(25);
+    // BinaryNode<int> r25(26);
+    // BinaryNode<int> r26(27);
+    // BinaryNode<int> r27(31);
+    // BinaryNode<int> r28(28);
+    // BinaryNode<int> r29(30);
+    // BinaryNode<int> r30(29);
+    // root.left = &r1;
+    // root.right = &r2;
+    // root.left->right = &r3;
+    // root.right->left = &r4;
+    // root.left->right->left = &r5;
+    // root.right->left->right = &r6;
+    // root.left->right->left->right = &r7;
+    // root.right->left->right->left = &r8;
+    // root.left->right->left->right->left = &r9;
+    // root.right->left->right->left->right = &r10;
+    // root.left->right->left->right->left->right = &r11;
+    // root.right->left->right->left->right->left = &r12;
+    // root.left->right->left->right->left->right->left = &r13;
+    // root.right->left->right->left->right->left->right = &r14;
+    // root.left->right->left->right->left->right->left->right = &r15;
+    // root.right->left->right->left->right->left->right->left = &r16;
+    // root.left->right->left->right->left->right->left->right->left = &r17;
+    // root.right->left->right->left->right->left->right->left->right = &r18;
+    // root.left->right->left->right->left->right->left->right->left->right = &r19;
+    // root.right->left->right->left->right->left->right->left->right->left = &r20;
+    // root.left->right->left->right->left->right->left->right->left->right->left = &r21;
+    // root.right->left->right->left->right->left->right->left->right->left->right = &r22;
+    
+    // root.right->right = &r23;
+    // root.right->right->right = &r24;
+    // root.right->right->right->right = &r25;
+    // root.right->right->right->right->right = &r26;
+    // root.right->right->right->right->right->right = &r27;
+    // root.right->right->right->right->right->right->left = &r28;
+    // root.right->right->right->right->right->right->left->right = &r29;
+    // root.right->right->right->right->right->right->left->right->left = &r30;
+    
     //setup state
     Annotated_Bst_State state;
     state.a = &root;

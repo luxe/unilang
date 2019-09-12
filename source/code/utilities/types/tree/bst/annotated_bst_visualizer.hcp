@@ -207,12 +207,12 @@ static std::string graphviz_for_structuring_picture(Annotated_Bst_State const& s
         if (node.first && node.second){
             //Append(str,Get_Double_Quote());
             Append(str, "node");
-            Append(str,std::to_string(node.first.value()));
+            Append(str,std::to_string(possibly_corrected_value(state,node.first.value())));
             //Append(str,Get_Double_Quote());
             Append(str, " -> ");
             //Append(str,Get_Double_Quote());
             Append(str, "node");
-            Append(str,std::to_string(node.second.value()));
+            Append(str,std::to_string(possibly_corrected_value(state,node.second.value())));
             //Append(str,Get_Double_Quote());
             Append_With_Newline(str," [style=invis]");
         }
@@ -243,13 +243,27 @@ static std::string graphviz_for_structuring_picture(Annotated_Bst_State const& s
         for (auto val: levels){
             //Append(str,Get_Double_Quote());
             Append(str, "node");
-            Append(str,std::to_string(val));
+            Append(str,std::to_string(possibly_corrected_value(state,val)));
             //Append(str,Get_Double_Quote());
             Append(str, " ");
         }
         Append_With_Newline(str,"}");
     }
     return str;
+}
+▶
+
+◀private:
+static int possibly_corrected_value(Annotated_Bst_State const& state, int val){
+    if (state.swap_occured){
+        if (state.swapped_vals.first == val){
+            val = state.swapped_vals.second;
+        }
+        else if (state.swapped_vals.second == val){
+            val = state.swapped_vals.first;
+        }
+    }
+    return val;
 }
 ▶
 
