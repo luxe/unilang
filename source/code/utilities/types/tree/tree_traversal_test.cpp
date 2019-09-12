@@ -3,6 +3,7 @@
 #include "code/utilities/types/tree/bst/annotated_bst_fix.hpp"
 #include "code/utilities/types/tree/bst/annotated_bst_state.hpp"
 #include "code/utilities/data_structures/tree/binary_nodes.hpp"
+#include "code/utilities/types/tree/bst/prebuilt_bst_trees.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>
 #include <iostream>
@@ -21,6 +22,7 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     // state.val_heights = Tree_Traversal::get_binary_node_levels(&root);
     // state.original_connections = Tree_Traversal::get_all_directed_relationships(&root);
     
+    auto x = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example1();
     
     
     //setup state
@@ -35,8 +37,6 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     state.original_connections = Tree_Traversal::get_all_directed_relationships(&real_root);
     
     Annotated_Bst_Fix::fix(state);
-    
-    
 }
 
 

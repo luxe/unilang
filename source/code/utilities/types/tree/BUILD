@@ -23,5 +23,6 @@ gtest(
         "//code/utilities/types/tree/bst:annotated_bst_fix",
         "//code/utilities/types/tree/bst:annotated_bst_state",
         "//code/utilities/data_structures/tree:binary_nodes",
+        "//code/utilities/types/tree/bst:prebuilt_bst_trees",
     ]
 )
