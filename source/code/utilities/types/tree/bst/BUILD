@@ -25,5 +25,10 @@ hcp(name = "annotated_bst_visualizer", deps = [
 ])
 
 hcp(name = "annotated_bst_state", deps = [
-    "//code/utilities/data_structures/tree:binary_node"
+    "//code/utilities/data_structures/tree:binary_node",
+])
+
+hcp(name = "prebuilt_bst_trees", deps = [
+    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree:binary_nodes",
 ])

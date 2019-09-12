@@ -15,6 +15,7 @@ gtest(
         "//code/tools/hackerrank:bst_swap_algorithm",
         "//code/tools/hackerrank:bst_swap_solution",
         "//code/utilities/data_structures/tree:binary_nodes",
+        "//code/utilities/types/tree/bst:prebuilt_bst_trees",
     ]
 )
 
