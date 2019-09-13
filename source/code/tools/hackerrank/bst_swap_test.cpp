@@ -83,33 +83,29 @@ std::vector<Bst_Swap_Algorithm> algorithms_to_test(){
 
 
 TEST(BST_Fix, NonAdjacent_1) {
-    
     for (auto algo: algorithms_to_test()){
       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example1();
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
 TEST(BST_Fix, NonAdjacent_2) {
-    
     for (auto algo: algorithms_to_test()){
       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example2();
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
 TEST(BST_Fix, NonAdjacent_3) {
-    
     for (auto algo: algorithms_to_test()){
       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example3();
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
-// TEST(BST_Fix, NonAdjacent_4) {
-    
-//     for (auto algo: algorithms_to_test()){
-//       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example4();
-//       check_algorithm_fixes_tree(*tree.nodes[0],algo);
-//     }
-// }
+TEST(BST_Fix, NonAdjacent_4) {
+    for (auto algo: algorithms_to_test()){
+      auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example4();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
+}
 // TEST(BST_Fix, NonAdjacent_5) {
     
 //     for (auto algo: algorithms_to_test()){
