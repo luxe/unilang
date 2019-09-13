@@ -214,6 +214,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             //possible discrepancy 1
             record_compare(state,state.b->left->val,state.b->val);
             if (state.b->left->val > state.b->val){
+                record_first_discrepancy(state,state.b->left->val);
                 std::cout << "FOUND DISCREPENCY A" << std::endl;
                 set_proxy1_to_b_left(state); //store discrepancy
                 state.b = state.b->right; //do what you would've done this iteration
@@ -224,6 +225,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             //possible discrepancy 2
             record_compare(state,state.b->val,state.b->right->val);
             if (state.b->val > state.b->right->val){
+                record_first_discrepancy(state,state.b->val);
                 std::cout << "FOUND DISCREPENCY B" << std::endl;
                 set_proxy1_to_b(state); //store discrepancy
                 state.b = state.b->right; //do what you would've done this iteration
@@ -242,6 +244,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             //possible discrepancy 3
             record_compare(state,state.b->val,state.b->right->val);
             if (state.b->val > state.b->right->val){
+                record_first_discrepancy(state,state.b->val);
                 std::cout << "FOUND DISCREPENCY C" << std::endl;
                 set_proxy1_to_b(state); //store discrepancy
                 state.b = state.b->right; //do what you would've done this iteration
@@ -295,6 +298,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
                     //possible discrepancy 4
                     record_compare(state,state.b->val,proxy1_right_val(state));
                     if (state.b->val > proxy1_right_val(state)){
+                        record_first_discrepancy(state,state.b->val);
                         std::cout << "FOUND DISCREPENCY D" << std::endl;
                         set_proxy1_right_to_null(state); //do what you would've done this iteration
                         set_proxy1_to_b(state); //store discrepancy
@@ -522,6 +526,16 @@ static void record_compare(Annotated_Bst_State & state, int const& a, int const&
 ◀public:
 static void record_swap(Annotated_Bst_State & state, int const& a, int const& b){
     state.swap_occured = true;
+    state.performing_swap = true;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.performing_swap = false;
+}
+▶
+◀public:
+static void record_first_discrepancy(Annotated_Bst_State & state, int const& a){
+    state.first_discrepancy_found = true;
+    state.first_discrepancy = a;
+    Annotated_Bst_Visualizer::make_image(state);
 }
 ▶
 
