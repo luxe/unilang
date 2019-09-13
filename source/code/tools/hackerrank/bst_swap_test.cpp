@@ -13,17 +13,28 @@
 #include <vector>
 #include <utility>
 
+
+std::string show_discrepencies(std::vector<std::pair<int,int>> const& discrepencies){
+  std::string str;
+  str += "Those discrepancies are:";
+  str += "\n";
+  for (auto const& x: discrepencies){
+    str += std::to_string(x.first) + " " + std::to_string(x.second) + "\n";
+  }
+  return str;
+}
+
 void wrong_by_only_two_nodes(std::vector<int> nodes){
   auto sorted = nodes;
   std::sort(sorted.begin(),sorted.end());
   
-  int discrepency_count = 0;
+  std::vector<std::pair<int,int>> discrepencies;
   for (size_t i = 0; i < sorted.size(); ++i){
     if (nodes[i] != sorted[i]){
-      ++discrepency_count;
+      discrepencies.emplace_back(std::make_pair(nodes[i],sorted[i]));
     }
   }
-  EXPECT_EQ(discrepency_count,2);
+  EXPECT_EQ(discrepencies.size(),2) << show_discrepencies(discrepencies);
 }
 
 void check_algorithm_fixes_tree(BinaryNode<int> & root, Bst_Swap_Algorithm const& algo){
@@ -61,7 +72,7 @@ void check_every_swap_combination(BinaryNode<int> & root, Bst_Swap_Algorithm con
 // all other trees have 2 or more childless nodes.
 // the hickey hijack requires that 1 pointer capture a childless node, in which the available child storage can be used to connect back to the root,
 // then using the final child storage, connect to another childless node in order to gain two pointers of additional storage during later traversal.
-// this transformation renders the original pointer the ability of two pointers indirectly, tags the both the childless nodes involved, and ensures
+// this transformation renders the original pointer the ability of two pointers indirectly, tags both of the childless nodes involved, and ensures
 // the original pointer can get back to the root.  From this point, we perform a modified morris traversal in which we capture the first discrepancy,
 // in the first pointers indirected storage.  Using the first pointer's indirected storage, the morris traversal is able to complete, with knowledge of the
 // first node that needs swapped, and knowledge of how to return to the root.  At this point, we perform a modified reverse morris traversal choosing to forget
@@ -71,7 +82,7 @@ void check_every_swap_combination(BinaryNode<int> & root, Bst_Swap_Algorithm con
 
 std::vector<Bst_Swap_Algorithm> algorithms_to_test(){
   std::vector<Bst_Swap_Algorithm> x;
-  x.emplace_back(Bst_Swap_Algorithm::MORRIS_HICKEY_TWO);
+  //x.emplace_back(Bst_Swap_Algorithm::MORRIS_HICKEY_TWO);
   x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_FIVE);
   x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_FOUR);
   x.emplace_back(Bst_Swap_Algorithm::HACKERRANK_RECURSIVE_THREE);
@@ -122,6 +133,13 @@ TEST(BST_Fix, NonAdjacent_7) {
         
     for (auto algo: algorithms_to_test()){
       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example7();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
+}
+TEST(BST_Fix, NonAdjacent_8) {
+        
+    for (auto algo: algorithms_to_test()){
+      auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example8();
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
