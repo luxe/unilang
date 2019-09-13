@@ -11,6 +11,15 @@ std::string& Append_With_Newline(std::string & str_to_append_to, char const& app
         str_to_append_to += "\n";
         return str_to_append_to;
 }
+std::string& Append_With_Space(std::string & str_to_append_to, std::string const& append){
+        str_to_append_to += append + " ";
+        return str_to_append_to;
+}
+std::string& Append_With_Space(std::string & str_to_append_to, char const& append){
+        str_to_append_to += append;
+        str_to_append_to += " ";
+        return str_to_append_to;
+}
 std::string& Append(std::string & str, std::string const& part){
         str += part;
         return str;

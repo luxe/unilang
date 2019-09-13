@@ -10,6 +10,7 @@ class
 ❪"code/utilities/types/tree/tree_traversal.hpp"❫
 ❪"code/utilities/types/tree/tree_node_properties.hpp"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/creators/lib"❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
@@ -292,7 +293,18 @@ static std::string node_label(int val){
 static std::string node_label_as_table(Annotated_Bst_State const& state, int val){
     std::string str;
     //BGCOLOR=\"red\"
-    Append_With_Newline(str,"<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"> <TR>");
+    Append_With_Space(str,"<<TABLE");
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BORDER","0"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLBORDER","1"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLSPACING","0"));
+    if (state.comparing_values){
+        if (val == state.compared_vals.first || val == state.compared_vals.second){
+            Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BGCOLOR","orange"));
+        }
+    }
+    Append_With_Newline(str,"> <TR>");
+    
+    
     Append_With_Newline(str,"<TD PORT=\"f0\"></TD>");
     Append(str,"<TD PORT=\"f1\">");
     Append(str, std::to_string(val));
@@ -306,7 +318,12 @@ static std::string node_label_as_table(Annotated_Bst_State const& state, int val
 ◀private:
 static std::string empty_table(std::string const& name){
     std::string str;
-    Append_With_Newline(str,"<<TABLE BORDER=\"0\" CELLBORDER=\"1\" CELLSPACING=\"0\"> <TR>");
+    Append_With_Space(str,"<<TABLE");
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("BORDER","0"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLBORDER","1"));
+    Append_With_Space(str,Create_XML_Attribute_Equals_Quoted_Value("CELLSPACING","0"));
+    Append_With_Newline(str,"> <TR>");
+    
     Append(str,"<TD PORT=\"main\">");
     Append(str, name);
     Append_With_Newline(str,"</TD>");

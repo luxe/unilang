@@ -27,3 +27,13 @@ std::string Chars_To_String(std::vector<char> chars){
   }
   return str;
 }
+std::string Create_XML_Attribute_Equals_Quoted_Value(std::string const& key, std::string const& value)
+{
+  std::string str;
+  str += key;
+  str += "=";
+  str += "\"";
+  str += value;
+  str += "\"";
+  return str;
+}

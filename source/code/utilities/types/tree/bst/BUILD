@@ -22,6 +22,7 @@ hcp(name = "annotated_bst_visualizer", deps = [
     "//code/utilities/types/char:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/filesystem/files/deleting:lib",
+    "//code/utilities/types/strings/creators:lib",
 ])
 
 hcp(name = "annotated_bst_state", deps = [
