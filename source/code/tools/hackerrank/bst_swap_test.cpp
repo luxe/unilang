@@ -118,13 +118,13 @@ TEST(BST_Fix, NonAdjacent_6) {
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
-// TEST(BST_Fix, NonAdjacent_7) {
+TEST(BST_Fix, NonAdjacent_7) {
         
-//     for (auto algo: algorithms_to_test()){
-//       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example7();
-//       check_algorithm_fixes_tree(*tree.nodes[0],algo);
-//     }
-// }
+    for (auto algo: algorithms_to_test()){
+      auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example7();
+      check_algorithm_fixes_tree(*tree.nodes[0],algo);
+    }
+}
 // TEST(BST_Fix, Adjacent_1) {
     
 //     for (auto algo: algorithms_to_test()){
