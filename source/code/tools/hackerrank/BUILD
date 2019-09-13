@@ -68,6 +68,9 @@ hcp(name = "bst_swap_solution_morris_hickey", deps = [
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:annotated_bst_fix",
+    "//code/utilities/types/tree/bst:annotated_bst_state",
+    "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
 ])
 
 hcp(name = "bst_swap_solution", deps = [
