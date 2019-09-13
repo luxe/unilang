@@ -44,6 +44,17 @@ static void fix(Annotated_Bst_State & state){
     //find the tail
     else{
         std::cout << "double hop impl" << std::endl;
+        Trace_The_Tail_For_The_First_Childless_Node(state);
+        
+        Double_Hop_Implementation(state);
+    }
+}
+▶
+
+
+◀public:
+static void Trace_The_Tail_For_The_First_Childless_Node(Annotated_Bst_State & state){
+    
         state.b = state.a;
         Annotated_Bst_Visualizer::make_image(state);
         
@@ -58,9 +69,6 @@ static void fix(Annotated_Bst_State & state){
         Annotated_Bst_Visualizer::make_image(state);
         state.b = state.b->right;
         Annotated_Bst_Visualizer::make_image(state);
-        
-        Double_Hop_Implementation(state);
-    }
 }
 ▶
 
@@ -93,7 +101,6 @@ static void Single_Hop_Implementation(Annotated_Bst_State & state){
         
         if (state.a->left->right){
             std::cout << "WE HAVEN'T FOUND THE SECOND SWAP YET" << std::endl;
-            exit(0);
         }
         cleanup_single_hop(state);
     }
@@ -127,6 +134,14 @@ static void Double_Hop_Implementation(Annotated_Bst_State & state){
         std::cout << "we might actually fix the tree by finishing the traversal" << std::endl;
         state.a->left->left = state.a->left->right;
         continued_LR_morris_traversal_looking_for_discrepancy_or_end(state);
+        
+        if (state.a->left->right){
+            std::cout << "WE HAVEN'T FOUND THE SECOND SWAP YET" << std::endl;
+            
+            //it might be on the tail end we didn't traverse, or we might
+            //have to do a reverse morris traversal all over again
+            //under the assumption that the discrepancy is adjacent
+        }
         cleanup_double_hop(state);
     }
 }
@@ -197,7 +212,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             std::cout << "hack climb" << std::endl;
             
             //possible discrepancy 1
-            std::cout << state.b->left->val << "->" << state.b->val << std::endl;
+            record_compare(state,state.b->left->val,state.b->val);
             if (state.b->left->val > state.b->val){
                 std::cout << "FOUND DISCREPENCY A" << std::endl;
                 set_proxy1_to_b_left(state); //store discrepancy
@@ -207,7 +222,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
             }
             
             //possible discrepancy 2
-            std::cout << state.b->val << "->" << state.b->right->val << std::endl;
+            record_compare(state,state.b->val,state.b->right->val);
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY B" << std::endl;
                 set_proxy1_to_b(state); //store discrepancy
@@ -225,7 +240,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
         else if (state.b->left == nullptr) {
             
             //possible discrepancy 3
-            std::cout << state.b->val << "->" << state.b->right->val << std::endl;
+            record_compare(state,state.b->val,state.b->right->val);
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY C" << std::endl;
                 set_proxy1_to_b(state); //store discrepancy
@@ -278,7 +293,7 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
                     
                     
                     //possible discrepancy 4
-                    std::cout << state.b->val << "->" << proxy1_right_val(state) << std::endl;
+                    record_compare(state,state.b->val,proxy1_right_val(state));
                     if (state.b->val > proxy1_right_val(state)){
                         std::cout << "FOUND DISCREPENCY D" << std::endl;
                         set_proxy1_right_to_null(state); //do what you would've done this iteration
@@ -314,7 +329,7 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
             std::cout << "hack climb" << std::endl;
             
             //possible discrepancy 1
-            std::cout << state.b->left->val << "->" << state.b->val << std::endl;
+            record_compare(state,state.b->left->val,state.b->val);
             if (state.b->left->val > state.b->val){
                 std::cout << "FOUND DISCREPENCY A" << std::endl;
                 std::swap(state.a->left->right->val,state.b->val);
@@ -338,7 +353,7 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
             }
             
             //possible discrepancy 2
-            std::cout << state.b->val << "->" << state.b->right->val << std::endl;
+            record_compare(state,state.b->val,state.b->right->val);
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY B" << std::endl;
                 std::cout << "A" << std::endl;
@@ -366,7 +381,7 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
         else if (state.b->left == nullptr) {
             
             //possible discrepancy 3
-            std::cout << state.b->val << "->" << state.b->right->val << std::endl;
+            record_compare(state,state.b->val,state.b->right->val);
             if (state.b->val > state.b->right->val){
                 std::cout << "FOUND DISCREPENCY C" << std::endl;
                 std::cout << "swap happened" << std::endl;
@@ -450,9 +465,11 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
                     
                     
                     if (state.b->val != proxy2_right_val(state)){
+                        record_compare(state,state.b->val,proxy2_right_val(state));
                         std::cout << state.b->val << "->" << proxy2_right_val(state) << std::endl;
                     }
                     else{
+                        record_compare(state,state.b->val,state.b->right->val);
                         std::cout << state.b->val << "->" << state.b->right->val << std::endl;
                     }
                 
@@ -484,6 +501,16 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
             }
         }
     }
+}
+▶
+
+◀public:
+static void record_compare(Annotated_Bst_State & state, int const& a, int const& b){
+    state.comparing_values = true;
+    state.compared_vals.first = a;
+    state.compared_vals.second = b;
+    Annotated_Bst_Visualizer::make_image(state);
+    state.comparing_values = false;
 }
 ▶
 

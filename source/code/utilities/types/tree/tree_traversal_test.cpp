@@ -23,8 +23,8 @@ TEST(bst_inorder_throw_discrepancy, NonAdjacent_1) {
     // state.val_heights = Tree_Traversal::get_binary_node_levels(&root);
     // state.original_connections = Tree_Traversal::get_all_directed_relationships(&root);
     
-    //auto x = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example1();
     auto x = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example8();
+    //auto x = Prebuilt_Bst_Trees::TwoNodesSwapped_Adjecent_Example1();
     
     
     //setup state
