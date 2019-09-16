@@ -294,17 +294,24 @@ static void modified_LR_morris_traversal_looking_for_discrepancy(Annotated_Bst_S
                     std::cout << "FINISHED DOWNFALL " << proxy1_val(state) << std::endl;
                     
                     
-                    
-                    //possible discrepancy 4
-                    record_compare(state,state.b->val,proxy1_right_val(state));
-                    if (state.b->val > proxy1_right_val(state)){
-                        record_first_discrepancy(state,state.b->val);
-                        std::cout << "FOUND DISCREPENCY D" << std::endl;
-                        set_proxy1_right_to_null(state); //do what you would've done this iteration
-                        set_proxy1_to_b(state); //store discrepancy
-                        state.b = state.b->right; //do what you would've done this iteration
-                        Annotated_Bst_Visualizer::make_image(state);
-                        break;
+                    if (state.b->val != proxy1_right_val(state)){
+                        record_compare(state,state.b->val,proxy1_right_val(state));
+                        std::cout << state.b->val << "->" << proxy1_right_val(state) << std::endl;
+                        
+                        //possible discrepancy 4
+                        if (state.b->val > proxy1_right_val(state)){
+                            record_first_discrepancy(state,state.b->val);
+                            std::cout << "FOUND DISCREPENCY D" << std::endl;
+                            set_proxy1_right_to_null(state); //do what you would've done this iteration
+                            set_proxy1_to_b(state); //store discrepancy
+                            state.b = state.b->right; //do what you would've done this iteration
+                            Annotated_Bst_Visualizer::make_image(state);
+                            break;
+                        }
+                    }
+                    else{
+                        record_compare(state,state.b->val,state.b->right->val);
+                        std::cout << state.b->val << "->" << state.b->right->val << std::endl;
                     }
                 }
                 state.b = state.b->right;
@@ -465,27 +472,27 @@ static void continued_LR_morris_traversal_looking_for_discrepancy_or_end(Annotat
                     if (state.b->val != proxy2_right_val(state)){
                         record_compare(state,state.b->val,proxy2_right_val(state));
                         std::cout << state.b->val << "->" << proxy2_right_val(state) << std::endl;
+                        
+                        //possible discrepancy 4
+                        if (state.b->val > proxy2_right_val(state)){
+                            std::cout << "FOUND DISCREPENCY D" << std::endl;
+                            std::cout << "swap happened" << std::endl;
+                            std::swap(state.a->left->right->val,state.a->left->left->right->val);
+                            record_swap(state,state.a->left->right->val,state.a->left->left->right->val);
+                            std::cout << state.a->left->right->val << " " << state.a->left->left->right->val << std::endl;
+                            set_proxy1_to_null(state);
+                            //set_proxy2_right_to_null(state); //do what you would've done this iteration
+                            //set_proxy2_to_b(state); //store discrepancy
+                            //state.b = state.b->right; //do what you would've done this iteration
+                            //Annotated_Bst_Visualizer::make_image(state);
+                            //break;
+                        }
                     }
                     else{
                         record_compare(state,state.b->val,state.b->right->val);
                         std::cout << state.b->val << "->" << state.b->right->val << std::endl;
                     }
                 
-                    
-                    //possible discrepancy 4
-                    if (state.b->val > proxy2_right_val(state)){
-                        std::cout << "FOUND DISCREPENCY D" << std::endl;
-                        std::cout << "swap happened" << std::endl;
-                        std::swap(state.a->left->right->val,state.a->left->left->right->val);
-                        record_swap(state,state.a->left->right->val,state.a->left->left->right->val);
-                        std::cout << state.a->left->right->val << " " << state.a->left->left->right->val << std::endl;
-                        set_proxy1_to_null(state);
-                        //set_proxy2_right_to_null(state); //do what you would've done this iteration
-                        //set_proxy2_to_b(state); //store discrepancy
-                        //state.b = state.b->right; //do what you would've done this iteration
-                        //Annotated_Bst_Visualizer::make_image(state);
-                        //break;
-                    }
                     
                   if (proxy2_points_to_a(state)){std::cout << "SDFSDFSDFSDF" << std::endl; break;}
                     if (proxy2_right_points_to_a(state)){std::cout << "SDFSDFSDFSDF2" << std::endl; 
