@@ -5,15 +5,35 @@ function create_found_acronym() {
     };
 };
 
-function create_node_from_text(text) {
+
+// Reading from json
+function is_acronym(text,acronyms) {
+    for (var j = 0; j < acronyms["acronyms"].length; j++){
+        if (acronyms["acronyms"][j]["abbreviation"] === text){
+            return true;
+        }
+    }
+    return false;
+}
+
+function acronym_tooltip(text,acronyms) {
+    for (var j = 0; j < acronyms["acronyms"].length; j++){
+        if (acronyms["acronyms"][j]["abbreviation"] === text){
+            return acronyms["acronyms"][j]["expanded"];
+        }
+    }
+    return "";
+}
+
+function create_node_from_text(text,acronym_json) {
     var outer = document.createElement("span");
-    var ctext = document.createTextNode("hello wor");
+    var ctext = document.createTextNode("");
     var words = tokenize_node_value(text);
+    
     for (var j = 0; j < words.length; j++){
-         if (words[j] === "engine") {
+         if (is_acronym(words[j],acronym_json)) {
             var outer2 = document.createElement("span");
             var gg = document.createTextNode(words[j]);
-            //gg.nodeValue += " ";
             outer2.appendChild(gg);
             outer.appendChild(outer2);
             
@@ -30,12 +50,11 @@ function create_node_from_text(text) {
 }
 
 
-function span_out_acronyms() {
+function span_out_acronyms(acronym_json) {
     
     var texts = get_all_text_nodes();
     for (var i = 0; i < texts.length; i++) {
-        var new_node = create_node_from_text(texts[i].nodeValue);
-        console.log(new_node);
+        var new_node = create_node_from_text(texts[i].nodeValue,acronym_json);
         texts[i].parentNode.replaceChild(new_node,texts[i]);
     }
     
@@ -89,7 +108,7 @@ function tokenize_node_value(nodeValue) {
     return nodeValue.split(" ");
 }
 
-function tooltipify(found_acronyms) {
+function tooltipify(found_acronyms,acronym_json) {
     for (var i = 0; i < found_acronyms.length; i++) {
         
         //create outer span to make word a tooltip
@@ -105,7 +124,7 @@ function tooltipify(found_acronyms) {
         inner.setAttribute('class', 'tooltiptext');
         
         //insert definition
-        var defined = document.createTextNode("hello world");
+        var defined = document.createTextNode(acronym_tooltip(found_acronyms[i].node.nodeValue,acronym_json));
         inner.appendChild(defined);
         outer.appendChild(inner);
         
@@ -116,9 +135,9 @@ function tooltipify(found_acronyms) {
 
 function rewrite_dom_via_acronyms(acronym_json) {
     console.log(acronym_json);
-    span_out_acronyms();
+    span_out_acronyms(acronym_json);
     var found_acronyms = find_all_acronyms();
-    tooltipify(found_acronyms);
+    tooltipify(found_acronyms,acronym_json);
 }
 
 function main() {
