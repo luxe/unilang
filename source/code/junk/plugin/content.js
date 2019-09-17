@@ -12,8 +12,12 @@ function find_all_acronyms() {
         var element = elements[i];
         for (var j = 0; j < element.childNodes.length; j++) {
             var node = element.childNodes[j];
-            if (node.nodeType === Node.TEXT_NODE) {
-                store_acronyms_in_node(node,element,all_acronyms);
+            console.log(element.nodeName);
+            
+            if (element.nodeName != "STYLE" && element.nodeName != "NOSCRIPT" && element.nodeName != "SCRIPT"){
+                if (node.nodeType === Node.TEXT_NODE) {
+                    store_acronyms_in_node(node,element,all_acronyms);
+                }
             }
         }
     }
@@ -25,7 +29,7 @@ function store_acronyms_in_node(node,element,all_acronyms){
     
     var span = element.ownerDocument.createElement('span');
     var continued_text = document.createTextNode("hello");
-    element.parentNode.replaceChild(span, continued_text);
+    node.parentNode.replaceChild(continued_text, node);
     
     // var replaced_tag = document.createElement("span");
     // //element.replaceChild(replaced_tag,node);
