@@ -9,10 +9,8 @@ function create_found_acronym() {
 /* Reading from json */
 function is_acronym(text,acronyms) {
     var mtext = text.replace (/[^a-z0-9+]+/gi,'');
-    
     for (var j = 0; j < acronyms["acronyms"].length; j++){
         if (acronyms["acronyms"][j]["abbreviation"] === mtext){
-            console.log(text);
             return true;
             
         }
@@ -139,7 +137,6 @@ function tooltipify(found_acronyms,acronym_json) {
 }
 
 function rewrite_dom_via_acronyms(acronym_json) {
-    console.log(acronym_json);
     span_out_acronyms(acronym_json);
     var found_acronyms = find_all_acronyms(acronym_json);
     tooltipify(found_acronyms,acronym_json);
@@ -157,7 +154,5 @@ function main() {
 }
 
 window.onload = function () {
-//setInterval(function(){
     main();
-//},1000);
 }
