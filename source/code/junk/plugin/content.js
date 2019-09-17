@@ -5,15 +5,67 @@ function create_found_acronym() {
     };
 };
 
+function create_node_from_text(text) {
+    var outer = document.createElement("span");
+    var ctext = document.createTextNode("hello wor");
+    var words = tokenize_node_value(text);
+    for (var j = 0; j < words.length; j++){
+         if (words[j] === "engine") {
+            var outer2 = document.createElement("span");
+            var gg = document.createTextNode(words[j]);
+            //gg.nodeValue += " ";
+            outer2.appendChild(gg);
+            outer.appendChild(outer2);
+            
+            var gg2 = document.createTextNode(" ");
+            outer.appendChild(gg2);
+         }
+         else{
+            var gg2 = document.createTextNode(words[j]);
+            gg2.nodeValue += " ";
+            outer.appendChild(gg2);
+         }
+    }
+    return outer;
+}
+
+
+function span_out_acronyms() {
+    
+    var texts = get_all_text_nodes();
+    for (var i = 0; i < texts.length; i++) {
+        var new_node = create_node_from_text(texts[i].nodeValue);
+        console.log(new_node);
+        texts[i].parentNode.replaceChild(new_node,texts[i]);
+    }
+    
+}
+
+function get_all_text_nodes() {
+    text_nodes = []
+    var elements = document.body.getElementsByTagName('*');
+    for (var i = 0, imax=elements.length; i < imax; i++) {
+        var element = elements[i];
+        for (var j = 0, jmax = element.childNodes.length; j < jmax; j++) {
+            var node = element.childNodes[j];
+            if (element.nodeName != "STYLE" && element.nodeName != "NOSCRIPT" && element.nodeName != "SCRIPT"){
+                if (node.nodeType === Node.TEXT_NODE) {
+                    text_nodes.push(node);
+                }
+            }
+        }
+    }
+    return text_nodes;
+}
+
 function find_all_acronyms() {
+
     all_acronyms = []
     var elements = document.body.getElementsByTagName('*');
-    for (var i = 0; i < elements.length; i++) {
+    for (var i = 0, imax=elements.length; i < imax; i++) {
         var element = elements[i];
-        for (var j = 0; j < element.childNodes.length; j++) {
+        for (var j = 0, jmax = element.childNodes.length; j < jmax; j++) {
             var node = element.childNodes[j];
-            console.log(element.nodeName);
-            
             if (element.nodeName != "STYLE" && element.nodeName != "NOSCRIPT" && element.nodeName != "SCRIPT"){
                 if (node.nodeType === Node.TEXT_NODE) {
                     store_acronyms_in_node(node,element,all_acronyms);
@@ -25,80 +77,12 @@ function find_all_acronyms() {
 }
 
 function store_acronyms_in_node(node,element,all_acronyms){
-    
-    
-    var span = element.ownerDocument.createElement('span');
-    var continued_text = document.createTextNode("hello");
-    node.parentNode.replaceChild(continued_text, node);
-    
-    // var replaced_tag = document.createElement("span");
-    // //element.replaceChild(replaced_tag,node);
-    // // var continued_text = document.createTextNode("");
-    
-    // tokenized = tokenize_node_value(node.nodeValue);
-    // for (var k = 0; k < tokenized.length; k++){
-    //     if (tokenized[k] === "engine") {
-    //         var found_acronym = new create_found_acronym();
-    //         found_acronym.node = node;
-    //         found_acronym.elem = element;
-    //         all_acronyms.push(found_acronym);
-    //     }
-    // }
-            
-    //         //add the current text
-    //         replaced_tag.appendChild(continued_text);
-    //         continued_text.nodeValue = "";
-            
-    //         var outer = document.createElement("span");
-            
-    //         //re-insert acronym
-    //         var word = document.createTextNode("engine");
-    //         outer.appendChild(word);
-            
-    //         replaced_tag.appendChild(outer);
-    //     }
-    //     else{
-    //         continued_text.nodeValue += tokenized[k] + " ";
-    //     }
-    // }
-    
-    // //add the current text
-    // replaced_tag.appendChild(continued_text);
-    // continued_text.nodeValue = "";
-    
-    // element.replaceChild(replaced_tag,node);
-            
-    //console.log(continued_text.nodeValue);
-    
-    //node.parentNode.replaceChild(replaced_tag,node);
-    
-    
-    //replaced_tag.nodeValue = node.nodeValue;
-    //replaced_tag.nodeValue += " test ";
-    //node.parentNode.replaceChild(replaced_tag,node);
-    
-    
-    
-    // tokenized = tokenize_node_value(node.nodeValue)
-    // for (var k = 0; k < tokenized.length; k++){
-    //     if (tokenized[k] === "engine") {
-            
-    //         var word_tag = document.createTextNode(tokenized[k]);
-    //         replaced_tag.appendChild(word_tag);
-            
-            
-    //         var found_acronym = new create_found_acronym();
-    //         //found_acronym.node = node;
-    //         found_acronym.node = word_tag;
-    //         found_acronym.elem = element;
-    //         all_acronyms.push(found_acronym);
-    //     }
-    //     else{
-    //         replaced_tag.nodeValue += tokenized[k];
-    //     }
-    // }
-    
-    //console.log(replaced_tag.nodeValue);
+        if (node.nodeValue === "engine") {
+            var found_acronym = new create_found_acronym();
+            found_acronym.node = node;
+            found_acronym.elem = element;
+            all_acronyms.push(found_acronym);
+        }
 }
 
 function tokenize_node_value(nodeValue) {
@@ -132,6 +116,7 @@ function tooltipify(found_acronyms) {
 
 function rewrite_dom_via_acronyms(acronym_json) {
     console.log(acronym_json);
+    span_out_acronyms();
     var found_acronyms = find_all_acronyms();
     tooltipify(found_acronyms);
 }
