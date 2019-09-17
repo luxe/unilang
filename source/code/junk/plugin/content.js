@@ -6,19 +6,24 @@ function create_found_acronym() {
 };
 
 
-// Reading from json
+/* Reading from json */
 function is_acronym(text,acronyms) {
+    var mtext = text.replace (/[^a-z0-9+]+/gi,'');
+    
     for (var j = 0; j < acronyms["acronyms"].length; j++){
-        if (acronyms["acronyms"][j]["abbreviation"] === text){
+        if (acronyms["acronyms"][j]["abbreviation"] === mtext){
+            console.log(text);
             return true;
+            
         }
     }
     return false;
 }
 
 function acronym_tooltip(text,acronyms) {
+    var mtext = text.replace (/[^a-z0-9+]+/gi,'');
     for (var j = 0; j < acronyms["acronyms"].length; j++){
-        if (acronyms["acronyms"][j]["abbreviation"] === text){
+        if (acronyms["acronyms"][j]["abbreviation"] === mtext){
             return acronyms["acronyms"][j]["expanded"];
         }
     }
@@ -77,7 +82,7 @@ function get_all_text_nodes() {
     return text_nodes;
 }
 
-function find_all_acronyms() {
+function find_all_acronyms(acronym_json) {
 
     all_acronyms = []
     var elements = document.body.getElementsByTagName('*');
@@ -87,7 +92,7 @@ function find_all_acronyms() {
             var node = element.childNodes[j];
             if (element.nodeName != "STYLE" && element.nodeName != "NOSCRIPT" && element.nodeName != "SCRIPT"){
                 if (node.nodeType === Node.TEXT_NODE) {
-                    store_acronyms_in_node(node,element,all_acronyms);
+                    store_acronyms_in_node(node,element,all_acronyms,acronym_json);
                 }
             }
         }
@@ -95,8 +100,8 @@ function find_all_acronyms() {
     return all_acronyms;
 }
 
-function store_acronyms_in_node(node,element,all_acronyms){
-        if (node.nodeValue === "engine") {
+function store_acronyms_in_node(node,element,all_acronyms,acronym_json){
+        if (is_acronym(node.nodeValue,acronym_json)) {
             var found_acronym = new create_found_acronym();
             found_acronym.node = node;
             found_acronym.elem = element;
@@ -136,7 +141,7 @@ function tooltipify(found_acronyms,acronym_json) {
 function rewrite_dom_via_acronyms(acronym_json) {
     console.log(acronym_json);
     span_out_acronyms(acronym_json);
-    var found_acronyms = find_all_acronyms();
+    var found_acronyms = find_all_acronyms(acronym_json);
     tooltipify(found_acronyms,acronym_json);
 }
 
@@ -151,4 +156,8 @@ function main() {
       })
 }
 
-main();
+window.onload = function () {
+//setInterval(function(){
+    main();
+//},1000);
+}
