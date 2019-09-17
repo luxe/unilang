@@ -7,22 +7,94 @@ function create_found_acronym() {
 
 function find_all_acronyms() {
     all_acronyms = []
-    var elements = document.getElementsByTagName('*');
+    var elements = document.body.getElementsByTagName('*');
     for (var i = 0; i < elements.length; i++) {
         var element = elements[i];
         for (var j = 0; j < element.childNodes.length; j++) {
             var node = element.childNodes[j];
             if (node.nodeType === Node.TEXT_NODE) {
-                if (node.nodeValue === "engine") {
-                    var found_acronym = new create_found_acronym();
-                    found_acronym.node = node;
-                    found_acronym.elem = element;
-                    all_acronyms.push(found_acronym);
-                }
+                store_acronyms_in_node(node,element,all_acronyms);
             }
         }
     }
     return all_acronyms;
+}
+
+function store_acronyms_in_node(node,element,all_acronyms){
+    
+    
+    var span = element.ownerDocument.createElement('span');
+    var continued_text = document.createTextNode("hello");
+    element.parentNode.replaceChild(span, continued_text);
+    
+    // var replaced_tag = document.createElement("span");
+    // //element.replaceChild(replaced_tag,node);
+    // // var continued_text = document.createTextNode("");
+    
+    // tokenized = tokenize_node_value(node.nodeValue);
+    // for (var k = 0; k < tokenized.length; k++){
+    //     if (tokenized[k] === "engine") {
+    //         var found_acronym = new create_found_acronym();
+    //         found_acronym.node = node;
+    //         found_acronym.elem = element;
+    //         all_acronyms.push(found_acronym);
+    //     }
+    // }
+            
+    //         //add the current text
+    //         replaced_tag.appendChild(continued_text);
+    //         continued_text.nodeValue = "";
+            
+    //         var outer = document.createElement("span");
+            
+    //         //re-insert acronym
+    //         var word = document.createTextNode("engine");
+    //         outer.appendChild(word);
+            
+    //         replaced_tag.appendChild(outer);
+    //     }
+    //     else{
+    //         continued_text.nodeValue += tokenized[k] + " ";
+    //     }
+    // }
+    
+    // //add the current text
+    // replaced_tag.appendChild(continued_text);
+    // continued_text.nodeValue = "";
+    
+    // element.replaceChild(replaced_tag,node);
+            
+    //console.log(continued_text.nodeValue);
+    
+    //node.parentNode.replaceChild(replaced_tag,node);
+    
+    
+    //replaced_tag.nodeValue = node.nodeValue;
+    //replaced_tag.nodeValue += " test ";
+    //node.parentNode.replaceChild(replaced_tag,node);
+    
+    
+    
+    // tokenized = tokenize_node_value(node.nodeValue)
+    // for (var k = 0; k < tokenized.length; k++){
+    //     if (tokenized[k] === "engine") {
+            
+    //         var word_tag = document.createTextNode(tokenized[k]);
+    //         replaced_tag.appendChild(word_tag);
+            
+            
+    //         var found_acronym = new create_found_acronym();
+    //         //found_acronym.node = node;
+    //         found_acronym.node = word_tag;
+    //         found_acronym.elem = element;
+    //         all_acronyms.push(found_acronym);
+    //     }
+    //     else{
+    //         replaced_tag.nodeValue += tokenized[k];
+    //     }
+    // }
+    
+    //console.log(replaced_tag.nodeValue);
 }
 
 function tokenize_node_value(nodeValue) {
