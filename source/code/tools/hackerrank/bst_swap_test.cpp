@@ -165,6 +165,14 @@ TEST(BST_Fix, NonAdjacent_12) {
       check_algorithm_fixes_tree(*tree.nodes[0],algo);
     }
 }
+// TEST(BST_Fix, NonAdjacent_13) {
+//     for (auto algo: algorithms_to_test()){
+//       auto tree = Prebuilt_Bst_Trees::TwoNodesSwapped_NonAdjecent_Example13();
+//       check_algorithm_fixes_tree(*tree.nodes[0],algo);
+//     }
+// }
+
+
 // TEST(BST_Fix, Adjacent_1) {
     
 //     for (auto algo: algorithms_to_test()){
