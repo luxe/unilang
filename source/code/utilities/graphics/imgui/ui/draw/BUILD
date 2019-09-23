@@ -9,7 +9,7 @@ hcp(name="imgui_type_utility", deps = [
 ])
 
 hcp(name="cursor",deps = [
-"//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
+"//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
 ])
 
 hcp(name="mouse_selection",deps = [

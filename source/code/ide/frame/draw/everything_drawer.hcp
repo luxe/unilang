@@ -58,10 +58,10 @@ class
         if (settings.cursor_mouse_connector.draw){
             settings.cursor_mouse_connector.line.pos = Mouse_Position_Getter::Get();
             settings.cursor_mouse_connector.line.pos.x -= it.recommended_cursor_pos.x;
-            settings.cursor_mouse_connector.line.pos.y -= it.recommended_cursor_pos.y + settings.cursor.shape.height;
+            settings.cursor_mouse_connector.line.pos.y -= it.recommended_cursor_pos.y + settings.cursor.shape.shape.height;
             
             auto start_pos = it.recommended_cursor_pos;
-            start_pos.y += settings.cursor.shape.height;
+            start_pos.y += settings.cursor.shape.shape.height;
             Line_Drawer::Draw(draw_list,start_pos,settings.cursor_mouse_connector.line);
         }
 ❱
@@ -74,13 +74,15 @@ class
         Adjust_Based_On_Mouse_Selection(settings,label,selection);
         
         
-        auto cursor_draw_pos = selection.recommended_cursor_pos;
-        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor.shape);
+        settings.cursor.shape.pos = selection.recommended_cursor_pos;
+        settings.cursor_selection.shape.pos = selection.recommended_cursor_pos;
+        
+        Rectangle_Drawer::draw_rectangle(draw_list,settings.cursor.shape);
         
         
-        settings.cursor_selection.shape.width = selection.additional_chars_selected * 6;
-        settings.cursor_selection.shape.height = 13;
-        Rectangle_Drawer::draw_rectangle(draw_list,cursor_draw_pos,settings.cursor_selection.shape);
+        settings.cursor_selection.shape.shape.width = selection.additional_chars_selected * 6;
+        settings.cursor_selection.shape.shape.height = 13;
+        Rectangle_Drawer::draw_rectangle(draw_list,settings.cursor_selection.shape);
     }
 ❱
 
