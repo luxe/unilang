@@ -13,7 +13,7 @@ hcp(name="cursor",deps = [
 ])
 
 hcp(name="mouse_selection",deps = [
-"//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
+"//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
 ])
 
 hcp(name="cursor_mouse_connector",deps = [
