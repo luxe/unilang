@@ -29,7 +29,7 @@ hcp(name="background_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/window:window_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
-    "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
+    "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
 ])
 
 hcp(name="ide_settings_getter", deps = [
