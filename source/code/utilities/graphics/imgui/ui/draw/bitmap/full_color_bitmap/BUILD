@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="full_color_bitmap", deps = [
-"//code/utilities/graphics/imgui/ui/draw:color",
+"//code/utilities/data_structures/color:transparent_rgb_color",
 "//code/utilities/data_structures/position:position",
 ])
 

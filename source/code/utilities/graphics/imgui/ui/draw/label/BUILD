@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="label_settings", deps = [
-"//code/utilities/graphics/imgui/ui/draw:color",
+"//code/utilities/data_structures/color:transparent_rgb_color",
 "//code/utilities/data_structures/position:position",
 "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
 "//code/utilities/graphics/imgui/ui/draw/label:label_cursor_selection",

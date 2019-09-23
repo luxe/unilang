@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name="color",deps = [])
 
 hcp(name="imgui_type_utility", deps = [
-"//code/utilities/graphics/imgui/ui/draw:color",
+"//code/utilities/data_structures/color:transparent_rgb_color",
 "//code/utilities/data_structures/position:position",
 "//code/utilities/graphics/imgui:mechanics",
 ])
