@@ -9,4 +9,5 @@ hcp(name="rectangle_drawer", deps = [
 "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
 "//code/utilities/data_structures/position:position",
 "//code/utilities/graphics/imgui:mechanics",
+"//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
 ])
