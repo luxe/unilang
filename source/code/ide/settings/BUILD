@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw:color",
-    "//code/utilities/graphics/imgui/ui/draw:position",
+    "//code/utilities/data_structures/position:position",
     "//code/utilities/graphics/imgui/ui/draw:cursor",
     "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
     "//code/utilities/graphics/imgui/ui/draw:cursor_mouse_connector",
@@ -19,7 +19,7 @@ hcp(name="ide_settings", deps = [
 
 hcp(name="background_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw:color",
-    "//code/utilities/graphics/imgui/ui/draw:position",
+    "//code/utilities/data_structures/position:position",
     "//code/utilities/graphics/imgui/ui/draw:cursor",
     "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
     "//code/utilities/graphics/imgui/ui/draw:cursor_mouse_connector",

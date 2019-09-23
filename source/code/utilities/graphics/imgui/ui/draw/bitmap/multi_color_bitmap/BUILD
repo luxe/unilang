@@ -14,6 +14,6 @@ hcp(name="multi_color_bitmap_drawer", deps = [
 "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events",
 "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
 "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
-"//code/utilities/graphics/imgui/ui/draw:position",
+"//code/utilities/data_structures/position:position",
 "//code/utilities/graphics/imgui:mechanics",
 ])

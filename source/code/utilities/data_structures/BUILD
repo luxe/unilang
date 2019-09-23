@@ -24,3 +24,12 @@ values = [
 ,"south"
 ,"east"
 ])
+
+enum_cpp(name = "optional_compass_direction",
+values = [
+"north"
+,"west"
+,"south"
+,"east",
+"none"
+])

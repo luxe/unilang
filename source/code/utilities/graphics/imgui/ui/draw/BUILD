@@ -4,11 +4,9 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="color",deps = [])
 
-hcp(name="position",deps = [])
-
 hcp(name="imgui_type_utility", deps = [
 "//code/utilities/graphics/imgui/ui/draw:color",
-"//code/utilities/graphics/imgui/ui/draw:position",
+"//code/utilities/data_structures/position:position",
 "//code/utilities/graphics/imgui:mechanics",
 ])
 
@@ -26,6 +24,6 @@ hcp(name="cursor_mouse_connector",deps = [
 
 
 hcp(name="mouse_position_getter", deps = [
-"//code/utilities/graphics/imgui/ui/draw:position",
+"//code/utilities/data_structures/position:position",
 "//code/utilities/graphics/imgui:mechanics",
 ])
