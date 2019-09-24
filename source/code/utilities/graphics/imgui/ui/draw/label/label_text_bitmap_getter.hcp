@@ -26,8 +26,15 @@ class
     auto bitmap = Text_To_Bitmap::Convert(font_chars,label.message);
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
     if (!style.width.grow_width){
+        
+        //shift the text
         Text_Cycle(bitmap,style.width);
-        Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
+        
+        //trim off the pixels
+        auto removed = Remove_Pixels_Past_A_Width(bitmap,style.width.fixed_width);
+        
+        //possible wrap some pixels back around
+        //TODO
     }
     
     return bitmap;
@@ -69,6 +76,7 @@ class
     std::vector<Position> removed;
     Remove_If(bitmap.pixels,[&](Position const& position){
         if (position.x+5 > width || position.x < 0){
+            removed .emplace_back(position);
             return true;
         }
         return false;
