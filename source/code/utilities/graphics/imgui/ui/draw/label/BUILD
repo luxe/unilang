@@ -30,6 +30,7 @@ hcp(name="label_drawer", deps = [
 
 hcp(name="label_cursor_selection", deps = [
 "//code/utilities/data_structures/position:position",
+"//code/ide/settings:label_cursor",
 ])
 
 hcp(name="label_user_state", deps = [
