@@ -15,5 +15,5 @@ hcp(name="hsv_to_rgb_converter",deps = [
 ])
 
 hcp(name="color_transitioner",deps = [
-    "//code/utilities/data_structures/color:rgb_color",
+    "//code/utilities/data_structures/color:rgb_color_transition",
 ])
