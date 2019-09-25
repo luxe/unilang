@@ -13,3 +13,7 @@ hcp(name="hsv_to_rgb_converter",deps = [
     "//code/utilities/data_structures/color:hsv_color",
     "//code/utilities/data_structures/color:rgb_color",
 ])
+
+hcp(name="color_transitioner",deps = [
+    "//code/utilities/data_structures/color:rgb_color",
+])
