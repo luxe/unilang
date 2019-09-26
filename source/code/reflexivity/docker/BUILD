@@ -9,17 +9,7 @@ hcp(name = "dockerfile_refresher", deps = [
 "//code/utilities/filesystem/files/deleting:lib",
 "//code/utilities/types/vectors/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
-"//code/reflexivity/docker:apt_get_command",
+"//code/reflexivity/docker/data:apt_get_command",
 "//code/transcompilers/unilang/file_extension_getter:file_extension_getter",
-"//code/reflexivity/docker:apt_get_commands_getter",
-])
-
-hcp(name = "apt_get_command", deps = [])
-hcp(name = "apt_ppa_command", deps = [])
-
-hcp(name = "apt_get_commands_getter", deps = [
-    "//code/reflexivity/docker:apt_get_command",
-])
-hcp(name = "apt_ppa_commands_getter", deps = [
-    "//code/reflexivity/docker:apt_ppa_command",
+"//code/reflexivity/docker/data:apt_get_commands_getter",
 ])
