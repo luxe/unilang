@@ -23,9 +23,9 @@ FROM ubuntu:18.04
 # With the transition from Ubuntu 14.04 to 18.04, installing xorg would pause for user input on country
 # This has been mitigated using the "noninteractive".
 RUN apt-get update
-RUN apt-get install -y software-properties-common
 # RUN add-apt-repository ppa:mc3man/trusty-media
 RUN add-apt-repository ppa:jonathonf/ffmpeg-4
+RUN apt-get install -y software-properties-common
 RUN apt-get install -y git
 RUN apt-get install -y patch
 RUN apt-get install -y python
