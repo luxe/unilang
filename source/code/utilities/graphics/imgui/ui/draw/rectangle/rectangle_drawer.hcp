@@ -9,6 +9,8 @@ class
 ❪"code/utilities/data_structures/shapes/rectangle/positioned_rectangle_settings"❫
 ❪"code/utilities/data_structures/shapes/rectangle/shade_rectangle_settings"❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/multi_color_bitmap"❫
+❪"code/utilities/colors/color_transitioner"❫
+❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/multi_color_bitmap_drawer"❫
 ⚯
 ⚞⚟
 
@@ -26,6 +28,7 @@ class
 ◀public: static▶ void ☀draw_rectangle(ImDrawList *draw_list, Position pos, Shade_Rectangle_Settings const &settings)
 ❰
   auto fill_as_bitmap = Fill_As_Bitmap(draw_list,pos,settings);
+  Multi_Color_Bitmap_Drawer::Draw(draw_list,pos,fill_as_bitmap);
 ❱
 
 
@@ -53,8 +56,19 @@ class
 
 ◀private: static▶ Multi_Color_Bitmap ☀Fill_As_Bitmap(ImDrawList *draw_list, Position pos, Shade_Rectangle_Settings const &settings)❰
     Multi_Color_Bitmap bitmap;
-    //auto colors = TODO
+    auto colors = Color_Transitioner::Transition_Colors(settings.colors.fill,settings.dimensions.width);
     
+    Pixel_Settings p_settings;
+    p_settings.pos = pos;
+    for (auto const& c: colors){
+      p_settings.color_fill = c;
+      for (size_t i = 0; i < settings.dimensions.height; ++i){
+        bitmap.pixels.emplace_back(p_settings);
+        p_settings.pos.y++;
+      }
+      p_settings.pos.y = pos.y;
+      p_settings.pos.x++;
+    }
     return bitmap;
 ❱
 
