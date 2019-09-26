@@ -15,15 +15,16 @@ class
 
 ◀public: static▶ void ☀Refresh()❰
 
-    //get dockerfile path
-    std::string f = Bazel_Derived_Root_Of_Repo();
-    f += "Dockerfile";
-    
-    
     auto apt_get_commands = Apt_Get_Commands_Getter::Get_Commands();
     std::string base_container = "ubuntu:18.04";
-    Write_To_File(f,Create_Dockerfile(apt_get_commands,base_container));
+    Write_To_File(Get_DockerFile_Path(),Create_Dockerfile_Contents(apt_get_commands,base_container));
 
+❱
+
+◀private: static▶ std::string ☀Get_DockerFile_Path()❰
+    std::string f = Bazel_Derived_Root_Of_Repo();
+    f += "Dockerfile";
+    return f;
 ❱
 
 ◀private: static▶ std::string ☀Get_Docker_Intro_Comment()❰
@@ -99,7 +100,7 @@ return str;
 
 
 
-◀private: static▶ std::string ☀Create_Dockerfile(std::vector<Apt_Get_Command> const& apt_commands, std::string const& base_container)❰
+◀private: static▶ std::string ☀Create_Dockerfile_Contents(std::vector<Apt_Get_Command> const& apt_commands, std::string const& base_container)❰
 
     auto str = Docker_Intro_Comments(base_container);
     for (auto const& it: apt_commands){
