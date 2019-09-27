@@ -18,6 +18,11 @@ class
 
     auto settings = Docker_Settings_Getter::Get_Uncached_Dockerfile();
     Write_To_File(Get_DockerFile_Path(),Create_Dockerfile_Contents(settings));
+    
+    //maybe upload to dockerhub
+    
+    settings = Docker_Settings_Getter::Get_Cached_Dockerfile();
+    Write_To_File(Get_DockerFile_Path(),Create_Dockerfile_Contents(settings));
 
 ❱
 
@@ -41,40 +46,9 @@ class
 std::string str;
 str += settings.intro_comment;
 str += Get_Docker_From_Command(settings);
-
-
-std::string other = R"RAW(
-# All of the necessary apt-get installs
-# Strangely, wget was not working on a different machine??
-# Which is confusing because I was building a docker container; why would the host machine matter.
-# The fix was to use --fix-missing on the update.
-# With the transition from Ubuntu 14.04 to 18.04, installing xorg would pause for user input on country
-# This has been mitigated using the "noninteractive".
-RUN apt-get update
-RUN apt-get install -y software-properties-common
-)RAW";
-str+= other;
+str += settings.pre_steps;
 return str;
 ❱
-
-◀private: static▶ std::string ☀Docker_End_Stuff()❰
-std::string str = R"RAW(
-# The build runs certain tools that need a particular locale to be available
-# I had to do this differently when transitioning from Ubuntu 14.04 to 18.04
-# This will ensure the en_US.UTF-8 locale is available.
-# Ideally, I'd like to fix the tools so this is not needed in the Dockerfile.
-RUN echo "locales locales/default_environment_locale select en_US.UTF-8" | debconf-set-selections
-RUN echo "locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8" | debconf-set-selections
-RUN rm "/etc/locale.gen"
-RUN dpkg-reconfigure --frontend noninteractive locales
-
-# Copy the content of your repository into the image
-COPY . ./
-)RAW";
-return str;
-❱
-
-
 
 ◀private: static▶ std::string ☀Create_Dockerfile_Contents(Docker_Settings const& settings)❰
 
@@ -90,7 +64,6 @@ return str;
         str += "\n";
     }
     
-    
     //create all the apt get install commands
     for (auto const& it: settings.gets){
         str += "RUN ";
@@ -101,6 +74,6 @@ return str;
         str += it.name;
         str += "\n";
     }
-    str += Docker_End_Stuff();
+    str += settings.post_steps;
     return str;
 ❱
