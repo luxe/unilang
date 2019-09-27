@@ -26,32 +26,10 @@ class
     f += "Dockerfile";
     return f;
 ❱
-
-◀private: static▶ std::string ☀Get_Docker_Intro_Comment()❰
-std::string str = R"RAW(
-# Why does this docker container exist?
-# I'd like to build everything from source, but that's not always easy.
-# From Cmake to autotools; the world is full of exotic builds and difficult to pin-down dependencies.
-# For non-bazel projects, I usually have to rewrite the tool's build files in skylark.
-# This can be difficult.  For example, when build files generate other build files for the build, it can be too much work.
-# We use the docker container when we can't figure out how to build certain projects.
-# As an aspiration, I'd want to migrate as many package manager-related actions into the build rules.
-# But if it's too hard, they can stay here.
-# It's also nice to have Dockerfiles for CIs and containerized contexts for different tools.
-
-# Other thoughts on reducing this Dockerfile:
-# I think there is a way to include debian packages directly in bazel rules.  We could look into that.
-# Although its a better practice to run all of these commands a a single command since it will create less layers,
-# I'm keeping them separated as it makes debugging easier.
-
-# We try to upgrade to the latest Ubuntu when available
-)RAW";
-return str;
-❱
-◀private: static▶ std::string ☀Get_Docker_From_Command(std::string const& base_container)❰
+◀private: static▶ std::string ☀Get_Docker_From_Command(Docker_Settings const& settings)❰
     std::string statement;
     statement += "FROM ";
-    statement += base_container;
+    statement += settings.base_container;
     return statement;
 ❱
 
@@ -59,10 +37,10 @@ return str;
 
 
 
-◀private: static▶ std::string ☀Docker_Intro_Comments(std::string const& base_container)❰
+◀private: static▶ std::string ☀Docker_Intro_Comments(Docker_Settings const& settings)❰
 std::string str;
-str += Get_Docker_Intro_Comment();
-str += Get_Docker_From_Command(base_container);
+str += settings.intro_comment;
+str += Get_Docker_From_Command(settings);
 
 
 std::string other = R"RAW(
@@ -100,7 +78,7 @@ return str;
 
 ◀private: static▶ std::string ☀Create_Dockerfile_Contents(Docker_Settings const& settings)❰
 
-    auto str = Docker_Intro_Comments(settings.base_container);
+    auto str = Docker_Intro_Comments(settings);
     
     //create all the ppa commands
     for (auto const& it: settings.ppas){

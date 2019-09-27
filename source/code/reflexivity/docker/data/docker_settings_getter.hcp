@@ -10,6 +10,7 @@ class
 
 ◀public: static▶ Docker_Settings ☀Get_Uncached_Dockerfile()❰
     Docker_Settings settings;
+    settings.intro_comment = Get_Intro_Comment();
     settings.base_container = "ubuntu:18.04";
     settings.gets = Apt_Get_Commands_Getter::Get();
     settings.ppas = Apt_Ppa_Commands_Getter::Get();
@@ -18,8 +19,31 @@ class
 
 ◀public: static▶ Docker_Settings ☀Get_Cached_Dockerfile()❰
     Docker_Settings settings;
+    settings.intro_comment = "cached container for building monorepo";
     settings.base_container = "trevorjameshickey/unilang";
     settings.gets = {};
     settings.ppas = {};
     return settings;
+❱
+
+◀private: static▶ std::string ☀Get_Intro_Comment()❰
+std::string str = R"RAW(
+# Why does this docker container exist?
+# I'd like to build everything from source, but that's not always easy.
+# From Cmake to autotools; the world is full of exotic builds and difficult to pin-down dependencies.
+# For non-bazel projects, I usually have to rewrite the tool's build files in skylark.
+# This can be difficult.  For example, when build files generate other build files for the build, it can be too much work.
+# We use the docker container when we can't figure out how to build certain projects.
+# As an aspiration, I'd want to migrate as many package manager-related actions into the build rules.
+# But if it's too hard, they can stay here.
+# It's also nice to have Dockerfiles for CIs and containerized contexts for different tools.
+
+# Other thoughts on reducing this Dockerfile:
+# I think there is a way to include debian packages directly in bazel rules.  We could look into that.
+# Although its a better practice to run all of these commands a a single command since it will create less layers,
+# I'm keeping them separated as it makes debugging easier.
+
+# We try to upgrade to the latest Ubuntu when available
+)RAW";
+return str;
 ❱
