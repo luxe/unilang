@@ -11,3 +11,8 @@ hcp(name = "apt_get_commands_getter", deps = [
 hcp(name = "apt_ppa_commands_getter", deps = [
     "//code/reflexivity/docker/data:apt_ppa_command",
 ])
+
+hcp(name = "docker_settings", deps = [
+    "//code/reflexivity/docker/data:apt_get_command",
+    "//code/reflexivity/docker/data:apt_ppa_command",
+])
