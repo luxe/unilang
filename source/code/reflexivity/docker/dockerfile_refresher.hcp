@@ -32,20 +32,20 @@ class
     return f;
 ❱
 ◀private: static▶ std::string ☀Get_Docker_From_Command(Docker_Settings const& settings)❰
-    std::string statement;
-    statement += "FROM ";
-    statement += settings.base_container;
-    return statement;
+    std::string str;
+    Append(str,"FROM ");
+    Append(str,settings.base_container);
+    return str;
 ❱
 
 
-
+ 
 
 
 ◀private: static▶ std::string ☀Docker_Intro_Comments(Docker_Settings const& settings)❰
 std::string str;
 Append_With_Newline(str,settings.intro_comment);
-str += Get_Docker_From_Command(settings);
+Append(str,Get_Docker_From_Command(settings));
 Append_With_Newline(str,settings.pre_steps);
 return str;
 ❱
@@ -55,6 +55,17 @@ return str;
     auto str = Docker_Intro_Comments(settings);
     
     //create all the ppa commands
+    Append(str,Get_Add_Ppa_Statements(settings));
+    
+    //create all the apt get install commands
+    Append(str,Get_Install_Statements(settings));
+    str += settings.post_steps;
+    return str;
+❱
+
+
+◀private: static▶ std::string ☀Get_Add_Ppa_Statements(Docker_Settings const& settings)❰
+    std::string str;
     for (auto const& it: settings.ppas){
         str += "RUN add-apt-repository ";
         str += "ppa:";
@@ -63,8 +74,10 @@ return str;
         str += it.ppa_name;
         str += "\n";
     }
-    
-    //create all the apt get install commands
+    return str;
+❱
+◀private: static▶ std::string ☀Get_Install_Statements(Docker_Settings const& settings)❰
+    std::string str;
     for (auto const& it: settings.gets){
         str += "RUN ";
         for (auto const& def: it.defines){
@@ -74,6 +87,5 @@ return str;
         str += it.name;
         str += "\n";
     }
-    str += settings.post_steps;
     return str;
 ❱
