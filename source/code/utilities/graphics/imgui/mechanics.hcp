@@ -11,6 +11,7 @@ class
 ❪iostream❫
 ❪"code/utilities/graphics/imgui/sdl_init_settings"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/graphics/sfml/game_loop"❫
 ⚯
 ⚞⚟
 
@@ -58,13 +59,24 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
     before();
 
     // render each frame until we decide to exit
-    while (!poll_for_events(window))
-    {
-        
+    
+    Game_Loop::Run([&](){
+        return !poll_for_events(window);
+    },
+    [&](sf::Time const& TimePerFrame){
         render_frame(window,during);
-
         Mechanics::render_frame(window, gl_context, io, clear_color);
-    }
+    },
+    [&](){
+        //draw
+    });
+    
+    // while (!poll_for_events(window))
+    // {
+        
+    //     render_frame(window,during);
+    //     Mechanics::render_frame(window, gl_context, io, clear_color);
+    // }
 
     Mechanics::clean_up_resources(gl_context, window);
     return EXIT_SUCCESS;
