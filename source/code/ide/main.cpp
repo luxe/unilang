@@ -12,6 +12,8 @@
 
 int main()
 {
+    
+    //do all our startup tasks
     auto s = Ide_Settings_Getter::Get();
     auto before = [&](){};
     
