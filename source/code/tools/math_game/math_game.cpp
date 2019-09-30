@@ -71,6 +71,25 @@ std::unique_ptr<sf::RenderWindow> Create_Render_Window(std::string const& name){
     return window;
 }
 
+template <typename T, typename U, typename V>
+void game_loop(T stop_predicate, U logic, V render){
+    
+    // run the program as long as the window is open
+    // this is a common game loop and it was taken
+    // from the SFML Game Development Book.
+    sf::Clock clock;
+    sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
+    while (stop_predicate()){
+        timeSinceLastUpdate += clock.restart();
+        while (timeSinceLastUpdate > TimePerFrame){
+            timeSinceLastUpdate -= TimePerFrame;
+            logic(TimePerFrame);
+        }
+        render();
+    }
+}
+
 int main()
 {
     
@@ -84,19 +103,31 @@ int main()
     // run the program as long as the window is open
     // this is a common game loop and it was taken
     // from the SFML Game Development Book.
-    sf::Clock clock;
-    sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
-    while (window->isOpen())
-    {
-        timeSinceLastUpdate += clock.restart();
-        while (timeSinceLastUpdate > TimePerFrame){
-            timeSinceLastUpdate -= TimePerFrame;
-            Handle_Events(*window);
-            State_Updater::Run_Frame_Logic(*window,TimePerFrame,state,assets);
-        }
+    // sf::Clock clock;
+    // sf::Time timeSinceLastUpdate = sf::Time::Zero;
+    // const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
+    // while (window->isOpen())
+    // {
+    //     timeSinceLastUpdate += clock.restart();
+    //     while (timeSinceLastUpdate > TimePerFrame){
+    //         timeSinceLastUpdate -= TimePerFrame;
+    //         Handle_Events(*window);
+    //         State_Updater::Run_Frame_Logic(*window,TimePerFrame,state,assets);
+    //     }
+    //     Frame_Renderer::Run_Frame_Render(*window,state,assets);
+    // }
+    
+    game_loop(
+    [&](){
+        return window->isOpen();
+    },
+    [&](sf::Time const& TimePerFrame){
+        Handle_Events(*window);
+        State_Updater::Run_Frame_Logic(*window,TimePerFrame,state,assets);
+    },
+    [&](){
         Frame_Renderer::Run_Frame_Render(*window,state,assets);
-    }
+    });
 
     return 0;
 }
