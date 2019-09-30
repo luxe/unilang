@@ -58,8 +58,22 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
     before();
 
     // render each frame until we decide to exit
-    while (!Mechanics::poll_for_events(window))
+    while (!poll_for_events(window))
     {
+        
+        render_frame(window,during);
+
+        Mechanics::render_frame(window, gl_context, io, clear_color);
+    }
+
+    Mechanics::clean_up_resources(gl_context, window);
+    return EXIT_SUCCESS;
+}▶
+
+◀private:
+template <typename T>
+static void render_frame(SDL_Window * window, T during){
+
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplSDL2_NewFrame(window);
@@ -67,16 +81,10 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
 
         // our custom frame logic
         during(window);
-
-        Mechanics::render_frame(window, gl_context, io, clear_color);
-    }
-
-    Mechanics::clean_up_resources(gl_context, window);
-    return EXIT_SUCCESS;
 }
 ▶
 
-◀private: static▶ void ☀customize_imgui_overall_look(Sdl_Init_Settings const& s) ❰
+◀private: static▶ void ☀customize_imgui_overall_look(Sdl_Init_Settings const& s)❰
     // customize imgui overall look
     // (maybe move to overall settings)
     //ImGui::StyleColorsLight();
