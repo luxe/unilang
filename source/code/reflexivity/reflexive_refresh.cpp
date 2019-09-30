@@ -13,11 +13,15 @@
 int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
+    //what to refresh
     Reflexive_Refresh_Settings settings;
+    settings.refresh_dockerfile = true;
+    settings.refresh_deps_definitions = true;
+    settings.refresh_toolchain_conversion_tests = true;
     
     //things within the repository that need regenerated
     if (settings.refresh_dockerfile){
-        std::cout << "generating Dockerfile..." << std::endl;
+        std::cout << "Generating Dockerfile..." << std::endl;
         Dockerfile_Refresher::Refresh();
     }
     
