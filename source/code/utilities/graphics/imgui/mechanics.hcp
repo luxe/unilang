@@ -20,7 +20,6 @@ class
 template <typename T, typename U>
 static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
 {
-    
     // set up GL and SDL
     Mechanics::setup_sdl();
     auto          glsl_version = Mechanics::decide_sdl_glsl_version();
@@ -34,14 +33,18 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
     
-    
     //set a default font
+    //I wasn't happy with this because it wasn't perfect.
+    //I couldn't get the aliasing perfect, it wasn't pixel perfect.
+    //I've decided to render text directly as my own pixelated bitmaps.  
+    //This is better anyways, because I want so much more out of text.  
+    //I want to color parts of letters/words differently over quick time iterations.
+    //so maybe my own pixel perfect bitmaps is a better direction with less blockers anyway.
     //io.Fonts->AddFontDefault();
     //std::string font_path = Full_Path_To_Home();
     //font_path += "/.fonts/ProFontPowerline.ttf";
     //std::cout << font_path << std::endl;
     //ImFont* font1 = io.Fonts->AddFontFromFileTTF(font_path.c_str(),12);
-    
     
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
@@ -57,9 +60,22 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
     //sometimes its important to do something after all of the SDL and imgui stuff have been established
     //but before the app starts rendering frames.
     before();
-
-    // render each frame until we decide to exit
     
+    
+    //Below is our old implementation derived from what I've seen from ImGui applications.
+    //I believe mixing application logic / rendering logic may be bad.
+    //Instead, maybe it would be better to run ImGui in the same way that SFML game loops run.
+    //below is that alternative approach
+    // while (!poll_for_events(window))
+    // {
+    //     render_frame(window,during);
+    //     Mechanics::render_frame(window, gl_context, io, clear_color);
+    // }
+    
+    //we think its better to do a more disciplined logic+render update
+    //where the logic is updated at a faster rate than the application is rendering.
+    //I'm not sure if this paradigm is good for imgui (as it may be for SFML).
+    //Either way, this will force us to separate our logic from render which would be good anyhow.
     Game_Loop::Run([&](){
         return !poll_for_events(window);
     },
@@ -70,13 +86,6 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
     [&](){
         //draw
     });
-    
-    // while (!poll_for_events(window))
-    // {
-        
-    //     render_frame(window,during);
-    //     Mechanics::render_frame(window, gl_context, io, clear_color);
-    // }
 
     Mechanics::clean_up_resources(gl_context, window);
     return EXIT_SUCCESS;
