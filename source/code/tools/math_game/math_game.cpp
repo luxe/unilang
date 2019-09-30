@@ -13,6 +13,7 @@
 #include "code/tools/math_game/state/game_state_getter.hpp"
 #include "code/tools/math_game/core/frame_renderer.hpp"
 #include "code/tools/math_game/core/state_updater.hpp"
+#include "code/utilities/graphics/sfml/game_loop.hpp"
 
 void Handle_Events(sf::RenderWindow & window){
     
@@ -71,25 +72,6 @@ std::unique_ptr<sf::RenderWindow> Create_Render_Window(std::string const& name){
     return window;
 }
 
-template <typename T, typename U, typename V>
-void game_loop(T stop_predicate, U logic, V render){
-    
-    // run the program as long as the window is open
-    // this is a common game loop and it was taken
-    // from the SFML Game Development Book.
-    sf::Clock clock;
-    sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
-    while (stop_predicate()){
-        timeSinceLastUpdate += clock.restart();
-        while (timeSinceLastUpdate > TimePerFrame){
-            timeSinceLastUpdate -= TimePerFrame;
-            logic(TimePerFrame);
-        }
-        render();
-    }
-}
-
 int main()
 {
     
@@ -117,7 +99,7 @@ int main()
     //     Frame_Renderer::Run_Frame_Render(*window,state,assets);
     // }
     
-    game_loop(
+    Game_Loop::Run(
     [&](){
         return window->isOpen();
     },
