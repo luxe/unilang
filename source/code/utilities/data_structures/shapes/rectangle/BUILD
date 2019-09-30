@@ -14,6 +14,7 @@ hcp(name="rectangle_settings",deps = [
     "//code/utilities/data_structures/shapes/rectangle:rectangle_dimensions",
     "//code/utilities/data_structures/shapes/rectangle:rectangle_edge",
     "//code/utilities/data_structures/shapes/rectangle:rectangle_fill_colors",
+    "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
 ])
 
 hcp(name="shade_rectangle_settings",deps = [
