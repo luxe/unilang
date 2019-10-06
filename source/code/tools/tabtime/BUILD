@@ -13,5 +13,6 @@ cc_binary(
     name = "tabtime",
     srcs = ["tabtime.cpp"],
     deps = [
+        "//code/utilities/shell:lib"
     ]
 )
