@@ -13,6 +13,10 @@ cc_binary(
     name = "tabtime",
     srcs = ["tabtime.cpp"],
     deps = [
-        "//code/utilities/shell:lib"
+        "//code/tools/tabtime:tabtime_runner"
     ]
 )
+
+hcp(name = "tabtime_runner", deps = [
+    "//code/utilities/shell:lib",
+])
