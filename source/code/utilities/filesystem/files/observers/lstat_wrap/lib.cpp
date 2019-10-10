@@ -2,7 +2,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <filesystem>
 
 size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file)
 {
