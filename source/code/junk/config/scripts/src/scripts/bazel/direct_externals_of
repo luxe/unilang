@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#which external libraries directly rely on X
+
+for DEP in "$@"
+do
+	./bazel query "rdeps(...,@$DEP//...)"             `#query reverse dependencies`\
+	--noimplicit_deps                               `#transitive/non-transitive`\
+	--keep_going 2> /dev/null                       `#rdeps fails on 3rd party projects that may have their own unused build rules`\
+	| grep "^@"                                       `#external targets only`\
+        | sed "/@$DEP/d"                             `#hide cycles`\
+	| sed 's|\//.*|//|'                             `#remove details after //`\
+	| sort | uniq                                   `#remove duplicates`\
+	| cut -c2-                                      `#make it graphvizy`\
+	| sed 's/..$//'                                 `#make it graphvizy`\
+	| sed 's/^/"/'                                  `#make it graphvizy`\
+	| sed 's/$/" -> "'$DEP'"/'                      `#make it graphvizy`
+done
