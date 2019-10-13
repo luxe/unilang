@@ -3,9 +3,9 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-cpp_main(
-    name = "main",
-    deps = [
-        "@entt//:entt",
-    ],
-)
+# cpp_main(
+#     name = "main",
+#     deps = [
+#         "@entt//:entt",
+#     ],
+# )
