@@ -319,6 +319,7 @@ cc_library(
       "c++/src/capnp/schema-loader.c++",
       "c++/src/capnp/dynamic.c++",
       "c++/src/capnp/stringify.c++",
+      "c++/src/capnp/schema.capnp.c++",
     ],
     deps = [":kj",":capnp_headers"],
     includes = [".", "c++/src/"]
