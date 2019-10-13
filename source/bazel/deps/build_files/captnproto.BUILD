@@ -129,6 +129,7 @@ cc_library(
       "c++/src/kj/string-tree.c++",
       "c++/src/kj/time.c++",
       "c++/src/kj/filesystem.c++",
+      "c++/src/kj/mutex.c++",
       "c++/src/kj/filesystem-disk-unix.c++",
       "c++/src/kj/filesystem-disk-win32.c++",
       "c++/src/kj/parse/char.c++",
@@ -152,6 +153,7 @@ cc_library(
     srcs = [
         "c++/src/kj/compat/url.c++",
         "c++/src/kj/compat/http.c++",
+        "c++/src/kj/memory.c++",
     ],
     deps = [":kj_headers",":kj_http_headers",":kj_async_headers",":kj_parse_headers"],
     includes = [".","c++/src/"],
@@ -291,6 +293,9 @@ cc_library(
 
 cc_library(
     name = "capnp_sources_lite",
+    hdrs = [
+        "c++/src/capnp/any.h",
+    ],
     srcs = [
       "c++/src/capnp/c++.capnp.c++",
       "c++/src/capnp/blob.c++",
@@ -315,7 +320,7 @@ cc_library(
       "c++/src/capnp/dynamic.c++",
       "c++/src/capnp/stringify.c++",
     ],
-    deps = [":capnp_headers",":kj"],
+    deps = [":kj",":capnp_headers"],
     includes = [".", "c++/src/"]
 )
 
@@ -379,7 +384,8 @@ cc_library(
         "c++/src/capnp/compiler/lexer.h", 
         "c++/src/capnp/compiler/type-id.h", 
         "c++/src/capnp/compiler/error-reporter.h",
-        "c++/src/capnp/compiler/module-loader.h"
+        "c++/src/capnp/compiler/module-loader.h",
+        "c++/src/capnp/any.h",
     ],
     deps = [":capnp_headers",":kj"],
     includes = [".", "c++/src/","c++/src/capnp/compiler"]
@@ -431,8 +437,8 @@ cc_library(
 cc_binary(
     name = "capnp_tool",
     srcs = [
-    "c++/src/capnp/compiler/module-loader.c++",
-    "c++/src/capnp/compiler/capnp.c++",
+	    "c++/src/capnp/compiler/module-loader.c++",
+	    "c++/src/capnp/compiler/capnp.c++",
     ],
     deps = [":capnp"]
 )
