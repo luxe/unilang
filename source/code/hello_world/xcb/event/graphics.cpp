@@ -61,7 +61,8 @@ void event_loop(xcb_window_t window, xcb_gcontext_t graphics_context) {
   xcb_generic_event_t *event;
   xcb_rectangle_t r = { 20, 20, 60, 60 };
   
-  while(event = xcb_wait_for_event(connection)) {
+  event = xcb_wait_for_event(connection);
+  while(event) {
     switch(event->response_type) {
     case XCB_EXPOSE:
       xcb_poly_fill_rectangle(connection, window, graphics_context, 1, &r);

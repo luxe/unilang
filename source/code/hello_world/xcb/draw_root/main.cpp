@@ -7,7 +7,6 @@ main ()
 {
   xcb_connection_t    *c;
   xcb_screen_t        *screen;
-  xcb_generic_event_t *e;
   uint32_t             mask = 0;
   xcb_gcontext_t    gc = { 0 };    /* the returned default graphic context */
   xcb_drawable_t draw;

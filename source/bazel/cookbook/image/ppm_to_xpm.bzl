@@ -10,6 +10,6 @@ def ppm_to_xpm(name):
         srcs = [ppm_name],
         outs = [xpm_name],
         cmd = """
-              ppmtoxpm $(SRCS) > $(OUTS)
+              ppmtoxpm $(SRCS) > $(OUTS) 2>/dev/null
               """
     )

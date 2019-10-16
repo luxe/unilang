@@ -88,10 +88,16 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
         struct curl_slist *chunk = NULL;
         chunk = curl_slist_append(chunk, "Transfer-Encoding: chunked");
         CURLcode res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+        if (!res){
+          //UH OH
+        }
         
         struct curl_slist *chunk2 = NULL;
         chunk2 = curl_slist_append(chunk, "Expect:");
         CURLcode res2 = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk2);
+        if (!res2){
+          //UH OH
+        }
         
         static const char *postthis = "moo mooo moo moo";
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
