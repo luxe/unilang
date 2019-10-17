@@ -33,24 +33,10 @@ class
       //go to repo we are adding things to
       std::string repo_path = Full_Path_To_Desktop() + "luxe.github.com";
       Set_Path(repo_path);
-  
-      {
-        auto doc_structure = Deskstock_Documentation_Getter::Get();
-        Deploy_Program(debs,doc_structure);
-      }
       
-      {
-        auto doc_structure = Noogle_Documentation_Getter::Get();
-        Deploy_Program(debs,doc_structure);
-      }
-      
-      {
-        auto doc_structure = Mario_Documentation_Getter::Get();
-        Deploy_Program(debs,doc_structure);
-      }
-      {
-        auto doc_structure = Gcalviz_Documentation_Getter::Get();
-        Deploy_Program(debs,doc_structure);
+      auto docs = Get_Documentation_Structures();
+      for (auto const& doc: docs){
+        Deploy_Program(debs,doc);
       }
       
       Git_Updater::Update_All_Changes("redeploy");
@@ -60,6 +46,15 @@ class
       //https://assafmo.github.io/2019/05/02/ppa-repo-hosted-on-github.html
       //https://github.com/assafmo/ppa/blob/master/update.sh
     
+❱
+
+◀private: static▶ std::vector<Structure> ☀Get_Documentation_Structures()❰
+  std::vector<Structure> docs;
+  docs.emplace_back(Deskstock_Documentation_Getter::Get());
+  docs.emplace_back(Noogle_Documentation_Getter::Get());
+  docs.emplace_back(Mario_Documentation_Getter::Get());
+  docs.emplace_back(Gcalviz_Documentation_Getter::Get());
+  return docs;
 ❱
 
 ◀private: static▶ void ☀Deploy_Program(std::vector<std::string> const& debs, Structure const& doc_structure)❰
