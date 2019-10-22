@@ -30,6 +30,17 @@ function robust_download() {
 	done;
 }
 
+function bootstrap_bazel() {
+	if [[ ! -f "${bazel}" ]]; then
+
+	    ensure_barebone_binaries
+	    pre_bazel_download_setup_env
+	    download_bazel
+	    post_bazel_download_verify
+
+	fi
+}
+
 function ensure_barebone_binaries() {
 
     # Check for some bootstraping necessities
@@ -81,14 +92,7 @@ function post_bazel_download_verify() {
     trap - ERR INT TERM
 }
 
-if [[ ! -f "${bazel}" ]]; then
-
-    ensure_barebone_binaries
-    pre_bazel_download_setup_env
-    download_bazel
-    post_bazel_download_verify
-
-fi
+bootstrap_bazel
 
 # If Inside Emacs Bazel tries to be helpful say it's "entering a
 # directory" but that actually confuses emacs because then it starts
