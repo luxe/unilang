@@ -22,6 +22,14 @@ cache_root="${HOME}/.cache"
 install_dir="${cache_root}/bazel/${sha256}"
 bazel="${install_dir}/bazel"
 
+function robust_download() {
+	while [ 1 ]; do
+	    wget "${url}" -O "${in_progress_download}" --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0
+	    if [ $? = 0 ]; then break; fi;
+	    sleep 1s;
+	done;
+}
+
 function ensure_barebone_binaries() {
 
     # Check for some bootstraping necessities
@@ -56,10 +64,9 @@ function pre_bazel_download_setup_env() {
 function download_bazel() {
 
     # Download bazel
-    # Make more robust in case server is temporarily down
     in_progress_download="${install_dir}/in_progress_download"
     if tty -s; then
-        wget "${url}" -O "${in_progress_download}"
+        robust_download
     else
         wget "${url}" -O "${in_progress_download}" --no-verbose
     fi
