@@ -22,7 +22,7 @@ cache_root="${HOME}/.cache"
 install_dir="${cache_root}/bazel/${sha256}"
 bazel="${install_dir}/bazel"
 
-if [[ ! -f "${bazel}" ]]; then
+function ensure_barebone_binaries() {
 
     # Check for some bootstraping necessities
     # If these bare-bone requirements don't exist, I considered installing them for the user automatically,
@@ -40,6 +40,9 @@ if [[ ! -f "${bazel}" ]]; then
     # CONSIDER(thickey): Do you need some kind of Java tooling installed for bazel first?  If so, add it here!
     # I think sfortson mentioned that he had to install bazel first.  The CIs seem to be fine, but sam was on arch linux
     # I'm not sure if bazel's thing is truely stand-alone or what.  you might need the jvm first.
+}
+
+function pre_bazel_download_setup_env() {
 
     # Say that we are missing bazel, and will install it
     echo "INFO: Required bazel version not found."
@@ -48,6 +51,9 @@ if [[ ! -f "${bazel}" ]]; then
     # Setup install directory & delete it on failure
     mkdir -p "${install_dir}"
     trap 'rm -rf "${install_dir}"' ERR INT TERM
+}
+
+function download_bazel() {
 
     # Download bazel
     in_progress_download="${install_dir}/in_progress_download"
@@ -59,12 +65,23 @@ if [[ ! -f "${bazel}" ]]; then
 	# I see no reason to.
         wget "${url}" -O "${in_progress_download}" --no-verbose
     fi
+}
+
+function post_bazel_download_verify() {
 
     # Check that our download is valid
     echo "${sha256}  ${in_progress_download}" | sha256sum --check >&2
     chmod +x "${in_progress_download}"
     mv "${in_progress_download}" "${bazel}"
     trap - ERR INT TERM
+}
+
+if [[ ! -f "${bazel}" ]]; then
+
+    ensure_barebone_binaries
+    pre_bazel_download_setup_env
+    download_bazel
+    post_bazel_download_verify
 
 fi
 
