@@ -99,6 +99,7 @@ load("//bazel/deps/get:levenshtein.bzl", "levenshtein")
 load("//bazel/deps/get:rang.bzl", "rang")
 load("//bazel/deps/get:crossguid.bzl", "crossguid")
 load("//bazel/deps/get:fluxcapacitor.bzl", "fluxcapacitor")
+load("//bazel/deps/get:tardis.bzl", "tardis")
 def third_party_libraries():
     boost()
     abseil()
@@ -201,3 +202,4 @@ def third_party_libraries():
     rang()
     crossguid()
     fluxcapacitor()
+    tardis()
