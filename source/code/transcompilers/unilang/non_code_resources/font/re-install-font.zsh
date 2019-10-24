@@ -31,6 +31,16 @@ cp -f font-files/ProFontPowerline.ttf ~/.fonts/;
 cp -f font-files/ProFontPowerlineBold.ttf ~/.local/share/fonts/;
 cp -f font-files/ProFontPowerlineBold.ttf ~/.fonts/;
 
+#sometimes systems have bitmap fonts disabled by default
+#https://bugs.launchpad.net/ubuntu/+source/fontconfig/+bug/1560114
+#we should just enable it.
+sudo rm /etc/fonts/conf.d/70-no-bitmaps.conf
+sudo ln -s /etc/fonts/conf.avail/70-yes-bitmaps.conf /etc/fonts/conf.d/70-yes-bitmaps.conf
+
+#we could try rebuilding the font cache?
+#fc-cache -f -v
+sudo dpkg-reconfigure fontconfig
+
 #I've had it get stuck on the fallback font...
 #hmm.. I dunno.  run the script again.  worked for me.
 #you know what, we'll force the registry changes, even though they shouldn't be changing
