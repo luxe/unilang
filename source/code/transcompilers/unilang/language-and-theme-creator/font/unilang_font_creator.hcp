@@ -10,25 +10,28 @@ class
 ❪"code/transcompilers/unilang/language-and-theme-creator/sublime/unilang_file_creator"❫
 ❪"code/transcompilers/unilang/language-and-theme-creator/font/unilang_font"❫
 ❪"code/transcompilers/unilang/tokens/uniqueness/unique_tokens_checker"❫
-❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/bdf/exporter/bdf_settings_to_format"❫
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
+❪"code/transcompilers/unilang/language-and-theme-creator/font/unilang_font_creation_settings_getter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Create_Fonts()❰
-
-    std::string font_name = "Unilang";
-    std::string font_format = "bdf";
+    
+    //get settings
+    auto settings = Unilang_Font_Creation_Settings_Getter::Get();
+    
+    //get font
     std::string font_str = Font_As_String();
     
+    //create all the font files
+    for (auto const& path: settings.font_paths){
+        Create_Path_If_It_Doesnt_Already_Exist(path);
+        std::ofstream outfile(path + settings.font_name + "." + settings.font_format);
+        outfile << font_str;
+        outfile.close();
+    }
     
-    //TODO: prob rename to Unilang
-    Create_Path_If_It_Doesnt_Already_Exist(Fonts_Path_1());
-    std::ofstream outfile(Fonts_Path_1() + font_name + "." + font_format);
-    outfile << font_str;
-    outfile.close();
-
-    //some other things that MIGHT need to be done
+    //other ubuntu hacks so the font is actually available on the system
     //sudo rm /etc/fonts/conf.avail/70-no-bitmaps.conf
     //sudo fc-cache -f -v
 ❱
@@ -41,11 +44,4 @@ class
     str += Bdf_Settings_To_Format::Convert(bdf_settings);
     
     return str;
-❱
-
-◀private: static▶ std::string ☀Fonts_Path_1()❰
-    return Full_Path_To_Home() + "/.fonts/";
-❱
-◀private: static▶ std::string ☀Fonts_Path_2()❰
-    return Full_Path_To_Home() + "/.local/share/fonts/";
 ❱

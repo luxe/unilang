@@ -17,6 +17,7 @@ hcp(name = "unilang_font_creator", deps = [
 "//code/utilities/bdf/exporter:bdf_settings_to_format",
 "//code/utilities/bdf/glyph:glyphs",
 "//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font",
+"//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font_creation_settings_getter",
 ])
 
 hcp(name = "predefined_characters", deps = [
@@ -31,4 +32,12 @@ hcp(name = "unilang_font", deps = [
 "//code/utilities/bdf/glyph:glyphs",
 "//code/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker",
 "//code/utilities/bdf/exporter:bdf_settings_to_format",
+])
+
+hcp(name = "unilang_font_creation_settings", deps = [
+])
+
+hcp(name = "unilang_font_creation_settings_getter", deps = [
+    "//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font_creation_settings",
+    "//code/utilities/filesystem/paths:lib",
 ])
