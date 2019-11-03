@@ -1,20 +1,17 @@
 #!/usr/bin/env bash
-# This is the front-end script that bootstraps and calls bazel
-# any build commands will go through this script.
+# This is the front-end script that bootstraps and calls bazel.
+# Any build commands will go through this script.
 # it is expected to behave the same as the bazel command itself (with bootstraping capability / extra features).
-# We may also consider bazelisk, but bazelisk would likely need bootstrapped as well.  
+# We may also consider bazelisk, but bazelisk would likely need bootstrapped as well.
 # Regardless, we'll always want some kind of bare bones shell script to get/call other build tools.
 
 set -euo pipefail
 
-# the version of bazel we are using
-#url=https://github.com/bazelbuild/bazel/releases/download/1.0.0/bazel-1.0.0-linux-x86_64
-#sha256=d338fbdc5dd849582914a2411fb34f85b08303f6bfd36e7ca120eec0c27eda52
 url=https://github.com/bazelbuild/bazel/releases/download/1.1.0/bazel-1.1.0-linux-x86_64
 sha256=f54ab5f31b8d7c6a0ce9dee387af45b1d6577ff9625ef6c535896b59cdf8828a
 
-# paths to place bazel related artifacts
-# CONSIDER(thickey): should we really install bazel in the user's home directory?  
+# paths to place bazel related artifacts.
+# CONSIDER(thickey): should we really install bazel in the user's home directory?
 # Are we sure they will even have a home repo?  Would it be better to install it inside the repo itself?
 # I think this is fine for now.  We'll see if any problems arise.
 # It may be recomended to have bazel write its cache to the home directory anyway.
@@ -23,27 +20,30 @@ install_dir="${cache_root}/bazel/${sha256}"
 bazel="${install_dir}/bazel"
 
 function robust_download() {
-	while [ 1 ]; do
-	    wget "${url}" -O "${in_progress_download}" --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0
-	    if [ $? = 0 ]; then break; fi;
-	    sleep 1s;
-	done;
+    while [ 1 ]; do
+        wget "${url}" -O "${in_progress_download}" --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 0
+        if [ $? = 0 ]; then break; fi;
+        sleep 1s;
+    done;
 }
+
 
 function bootstrap_bazel() {
-	if [[ ! -f "${bazel}" ]]; then
+    if [[ ! -f "${bazel}" ]]; then
 
-	    ensure_barebone_binaries
-	    pre_bazel_download_setup_env
-	    download_bazel
-	    post_bazel_download_verify
+        ensure_barebone_binaries
+        pre_bazel_download_setup_env
+        download_bazel
+        post_bazel_download_verify
 
-	fi
+    fi
 }
+
 
 function ensure_command_exists() {
-	command -v $1 >/dev/null 2>&1 || { echo >&2 "I require $1 but it's not installed.  Aborting."; exit 1; }
+    command -v $1 >/dev/null 2>&1 || { echo >&2 "I require $1 but it's not installed.  Aborting."; exit 1; }
 }
+
 
 function ensure_barebone_binaries() {
 
@@ -73,6 +73,7 @@ function ensure_barebone_binaries() {
     # We assume no runtime dependencies for running bazel
 }
 
+
 function pre_bazel_download_setup_env() {
 
     # Say that we are missing bazel, and will install it
@@ -83,6 +84,7 @@ function pre_bazel_download_setup_env() {
     mkdir -p "${install_dir}"
     trap 'rm -rf "${install_dir}"' ERR INT TERM
 }
+
 
 function download_bazel() {
 
@@ -95,6 +97,7 @@ function download_bazel() {
     fi
 }
 
+
 function post_bazel_download_verify() {
 
     # Check that our download is valid
@@ -105,7 +108,6 @@ function post_bazel_download_verify() {
 }
 
 bootstrap_bazel
-
 # If Inside Emacs Bazel tries to be helpful say it's "entering a
 # directory" but that actually confuses emacs because then it starts
 # looking for files inside the runfiles tree.
