@@ -16,6 +16,9 @@ std::string& Append_A_Tab(std::string & str);
 std::string& Append_N_Newlines(std::string & str, int number_of_times);
 std::string& Append_N_Spaces(std::string & str, int number_of_times);
 
+//language specific
+std::string& Append_Bash_Comment_With_Newline(std::string & str, std::string const& part);
+
 //appending to wstring
 std::string& Append_With_Newline(std::string & str, std::wstring const& part);
 std::string& Append(std::string & str, std::wstring const& part);

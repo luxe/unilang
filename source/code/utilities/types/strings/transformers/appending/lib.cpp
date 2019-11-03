@@ -56,6 +56,13 @@ std::string& Append_N_Spaces(std::string & str, int number_of_times)
         return Append_N_Times(str," ",number_of_times);
 }
 
+std::string& Append_Bash_Comment_With_Newline(std::string & str, std::string const& part)
+{
+        str += "# ";
+        str += part + "\n";
+        return str;
+}
+
 
 std::string& Append_With_Newline(std::string & str_to_append_to, std::wstring const& append){
         str_to_append_to += as_string(append) + "\n";
