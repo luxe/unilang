@@ -12,11 +12,28 @@
 // Parts of the repository (this repository, right here) need generated programatically.  
 // The reason we need to generate parts programatically, is so we can try to automatically upgrade portions of the repo infrastructure.
 // Like most things, more possibilities open up, when the repo infrastructure is expressed in a data model
+
+
+char *program_path()
+{
+    char *path = static_cast<char*>(malloc(PATH_MAX));
+    if (path != NULL) {
+        if (readlink("/proc/self/exe", path, PATH_MAX) == -1) {
+            free(path);
+            path = NULL;
+        }
+    }
+    return path;
+}
+
 int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
     //what to refresh
     auto settings = Reflexive_Refresh_Settings_Getter::Get();
+    
+    std::cout << program_path() << std::endl;
+    exit(0);
     
     //things within the repository that need regenerated
     
@@ -29,6 +46,7 @@ int main(int argc, char** argv){
     
     if (settings.refresh_bazelrc){
         std::cout << "Generating .bazelrc..." << std::endl;
+        //Bazelrc_Refresher::Refresh();
     }
     
     if (settings.refresh_dockerfile){
