@@ -7,6 +7,7 @@
 #include "code/reflexivity/settings/reflexive_refresh_settings.hpp"
 #include "code/reflexivity/settings/reflexive_refresh_settings_getter.hpp"
 #include "code/utilities/locale/lib.hpp"
+#include <errno.h>
 
 
 // Parts of the repository (this repository, right here) need generated programatically.  
@@ -14,7 +15,7 @@
 // Like most things, more possibilities open up, when the repo infrastructure is expressed in a data model
 
 
-char *program_path()
+std::string program_path_via_readlink()
 {
     char *path = static_cast<char*>(malloc(PATH_MAX));
     if (path != NULL) {
@@ -23,7 +24,12 @@ char *program_path()
             path = NULL;
         }
     }
-    return path;
+    std::string rstr = path;
+    free(path);
+    return rstr;
+}
+std::string program_path_via_glibc(){
+    return program_invocation_name;
 }
 
 int main(int argc, char** argv){
@@ -32,7 +38,8 @@ int main(int argc, char** argv){
     //what to refresh
     auto settings = Reflexive_Refresh_Settings_Getter::Get();
     
-    std::cout << program_path() << std::endl;
+    std::cout << program_path_via_readlink() << std::endl;
+    std::cout << program_path_via_glibc() << std::endl;
     exit(0);
     
     //things within the repository that need regenerated
