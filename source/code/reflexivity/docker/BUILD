@@ -13,4 +13,5 @@ hcp(name = "dockerfile_refresher", deps = [
 "//code/transcompilers/unilang/file_extension_getter:file_extension_getter",
 "//code/reflexivity/docker/data:docker_settings_getter",
 "//code/reflexivity/docker/data:docker_settings",
+"//code/reflexivity/comment:generated_comment_getter",
 ])

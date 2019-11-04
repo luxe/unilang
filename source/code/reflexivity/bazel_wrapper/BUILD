@@ -7,4 +7,5 @@ hcp(name = "bazel_wrapper_refresher", deps = [
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/filesystem/files/creating:lib",
+    "//code/reflexivity/comment:generated_comment_getter",
 ])

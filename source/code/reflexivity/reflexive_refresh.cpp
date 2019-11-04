@@ -22,9 +22,6 @@ int main(int argc, char** argv){
     //what to refresh
     auto settings = Reflexive_Refresh_Settings_Getter::Get();
     
-    std::cout << Program_Name_Getter::Get_From_Repo_Context() << std::endl;
-    exit(0);
-    
     //things within the repository that need regenerated
     
     
