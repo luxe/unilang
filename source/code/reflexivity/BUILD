@@ -11,6 +11,7 @@ cpp_main(
         "//code/reflexivity/deps_define:deps_definition_refresher",
         "//code/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/utilities/locale:lib",
-        "//code/reflexivity/settings:reflexive_refresh_settings"
+        "//code/reflexivity/settings:reflexive_refresh_settings",
+        "//code/reflexivity/settings:reflexive_refresh_settings_getter"
     ],
 )

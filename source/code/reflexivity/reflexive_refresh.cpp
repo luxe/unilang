@@ -5,6 +5,7 @@
 #include "code/reflexivity/deps_define/deps_definition_refresher.hpp"
 #include "code/reflexivity/tool_chain_conversion/tool_chain_conversion_refresher.hpp"
 #include "code/reflexivity/settings/reflexive_refresh_settings.hpp"
+#include "code/reflexivity/settings/reflexive_refresh_settings_getter.hpp"
 #include "code/utilities/locale/lib.hpp"
 
 
@@ -15,16 +16,19 @@ int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
     //what to refresh
-    Reflexive_Refresh_Settings settings;
-    settings.refresh_bazel_wrapper = true;
-    settings.refresh_dockerfile = true;
-    settings.refresh_deps_definitions = true;
-    settings.refresh_toolchain_conversion_tests = true;
+    auto settings = Reflexive_Refresh_Settings_Getter::Get();
     
     //things within the repository that need regenerated
+    
+    
+    //root repo stuff
     if (settings.refresh_bazel_wrapper){
         std::cout << "Generating Bazel Wrapper..." << std::endl;
         Bazel_Wrapper_Refresher::Refresh();
+    }
+    
+    if (settings.refresh_bazelrc){
+        std::cout << "Generating .bazelrc..." << std::endl;
     }
     
     if (settings.refresh_dockerfile){
@@ -32,13 +36,17 @@ int main(int argc, char** argv){
         Dockerfile_Refresher::Refresh();
     }
     
+    
+    
+    
+    
     if (settings.refresh_deps_definitions){
-        std::cout << "Definition Refresher..." << std::endl;
+        std::cout << "Generating 3rd party deps..." << std::endl;
         Deps_Definition_Refresher::Refresh();
     }
     
     if (settings.refresh_toolchain_conversion_tests){
-        std::cout << "Tool Chain Conversion Refresher..." << std::endl;
+        std::cout << "Generating Tool Chain Conversions..." << std::endl;
         Tool_Chain_Conversion_Refresher::Refresh();
     }
 }
