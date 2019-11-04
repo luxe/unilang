@@ -1,0 +1,44 @@
+class
+❪string❫
+❪vector❫
+❪"code/reflexivity/docker/data/apt_get_command"❫
+❪"code/reflexivity/docker/data/docker_settings"❫
+⚯
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/filesystem/files/deleting/lib"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/transcompilers/unilang/file_extension_getter/file_extension_getter"❫
+❪"code/reflexivity/docker/data/docker_settings_getter"❫
+❪"code/reflexivity/comment/generated_comment_getter"❫
+⚞⚟
+
+◀public: static▶ void ☀Refresh()❰
+
+    Write_To_File(Get_Bazelrc_File_Path(),Create_Bazelrc_Contents());
+
+❱
+
+◀private: static▶ std::string ☀Create_Bazelrc_Contents()❰
+    std::string str;
+    Append_With_Newline(str,Generated_Comment_Getter::Get());
+    
+    //TODO(thickey): fix parts of the repo to delete these:
+    Append_With_Newline(str,"build --incompatible_bzl_disallow_load_after_statement=false");
+    Append_With_Newline(str,"build --incompatible_no_transitive_loads=false");
+    Append_With_Newline(str,"build --incompatible_disable_crosstool_file=false");
+    Append_With_Newline(str,"build --incompatible_disable_deprecated_attr_params=false");
+    Append_With_Newline(str,"build --incompatible_use_python_toolchains=false");
+    Append_With_Newline(str,"build --incompatible_use_specific_tool_files=false");
+    
+    Append_With_Newline(str,"build --crosstool_top=@llvm_toolchain//:toolchain");
+    return str;
+❱
+
+◀private: static▶ std::string ☀Get_Bazelrc_File_Path()❰
+    std::string f = Bazel_Derived_Root_Of_Repo();
+    f += "source/.bazelrc";
+    return f;
+❱

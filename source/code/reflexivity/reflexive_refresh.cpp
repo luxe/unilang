@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "code/reflexivity/docker/dockerfile_refresher.hpp"
+#include "code/reflexivity/bazelrc/bazelrc_refresher.hpp"
 #include "code/reflexivity/bazel_wrapper/bazel_wrapper_refresher.hpp"
 #include "code/reflexivity/deps_define/deps_definition_refresher.hpp"
 #include "code/reflexivity/tool_chain_conversion/tool_chain_conversion_refresher.hpp"
@@ -33,16 +34,13 @@ int main(int argc, char** argv){
     
     if (settings.refresh_bazelrc){
         std::cout << "Generating .bazelrc..." << std::endl;
-        //Bazelrc_Refresher::Refresh();
+        Bazelrc_Refresher::Refresh();
     }
     
     if (settings.refresh_dockerfile){
         std::cout << "Generating Dockerfile..." << std::endl;
         Dockerfile_Refresher::Refresh();
     }
-    
-    
-    
     
     if (settings.refresh_deps_definitions){
         std::cout << "Generating 3rd party deps..." << std::endl;

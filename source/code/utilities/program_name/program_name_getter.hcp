@@ -10,7 +10,7 @@ class
     std::string name;
     
     //choose an implementation
-    name = program_path_via_readlink();
+    name = program_path_via_glibc();
     
     return name;
 ❱
@@ -18,7 +18,7 @@ class
 ◀public: static▶ std::string ☀Get_From_Repo_Context()❰
     
     //choose an implementation
-    auto name = program_path_via_readlink();
+    auto name = program_path_via_glibc();
     
     
     auto parts = Get_Path_In_Parts(name);
@@ -47,6 +47,7 @@ class
 
 
 //implementation 1
+//careful.  This gets filled with all kinds of extra junk from doing file i/o
 ◀private: static▶ std::string ☀program_path_via_readlink()❰
     char *path = static_cast<char*>(malloc(PATH_MAX));
     if (path != NULL) {
@@ -61,6 +62,7 @@ class
 ❱
 
 //implementation 2
+//careful may not be supported on other platforms
 ◀private: static▶ std::string ☀program_path_via_glibc()❰
     return program_invocation_name;
 ❱

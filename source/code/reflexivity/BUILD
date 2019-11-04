@@ -7,6 +7,7 @@ cpp_main(
     name = "reflexive_refresh",
     deps = [
         "//code/reflexivity/docker:dockerfile_refresher",
+        "//code/reflexivity/bazelrc:bazelrc_refresher",
         "//code/reflexivity/bazel_wrapper:bazel_wrapper_refresher",
         "//code/reflexivity/deps_define:deps_definition_refresher",
         "//code/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
