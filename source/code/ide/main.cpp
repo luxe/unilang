@@ -16,8 +16,8 @@ int main()
     //do all our startup tasks
     auto s = Ide_Settings_Getter::Get();
     auto before = [&](){};
+    auto logic = [&](){};
+    auto render = [&](SDL_Window* window){Frame_Renderer::each_frame(s,window);};
     
-    return Mechanics::render_each_frame(s.init,before,[&](SDL_Window* window){
-        Frame_Renderer::each_frame(s,window);
-    });
+    return Mechanics::render_each_frame(s.init,before,logic,render);
 }

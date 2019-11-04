@@ -17,8 +17,8 @@ class
 
 
 ◀public: 
-template <typename T, typename U>
-static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
+template <typename T, typename U, typename V>
+static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V render)
 {
     // set up GL and SDL
     setup_sdl();
@@ -68,23 +68,25 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
     //below is that alternative approach
     // while (!poll_for_events(window))
     // {
-    //     render_frame(window,during);
+    //     render_frame(window,render);
     //     render_frame(window, gl_context, io, clear_color);
     // }
     
     //we think its better to do a more disciplined logic+render update
     //where the logic is updated at a faster rate than the application is rendering.
-    //I'm not sure if this paradigm is good for imgui (as it may be for SFML).
-    //Either way, this will force us to separate our logic from render which would be good anyhow.
+    //I'm not sure if this paradigm is good for imgui (as it appears to be for SFML).
+    //Either way, this will force us to separate our logic from render which would be good to do anyhow.
     Game_Loop::Run([&](){
         return !poll_for_events(window);
     },
     [&](sf::Time const& TimePerFrame){
-        render_frame(window,during);
-        render_frame(window, gl_context, io, clear_color);
+        //logic
+        logic();
     },
     [&](){
-        //draw
+        //render
+        render_frame(window,render);
+        render_frame(window, gl_context, io, clear_color);
     });
 
     clean_up_resources(gl_context, window);
@@ -93,7 +95,7 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U during)
 
 ◀private:
 template <typename T>
-static void render_frame(SDL_Window * window, T during){
+static void render_frame(SDL_Window * window, T render){
 
         // Start the Dear ImGui frame
         ImGui_ImplOpenGL3_NewFrame();
@@ -101,7 +103,7 @@ static void render_frame(SDL_Window * window, T during){
         ImGui::NewFrame();
 
         // our custom frame logic
-        during(window);
+        render(window);
 }
 ▶
 
