@@ -1,0 +1,66 @@
+class
+❪iostream❫
+❪string❫
+❪cstdlib❫
+⚯
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get()❰
+    std::string name;
+    
+    //choose an implementation
+    name = program_path_via_readlink();
+    
+    return name;
+❱
+
+◀public: static▶ std::string ☀Get_From_Repo_Context()❰
+    
+    //choose an implementation
+    auto name = program_path_via_readlink();
+    
+    
+    auto parts = Get_Path_In_Parts(name);
+    
+    //assumed subdirectory where program is run under a bazel context
+    std::string assumed_sub_directory = "bin";
+    
+    std::string result;
+    for (size_t i = parts.size()-1; i > 0; --i){
+        if (parts[i] == assumed_sub_directory){
+            break;
+        }
+        
+        if (i != parts.size()-1){
+            result = parts[i] + "/" + result;
+        }
+        else{
+            result = parts[i];
+        }
+    }
+    
+    return result;
+❱
+
+
+
+
+//implementation 1
+◀private: static▶ std::string ☀program_path_via_readlink()❰
+    char *path = static_cast<char*>(malloc(PATH_MAX));
+    if (path != NULL) {
+        if (readlink("/proc/self/exe", path, PATH_MAX) == -1) {
+            free(path);
+            path = NULL;
+        }
+    }
+    std::string rstr = path;
+    free(path);
+    return rstr;
+❱
+
+//implementation 2
+◀private: static▶ std::string ☀program_path_via_glibc()❰
+    return program_invocation_name;
+❱

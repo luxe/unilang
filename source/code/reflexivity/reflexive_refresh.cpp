@@ -7,6 +7,7 @@
 #include "code/reflexivity/settings/reflexive_refresh_settings.hpp"
 #include "code/reflexivity/settings/reflexive_refresh_settings_getter.hpp"
 #include "code/utilities/locale/lib.hpp"
+#include "code/utilities/program_name/program_name_getter.hpp"
 #include <errno.h>
 
 
@@ -15,31 +16,13 @@
 // Like most things, more possibilities open up, when the repo infrastructure is expressed in a data model
 
 
-std::string program_path_via_readlink()
-{
-    char *path = static_cast<char*>(malloc(PATH_MAX));
-    if (path != NULL) {
-        if (readlink("/proc/self/exe", path, PATH_MAX) == -1) {
-            free(path);
-            path = NULL;
-        }
-    }
-    std::string rstr = path;
-    free(path);
-    return rstr;
-}
-std::string program_path_via_glibc(){
-    return program_invocation_name;
-}
-
 int main(int argc, char** argv){
     Set_English_UTF8_Locale();
     
     //what to refresh
     auto settings = Reflexive_Refresh_Settings_Getter::Get();
     
-    std::cout << program_path_via_readlink() << std::endl;
-    std::cout << program_path_via_glibc() << std::endl;
+    std::cout << Program_Name_Getter::Get_From_Repo_Context() << std::endl;
     exit(0);
     
     //things within the repository that need regenerated
@@ -60,7 +43,6 @@ int main(int argc, char** argv){
         std::cout << "Generating Dockerfile..." << std::endl;
         Dockerfile_Refresher::Refresh();
     }
-    
     
     
     
