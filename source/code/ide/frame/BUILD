@@ -21,9 +21,16 @@ enum_cpp(
 )
 
 hcp(
+    name = "frame_elements",
+    deps = [
+    ],
+)
+
+hcp(
     name = "frame_logic_updater",
     deps = [
         "//code/ide/settings:ide_settings",
+        "//code/ide/frame:frame_elements",
     ],
 )
 
