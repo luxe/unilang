@@ -21,6 +21,13 @@ enum_cpp(
 )
 
 hcp(
+    name = "frame_logic_updater",
+    deps = [
+        "//code/ide/settings:ide_settings",
+    ],
+)
+
+hcp(
     name = "frame_renderer",
     deps = ["@imgui//:imgui_sdl_opengl3",
         "//code/ide/settings:ide_settings",
