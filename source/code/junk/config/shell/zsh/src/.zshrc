@@ -49,7 +49,6 @@ plugins=(
     jsontools
     ruby
     sublime
-    terminalapp
     zsh-syntax-highlighting
     zsh_reload
 )
