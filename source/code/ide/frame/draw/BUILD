@@ -13,7 +13,6 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/ide/frame:fullscreener",
-        "//code/ide/frame:background_drawer",
         "//code/utilities/graphics/imgui:mechanics",
         "//code/ide/frame:mouse_selection_drawer",
         "//code/utilities/keyboard:key_detector",

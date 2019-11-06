@@ -5,6 +5,7 @@
 #include "code/ide/settings/ide_settings_getter.hpp"
 #include "code/ide/frame/frame_renderer.hpp"
 #include "code/ide/frame/frame_logic_updater.hpp"
+#include "code/ide/frame/frame_elements.hpp"
 
 
 //other programming editors for inspiration:
@@ -16,9 +17,10 @@ int main()
     
     //lambdas into main application loop
     auto s = Ide_Settings_Getter::Get();
+    Frame_Elements elements;
     auto before = [&]()                  {};
-    auto logic =  [&]()                  {Frame_Logic_Updater::each_frame(s);};
-    auto render = [&](SDL_Window* window){Frame_Renderer::each_frame(s,window);};
+    auto logic =  [&]()                  {elements = Frame_Logic_Updater::each_frame(s);};
+    auto render = [&](SDL_Window* window){Frame_Renderer::each_frame(s,elements,window);};
     
     return Mechanics::render_each_frame(s.init,before,logic,render);
 }

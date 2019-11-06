@@ -23,6 +23,7 @@ enum_cpp(
 hcp(
     name = "frame_elements",
     deps = [
+        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
     ],
 )
 
@@ -44,7 +45,6 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/ide/frame:fullscreener",
-        "//code/ide/frame:background_drawer",
         "//code/utilities/graphics/imgui:mechanics",
         "//code/ide/frame:mouse_selection_drawer",
         "//code/utilities/keyboard:key_detector",
@@ -53,6 +53,8 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap_drawer",
         "//code/ide/frame/draw:everything_drawer",
+        "//code/ide/frame:frame_elements",
+        "//code/utilities/types/variant:lib",
     ],
 )
 
@@ -62,14 +64,6 @@ hcp(name = "fullscreener", deps = [
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
     "//code/utilities/keyboard:key_detector",
-])
-
-
-hcp(name = "background_drawer", deps = [
-    "@imgui//:imgui_sdl_opengl3",
-    "//code/ide/settings:ide_settings",
-    "//code/utilities/graphics/imgui:mechanics",
-    "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
 ])
 
 hcp(name = "mouse_selection_drawer", deps = [

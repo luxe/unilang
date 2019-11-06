@@ -1,6 +1,7 @@
 class
 ❪"code/ide/settings/ide_settings"❫
 ❪"code/utilities/graphics/imgui/mechanics"❫
+❪"code/ide/frame/frame_elements"❫
 ❪"SDL.h"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
@@ -11,31 +12,46 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
 ❪"code/utilities/keyboard/key_detector"❫
 ❪"code/ide/frame/fullscreener"❫
-❪"code/ide/frame/background_drawer"❫
 ❪"code/ide/frame/mouse_selection_drawer"❫
 ❪"code/ide/frame/label_cursor_action_doer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/line/line_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/mouse_position_getter"❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/multi_color_bitmap_drawer"❫
 ❪"code/ide/frame/draw/everything_drawer"❫
+❪"code/utilities/types/variant/lib"❫
 ⚞⚟
 
 
 
-◀public: static▶ void ☀each_frame(Ide_Settings & settings,SDL_Window* window)❰
+◀public: static▶ void ☀each_frame(Ide_Settings & settings, Frame_Elements const& elements, SDL_Window* window)❰
 
     ImGui_Property_Per_Frame(settings);
     Fullscreener::Possibly_Fullscreen(settings,window);
     
     //Draw the main window and render everything inside of it
     Prepare_Window_Drawing_Surface(settings);
+    
+    //TODO(luxe): dissolve this
     Window_Renderer::render(settings.background.main_window,[&](){
+        
+        Render_Frame_Elements(elements);
         Everything_Drawer::Draw(settings);
     });
         
     //bool flag = true;
     //ImGui::ShowDemoWindow(&flag);
     
+❱
+
+◀private: static▶ void ☀Render_Frame_Elements(Frame_Elements const& elements)❰
+    ImDrawList *draw_list = ImGui::GetWindowDrawList();
+    for (auto const& it: elements.types){
+        std::visit(overloaded {
+            [&](Positioned_Rectangle_Settings const& x) {
+                Rectangle_Drawer::draw_rectangle(draw_list,x);
+            },
+        }, it);
+    }
 ❱
 
 ◀private: static▶ void ☀ImGui_Property_Per_Frame(Ide_Settings & settings)❰
