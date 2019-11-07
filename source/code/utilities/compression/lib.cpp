@@ -12,6 +12,7 @@ bool Make_Zip_File(std::string const& directory_name){
 
 std::string Sha256sum_Of_Url_Artifact(std::string const& url)
 {
+    //TODO(thickey) we can get the raw data directly from wget and pipe it into sha256sum
     //decide where to put the downloaded artifact
     std::string path = "/tmp/";
     

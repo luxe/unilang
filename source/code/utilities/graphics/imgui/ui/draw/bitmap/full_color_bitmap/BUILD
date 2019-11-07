@@ -7,8 +7,14 @@ hcp(name="full_color_bitmap", deps = [
 "//code/utilities/data_structures/position:position",
 ])
 
+hcp(name="positioned_full_color_bitmap", deps = [
+"//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
+"//code/utilities/data_structures/position:position",
+])
+
 hcp(name="full_color_bitmap_drawer", deps = [
 "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
+"//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
 "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_settings",
 "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_drawer",
 "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events",
