@@ -26,6 +26,11 @@ class
         settings.mouse.left_selection.shape.shape.dimensions.height = mouse_pos.y - settings.mouse.left_selection.shape.pos.y;
         elements.types.emplace_back(settings.mouse.left_selection.shape);
     }
+    
+    if (ImGui::IsMouseReleased(0)){
+        settings.mouse.left_selection.shape.shape.dimensions.width = 0;
+        settings.mouse.left_selection.shape.shape.dimensions.height = 0;
+    }
 ❱
 
 ◀private: static▶ void ☀Handle_Right_Click(Frame_Elements & elements, Ide_Settings & settings)❰
@@ -34,6 +39,9 @@ class
         auto mouse_pos = ImGui::GetMousePos();
         settings.mouse.right_selection.shape.pos.x = mouse_pos.x;
         settings.mouse.right_selection.shape.pos.y = mouse_pos.y;
+        
+        settings.prev_position.x = mouse_pos.x;
+        settings.prev_position.y = mouse_pos.y;
     }
     
     if (ImGui::IsMouseDown(1)){
@@ -41,5 +49,21 @@ class
         settings.mouse.right_selection.shape.shape.dimensions.width = mouse_pos.x - settings.mouse.right_selection.shape.pos.x;
         settings.mouse.right_selection.shape.shape.dimensions.height = mouse_pos.y - settings.mouse.right_selection.shape.pos.y;
         elements.types.emplace_back(settings.mouse.right_selection.shape);
+        
+        auto x_change = mouse_pos.x - settings.prev_position.x;
+        auto y_change = mouse_pos.y - settings.prev_position.y;
+        
+        settings.view_anchor.x += x_change;
+        settings.view_anchor.y += y_change;
+        std::cout << settings.view_anchor.x << " " << settings.view_anchor.y << std::endl;
+        
+        
+        settings.prev_position.x = mouse_pos.x;
+        settings.prev_position.y = mouse_pos.y;
+    }
+    
+    if (ImGui::IsMouseReleased(1)){
+        settings.mouse.right_selection.shape.shape.dimensions.width = 0;
+        settings.mouse.right_selection.shape.shape.dimensions.height = 0;
     }
 ❱
