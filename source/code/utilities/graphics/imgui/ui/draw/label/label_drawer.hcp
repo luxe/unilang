@@ -4,6 +4,7 @@ class
 ❪utility❫
 ❪cstdlib❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap/full_color_bitmap"❫
+❪"code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap/positioned_full_color_bitmap"❫
 ❪"code/utilities/bdf/settings/character_segment"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_settings"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/positioned_label"❫
@@ -32,7 +33,8 @@ class
     Frame_Elements elements;
     
     //convert strings to bitmap representations
-    auto bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,label);
+    Positioned_Full_Color_Bitmap bitmap;
+    bitmap.bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,label);
     
     //decide box dimensions
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
@@ -48,12 +50,13 @@ class
     //draw and handle backdrop
     auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.styles.regular_active.box);
     Set_Label_Properties_Based_On_Events(label,events);
-    Draw_Rectangle_Portion(bitmap,pos,style);
+    Draw_Rectangle_Portion(elements,bitmap,pos,style);
     
     //adjust for message bitmap and print it
     pos.y -= y_adjusted_label_draw;
     pos.x -= x_adjusted_label_draw;
-    //Full_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
+    bitmap.pos = pos;
+    elements.types.emplace_back(bitmap);
     
     
     //set active properties on the label
@@ -92,10 +95,13 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Draw_Rectangle_Portion(Full_Color_Bitmap & bitmap, Position pos, Label_Style const& style)❰
+◀private: static▶ void ☀Draw_Rectangle_Portion(Frame_Elements & elements, Positioned_Full_Color_Bitmap & bitmap, Position pos, Label_Style const& style)❰
     
-    bitmap.color_fill = style.text;
-    //Rectangle_Drawer::draw_rectangle(draw_list,pos,style.box);
+    bitmap.bitmap.color_fill = style.text;
+    Positioned_Rectangle_Settings settings;
+    settings.shape = style.box;
+    settings.pos = pos;
+    elements.types.emplace_back(settings);
 ❱
 
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label, Label_Style const& style)❰
