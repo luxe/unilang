@@ -40,6 +40,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/ide/frame:label_cursor_action_doer",
+        "//code/utilities/types/vectors/operators:lib",
     ],
 )
 

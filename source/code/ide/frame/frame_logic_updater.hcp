@@ -8,6 +8,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
 ❪"code/ide/frame/label_cursor_action_doer"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 
@@ -41,9 +42,9 @@ class
     settings.test_label.pos.x = pos.x + 30;
     settings.test_label.pos.y = pos.y + 10;
     
-    Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label);
+    elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label).types;
     for (auto & it: settings.test_label.label.cursors){
-        Handle_Cursor_Selections(settings,settings.test_label,it);
+        Handle_Cursor_Selections(elements,settings,settings.test_label,it);
         //Draw_Mouse_Cursor_Connector(draw_list,settings,it);
     }
 ❱
@@ -60,22 +61,22 @@ class
         // }
 ❱
 
-◀private: static▶ void ☀Handle_Cursor_Selections(Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Cursor_Selections(Frame_Elements & elements, Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
     
     if (label.label.user_state.is_active){
         Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,label,selection);
-        Draw_Label_Cursor(selection);
+        Draw_Label_Cursor(elements, selection);
     }
 ❱
 
-◀private: static▶ void ☀Draw_Label_Cursor(Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Draw_Label_Cursor(Frame_Elements & elements, Label_Cursor_Selection & selection)❰
     //draw label cursor
     selection.label_cursor.tick.shape.pos = selection.recommended_cursor_pos;
     selection.label_cursor.highlight.shape.pos = selection.recommended_cursor_pos;
-    //Rectangle_Drawer::draw_rectangle(draw_list,selection.label_cursor.tick.shape);
+    elements.types.emplace_back(selection.label_cursor.tick.shape);
     
     selection.label_cursor.highlight.shape.shape.dimensions.width = selection.additional_chars_selected * 6;
     selection.label_cursor.highlight.shape.shape.dimensions.height = 13;
-    //Rectangle_Drawer::draw_rectangle(draw_list,selection.label_cursor.highlight.shape);
+    elements.types.emplace_back(selection.label_cursor.highlight.shape);
 ❱
 
