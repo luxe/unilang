@@ -34,6 +34,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/style:label_style_chooser",
     "//code/utilities/graphics/imgui/ui/draw/label:label_length_getter",
     "//code/utilities/graphics/imgui/ui/draw/label:positioned_label",
+    "//code/ide/frame:frame_elements",
 ])
 
 hcp(name="label_cursor_selection", deps = [

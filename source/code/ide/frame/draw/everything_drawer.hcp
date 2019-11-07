@@ -22,22 +22,16 @@ class
 
 
 ◀public: static▶ void ☀Draw(Ide_Settings & settings)❰
-        
-    //object for drawing everything
-    ImDrawList *draw_list = ImGui::GetWindowDrawList();
     
     //the closest to the corner we can get
     //this is basically used as our pseudo (0,0) for drawing anything in our application
     auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
     settings.test_label.pos.x = pos.x + 30;
     settings.test_label.pos.y = pos.y + 10;
-        
-    //auto time = ImGui::GetTime();
-    //auto time = ImGui::GetFrameCount();
-    //settings.test_label.message = std::to_string(time);
-    Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,settings.test_label);
+    
+    Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label);
     for (auto & it: settings.test_label.label.cursors){
-        Handle_Cursor_Selections(draw_list,settings,settings.test_label,it);
+        Handle_Cursor_Selections(settings,settings.test_label,it);
         //Draw_Mouse_Cursor_Connector(draw_list,settings,it);
     }
 ❱
@@ -54,23 +48,23 @@ class
         // }
 ❱
 
-◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Cursor_Selections(Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
     
     if (label.label.user_state.is_active){
         Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,label,selection);
-        Draw_Label_Cursor(draw_list,selection);
+        Draw_Label_Cursor(selection);
     }
 ❱
 
-◀private: static▶ void ☀Draw_Label_Cursor(ImDrawList *draw_list, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Draw_Label_Cursor(Label_Cursor_Selection & selection)❰
     //draw label cursor
     selection.label_cursor.tick.shape.pos = selection.recommended_cursor_pos;
     selection.label_cursor.highlight.shape.pos = selection.recommended_cursor_pos;
-    Rectangle_Drawer::draw_rectangle(draw_list,selection.label_cursor.tick.shape);
+    //Rectangle_Drawer::draw_rectangle(draw_list,selection.label_cursor.tick.shape);
     
     selection.label_cursor.highlight.shape.shape.dimensions.width = selection.additional_chars_selected * 6;
     selection.label_cursor.highlight.shape.shape.dimensions.height = 13;
-    Rectangle_Drawer::draw_rectangle(draw_list,selection.label_cursor.highlight.shape);
+    //Rectangle_Drawer::draw_rectangle(draw_list,selection.label_cursor.highlight.shape);
 ❱
 
 
