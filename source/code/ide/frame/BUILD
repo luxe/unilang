@@ -33,6 +33,8 @@ hcp(
         "//code/ide/settings:ide_settings",
         "//code/ide/frame:frame_elements",
         "//code/ide/frame:mouse_selection_drawer",
+        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+        "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     ],
 )
 
