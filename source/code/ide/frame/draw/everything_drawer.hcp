@@ -9,6 +9,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/label/label_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/positioned_label"❫
 ❪"code/utilities/keyboard/key_detector"❫
 ❪"code/ide/frame/fullscreener"❫
 ❪"code/ide/frame/label_cursor_action_doer"❫
@@ -28,16 +29,16 @@ class
     //the closest to the corner we can get
     //this is basically used as our pseudo (0,0) for drawing anything in our application
     auto pos = Window_Position_Finder::attempted_perfect_top_left_corner();
-    pos.x += 30;
-    pos.y += 10;
+    settings.test_label.pos.x = pos.x + 30;
+    settings.test_label.pos.y = pos.y + 10;
         
     //auto time = ImGui::GetTime();
     //auto time = ImGui::GetFrameCount();
     //settings.test_label.message = std::to_string(time);
-    Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,pos,settings.test_label);
-    for (auto & it: settings.test_label.cursors){
-        Handle_Cursor_Selections(draw_list,settings,pos,settings.test_label,it);
-        Draw_Mouse_Cursor_Connector(draw_list,settings,it);
+    Label_Drawer::Draw(draw_list,settings.unilang_font_lookup,settings.test_label);
+    for (auto & it: settings.test_label.label.cursors){
+        Handle_Cursor_Selections(draw_list,settings,settings.test_label,it);
+        //Draw_Mouse_Cursor_Connector(draw_list,settings,it);
     }
 ❱
 
@@ -53,10 +54,10 @@ class
         // }
 ❱
 
-◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings & settings, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Cursor_Selections(ImDrawList *draw_list, Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
     
-    if (label.user_state.is_active){
-        Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,pos,label,selection);
+    if (label.label.user_state.is_active){
+        Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,label,selection);
         Draw_Label_Cursor(draw_list,selection);
     }
 ❱

@@ -18,6 +18,7 @@ hcp(name="ide_settings", deps = [
     "//code/ide/settings:mouse",
     "//code/ide/settings:label_cursor",
     "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label:positioned_label",
 ])
 
 hcp(name="background_settings", deps = [
