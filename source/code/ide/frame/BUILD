@@ -24,6 +24,8 @@ hcp(
     name = "frame_elements",
     deps = [
         "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
+        "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
+        "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
     ],
 )
 
@@ -58,6 +60,8 @@ hcp(
         "//code/ide/frame/draw:everything_drawer",
         "//code/ide/frame:frame_elements",
         "//code/utilities/types/variant:lib",
+        "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
+        "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
     ],
 )
 

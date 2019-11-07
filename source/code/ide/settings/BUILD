@@ -57,7 +57,7 @@ hcp(name="standard_bitmap_cursor", deps = [
 
 hcp(name="mouse", deps = [
     "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
 ])
 
 hcp(name="label_cursor", deps = [
