@@ -41,6 +41,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
         "//code/ide/frame:label_cursor_action_doer",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/ide/frame:mouse_frame_getter",
     ],
 )
 
@@ -65,6 +66,21 @@ hcp(
         "//code/utilities/types/variant:lib",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
+    ],
+)
+
+hcp(
+    name = "mouse_frame_getter",
+    deps = [
+        "//code/ide/settings:ide_settings",
+        "//code/ide/frame:frame_elements",
+        "//code/ide/frame:mouse_selection_drawer",
+        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+        "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
+        "//code/utilities/graphics/imgui/ui/window:window_position_finder",
+        "//code/utilities/graphics/imgui/ui/draw/label:label_drawer",
+        "//code/ide/frame:label_cursor_action_doer",
+        "//code/utilities/types/vectors/operators:lib",
     ],
 )
 
