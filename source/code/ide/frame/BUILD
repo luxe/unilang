@@ -81,6 +81,7 @@ hcp(name = "mouse_selection_drawer", deps = [
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
     "//code/ide/frame:frame_elements",
+    "//code/utilities/mouse/state:mouse_state_getter",
 ])
 
 hcp(name = "label_cursor_action_doer", deps = [

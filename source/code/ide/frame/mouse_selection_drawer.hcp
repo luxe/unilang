@@ -2,63 +2,47 @@ class
 ❪"code/ide/settings/ide_settings"❫
 ❪"code/utilities/graphics/imgui/mechanics"❫
 ❪"code/ide/frame/frame_elements"❫
+❪"code/utilities/mouse/state/mouse_state_getter"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Draw(Frame_Elements & elements, Ide_Settings & settings)❰
-        
-    Handle_Left_Click(elements,settings);
-    Handle_Right_Click(elements,settings);
-❱
-
-◀private: static▶ void ☀Handle_Left_Click(Frame_Elements & elements, Ide_Settings & settings)❰
-
-    if (ImGui::IsMouseClicked(0)){
-        auto mouse_pos = ImGui::GetMousePos();
-        settings.mouse.left_selection.shape.pos.x = mouse_pos.x;
-        settings.mouse.left_selection.shape.pos.y = mouse_pos.y;
+    
+    auto mouse_state = Mouse_State_Getter::Get();
+    
+    //drawing box highlights when clicking and dragging the mouse
+    Handle_Mouse_Button(elements,mouse_state.pos,mouse_state.left,settings.mouse.left_selection);
+    Handle_Mouse_Button(elements,mouse_state.pos,mouse_state.right,settings.mouse.right_selection);
+    
+    //changing the viewing anchor when clicking and dragging the mouse
+    if (mouse_state.right.clicked){
+        settings.prev_position = mouse_state.pos;
+    }
+    if (mouse_state.right.down){
+        Adjust_The_View_Anchor(settings,mouse_state.pos);
     }
     
-    if (ImGui::IsMouseDown(0)){
-        auto mouse_pos = ImGui::GetMousePos();
-        settings.mouse.left_selection.shape.shape.dimensions.width = mouse_pos.x - settings.mouse.left_selection.shape.pos.x;
-        settings.mouse.left_selection.shape.shape.dimensions.height = mouse_pos.y - settings.mouse.left_selection.shape.pos.y;
-        elements.types.emplace_back(settings.mouse.left_selection.shape);
-    }
-    
-    if (ImGui::IsMouseReleased(0)){
-        settings.mouse.left_selection.shape.shape.dimensions.width = 0;
-        settings.mouse.left_selection.shape.shape.dimensions.height = 0;
-    }
-❱
 
-◀private: static▶ void ☀Handle_Right_Click(Frame_Elements & elements, Ide_Settings & settings)❰
+◀private: static▶ void ☀Handle_Mouse_Button(Frame_Elements & elements, Position const& mouse_pos, Mouse_Button_State const& state, Mouse_Selection & selection)❰
 
-    if (ImGui::IsMouseClicked(1)){
-        auto mouse_pos = ImGui::GetMousePos();
-        settings.mouse.right_selection.shape.pos.x = mouse_pos.x;
-        settings.mouse.right_selection.shape.pos.y = mouse_pos.y;
-        
-        settings.prev_position.x = mouse_pos.x;
-        settings.prev_position.y = mouse_pos.y;
+    if (state.clicked){
+        selection.shape.pos = mouse_pos;
     }
     
-    if (ImGui::IsMouseDown(1)){
-        auto mouse_pos = ImGui::GetMousePos();
-        settings.mouse.right_selection.shape.shape.dimensions.width = mouse_pos.x - settings.mouse.right_selection.shape.pos.x;
-        settings.mouse.right_selection.shape.shape.dimensions.height = mouse_pos.y - settings.mouse.right_selection.shape.pos.y;
-        elements.types.emplace_back(settings.mouse.right_selection.shape);
-        Adjust_The_View_Anchor(settings,mouse_pos);
+    if (state.down){
+        selection.shape.shape.dimensions.width = mouse_pos.x - selection.shape.pos.x;
+        selection.shape.shape.dimensions.height = mouse_pos.y - selection.shape.pos.y;
+        elements.types.emplace_back(selection.shape);
     }
     
-    if (ImGui::IsMouseReleased(1)){
-        settings.mouse.right_selection.shape.shape.dimensions.width = 0;
-        settings.mouse.right_selection.shape.shape.dimensions.height = 0;
+    if (state.released){
+        selection.shape.shape.dimensions.width = 0;
+        selection.shape.shape.dimensions.height = 0;
     }
 ❱
 
-◀private: static▶ void ☀Adjust_The_View_Anchor(Ide_Settings & settings, ImVec2 const& mouse_pos)❰
+◀private: static▶ void ☀Adjust_The_View_Anchor(Ide_Settings & settings, Position const& mouse_pos)❰
 
         auto x_change = mouse_pos.x - settings.prev_position.x;
         auto y_change = mouse_pos.y - settings.prev_position.y;
