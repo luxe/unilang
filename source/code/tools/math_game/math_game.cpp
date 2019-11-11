@@ -81,23 +81,6 @@ int main()
     //get all the assets and game state
     auto assets = Assets_Loader::Load(*window);
     Game_State state = Game_State_Getter::Get();
-
-    // run the program as long as the window is open
-    // this is a common game loop and it was taken
-    // from the SFML Game Development Book.
-    // sf::Clock clock;
-    // sf::Time timeSinceLastUpdate = sf::Time::Zero;
-    // const sf::Time TimePerFrame = sf::seconds(1.f/60.f);
-    // while (window->isOpen())
-    // {
-    //     timeSinceLastUpdate += clock.restart();
-    //     while (timeSinceLastUpdate > TimePerFrame){
-    //         timeSinceLastUpdate -= TimePerFrame;
-    //         Handle_Events(*window);
-    //         State_Updater::Run_Frame_Logic(*window,TimePerFrame,state,assets);
-    //     }
-    //     Frame_Renderer::Run_Frame_Render(*window,state,assets);
-    // }
     
     Game_Loop::Run(
     [&](){
