@@ -1,6 +1,7 @@
 #include <iostream>
+#include "code/tools/crossword/crossword_maker.hpp"
 
 int main(int const argc, char** const argv){
     
-    std::cout << "hello world" << std::endl;
+    Crossword_Maker::Make();
 }

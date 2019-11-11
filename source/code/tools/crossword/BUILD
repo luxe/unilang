@@ -18,4 +18,6 @@ cc_binary(
 )
 
 hcp(name = "crossword_maker", deps = [
+    "//code/utilities/types/vectors/creators:lib",
+    "//code/utilities/printers:lib",
 ])

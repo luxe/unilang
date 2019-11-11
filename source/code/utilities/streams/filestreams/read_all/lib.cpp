@@ -9,7 +9,7 @@
 
 
 //compied over to fix dep issue
-std::vector<std::string> Get_Comma_Seperated_Values_From_File(std::string const& path_to_file){
+std::vector<std::string> Get_Comma_Seperated_Values_From_File_Impl(std::string const& path_to_file){
   auto all = Read_Entire_File_Into_String(path_to_file);
   auto parts = Split_Into_Parts_From_Comma(all);
   for (auto & it: parts){
@@ -151,7 +151,7 @@ std::vector<std::vector<std::string>> Get_And_Parse_Each_Line_Of_File(std::strin
 }
 
 std::vector<std::pair<char,int>> Get_Comma_Seperated_Values_From_File_Where_Each_Value_Is_A_Pair_Of_Char_Int(std::string const& file){
-    auto strings = Get_Comma_Seperated_Values_From_File(file);
+    auto strings = Get_Comma_Seperated_Values_From_File_Impl(file);
     auto result = Get_As_Each_Element_A_Char_And_Int(strings);
     return result;
 }
