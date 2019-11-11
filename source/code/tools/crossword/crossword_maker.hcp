@@ -3,6 +3,7 @@ class
 ❪"code/utilities/data_structures/compass_direction"❫
 ❪"code/utilities/data_structures/compass_direction_diagnonal"❫
 ❪"code/utilities/data_structures/point/point"❫
+❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/types/vectors/creators/lib"❫
@@ -15,49 +16,14 @@ class
 
 ◀public: static▶ void ☀Make()❰
 
-    std::string file_name = "/home/laptop/Desktop/crossword.html";
-    
-    int x = 40;
-    int y = 40;
-    
-    std::vector<std::string> words;
-    words.emplace_back("angel");
-    words.emplace_back("snowman");
-    words.emplace_back("santa");
-    words.emplace_back("tree");
-    words.emplace_back("merry");
-    words.emplace_back("light");
-    words.emplace_back("snow");
-    words.emplace_back("candy cane");
-    words.emplace_back("candle");
-    words.emplace_back("cookie");
-    words.emplace_back("stocking");
-    words.emplace_back("sleigh");
-    words.emplace_back("reindeer");
-    words.emplace_back("presents");
-    words.emplace_back("winter");
-    words.emplace_back("sleigh");
-    words.emplace_back("holiday");
-    words.emplace_back("eggnog");
-    words.emplace_back("evergreen");
-    words.emplace_back("gingerbread");
-    words.emplace_back("ornament");
-    words.emplace_back("gingle");
-    words.emplace_back("star");
-    words.emplace_back("fireplace");
-    words.emplace_back("cider");
-    words.emplace_back("joy");
-    words.emplace_back("party");
-    words.emplace_back("rudolph");
+    auto settings = Get_Settings();
 
     
     //create grid
-    auto grid = Create_N_By_N_Vector_Of_Question_Marks(x,y);
-    //std::cout << grid << std::endl;
-    std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    auto grid = Create_N_By_N_Vector_Of_Question_Marks(settings.dimensions.x,settings.dimensions.y);
     
     
-    for (auto const& word: words){
+    for (auto const& word: settings.words){
         
         //get random position and direction
         Point point;
@@ -76,13 +42,62 @@ class
         Fit_Word(grid,word,point,direction);
         
         
-        //std::cout << direction << std::endl;
-        //std::cout << x_random << " " << y_random << std::endl;
     }
     
     std::cout << std::endl;
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
+    Fill_Remaining_Spaces_With_Random_Letters(grid);
+    
+    std::cout << std::endl;
+    std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    
+    auto str = As_Html_Format(grid,settings.words);
+    Write_To_File(settings.file_name,str);
+    
+❱
+
+◀public: static▶ Crossword_Puzzle_Settings ☀Get_Settings()❰
+    Crossword_Puzzle_Settings settings;
+    
+    settings.file_name = "/home/laptop/Desktop/crossword.html";
+    
+    settings.dimensions.x = 40;
+    settings.dimensions.y = 40;
+    
+    settings.words.emplace_back("angel");
+    settings.words.emplace_back("snowman");
+    settings.words.emplace_back("santa");
+    settings.words.emplace_back("tree");
+    settings.words.emplace_back("merry");
+    settings.words.emplace_back("light");
+    settings.words.emplace_back("snow");
+    settings.words.emplace_back("candy cane");
+    settings.words.emplace_back("candle");
+    settings.words.emplace_back("cookie");
+    settings.words.emplace_back("stocking");
+    settings.words.emplace_back("sleigh");
+    settings.words.emplace_back("reindeer");
+    settings.words.emplace_back("presents");
+    settings.words.emplace_back("winter");
+    settings.words.emplace_back("holiday");
+    settings.words.emplace_back("eggnog");
+    settings.words.emplace_back("evergreen");
+    settings.words.emplace_back("gingerbread");
+    settings.words.emplace_back("ornament");
+    settings.words.emplace_back("gingle");
+    settings.words.emplace_back("star");
+    settings.words.emplace_back("fireplace");
+    settings.words.emplace_back("cider");
+    settings.words.emplace_back("joy");
+    settings.words.emplace_back("party");
+    settings.words.emplace_back("rudolph");
+    
+    return settings;
+❱
+
+
+◀private: static▶ void ☀Fill_Remaining_Spaces_With_Random_Letters(std::vector<std::vector<std::string>> & grid)❰
     std::string q_mark = "?";
     for (auto & x: grid){
         for (auto & y: x){
@@ -91,16 +106,10 @@ class
             }
         }
     }
-    
-    std::cout << std::endl;
-    std::cout << Table_As_Column_Aligned(grid) << std::endl;
-    
-    auto str = As_Html_Format(grid,words);
-    Write_To_File(file_name,str);
-    
 ❱
 
-◀public: static▶ std::string ☀As_Html_Format(std::vector<std::vector<std::string>> const& grid, std::vector<std::string> const& words)❰
+
+◀private: static▶ std::string ☀As_Html_Format(std::vector<std::vector<std::string>> const& grid, std::vector<std::string> const& words)❰
     std::string x;
     Append_With_Newline(x,"<!doctype html>");
     Append_With_Newline(x,"<html>");
@@ -157,7 +166,7 @@ class
     return x;
 ❱
 
-◀public: static▶ bool ☀Word_Fits(std::vector<std::vector<std::string>> const& grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
+◀private: static▶ bool ☀Word_Fits(std::vector<std::vector<std::string>> const& grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
 
     for (auto letter: word){
         if (!Position_In_Range(grid,point)){
@@ -177,14 +186,14 @@ class
     return true;
 ❱
 
-◀public: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
+◀private: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
     for (auto letter: word){
         grid[point.x][point.y] = letter;
         Move_Position_In_Direction(point,dir);
     }
 ❱
 
-◀public: static▶ bool ☀Position_In_Range(std::vector<std::vector<std::string>> const& grid, Point const& p)❰
+◀private: static▶ bool ☀Position_In_Range(std::vector<std::vector<std::string>> const& grid, Point const& p)❰
     if (p.x < 0 || p.y < 0){
         return false;
     }
@@ -199,7 +208,7 @@ class
 ❱
 
 
-◀public: static▶ void ☀Move_Position_In_Direction(Point & point, Compass_Direction_Diagnonal const& dir)❰
+◀private: static▶ void ☀Move_Position_In_Direction(Point & point, Compass_Direction_Diagnonal const& dir)❰
     if (dir == Compass_Direction_Diagnonal::NORTH){
         point.y -= 1;
         return;

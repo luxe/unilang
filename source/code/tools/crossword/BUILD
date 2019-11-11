@@ -27,4 +27,5 @@ hcp(name = "crossword_maker", deps = [
     "//code/utilities/data_structures:compass_direction_diagnonal",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/tools/crossword/settings:crossword_puzzle_settings",
 ])
