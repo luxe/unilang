@@ -105,3 +105,6 @@ std::string Get_Random_String(T const& password_chars, unsigned int const& lengt
   
   return password;
 }
+
+
+std::string Random_Lowercase_Letter();

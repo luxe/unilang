@@ -25,6 +25,18 @@ values = [
 ,"east"
 ])
 
+enum_cpp(name = "compass_direction_diagnonal",
+values = [
+"north"
+,"west"
+,"south"
+,"east"
+,"north_west"
+,"north_east"
+,"south_west"
+,"south_east"
+])
+
 enum_cpp(name = "optional_compass_direction",
 values = [
 "north"

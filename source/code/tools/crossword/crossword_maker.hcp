@@ -1,21 +1,247 @@
 class
 ❪string❫
+❪"code/utilities/data_structures/compass_direction"❫
+❪"code/utilities/data_structures/compass_direction_diagnonal"❫
+❪"code/utilities/data_structures/point/point"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/types/vectors/creators/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/random/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Make()❰
 
-    std::cout << "hello world" << std::endl;
+    std::string file_name = "/home/laptop/Desktop/crossword.html";
     
-    int x = 20;
-    int y = 20;
+    int x = 40;
+    int y = 40;
     
+    std::vector<std::string> words;
+    words.emplace_back("angel");
+    words.emplace_back("snowman");
+    words.emplace_back("santa");
+    words.emplace_back("tree");
+    words.emplace_back("merry");
+    words.emplace_back("light");
+    words.emplace_back("snow");
+    words.emplace_back("candy cane");
+    words.emplace_back("candle");
+    words.emplace_back("cookie");
+    words.emplace_back("stocking");
+    words.emplace_back("sleigh");
+    words.emplace_back("reindeer");
+    words.emplace_back("presents");
+    words.emplace_back("winter");
+    words.emplace_back("sleigh");
+    words.emplace_back("holiday");
+    words.emplace_back("eggnog");
+    words.emplace_back("evergreen");
+    words.emplace_back("gingerbread");
+    words.emplace_back("ornament");
+    words.emplace_back("gingle");
+    words.emplace_back("star");
+    words.emplace_back("fireplace");
+    words.emplace_back("cider");
+    words.emplace_back("joy");
+    words.emplace_back("party");
+    words.emplace_back("rudolph");
+
+    
+    //create grid
     auto grid = Create_N_By_N_Vector_Of_Question_Marks(x,y);
     //std::cout << grid << std::endl;
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
+    
+    for (auto const& word: words){
+        
+        //get random position and direction
+        Point point;
+        point.x = Get_Random_Index(grid);
+        point.y = Get_Random_Index(grid[0]);
+        Compass_Direction_Diagnonal direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
+        
+        std::cout << "fitting " << word << std::endl;
+        while (!Word_Fits(grid,word,point,direction)){
+            
+            //try again
+            point.x = Get_Random_Index(grid);
+            point.y = Get_Random_Index(grid[0]);
+            direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
+        }
+        Fit_Word(grid,word,point,direction);
+        
+        
+        //std::cout << direction << std::endl;
+        //std::cout << x_random << " " << y_random << std::endl;
+    }
+    
+    std::cout << std::endl;
+    std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    
+    std::string q_mark = "?";
+    for (auto & x: grid){
+        for (auto & y: x){
+            if (y == q_mark){
+                y = Random_Lowercase_Letter();
+            }
+        }
+    }
+    
+    std::cout << std::endl;
+    std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    
+    auto str = As_Html_Format(grid,words);
+    Write_To_File(file_name,str);
+    
 ❱
+
+◀public: static▶ std::string ☀As_Html_Format(std::vector<std::vector<std::string>> const& grid, std::vector<std::string> const& words)❰
+    std::string x;
+    Append_With_Newline(x,"<!doctype html>");
+    Append_With_Newline(x,"<html>");
+    Append_With_Newline(x,"<head>");
+    Append_With_Newline(x,"<style>");
+    Append_With_Newline(x,"table, th, td { border: 0px solid black; }");
+    Append_With_Newline(x,"table { padding-bottom: 60px; }");
+    Append_With_Newline(x,"tr { text-align: center; }");
+    Append_With_Newline(x,"</style>");
+    Append_With_Newline(x,"</head>");
+    Append_With_Newline(x,"<body>");
+    
+    Append_With_Newline(x,"<strong> T&T word search game </strong>");
+    
+    //puzzle box
+    Append_With_Newline(x,"<table style=\"width:100%\">");
+    for (auto const& a: grid){
+        Append_With_Newline(x,"<tr>");
+        for (auto const& b: a){
+            Append_With_Newline(x,"<td>");
+            Append_With_Newline(x,b);
+            Append_With_Newline(x,"</td>");
+        }
+        Append_With_Newline(x,"</tr>");
+    }
+    Append_With_Newline(x,"</table>");
+    
+    
+    
+    
+    //word bank
+    Append_With_Newline(x,"<table style=\"width:100%\">");
+    int count = 0;
+    Append_With_Newline(x,"<tr>");
+    for (auto const& word: words){
+        if (count == 4){
+            count = 0;
+            Append_With_Newline(x,"</tr>");
+            Append_With_Newline(x,"<tr>");
+        }
+        
+            Append_With_Newline(x,"<td>");
+            Append_With_Newline(x,word);
+            Append_With_Newline(x,"</td>");
+        
+        ++count;
+    }
+    Append_With_Newline(x,"</tr>");
+    Append_With_Newline(x,"</table>");
+    
+    Append_With_Newline(x,"</body>");
+    Append_With_Newline(x,"</html>");
+    
+    return x;
+❱
+
+◀public: static▶ bool ☀Word_Fits(std::vector<std::vector<std::string>> const& grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
+
+    for (auto letter: word){
+        if (!Position_In_Range(grid,point)){
+            return false;
+        }
+        
+        std::string str;
+        str += letter;
+        if (grid[point.x][point.y] != "?" && grid[point.x][point.y] != str){
+            return false;
+        }
+        
+        Move_Position_In_Direction(point,dir);
+    }
+    
+    
+    return true;
+❱
+
+◀public: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
+    for (auto letter: word){
+        grid[point.x][point.y] = letter;
+        Move_Position_In_Direction(point,dir);
+    }
+❱
+
+◀public: static▶ bool ☀Position_In_Range(std::vector<std::vector<std::string>> const& grid, Point const& p)❰
+    if (p.x < 0 || p.y < 0){
+        return false;
+    }
+    if (p.x > grid.size()-1){
+        return false;
+    }
+    
+    if (p.y > grid[0].size()-1){
+        return false;
+    }
+    return true;
+❱
+
+
+◀public: static▶ void ☀Move_Position_In_Direction(Point & point, Compass_Direction_Diagnonal const& dir)❰
+    if (dir == Compass_Direction_Diagnonal::NORTH){
+        point.y -= 1;
+        return;
+    }
+    if (dir == Compass_Direction_Diagnonal::SOUTH){
+        point.y += 1;
+        return;
+    }
+    
+    if (dir == Compass_Direction_Diagnonal::WEST){
+        point.x -= 1;
+        return;
+    }
+    if (dir == Compass_Direction_Diagnonal::EAST){
+        point.x += 1;
+        return;
+    }
+    
+    if (dir == Compass_Direction_Diagnonal::NORTH_WEST){
+        point.y -= 1;
+        point.x -= 1;
+        return;
+    }
+    if (dir == Compass_Direction_Diagnonal::SOUTH_WEST){
+        point.y += 1;
+        point.x -= 1;
+        return;
+    }
+    if (dir == Compass_Direction_Diagnonal::NORTH_EAST){
+        point.y -= 1;
+        point.x += 1;
+        return;
+    }
+    if (dir == Compass_Direction_Diagnonal::SOUTH_EAST){
+        point.y += 1;
+        point.x += 1;
+        return;
+    }
+❱
+
+
+
+
+
+

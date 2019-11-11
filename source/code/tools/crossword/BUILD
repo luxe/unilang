@@ -21,4 +21,10 @@ hcp(name = "crossword_maker", deps = [
     "//code/utilities/types/vectors/creators:lib",
     "//code/utilities/printers:lib",
     "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/random:lib",
+    "//code/utilities/data_structures:compass_direction",
+    "//code/utilities/data_structures/point:point",
+    "//code/utilities/data_structures:compass_direction_diagnonal",
+    "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
 ])
