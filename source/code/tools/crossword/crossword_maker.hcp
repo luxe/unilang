@@ -17,41 +17,28 @@ class
 
 ◀public: static▶ void ☀Make()❰
 
+    //puzzle settings
     auto settings = Get_Settings();
 
-    
     //create grid
     auto grid = Create_N_By_N_Vector_Of_Question_Marks(settings.dimensions.x,settings.dimensions.y);
     
+    //place words
+    Randomly_Place_Each_Word(grid,settings);
     
-    for (auto const& word: settings.words){
-        
-        //get random position and direction
-        auto word_try = Random_Word_Try(grid);
-        
-        std::cout << "fitting " << word << std::endl;
-        while (!Word_Fits(grid,word,word_try)){
-            
-            //try again
-            word_try = Random_Word_Try(grid);
-        }
-        Fit_Word(grid,word,word_try);
-        
-        
-    }
-    
+    //take a peek
     std::cout << std::endl;
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
+    //fill empty spaces
     Fill_Remaining_Spaces_With_Random_Letters(grid);
     
-    std::cout << std::endl;
-    std::cout << Table_As_Column_Aligned(grid) << std::endl;
-    
+    //create artifact
     auto str = As_Html_Format(grid,settings.words);
     Write_To_File(settings.file_name,str);
-    
 ❱
+
+
 
 ◀private: static▶ Crossword_Puzzle_Settings ☀Get_Settings()❰
     Crossword_Puzzle_Settings settings;
@@ -90,6 +77,23 @@ class
     settings.words.emplace_back("rudolph");
     
     return settings;
+❱
+
+◀private: static▶ void ☀Randomly_Place_Each_Word(std::vector<std::vector<std::string>> & grid, Crossword_Puzzle_Settings const& settings)❰
+
+    for (auto const& word: settings.words){
+        
+        //get random position and direction
+        auto word_try = Random_Word_Try(grid);
+        
+        std::cout << "fitting " << word << std::endl;
+        while (!Word_Fits(grid,word,word_try)){
+            
+            //try again
+            word_try = Random_Word_Try(grid);
+        }
+        Fit_Word(grid,word,word_try);
+    }
 ❱
 
 ◀private: static▶ Word_Try ☀Random_Word_Try(std::vector<std::vector<std::string>> const& grid)❰
