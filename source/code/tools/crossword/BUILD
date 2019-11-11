@@ -29,9 +29,18 @@ hcp(name = "crossword_maker", deps = [
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/tools/crossword/settings:crossword_puzzle_settings",
     "//code/tools/crossword:word_try",
+    "//code/tools/crossword:html_exporter",
 ])
 
 hcp(name = "word_try", deps = [
     "//code/utilities/data_structures:compass_direction_diagnonal",
     "//code/utilities/data_structures/point:point",
+])
+
+hcp(name = "html_exporter", deps = [
+    "//code/tools/crossword/settings:crossword_puzzle_settings",
+    "//code/utilities/types/vectors/creators:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
 ])

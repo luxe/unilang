@@ -13,6 +13,7 @@ class
 ❪"code/utilities/random/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/tools/crossword/html_exporter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Make()❰
@@ -33,9 +34,8 @@ class
     //fill empty spaces
     Fill_Remaining_Spaces_With_Random_Letters(grid);
     
-    //create artifact
-    auto str = As_Html_Format(grid,settings.words);
-    Write_To_File(settings.file_name,str);
+    //create artifacts
+    Html_Exporter::Export(grid,settings);
 ❱
 
 
@@ -113,64 +113,6 @@ class
             }
         }
     }
-❱
-
-
-◀private: static▶ std::string ☀As_Html_Format(std::vector<std::vector<std::string>> const& grid, std::vector<std::string> const& words)❰
-    std::string x;
-    Append_With_Newline(x,"<!doctype html>");
-    Append_With_Newline(x,"<html>");
-    Append_With_Newline(x,"<head>");
-    Append_With_Newline(x,"<style>");
-    Append_With_Newline(x,"table, th, td { border: 0px solid black; }");
-    Append_With_Newline(x,"table { padding-bottom: 60px; }");
-    Append_With_Newline(x,"tr { text-align: center; }");
-    Append_With_Newline(x,"</style>");
-    Append_With_Newline(x,"</head>");
-    Append_With_Newline(x,"<body>");
-    
-    Append_With_Newline(x,"<strong> T&T word search game </strong>");
-    
-    //puzzle box
-    Append_With_Newline(x,"<table style=\"width:100%\">");
-    for (auto const& a: grid){
-        Append_With_Newline(x,"<tr>");
-        for (auto const& b: a){
-            Append_With_Newline(x,"<td>");
-            Append_With_Newline(x,b);
-            Append_With_Newline(x,"</td>");
-        }
-        Append_With_Newline(x,"</tr>");
-    }
-    Append_With_Newline(x,"</table>");
-    
-    
-    
-    
-    //word bank
-    Append_With_Newline(x,"<table style=\"width:100%\">");
-    int count = 0;
-    Append_With_Newline(x,"<tr>");
-    for (auto const& word: words){
-        if (count == 4){
-            count = 0;
-            Append_With_Newline(x,"</tr>");
-            Append_With_Newline(x,"<tr>");
-        }
-        
-            Append_With_Newline(x,"<td>");
-            Append_With_Newline(x,word);
-            Append_With_Newline(x,"</td>");
-        
-        ++count;
-    }
-    Append_With_Newline(x,"</tr>");
-    Append_With_Newline(x,"</table>");
-    
-    Append_With_Newline(x,"</body>");
-    Append_With_Newline(x,"</html>");
-    
-    return x;
 ❱
 
 ◀private: static▶ bool ☀Word_Fits(std::vector<std::vector<std::string>> const& grid, std::string const& word, Word_Try word_try)❰

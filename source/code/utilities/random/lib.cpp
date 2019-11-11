@@ -57,3 +57,34 @@ std::string Random_Lowercase_Letter(){
 	x.emplace_back("z");
 	return Get_Random_Element(x);
 }
+
+std::string Random_Uppercase_Letter(){
+	std::vector<std::string> x;
+	x.emplace_back("A");
+	x.emplace_back("B");
+	x.emplace_back("C");
+	x.emplace_back("D");
+	x.emplace_back("E");
+	x.emplace_back("F");
+	x.emplace_back("G");
+	x.emplace_back("H");
+	x.emplace_back("I");
+	x.emplace_back("J");
+	x.emplace_back("K");
+	x.emplace_back("L");
+	x.emplace_back("M");
+	x.emplace_back("N");
+	x.emplace_back("O");
+	x.emplace_back("P");
+	x.emplace_back("Q");
+	x.emplace_back("R");
+	x.emplace_back("S");
+	x.emplace_back("T");
+	x.emplace_back("U");
+	x.emplace_back("V");
+	x.emplace_back("W");
+	x.emplace_back("X");
+	x.emplace_back("Y");
+	x.emplace_back("Z");
+	return Get_Random_Element(x);
+}
