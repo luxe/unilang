@@ -22,3 +22,7 @@ template<typename T>
 std::vector<std::vector<T>> Create_A_Square_Vector(int size, T value){
   return Create_N_By_N_Vector(size,size,value);
 }
+
+
+
+std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Question_Marks(int x, int y);

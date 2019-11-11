@@ -11,3 +11,9 @@ std::vector<std::string> Get_Comma_Seperated_Values_From_File(std::string const&
   }
   return parts;
 }
+
+std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Question_Marks(int x, int y){
+    std::string str = "?";
+    std::vector<std::vector<std::string>> vec = Create_N_By_N_Vector(x,y,str);
+    return vec;
+}
