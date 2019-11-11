@@ -4,6 +4,7 @@ class
 ❪"code/utilities/data_structures/compass_direction_diagnonal"❫
 ❪"code/utilities/data_structures/point/point"❫
 ❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
+❪"code/tools/crossword/word_try"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/types/vectors/creators/lib"❫
@@ -26,20 +27,15 @@ class
     for (auto const& word: settings.words){
         
         //get random position and direction
-        Point point;
-        point.x = Get_Random_Index(grid);
-        point.y = Get_Random_Index(grid[0]);
-        Compass_Direction_Diagnonal direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
+        auto word_try = Random_Word_Try(grid);
         
         std::cout << "fitting " << word << std::endl;
-        while (!Word_Fits(grid,word,point,direction)){
+        while (!Word_Fits(grid,word,word_try)){
             
             //try again
-            point.x = Get_Random_Index(grid);
-            point.y = Get_Random_Index(grid[0]);
-            direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
+            word_try = Random_Word_Try(grid);
         }
-        Fit_Word(grid,word,point,direction);
+        Fit_Word(grid,word,word_try);
         
         
     }
@@ -57,7 +53,7 @@ class
     
 ❱
 
-◀public: static▶ Crossword_Puzzle_Settings ☀Get_Settings()❰
+◀private: static▶ Crossword_Puzzle_Settings ☀Get_Settings()❰
     Crossword_Puzzle_Settings settings;
     
     settings.file_name = "/home/laptop/Desktop/crossword.html";
@@ -96,6 +92,13 @@ class
     return settings;
 ❱
 
+◀private: static▶ Word_Try ☀Random_Word_Try(std::vector<std::vector<std::string>> const& grid)❰
+    Word_Try x;
+    x.point.x = Get_Random_Index(grid);
+    x.point.y = Get_Random_Index(grid[0]);
+    x.direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
+    return x;
+❱
 
 ◀private: static▶ void ☀Fill_Remaining_Spaces_With_Random_Letters(std::vector<std::vector<std::string>> & grid)❰
     std::string q_mark = "?";
@@ -166,30 +169,30 @@ class
     return x;
 ❱
 
-◀private: static▶ bool ☀Word_Fits(std::vector<std::vector<std::string>> const& grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
+◀private: static▶ bool ☀Word_Fits(std::vector<std::vector<std::string>> const& grid, std::string const& word, Word_Try word_try)❰
 
     for (auto letter: word){
-        if (!Position_In_Range(grid,point)){
+        if (!Position_In_Range(grid,word_try.point)){
             return false;
         }
         
         std::string str;
         str += letter;
-        if (grid[point.x][point.y] != "?" && grid[point.x][point.y] != str){
+        if (grid[word_try.point.x][word_try.point.y] != "?" && grid[word_try.point.x][word_try.point.y] != str){
             return false;
         }
         
-        Move_Position_In_Direction(point,dir);
+        Move_Position_In_Direction(word_try.point,word_try.direction);
     }
     
     
     return true;
 ❱
 
-◀private: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Point point, Compass_Direction_Diagnonal const& dir)❰
+◀private: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Word_Try word_try)❰
     for (auto letter: word){
-        grid[point.x][point.y] = letter;
-        Move_Position_In_Direction(point,dir);
+        grid[word_try.point.x][word_try.point.y] = letter;
+        Move_Position_In_Direction(word_try.point,word_try.direction);
     }
 ❱
 
