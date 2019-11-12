@@ -5,10 +5,12 @@ class
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
 ❪"code/tools/external_deps_analysis/settings"❫
+❪"code/tools/external_deps_analysis/analysis_state"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/sets/lib"❫
 ⚯
 ⚞⚟
 
@@ -24,11 +26,41 @@ class
     //move into bazel managed repo
     Set_Path(settings.run_path);
     
-    auto results = Get_Direct_Dependencies(settings,settings.dep_name);
     
     
-    std::vector<std::pair<std::string,std::string>> relationships;
+    //start the analysis at a particular dependency
+    Analysis_State state;
+    state.deps_to_explore.push(settings.dep_name);
+    
+    while (!state.deps_to_explore.empty()){
+        
+        //since we are now exploring this dependency, remove it from the queue
+        auto dep = Pop_Front(state.deps_to_explore);
+        
+        
+        //if we haven't yet explored this dependency do so, and add it to the set so we don't do it again
+        if (!Exists_In_Set(state.dep_explored,dep)){
+            state.dep_explored.insert(dep);
+            
+            std::cout << "exploring " << dep << ": ";
+            std::cout.flush();
+            Explore_The_Direct_Relationships(settings,state,dep);
+        }
+    }
+    
+❱
+
+◀private: static▶ void ☀Explore_The_Direct_Relationships(Settings const& settings, Analysis_State & state, std::string const& dep)❰
+
+    //bazel query to get direct 3rd party dependencies
+    auto results = Get_Direct_Dependencies(settings,dep);
     std::cout << results << std::endl;
+    
+    //add relationships
+    for (auto const& it: results){state.relationships.emplace_back(settings.dep_name,it);}
+    
+    //add deps to explore
+    for (auto const& it: results){state.deps_to_explore.push(it);}
 ❱
 
 
@@ -56,6 +88,14 @@ class
     Sort_And_Remove_Duplicates(results);
     return results;
 ❱
+
+◀private: static▶ std::string ☀Pop_Front(std::queue<std::string> & q)❰
+    std::string str = q.front();
+    q.pop();
+    return str;
+❱
+
+
 
 
 // #!/usr/bin/env bash
