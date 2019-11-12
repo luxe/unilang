@@ -3,6 +3,16 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "task_executer", deps = [
+    "//code/utilities/shell:lib",
+    "//code/utilities/printers:lib",
+    "//code/tools/external_deps_analysis:settings",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+])
+
+hcp(name = "settings", deps = [
 ])
 
 cc_binary(

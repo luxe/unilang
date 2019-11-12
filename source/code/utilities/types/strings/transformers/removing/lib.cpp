@@ -329,3 +329,10 @@ std::string As_Empty_String_If_It_Only_Contains_Whitespace(std::string str){
         }
         return str;
 }
+
+std::string& Remove_Everything_After_Found_Instance(std::string & str, std::string const& instance)
+{
+    //mystr = str.substr(0, str.find("%", 0));
+    str.erase(str.find (instance), str [str.length() - 1]);
+    return str;
+}

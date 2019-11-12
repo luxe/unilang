@@ -51,3 +51,6 @@ std::string& Keep_Only_First_N_Characters(std::string & str, unsigned int const&
 
 std::string& Empty_String_If_It_Only_Contains_Whitespace(std::string & str);
 std::string As_Empty_String_If_It_Only_Contains_Whitespace(std::string str);
+
+
+std::string& Remove_Everything_After_Found_Instance(std::string & str, std::string const& instance);

@@ -1,8 +1,77 @@
 class
+❪iostream❫
+❪string❫
+❪utility❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/printers/prettyprint"❫
+❪"code/tools/external_deps_analysis/settings"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
 
+    //settings
+    Settings settings;
+    settings.run_path = "/home/thickey/Desktop/na";
+    settings.bazel_wrapper = "./bazel";
+    settings.dep_name = "cuda";
+    
+    //move into bazel managed repo
+    Set_Path(settings.run_path);
+    
+    auto results = Get_Direct_Dependencies(settings,settings.dep_name);
+    
+    
+    std::vector<std::pair<std::string,std::string>> relationships;
+    std::cout << results << std::endl;
 ❱
+
+
+◀private: static▶ std::string ☀Get_Bazel_Query_Command(Settings const& settings, std::string const& dep_name) ❰
+    std::string command = settings.bazel_wrapper;
+    command += " query 'rdeps(...,@" + dep_name + "//...)' ";
+    command += "--implicit_deps ";
+    command += "--keep_going 2> /dev/null ";
+    return command;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Direct_Dependencies(Settings const& settings, std::string const& dep_name)❰
+
+    auto command = Get_Bazel_Query_Command(settings,dep_name);
+    auto results = Get_Each_Line_Of_Shell_Command(command);
+    Remove_If(results,[&](std::string s){
+        return !Begins_With(s,"@");
+    });
+    
+    for (auto & it: results){
+        Remove_Everything_After_Found_Instance(it,"//");
+        Remove_First_Char(it);
+    }
+    
+    Sort_And_Remove_Duplicates(results);
+    return results;
+❱
+
+
+// #!/usr/bin/env bash
+// #which external libraries directly rely on X
+
+// for DEP in "$@"
+// do
+//     ./bazel query "rdeps(...,@$DEP//...)"        `#query reverse dependencies`\
+//     --implicit_deps                              `#transitive/non-transitive`\
+//     --keep_going 2> /dev/null                    `#rdeps fails on 3rd party projects that may have their own unused build rules`\
+//     | grep "^@"                                  `#external targets only`\
+//     | sed "/@$DEP/d"                             `#hide cycles`\
+//     | sed 's|\//.*|//|'                          `#remove details after //`\
+//     | sort | uniq                                `#remove duplicates`\
+//     | cut -c2-                                   `#make it graphvizy`\
+//     | sed 's/..$//'                              `#make it graphvizy`\
+//     | sed 's/^/"/'                               `#make it graphvizy`\
+//     | sed 's/$/" <- "'$DEP'"/'                   `#make it graphvizy`
+// done
