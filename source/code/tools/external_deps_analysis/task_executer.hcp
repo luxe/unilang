@@ -10,7 +10,9 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/graphviz/graphviz_image_maker"❫
 ⚯
 ⚞⚟
 
@@ -20,8 +22,10 @@ class
     //settings
     Settings settings;
     settings.run_path = "/home/thickey/Desktop/na";
+    settings.result_path = "/home/thickey/Desktop/results/results";
     settings.bazel_wrapper = "./bazel";
     settings.dep_name = "cuda";
+    settings.verbose = true;
     
     //move into bazel managed repo
     Set_Path(settings.run_path);
@@ -41,8 +45,10 @@ class
         if (!Exists_In_Set(state.dep_explored,dep)){
             state.dep_explored.insert(dep);
             
-            std::cout << "exploring " << dep << ": ";
-            std::cout.flush();
+            if (settings.verbose){
+                std::cout << "querying " << dep << "... ";
+                std::cout.flush();
+            }
             Explore_The_Direct_Relationships(settings,state,dep);
         }
     }
@@ -52,6 +58,12 @@ class
         return p.first == p.second;
     });
     
+    Output_Graphviz_Info(settings,state);
+    
+❱
+
+◀private: static▶ void ☀Output_Graphviz_Info(Settings const& settings, Analysis_State const& state)❰
+
     std::vector<std::string> relationships_strs;
     for (auto const& it: state.relationships){
         std::string line = "";
@@ -63,16 +75,31 @@ class
         line += it.second;
         line += "\"";
         relationships_strs.emplace_back(line);
-        std::cout << line << std::endl;
     }
     
+    std::string x;
+    Append_With_Newline(x,"digraph results {");
+    //Append_With_Newline(x,"splines=false;");
+    Append_With_Newline(x,"node [");
+    Append_With_Newline(x,"fontname=\"Arial\",");
+    //Append_With_Newline(x,"shape = plaintext,");
+    Append_With_Newline(x,"height=.1");
+    Append_With_Newline(x,"]");
+    for (auto const& it: relationships_strs){
+        Append_With_Newline(x,it);
+    }
+    Append_With_Newline(x,"}");
+    Graphviz_Image_Maker::Make(x,settings.result_path);
 ❱
 
 ◀private: static▶ void ☀Explore_The_Direct_Relationships(Settings const& settings, Analysis_State & state, std::string const& dep)❰
 
     //bazel query to get direct 3rd party dependencies
     auto results = Get_Direct_Dependencies(settings,dep);
-    std::cout << results << std::endl;
+    
+    if (settings.verbose){
+        std::cout << results << std::endl;
+    }
     
     //add relationships
     for (auto const& it: results){state.relationships.emplace_back(dep,it);}

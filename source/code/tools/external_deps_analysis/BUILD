@@ -12,6 +12,8 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/sets:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/graphviz:graphviz_image_maker",
 ])
 
 hcp(name = "settings", deps = [
