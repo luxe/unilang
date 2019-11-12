@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+for DEP in "$@"
+do
+    ./bazel query "kind(rule,@$DEP//...)" --output label_kind        `#query reverse dependencies`\
+    --implicit_deps                              `#transitive/non-transitive`\
+    --keep_going 2> /dev/null                    `#rdeps fails on 3rd party projects that may have their own unused build rules`
+done
