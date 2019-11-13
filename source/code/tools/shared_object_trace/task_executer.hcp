@@ -9,12 +9,14 @@ class
 ⚯
 ❪"code/utilities/exits/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
+    //cli verify
     if (options.Run_Dir().empty()){
         Exit_With_Error("provide path to external dir");
     }
@@ -25,20 +27,26 @@ class
     //move into external dir of bazel repo
     Set_Path(options.Run_Dir());
     
-    auto files = Get_Shared_Objects(options.Dep());
+    //get all the shared library files from this third party dependency
+    auto sos = Get_Shared_Objects(options.Dep());
     
-    
-    std::cout << files.size() << std::endl;
+    auto dirs = Get_Other_External_Paths(options.Dep());
+    for (auto dir: dirs){
+        //auto ldd_results = Ldd_Results_From_Dir(dir);
+        //std::cout << ldd_results << std::endl;
+    }
 ❱
 
-◀private: static▶ std::vector<File_And_Type>☀Get_Shared_Objects(std::string dep)❰
+◀private: static▶ std::vector<File_And_Type> ☀Get_Shared_Objects(std::string dep)❰
+
+    std::string identifier_for_shared_object = "shared object"
     
     auto files = Recursively_Get_All_Paths_To_Files_From_Path(dep);
     std::vector<File_And_Type> results;
     
     for (auto const& it: files){
         auto type = Type_Of_File(it);
-        if (Contains_Substring(type,"shared object")){
+        if (Contains_Substring(type,identifier_for_shared_object)){
             File_And_Type x;
             x.file = it;
             x.type = type;
@@ -46,4 +54,18 @@ class
         }
     }
     return results;
+❱
+
+◀private: static▶ std::string ☀Get_Other_External_Paths(std::string dep)❰
+
+    std::vector<std::string> paths;
+    
+    auto dirs = Get_Dirs_Of_Path();
+    for (auto dir: Get_Dirs_Of_Path()){
+        if (dir != dep){
+            paths.emplace_back(dir);
+        }
+    }
+    
+    return paths;
 ❱
