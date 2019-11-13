@@ -9,6 +9,7 @@ class
 ❪iostream❫
 ❪"code/utilities/types/vectors/creators/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
 ❪"code/utilities/random/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
@@ -28,60 +29,108 @@ class
     Randomly_Place_Each_Word(grid,settings);
     
     //take a peek
-    std::cout << std::endl;
-    std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    //std::cout << std::endl;
+    //std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    Html_Exporter::Export(grid,settings,settings.answer_file_name);
     
     //fill empty spaces
     Fill_Remaining_Spaces_With_Random_Letters(grid);
     
     //create artifacts
-    Html_Exporter::Export(grid,settings);
+    Html_Exporter::Export(grid,settings,settings.puzzle_file_name);
 ❱
+
+
 
 
 
 ◀private: static▶ Crossword_Puzzle_Settings ☀Get_Settings()❰
     Crossword_Puzzle_Settings settings;
     
-    settings.file_name = "/home/laptop/Desktop/crossword.html";
+    settings.puzzle_file_name = "/home/laptop/Desktop/crossword.html";
+    settings.answer_file_name = "/home/laptop/Desktop/crossword_answer.html";
     
-    settings.dimensions.x = 40;
-    settings.dimensions.y = 40;
+    settings.dimensions.x = 25;
+    settings.dimensions.y = 30;
     
-    settings.words.emplace_back("angel");
-    settings.words.emplace_back("snowman");
-    settings.words.emplace_back("santa");
-    settings.words.emplace_back("tree");
-    settings.words.emplace_back("merry");
-    settings.words.emplace_back("light");
-    settings.words.emplace_back("snow");
-    settings.words.emplace_back("candy cane");
-    settings.words.emplace_back("candle");
-    settings.words.emplace_back("cookie");
-    settings.words.emplace_back("stocking");
-    settings.words.emplace_back("sleigh");
-    settings.words.emplace_back("reindeer");
-    settings.words.emplace_back("presents");
-    settings.words.emplace_back("winter");
-    settings.words.emplace_back("holiday");
-    settings.words.emplace_back("eggnog");
-    settings.words.emplace_back("evergreen");
-    settings.words.emplace_back("gingerbread");
-    settings.words.emplace_back("ornament");
-    settings.words.emplace_back("gingle");
-    settings.words.emplace_back("star");
-    settings.words.emplace_back("fireplace");
-    settings.words.emplace_back("cider");
-    settings.words.emplace_back("joy");
-    settings.words.emplace_back("party");
-    settings.words.emplace_back("rudolph");
+    settings.words = United_States_Words();
     
     return settings;
 ❱
 
+◀private: static▶ std::vector<std::string> ☀Christmas_Words()❰
+    std::vector<std::string> x;
+    x.emplace_back("angel");
+    x.emplace_back("snowman");
+    x.emplace_back("santa");
+    x.emplace_back("tree");
+    x.emplace_back("merry");
+    x.emplace_back("light");
+    x.emplace_back("snow");
+    x.emplace_back("candy cane");
+    x.emplace_back("candle");
+    x.emplace_back("cookie");
+    x.emplace_back("stocking");
+    x.emplace_back("sleigh");
+    x.emplace_back("reindeer");
+    x.emplace_back("presents");
+    x.emplace_back("winter");
+    x.emplace_back("holiday");
+    x.emplace_back("eggnog");
+    x.emplace_back("evergreen");
+    x.emplace_back("gingerbread");
+    x.emplace_back("ornament");
+    x.emplace_back("gingle");
+    x.emplace_back("star");
+    x.emplace_back("fireplace");
+    x.emplace_back("cider");
+    x.emplace_back("joy");
+    x.emplace_back("party");
+    x.emplace_back("rudolph");
+    return x;
+❱
+
+◀private: static▶ std::vector<std::string> ☀United_States_Words()❰
+    std::vector<std::string> x;
+    x.emplace_back("hamburger");
+    x.emplace_back("cheese");
+    x.emplace_back("frech fries");
+    x.emplace_back("pierogi");
+    x.emplace_back("pizza");
+    x.emplace_back("pepperoni");
+    x.emplace_back("fried chicken");
+    x.emplace_back("turkey");
+    x.emplace_back("pumpkin pie");
+    x.emplace_back("barbecue");
+    x.emplace_back("chowder");
+    x.emplace_back("bagel");
+    x.emplace_back("salad");
+    x.emplace_back("jambalaya");
+    x.emplace_back("gumbo");
+    x.emplace_back("hot dog");
+    x.emplace_back("parfait");
+    x.emplace_back("pudding");
+    x.emplace_back("tots");
+    x.emplace_back("pancake");
+    x.emplace_back("key lime");
+    x.emplace_back("poboy");
+    x.emplace_back("subway");
+    x.emplace_back("hoagies");
+    x.emplace_back("beignets");
+    x.emplace_back("beer");
+    x.emplace_back("etouffee");
+    x.emplace_back("doughnut");
+    x.emplace_back("salad");
+    x.emplace_back("coke");
+    return x;
+❱
+
 ◀private: static▶ void ☀Randomly_Place_Each_Word(std::vector<std::vector<std::string>> & grid, Crossword_Puzzle_Settings const& settings)❰
 
-    for (auto const& word: settings.words){
+    for (auto word: settings.words){
+        
+        Remove_Spaces(word);
+        std::cout << word << std::endl;
         
         //get random position and direction
         auto word_try = Random_Word_Try(grid);
