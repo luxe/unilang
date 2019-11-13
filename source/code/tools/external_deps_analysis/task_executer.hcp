@@ -45,10 +45,7 @@ class
         if (!Exists_In_Set(state.dep_explored,dep)){
             state.dep_explored.insert(dep);
             
-            if (settings.verbose){
-                std::cout << "querying " << dep << "... ";
-                std::cout.flush();
-            }
+            Verbose_Querying_Message(settings,dep);
             Explore_The_Direct_Relationships(settings,state,dep);
         }
     }
@@ -60,6 +57,18 @@ class
     
     Output_Graphviz_Info(settings,state);
     
+❱
+
+◀private: static▶ void ☀Verbose_Querying_Message(Settings const& settings, std::string const& dep)❰
+    if (settings.verbose){
+        std::cout << "querying " << dep << "... ";
+        std::cout.flush();
+    }
+❱
+◀private: static▶ void ☀Verbose_Direct_Dependencies_Message(Settings const& settings, std::vector<std::string> const& results)❰
+    if (settings.verbose){
+        std::cout << results << std::endl;
+    }
 ❱
 
 ◀private: static▶ void ☀Output_Graphviz_Info(Settings const& settings, Analysis_State const& state)❰
@@ -97,9 +106,7 @@ class
     //bazel query to get direct 3rd party dependencies
     auto results = Get_Direct_Dependencies(settings,dep);
     
-    if (settings.verbose){
-        std::cout << results << std::endl;
-    }
+    Verbose_Direct_Dependencies_Message(settings,results);
     
     //add relationships
     for (auto const& it: results){state.relationships.emplace_back(dep,it);}
@@ -113,7 +120,7 @@ class
     std::string command = settings.bazel_wrapper;
     command += " query 'rdeps(...,@" + dep_name + "//...)' ";
     command += "--implicit_deps ";
-    command += "--host_deps ";
+    command += "--nohost_deps ";
     command += "--keep_going 2> /dev/null ";
     return command;
 ❱
