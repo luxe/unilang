@@ -14,6 +14,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/types/sets:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/graphviz:graphviz_image_maker",
+    "//code/tools/external_deps_analysis/program_options:lib",
 ])
 
 hcp(name = "settings", deps = [
@@ -22,8 +23,20 @@ hcp(name = "settings", deps = [
 hcp(name = "analysis_state", deps = [
 ])
 
+hcp(name = "external_deps_analysis_documentation_getter", deps = [
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/utilities/converters:lib",
+    "//code/utilities/json/functions:lib",
+    "//code/tools/external_deps_analysis/program_options:lib",
+    "//code/utilities/documentation:common_documentation_getter",
+])
+
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["//code/tools/external_deps_analysis:task_executer"]
+    deps = [
+        "//code/tools/external_deps_analysis:task_executer",
+        "//code/tools/external_deps_analysis/program_options:lib",
+    ]
 )
