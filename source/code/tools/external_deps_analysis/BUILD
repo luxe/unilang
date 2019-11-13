@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "task_executer", deps = [
     "//code/utilities/shell:lib",
@@ -32,11 +33,13 @@ hcp(name = "external_deps_analysis_documentation_getter", deps = [
     "//code/utilities/documentation:common_documentation_getter",
 ])
 
-cc_binary(
+distributable_cpp_main(
     name = "external_deps_analysis",
-    srcs = ["external_deps_analysis.cpp"],
     deps = [
         "//code/tools/external_deps_analysis:task_executer",
         "//code/tools/external_deps_analysis/program_options:lib",
-    ]
+    ],
+    description = "dependency graph creation for 3rd party libraries in bazel",
+    depends = [
+    ],
 )
