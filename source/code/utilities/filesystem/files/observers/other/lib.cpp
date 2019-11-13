@@ -34,3 +34,9 @@ bool Files_Are_The_Same(const std::string& path_to_file1, const std::string& pat
                     std::istreambuf_iterator<char>(),
                     std::istreambuf_iterator<char>(f2.rdbuf()));
 }
+
+std::string Type_Of_File(std::string const& path){
+  std::string str;
+  //file -L -b -z -N 
+  return str;
+}
