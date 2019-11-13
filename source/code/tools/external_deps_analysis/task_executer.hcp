@@ -23,8 +23,25 @@ class
     //settings
     auto settings = Default_Settings();
     
-    //move into bazel managed repo
-    Set_Path(settings.run_path);
+    //set via program_options
+    if (!options.Dep().empty()){
+        settings.dep_name = options.Dep();
+    }
+    if (!options.Run_Dir().empty()){
+        settings.run_path = options.Run_Dir();
+    }
+    if (!options.Output_Dir().empty()){
+        settings.result_path = options.Output_Dir();
+    }
+    if (!options.Bazel().empty()){
+        settings.bazel_wrapper = options.Bazel();
+    }
+    
+    
+    //possibly move into bazel managed repo
+    if (settings.use_run_path){
+        Set_Path(settings.run_path);
+    }
     
     //start the analysis at a particular dependency
     Analysis_State state;
@@ -58,7 +75,7 @@ class
     Settings settings;
     settings.use_run_path = true;
     settings.run_path = "/home/thickey/Desktop/na";
-    settings.result_path = "/home/thickey/Desktop/results/results";
+    settings.result_path = "/home/thickey/Desktop/results";
     settings.bazel_wrapper = "./bazel";
     settings.dep_name = "cuda";
     settings.verbose = true;
@@ -104,7 +121,7 @@ class
         Append_With_Newline(x,it);
     }
     Append_With_Newline(x,"}");
-    Graphviz_Image_Maker::Make(x,settings.result_path);
+    Graphviz_Image_Maker::Make(x,settings.result_path,settings.dep_name);
 ❱
 
 ◀private: static▶ void ☀Explore_The_Direct_Relationships(Settings const& settings, Analysis_State & state, std::string const& dep)❰

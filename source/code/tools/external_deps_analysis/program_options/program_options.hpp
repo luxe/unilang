@@ -20,6 +20,7 @@ class Program_Options {
         std::string Dep() const;
         std::string Run_Dir() const;
         std::string Output_Dir() const;
+        std::string Bazel() const;
 
         
         std::string Get_Help_Message();

@@ -33,8 +33,8 @@ hcp(name = "external_deps_analysis_documentation_getter", deps = [
 ])
 
 cc_binary(
-    name = "main",
-    srcs = ["main.cpp"],
+    name = "external_deps_analysis",
+    srcs = ["external_deps_analysis.cpp"],
     deps = [
         "//code/tools/external_deps_analysis:task_executer",
         "//code/tools/external_deps_analysis/program_options:lib",

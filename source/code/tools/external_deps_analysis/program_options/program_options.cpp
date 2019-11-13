@@ -39,6 +39,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	("dep",value<std::string>(),"third party dep name (applied as '@DEP//...')")
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
+        ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -120,6 +121,14 @@ std::string Program_Options::Output_Dir() const{
 	std::string data;
 	if (vm.count("output_dir")){
 		data = vm["output_dir"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Bazel() const{
+	std::string data;
+	if (vm.count("bazel")){
+		data = vm["bazel"].as<std::string>();
 	}
 
 	return data;
