@@ -3,9 +3,13 @@ class
 ❪string❫
 ❪utility❫
 ❪"code/tools/shared_object_trace/program_options/program_options"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/files/observers/other/lib"❫
+❪"code/tools/shared_object_trace/file_and_type"❫
 ⚯
 ❪"code/utilities/exits/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
 
@@ -14,7 +18,32 @@ class
     if (options.Run_Dir().empty()){
         Exit_With_Error("provide path to external dir");
     }
-
+    if (options.Dep().empty()){
+        Exit_With_Error("pass a third party dep name");
+    }
+    
+    //move into external dir of bazel repo
     Set_Path(options.Run_Dir());
+    
+    auto files = Get_Shared_Objects(options.Dep());
+    
+    
+    std::cout << files.size() << std::endl;
+❱
 
+◀private: static▶ std::vector<File_And_Type>☀Get_Shared_Objects(std::string dep)❰
+    
+    auto files = Recursively_Get_All_Paths_To_Files_From_Path(dep);
+    std::vector<File_And_Type> results;
+    
+    for (auto const& it: files){
+        auto type = Type_Of_File(it);
+        if (Contains_Substring(type,"shared object")){
+            File_And_Type x;
+            x.file = it;
+            x.type = type;
+            results.emplace_back(x);
+        }
+    }
+    return results;
 ❱

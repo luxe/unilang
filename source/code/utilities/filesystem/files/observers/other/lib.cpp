@@ -36,7 +36,5 @@ bool Files_Are_The_Same(const std::string& path_to_file1, const std::string& pat
 }
 
 std::string Type_Of_File(std::string const& path){
-  std::string str;
-  //file -L -b -z -N 
-  return str;
+  return execute("file -L -b -z -N " + path);
 }
