@@ -9,3 +9,5 @@ bool Files_Are_The_Same(const std::string& path_to_file1, const std::string& pat
 bool Folder_Has_C_Or_CPP_File(std::string folder_name);
 
 std::string Type_Of_File(std::string const& path);
+
+bool Is_A_Dynamic_Executable_According_to_Ldd(std::string const& path);

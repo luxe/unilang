@@ -1,6 +1,7 @@
 #include "code/utilities/filesystem/files/observers/other/lib.hpp"
 #include "code/utilities/filesystem/files/getting/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
+#include "code/utilities/types/strings/transformers/trimming/lib.hpp"
 #include <sstream>
 #include <fstream>
 #include <algorithm>
@@ -37,4 +38,13 @@ bool Files_Are_The_Same(const std::string& path_to_file1, const std::string& pat
 
 std::string Type_Of_File(std::string const& path){
   return execute("file -L -b -z -N " + path);
+}
+
+bool Is_A_Dynamic_Executable_According_to_Ldd(std::string const& path)
+{
+  auto results = execute_and_get_back_stdout_only("ldd " + path);
+  trim(results);
+  
+  return results == "not a dynamic executable";
+  
 }

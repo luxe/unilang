@@ -6,6 +6,8 @@ class
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/files/observers/other/lib"❫
 ❪"code/tools/shared_object_trace/file_and_type"❫
+❪"code/utilities/filesystem/files/observers/other/file_and_ldd_results"❫
+❪"code/utilities/filesystem/files/observers/other/ldd_results_getter"❫
 ⚯
 ❪"code/utilities/exits/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
@@ -28,18 +30,32 @@ class
     Set_Path(options.Run_Dir());
     
     //get all the shared library files from this third party dependency
-    auto sos = Get_Shared_Objects(options.Dep());
+    //auto sos = Get_Shared_Objects(options.Dep());
     
     auto dirs = Get_Other_External_Paths(options.Dep());
     for (auto dir: dirs){
-        //auto ldd_results = Ldd_Results_From_Dir(dir);
+        auto ldd_results = Ldd_Results_Getter::Get(dir);
         //std::cout << ldd_results << std::endl;
     }
+    
+    
 ❱
+
+
+
+◀private: static▶ std::vector<File_And_Ldd_Results> ☀Ldd_Results_From_Dir(std::string const& dir)❰
+    std::vector<File_And_Ldd_Results> results;
+    auto files = Recursively_Get_All_Paths_To_Files_From_Path(dir);
+    for (auto const& it: files){
+    }
+    return results;
+❱
+
+
 
 ◀private: static▶ std::vector<File_And_Type> ☀Get_Shared_Objects(std::string dep)❰
 
-    std::string identifier_for_shared_object = "shared object"
+    std::string identifier_for_shared_object = "shared object";
     
     auto files = Recursively_Get_All_Paths_To_Files_From_Path(dep);
     std::vector<File_And_Type> results;
@@ -56,7 +72,7 @@ class
     return results;
 ❱
 
-◀private: static▶ std::string ☀Get_Other_External_Paths(std::string dep)❰
+◀private: static▶ std::vector<std::string> ☀Get_Other_External_Paths(std::string dep)❰
 
     std::vector<std::string> paths;
     

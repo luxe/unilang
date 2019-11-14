@@ -11,6 +11,8 @@ hcp(name = "task_executer", deps = [
     "//code/tools/shared_object_trace:file_and_type",
     "//code/utilities/filesystem/files/observers/other:lib",
     "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
+    "//code/utilities/filesystem/files/observers/other:ldd_results_getter",
 ])
 
 hcp(name = "file_and_type", deps = [
