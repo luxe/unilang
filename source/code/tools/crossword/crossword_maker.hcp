@@ -5,6 +5,7 @@ class
 ❪"code/utilities/data_structures/point/point"❫
 ❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
 ❪"code/tools/crossword/word_try"❫
+❪"code/tools/crossword/crossword_words"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/types/vectors/creators/lib"❫
@@ -53,119 +54,21 @@ class
     settings.dimensions.x = 25;
     settings.dimensions.y = 30;
     
-    settings.words = United_States_Words();
+    settings.words = Crossword_Words::Jungle_Words();
     
     return settings;
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Christmas_Words()❰
-    std::vector<std::string> x;
-    x.emplace_back("angel");
-    x.emplace_back("snowman");
-    x.emplace_back("santa");
-    x.emplace_back("tree");
-    x.emplace_back("merry");
-    x.emplace_back("light");
-    x.emplace_back("snow");
-    x.emplace_back("candy cane");
-    x.emplace_back("candle");
-    x.emplace_back("cookie");
-    x.emplace_back("stocking");
-    x.emplace_back("sleigh");
-    x.emplace_back("reindeer");
-    x.emplace_back("presents");
-    x.emplace_back("winter");
-    x.emplace_back("holiday");
-    x.emplace_back("eggnog");
-    x.emplace_back("evergreen");
-    x.emplace_back("gingerbread");
-    x.emplace_back("ornament");
-    x.emplace_back("gingle");
-    x.emplace_back("star");
-    x.emplace_back("fireplace");
-    x.emplace_back("cider");
-    x.emplace_back("joy");
-    x.emplace_back("party");
-    x.emplace_back("rudolph");
-    return x;
-❱
-
-◀private: static▶ std::vector<std::string> ☀United_States_Words()❰
-    std::vector<std::string> x;
-    x.emplace_back("hamburger");
-    x.emplace_back("cheese");
-    x.emplace_back("french fries");
-    x.emplace_back("pierogi");
-    x.emplace_back("pizza");
-    x.emplace_back("pepperoni");
-    x.emplace_back("fried chicken");
-    x.emplace_back("turkey");
-    x.emplace_back("pumpkin pie");
-    x.emplace_back("barbecue");
-    x.emplace_back("chowder");
-    x.emplace_back("bagel");
-    x.emplace_back("salad");
-    x.emplace_back("jambalaya");
-    x.emplace_back("gumbo");
-    x.emplace_back("hot dog");
-    x.emplace_back("parfait");
-    x.emplace_back("pudding");
-    x.emplace_back("tots");
-    x.emplace_back("pancake");
-    x.emplace_back("key lime");
-    x.emplace_back("poboy");
-    x.emplace_back("subway");
-    x.emplace_back("hoagies");
-    x.emplace_back("beignets");
-    x.emplace_back("beer");
-    x.emplace_back("etouffee");
-    x.emplace_back("doughnut");
-    x.emplace_back("coke");
-    return x;
-❱
-◀private: static▶ std::vector<std::string> ☀Jungle_Words()❰
-    std::vector<std::string> x;
-    x.emplace_back("reptiles");
-    x.emplace_back("orangutan");
-    x.emplace_back("tiger");
-    x.emplace_back("monkey");
-    x.emplace_back("ocelot");
-    x.emplace_back("elephant");
-    x.emplace_back("python");
-    x.emplace_back("tarsiers");
-    x.emplace_back("orchid");
-    x.emplace_back("epiphytes");
-    x.emplace_back("bougainvillea");
-    x.emplace_back("rain");
-    x.emplace_back("bamboo");
-    x.emplace_back("toucan");
-    x.emplace_back("okapi");
-    x.emplace_back("jaguar");
-    x.emplace_back("sloth");
-    x.emplace_back("hippo");
-    x.emplace_back("aardvark");
-    x.emplace_back("baboons");
-    x.emplace_back("rhino");
-    x.emplace_back("wildlife");
-    x.emplace_back("serval");
-    x.emplace_back("cobra");
-    x.emplace_back("antelopes");
-    x.emplace_back("armadillo");
-    x.emplace_back("bear");
-    x.emplace_back("chimpanzee");
-    x.emplace_back("cougar");
-    x.emplace_back("hyena");
-    return x;
-❱
 ◀private: static▶ void ☀Randomly_Place_Each_Word(std::vector<std::vector<std::string>> & grid, Crossword_Puzzle_Settings const& settings)❰
 
     for (auto word: settings.words){
         
         Remove_Spaces(word);
-        std::cout << word << std::endl;
         
         //get random position and direction
-        auto word_try = Random_Word_Try(grid);
+        //auto word_try = Random_Word_Try(grid);
+        
+        auto word_try = Primed_Random_Word_Try(grid,word);
         
         std::cout << "fitting " << word << std::endl;
         while (!Word_Fits(grid,word,word_try)){
@@ -175,6 +78,20 @@ class
         }
         Fit_Word(grid,word,word_try);
     }
+❱
+
+◀private: static▶ Word_Try ☀Primed_Random_Word_Try(std::vector<std::vector<std::string>> const& grid, std::string const& word)❰
+    
+    auto word_try = Random_Word_Try(grid);
+    for (int i = 0; i < 20; ++i){
+        if (Word_Fits_And_Has_Pass_Through(grid,word,word_try)){
+            std::cout << "passthrough" << std::endl;
+            return word_try;
+        }
+        word_try = Random_Word_Try(grid);
+    }
+    
+    return word_try;
 ❱
 
 ◀private: static▶ Word_Try ☀Random_Word_Try(std::vector<std::vector<std::string>> const& grid)❰
@@ -212,8 +129,32 @@ class
         Move_Position_In_Direction(word_try.point,word_try.direction);
     }
     
-    
     return true;
+❱
+
+◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(std::vector<std::vector<std::string>> const& grid, std::string const& word, Word_Try word_try)❰
+
+
+    bool has_pass_through = false;
+    for (auto letter: word){
+        if (!Position_In_Range(grid,word_try.point)){
+            return false;
+        }
+        
+        std::string str;
+        str += letter;
+        if (grid[word_try.point.x][word_try.point.y] != "?" && grid[word_try.point.x][word_try.point.y] != str){
+            return false;
+        }
+        
+        if (grid[word_try.point.x][word_try.point.y] != "?"){
+            has_pass_through = true;
+        }
+        
+        Move_Position_In_Direction(word_try.point,word_try.direction);
+    }
+    
+    return has_pass_through;
 ❱
 
 ◀private: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Word_Try word_try)❰

@@ -68,6 +68,12 @@ std::vector<T>& Sort_And_Remove_Duplicates(std::vector<T>& vec){
 }
 
 template <typename T>
+std::vector<T>& Sort(std::vector<T>& vec){
+    std::sort(vec.begin(), vec.end());
+    return vec;
+}
+
+template <typename T>
 std::vector<T>& Remove_Duplicates(std::vector<T>& vec){
     std::vector<T> solution;
     std::set<T> found;
