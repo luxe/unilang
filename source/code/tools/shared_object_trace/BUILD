@@ -13,6 +13,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
     "//code/utilities/filesystem/files/observers/other:ldd_results_getter",
+    "//code/utilities/types/vectors/transformers:lib",
 ])
 
 hcp(name = "file_and_type", deps = [

@@ -13,6 +13,7 @@ class
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ⚞⚟
 
 
@@ -32,9 +33,14 @@ class
     //get all the shared library files from this third party dependency
     //auto sos = Get_Shared_Objects(options.Dep());
     
+    auto x = Ldd_Results_From_Dir("torch_external");
+    std::cout << x.size() << std::endl;
+    exit(0);
+    
     auto dirs = Get_Other_External_Paths(options.Dep());
     for (auto dir: dirs){
-        auto ldd_results = Ldd_Results_Getter::Get(dir);
+        std::cout << dir << std::endl;
+        auto ldd_results = Ldd_Results_From_Dir(dir);
         //std::cout << ldd_results << std::endl;
     }
     
@@ -47,6 +53,11 @@ class
     std::vector<File_And_Ldd_Results> results;
     auto files = Recursively_Get_All_Paths_To_Files_From_Path(dir);
     for (auto const& it: files){
+        auto ldd_results = Ldd_Results_Getter::Get(it);
+        
+        if (ldd_results.results.valid){
+            results.emplace_back(ldd_results);
+        }
     }
     return results;
 ❱
@@ -82,6 +93,8 @@ class
             paths.emplace_back(dir);
         }
     }
+    
+    Sort_And_Remove_Duplicates(paths);
     
     return paths;
 ❱

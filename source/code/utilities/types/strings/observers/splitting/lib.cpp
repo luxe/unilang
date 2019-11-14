@@ -31,6 +31,9 @@ std::vector<std::string> Split_Into_Parts_From_Dot(std::string const& str){
 std::vector<std::string> Split_By_Spaces(std::string const& str){
  	return Split_Into_Parts_From_Delimiter(str,' ');
 }
+std::vector<std::string> Split_Into_Parts_From_Newline(std::string const& str){
+    return Split_Into_Parts_From_Delimiter(str,'\n');
+}
 std::string Get_Path_After_Desktop(std::string const& str)
 {
 	auto parts = Get_Path_In_Parts(str);

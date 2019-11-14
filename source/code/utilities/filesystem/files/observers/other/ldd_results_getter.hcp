@@ -5,14 +5,108 @@ class
 ❪"code/utilities/filesystem/files/observers/other/file_and_ldd_results"❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚯
 ⚞⚟
+
+//example to parse:
+// linux-vdso.so.1 (0x00007ffd0577b000)
+// libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f99814f9000)
+// libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f99812f5000)
+// libstdc++.so.6 => /usr/lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f9980f6c000)
+// libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f9980bce000)
+// libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f99809b6000)
+// libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f99805c5000)
+// /lib64/ld-linux-x86-64.so.2 (0x00007f9981957000)
 
 
 ◀public: static▶ File_And_Ldd_Results ☀Get(std::string const& file_path) ❰
     
-    File_And_Ldd_Results results;
+    File_And_Ldd_Results x;
+    x.file = file_path;
     
-    return results;
+    //execute the results
+    //return early if there are no results from ldd
+    auto results = execute_and_get_back_stdout_only("ldd " + file_path);
+    if (Ldd_Gives_No_Results(results)){
+        x.results = Invalid_Ldd_Result();
+        return x;
+    }
     
+    //if there is no result it is also invalid
+    trim(results);
+    if (results.empty()){
+        x.results = Invalid_Ldd_Result();
+        return x;
+    }
+    
+    
+    // we got some kind of results back from ldd
+    // try to parse it out
+    x.results = Parse_Ldd_Results(results);
+    return x;
+❱
+
+◀private: static▶ Ldd_Results ☀Invalid_Ldd_Result()❰
+    Ldd_Results ldd;
+    ldd.valid = false;
+    return ldd;
+❱
+
+◀private: static▶ Ldd_Results ☀Parse_Ldd_Results(std::string results)❰
+    Ldd_Results x;
+    x.valid = true;
+    
+    auto lines = Split_Into_Parts_From_Newline(results);
+    
+    for (auto const& it: lines){
+        if (!it.empty()){
+            x.entries.emplace_back(Parse_Ldd_Line(it));
+        }
+    }
+    
+    return x;
+❱
+
+◀private: static▶ Ldd_Entry ☀Parse_Ldd_Line(std::string line)❰
+
+    std::string ldd_points_to_symbol = "=>";
+    std::string ldd_not_found_message = "not found";
+    std::string empty_str = "";
+
+    Ldd_Entry x;
+    x.is_pointing_at = false;
+    
+    trim(line);
+    auto elements = Split_By_Spaces(line);
+    
+    x.so = Safe_Index_Get(elements,0,empty_str);
+    
+    //logic if the .so points somewhere
+    if (Safe_Is_Index_Equal(elements,1,ldd_points_to_symbol)){
+        x.is_pointing_at = true;
+        if (Safe_Is_Index_Equal(elements,2,ldd_not_found_message)){
+            x.pointing_at = empty_str;
+            x.memory_address = empty_str;
+        }
+        else{
+            x.pointing_at = Safe_Index_Get(elements,2,empty_str);
+            x.memory_address = Safe_Index_Get(elements,3,empty_str);
+        }
+    }
+    
+    //logic of the .so does not point somewhere
+    else {
+        x.memory_address = Safe_Index_Get(elements,1,empty_str);
+    }
+    
+    std::cout << line << std::endl;
+    
+    return x;
+❱
+
+◀private: static▶ bool ☀Ldd_Gives_No_Results(std::string results)❰
+    trim(results);
+    return results == "not a dynamic executable";
 ❱

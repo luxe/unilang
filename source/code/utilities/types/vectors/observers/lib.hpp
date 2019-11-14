@@ -88,6 +88,30 @@ size_t Get_Index_Of_Element(std::vector<T> const& v, T const& element){
 }
 
 template<typename T>
+bool Safe_Is_Index_Equal(std::vector<T> const& v, size_t i, T t){
+  
+  //out of range
+  if (i < 0 || i >= v.size()){
+    return false;
+  }
+  
+  //in range, make check
+  return v[i] == t;
+}
+
+template<typename T>
+T Safe_Index_Get(std::vector<T> const& v, size_t i, T if_missing){
+  
+  //out of range
+  if (i < 0 || i >= v.size()){
+    return if_missing;
+  }
+  
+  //in range, get
+  return v[i];
+}
+
+template<typename T>
 T Last_Element(std::vector<T> const& v){
     return v.back();
 }
