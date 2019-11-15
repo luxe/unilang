@@ -35,6 +35,7 @@ hcp(name = "crossword_maker", deps = [
     "//code/utilities/data_structures/point:point_mover",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/types/strings/transformers/casing:lib",
+    "//code/utilities/std_hackery:std_aliases",
 ])
 
 hcp(name = "crossword_words", deps = [
