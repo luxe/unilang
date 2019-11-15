@@ -19,8 +19,6 @@ class
 ❪"code/tools/crossword/html_exporter"❫
 ⚞⚟
 
-//TODO: make question mark symbol generic
-
 ◀public: static▶ void ☀Make()❰
 
     //puzzle settings
@@ -30,7 +28,7 @@ class
     Adjust_Word_Lists(settings);
 
     //create grid
-    auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,"?");
+    auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,settings.empty_cell_symbol);
     
     //place words
     Randomly_Place_Each_Word(grid,settings);
@@ -43,7 +41,7 @@ class
     }
     
     //fill empty spaces
-    Fill_Remaining_Spaces_With_Random_Letters(grid);
+    Fill_Remaining_Spaces_With_Random_Letters(grid,settings);
     
     //create artifacts
     if (settings.create_puzzle_artifact){
@@ -73,6 +71,7 @@ class
     
     settings.dimensions.x = 25;
     settings.dimensions.y = 30;
+    settings.empty_cell_symbol = "?";
     
     settings.words = Crossword_Words::Winter_Words();
     
@@ -97,10 +96,10 @@ class
         //get random position and direction
         //auto word_try = Random_Word_Try(grid);
         
-        auto word_try = Primed_Random_Word_Try(grid,word);
+        auto word_try = Primed_Random_Word_Try(grid,settings,word);
         
         std::cout << "fitting " << word << " ";
-        while (!Word_Fits(grid,word,word_try)){
+        while (!Word_Fits(grid,settings,word,word_try)){
             
             //try again
             word_try = Random_Word_Try(grid);
@@ -111,11 +110,11 @@ class
 ❱
 
 
-◀private: static▶ Word_Try ☀Primed_Random_Word_Try(string_grid const& grid, std::string const& word)❰
+◀private: static▶ Word_Try ☀Primed_Random_Word_Try(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
     
     auto word_try = Random_Word_Try(grid);
     for (int i = 0; i < 20; ++i){
-        if (Word_Fits_And_Has_Pass_Through(grid,word,word_try)){
+        if (Word_Fits_And_Has_Pass_Through(grid,settings,word,word_try)){
             std::cout << "(passthrough) ";
             return word_try;
         }
@@ -133,18 +132,17 @@ class
     return x;
 ❱
 
-◀private: static▶ void ☀Fill_Remaining_Spaces_With_Random_Letters(string_grid & grid)❰
-    std::string q_mark = "?";
+◀private: static▶ void ☀Fill_Remaining_Spaces_With_Random_Letters(string_grid & grid, Crossword_Puzzle_Settings const& settings)❰
     for (auto & x: grid){
         for (auto & y: x){
-            if (y == q_mark){
+            if (y == settings.empty_cell_symbol){
                 y = Random_Uppercase_Letter();
             }
         }
     }
 ❱
 
-◀private: static▶ bool ☀Word_Fits(string_grid const& grid, std::string const& word, Word_Try word_try)❰
+◀private: static▶ bool ☀Word_Fits(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
 
     for (auto letter: word){
         if (!Position_In_Range(grid,word_try.point)){
@@ -153,7 +151,7 @@ class
         
         std::string str;
         str += letter;
-        if (grid[word_try.point.x][word_try.point.y] != "?" && grid[word_try.point.x][word_try.point.y] != str){
+        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
             return false;
         }
         
@@ -163,7 +161,7 @@ class
     return true;
 ❱
 
-◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(string_grid const& grid, std::string const& word, Word_Try word_try)❰
+◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
 
 
     bool has_pass_through = false;
@@ -174,11 +172,11 @@ class
         
         std::string str;
         str += letter;
-        if (grid[word_try.point.x][word_try.point.y] != "?" && grid[word_try.point.x][word_try.point.y] != str){
+        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
             return false;
         }
         
-        if (grid[word_try.point.x][word_try.point.y] != "?"){
+        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol){
             has_pass_through = true;
         }
         
