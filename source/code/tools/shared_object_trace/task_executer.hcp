@@ -8,14 +8,28 @@ class
 ❪"code/tools/shared_object_trace/file_and_type"❫
 ❪"code/utilities/filesystem/files/observers/other/file_and_ldd_results"❫
 ❪"code/utilities/filesystem/files/observers/other/ldd_results_getter"❫
+❪"code/tools/shared_object_trace/correlated_so_ldd"❫
+❪"code/utilities/std_hackery/std_aliases"❫
 ⚯
 ❪"code/utilities/exits/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/printers/lib"❫
 ⚞⚟
 
+//we need a faster way to check file types, and get ldd results
+//would be really nice to have a library solution.
+
+//consider "readelf"
+//https://unix.stackexchange.com/questions/120015/how-to-find-out-the-dynamic-libraries-executables-loads-when-run
+
+
+//consider "strace -e trace=open myprogram"
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
@@ -31,16 +45,23 @@ class
     Set_Path(options.Run_Dir());
     
     //get all the shared library files from this third party dependency
-    //auto sos = Get_Shared_Objects(options.Dep());
+    Output_And_Flush("Getting shared objects from " + options.Dep() + "...");
+    std::cout.flush();
+    auto sos = Get_Shared_Objects_From_Dir(options.Dep());
+    Output_And_Flush_With_Newline(" " + std::to_string(sos.size()) + " found");
     
     
-    auto dirs = Get_Other_External_Paths(options.Dep());
+    std::vector<Correlated_So_Ldd> all_correlations;
+    
+    auto dirs = Get_Dir_Names_Excluding(Dirs_To_Skip(options.Dep()));
     for (auto dir: dirs){
-        std::cout << dir << std::endl;
+        Output_And_Flush("Getting LDD data from " + dir + "...");
         auto ldd_results = Ldd_Results_From_Dir(dir);
-        for (x: ldd_results){
-        }
-        //std::cout << ldd_results << std::endl;
+        Output_And_Flush(" " + std::to_string(ldd_results.size()) + " ldd results");
+        
+        auto correlations = Get_Correlations(sos,ldd_results);
+        all_correlations += correlations;
+        Output_And_Flush_With_Newline(" " + std::to_string(correlations.size()) + " correlations");
     }
     
     
@@ -48,6 +69,458 @@ class
 
 
 
+◀private: static▶ strings ☀Dirs_To_Skip(std::string const& searched)❰
+    strings x;
+    x.emplace_back(searched);
+    x.emplace_back("ARM_NEON_2_x86_SSE");
+    x.emplace_back("CLI11");
+    x.emplace_back("amo_lane_graph_state");
+    x.emplace_back("amo_lidar_localization_priors");
+    x.emplace_back("andres_graph");
+    x.emplace_back("arrow");
+    x.emplace_back("asmjit");
+    x.emplace_back("atg_idl");
+    x.emplace_back("atg_proto");
+    x.emplace_back("aws"); //too slow
+    x.emplace_back("aws-c-common");
+    x.emplace_back("aws-c-event-stream");
+    x.emplace_back("aws-checksums");
+    x.emplace_back("base64");
+    x.emplace_back("bazel_gazelle");
+    x.emplace_back("bazel_gazelle_go_repository_cache"); //found 1, but too slow
+    x.emplace_back("bazel_gazelle_go_repository_tools");
+    x.emplace_back("bazel_skylib");
+    x.emplace_back("bazel_toolchains");
+    x.emplace_back("bazel_version");
+    x.emplace_back("bcc");
+    x.emplace_back("bonsai");
+    x.emplace_back("boost"); //too slow
+    x.emplace_back("build_bazel_rules_android");
+    x.emplace_back("build_bazel_rules_nodejs");
+    x.emplace_back("buildifier");
+    x.emplace_back("cairo"); //Syntax error: "(" unexpected (0 found)
+    x.emplace_back("catapult"); //Syntax error: "(" unexpected (5 found)
+    x.emplace_back("cc_debug_image_base");
+    x.emplace_back("cc_image_base");
+    x.emplace_back("com_bluecore_rules_pyz");
+    x.emplace_back("com_github_aws_aws_sdk_go");
+    x.emplace_back("com_github_aws_lambda_go");
+    x.emplace_back("com_github_bazelbuild_buildtools");
+    x.emplace_back("com_github_cares_cares");
+    x.emplace_back("com_github_containernetworking_cni");
+    x.emplace_back("com_github_containernetworking_plugins");
+    x.emplace_back("com_github_coreos_iptables");
+    x.emplace_back("com_github_gflags_gflags");
+    x.emplace_back("com_github_goStrongswanVici");
+    x.emplace_back("com_github_go_elasticsearch");
+    x.emplace_back("com_github_godbus");
+    x.emplace_back("com_github_gofrs_uuid");
+    x.emplace_back("com_github_golang_geo");
+    x.emplace_back("com_github_golang_mock");
+    x.emplace_back("com_github_golang_protobuf");
+    x.emplace_back("com_github_google_benchmark");
+    x.emplace_back("com_github_google_go_containerregistry");
+    x.emplace_back("com_github_google_go_tpm");
+    x.emplace_back("com_github_google_go_tpm_tools");
+    x.emplace_back("com_github_google_uuid");
+    x.emplace_back("com_github_gorilla_mux");
+    x.emplace_back("com_github_gorilla_websocket");
+    x.emplace_back("com_github_gremgo_neptune");
+    x.emplace_back("com_github_grpc_grpc");
+    x.emplace_back("com_github_hashicorp_errwrap");
+    x.emplace_back("com_github_hashicorp_go_cleanhttp");
+    x.emplace_back("com_github_hashicorp_go_retryablehttp");
+    x.emplace_back("com_github_hashicorp_multierror");
+    x.emplace_back("com_github_hashicorp_vault_avsec");
+    x.emplace_back("com_github_jmhodges_bazel_gomock");
+    x.emplace_back("com_github_m3db_tally_cpp");
+    x.emplace_back("com_github_nelhage_rules_boost");
+    x.emplace_back("com_github_osechet_timex");
+    x.emplace_back("com_github_paulmach_orb");
+    x.emplace_back("com_github_pelletier_go_toml");
+    x.emplace_back("com_github_pkg_errors");
+    x.emplace_back("com_github_pmezard_go_difflib");
+    x.emplace_back("com_github_satori_go_uuid");
+    x.emplace_back("com_github_spf13_afero");
+    x.emplace_back("com_github_stretchr_testify");
+    x.emplace_back("com_github_tencent_rapidjson");
+    x.emplace_back("com_github_uber_go_tally");
+    x.emplace_back("com_github_urfave_cli");
+    x.emplace_back("com_github_vault_api");
+    x.emplace_back("com_github_vishvananda_netlink");
+    x.emplace_back("com_github_vishvananda_netns");
+    x.emplace_back("com_google_absl");
+    x.emplace_back("com_google_googletest");
+    x.emplace_back("com_google_protobuf");
+    x.emplace_back("com_googlesource_code_re2");
+    x.emplace_back("container_py_toolchain");
+    x.emplace_back("cpp_netlib_uri");
+    x.emplace_back("cpr");
+    x.emplace_back("cpuinfo");
+    x.emplace_back("cub"); //1
+    x.emplace_back("cudnn"); //3
+    x.emplace_back("cupti"); //3
+    x.emplace_back("curl");
+    x.emplace_back("dbscan_test_data");
+    x.emplace_back("docker_config");
+    x.emplace_back("double-conversion");
+    x.emplace_back("eigen");
+    x.emplace_back("elfutils");
+    x.emplace_back("envoy_base");
+    x.emplace_back("eslint"); //1
+    x.emplace_back("expat");
+    x.emplace_back("farmhash_archive");
+    x.emplace_back("fbgemm");
+    x.emplace_back("fft2d");
+    x.emplace_back("flatbuffers");
+    x.emplace_back("flex");
+    x.emplace_back("fmt");
+    x.emplace_back("fontconfig");
+    x.emplace_back("foxi");
+    x.emplace_back("freetype2");
+    x.emplace_back("gd");
+    x.emplace_back("gemmlowp");
+    x.emplace_back("gif_archive");
+    x.emplace_back("gloo");
+    x.emplace_back("go_googleapis");
+    x.emplace_back("go_puller_darwin");
+    x.emplace_back("go_puller_linux");
+    x.emplace_back("go_sdk");
+    x.emplace_back("goal_scoring_dummy_model_with_weights");
+    x.emplace_back("googleapis_api_common_protos");
+    x.emplace_back("gzip"); //1
+    x.emplace_back("hello_world_test_data");
+    x.emplace_back("highwayhash");
+    x.emplace_back("icu");
+    x.emplace_back("ideep");
+    x.emplace_back("image_detector_model_test_data");
+    x.emplace_back("image_detector_models");
+    x.emplace_back("in_gopkg_yaml_v2");
+    x.emplace_back("io_bazel_rules_docker");
+    x.emplace_back("io_bazel_rules_go");
+    x.emplace_back("io_bazel_rules_go_compat");
+    x.emplace_back("io_bazel_rules_jsonnet");
+    x.emplace_back("io_bazel_rules_nogo");
+    x.emplace_back("ipt");
+    x.emplace_back("jsoncpp_git");
+    x.emplace_back("jsonnet");
+    x.emplace_back("lcov");
+    x.emplace_back("levenshtein-sse");
+    x.emplace_back("libjasper");
+    x.emplace_back("libjpeg-turbo");
+    x.emplace_back("libpcap");
+    x.emplace_back("libpng");
+    x.emplace_back("libxsmm_archive");
+    x.emplace_back("licnn_inference_test_data");
+    x.emplace_back("lidar_cnn_models");
+    x.emplace_back("llvm"); //too slow
+    x.emplace_back("llvm_patch");
+    x.emplace_back("lmdb");
+    x.emplace_back("lni_dummy_model");
+    x.emplace_back("local_config_cc");
+    x.emplace_back("local_config_cc_toolchains");
+    x.emplace_back("local_config_platform");
+    x.emplace_back("local_config_sh");
+    x.emplace_back("local_config_xcode");
+    x.emplace_back("local_jdk");
+    x.emplace_back("log4cplus");//1
+    x.emplace_back("lz4");
+    x.emplace_back("mini_msds_tetrys_tables_test_data");
+    x.emplace_back("minizip");
+    x.emplace_back("mkl");//36
+    x.emplace_back("mkl-dnn");
+    x.emplace_back("mkl_headers");
+    x.emplace_back("mp4v2");
+    x.emplace_back("nasm");
+    x.emplace_back("nccl_archive");
+    x.emplace_back("ncurses");
+    x.emplace_back("net_zlib_zlib");
+    x.emplace_back("neuropods");
+    x.emplace_back("neuropods_prebuilt");//18
+    x.emplace_back("nlohmann_json..."); //sh: 1: Syntax error: "(" unexpected (3 found)
+    x.emplace_back("nodejs");
+    x.emplace_back("nodejs_linux_amd64"); //1
+    x.emplace_back("nsync");
+    x.emplace_back("nvenc"); //1
+    x.emplace_back("onnx");
+    x.emplace_back("opencv");
+    x.emplace_back("openssl");
+    x.emplace_back("openvpn...");//1
+    x.emplace_back("org_apache_thrift");
+    x.emplace_back("org_golang_go...");//11
+    x.emplace_back("org_golang_google_grpc");
+    x.emplace_back("org_golang_x_crypto");
+    x.emplace_back("org_golang_x_net");
+    x.emplace_back("org_golang_x_sys");
+    x.emplace_back("org_golang_x_text");
+    x.emplace_back("org_golang_x_tools");
+    x.emplace_back("org_tensorflow");
+    x.emplace_back("org_uber_go_atomic");
+    x.emplace_back("org_uber_go_config");
+    x.emplace_back("org_uber_go_multierr");
+    x.emplace_back("org_uber_go_zap");
+    x.emplace_back("pia");
+    x.emplace_back("picosha2");
+    x.emplace_back("pixman");
+    x.emplace_back("pnp_rav_models");
+    x.emplace_back("pnp_rna_dummy_model_neuropod");
+    x.emplace_back("pnp_rna_models");
+    x.emplace_back("prettier");//1
+    x.emplace_back("prototool");//1
+    x.emplace_back("pybind11");
+    x.emplace_back("pypi_absl_py");
+    //x.emplace_back("pypi_apex"); //4/3
+    x.emplace_back("pypi_appdirs");
+    x.emplace_back("pypi_asn1crypto");
+    x.emplace_back("pypi_astcheck");
+    x.emplace_back("pypi_astor");
+    x.emplace_back("pypi_astsearch");
+    x.emplace_back("pypi_atc_reltools");
+    x.emplace_back("pypi_atc_shipyard_client");
+    x.emplace_back("pypi_atg_release_utilities");
+    x.emplace_back("pypi_atomicwrites");
+    x.emplace_back("pypi_attrs");
+    x.emplace_back("pypi_aws_credential_client");
+    x.emplace_back("pypi_awscli");
+    x.emplace_back("pypi_backcall");
+    x.emplace_back("pypi_black");
+    x.emplace_back("pypi_bleach");
+    x.emplace_back("pypi_bokeh");
+    x.emplace_back("pypi_boto3");
+    x.emplace_back("pypi_botocore");
+    x.emplace_back("pypi_certifi");
+    x.emplace_back("pypi_cffi");//2
+    x.emplace_back("pypi_chardet");
+    x.emplace_back("pypi_click");
+    x.emplace_back("pypi_colorama");
+    x.emplace_back("pypi_cookies");
+    x.emplace_back("pypi_coverage");//1
+    x.emplace_back("pypi_cpplint");
+    x.emplace_back("pypi_cryptography");//3
+    x.emplace_back("pypi_decorator");
+    x.emplace_back("pypi_defusedxml");
+    x.emplace_back("pypi_deprecated");
+    x.emplace_back("pypi_dill");
+    x.emplace_back("pypi_diskcache");
+    x.emplace_back("pypi_docker");
+    x.emplace_back("pypi_docutils");
+    x.emplace_back("pypi_entrypoints");
+    x.emplace_back("pypi_flake8");
+    x.emplace_back("pypi_funcsigs");
+    x.emplace_back("pypi_future");
+    x.emplace_back("pypi_gast");
+    x.emplace_back("pypi_geojson");
+    x.emplace_back("pypi_gitdb2");
+    x.emplace_back("pypi_gitpython");
+    x.emplace_back("pypi_grpcio");//1
+    x.emplace_back("pypi_grpcio_testing");
+    x.emplace_back("pypi_h5py");//28
+    x.emplace_back("pypi_humanfriendly");
+    x.emplace_back("pypi_idna");
+    x.emplace_back("pypi_importlib_metadata");
+    x.emplace_back("pypi_ipdb");
+    x.emplace_back("pypi_ipykernel");
+    x.emplace_back("pypi_ipython");
+    x.emplace_back("pypi_ipython_genutils");
+    x.emplace_back("pypi_ipywidgets");
+    x.emplace_back("pypi_jedi");
+    x.emplace_back("pypi_jeepney");
+    x.emplace_back("pypi_jinja2");
+    x.emplace_back("pypi_jmespath");
+    x.emplace_back("pypi_jsondiff");
+    x.emplace_back("pypi_jsonschema");
+    x.emplace_back("pypi_jupyter");
+    x.emplace_back("pypi_jupyter_client");
+    x.emplace_back("pypi_jupyter_console");
+    x.emplace_back("pypi_jupyter_core");
+    x.emplace_back("pypi_keras_applications");
+    x.emplace_back("pypi_keras_preprocessing");
+    x.emplace_back("pypi_keyring");
+    x.emplace_back("pypi_keyrings_alt");
+    x.emplace_back("pypi_m3");
+    x.emplace_back("pypi_markdown");
+    x.emplace_back("pypi_markupsafe");//1
+    x.emplace_back("pypi_mccabe");
+    x.emplace_back("pypi_mistune");
+    x.emplace_back("pypi_mock");
+    x.emplace_back("pypi_more_itertools");
+    x.emplace_back("pypi_msgpack");//1
+    x.emplace_back("pypi_mypy");
+    x.emplace_back("pypi_mypy_extensions");
+    x.emplace_back("pypi_nbconvert");//12
+    x.emplace_back("pypi_nbformat");
+    x.emplace_back("pypi_networkx");
+    x.emplace_back("pypi_notebook");
+    x.emplace_back("pypi_numpy");//13
+    x.emplace_back("pypi_opencv_python_headless");//8
+    x.emplace_back("pypi_packaging");
+    x.emplace_back("pypi_pandas");//41
+    x.emplace_back("pypi_pandocfilters");
+    x.emplace_back("pypi_parso");
+    x.emplace_back("pypi_petastorm");
+    x.emplace_back("pypi_pexpect");
+    x.emplace_back("pypi_phabricator");
+    x.emplace_back("pypi_pickleshare");
+    x.emplace_back("pypi_pillow");//18
+    x.emplace_back("pypi_pluggy");
+    x.emplace_back("pypi_ply");
+    x.emplace_back("pypi_prometheus_client");
+    x.emplace_back("pypi_prompt_toolkit");//1
+    x.emplace_back("pypi_protobuf");//2
+    x.emplace_back("pypi_psutil");//2
+    x.emplace_back("pypi_ptable");
+    x.emplace_back("pypi_ptyprocess");
+    x.emplace_back("pypi_py");
+    x.emplace_back("pypi_py4j");
+    x.emplace_back("pypi_pyarrow");//27
+    x.emplace_back("pypi_pyasn1");
+    x.emplace_back("pypi_pycodestyle");
+    x.emplace_back("pypi_pycparser");
+    x.emplace_back("pypi_pyflakes");
+    x.emplace_back("pypi_pygithub");
+    x.emplace_back("pypi_pygments");
+    x.emplace_back("pypi_pyjwt");
+    x.emplace_back("pypi_pyparsing");
+    x.emplace_back("pypi_pyproj");//9
+    x.emplace_back("pypi_pyrsistent");//1
+    x.emplace_back("pypi_pyspark");
+    x.emplace_back("pypi_pytest");
+    x.emplace_back("pypi_python_dateutil");
+    x.emplace_back("pypi_pytz");
+    x.emplace_back("pypi_pyyaml");//1
+    x.emplace_back("pypi_pyzmq");//13
+    x.emplace_back("pypi_qtconsole");
+    x.emplace_back("pypi_requests");
+    x.emplace_back("pypi_responses");
+    x.emplace_back("pypi_rsa");
+    x.emplace_back("pypi_s2sphere");
+    x.emplace_back("pypi_s3fs");
+    x.emplace_back("pypi_s3transfer");
+    x.emplace_back("pypi_secretstorage");
+    x.emplace_back("pypi_send2trash");
+    x.emplace_back("pypi_setuptools"); //sh: 1: Syntax error: "(" unexpected (1 found)
+    x.emplace_back("pypi_sh");
+    x.emplace_back("pypi_shapely"); //4
+    x.emplace_back("pypi_six");
+    x.emplace_back("pypi_smmap2");
+    x.emplace_back("pypi_tenacity");
+    x.emplace_back("pypi_tensorboard");
+    x.emplace_back("pypi_tensorflow"); //43
+    x.emplace_back("pypi_tensorflow_estimator");
+    x.emplace_back("pypi_termcolor");
+    x.emplace_back("pypi_terminado");
+    x.emplace_back("pypi_terminaltables");
+    x.emplace_back("pypi_testpath");
+    x.emplace_back("pypi_tetrys");
+    x.emplace_back("pypi_thriftrw"); //25
+    x.emplace_back("pypi_toml");
+    //x.emplace_back("pypi_torch"); //169 ldd results 257 correlations
+    x.emplace_back("pypi_torch2trt");
+    //x.emplace_back("pypi_torchvision"); // 1 ldd results 1 correlations
+    x.emplace_back("pypi_tornado");//1
+    x.emplace_back("pypi_traitlets");
+    x.emplace_back("pypi_typed_ast");//2
+    x.emplace_back("pypi_urllib3");
+    x.emplace_back("pypi_wcwidth");
+    x.emplace_back("pypi_webencodings");
+    x.emplace_back("pypi_websocket_client");
+    x.emplace_back("pypi_werkzeug");
+    x.emplace_back("pypi_wheel");
+    x.emplace_back("pypi_widgetsnbextension");
+    x.emplace_back("pypi_wrapt");//1
+    x.emplace_back("pypi_zipp");
+    x.emplace_back("python3");//42
+    x.emplace_back("python_base");
+    x.emplace_back("pyz3_image_base");
+    x.emplace_back("rad_telemetry");//27
+    x.emplace_back("range-v3");
+    x.emplace_back("remote_coverage_tools");
+    x.emplace_back("remote_java_tools_darwin");
+    x.emplace_back("remote_java_tools_linux");//3
+    x.emplace_back("remote_java_tools_windows");
+    x.emplace_back("remotejdk11_linux");//72
+    x.emplace_back("rules_cc");
+    x.emplace_back("rules_java");
+    x.emplace_back("rules_proto");
+    x.emplace_back("rules_proto_grpc");
+    x.emplace_back("s2geometry");
+    x.emplace_back("seccomms");
+    x.emplace_back("semantic_segmentation_neuropod");
+    x.emplace_back("sim-client-binary"); //1
+    x.emplace_back("sleef");
+    x.emplace_back("sleef_patch");
+    x.emplace_back("snappy");
+    x.emplace_back("spdlog");
+    x.emplace_back("sq"); //1
+    x.emplace_back("sqlite3");
+    x.emplace_back("squashfs-tools");
+    x.emplace_back("sysroot");//327
+    x.emplace_back("sysroot-runtime");//187
+    x.emplace_back("tbb");
+    //x.emplace_back("tensorrt");// 23 ldd results 23 correlations
+    x.emplace_back("tinyply");
+    x.emplace_back("torch");
+    //x.emplace_back("torch_external");// 8 ldd results 45 correlations
+    x.emplace_back("torch_models_test_data");
+    x.emplace_back("torch_patch");
+    x.emplace_back("trail");
+    x.emplace_back("type_safe");
+    x.emplace_back("uber-m3collector");
+    x.emplace_back("uberatc_minimal");
+    x.emplace_back("ubuntu_1804");
+    x.emplace_back("upb");
+    x.emplace_back("valijson");
+    x.emplace_back("variant");
+    x.emplace_back("websocketpp");
+    x.emplace_back("wise_enum");
+    x.emplace_back("x264");
+    x.emplace_back("xviz");
+    x.emplace_back("yaml-cpp");
+    x.emplace_back("zipper");
+    x.emplace_back("zstd");
+
+
+    return x;
+❱
+
+
+◀private: static▶ std::vector<Correlated_So_Ldd> ☀Get_Correlations(std::vector<File_And_Type> const& sos, std::vector<File_And_Ldd_Results> const& ldd)❰
+    std::vector<Correlated_So_Ldd> x;
+    
+    for (auto const& ldd_result: ldd){
+        for (auto const& so: sos){
+            x += Get_Correlations(so,ldd_result);
+        }
+    }
+    
+    return x;
+❱
+
+◀private: static▶ std::vector<Correlated_So_Ldd> ☀Get_Correlations(File_And_Type const& so, File_And_Ldd_Results const& ldd)❰
+    
+    std::vector<Correlated_So_Ldd> x;
+    for (auto const& entry: ldd.results.entries){
+        if (Get_File_Name(so.file) == Get_File_Name(entry.so)){
+            
+            //store
+            Correlated_So_Ldd temp;
+            temp.so = so;
+            temp.ldd = ldd;
+            x.emplace_back(temp);
+        }
+        if (Get_File_Name(so.file) == Get_File_Name(entry.pointing_at)){
+            
+            //store
+            Correlated_So_Ldd temp;
+            temp.so = so;
+            temp.ldd = ldd;
+            x.emplace_back(temp);
+        }
+    }
+    return x;
+❱
+
+//extracting info from filesystem
 ◀private: static▶ std::vector<File_And_Ldd_Results> ☀Ldd_Results_From_Dir(std::string const& dir)❰
     std::vector<File_And_Ldd_Results> results;
     auto files = Recursively_Get_All_Paths_To_Files_From_Path(dir);
@@ -63,7 +536,7 @@ class
 
 
 
-◀private: static▶ std::vector<File_And_Type> ☀Get_Shared_Objects(std::string dep)❰
+◀private: static▶ std::vector<File_And_Type> ☀Get_Shared_Objects_From_Dir(std::string dep)❰
 
     std::string identifier_for_shared_object = "shared object";
     
@@ -82,13 +555,13 @@ class
     return results;
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Get_Other_External_Paths(std::string dep)❰
+◀private: static▶ std::vector<std::string> ☀Get_Dir_Names_Excluding(strings deps)❰
 
     std::vector<std::string> paths;
     
     auto dirs = Get_Dirs_Of_Path();
     for (auto dir: Get_Dirs_Of_Path()){
-        if (dir != dep){
+        if (!In_Vector(deps,dir)){
             paths.emplace_back(dir);
         }
     }

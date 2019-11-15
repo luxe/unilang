@@ -13,6 +13,7 @@ void Move_Cursor_Up();
 void Clear_Terminal_Up_N_Lines(int n);
 
 void Output_And_Flush(std::string const& message);
+void Output_And_Flush_With_Newline(std::string const& message);
 void Print_Newline();
 
 //prints all parameters with std::cout

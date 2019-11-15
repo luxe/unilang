@@ -28,6 +28,10 @@ void Output_And_Flush(std::string const& message){
   std::cout << message; std::cout.flush();
   return;
 }
+void Output_And_Flush_With_Newline(std::string const& message){
+  std::cout << message << std::endl;
+}
+
 void Print_Newline(){
   std::cout << "\n";
 }
