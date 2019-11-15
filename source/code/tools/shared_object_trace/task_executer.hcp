@@ -44,16 +44,22 @@ class
     //move into external dir of bazel repo
     Set_Path(options.Run_Dir());
     
+    auto all_correlations = Get_All_So_Ldd_Correlations(options.Dep());
+    std::cout << all_correlations.size() << std::endl;
+❱
+
+◀private: static▶ std::vector<Correlated_So_Ldd> ☀Get_All_So_Ldd_Correlations(std::string const& dep_name)❰
+
     //get all the shared library files from this third party dependency
-    Output_And_Flush("Getting shared objects from " + options.Dep() + "...");
+    Output_And_Flush("Getting shared objects from " + dep_name + "...");
     std::cout.flush();
-    auto sos = Get_Shared_Objects_From_Dir(options.Dep());
+    auto sos = Get_Shared_Objects_From_Dir(dep_name);
     Output_And_Flush_With_Newline(" " + std::to_string(sos.size()) + " found");
     
     
     std::vector<Correlated_So_Ldd> all_correlations;
     
-    auto dirs = Get_Dir_Names_Excluding(Dirs_To_Skip(options.Dep()));
+    auto dirs = Get_Dir_Names_Excluding(Dirs_To_Skip(dep_name));
     for (auto dir: dirs){
         Output_And_Flush("Getting LDD data from " + dir + "...");
         auto ldd_results = Ldd_Results_From_Dir(dir);
@@ -64,9 +70,8 @@ class
         Output_And_Flush_With_Newline(" " + std::to_string(correlations.size()) + " correlations");
     }
     
-    
+    return all_correlations;
 ❱
-
 
 
 ◀private: static▶ strings ☀Dirs_To_Skip(std::string const& searched)❰
@@ -237,7 +242,7 @@ class
     x.emplace_back("net_zlib_zlib");
     x.emplace_back("neuropods");
     x.emplace_back("neuropods_prebuilt");//18
-    x.emplace_back("nlohmann_json..."); //sh: 1: Syntax error: "(" unexpected (3 found)
+    x.emplace_back("nlohmann_json"); //sh: 1: Syntax error: "(" unexpected (3 found)
     x.emplace_back("nodejs");
     x.emplace_back("nodejs_linux_amd64"); //1
     x.emplace_back("nsync");
@@ -245,9 +250,9 @@ class
     x.emplace_back("onnx");
     x.emplace_back("opencv");
     x.emplace_back("openssl");
-    x.emplace_back("openvpn...");//1
+    x.emplace_back("openvpn");//1
     x.emplace_back("org_apache_thrift");
-    x.emplace_back("org_golang_go...");//11
+    x.emplace_back("org_golang_go");//11
     x.emplace_back("org_golang_google_grpc");
     x.emplace_back("org_golang_x_crypto");
     x.emplace_back("org_golang_x_net");
@@ -478,6 +483,7 @@ class
     x.emplace_back("yaml-cpp");
     x.emplace_back("zipper");
     x.emplace_back("zstd");
+    x.emplace_back("local_config_cuda");
 
 
     return x;
