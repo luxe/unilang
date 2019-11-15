@@ -6,9 +6,11 @@ class
 ❪"code/tools/crossword/crossword_words"❫
 ⚯
 ❪iostream❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
 ❪"code/utilities/types/vectors/creators/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
 ❪"code/utilities/random/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
@@ -22,6 +24,10 @@ class
 
     //puzzle settings
     auto settings = Get_Settings();
+    
+    //adjustments on words
+    Sort_And_Remove_Duplicates(settings.words);
+    Uppercase(settings.words);
 
     //create grid
     auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,"?");
@@ -61,14 +67,23 @@ class
     settings.dimensions.x = 25;
     settings.dimensions.y = 30;
     
-    settings.words = Crossword_Words::Jungle_Words();
+    settings.words = Crossword_Words::Winter_Words();
+    
+    settings.decoy_words.emplace_back("trevor");
+    settings.decoy_words.emplace_back("teresa");
     
     return settings;
 ❱
 
 ◀private: static▶ void ☀Randomly_Place_Each_Word(std::vector<std::vector<std::string>> & grid, Crossword_Puzzle_Settings const& settings)❰
 
-    for (auto word: settings.words){
+    Randomly_Place_Word_Set(grid,settings,settings.words);
+    Randomly_Place_Word_Set(grid,settings,settings.decoy_words);
+❱
+
+◀private: static▶ void ☀Randomly_Place_Word_Set(std::vector<std::vector<std::string>> & grid, Crossword_Puzzle_Settings const& settings, std::vector<std::string> const& word_set)❰
+
+    for (auto word: word_set){
         
         Remove_Spaces(word);
         
@@ -77,22 +92,24 @@ class
         
         auto word_try = Primed_Random_Word_Try(grid,word);
         
-        std::cout << "fitting " << word << std::endl;
+        std::cout << "fitting " << word << " ";
         while (!Word_Fits(grid,word,word_try)){
             
             //try again
             word_try = Random_Word_Try(grid);
         }
         Fit_Word(grid,word,word_try);
+        std::cout << std::endl;
     }
 ❱
+
 
 ◀private: static▶ Word_Try ☀Primed_Random_Word_Try(std::vector<std::vector<std::string>> const& grid, std::string const& word)❰
     
     auto word_try = Random_Word_Try(grid);
     for (int i = 0; i < 20; ++i){
         if (Word_Fits_And_Has_Pass_Through(grid,word,word_try)){
-            std::cout << "passthrough" << std::endl;
+            std::cout << "(passthrough) ";
             return word_try;
         }
         word_try = Random_Word_Try(grid);
@@ -114,7 +131,7 @@ class
     for (auto & x: grid){
         for (auto & y: x){
             if (y == q_mark){
-                y = Random_Lowercase_Letter();
+                y = Random_Uppercase_Letter();
             }
         }
     }
