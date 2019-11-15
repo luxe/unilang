@@ -20,6 +20,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/printers:lib",
     "//code/utilities/std_hackery:std_aliases",
     "//code/utilities/types/vectors/observers:lib",
+    "//code/tools/shared_object_trace:so_ldd_correlation_visualizer",
 ])
 
 hcp(name = "file_and_type", deps = [
@@ -28,6 +29,18 @@ hcp(name = "file_and_type", deps = [
 hcp(name = "correlated_so_ldd", deps = [
     "//code/tools/shared_object_trace:file_and_type",
     "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
+])
+
+hcp(name = "so_ldd_correlation_visualizer", deps = [
+    "//code/tools/shared_object_trace:correlated_so_ldd",
+    "//code/utilities/shell:lib",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/types/sets:lib",
+    "//code/utilities/graphviz:graphviz_image_maker",
 ])
 
 distributable_cpp_main(
