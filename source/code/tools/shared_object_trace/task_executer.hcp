@@ -9,6 +9,7 @@ class
 ❪"code/utilities/filesystem/files/observers/other/file_and_ldd_results"❫
 ❪"code/utilities/filesystem/files/observers/other/ldd_results_getter"❫
 ❪"code/tools/shared_object_trace/correlated_so_ldd"❫
+❪"code/tools/shared_object_trace/correlation_results"❫
 ❪"code/utilities/std_hackery/std_aliases"❫
 ⚯
 ❪"code/utilities/exits/lib"❫
@@ -46,20 +47,21 @@ class
     Set_Path(options.Run_Dir());
     
     auto all_correlations = Get_All_So_Ldd_Correlations(options.Dep());
-    std::cout << all_correlations.size() << std::endl;
-    So_Ldd_Correlation_Visualizer::Visualize(all_correlations);
+    std::cout << all_correlations.connections.size() << std::endl;
+    So_Ldd_Correlation_Visualizer::Visualize(all_correlations,options.Dep());
 ❱
 
-◀private: static▶ std::vector<Correlated_So_Ldd> ☀Get_All_So_Ldd_Correlations(std::string const& dep_name)❰
+◀private: static▶ Correlation_Results ☀Get_All_So_Ldd_Correlations(std::string const& dep_name)❰
 
+    Correlation_Results x;
+    
     //get all the shared library files from this third party dependency
     Output_And_Flush("Getting shared objects from " + dep_name + "...");
     std::cout.flush();
     auto sos = Get_Shared_Objects_From_Dir(dep_name);
     Output_And_Flush_With_Newline(" " + std::to_string(sos.size()) + " found");
+    x.original_sos = sos;
     
-    
-    std::vector<Correlated_So_Ldd> all_correlations;
     
     auto dirs = Get_Dir_Names_Excluding(Dirs_To_Skip(dep_name));
     for (auto dir: dirs){
@@ -68,11 +70,11 @@ class
         Output_And_Flush(" " + std::to_string(ldd_results.size()) + " ldd results");
         
         auto correlations = Get_Correlations(sos,ldd_results);
-        all_correlations += correlations;
+        x.connections += correlations;
         Output_And_Flush_With_Newline(" " + std::to_string(correlations.size()) + " correlations");
     }
     
-    return all_correlations;
+    return x;
 ❱
 
 

@@ -31,6 +31,11 @@ hcp(name = "correlated_so_ldd", deps = [
     "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
 ])
 
+hcp(name = "correlation_results", deps = [
+    "//code/tools/shared_object_trace:correlated_so_ldd",
+    "//code/tools/shared_object_trace:file_and_type",
+])
+
 hcp(name = "so_ldd_correlation_visualizer", deps = [
     "//code/tools/shared_object_trace:correlated_so_ldd",
     "//code/utilities/shell:lib",
@@ -41,6 +46,8 @@ hcp(name = "so_ldd_correlation_visualizer", deps = [
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/types/sets:lib",
     "//code/utilities/graphviz:graphviz_image_maker",
+    "//code/utilities/types/strings/observers/path:lib",
+    "//code/tools/shared_object_trace:correlation_results",
 ])
 
 distributable_cpp_main(

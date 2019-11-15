@@ -29,6 +29,19 @@ std::string& Append(std::string & str, char const& part){
         return str;
 }
 
+std::string& Append_In_DQuotes(std::string & str, std::string const& part){
+        str += '"';
+        str += part;
+        str += '"';
+        return str;
+}
+std::string& Append_In_DQuotes(std::string & str, char const& part){
+        str += '"';
+        str += part;
+        str += '"';
+        return str;
+}
+
 std::string& Append_N_Times(std::string & str, std::string const& part, unsigned int number_of_times){
         for (unsigned int i = 0; i < number_of_times; ++i){
                 str+=part;

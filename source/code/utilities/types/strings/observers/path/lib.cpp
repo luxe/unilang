@@ -37,6 +37,19 @@ std::string Get_File_Name(std::string const& str){
     
     return filename;
 }
+std::string Get_First_Folder_Name(std::string const& str){
+    std::string filename;
+    for (auto const& it : str){
+        if (it == '/'){
+            break;
+        }else{
+            filename+=it;
+        }
+    }
+    return filename;
+}
+
+
 bool File_Name_Starts_With(std::string const& str, std::string const& prefix){
     auto file_name = Get_File_Name(str);
     return Begins_With(file_name,prefix);

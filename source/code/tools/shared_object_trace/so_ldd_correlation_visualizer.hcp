@@ -1,6 +1,7 @@
 class
 ❪iostream❫
 ❪string❫
+❪set❫
 ❪utility❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
@@ -11,40 +12,90 @@ class
 ❪"code/utilities/types/sets/lib"❫
 ❪"code/utilities/graphviz/graphviz_image_maker"❫
 ❪"code/tools/shared_object_trace/correlated_so_ldd"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/tools/shared_object_trace/correlation_results"❫
 ⚯
 ⚞⚟
 
+◀public: static▶ void ☀Visualize(Correlation_Results const& correlations, std::string const& dep_name)❰
+    
+    auto relationships_strs = Get_Relationships(correlations.connections);
+    
+    std::string x;
+    Append_With_Newline(x,"digraph results {");
+    //Append_With_Newline(x,"splines=false;");
+    Append_With_Newline(x,"node [");
+    Append_With_Newline(x,"fontname=\"Arial\",");
+    //Append_With_Newline(x,"shape = plaintext,");
+    Append_With_Newline(x,"height=.1");
+    Append_With_Newline(x,"]");
+    
+    Append_In_DQuotes(x,dep_name);
+    Append(x," [xlabel=");
+    Append_In_DQuotes(x,Main_Dep_Numbers(correlations,dep_name));
+    Append_With_Newline(x,"]");
+    
+    
+    for (auto const& it: relationships_strs){
+         Append_With_Newline(x,it);
+     }
+     Append_With_Newline(x,"}");
+     
+    auto result_path = "/home/thickey/Desktop/results";
+    Graphviz_Image_Maker::Make(x,result_path,dep_name + "_so_trace");
+❱
 
-    // for (auto const& it: all_correlations){
-    //     std::cout << it.so.file << " -> ";
-    //     std::cout << it.ldd.file << std::endl;
-    // }
-◀public: static▶ void ☀Visualize(std::vector<Correlated_So_Ldd> const& correlations)❰
+◀private: static▶ std::string ☀Main_Dep_Numbers(Correlation_Results const& correlations, std::string const& dep_name)❰
+    std::string x;
+    
+    x += std::to_string(Total_Sos_Connected(correlations));
+    x += " / ";
+    x += std::to_string(correlations.original_sos.size());
+    x += "(";
+    x += std::to_string(correlations.connections.size());
+    x += ")";
+    return x;
+❱
 
+◀private: static▶ size_t ☀Total_Sos_Connected(Correlation_Results const& correlations)❰
+    std::set<std::string> x;
+    for (auto const& it: correlations.connections){
+        x.insert(Get_File_Name(it.so.file));
+    }
+    return x.size();
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_Relationships(std::vector<Correlated_So_Ldd> const& correlations)❰
     std::vector<std::string> relationships_strs;
+    
+    //this is one strategy for displaying the relationships
+    //query lib -> its sos -> libs that use them
+    
     for (auto const& it: correlations){
         std::string line = "";
         line += "\"";
-        line += it.so.file;
+        line += Get_First_Folder_Name(it.so.file);
         line += "\"";
-        line += " <- ";
+        line += " -> ";
         line += "\"";
-        line += it.ldd.file;
+        line += Get_File_Name(it.so.file);
         line += "\"";
         relationships_strs.emplace_back(line);
     }
     
-    // std::string x;
-    // Append_With_Newline(x,"digraph results {");
-    // //Append_With_Newline(x,"splines=false;");
-    // Append_With_Newline(x,"node [");
-    // Append_With_Newline(x,"fontname=\"Arial\",");
-    // //Append_With_Newline(x,"shape = plaintext,");
-    // Append_With_Newline(x,"height=.1");
-    // Append_With_Newline(x,"]");
-    // for (auto const& it: relationships_strs){
-    //     Append_With_Newline(x,it);
-    // }
-    // Append_With_Newline(x,"}");
-    //Graphviz_Image_Maker::Make(x,settings.result_path,settings.dep_name);
+    //add ldd to 3rd party connections
+    for (auto const& it: correlations){
+        std::string line = "";
+        line += "\"";
+        line += Get_File_Name(it.so.file);
+        line += "\"";
+        line += " -> ";
+        line += "\"";
+        line += Get_First_Folder_Name(it.ldd.file);
+        line += "\"";
+        relationships_strs.emplace_back(line);
+    }
+    Sort_And_Remove_Duplicates(relationships_strs);
+    
+    return relationships_strs;
 ❱
