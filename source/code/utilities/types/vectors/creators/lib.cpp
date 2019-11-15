@@ -17,3 +17,7 @@ std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Question_Marks(int
     std::vector<std::vector<std::string>> vec = Create_N_By_N_Vector(x,y,str);
     return vec;
 }
+std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Strs(int x, int y, std::string const& str){
+    std::vector<std::vector<std::string>> vec = Create_N_By_N_Vector(x,y,str);
+    return vec;
+}

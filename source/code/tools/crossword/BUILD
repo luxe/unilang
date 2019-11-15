@@ -32,6 +32,7 @@ hcp(name = "crossword_maker", deps = [
     "//code/tools/crossword:html_exporter",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/tools/crossword:crossword_words",
+    "//code/utilities/data_structures/point:point_mover",
 ])
 
 hcp(name = "crossword_words", deps = [

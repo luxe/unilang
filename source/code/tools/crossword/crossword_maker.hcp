@@ -1,8 +1,6 @@
 class
 ❪string❫
-❪"code/utilities/data_structures/compass_direction"❫
-❪"code/utilities/data_structures/compass_direction_diagnonal"❫
-❪"code/utilities/data_structures/point/point"❫
+❪"code/utilities/data_structures/point/point_mover"❫
 ❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
 ❪"code/tools/crossword/word_try"❫
 ❪"code/tools/crossword/crossword_words"❫
@@ -18,13 +16,15 @@ class
 ❪"code/tools/crossword/html_exporter"❫
 ⚞⚟
 
+//TODO: make question mark symbol generic
+
 ◀public: static▶ void ☀Make()❰
 
     //puzzle settings
     auto settings = Get_Settings();
 
     //create grid
-    auto grid = Create_N_By_N_Vector_Of_Question_Marks(settings.dimensions.x,settings.dimensions.y);
+    auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,"?");
     
     //place words
     Randomly_Place_Each_Word(grid,settings);
@@ -32,13 +32,17 @@ class
     //take a peek
     //std::cout << std::endl;
     //std::cout << Table_As_Column_Aligned(grid) << std::endl;
-    Html_Exporter::Export(grid,settings,settings.answer_file_name);
+    if (settings.create_answer_artifact){
+        Html_Exporter::Export(grid,settings,settings.answer_file_name);
+    }
     
     //fill empty spaces
     Fill_Remaining_Spaces_With_Random_Letters(grid);
     
     //create artifacts
-    Html_Exporter::Export(grid,settings,settings.puzzle_file_name);
+    if (settings.create_puzzle_artifact){
+        Html_Exporter::Export(grid,settings,settings.puzzle_file_name);
+    }
 ❱
 
 
@@ -48,7 +52,10 @@ class
 ◀private: static▶ Crossword_Puzzle_Settings ☀Get_Settings()❰
     Crossword_Puzzle_Settings settings;
     
+    settings.create_puzzle_artifact = true;
     settings.puzzle_file_name = "/home/laptop/Desktop/crossword.html";
+    
+    settings.create_answer_artifact = false;
     settings.answer_file_name = "/home/laptop/Desktop/crossword_answer.html";
     
     settings.dimensions.x = 25;
@@ -126,7 +133,7 @@ class
             return false;
         }
         
-        Move_Position_In_Direction(word_try.point,word_try.direction);
+        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
     }
     
     return true;
@@ -151,7 +158,7 @@ class
             has_pass_through = true;
         }
         
-        Move_Position_In_Direction(word_try.point,word_try.direction);
+        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
     }
     
     return has_pass_through;
@@ -160,7 +167,7 @@ class
 ◀private: static▶ void ☀Fit_Word(std::vector<std::vector<std::string>> & grid, std::string const& word, Word_Try word_try)❰
     for (auto letter: word){
         grid[word_try.point.x][word_try.point.y] = letter;
-        Move_Position_In_Direction(word_try.point,word_try.direction);
+        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
     }
 ❱
 
@@ -176,48 +183,6 @@ class
         return false;
     }
     return true;
-❱
-
-
-◀private: static▶ void ☀Move_Position_In_Direction(Point & point, Compass_Direction_Diagnonal const& dir)❰
-    if (dir == Compass_Direction_Diagnonal::NORTH){
-        point.y -= 1;
-        return;
-    }
-    if (dir == Compass_Direction_Diagnonal::SOUTH){
-        point.y += 1;
-        return;
-    }
-    
-    if (dir == Compass_Direction_Diagnonal::WEST){
-        point.x -= 1;
-        return;
-    }
-    if (dir == Compass_Direction_Diagnonal::EAST){
-        point.x += 1;
-        return;
-    }
-    
-    if (dir == Compass_Direction_Diagnonal::NORTH_WEST){
-        point.y -= 1;
-        point.x -= 1;
-        return;
-    }
-    if (dir == Compass_Direction_Diagnonal::SOUTH_WEST){
-        point.y += 1;
-        point.x -= 1;
-        return;
-    }
-    if (dir == Compass_Direction_Diagnonal::NORTH_EAST){
-        point.y -= 1;
-        point.x += 1;
-        return;
-    }
-    if (dir == Compass_Direction_Diagnonal::SOUTH_EAST){
-        point.y += 1;
-        point.x += 1;
-        return;
-    }
 ❱
 
 

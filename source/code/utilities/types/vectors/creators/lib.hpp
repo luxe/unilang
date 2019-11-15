@@ -26,3 +26,4 @@ std::vector<std::vector<T>> Create_A_Square_Vector(int size, T value){
 
 
 std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Question_Marks(int x, int y);
+std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Strs(int x, int y, std::string const& str);
