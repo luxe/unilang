@@ -19,4 +19,6 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/keyboard/joycons:joycon_state_getter",
     "//code/tools/ily3000/assets:assets_loader",
     "//code/tools/ily3000/state:game_state",
+    "//code/utilities/keyboard/joycons:joystick_rotating_checker",
+    "//code/utilities/math:math",
 ])

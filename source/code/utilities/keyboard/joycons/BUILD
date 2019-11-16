@@ -17,3 +17,14 @@ hcp(name = "joycons", deps = [
 hcp(name = "joycon_state_getter", deps = [
     "//code/utilities/keyboard/joycons:joycons",
 ])
+
+hcp(name = "joycon_joystick_direction_getter", deps = [
+    "//code/utilities/keyboard/joycons:joycons",
+    "//code/utilities/data_structures:compass_direction_diagnonal",
+])
+
+hcp(name = "joystick_rotating_checker", deps = [
+    "//code/utilities/keyboard/joycons:joycon_horizontal_state",
+    "//code/utilities/data_structures:compass_direction_diagnonal",
+    "//code/utilities/keyboard/joycons:joycon_joystick_direction_getter",
+])
