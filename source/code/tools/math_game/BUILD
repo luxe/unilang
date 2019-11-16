@@ -16,6 +16,7 @@ cc_binary(
     "//code/tools/math_game/core:state_updater",
     "//code/tools/math_game/state:game_state_getter",
     "//code/utilities/graphics/sfml:game_loop",
+    "//code/utilities/graphics/sfml:standard_sfml_game_loop",
     "@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
    linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
 )
