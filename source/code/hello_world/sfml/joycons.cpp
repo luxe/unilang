@@ -4,7 +4,17 @@
 #include "code/utilities/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/json/functions/lib.hpp"
 
-//jstest-gtk to toy visually
+
+//setting up the joycons are stupid.
+//you have to run this jcdriver program
+//https://github.com/riking/joycon
+//then type sync
+//the go your bluetooth devices and search for devices
+//find the device and try to pair it.
+//it might say there are errors and stuff in ubuntu, but it will usually work
+//you can run this program to verify.
+
+//jstest-gtk to toy with visually
 int main()
 {
     while (true){
