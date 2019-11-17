@@ -40,6 +40,7 @@ hcp(name = "crossword_maker", deps = [
 ])
 
 hcp(name = "crossword_words", deps = [
+    "//code/utilities/types/vectors/transformers:lib",
 ])
 
 hcp(name = "word_try", deps = [

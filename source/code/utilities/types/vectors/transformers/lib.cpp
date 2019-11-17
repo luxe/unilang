@@ -7,6 +7,9 @@
 #include "code/utilities/types/strings/transformers/other/lib.hpp"
 
 
+void Add(std::vector<std::string> & vec, std::string const& item){
+    vec.emplace_back(item);
+}
 std::vector<std::string>& Remove_First_Elements_That_Are_Whitespace_Elements(std::vector<std::string>& vec){
     size_t count = 0;
     for (auto const& it: vec){

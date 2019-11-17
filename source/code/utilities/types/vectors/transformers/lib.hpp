@@ -44,6 +44,11 @@ template <typename T>
 void Add_To_Front(std::vector<T> & vec, T const& item){
 	vec.insert(vec.begin(), item);
 }
+template <typename T>
+void Add(std::vector<T> & vec, T const& item){
+    vec.emplace_back(item);
+}
+void Add(std::vector<std::string> & vec, std::string const& item);
 
 
 
