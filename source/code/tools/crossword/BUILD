@@ -53,4 +53,6 @@ hcp(name = "html_exporter", deps = [
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/colors:color_palettes",
+    "//code/utilities/random:lib",
 ])
