@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "code/utilities/types/char/letter_case.hpp"
 
     std::string& CapitalizeFirstChar(std::string & s);
     std::string& LowercaseFirstChar(std::string & s);
@@ -9,6 +10,8 @@
     
     std::string& Lowercase(std::string &s);
     std::string As_Lowercase(std::string s);
+    
+    std::string& Set_Casing(std::string &s, Letter_Case const& case_style);
     
     std::string As_Camel_Case(std::string s);
     std::string As_Lower_Camel_Case(std::string s);

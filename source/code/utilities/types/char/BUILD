@@ -1,10 +1,15 @@
-package(
-    default_visibility = ["//visibility:public"],
-)
+package(default_visibility = ["//visibility:public"])
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+
+enum_cpp(name = "letter_case",
+values = [
+"upper"
+,"lower"
+])
 
 cc_library(
     name = "lib",
-    srcs = glob(["*.cpp"]),
-    hdrs = glob(["*.hpp"]),
+    srcs = ["lib.cpp"],
+    hdrs = ["lib.hpp"],
     deps = ["//code/utilities/language_basic/control_structures/looping:lib"]
 )

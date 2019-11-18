@@ -36,6 +36,17 @@ std::string As_Lowercase(std::string str){
     return str;
 }
 
+std::string& Set_Casing(std::string &s, Letter_Case const& case_style){
+    
+    if (case_style == Letter_Case::UPPER){
+        Uppercase(s);
+    }
+    else if (case_style == Letter_Case::LOWER){
+        Lowercase(s);
+    }
+    return s;
+}
+
 
 
 
