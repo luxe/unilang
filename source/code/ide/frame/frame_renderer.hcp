@@ -27,12 +27,17 @@ class
 ◀public: static▶ void ☀each_frame(Ide_Settings & settings, Frame_Elements const& elements, SDL_Window* window)❰
 
     Fullscreener::Possibly_Fullscreen(settings,window);
-    ImGui_Property_Per_Frame(settings);
+    Imgui_Frame_Renderer(settings.background,elements);
+❱
+
+◀private: static▶ void ☀Imgui_Frame_Renderer(Background_Settings & settings, Frame_Elements const& elements)❰
+
+    ImGui_Property_Per_Frame();
     
     //Draw the main window and render everything inside of it
     Prepare_Window_Drawing_Surface(settings);
     
-    Window_Renderer::render(settings.background.main_window,[&](){
+    Window_Renderer::render(settings.main_window,[&](){
         Render_Frame_Elements(elements);
     });
     
@@ -58,7 +63,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀ImGui_Property_Per_Frame(Ide_Settings & settings)❰
+◀private: static▶ void ☀ImGui_Property_Per_Frame()❰
     
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -67,7 +72,7 @@ class
     ImGui::SetMouseCursor(ImGuiMouseCursor_None);
 ❱
 
-◀private: static▶ void ☀Prepare_Window_Drawing_Surface(Ide_Settings & settings)❰
+◀private: static▶ void ☀Prepare_Window_Drawing_Surface(Background_Settings & settings)❰
 
     //create a giant window that spans the entire application
     //since we are using imgui, we have found it better to draw bitmaps on what imgui considers a window.  
@@ -79,11 +84,11 @@ class
     Position window_end_position = Imgui_Type_Utility::Display_Size_Position();
     window_end_position.x += 8;
     Update_Background_For_Window_Size(settings,window_end_position);
-    ImGui::SetNextWindowPos(Imgui_Type_Utility::To_ImVec2(settings.background.main_window_backdrop.pos));
+    ImGui::SetNextWindowPos(Imgui_Type_Utility::To_ImVec2(settings.main_window_backdrop.pos));
     ImGui::SetNextWindowSize(Imgui_Type_Utility::To_ImVec2(window_end_position));
 ❱
 
-◀private: static▶ void ☀Update_Background_For_Window_Size(Ide_Settings & settings, Position const& window_end_position)❰
-    settings.background.main_window_backdrop.shape.dimensions.width = window_end_position.x;
-    settings.background.main_window_backdrop.shape.dimensions.height = window_end_position.y;
+◀private: static▶ void ☀Update_Background_For_Window_Size(Background_Settings & settings, Position const& window_end_position)❰
+    settings.main_window_backdrop.shape.dimensions.width = window_end_position.x;
+    settings.main_window_backdrop.shape.dimensions.height = window_end_position.y;
 ❱
