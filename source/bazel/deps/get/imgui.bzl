@@ -15,6 +15,7 @@ def imgui():
           # Changing this is the author's suggestion, and the code even has a comment to do this.
           # these use some imconfig.h file to overwrite, but this is fine too.
           patch_cmds = ["find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \\;"],
+
           urls = [
             'https://github.com/unilang/imgui/archive/v1.62.tar.gz',
             'https://github.com/ocornut/imgui/archive/v1.62.tar.gz',

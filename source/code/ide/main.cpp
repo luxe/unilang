@@ -1,5 +1,4 @@
 #include "code/utilities/graphics/imgui/mechanics.hpp"
-#include "code/utilities/graphics/imgui/sdl_init_settings.hpp"
 #include "code/utilities/graphics/imgui/ui/ui_renders.hpp"
 #include "code/ide/settings/ide_settings.hpp"
 #include "code/ide/settings/ide_settings_getter.hpp"
