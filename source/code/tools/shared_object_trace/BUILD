@@ -48,6 +48,7 @@ hcp(name = "so_ldd_correlation_visualizer", deps = [
     "//code/utilities/graphviz:graphviz_image_maker",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/tools/shared_object_trace:correlation_results",
+    "//code/utilities/data_structures/unique_counter:unique_counter",
 ])
 
 distributable_cpp_main(

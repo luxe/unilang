@@ -14,6 +14,7 @@ class
 ❪"code/tools/shared_object_trace/correlated_so_ldd"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"code/tools/shared_object_trace/correlation_results"❫
+❪"code/utilities/data_structures/unique_counter/unique_counter"❫
 ⚯
 ⚞⚟
 
@@ -30,10 +31,9 @@ class
     Append_With_Newline(x,"height=.1");
     Append_With_Newline(x,"]");
     
-    Append_In_DQuotes(x,dep_name);
-    Append(x," [xlabel=");
-    Append_In_DQuotes(x,Main_Dep_Numbers(correlations,dep_name));
-    Append_With_Newline(x,"]");
+    //add dep metric numbers
+    Append_With_Newline(x,Add_Main_Dep_Metrics(correlations,dep_name));
+    Append_With_Newline(x,Add_Other_Dep_Metrics(correlations,dep_name));
     
     
     for (auto const& it: relationships_strs){
@@ -45,15 +45,44 @@ class
     Graphviz_Image_Maker::Make(x,result_path,dep_name + "_so_trace");
 ❱
 
+◀private: static▶ std::string ☀Add_Main_Dep_Metrics(Correlation_Results const& correlations, std::string const& dep_name)❰
+    std::string x;
+    Append_In_DQuotes(x,dep_name);
+    Append(x," [xlabel=");
+    Append_In_DQuotes(x,Main_Dep_Numbers(correlations,dep_name));
+    Append_With_Newline(x,"]");
+    return x;
+❱
+◀private: static▶ std::string ☀Add_Other_Dep_Metrics(Correlation_Results const& correlations, std::string const& dep_name)❰
+    Unique_Counter<std::string> counter;
+    for (auto const& it: correlations.connections){
+        counter.Add(Get_First_Folder_Name(it.ldd.file));
+    }
+    
+    std::string x;
+    for (auto const& it: counter.hash_table){
+        Append_In_DQuotes(x,it.first);
+        Append(x," [xlabel=");
+        Append(x,"C=");
+        Append_In_DQuotes(x,std::to_string(it.second));
+        Append_With_Newline(x,"]");
+    }
+    return x;
+    
+❱
+
 ◀private: static▶ std::string ☀Main_Dep_Numbers(Correlation_Results const& correlations, std::string const& dep_name)❰
     std::string x;
     
-    x += std::to_string(Total_Sos_Connected(correlations));
-    x += " / ";
+    x+= "T=";
     x += std::to_string(correlations.original_sos.size());
-    x += "(";
+    x+= " ";
+    x+= "U=";
+    x += std::to_string(Total_Sos_Connected(correlations));
+    x+= " ";
+    x+= "C=";
     x += std::to_string(correlations.connections.size());
-    x += ")";
+    
     return x;
 ❱
 
