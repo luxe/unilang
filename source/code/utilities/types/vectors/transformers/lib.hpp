@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <set>
+#include "code/utilities/types/strings/transformers/casing/lib.hpp"
 
 //whoops.. pre-pre-jstd is really needed
 template <typename T>

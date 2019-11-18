@@ -17,6 +17,7 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/tools/crossword/html_exporter"❫
+❪"code/tools/crossword/random_word_placer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Make()❰
@@ -30,12 +31,16 @@ class
     //create grid
     auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,settings.empty_cell_symbol);
     
-    //place words
-    Randomly_Place_Each_Word(grid,settings);
+    //place words (this is the main algorithm)
+    //we can come up with different core algorithms here.
+    Random_Word_Placer::Randomly_Place_Each_Word(grid,settings);
     
-    //take a peek
-    //std::cout << std::endl;
-    //std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    //TODO: verify properties about the puzzle
+    //depending on which algorithm we use, there may be certain properties
+    //about the puzzle that we want to check after its created.
+    
+    //take a terminal peek
+    //std::cout << std::endl << Table_As_Column_Aligned(grid) << std::endl;
     if (settings.create_answer_artifact){
         Html_Exporter::Export(grid,settings,settings.answer_file_name);
     }
@@ -47,69 +52,6 @@ class
     if (settings.create_puzzle_artifact){
         Html_Exporter::Export(grid,settings,settings.puzzle_file_name);
     }
-    
-    //verify properties about the puzzle
-❱
-
-
-
-◀private: static▶ void ☀Adjust_Word_Lists(Crossword_Puzzle_Settings & settings)❰
-
-    Sort_And_Remove_Duplicates(settings.words);
-    Sort_And_Remove_Duplicates(settings.decoy_words);
-    Uppercase(settings.words);
-    Uppercase(settings.decoy_words);
-❱
-
-◀private: static▶ void ☀Randomly_Place_Each_Word(string_grid & grid, Crossword_Puzzle_Settings const& settings)❰
-
-    Randomly_Place_Word_Set(grid,settings,settings.words);
-    Randomly_Place_Word_Set(grid,settings,settings.decoy_words);
-❱
-
-◀private: static▶ void ☀Randomly_Place_Word_Set(string_grid & grid, Crossword_Puzzle_Settings const& settings, strings const& word_set)❰
-
-    for (auto word: word_set){
-        
-        Remove_Spaces(word);
-        
-        //get random position and direction
-        //auto word_try = Random_Word_Try(grid);
-        
-        auto word_try = Primed_Random_Word_Try(grid,settings,word);
-        
-        std::cout << "fitting " << word << " ";
-        while (!Word_Fits(grid,settings,word,word_try)){
-            
-            //try again
-            word_try = Random_Word_Try(grid);
-        }
-        Fit_Word(grid,word,word_try);
-        std::cout << std::endl;
-    }
-❱
-
-
-◀private: static▶ Word_Try ☀Primed_Random_Word_Try(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
-    
-    auto word_try = Random_Word_Try(grid);
-    for (int i = 0; i < 20; ++i){
-        if (Word_Fits_And_Has_Pass_Through(grid,settings,word,word_try)){
-            std::cout << "(passthrough) ";
-            return word_try;
-        }
-        word_try = Random_Word_Try(grid);
-    }
-    
-    return word_try;
-❱
-
-◀private: static▶ Word_Try ☀Random_Word_Try(string_grid const& grid)❰
-    Word_Try x;
-    x.point.x = Get_Random_Index(grid);
-    x.point.y = Get_Random_Index(grid[0]);
-    x.direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
-    return x;
 ❱
 
 ◀private: static▶ void ☀Fill_Remaining_Spaces_With_Random_Letters(string_grid & grid, Crossword_Puzzle_Settings const& settings)❰
@@ -122,71 +64,15 @@ class
     }
 ❱
 
-◀private: static▶ bool ☀Word_Fits(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
 
-    for (auto letter: word){
-        if (!Position_In_Range(grid,word_try.point)){
-            return false;
-        }
-        
-        std::string str;
-        str += letter;
-        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
-            return false;
-        }
-        
-        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
-    }
-    
-    return true;
+◀private: static▶ void ☀Adjust_Word_Lists(Crossword_Puzzle_Settings & settings)❰
+
+    //clean up the wordlist based on our expectations
+    Sort_And_Remove_Duplicates(settings.words);
+    Sort_And_Remove_Duplicates(settings.decoy_words);
+    Uppercase(settings.words);
+    Uppercase(settings.decoy_words);
 ❱
-
-◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
-
-
-    bool has_pass_through = false;
-    for (auto letter: word){
-        if (!Position_In_Range(grid,word_try.point)){
-            return false;
-        }
-        
-        std::string str;
-        str += letter;
-        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
-            return false;
-        }
-        
-        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol){
-            has_pass_through = true;
-        }
-        
-        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
-    }
-    
-    return has_pass_through;
-❱
-
-◀private: static▶ void ☀Fit_Word(string_grid & grid, std::string const& word, Word_Try word_try)❰
-    for (auto letter: word){
-        grid[word_try.point.x][word_try.point.y] = letter;
-        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
-    }
-❱
-
-◀private: static▶ bool ☀Position_In_Range(string_grid const& grid, Point const& p)❰
-    if (p.x < 0 || p.y < 0){
-        return false;
-    }
-    if (p.x > grid.size()-1){
-        return false;
-    }
-    
-    if (p.y > grid[0].size()-1){
-        return false;
-    }
-    return true;
-❱
-
 
 
 

@@ -1,13 +1,13 @@
 class
 ❪string❫
 ❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
+❪"code/utilities/colors/color_palettes"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/types/vectors/creators/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
-❪"code/utilities/colors/color_palettes"❫
 ❪"code/utilities/random/lib"❫
 ⚞⚟
 
@@ -45,7 +45,7 @@ class
     Append_With_Newline(x,"</strong>");
     
     //puzzle box and word bank
-    Append_With_Newline(x,As_Html_Table(grid));
+    Append_With_Newline(x,As_Html_Table(grid,settings.letter_colors));
     Append_With_Newline(x,As_Html_Table(settings.words,settings.words_per_row));
     
     Append_With_Newline(x,"</body>");
@@ -54,7 +54,7 @@ class
     return x;
 ❱
 
-◀private: static▶ std::string ☀As_Html_Table(std::vector<std::vector<std::string>> const& grid)❰
+◀private: static▶ std::string ☀As_Html_Table(std::vector<std::vector<std::string>> const& grid, std::vector<Rgb_Color> const& colors)❰
 
     std::string x;
     Append_With_Newline(x,"<table style=\"width:100%\">");
@@ -62,7 +62,7 @@ class
         Append_With_Newline(x,"<tr>");
         for (auto const& b: a){
             Append(x,"<td ");
-            Append(x,Random_Color());
+            Append(x,Css_Style_Property_For_Random_Color(colors));
             Append_With_Newline(x,">");
             Append_With_Newline(x,b);
             Append_With_Newline(x,"</td>");
@@ -73,8 +73,7 @@ class
     return x;
 ❱
 
-◀private: static▶ std::string ☀Random_Color()❰
-    auto colors = Color_Palettes::Dark_Palette_1();
+◀private: static▶ std::string ☀Css_Style_Property_For_Random_Color(std::vector<Rgb_Color> const& colors)❰
     auto rcolor = Get_Random_Element(colors);
     std::string x = "style=\"";
     Append(x,"color:rgb(");
@@ -86,6 +85,7 @@ class
     Append(x,");\"");
     return x;
 ❱
+
 
 ◀private: static▶ std::string ☀As_Html_Table(std::vector<std::string> const& words, int per_row)❰
 

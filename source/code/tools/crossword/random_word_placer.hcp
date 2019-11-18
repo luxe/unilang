@@ -1,0 +1,137 @@
+class
+❪string❫
+❪"code/utilities/data_structures/point/point_mover"❫
+❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
+❪"code/tools/crossword/word_try"❫
+❪"code/utilities/std_hackery/std_aliases"❫
+⚯
+❪iostream❫
+❪"code/tools/crossword/settings/crossword_puzzle_settings_getter"❫
+❪"code/utilities/types/strings/transformers/casing/lib"❫
+❪"code/utilities/types/vectors/creators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/random/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/tools/crossword/html_exporter"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Randomly_Place_Each_Word(string_grid & grid, Crossword_Puzzle_Settings const& settings)❰
+
+    Randomly_Place_Word_Set(grid,settings,settings.words);
+    Randomly_Place_Word_Set(grid,settings,settings.decoy_words);
+❱
+
+◀private: static▶ void ☀Randomly_Place_Word_Set(string_grid & grid, Crossword_Puzzle_Settings const& settings, strings const& word_set)❰
+
+    for (auto word: word_set){
+        
+        Remove_Spaces(word);
+        
+        //possibly log
+        if (settings.random_place_strategy.show_word_being_fitted){std::cout << "fitting " << word << " " << std::endl;}
+        
+        //randomly place the word until it fits
+        auto word_try = Primed_Random_Word_Try(grid,settings,word);
+        while (!Word_Fits(grid,settings,word,word_try)){
+            
+            //try again
+            word_try = Random_Word_Try(grid);
+        }
+        
+        
+        Fit_Word(grid,word,word_try);
+    }
+❱
+
+
+◀private: static▶ Word_Try ☀Primed_Random_Word_Try(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
+    
+    auto word_try = Random_Word_Try(grid);
+    for (int i = 0; i < settings.random_place_strategy.primed_passthrough_attempts; ++i){
+        if (Word_Fits_And_Has_Pass_Through(grid,settings,word,word_try)){
+            std::cout << "(passthrough) ";
+            return word_try;
+        }
+        word_try = Random_Word_Try(grid);
+    }
+    
+    return word_try;
+❱
+
+◀private: static▶ Word_Try ☀Random_Word_Try(string_grid const& grid)❰
+    Word_Try x;
+    x.point.x = Get_Random_Index(grid);
+    x.point.y = Get_Random_Index(grid[0]);
+    x.direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
+    return x;
+❱
+
+◀private: static▶ bool ☀Word_Fits(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
+
+    for (auto letter: word){
+        if (!Position_In_Range(grid,word_try.point)){
+            return false;
+        }
+        
+        std::string str;
+        str += letter;
+        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
+            return false;
+        }
+        
+        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
+    }
+    
+    return true;
+❱
+
+◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
+
+
+    bool has_pass_through = false;
+    for (auto letter: word){
+        if (!Position_In_Range(grid,word_try.point)){
+            return false;
+        }
+        
+        std::string str;
+        str += letter;
+        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
+            return false;
+        }
+        
+        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol){
+            has_pass_through = true;
+        }
+        
+        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
+    }
+    
+    return has_pass_through;
+❱
+
+◀private: static▶ void ☀Fit_Word(string_grid & grid, std::string const& word, Word_Try word_try)❰
+    for (auto letter: word){
+        grid[word_try.point.x][word_try.point.y] = letter;
+        Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
+    }
+❱
+
+◀private: static▶ bool ☀Position_In_Range(string_grid const& grid, Point const& p)❰
+    if (p.x < 0 || p.y < 0){
+        return false;
+    }
+    if (p.x > grid.size()-1){
+        return false;
+    }
+    
+    if (p.y > grid[0].size()-1){
+        return false;
+    }
+    return true;
+❱
