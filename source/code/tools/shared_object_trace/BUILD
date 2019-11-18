@@ -51,6 +51,15 @@ hcp(name = "so_ldd_correlation_visualizer", deps = [
     "//code/utilities/data_structures/unique_counter:unique_counter",
 ])
 
+hcp(name = "shared_object_trace_documentation_getter", deps = [
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/utilities/converters:lib",
+    "//code/utilities/json/functions:lib",
+    "//code/tools/shared_object_trace/program_options:lib",
+    "//code/utilities/documentation:common_documentation_getter",
+])
+
 distributable_cpp_main(
     name = "shared_object_trace",
     deps = [
