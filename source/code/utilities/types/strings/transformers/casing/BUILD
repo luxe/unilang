@@ -8,8 +8,8 @@ cpp_object(
     "//code/utilities/types/strings/transformers/squeeze:lib",
     "//code/utilities/types/strings/transformers/trimming:lib",
     "//code/utilities/types/strings/transformers/search_replace:lib",
-    "//code/utilities/types/char:letter_case",
 ])
+
 
 cpp_object(
     name = "case_format_style",
@@ -18,4 +18,9 @@ cpp_object(
 hcp(
 name = "case_modifier",
 deps = ["lib","case_format_style"]
+)
+
+hcp(
+    name = "letter_case_setter",
+    deps = ["//code/utilities/types/char:letter_case",]
 )
