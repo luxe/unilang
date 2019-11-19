@@ -7,6 +7,13 @@ values = [
 ,"lower"
 ])
 
+enum_cpp(name = "optional_letter_case",
+values = [
+"upper"
+,"lower"
+,"any"
+])
+
 cc_library(
     name = "lib",
     srcs = ["lib.cpp"],
