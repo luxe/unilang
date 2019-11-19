@@ -27,6 +27,9 @@ char Get_Single_Quote();
 char Get_Forward_Slash();
 char Get_Back_Slash();
 
+std::vector<char> Get_Lowercase_Letters();
+std::vector<char> Get_Uppercase_Letters();
+
 //get unicode characters (just easier)
 wchar_t Zero_Width_Space();
 wchar_t Zero_Width_Non_Breaking_Space();

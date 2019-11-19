@@ -6,5 +6,8 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/gmp:lib"]
+    deps = [
+        "//code/utilities/gmp:lib",
+        "//code/utilities/types/char:lib"
+    ]
 )
