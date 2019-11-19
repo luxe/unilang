@@ -22,5 +22,8 @@ deps = ["lib","case_format_style"]
 
 hcp(
     name = "letter_case_setter",
-    deps = ["//code/utilities/types/char:letter_case",]
+    deps = [
+        "//code/utilities/types/char:letter_case",
+        "//code/utilities/types/strings/transformers/casing:lib",
+    ]
 )

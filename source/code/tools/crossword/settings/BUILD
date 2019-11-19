@@ -13,6 +13,7 @@ hcp(name = "crossword_puzzle_settings", deps = [
     "//code/utilities/data_structures/dimensions:two_d_dimensions",
     "//code/tools/crossword/settings:crossword_random_place_settings",
     "//code/utilities/colors:color_palettes",
+    "//code/utilities/types/char:letter_case",
 ])
 
 
