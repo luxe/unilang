@@ -11,5 +11,8 @@ cc_library(
     name = "lib",
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
-    deps = ["//code/utilities/language_basic/control_structures/looping:lib"]
+    deps = [
+        "//code/utilities/language_basic/control_structures/looping:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ]
 )

@@ -1,4 +1,5 @@
 #include "code/utilities/language_basic/control_structures/looping/lib.hpp"
+#include "code/utilities/types/vectors/operators/lib.hpp"
 #include "lib.hpp"
 #include <iostream>
 #include <bitset>
@@ -124,6 +125,11 @@ std::vector<char> Get_Uppercase_Letters(){
   x.emplace_back('X');
   x.emplace_back('Y');
   x.emplace_back('Z');
+  return x;
+}
+std::vector<char> Get_All_Cased_Letters(){
+  auto x = Get_Lowercase_Letters();
+  x += Get_Uppercase_Letters();
   return x;
 }
 
