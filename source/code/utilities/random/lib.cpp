@@ -34,9 +34,14 @@ std::string Random_Lowercase_Letter(){
 	str += Get_Random_Element(x);
 	return str;
 }
-
 std::string Random_Uppercase_Letter(){
 	auto x = Get_Uppercase_Letters();
+	std::string str;
+	str += Get_Random_Element(x);
+	return str;
+}
+std::string Random_Any_Case_Letter(){
+	auto x = Get_All_Cased_Letters();
 	std::string str;
 	str += Get_Random_Element(x);
 	return str;

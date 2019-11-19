@@ -109,5 +109,5 @@ std::string Get_Random_String(T const& password_chars, unsigned int const& lengt
 
 std::string Random_Lowercase_Letter();
 std::string Random_Uppercase_Letter();
-//std::string Random_Case_Letter(); //lowercase or uppercase
+std::string Random_Any_Case_Letter(); //lowercase or uppercase
 
