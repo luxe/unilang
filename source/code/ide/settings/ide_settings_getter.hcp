@@ -12,6 +12,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
 ❪"code/transcompilers/unilang/tokens/get_tokens"❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/pixel/pixel_slider"❫
+❪"code/utilities/colors/rectangle_shades"❫
 ⚯
 ❪"code/transcompilers/unilang/language-and-theme-creator/font/unilang_font"❫
 ❪"code/ide/settings/standard_bitmap_cursor"❫
@@ -19,20 +20,13 @@ class
 
 ◀public: static▶ Ide_Settings ☀Get()❰
 
-    //SDL related init settings
+    //SDL and Imgui related init settings
     Ide_Settings settings;
     settings.init = Initialization_Settings();
     settings.background.main_window = Main_Window_Settings();
     
     //the backdrop of the main window used for drawing
-    settings.background.main_window_backdrop.shape.dimensions.width = 0;
-    settings.background.main_window_backdrop.shape.dimensions.height = 0;
-    settings.background.main_window_backdrop.shape.edge.thickness = 1;
-    settings.background.main_window_backdrop.shape.edge.rounding  = 0.0;
-    settings.background.main_window_backdrop.shape.colors.border = Imgui_Type_Utility::Light_Blue();
-    settings.background.main_window_backdrop.shape.colors.fill = Imgui_Type_Utility::Light_Blue();
-    settings.background.main_window_backdrop.pos.x = -4;
-    settings.background.main_window_backdrop.pos.y = 0;
+    settings.background.main_window_backdrop = Main_Background();
     
     //font related settings
     settings.unilang_font_lookup = Get_Character_Lookup_Table();
@@ -42,9 +36,9 @@ class
     
     //shape between cursor and mouse
     //(something dumb for connecting the textbox cursor with the user's mouse)
-    settings.cursor_mouse_connector.draw = true;
-    settings.cursor_mouse_connector.line.thickness = 1;
-    settings.cursor_mouse_connector.line.color_fill = Imgui_Type_Utility::Red();
+    //settings.cursor_mouse_connector.draw = true;
+    //settings.cursor_mouse_connector.line.thickness = 1;
+    //settings.cursor_mouse_connector.line.color_fill = Imgui_Type_Utility::Red();
     
     //label cursor
     //settings.label_cursor = Create_Label_Cursor_Settings();
@@ -62,45 +56,22 @@ class
     settings.rec_test.edge.rounding  = 0.0;
     settings.rec_test.hooks.draw_border = false;
     settings.rec_test.hooks.draw_fill = true;
-    settings.rec_test.colors = Red_Blue_Fade();
+    settings.rec_test.colors = Rectangle_Shades::Red_Blue_Fade();
     
     return settings;
 ❱
 
-
-
-◀private: static▶ Rectangle_Shade_Colors ☀Red_Blue_Fade()❰
-
-    Rectangle_Shade_Colors colors;
-    
-    //border
-    colors.border = Imgui_Type_Utility::Red();
-    colors.border.alpha = 100;
-    
-    //fill
-    colors.fill.from = Imgui_Type_Utility::Red();
-    colors.fill.from.alpha = 100;
-    colors.fill.to = Imgui_Type_Utility::Light_Blue();
-    colors.fill.to.alpha = 100;
-    
-    return colors;
-❱
-
-◀private: static▶ Rectangle_Shade_Colors ☀Orange_White_Fade()❰
-
-    Rectangle_Shade_Colors colors;
-    
-    //border
-    colors.border = Imgui_Type_Utility::Black();
-    colors.border.alpha = 100;
-    
-    //fill
-    colors.fill.from = Imgui_Type_Utility::White();
-    colors.fill.from.alpha = 100;
-    colors.fill.to = Imgui_Type_Utility::Orange();
-    colors.fill.to.alpha = 100;
-    
-    return colors;
+◀private: static▶ Positioned_Rectangle_Settings ☀Main_Background()❰
+    Positioned_Rectangle_Settings x;
+    x.shape.dimensions.width = 0;
+    x.shape.dimensions.height = 0;
+    x.shape.edge.thickness = 1;
+    x.shape.edge.rounding  = 0.0;
+    x.shape.colors.border = Imgui_Type_Utility::Light_Blue();
+    x.shape.colors.fill = Imgui_Type_Utility::Light_Blue();
+    x.pos.x = -4;
+    x.pos.y = 0;
+    return x;
 ❱
 
 ◀private: static▶ Sdl_Init_Settings ☀Initialization_Settings()❰
@@ -195,6 +166,7 @@ class
     int default_box_thickness = 1;
     int default_fixed_width = 100;
     
+    //not selected
     x.regular_nonactive.box.edge.thickness = default_box_thickness;
     x.regular_nonactive.box.edge.rounding  = 0.0;
     x.regular_nonactive.box.colors.border = Imgui_Type_Utility::Black();
@@ -203,7 +175,7 @@ class
     x.regular_nonactive.width.grow_width = false;
     x.regular_nonactive.width.fixed_width = default_fixed_width;
     x.regular_nonactive.width.pixel_slide = Create_Normal_Pixel_Slider();
-    x.regular_nonactive.box.shades = Orange_White_Fade();
+    x.regular_nonactive.box.shades = Rectangle_Shades::Orange_White_Fade();
     x.regular_nonactive.box.hooks.draw_fill = true;
     x.regular_nonactive.box.hooks.draw_shade = true;
 
@@ -215,10 +187,11 @@ class
     x.hovered_nonactive.width.grow_width = false;
     x.hovered_nonactive.width.fixed_width = default_fixed_width;
     x.hovered_nonactive.width.pixel_slide = Create_Normal_Pixel_Slider();
-    x.hovered_nonactive.box.shades = Orange_White_Fade();
+    x.hovered_nonactive.box.shades = Rectangle_Shades::Orange_White_Fade();
     x.hovered_nonactive.box.hooks.draw_fill = true;
     x.hovered_nonactive.box.hooks.draw_shade = true;
     
+    //selected
     x.hovered_active.box.edge.thickness = default_box_thickness;
     x.hovered_active.box.edge.rounding  = 0.0;
     x.hovered_active.box.colors.border = Imgui_Type_Utility::Red();
@@ -227,7 +200,7 @@ class
     x.hovered_active.width.grow_width = true;
     x.hovered_active.width.fixed_width = default_fixed_width;
     x.hovered_active.width.pixel_slide = Create_Normal_Pixel_Slider();
-    x.hovered_active.box.shades = Orange_White_Fade();
+    x.hovered_active.box.shades = Rectangle_Shades::Orange_White_Fade();
     x.hovered_active.box.hooks.draw_fill = true;
     x.hovered_active.box.hooks.draw_shade = true;
     
@@ -239,7 +212,7 @@ class
     x.regular_active.width.grow_width = true;
     x.regular_active.width.fixed_width = default_fixed_width;
     x.regular_active.width.pixel_slide = Create_Normal_Pixel_Slider();
-    x.regular_active.box.shades = Orange_White_Fade();
+    x.regular_active.box.shades = Rectangle_Shades::Orange_White_Fade();
     x.regular_active.box.hooks.draw_fill = true;
     x.regular_active.box.hooks.draw_shade = true;
     

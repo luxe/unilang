@@ -51,6 +51,7 @@ hcp(name="ide_settings_getter", deps = [
     "//code/transcompilers/unilang/language-and-theme-creator/font:unilang_font",
     "//code/ide/settings:standard_bitmap_cursor",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
+    "//code/utilities/colors:rectangle_shades",
 ])
 
 hcp(name="standard_bitmap_cursor", deps = [

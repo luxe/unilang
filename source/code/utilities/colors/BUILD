@@ -23,3 +23,9 @@ hcp(name="color_palettes",deps = [
     "//code/utilities/data_structures/color:rgb_color",
     "//code/utilities/types/vectors/transformers:lib",
 ])
+
+hcp(name="rectangle_shades",deps = [
+    "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
+    "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
+])
+
