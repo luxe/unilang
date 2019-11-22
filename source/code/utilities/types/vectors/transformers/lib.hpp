@@ -80,6 +80,21 @@ std::vector<T>& Sort(std::vector<T>& vec){
 }
 
 template <typename T>
+std::vector<T> & Sort_For_Colums(std::vector<T>& vec, size_t cols){
+    std::vector<T> new_vec;
+    
+    for (size_t skip_amount = 0; skip_amount < cols+1; ++skip_amount){
+        for (size_t i = skip_amount; i < vec.size(); i += cols+1){
+            new_vec.emplace_back(vec[i]);
+        }
+    }
+    
+    
+    vec = new_vec;
+    return vec;
+}
+
+template <typename T>
 std::vector<T>& Remove_Duplicates(std::vector<T>& vec){
     std::vector<T> solution;
     std::set<T> found;
