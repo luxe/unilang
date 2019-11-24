@@ -3,6 +3,7 @@ cc_binary(
     srcs = ["tardis.c"],
     includes = ["."],
     data = [":novdso"],
+    deps = [":novdso"],
     visibility = ["//visibility:public"],
 )
 
