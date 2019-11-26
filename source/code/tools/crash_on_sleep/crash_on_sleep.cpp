@@ -119,13 +119,10 @@ void after_time(pid_t pid, struct user_regs_struct * uregs) {
 
 int main(int argc, char *argv[], char *envp[]) {
     
-    if (argc < 3) {
-        printf("USAGE: %s DELAY_FACTOR TIME_FACTOR COMMAND [ARGS]...\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-    
-    delayfactor = strtod(argv[1], NULL);
-    timefactor = strtod(argv[2], NULL);
+    //delayfactor = strtod(argv[1], NULL);
+    //timefactor = strtod(argv[2], NULL);
+    delayfactor = 1000;
+    timefactor = 1000;
     
     before_handlers[SYS_nanosleep] = before_nanosleep;
     before_handlers[SYS_poll] = before_poll;
@@ -148,7 +145,7 @@ int main(int argc, char *argv[], char *envp[]) {
         //system("pwd");
         //envp[0] = "LD_PRELOAD=novdso.so"; // FIXME: Do something more sensible
         kill(getpid(), SIGSTOP);
-        execvpe(argv[3], &argv[3], envp);
+        execvpe(argv[1], &argv[1], envp);
         perror("execvpe"); // execvpe only returns on error
         exit(-1);
     }
@@ -198,14 +195,35 @@ int main(int argc, char *argv[], char *envp[]) {
             //#endif
             if (uregs.orig_rax < NUM_SYSCALLS && before_handlers[uregs.orig_rax] != NULL) {
                 //fprintf(stderr, "[pid %d]   syscall(%llu)\t0x%016llX 0x%016llX 0x%016llX = ...\n", pid, uregs.orig_rax, uregs.rdi, uregs.rsi, uregs.rdx);
-                Exit_With_Error("Tried to sleep");
+                
+                if (uregs.orig_rax == SYS_nanosleep){
+                    //Exit_With_Error("Tried to nanosleep");
+                }
+                if (uregs.orig_rax == SYS_poll){
+                    //Exit_With_Error("Tried to poll");
+                }
+                if (uregs.orig_rax == SYS_select){
+                    //Exit_With_Error("Tried to select");
+                }
+                
+                
                 before_handlers[uregs.orig_rax](pid, &uregs);
             }
         } else {
-            #ifdef DEBUG
-                fprintf(stderr, "... 0x%llX\n", uregs.rax);
-            #endif
+            // #ifdef DEBUG
+            //     fprintf(stderr, "... 0x%llX\n", uregs.rax);
+            // #endif
             if (uregs.orig_rax < NUM_SYSCALLS && after_handlers[uregs.orig_rax] != NULL) {
+                
+                if (uregs.orig_rax == SYS_gettimeofday){
+                    Exit_With_Error("Tried to gettimeofday");
+                }
+                if (uregs.orig_rax == SYS_clock_gettime){
+                    Exit_With_Error("Tried to clock_gettime");
+                }
+                if (uregs.orig_rax == SYS_time){
+                    Exit_With_Error("Tried to time");
+                }
                 after_handlers[uregs.orig_rax](pid, &uregs);
             }
         }
