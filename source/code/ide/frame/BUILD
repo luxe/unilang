@@ -21,33 +21,6 @@ enum_cpp(
 )
 
 hcp(
-    name = "frame_elements",
-    deps = [
-        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-        "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
-        "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
-    ],
-)
-
-hcp(
-    name = "frame_logic_updater",
-    deps = [
-        "//code/ide/settings:ide_settings",
-        "//code/ide/frame:frame_elements",
-        "//code/ide/frame:mouse_selection_drawer",
-        "//code/utilities/mouse/state:mouse_position_getter",
-        "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
-        "//code/utilities/graphics/imgui/ui/window:window_position_finder",
-        "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
-        "//code/ide/frame:label_cursor_action_doer",
-        "//code/utilities/types/vectors/operators:lib",
-        "//code/ide/frame:mouse_frame_getter",
-        "//code/ide/frame:label_frame_getter",
-        "//code/ide/frame:view_anchor_adjuster",
-    ],
-)
-
-hcp(
     name = "frame_renderer",
     deps = ["@imgui//:imgui_sdl_opengl3",
         "//code/ide/settings:ide_settings",
@@ -64,7 +37,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/line:line_drawer",
         "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap_drawer",
-        "//code/ide/frame:frame_elements",
+        "//code/ide/frame/logic:frame_elements",
         "//code/utilities/types/variant:lib",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
@@ -76,7 +49,7 @@ hcp(
     deps = [
         "//code/utilities/mouse/state:mouse_state",
         "//code/ide/settings:ide_settings",
-        "//code/ide/frame:frame_elements",
+        "//code/ide/frame/logic:frame_elements",
         "//code/ide/frame:mouse_selection_drawer",
         "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
@@ -92,7 +65,7 @@ hcp(
     deps = [
         "//code/utilities/mouse/state:mouse_state",
         "//code/ide/settings:ide_settings",
-        "//code/ide/frame:frame_elements",
+        "//code/ide/frame/logic:frame_elements",
         "//code/ide/frame:mouse_selection_drawer",
         "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
@@ -116,7 +89,7 @@ hcp(name = "mouse_selection_drawer", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
-    "//code/ide/frame:frame_elements",
+    "//code/ide/frame/logic:frame_elements",
     "//code/utilities/mouse/state:mouse_state_getter",
     "//code/utilities/mouse/state:mouse_state",
 ])
@@ -125,7 +98,7 @@ hcp(name = "view_anchor_adjuster", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
-    "//code/ide/frame:frame_elements",
+    "//code/ide/frame/logic:frame_elements",
     "//code/utilities/mouse/state:mouse_state_getter",
     "//code/utilities/mouse/state:mouse_state",
 ])

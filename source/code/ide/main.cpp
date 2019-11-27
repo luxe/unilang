@@ -3,8 +3,8 @@
 #include "code/ide/settings/ide_settings.hpp"
 #include "code/ide/settings/ide_settings_getter.hpp"
 #include "code/ide/frame/frame_renderer.hpp"
-#include "code/ide/frame/frame_logic_updater.hpp"
-#include "code/ide/frame/frame_elements.hpp"
+#include "code/ide/frame/logic/frame_logic_updater.hpp"
+#include "code/ide/frame/logic/frame_elements.hpp"
 
 
 //other programming editors for inspiration:

@@ -1,6 +1,7 @@
 class
 ❪"code/ide/settings/ide_settings"❫
-❪"code/ide/frame/frame_elements"❫
+❪"code/ide/frame/logic/frame_elements"❫
+❪"code/utilities/mouse/state/mouse_state"❫
 ⚯
 ❪"code/ide/frame/mouse_selection_drawer"❫
 ❪"code/utilities/mouse/state/mouse_position_getter"❫
@@ -17,15 +18,28 @@ class
 
 
 ◀public: static▶ Frame_Elements ☀each_frame(Ide_Settings & settings)❰
-    Frame_Elements elements;
     
     //lets make sure the exact same mouse state is used for the entire frame of logic.
     //this will avoid any issues with a fast moving mouse whose position may change faster than the frame rate.
     auto mouse_state = Mouse_State_Getter::Get();
+    
+    //before deciding all the frame elements to draw, adjust the global viewing anchor
+    //the surface spread of frame elements may be infinite .  larger than anyone's screen.
+    //a user will find ways to view sub portions of this space (likely represented by the size of their monitor).
+    //the view anchor represents their location.
     View_Anchor_Adjuster::Adjust(settings,mouse_state);
     
+    //this decides everything needed by the frame drawer
+    //the data structure returned here is a representation that could be drawn anywhere
+    //to your screen, to an image, or dumped as json.
+    return Decide_Every_Element_Of_The_Frame(settings,mouse_state);
+❱
+
+◀private: static▶ Frame_Elements ☀Decide_Every_Element_Of_The_Frame(Ide_Settings & settings, Mouse_State const& mouse_state)❰
+
     //the order that the frame elements are added, are the order they are drawn.
     //the last element added has the highest z-index.
+    Frame_Elements elements;
     
     //draw the background
     elements.types.emplace_back(settings.background.main_window_backdrop);

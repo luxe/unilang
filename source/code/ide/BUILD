@@ -12,7 +12,7 @@ cpp_main(
         "//code/ide/settings:ide_settings",
         "//code/ide/settings:ide_settings_getter",
         "//code/ide/frame:frame_renderer",
-        "//code/ide/frame:frame_logic_updater",
-        "//code/ide/frame:frame_elements",
+        "//code/ide/frame/logic:frame_logic_updater",
+        "//code/ide/frame/logic:frame_elements",
     ],
 )
