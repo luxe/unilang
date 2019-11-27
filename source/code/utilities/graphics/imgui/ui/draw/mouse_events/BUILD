@@ -11,4 +11,5 @@ hcp(name="mouse_events_checker", deps = [
 "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events",
 "//code/utilities/data_structures/position:position",
 "//code/utilities/graphics/imgui:mechanics",
+"//code/utilities/mouse/state:mouse_state",
 ])

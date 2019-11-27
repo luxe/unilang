@@ -11,8 +11,13 @@ hcp(name = "mouse_state",deps=[
     "//code/utilities/mouse/state:mouse_button_state",
 ])
 
+hcp(name="mouse_position_getter", deps = [
+"//code/utilities/data_structures/position:position",
+"//code/utilities/graphics/imgui:mechanics",
+])
+
 hcp(name = "mouse_state_getter",deps=[
     "//code/utilities/mouse/state:mouse_state",
     "//code/utilities/graphics/imgui:mechanics",
-    "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+    "//code/utilities/mouse/state:mouse_position_getter",
 ])

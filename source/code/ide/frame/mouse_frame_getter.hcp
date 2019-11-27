@@ -1,9 +1,10 @@
 class
 ❪"code/ide/settings/ide_settings"❫
 ❪"code/ide/frame/frame_elements"❫
+❪"code/utilities/mouse/state/mouse_state"❫
 ⚯
 ❪"code/ide/frame/mouse_selection_drawer"❫
-❪"code/utilities/graphics/imgui/ui/draw/mouse_position_getter"❫
+❪"code/utilities/mouse/state/mouse_position_getter"❫
 ❪"code/utilities/graphics/imgui/ui/draw/mouse_events/mouse_events_checker"❫
 ❪"code/utilities/graphics/imgui/ui/window/window_position_finder"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/label_drawer"❫
@@ -11,19 +12,18 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
-◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings)❰
+◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Mouse_State const& mouse)❰
     Frame_Elements elements;
-    Render_Mouse_Components(elements,settings);
+    Render_Mouse_Components(elements,settings,mouse);
     return elements;
 ❱
 
-◀private: static▶ void ☀Render_Mouse_Components(Frame_Elements & elements, Ide_Settings & settings)❰
+◀private: static▶ void ☀Render_Mouse_Components(Frame_Elements & elements, Ide_Settings & settings, Mouse_State const& mouse)❰
 
     //the transparent box created by clicking and dragging the mouse
-    Mouse_Selection_Drawer::Draw(elements,settings);
+    Mouse_Selection_Drawer::Draw(elements,settings,mouse);
     
     //the actual global mouse cursor
-    auto mouse_pos = Mouse_Events_Checker::Get_Mouse_Position();
-    settings.mouse.bitmap.pos = mouse_pos;
+    settings.mouse.bitmap.pos = mouse.pos;
     elements.types.emplace_back(settings.mouse.bitmap);
 ❱

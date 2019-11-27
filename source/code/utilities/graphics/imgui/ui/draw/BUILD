@@ -19,9 +19,3 @@ hcp(name="mouse_selection",deps = [
 hcp(name="cursor_mouse_connector",deps = [
 "//code/utilities/graphics/imgui/ui/draw/line:line_settings",
 ])
-
-
-hcp(name="mouse_position_getter", deps = [
-"//code/utilities/data_structures/position:position",
-"//code/utilities/graphics/imgui:mechanics",
-])

@@ -3,25 +3,26 @@ class
 ❪"code/utilities/data_structures/shapes/rectangle/rectangle_settings"❫
 ❪"code/utilities/graphics/imgui/ui/draw/mouse_events/mouse_events"❫
 ❪"code/utilities/data_structures/position/position"❫
+❪"code/utilities/mouse/state/mouse_state"❫
 ⚯
 ❪"code/utilities/graphics/imgui/mechanics"❫
 ⚞⚟
 
 
 
-◀public: static▶ Mouse_Events ☀search_for_mouse_events_in_rectangle(Position pos, Rectangle_Settings const &settings)
+◀public: static▶ Mouse_Events ☀search_for_mouse_events_in_rectangle(Position pos, Rectangle_Settings const &settings, Mouse_State const& mouse_state)
 ❰
     //find if any mouse events have happened on the rectangle
     Mouse_Events events;
-    if (mouse_clicked_area(pos, settings))
+    if (mouse_clicked_area(pos, settings,mouse_state))
     {
         events.clicked = true;
-        events.pos = Get_Mouse_Position();
+        events.pos = mouse_state.pos;
     }
-    if (mouse_is_hovering_area(pos, settings))
+    if (mouse_is_hovering_area(pos, settings,mouse_state))
     {
         events.hovered = true;
-        events.pos = Get_Mouse_Position();
+        events.pos = mouse_state.pos;
     }
     
     return events;
@@ -29,25 +30,34 @@ class
 
 
 
-◀private: static▶ bool ☀mouse_clicked_area(Position pos, Rectangle_Settings const &settings)
+◀private: static▶ bool ☀mouse_clicked_area(Position pos, Rectangle_Settings const &settings, Mouse_State const& mouse_state)
 ❰
     if (ImGui::IsMouseClicked(0))
     {
-        auto mouse_pos = Get_Mouse_Position();
+        auto mouse_pos = mouse_state.pos;
         return position_inside_rectangle(mouse_pos,pos,settings);
     }
     return false;
 ❱
 
-◀private: static▶ bool ☀mouse_is_hovering_area(Position pos, Rectangle_Settings const &settings)
+◀private: static▶ bool ☀mouse_is_hovering_area(Position pos, Rectangle_Settings const &settings, Mouse_State const& mouse_state)
 ❰
-    if (ImGui::IsMouseHoveringRect(
-            ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.dimensions.width - 1, pos.y + settings.dimensions.height), false))
-    {
-        return true;
-    }
-    return false;
+    //old implementation
+    // if (ImGui::IsMouseHoveringRect(
+    //         ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.dimensions.width - 1, pos.y + settings.dimensions.height), false))
+    // {
+    //     return true;
+    // }
+    // return false;
+
+    auto mouse_pos = mouse_state.pos;
+    return position_inside_rectangle(mouse_pos,pos,settings);
 ❱
+
+
+
+
+
 
 ◀private: static▶ bool ☀position_inside_rectangle(Position const& pos, Position const& rect_pos, Rectangle_Settings const& settings)
 ❰
@@ -59,13 +69,4 @@ class
         }
     }
     return false;
-❱
-
-◀public: static▶ Position ☀Get_Mouse_Position()
-❰
-    auto mouse_pos = ImGui::GetMousePos();
-    Position p;
-    p.x = mouse_pos.x;
-    p.y = mouse_pos.y;
-    return p;
 ❱

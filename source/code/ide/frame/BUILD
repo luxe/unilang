@@ -35,7 +35,7 @@ hcp(
         "//code/ide/settings:ide_settings",
         "//code/ide/frame:frame_elements",
         "//code/ide/frame:mouse_selection_drawer",
-        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+        "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -61,7 +61,7 @@ hcp(
         "//code/utilities/keyboard:key_detector",
         "//code/ide/frame:label_cursor_action_doer",
         "//code/utilities/graphics/imgui/ui/draw/line:line_drawer",
-        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+        "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap_drawer",
         "//code/ide/frame:frame_elements",
         "//code/utilities/types/variant:lib",
@@ -73,10 +73,11 @@ hcp(
 hcp(
     name = "mouse_frame_getter",
     deps = [
+        "//code/utilities/mouse/state:mouse_state",
         "//code/ide/settings:ide_settings",
         "//code/ide/frame:frame_elements",
         "//code/ide/frame:mouse_selection_drawer",
-        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+        "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -88,10 +89,11 @@ hcp(
 hcp(
     name = "label_frame_getter",
     deps = [
+        "//code/utilities/mouse/state:mouse_state",
         "//code/ide/settings:ide_settings",
         "//code/ide/frame:frame_elements",
         "//code/ide/frame:mouse_selection_drawer",
-        "//code/utilities/graphics/imgui/ui/draw:mouse_position_getter",
+        "//code/utilities/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -115,6 +117,7 @@ hcp(name = "mouse_selection_drawer", deps = [
     "//code/utilities/graphics/imgui:mechanics",
     "//code/ide/frame:frame_elements",
     "//code/utilities/mouse/state:mouse_state_getter",
+    "//code/utilities/mouse/state:mouse_state",
 ])
 
 hcp(name = "label_cursor_action_doer", deps = [
