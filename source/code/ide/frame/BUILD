@@ -43,6 +43,7 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
         "//code/ide/frame:mouse_frame_getter",
         "//code/ide/frame:label_frame_getter",
+        "//code/ide/frame:view_anchor_adjuster",
     ],
 )
 
@@ -112,6 +113,15 @@ hcp(name = "fullscreener", deps = [
 ])
 
 hcp(name = "mouse_selection_drawer", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/ide/frame:frame_elements",
+    "//code/utilities/mouse/state:mouse_state_getter",
+    "//code/utilities/mouse/state:mouse_state",
+])
+
+hcp(name = "view_anchor_adjuster", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
