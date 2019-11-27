@@ -1,3 +1,11 @@
+//this code is all trash and was ripped from the tardis project.
+//we'll eventually turn it into framework for sniffing processes programatically with ptrace
+//the goal is to have a program that will crash based on customizable syscalls (or report the usage of syscalls in some other way).
+//this is good for testing or enforcing that certain binaries dont make certain syscalls.
+//sleeping, asking for the time, etc.
+//additionally we will have a version of this tool that records every syscall into a db, can report them at the end.
+//can just be used later for analysis.
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
