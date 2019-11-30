@@ -39,6 +39,7 @@ hcp(name = "crossword_maker", deps = [
     "//code/tools/crossword/settings:crossword_puzzle_settings_getter",
     "//code/tools/crossword:random_word_placer",
     "//code/utilities/types/strings/transformers/casing:letter_case_setter",
+    "//code/utilities/types/string_grid:random_letter_filler",
 ])
 
 hcp(name = "random_word_placer", deps = [
