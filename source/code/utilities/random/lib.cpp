@@ -27,6 +27,21 @@ std::string RandomIntFromRange(std::string low_in, std::string high_in){
 
 	return number;
 }
+std::string Random_Letter(Optional_Letter_Case const& c){
+	std::string letter;
+	
+    //get random letter
+    if (c == Optional_Letter_Case::UPPER){
+        letter = Random_Uppercase_Letter();
+    }
+    else if (c == Optional_Letter_Case::LOWER){
+        letter = Random_Lowercase_Letter();
+    }
+    else{
+        letter = Random_Any_Case_Letter();
+    }
+    return letter;
+}
 
 std::string Random_Lowercase_Letter(){
 	auto x = Get_Lowercase_Letters();

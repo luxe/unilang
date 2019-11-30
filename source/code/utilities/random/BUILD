@@ -8,6 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
         "//code/utilities/gmp:lib",
-        "//code/utilities/types/char:lib"
+        "//code/utilities/types/char:lib",
+        "//code/utilities/types/char:optional_letter_case"
     ]
 )

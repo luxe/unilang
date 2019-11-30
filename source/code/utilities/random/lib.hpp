@@ -2,6 +2,7 @@
 #include <random>
 #include <string>
 #include <set>
+#include "code/utilities/types/char/optional_letter_case.hpp"
 
 
 template<typename T>
@@ -107,6 +108,8 @@ std::string Get_Random_String(T const& password_chars, unsigned int const& lengt
 }
 
 
+//random letters
+std::string Random_Letter(Optional_Letter_Case const& c);
 std::string Random_Lowercase_Letter();
 std::string Random_Uppercase_Letter();
 std::string Random_Any_Case_Letter(); //lowercase or uppercase
