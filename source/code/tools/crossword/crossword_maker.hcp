@@ -31,6 +31,20 @@ class
     Adjust_Word_Lists(settings);
 
     //create grid
+    string_grids grids;
+    grids.emplace_back(Get_Completed_Grid(settings));
+    grids.emplace_back(Get_Completed_Grid(settings));
+    grids.emplace_back(Get_Completed_Grid(settings));
+    
+    //create artifacts
+    if (settings.output.create_puzzle_artifact){
+        Html_Exporter::Export(grids,settings,settings.output.puzzle_file_name);
+    }
+❱
+
+◀private: static▶ std::vector<std::vector<std::string>> ☀Get_Completed_Grid(Crossword_Puzzle_Settings const& settings)❰
+
+    //create grid
     auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,settings.empty_cell_symbol);
     
     auto letter_spread = Get_Letter_Spread(settings);
@@ -50,20 +64,17 @@ class
     //take a terminal peek
     //std::cout << std::endl << Table_As_Column_Aligned(grid) << std::endl;
     if (settings.output.create_answer_artifact){
-        Html_Exporter::Export(grid,settings,settings.output.answer_file_name);
+        //Html_Exporter::Export(grid,settings,settings.output.answer_file_name);
     }
     
     //fill empty spaces
     Random_Letter_Filler::Fill_Chars_With_Random_Letters(grid,settings.empty_cell_symbol,settings.letter_case);
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
-    //create artifacts
-    if (settings.output.create_puzzle_artifact){
-        Html_Exporter::Export(grid,settings,settings.output.puzzle_file_name);
-    }
+    return grid;
 ❱
 
-◀private: static▶ strings ☀Get_Letter_Spread(Crossword_Puzzle_Settings & settings)❰
+◀private: static▶ strings ☀Get_Letter_Spread(Crossword_Puzzle_Settings const& settings)❰
     strings x;
     for (auto const& it: settings.starting_char_likelyhood){
         auto amount = RandomIntFromRange(0,it.second);
