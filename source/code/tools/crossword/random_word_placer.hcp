@@ -26,7 +26,7 @@ class
     Randomly_Place_Word_Set(grid,settings,settings.decoy_words);
 ❱
 
-◀private: static▶ void ☀Randomly_Place_Word_Set(string_grid & grid, Crossword_Puzzle_Settings const& settings, strings const& word_set)❰
+◀public: static▶ void ☀Randomly_Place_Word_Set(string_grid & grid, Crossword_Puzzle_Settings const& settings, strings const& word_set)❰
 
     for (auto word: word_set){
         
@@ -62,7 +62,7 @@ class
     auto word_try = Random_Word_Try(grid);
     for (int i = 0; i < settings.random_place_strategy.primed_passthrough_attempts; ++i){
         if (Word_Fits_And_Has_Pass_Through(grid,settings,word,word_try)){
-            std::cout << "(passthrough) ";
+            std::cout << "(primed passthrough) ";
             return word_try;
         }
         word_try = Random_Word_Try(grid);
@@ -82,13 +82,8 @@ class
 ◀private: static▶ bool ☀Word_Fits(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
 
     for (auto letter: word){
-        if (!Position_In_Range(grid,word_try.point)){
-            return false;
-        }
         
-        std::string str;
-        str += letter;
-        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
+        if (Has_Violation(grid,settings,letter,word_try)){
             return false;
         }
         
@@ -103,17 +98,16 @@ class
 
     bool has_pass_through = false;
     for (auto letter: word){
-        if (!Position_In_Range(grid,word_try.point)){
+        
+        
+        if (Has_Violation(grid,settings,letter,word_try)){
             return false;
         }
         
         std::string str;
         str += letter;
-        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol && grid[word_try.point.x][word_try.point.y] != str){
-            return false;
-        }
-        
-        if (grid[word_try.point.x][word_try.point.y] != settings.empty_cell_symbol){
+        bool cell_space_already_has_letter = grid[word_try.point.x][word_try.point.y] == str;
+        if (cell_space_already_has_letter){
             has_pass_through = true;
         }
         
@@ -122,6 +116,25 @@ class
     
     return has_pass_through;
 ❱
+
+◀private: static▶ bool ☀Has_Violation(string_grid const& grid, Crossword_Puzzle_Settings const& settings, char const& letter, Word_Try word_try)❰
+
+        if (!Position_In_Range(grid,word_try.point)){
+            return true;
+        }
+        
+        std::string str;
+        str += letter;
+        bool cell_space_is_empty = grid[word_try.point.x][word_try.point.y] == settings.empty_cell_symbol;
+        bool cell_space_already_has_letter = grid[word_try.point.x][word_try.point.y] == str;
+        
+        if (!cell_space_is_empty && !cell_space_already_has_letter){
+            return true;
+        }
+    return false;
+❱
+
+
 
 ◀private: static▶ void ☀Fit_Word(string_grid & grid, std::string const& word, Word_Try word_try)❰
     for (auto letter: word){

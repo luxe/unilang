@@ -33,6 +33,12 @@ class
     //create grid
     auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,settings.empty_cell_symbol);
     
+    auto letter_spread = Get_Letter_Spread(settings);
+    std::cout << "letter spread: " << letter_spread << std::endl;
+    Random_Word_Placer::Randomly_Place_Word_Set(grid,settings,letter_spread);
+    std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    
+    
     //place words (this is the main algorithm)
     //we can come up with different core algorithms here.
     Random_Word_Placer::Randomly_Place_Each_Word(grid,settings);
@@ -43,30 +49,31 @@ class
     
     //take a terminal peek
     //std::cout << std::endl << Table_As_Column_Aligned(grid) << std::endl;
-    if (settings.create_answer_artifact){
-        Html_Exporter::Export(grid,settings,settings.answer_file_name);
+    if (settings.output.create_answer_artifact){
+        Html_Exporter::Export(grid,settings,settings.output.answer_file_name);
     }
     
     //fill empty spaces
     Random_Letter_Filler::Fill_Chars_With_Random_Letters(grid,settings.empty_cell_symbol,settings.letter_case);
+    std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
     //create artifacts
-    if (settings.create_puzzle_artifact){
-        Html_Exporter::Export(grid,settings,settings.puzzle_file_name);
+    if (settings.output.create_puzzle_artifact){
+        Html_Exporter::Export(grid,settings,settings.output.puzzle_file_name);
     }
 ❱
 
-◀private: static▶ void ☀Fill_Remaining_Spaces_With_Random_Letters(string_grid & grid, Crossword_Puzzle_Settings const& settings)❰
-    for (auto & x: grid){
-        for (auto & y: x){
-            if (y == settings.empty_cell_symbol){
-                y = Random_Letter(settings.letter_case);
-                
-            }
+◀private: static▶ strings ☀Get_Letter_Spread(Crossword_Puzzle_Settings & settings)❰
+    strings x;
+    for (auto const& it: settings.starting_char_likelyhood){
+        auto amount = RandomIntFromRange(0,it.second);
+        for (size_t i = 0; i < amount; ++i){
+            x.emplace_back(it.first);
         }
     }
+    
+    return x;
 ❱
-
 
 ◀private: static▶ void ☀Adjust_Word_Lists(Crossword_Puzzle_Settings & settings)❰
 
@@ -75,7 +82,7 @@ class
     Sort_For_Colums(settings.words,settings.words_per_row);
     Sort_And_Remove_Duplicates(settings.decoy_words);
     
-    
+    Letter_Case_Setter::Set_Casing(settings.starting_char_likelyhood,settings.letter_case);
     Letter_Case_Setter::Set_Casing(settings.words,settings.letter_case);
     Letter_Case_Setter::Set_Casing(settings.decoy_words,settings.letter_case);
 ❱
