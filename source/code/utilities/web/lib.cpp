@@ -1,5 +1,6 @@
 #include "code/utilities/web/lib.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
+#include "code/utilities/types/strings/observers/splitting/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
 #include <curl/curl.h>
 #include <iostream>
@@ -26,6 +27,14 @@ float Extract_Web_Json_Float(Web_Json_Extraction_Settings const& settings){
   auto str = Get_Html_Of_Site(settings.fetch);
   auto val = Json_Extractor::Extract(str,settings.extract);
   return val;
+}
+
+std::vector<std::string> Get_Each_Line_Of_Html_Site(Html_Fetch_Settings const& settings)
+{
+  auto site = Get_Html_Of_Site(settings);
+  auto lines = Split_Into_Parts_From_Newline(site);
+  
+  return lines;
 }
 
 std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings){

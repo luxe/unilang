@@ -7,6 +7,9 @@
 
 nlohmann::json Extract_Web_Json(Html_Fetch_Settings const& settings);
 float Extract_Web_Json_Float(Web_Json_Extraction_Settings const& settings);
+
+
+std::vector<std::string> Get_Each_Line_Of_Html_Site(Html_Fetch_Settings const& settings);
 std::string Get_Html_Of_Site(Html_Fetch_Settings const& settings);
 std::string Get_HTML_Of_Site_With_Curl_Command(std::string const& website);
 std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings);

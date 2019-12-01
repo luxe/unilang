@@ -9,6 +9,7 @@ cc_library(
     hdrs = ["lib.hpp"],
     deps = [
     "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/shell:lib",
     "@curl",
     "//code/utilities/web:html_fetch_settings",

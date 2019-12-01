@@ -39,6 +39,9 @@ std::string& Remove_Last_N_Chars(std::string & str, unsigned int const& number_o
 std::string As_Last_N_Chars_Removed(std::string str, unsigned int const& number_of_times);
 std::string As_First_Word_Of_String_Moved_To_The_End(std::string str);
 
+//keeping back
+std::string& Keep_End_Chars_Until_Char_Is_Found(std::string & str, char const& c);
+
 //changing both
 std::string& Remove_First_And_Last_Char(std::string & str);
 

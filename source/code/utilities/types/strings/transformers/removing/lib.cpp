@@ -340,3 +340,21 @@ std::string& Remove_Everything_After_Found_Instance(std::string & str, std::stri
     str.erase(str.find (instance), str [str.length() - 1]);
     return str;
 }
+
+
+//keeping back
+std::string& Keep_End_Chars_Until_Char_Is_Found(std::string & str, char const& c)
+{
+    std::string new_str;
+    for (size_t i = str.size()-1; i >= 0; --i){
+        if (str[i] == c){
+            str = new_str;
+            return str;
+        }
+        new_str = str[i] + new_str;
+        
+    }
+    
+    str = new_str;
+    return str;
+}
