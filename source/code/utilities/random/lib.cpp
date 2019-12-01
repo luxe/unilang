@@ -27,6 +27,20 @@ std::string RandomIntFromRange(std::string low_in, std::string high_in){
 
 	return number;
 }
+
+
+std::string Get_Random_By_Probability(std::map<std::string,float> const& m){
+	auto num = RandomRealFromRange<float>(0.0,100.0);
+	float total = 0;
+	for (auto const& it: m){
+		if (num <= total+it.second){
+			return it.first;
+		}
+		total += it.second;
+	}
+	return "?";
+}
+
 std::string Random_Letter(Optional_Letter_Case const& c){
 	std::string letter;
 	

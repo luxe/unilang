@@ -30,7 +30,7 @@ class
     //adjustments on words
     Adjust_Word_Lists(settings);
 
-    //create grid
+    //create multiple grids
     string_grids grids;
     grids.emplace_back(Get_Completed_Grid(settings));
     grids.emplace_back(Get_Completed_Grid(settings));
@@ -47,6 +47,8 @@ class
     //create grid
     auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,settings.empty_cell_symbol);
     
+    
+    //place letter spread
     auto letter_spread = Get_Letter_Spread(settings);
     std::cout << "letter spread: " << letter_spread << std::endl;
     Random_Word_Placer::Randomly_Place_Word_Set(grid,settings,letter_spread);
@@ -68,7 +70,12 @@ class
     }
     
     //fill empty spaces
-    Random_Letter_Filler::Fill_Chars_With_Random_Letters(grid,settings.empty_cell_symbol,settings.letter_case);
+    if (settings.use_probability_select){
+        Random_Letter_Filler::Fill_Chars_With_Random_Letters(grid,settings.empty_cell_symbol,settings.letter_case);
+    }
+    else{
+        Random_Letter_Filler::Fill_Chars_With_Random_Letters(grid,settings.empty_cell_symbol,settings.choose_char_likelyhood);
+    }
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
     return grid;
