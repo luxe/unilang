@@ -1,0 +1,32 @@
+class
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/web/automate/browser/default_browser_settings_getter"❫
+❪"code/utilities/web/automate/browser/browser_creator"❫
+❪"code/utilities/web/automate/navigation/browser_navigator"❫
+❪pybind11/embed.h❫
+⚞⚟
+
+◀public: static▶ std::vector<std::string> ☀Get(std::string const& day) ❰
+
+
+    //get the input (we have to use a browser driver because we need to be logged in)
+    pybind11::scoped_interpreter py_guard{};
+    auto settings = Default_Browser_Settings_Getter::Get();
+    settings.headless = true;
+    Browser_Creator::Create(settings);
+    std::string url = "https://adventofcode.com/2019/day/" + day + "/input";
+    auto lines = Browser_Navigator::Go_To_Url_And_Extract_Lines(settings,url);
+    
+    //there's some html cruft to remove
+    Keep_End_Chars_Until_Char_Is_Found(lines[0],'>');
+    Remove_Last_Element(lines);
+    
+    return lines;
+❱

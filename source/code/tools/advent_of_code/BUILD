@@ -7,6 +7,20 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/exits:lib",
 "//code/utilities/web:lib",
 "//code/utilities/printers:lib",
+"//code/tools/advent_of_code:advent_of_code_input_getter",
+"//code/utilities/web/automate/browser:default_browser_settings_getter",
+"//code/utilities/web/automate/browser:browser_creator",
+"//code/utilities/web/automate/navigation:browser_navigator",
+"//code/utilities/types/vectors/transformers:lib",
+"//code/utilities/types/strings/observers/converting:lib",
+"//code/utilities/types/strings/transformers/removing:lib",
+])
+
+hcp(name = "advent_of_code_input_getter", deps = [
+"//code/utilities/types/general:lib",
+"//code/utilities/exits:lib",
+"//code/utilities/web:lib",
+"//code/utilities/printers:lib",
 "@pybind11//:pybind11",
 "//code/utilities/web/automate/browser:default_browser_settings_getter",
 "//code/utilities/web/automate/browser:browser_creator",
