@@ -5,6 +5,40 @@
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "code/utilities/types/strings/transformers/squeeze/lib.hpp"
 #include "code/utilities/types/strings/transformers/other/lib.hpp"
+#include "code/utilities/types/strings/observers/converting/lib.hpp"
+
+
+
+
+//math (string is treated as integer)
+void Add_Each_Line_By(std::vector<std::string> & v, int num){
+    for (auto & it: v){
+        it = std::to_string(as_signed(it) + num);
+    }
+}
+void Subtract_Each_Line_By(std::vector<std::string> & v, int num){
+    for (auto & it: v){
+        it = std::to_string(as_signed(it) - num);
+    }
+}
+void Multiply_Each_Line_By(std::vector<std::string> & v, int num){
+    for (auto & it: v){
+        it = std::to_string(as_signed(it) * num);
+    }
+}
+void Divide_Each_Line_By(std::vector<std::string> & v, int num){
+    for (auto & it: v){
+        it = std::to_string(as_signed(it) / num);
+    }
+}
+int Accumulate(std::vector<std::string> const& v){
+    int total = 0;
+    for (auto const& it: v){
+        total += as_signed(it);
+    }
+    return total;
+}
+
 
 
 void Add(std::vector<std::string> & vec, std::string const& item){

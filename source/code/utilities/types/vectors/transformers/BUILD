@@ -12,6 +12,7 @@ cc_library(
 "//code/utilities/types/strings/transformers/squeeze:lib",
 "//code/utilities/types/strings/transformers/other:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
+"//code/utilities/types/strings/observers/converting:lib",
 "@boost//:range",
 ]
 )
