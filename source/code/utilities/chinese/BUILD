@@ -223,7 +223,7 @@ values = [
 ,"mu"
 ,"na"
 ,"nai"
-,"nan"
+,"_nan"
 ,"nang"
 ,"nao"
 ,"ne"
