@@ -24,9 +24,11 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
         "//code/ide/frame:label_cursor_action_doer",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/types/vectors/observers:lib",
         "//code/ide/frame:mouse_frame_getter",
         "//code/ide/frame:label_frame_getter",
         "//code/ide/frame:view_anchor_adjuster",
         "//code/utilities/mouse/state:mouse_state",
+        "//code/utilities/keyboard:key_detector",
     ],
 )

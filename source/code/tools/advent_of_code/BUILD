@@ -14,6 +14,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/types/strings/observers/converting:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
+"//code/utilities/types/strings/observers/splitting:lib",
 ])
 
 hcp(name = "advent_of_code_input_getter", deps = [

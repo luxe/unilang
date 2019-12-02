@@ -31,10 +31,7 @@ class
     Adjust_Word_Lists(settings);
 
     //create multiple grids
-    string_grids grids;
-    grids.emplace_back(Get_Completed_Grid(settings));
-    grids.emplace_back(Get_Completed_Grid(settings));
-    grids.emplace_back(Get_Completed_Grid(settings));
+    auto grids = Build_Grids(settings);
     
     //create artifacts
     if (settings.output.create_puzzle_artifact){
@@ -42,22 +39,29 @@ class
     }
 ❱
 
+◀private: static▶ string_grids ☀Build_Grids(Crossword_Puzzle_Settings const& settings)❰
+    string_grids grids;
+    grids.emplace_back(Get_Completed_Grid(settings));
+    grids.emplace_back(Get_Completed_Grid(settings));
+    grids.emplace_back(Get_Completed_Grid(settings));
+    return grids;
+❱
+
 ◀private: static▶ std::vector<std::vector<std::string>> ☀Get_Completed_Grid(Crossword_Puzzle_Settings const& settings)❰
 
-    //create grid
+    //create empty grid
     auto grid = Create_N_By_N_Vector_Of_Strs(settings.dimensions.x,settings.dimensions.y,settings.empty_cell_symbol);
     
-    
-    //place letter spread
+    //place letter spread (this may be empty)
     auto letter_spread = Get_Letter_Spread(settings);
     std::cout << "letter spread: " << letter_spread << std::endl;
     Random_Word_Placer::Randomly_Place_Word_Set(grid,settings,letter_spread);
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
     
-    
     //place words (this is the main algorithm)
     //we can come up with different core algorithms here.
-    Random_Word_Placer::Randomly_Place_Each_Word(grid,settings);
+    Random_Word_Placer::Randomly_Place_Word_Set(grid,settings,settings.words);
+    Random_Word_Placer::Randomly_Place_Word_Set(grid,settings,settings.decoy_words);
     
     //TODO: verify properties about the puzzle
     //depending on which algorithm we use, there may be certain properties
@@ -77,6 +81,9 @@ class
         Random_Letter_Filler::Fill_Chars_With_Random_Letters(grid,settings.empty_cell_symbol,settings.choose_char_likelyhood);
     }
     std::cout << Table_As_Column_Aligned(grid) << std::endl;
+    
+    
+    //look for answers
     
     return grid;
 ❱
