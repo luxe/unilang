@@ -40,6 +40,7 @@ hcp(name = "crossword_maker", deps = [
     "//code/tools/crossword:random_word_placer",
     "//code/utilities/types/strings/transformers/casing:letter_case_setter",
     "//code/utilities/types/string_grid:random_letter_filler",
+    "//code/utilities/types/string_grid:words_finder",
 ])
 
 hcp(name = "random_word_placer", deps = [
@@ -58,6 +59,7 @@ hcp(name = "random_word_placer", deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/tools/crossword:html_exporter",
+    "//code/utilities/data_structures/point:point_range_checker",
 ])
 
 hcp(name = "crossword_words", deps = [

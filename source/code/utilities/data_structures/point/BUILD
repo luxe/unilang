@@ -9,3 +9,8 @@ hcp(name = "point_mover", deps = [
     "//code/utilities/data_structures:compass_direction_diagnonal",
     "//code/utilities/data_structures/point:point",
 ])
+
+hcp(name = "point_range_checker", deps = [
+    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/data_structures/point:point",
+])
