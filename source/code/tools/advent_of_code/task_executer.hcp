@@ -1,5 +1,7 @@
 class
 ❪"code/utilities/data_structures/compass_directions/compass_direction_diagnonal_movement"❫
+❪"code/utilities/data_structures/point/point_line"❫
+❪"code/utilities/data_structures/point/point_mover"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
@@ -15,6 +17,7 @@ class
 ❪"code/tools/advent_of_code/advent_of_code_input_getter"❫
 ❪"code/utilities/json/functions/lib"❫
 ❪pybind11/embed.h❫
+❪"code/utilities/data_structures/point/point"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -110,12 +113,18 @@ class
 
 ◀private: static▶ void ☀Day_3_Part_1(std::vector<std::string> lines) ❰
     //std::cout << lines << std::endl;
-    for (auto const& it: lines){
-        auto parts = Split_Into_Parts_From_Comma(it);
-        auto moves = To_Moves(parts);
-        std::cout << As_JSON_String(moves) << std::endl;
-        std::cout << std::endl;
-    }
+
+    auto moves1 = To_Moves(Split_Into_Parts_From_Comma(lines[0]));
+    auto moves2 = To_Moves(Split_Into_Parts_From_Comma(lines[1]));
+    
+    auto lines1 = To_Lines(moves1);
+    auto lines2 = To_Lines(moves2);
+        
+        
+        
+        
+    std::cout << As_JSON_String(lines2) << std::endl;
+    std::cout << std::endl;
 ❱
 ◀private: static▶ void ☀Day_3_Part_2(std::vector<std::string> lines) ❰
 ❱
@@ -144,6 +153,28 @@ class
         moves.emplace_back(m);
     }
     return moves;
+❱
+◀private: static▶ std::vector<Point_Line> ☀To_Lines(std::vector<Compass_Direction_Diagnonal_Movement> const& moves)❰
+    std::vector<Point_Line> lines;
+    
+    //starting point
+    Point p;
+    p.x = 0;
+    p.y = 0;
+    
+    for (auto const& it: moves){
+        auto new_pos = Point_Mover::As_Moved_Direction(p,it);
+        
+        Point_Line line;
+        line.start = p;
+        line.end = new_pos;
+        lines.emplace_back(line);
+        
+        p = new_pos;
+    }
+    
+    
+    return lines;
 ❱
 
 

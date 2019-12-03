@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "point")
-hcp(name = "point_path", deps = [
+hcp(name = "point_line", deps = [
     "//code/utilities/data_structures/point:point",
 ])
 hcp(name = "directional_point", deps = [
@@ -16,6 +16,7 @@ hcp(name = "point_mover", deps = [
     "//code/utilities/data_structures:compass_direction",
     "//code/utilities/data_structures:compass_direction_diagnonal",
     "//code/utilities/data_structures/point:point",
+    "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
 ])
 
 hcp(name = "point_range_checker", deps = [
