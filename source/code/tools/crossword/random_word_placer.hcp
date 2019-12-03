@@ -2,7 +2,7 @@ class
 ❪string❫
 ❪"code/utilities/data_structures/point/point_mover"❫
 ❪"code/tools/crossword/settings/crossword_puzzle_settings"❫
-❪"code/tools/crossword/word_try"❫
+❪"code/utilities/data_structures/point/directional_point"❫
 ❪"code/utilities/std_hackery/std_aliases"❫
 ⚯
 ❪iostream❫
@@ -37,7 +37,7 @@ class
     }
 ❱
 
-◀private: static▶ Word_Try ☀Get_A_Word_Try_That_Works(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
+◀private: static▶ Directional_Point ☀Get_A_Word_Try_That_Works(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
 
         //randomly place the word until it fits
         auto word_try = Primed_Random_Word_Try(grid,settings,word);
@@ -51,7 +51,7 @@ class
 ❱
 
 
-◀private: static▶ Word_Try ☀Primed_Random_Word_Try(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
+◀private: static▶ Directional_Point ☀Primed_Random_Word_Try(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word)❰
     
     auto word_try = Random_Word_Try(grid);
     for (int i = 0; i < settings.random_place_strategy.primed_passthrough_attempts; ++i){
@@ -65,15 +65,15 @@ class
     return word_try;
 ❱
 
-◀private: static▶ Word_Try ☀Random_Word_Try(string_grid const& grid)❰
-    Word_Try x;
+◀private: static▶ Directional_Point ☀Random_Word_Try(string_grid const& grid)❰
+    Directional_Point x;
     x.point.x = Get_Random_Index(grid);
     x.point.y = Get_Random_Index(grid[0]);
     x.direction = static_cast<Compass_Direction_Diagnonal>(RandomIntFromRange(0,7));
     return x;
 ❱
 
-◀private: static▶ bool ☀Word_Fits(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
+◀private: static▶ bool ☀Word_Fits(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Directional_Point word_try)❰
 
     for (auto letter: word){
         
@@ -87,7 +87,7 @@ class
     return true;
 ❱
 
-◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Word_Try word_try)❰
+◀private: static▶ bool ☀Word_Fits_And_Has_Pass_Through(string_grid const& grid, Crossword_Puzzle_Settings const& settings, std::string const& word, Directional_Point word_try)❰
 
 
     bool has_pass_through = false;
@@ -111,7 +111,7 @@ class
     return has_pass_through;
 ❱
 
-◀private: static▶ bool ☀Has_Violation(string_grid const& grid, Crossword_Puzzle_Settings const& settings, char const& letter, Word_Try word_try)❰
+◀private: static▶ bool ☀Has_Violation(string_grid const& grid, Crossword_Puzzle_Settings const& settings, char const& letter, Directional_Point word_try)❰
 
         if (!Point_Range_Checker::In_Range(grid,word_try.point)){
             return true;
@@ -130,7 +130,7 @@ class
 
 
 
-◀private: static▶ void ☀Fit_Word(string_grid & grid, std::string const& word, Word_Try word_try)❰
+◀private: static▶ void ☀Fit_Word(string_grid & grid, std::string const& word, Directional_Point word_try)❰
     for (auto letter: word){
         grid[word_try.point.x][word_try.point.y] = letter;
         Point_Mover::Move_In_Direction(word_try.point,word_try.direction);
