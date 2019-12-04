@@ -20,6 +20,9 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/data_structures/point:point_line",
 "//code/utilities/data_structures/point:point_mover",
 "//code/utilities/data_structures/point:point",
+"//code/utilities/data_structures/point:point_line_intersections_getter",
+"//code/utilities/types/vectors/operators:lib",
+"//code/utilities/data_structures/point:point_line_to_points",
 ])
 
 hcp(name = "advent_of_code_input_getter", deps = [

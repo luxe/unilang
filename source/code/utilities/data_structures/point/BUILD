@@ -23,3 +23,14 @@ hcp(name = "point_range_checker", deps = [
     "//code/utilities/std_hackery:std_aliases",
     "//code/utilities/data_structures/point:point",
 ])
+
+hcp(name = "point_line_intersections_getter", deps = [
+    "//code/utilities/data_structures/point:point",
+    "//code/utilities/data_structures/point:point_line",
+    "//code/utilities/data_structures/point:point_line_to_points",
+])
+
+hcp(name = "point_line_to_points", deps = [
+    "//code/utilities/data_structures/point:point",
+    "//code/utilities/data_structures/point:point_line",
+])

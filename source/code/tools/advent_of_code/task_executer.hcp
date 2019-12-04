@@ -4,6 +4,7 @@ class
 ❪"code/utilities/data_structures/point/point_mover"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
@@ -18,6 +19,8 @@ class
 ❪"code/utilities/json/functions/lib"❫
 ❪pybind11/embed.h❫
 ❪"code/utilities/data_structures/point/point"❫
+❪"code/utilities/data_structures/point/point_line_intersections_getter"❫
+❪"code/utilities/data_structures/point/point_line_to_points"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -31,7 +34,7 @@ class
     // Day_2_Part_2(lines);
 
     auto lines = Advent_Of_Code_Input_Getter::Get("3");
-    Day_3_Part_1(lines);
+    //Day_3_Part_1(lines);
     Day_3_Part_2(lines);
 ❱
 
@@ -112,22 +115,88 @@ class
 
 
 ◀private: static▶ void ☀Day_3_Part_1(std::vector<std::string> lines) ❰
-    //std::cout << lines << std::endl;
 
+
+    //get all the line intersections
+    std::vector<Point> intersections = Get_Intersections(lines);
+    
+    //calculate Manhattan distances
+    std::vector<int> m_distances;
+    for (auto const& it: intersections){
+        size_t distance = 0;
+        distance += abs(it.x);
+        distance += abs(it.y);
+        m_distances.emplace_back(distance);
+    }
+    Sort_And_Remove_Duplicates(m_distances);
+    std::cout << m_distances[1] << std::endl;
+❱
+◀private: static▶ void ☀Day_3_Part_2(std::vector<std::string> lines) ❰
+
+    //get all the line intersections
+    std::vector<Point> intersections = Get_Intersections(lines);
+    
+    //get lines
+    auto moves1 = To_Moves(Split_Into_Parts_From_Comma(lines[0]));
+    auto moves2 = To_Moves(Split_Into_Parts_From_Comma(lines[1]));
+    auto lines1 = To_Lines(moves1);
+    auto lines2 = To_Lines(moves2);
+    
+    //get time till intersection
+    std::vector<size_t> times;
+    for (auto intersection: intersections){
+        size_t t1 = Distance_To_First_Intersection(intersection,lines1);
+        size_t t2 = Distance_To_First_Intersection(intersection,lines2);
+        times.emplace_back(t1+t2);
+    }
+    
+    Sort_And_Remove_Duplicates(times);
+    std::cout << times << std::endl;
+❱
+
+◀private: static▶ size_t ☀Distance_To_First_Intersection(Point const& intersection, std::vector<Point_Line> const& lines)❰
+    size_t t = 0;
+    for (auto l1: lines){
+        auto ps = Point_Line_To_Points::Convert(l1);
+        for (auto it: ps){
+            if (it.x == intersection.x && it.y == intersection.y){
+                return t;
+            }
+            else{
+                ++t;
+            }
+        }
+        --t;
+    }
+    std::cerr << "not found" << std::endl;
+    return t;
+❱
+
+
+
+
+◀private: static▶ std::vector<Point> ☀Get_Intersections(std::vector<std::string> const& lines)❰
     auto moves1 = To_Moves(Split_Into_Parts_From_Comma(lines[0]));
     auto moves2 = To_Moves(Split_Into_Parts_From_Comma(lines[1]));
     
     auto lines1 = To_Lines(moves1);
     auto lines2 = To_Lines(moves2);
-        
-        
-        
-        
-    std::cout << As_JSON_String(lines2) << std::endl;
-    std::cout << std::endl;
+    
+    
+    std::vector<Point> intersections;
+    auto total = lines1.size() * lines2.size();
+    size_t count = 0;
+    for (auto const& l1: lines1){
+        for (auto const& l2: lines2){
+            intersections += Point_Line_Intersections_Getter::Get(l1,l2);
+            //std::cout << count << " / " << total << std::endl;
+            ++count;
+        }
+    }
+    
+    return intersections;
 ❱
-◀private: static▶ void ☀Day_3_Part_2(std::vector<std::string> lines) ❰
-❱
+
 
 ◀private: static▶ std::vector<Compass_Direction_Diagnonal_Movement> ☀To_Moves(std::vector<std::string> const& parts)❰
     std::vector<Compass_Direction_Diagnonal_Movement> moves;
