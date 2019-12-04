@@ -15,18 +15,21 @@ class
 
 ◀public: static▶ std::vector<std::string> ☀Get(std::string const& day) ❰
 
+    //where to get the input from
+    std::string url = "https://adventofcode.com/2019/day/" + day + "/input";
 
     //get the input (we have to use a browser driver because we need to be logged in)
     pybind11::scoped_interpreter py_guard{};
     auto settings = Default_Browser_Settings_Getter::Get();
     settings.headless = true;
     Browser_Creator::Create(settings);
-    std::string url = "https://adventofcode.com/2019/day/" + day + "/input";
     auto lines = Browser_Navigator::Go_To_Url_And_Extract_Lines(settings,url);
     
     //there's some html cruft to remove
     Keep_End_Chars_Until_Char_Is_Found(lines[0],'>');
     Remove_Last_Element(lines);
+    
+    //maybe advent of code should use raw text for a REST API next time.
     
     return lines;
 ❱

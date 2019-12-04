@@ -1,0 +1,156 @@
+class
+❪"code/utilities/data_structures/compass_directions/compass_direction_diagnonal_movement"❫
+❪"code/utilities/data_structures/point/point_line"❫
+❪"code/utilities/data_structures/point/point_mover"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/exits/lib"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/web/automate/browser/default_browser_settings_getter"❫
+❪"code/utilities/web/automate/browser/browser_creator"❫
+❪"code/utilities/web/automate/navigation/browser_navigator"❫
+❪"code/tools/advent_of_code/advent_of_code_input_getter"❫
+❪"code/utilities/json/functions/lib"❫
+❪"code/utilities/data_structures/point/point"❫
+❪"code/utilities/data_structures/point/point_line_intersections_getter"❫
+❪"code/utilities/data_structures/point/point_line_to_points"❫
+⚞⚟
+
+◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
+
+
+    //get all the line intersections
+    std::vector<Point> intersections = Get_Intersections(lines);
+    
+    //calculate Manhattan distances
+    std::vector<int> m_distances;
+    for (auto const& it: intersections){
+        size_t distance = 0;
+        distance += abs(it.x);
+        distance += abs(it.y);
+        m_distances.emplace_back(distance);
+    }
+    Sort_And_Remove_Duplicates(m_distances);
+    std::cout << m_distances[1] << std::endl;
+❱
+◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+
+    //get all the line intersections
+    std::vector<Point> intersections = Get_Intersections(lines);
+    
+    //get lines
+    auto moves1 = To_Moves(Split_Into_Parts_From_Comma(lines[0]));
+    auto moves2 = To_Moves(Split_Into_Parts_From_Comma(lines[1]));
+    auto lines1 = To_Lines(moves1);
+    auto lines2 = To_Lines(moves2);
+    
+    //get time till intersection
+    std::vector<size_t> times;
+    for (auto intersection: intersections){
+        size_t t1 = Distance_To_First_Intersection(intersection,lines1);
+        size_t t2 = Distance_To_First_Intersection(intersection,lines2);
+        times.emplace_back(t1+t2);
+    }
+    
+    Sort_And_Remove_Duplicates(times);
+    std::cout << times << std::endl;
+❱
+
+◀private: static▶ size_t ☀Distance_To_First_Intersection(Point const& intersection, std::vector<Point_Line> const& lines)❰
+    size_t t = 0;
+    for (auto l1: lines){
+        auto ps = Point_Line_To_Points::Convert(l1);
+        for (auto it: ps){
+            if (it.x == intersection.x && it.y == intersection.y){
+                return t;
+            }
+            else{
+                ++t;
+            }
+        }
+        --t;
+    }
+    std::cerr << "not found" << std::endl;
+    return t;
+❱
+
+
+
+
+◀private: static▶ std::vector<Point> ☀Get_Intersections(std::vector<std::string> const& lines)❰
+    auto moves1 = To_Moves(Split_Into_Parts_From_Comma(lines[0]));
+    auto moves2 = To_Moves(Split_Into_Parts_From_Comma(lines[1]));
+    
+    auto lines1 = To_Lines(moves1);
+    auto lines2 = To_Lines(moves2);
+    
+    
+    std::vector<Point> intersections;
+    auto total = lines1.size() * lines2.size();
+    size_t count = 0;
+    for (auto const& l1: lines1){
+        for (auto const& l2: lines2){
+            intersections += Point_Line_Intersections_Getter::Get(l1,l2);
+            //std::cout << count << " / " << total << std::endl;
+            ++count;
+        }
+    }
+    
+    return intersections;
+❱
+
+
+◀private: static▶ std::vector<Compass_Direction_Diagnonal_Movement> ☀To_Moves(std::vector<std::string> const& parts)❰
+    std::vector<Compass_Direction_Diagnonal_Movement> moves;
+    for (auto part: parts){
+        Compass_Direction_Diagnonal direction = Compass_Direction_Diagnonal::NORTH;
+        if (part[0] == 'U'){
+            direction = Compass_Direction_Diagnonal::NORTH;
+        }
+        else if (part[0] == 'D'){
+            direction = Compass_Direction_Diagnonal::SOUTH;
+        }
+        else if (part[0] == 'L'){
+            direction = Compass_Direction_Diagnonal::WEST;
+        }
+        else if (part[0] == 'R'){
+            direction = Compass_Direction_Diagnonal::EAST;
+        }
+        part.erase(0,1);
+        
+        Compass_Direction_Diagnonal_Movement m;
+        m.direction = direction;
+        m.magnitude = as_signed(part);
+        moves.emplace_back(m);
+    }
+    return moves;
+❱
+◀private: static▶ std::vector<Point_Line> ☀To_Lines(std::vector<Compass_Direction_Diagnonal_Movement> const& moves)❰
+    std::vector<Point_Line> lines;
+    
+    //starting point
+    Point p;
+    p.x = 0;
+    p.y = 0;
+    
+    for (auto const& it: moves){
+        auto new_pos = Point_Mover::As_Moved_Direction(p,it);
+        
+        Point_Line line;
+        line.start = p;
+        line.end = new_pos;
+        lines.emplace_back(line);
+        
+        p = new_pos;
+    }
+    
+    
+    return lines;
+❱
+
