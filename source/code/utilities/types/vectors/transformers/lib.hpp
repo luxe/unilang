@@ -25,6 +25,38 @@ int Accumulate(std::vector<std::string> const& v);
 
 
 
+template<typename T>
+T& Position_Mode_Index(std::vector<T> & t, size_t index){
+  return t[t[index]];
+}
+
+template<typename T>
+void Position_Mode_Addition(std::vector<T> & t, size_t op1, size_t op2, size_t answer){
+    auto a = Position_Mode_Index(t,op1);
+    auto b = Position_Mode_Index(t,op2);
+    Position_Mode_Index(t,answer) = a+b;
+}
+template<typename T>
+void Position_Mode_Linear_Addition(std::vector<T> & t, size_t & pc){
+    auto a = Position_Mode_Index(t,pc+1);
+    auto b = Position_Mode_Index(t,pc+2);
+    Position_Mode_Index(t,pc+3) = a+b;
+    pc += 4;
+}
+
+template<typename T>
+void Position_Mode_Multiply(std::vector<T> & t, size_t op1, size_t op2, size_t answer){
+    auto a = Position_Mode_Index(t,op1);
+    auto b = Position_Mode_Index(t,op2);
+    Position_Mode_Index(t,answer) = a*b;
+}
+template<typename T>
+void Position_Mode_Linear_Multiply(std::vector<T> & t, size_t & pc){
+    auto a = Position_Mode_Index(t,pc+1);
+    auto b = Position_Mode_Index(t,pc+2);
+    Position_Mode_Index(t,pc+3) = a*b;
+    pc += 4;
+}
 
 
 

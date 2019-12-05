@@ -6,6 +6,8 @@ class
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
@@ -24,54 +26,50 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
     auto nums = Split_Into_Parts_From_Comma(lines[0]);
-    
-    
-    for (size_t i = 0; i < 100; i++){
-        for (size_t j = 0; j < 100; j++){
-            if (Program_Result(nums,i,j) == 19690720){
-                exit(0);
-            }
-        }
-    }
-    
-    
-    
-    std::cout << nums[0] << std::endl;
+    auto result = Program_Result(nums,12,2);
+    std::cout << result << std::endl;
 ❱
 
 ◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
-    //todo: unmerge part 1/2
+
+    auto nums = Split_Into_Parts_From_Comma(lines[0]);
+    
+    
+    auto seek_result = 19690720;
+    size_t answer = 0;
+    
+    Nested_Loop(0,100,0,100,[&](size_t i, size_t j, bool & stop){
+        if (Program_Result(nums,i,j) == seek_result){
+            answer = 100 * i + j;
+            stop = true;
+        }
+    });
+    
+    std::cout << answer << std::endl;
 ❱
 
-◀public: static▶ int ☀Program_Result(std::vector<std::string> nums, int input1, int input2) ❰
+◀public: static▶ int ☀Program_Result(std::vector<std::string> num_strs, int input1, int input2) ❰
+
+    auto nums = VecStringToVecInt(num_strs);
+    
     //99 means stop
     //1 means read next two, add and store in third
     //2 multiplies
-    nums[1] = std::to_string(input1);
-    nums[2] = std::to_string(input2);
+    nums[1] = input1;
+    nums[2] = input2;
     //std::cout << nums << std::endl;
     
+    int opcode_add = 1;
+    int opcode_mul = 2;
+    
     size_t pc = 0;
-    while(nums[pc] != "99"){
-        if (nums[pc] == "1"){
-            auto a = as_signed(nums[as_signed(nums[pc+1])]);
-            auto b = as_signed(nums[as_signed(nums[pc+2])]);
-            nums[as_signed(nums[pc+3])] = std::to_string(a+b);
-            //std::cout << "add: " << a << " " << b << " " << pc+3 << std::endl;
-            pc+=4;
+    while(nums[pc] != 99){
+        if (nums[pc] == opcode_add){
+            Position_Mode_Linear_Addition(nums,pc);
         }
-        else if (nums[pc] == "2"){
-            auto a = as_signed(nums[as_signed(nums[pc+1])]);
-            auto b = as_signed(nums[as_signed(nums[pc+2])]);
-            nums[as_signed(nums[pc+3])] = std::to_string(a*b);
-            //std::cout << "mul: " << a << " " << b << " " << pc+3 << std::endl;
-            pc+=4;
-        }
-        else{
-            break;
-            pc++;
+        else if (nums[pc] == opcode_mul){
+            Position_Mode_Linear_Multiply(nums,pc);
         }
     }
-    std::cout << nums[0] << std::endl;
-    return as_signed(nums[0]);
+    return nums[0];
 ❱

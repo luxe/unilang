@@ -8,6 +8,8 @@
 //setting up the joycons are stupid.
 //you have to run this jcdriver program
 //https://github.com/riking/joycon
+//git clone git@github.com:riking/joycon.git
+//might be in: /home/laptop/go/bin/jcdriver
 //then type sync
 //the go your bluetooth devices and search for devices
 //find the device and try to pair it.

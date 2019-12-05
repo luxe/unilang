@@ -77,6 +77,7 @@ hcp(name = "day_2", deps = [
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/exits:lib",
     "//code/utilities/web:lib",
     "//code/utilities/printers:lib",
@@ -88,6 +89,7 @@ hcp(name = "day_2", deps = [
     "//code/utilities/data_structures/point:point",
     "//code/utilities/data_structures/point:point_line_intersections_getter",
     "//code/utilities/data_structures/point:point_line_to_points",
+    "//code/utilities/types/vectors/converters:lib",
 ])
 
 hcp(name = "day_3", deps = [

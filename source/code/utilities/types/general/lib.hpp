@@ -14,6 +14,21 @@
 //    return container;
 //}
 
+
+template <typename Fun>
+void Nested_Loop(size_t i_start, size_t i_end,size_t j_start, size_t j_end, Fun fun){
+  bool stop = false;
+    for (size_t i = i_start; i < i_end; i++){
+        for (size_t j = j_start; j < j_end; j++){
+          fun(i,j,stop);
+          if (stop){break;}
+        }
+        if (stop){break;}
+    }
+}
+
+
+
 template <typename T, typename Key>
 bool Key_Exists(const T& container, const Key& key)
 {
