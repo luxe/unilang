@@ -108,7 +108,7 @@ std::string Get_Random_String(T const& password_chars, unsigned int const& lengt
   return password;
 }
 
-std::string Get_Random_By_Probability(std::map<std::string,float> const& m);
+std::string Get_Random_By_Probability(std::map<std::string,double> const& m);
 
 
 //random letters

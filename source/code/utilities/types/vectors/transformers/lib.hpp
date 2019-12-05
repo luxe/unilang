@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <iostream>
 #include <set>
 #include "code/utilities/types/strings/transformers/casing/lib.hpp"
 
@@ -30,6 +31,9 @@ T& Position_Mode_Index(std::vector<T> & t, size_t index){
   return t[t[index]];
 }
 
+
+
+//treating the vector as addressable memory or with an artificial program counter
 template<typename T>
 void Position_Mode_Addition(std::vector<T> & t, size_t op1, size_t op2, size_t answer){
     auto a = Position_Mode_Index(t,op1);
@@ -57,6 +61,24 @@ void Position_Mode_Linear_Multiply(std::vector<T> & t, size_t & pc){
     Position_Mode_Index(t,pc+3) = a*b;
     pc += 4;
 }
+template<typename T>
+void Position_Mode_Set_Input(std::vector<T> & t, size_t & pc){
+    T input;
+    std::cout << "input: ";
+    std::cout.flush();
+    std::cin >> input;
+    Position_Mode_Index(t,pc+1) = input;
+    pc += 2;
+    
+    
+}
+template<typename T>
+void Position_Mode_Print(std::vector<T> & t, size_t & pc){
+    std::cout << Position_Mode_Index(t,pc+1) << std::endl;
+    pc += 2;
+}
+
+
 
 
 

@@ -29,9 +29,9 @@ std::string RandomIntFromRange(std::string low_in, std::string high_in){
 }
 
 
-std::string Get_Random_By_Probability(std::map<std::string,float> const& m){
-	auto num = RandomRealFromRange<float>(0.0,100.0);
-	float total = 0;
+std::string Get_Random_By_Probability(std::map<std::string,double> const& m){
+	auto num = RandomRealFromRange<double>(0.0,100.0);
+	double total = 0;
 	for (auto const& it: m){
 		if (num <= total+it.second){
 			return it.first;
