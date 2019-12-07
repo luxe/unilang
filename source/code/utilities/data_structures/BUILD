@@ -45,3 +45,11 @@ values = [
 ,"east",
 "none"
 ])
+
+
+#how to index into containers (treating the values as further indexes)
+enum_cpp(name = "index_mode",
+values = [
+"position"
+,"immediate"
+])

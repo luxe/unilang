@@ -26,42 +26,117 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
     auto nums = Split_Into_Parts_From_Comma(lines[0]);
-    auto result = Program_Result(nums,12,2);
-    std::cout << result << std::endl;
+    Program_Result(nums);
+
+
+
 ❱
 
 ◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
 ❱
 
-◀public: static▶ int ☀Program_Result(std::vector<std::string> num_strs, int input1, int input2) ❰
+◀private: static▶ void ☀Program_Result(std::vector<std::string> num_strs) ❰
 
     auto nums = VecStringToVecInt(num_strs);
-    
-    //99 means stop
-    //nums[1] = input1;
-    //nums[2] = input2;
-    //std::cout << nums << std::endl;
     
     int opcode_stop = 99;
     int opcode_add = 1;
     int opcode_mul = 2;
     int opcode_input = 3;
     int opcode_output = 4;
+    int jump_if_true = 5;
+    int jump_if_false = 6;
+    int less_than = 7;
+    int equals = 8;
     
+    //std::cout << nums[0] << std::endl;
     size_t pc = 0;
-    while(nums[pc] != opcode_stop){
-        if (nums[pc] == opcode_add){
-            Position_Mode_Linear_Addition(nums,pc);
+    
+    auto op_code = get_op_code(nums[pc]);
+    Index_Mode i1 = static_cast<Index_Mode>(get_nth_digit_from_back(nums[pc],2));
+    Index_Mode i2 = static_cast<Index_Mode>(get_nth_digit_from_back(nums[pc],3));
+    Index_Mode i3 = static_cast<Index_Mode>(get_nth_digit_from_back(nums[pc],4));
+    
+    
+    while(op_code != opcode_stop){
+        
+        if (op_code == opcode_add){
+            Mode_Linear_Addition(nums,pc,i1,i2,i3);
         }
-        else if (nums[pc] == opcode_mul){
-            Position_Mode_Linear_Multiply(nums,pc);
+        else if (op_code == opcode_mul){
+            Mode_Linear_Multiply(nums,pc,i1,i2,i3);
         }
-        else if (nums[pc] == opcode_input){
+        else if (op_code == opcode_input){
             Position_Mode_Set_Input(nums,pc);
         }
-        else if (nums[pc] == opcode_output){
-            Position_Mode_Print(nums,pc);
+        else if (op_code == opcode_output){
+            Mode_Print(nums,pc,i1);
+        }
+        else if (op_code == jump_if_true){
+            Mode_Jump_If_True(nums,pc,i1,i2);
+        }
+        else if (op_code == jump_if_false){
+            Mode_Jump_If_False(nums,pc,i1,i2);
+        }
+        else if (op_code == less_than){
+            Mode_Jump_Less_Than(nums,pc,i1,i2,i3);
+        }
+        else if (op_code == equals){
+            Mode_Jump_Equals(nums,pc,i1,i2,i3);
+        }
+        op_code = get_op_code(nums[pc]);
+        i1 = static_cast<Index_Mode>(get_nth_digit_from_back(nums[pc],2));
+        i2 = static_cast<Index_Mode>(get_nth_digit_from_back(nums[pc],3));
+        i3 = static_cast<Index_Mode>(get_nth_digit_from_back(nums[pc],4));
+    }
+❱
+
+◀private: static▶ int ☀get_op_code(int x)❰
+    return get_last_n_digits(x,2);
+❱
+
+
+
+
+//utility related
+◀private: static▶ int ☀get_last_n_digits(int x, int digits)❰
+    auto x_str = std::to_string(x);
+    std::string final_str;
+    for (size_t i = 0; i < digits; ++i){
+        if (i < x_str.size()){
+            final_str = x_str[x_str.size()-1-i] + final_str;
         }
     }
-    return nums[0];
+    return as_signed(final_str);
 ❱
+
+◀private: static▶ int ☀get_nth_digit_from_back(int x, int digit_place)❰
+    
+    auto x_str = std::to_string(x);
+    if (digit_place < x_str.size()){
+        std::string result;
+        result += x_str[x_str.size()-1-digit_place];
+        return as_signed(result);
+    }
+    
+    return 0;
+❱
+
+
+
+
+//utility tests
+//std::cout << get_last_n_digits(123,2) << std::endl;
+//std::cout << get_last_n_digits(1234567,4) << std::endl;
+//std::cout << get_last_n_digits(20,4) << std::endl;
+
+// std::cout << get_nth_digit_from_back(1,0) << std::endl;
+// std::cout << get_nth_digit_from_back(1,1) << std::endl;
+// std::cout << get_nth_digit_from_back(54321,0) << std::endl;
+// std::cout << get_nth_digit_from_back(54321,1) << std::endl;
+// std::cout << get_nth_digit_from_back(54321,2) << std::endl;
+// std::cout << get_nth_digit_from_back(54321,3) << std::endl;
+// std::cout << get_nth_digit_from_back(54321,20) << std::endl;
+
+
+
