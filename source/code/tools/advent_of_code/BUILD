@@ -67,6 +67,7 @@ hcp(name = "day_1", deps = [
     "//code/utilities/data_structures/point:point",
     "//code/utilities/data_structures/point:point_line_intersections_getter",
     "//code/utilities/data_structures/point:point_line_to_points",
+    "//code/utilities/types/int:int",
 ])
 
 hcp(name = "day_2", deps = [

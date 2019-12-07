@@ -26,6 +26,11 @@ void Exit_With_Teal_Message_Error(std::string const& message);
 void Exit_With_White_Message_Error(std::string const& message);
 void Exit_With_Black_Message_Error(std::string const& message);
 
+//+-----------------------------+
+//| Exiting Based on Conditions |
+//+-----------------------------+
+void Exit_If_Not_Equal(int const& x, int const& y);
+
 //+--------------------------+
 //| Exiting without messages |
 //+--------------------------+

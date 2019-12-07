@@ -1,6 +1,10 @@
+#include <iostream>
 #include "code/utilities/exits/lib.hpp"
 #include "code/utilities/colors/lib.hpp"
 
+//+-----------------------+
+//| Exiting with messages |
+//+-----------------------+
 void Exit_With_Success(std::string const& success_message){
 	std::cout << success_message << '\n';
 	exit(EXIT_SUCCESS);
@@ -59,6 +63,16 @@ void Exit_With_White_Message_Error(std::string const& message){
 void Exit_With_Black_Message_Error(std::string const& message){
 	Black_Error_Message(message + '\n');
 	exit(EXIT_FAILURE);
+}
+
+//+-----------------------------+
+//| Exiting Based on Conditions |
+//+-----------------------------+
+void Exit_If_Not_Equal(int const& x, int const& y){
+	if (x != y){
+		std::cout << std::to_string(x) << " != " << std::to_string(y) << std::endl;
+		exit(EXIT_FAILURE);
+	}
 }
 
 //+--------------------------+
