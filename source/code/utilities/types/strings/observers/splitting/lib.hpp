@@ -8,6 +8,8 @@ std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Dot(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Newline(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Dash(std::string const& str);
+std::vector<std::string> Split_Into_Parts_From_Open_Paren(std::string const& str);
+std::vector<std::string> Split_Into_Parts_From_Close_Paren(std::string const& str);
 std::vector<std::string> Split_By_Spaces(std::string const& str);
 std::vector<std::string> Get_Path_In_Parts(std::string const& str);
 std::string Get_Path_After_Desktop(std::string const& str);

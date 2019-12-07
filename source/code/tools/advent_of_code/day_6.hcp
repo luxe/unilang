@@ -20,29 +20,52 @@ class
 ❪"code/utilities/data_structures/point/point"❫
 ❪"code/utilities/data_structures/point/point_line_intersections_getter"❫
 ❪"code/utilities/data_structures/point/point_line_to_points"❫
+❪"Graph.h"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
-    Divide_Each_Line_By(lines,3);
-    Subtract_Each_Line_By(lines,2);
-    auto total = Accumulate(lines);
+    //get vertex connections
+    std::vector<std::pair<std::string,std::string>> orbs;
+    for (auto const& it: lines){
+        auto split = Split_Into_Parts_From_Close_Paren(it);
+        std::pair<std::string,std::string> p;
+        p.first = split[0];
+        p.second = split[1];
+        orbs.emplace_back(p);
+    }
+    //std::cout << orbs << std::endl;
+    
+    //build graph
+    Graph G;
+    for (auto const& it: orbs){
+        G.addNode(it.first);
+        G.addNode(it.second);
+        G.addEdge(it.second,it.first);
+        G.addEdge(it.first,it.second);
+    }
+    
+    std::set<std::string> s;
+    for (auto const& it: orbs){
+        s.insert(it.first);
+        s.insert(it.second);
+    }
+    
+    int total = 0;
+    for (auto it: s){
+        auto path = G.BFS(it,"COM");
+        //std::cout << path << std::endl;
+        total += path.size()-1;
+    }
+    
     std::cout << total << std::endl;
+    
+    auto path = G.DFS("YOU","SAN");
+    std::cout << path << std::endl;
+    std::cout << path.size()-3 << std::endl;
+    
+
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
 
-    //todo: reduce_to_zero
-    int total = 0;
-    for (auto const& line: lines){
-        auto left_over = (as_signed(line) / 3) -2;
-        
-        
-        total += left_over;
-        left_over = (left_over/3)-2;
-        while (left_over >= 0){
-            total += left_over;
-            left_over = (left_over/3)-2;
-        }
-    }
-    std::cout << total << std::endl;
 ❱
