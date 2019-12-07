@@ -1,9 +1,8 @@
-package(
-    default_visibility = ["//visibility:public"],
-)
+package(default_visibility = ["//visibility:public"])
+load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-cc_library(
-    name = "lib",
-    srcs = glob(["*.cpp"]),
-    hdrs = glob(["*.hpp"]),
-)
+hcp(name = "int", deps = [
+    "//code/utilities/converters:lib",
+    "//code/utilities/types/strings/observers/converting:lib",
+])
