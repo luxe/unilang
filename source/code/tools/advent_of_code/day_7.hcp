@@ -23,12 +23,37 @@ class
 ❪"code/utilities/data_structures/point/point_line_intersections_getter"❫
 ❪"code/utilities/data_structures/point/point_line_to_points"❫
 ❪"code/utilities/types/int/int"❫
+❪"code/tools/advent_of_code/int_code_computer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
-    auto nums = Split_Into_Parts_From_Comma(lines[0]);
-    Program_Result(nums);
+    //get program input
+    auto num_strs = Split_Into_Parts_From_Comma(lines[0]);
+    auto nums = VecStringToVecInt(num_strs);
+    
+    auto combos = Int::permutations(5,5);
+    //std::cout << combos << std::endl;
+    //exit(0);
+    
+    
+    std::vector<int> totals;
+    for (auto combo: combos){
+        auto nums2 = nums;
+        int result = 0;
+        result = Int_Code_Computer::Run(nums,{combo[0],result})[0];
+        result = Int_Code_Computer::Run(nums,{combo[1],result})[0];
+        result = Int_Code_Computer::Run(nums,{combo[2],result})[0];
+        result = Int_Code_Computer::Run(nums,{combo[3],result})[0];
+        result = Int_Code_Computer::Run(nums,{combo[4],result})[0];
+        totals.emplace_back(result);
+    }
+    
+    Sort_And_Remove_Duplicates(totals);
+    std::cout << totals << std::endl;
+    
+    //run computer
+    //auto result = Int_Code_Computer::Run(nums,{1});
 
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
@@ -37,59 +62,3 @@ class
 
 
 
-
-◀private: static▶ void ☀Program_Result(std::vector<std::string> num_strs) ❰
-
-    auto nums = VecStringToVecInt(num_strs);
-    
-    int opcode_stop = 99;
-    int opcode_add = 1;
-    int opcode_mul = 2;
-    int opcode_input = 3;
-    int opcode_output = 4;
-    int jump_if_true = 5;
-    int jump_if_false = 6;
-    int less_than = 7;
-    int equals = 8;
-    
-    //std::cout << nums[0] << std::endl;
-    size_t pc = 0;
-    
-    auto op_code = Int::get_last_n_digits(nums[pc],2);
-    Index_Mode i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(nums[pc],2));
-    Index_Mode i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(nums[pc],3));
-    Index_Mode i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(nums[pc],4));
-    
-    
-    while(op_code != opcode_stop){
-        
-        if (op_code == opcode_add){
-            Mode_Linear_Addition(nums,pc,i1,i2,i3);
-        }
-        else if (op_code == opcode_mul){
-            Mode_Linear_Multiply(nums,pc,i1,i2,i3);
-        }
-        else if (op_code == opcode_input){
-            Position_Mode_Set_Input(nums,pc);
-        }
-        else if (op_code == opcode_output){
-            Mode_Print(nums,pc,i1);
-        }
-        else if (op_code == jump_if_true){
-            Mode_Jump_If_True(nums,pc,i1,i2);
-        }
-        else if (op_code == jump_if_false){
-            Mode_Jump_If_False(nums,pc,i1,i2);
-        }
-        else if (op_code == less_than){
-            Mode_Jump_Less_Than(nums,pc,i1,i2,i3);
-        }
-        else if (op_code == equals){
-            Mode_Jump_Equals(nums,pc,i1,i2,i3);
-        }
-        op_code = Int::get_last_n_digits(nums[pc],2);
-        i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(nums[pc],2));
-        i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(nums[pc],3));
-        i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(nums[pc],4));
-    }
-❱
