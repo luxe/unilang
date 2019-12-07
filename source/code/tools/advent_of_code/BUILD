@@ -33,17 +33,41 @@ hcp(name = "task_executer", deps = [
 ])
 
 hcp(name = "advent_of_code_input_getter", deps = [
-"//code/utilities/types/general:lib",
-"//code/utilities/exits:lib",
-"//code/utilities/web:lib",
-"//code/utilities/printers:lib",
-"@pybind11//:pybind11",
-"//code/utilities/web/automate/browser:default_browser_settings_getter",
-"//code/utilities/web/automate/browser:browser_creator",
-"//code/utilities/web/automate/navigation:browser_navigator",
-"//code/utilities/types/vectors/transformers:lib",
-"//code/utilities/types/strings/observers/converting:lib",
-"//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/types/general:lib",
+    "//code/utilities/exits:lib",
+    "//code/utilities/web:lib",
+    "//code/utilities/printers:lib",
+    "@pybind11//:pybind11",
+    "//code/utilities/web/automate/browser:default_browser_settings_getter",
+    "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/navigation:browser_navigator",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+])
+
+hcp(name = "int_code_computer", deps = [
+    "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+    "//code/utilities/data_structures/point:point_line",
+    "//code/utilities/data_structures/point:point_mover",
+    "//code/utilities/types/general:lib",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/exits:lib",
+    "//code/utilities/web:lib",
+    "//code/utilities/printers:lib",
+    "//code/utilities/web/automate/browser:default_browser_settings_getter",
+    "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/navigation:browser_navigator",
+    "//code/tools/advent_of_code:advent_of_code_input_getter",
+    "//code/utilities/json/functions:lib",
+    "//code/utilities/data_structures/point:point",
+    "//code/utilities/data_structures/point:point_line_intersections_getter",
+    "//code/utilities/data_structures/point:point_line_to_points",
+    "//code/utilities/types/int:int",
 ])
 
 hcp(name = "day_1", deps = [
@@ -93,6 +117,7 @@ hcp(name = "day_2", deps = [
     "//code/utilities/data_structures/point:point_line_intersections_getter",
     "//code/utilities/data_structures/point:point_line_to_points",
     "//code/utilities/types/vectors/converters:lib",
+    "//code/tools/advent_of_code:int_code_computer",
 ])
 
 hcp(name = "day_3", deps = [
