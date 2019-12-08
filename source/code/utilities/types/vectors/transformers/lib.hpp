@@ -26,6 +26,15 @@ void Multiply_Each_Line_By(std::vector<std::string> & v, int num);
 void Divide_Each_Line_By(std::vector<std::string> & v, int num);
 int Accumulate(std::vector<std::string> const& v);
 
+template <typename T, typename Fun>
+int Accumulate(std::vector<T> const& v, Fun f){
+    int total = 0;
+    for (auto const& it: v){
+        total += f(it);
+    }
+    return total;
+}
+
 
 
 //directly / indirectly indexing into a vector

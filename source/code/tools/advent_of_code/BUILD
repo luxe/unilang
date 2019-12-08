@@ -31,6 +31,7 @@ hcp(name = "task_executer", deps = [
 "//code/tools/advent_of_code:day_6",
 "//code/tools/advent_of_code:day_7",
 "//code/tools/advent_of_code:day_8",
+"//code/tools/advent_of_code:day_9",
 ])
 
 hcp(name = "advent_of_code_input_getter", deps = [
@@ -246,6 +247,31 @@ hcp(name = "day_7", deps = [
 ])
 
 hcp(name = "day_8", deps = [
+    "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+    "//code/utilities/data_structures/point:point_line",
+    "//code/utilities/data_structures/point:point_mover",
+    "//code/utilities/types/general:lib",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/exits:lib",
+    "//code/utilities/web:lib",
+    "//code/utilities/printers:lib",
+    "//code/utilities/web/automate/browser:default_browser_settings_getter",
+    "//code/utilities/web/automate/browser:browser_creator",
+    "//code/utilities/web/automate/navigation:browser_navigator",
+    "//code/tools/advent_of_code:advent_of_code_input_getter",
+    "//code/utilities/json/functions:lib",
+    "//code/utilities/data_structures/point:point",
+    "//code/utilities/data_structures/point:point_line_intersections_getter",
+    "//code/utilities/data_structures/point:point_line_to_points",
+    "//code/utilities/types/int:int",
+    "//code/utilities/types/strings/observers/counters:lib",
+])
+
+hcp(name = "day_9", deps = [
     "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
     "//code/utilities/data_structures/point:point_line",
     "//code/utilities/data_structures/point:point_mover",
