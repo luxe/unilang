@@ -1,5 +1,6 @@
 class
 ❪vector❫
+❪"code/tools/advent_of_code/int_code_computer_state"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
@@ -23,9 +24,10 @@ class
 ❪"code/utilities/types/int/int"❫
 ⚞⚟
 
-◀public: static▶ std::vector<int> ☀Run(std::vector<int> & memory, std::vector<int> const& inputs) ❰
+◀public: static▶ std::vector<int> ☀Run(Int_Code_Computer_State & state, std::vector<int> const& inputs) ❰
 
 
+    // settings
     int opcode_stop = 99;
     int opcode_add = 1;
     int opcode_mul = 2;
@@ -35,48 +37,58 @@ class
     int jump_if_false = 6;
     int less_than = 7;
     int equals = 8;
+    
+    bool return_on_output = true;
 
-    size_t pc = 0;
     size_t current_input = 0;
     std::vector<int> outputs;
     
-    auto op_code = Int::get_last_n_digits(memory[pc],2);
-    Index_Mode i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(memory[pc],2));
-    Index_Mode i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(memory[pc],3));
-    Index_Mode i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(memory[pc],4));
+    auto op_code = Int::get_last_n_digits(state.memory[state.pc],2);
+    Index_Mode i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],2));
+    Index_Mode i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],3));
+    Index_Mode i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],4));
     
     
     while(op_code != opcode_stop){
         
         if (op_code == opcode_add){
-            Mode_Linear_Addition(memory,pc,i1,i2,i3);
+            Mode_Linear_Addition(state.memory,state.pc,i1,i2,i3);
         }
         else if (op_code == opcode_mul){
-            Mode_Linear_Multiply(memory,pc,i1,i2,i3);
+            Mode_Linear_Multiply(state.memory,state.pc,i1,i2,i3);
         }
         else if (op_code == opcode_input){
-            Position_Mode_Set(memory,pc,inputs[current_input]);
+            
+            if (inputs.size() <= current_input ){
+                std::cerr << "input out of range" << std::endl;
+                exit(0);
+            }
+            Position_Mode_Set(state.memory,state.pc,inputs[current_input]);
             ++current_input;
         }
         else if (op_code == opcode_output){
-            outputs.emplace_back(Mode_Get(memory,pc,i1));
+            outputs.emplace_back(Mode_Get(state.memory,state.pc,i1));
+            if (return_on_output){
+                return outputs;
+            }
         }
         else if (op_code == jump_if_true){
-            Mode_Jump_If_True(memory,pc,i1,i2);
+            Mode_Jump_If_True(state.memory,state.pc,i1,i2);
         }
         else if (op_code == jump_if_false){
-            Mode_Jump_If_False(memory,pc,i1,i2);
+            Mode_Jump_If_False(state.memory,state.pc,i1,i2);
         }
         else if (op_code == less_than){
-            Mode_Jump_Less_Than(memory,pc,i1,i2,i3);
+            Mode_Jump_Less_Than(state.memory,state.pc,i1,i2,i3);
         }
         else if (op_code == equals){
-            Mode_Jump_Equals(memory,pc,i1,i2,i3);
+            Mode_Jump_Equals(state.memory,state.pc,i1,i2,i3);
         }
-        op_code = Int::get_last_n_digits(memory[pc],2);
-        i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(memory[pc],2));
-        i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(memory[pc],3));
-        i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(memory[pc],4));
+        
+        op_code = Int::get_last_n_digits(state.memory[state.pc],2);
+        i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],2));
+        i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],3));
+        i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],4));
     }
     
     return outputs;
