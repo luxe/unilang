@@ -8,6 +8,7 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/exits/lib"❫
 ❪"code/utilities/web/lib"❫
@@ -24,18 +25,54 @@ class
 ⚞⚟
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
+
+    //get layer data
     auto parts = Split_Into_Parts(lines[0],25,6);
     
-    for (auto i: parts){
-        for (auto j: i){
-            std::cout << j << std::endl;
+    //find layer with the fewest zeros
+    int fewest_zeros = 10000;
+    int found_index = 0;
+    for (size_t i = 0; i < parts.size(); ++i){
+        auto count = Count_Instances_Of_Zeros(parts[i]);
+        if (count < fewest_zeros){
+            fewest_zeros = count;
+            found_index = i;
         }
-        std::cout << "------" << std::endl;
     }
+    
+    //print answer
+    std::cout << Count_Instances_Of_Ones(parts[found_index]) * Count_Instances_Of_Twos(parts[found_index]) << std::endl;
     
 
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> const& lines) ❰
-
-
+    
+    //get layer data
+    auto parts = Split_Into_Parts(lines[0],25,6);
+    
+    //reverse layers
+    std::vector<std::vector<std::string>> revered;
+    for (auto it = parts.rbegin(); it != parts.rend(); ++it)
+    {
+        revered.emplace_back(*it);
+    }
+    
+    //place layers
+    auto main_layer = revered[0];
+    for (auto const& it: revered){
+        for (size_t i = 0; i < it.size(); ++i){
+            for (size_t j = 0; j < it[i].size(); ++j){
+                if (it[i][j] == '0'){
+                    main_layer[i][j] = ' ';
+                }
+                else if (it[i][j] == '1'){
+                    main_layer[i][j] = '@';
+                }
+            }
+        }
+        for (auto const& it: main_layer){std::cout << it << std::endl;}
+        std::cout << std::endl;
+    }
+    
+    
 ❱

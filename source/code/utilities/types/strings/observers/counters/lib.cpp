@@ -1,5 +1,6 @@
 #include "code/utilities/types/strings/observers/counters/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
+#include <vector>
 
 unsigned int Starts_With_Char_How_Many_Times(std::string const& str, char c){
 	unsigned int count=0;
@@ -27,4 +28,25 @@ unsigned int Count_Instances_Of_Character(std::string const& s, char const& c) {
     }
 
     return count;
+}
+
+
+unsigned int Count_Instances_Of_Character(std::vector<std::string> const& vec, char const& c){
+    unsigned int total = 0;
+    for (auto const& it: vec){
+        total += Count_Instances_Of_Character(it,c);
+    }
+    return total;
+}
+
+
+//specific
+unsigned int Count_Instances_Of_Zeros(std::vector<std::string> const& vec){
+    return Count_Instances_Of_Character(vec,'0');
+}
+unsigned int Count_Instances_Of_Ones(std::vector<std::string> const& vec){
+    return Count_Instances_Of_Character(vec,'1');
+}
+unsigned int Count_Instances_Of_Twos(std::vector<std::string> const& vec){
+    return Count_Instances_Of_Character(vec,'2');
 }
