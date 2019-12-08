@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 
+std::vector<std::vector<std::string>> Split_Into_Parts(std::string const& str, int part1, int part2);
 std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& str, char const& delimiter);
 std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str);
 std::vector<std::string> Split_Into_Parts_From_Dot(std::string const& str);

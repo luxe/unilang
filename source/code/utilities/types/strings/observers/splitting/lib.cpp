@@ -1,6 +1,33 @@
 #include "code/utilities/types/strings/observers/splitting/lib.hpp"
 #include<boost/tokenizer.hpp>
 
+std::vector<std::vector<std::string>> Split_Into_Parts(std::string const& str, int part1, int part2){
+    std::vector<std::vector<std::string>> results;
+    std::vector<std::string> temp;
+    std::string stemp;
+    int at_part1 = 0;
+    int at_part2 = 0;
+    for (auto const& it: str){
+        stemp += it;
+        ++at_part1;
+        
+        //first layer
+        if (at_part1 == part1){
+            temp.emplace_back(stemp);
+            stemp.clear();
+            at_part1 = 0;
+            ++at_part2;
+        }
+        
+        if (at_part2 == part2){
+            results.emplace_back(temp);
+            temp.clear();
+            at_part2 = 0;
+        }
+    }
+    
+    return results;
+}
 std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& str, char const& delimiter){
 	std::vector<std::string> parts;
 	
