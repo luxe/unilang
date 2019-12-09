@@ -145,6 +145,5 @@ cc_binary(
         "output",
         "x86",
     ],
-    #features = ["nonhost"],
     visibility = ["//visibility:public"],
 )
