@@ -77,7 +77,9 @@ T Get_Immediate_Mode_Index(std::vector<T> & t, string_map & extra, std::string i
 template<typename T>
 T Get_Relative_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base){
   
+  std::cout << index << "--" << base << std::endl;
   auto derived_index = add_big_numbers(base,index);
+  std::cout << "relavtive:" << derived_index << std::endl;
   auto new_index = Index_Into_Available_Container(t,extra,derived_index);
   return Index_Into_Available_Container(t,extra,new_index);
 }
