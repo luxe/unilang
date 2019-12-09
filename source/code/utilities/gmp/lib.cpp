@@ -93,3 +93,34 @@ std::string decrement_big_numbers(std::string const& num1)
 	auto result = a - 1;
 	return to_string(result);
 }
+
+
+bool is_equal(std::string const& num1, std::string const& num2){
+	mpz_class a(num1);
+	mpz_class b(num2);
+	return a == b;
+}
+bool less_than(std::string const& num1, std::string const& num2)
+{
+	mpz_class a(num1);
+	mpz_class b(num2);
+	return a < b;
+}
+bool less_equal(std::string const& num1, std::string const& num2)
+{
+	mpz_class a(num1);
+	mpz_class b(num2);
+	return a <= b;
+}
+bool greater_than(std::string const& num1, std::string const& num2){
+	mpz_class a(num1);
+	mpz_class b(num2);
+	return a > b;
+}
+bool greater_equal(std::string const& num1, std::string const& num2){
+	mpz_class a(num1);
+	mpz_class b(num2);
+	return a >= b;
+}
+
+

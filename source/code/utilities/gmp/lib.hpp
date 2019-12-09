@@ -15,9 +15,18 @@ mpz_class Factorial(mpz_class n);
 std::string to_string(mpz_class const& num);
 mpz_class to_mpz_class(char c);
 
+
+//math
 std::string add_big_numbers(std::string const& num1, std::string const& num2);
 std::string subtract_big_numbers(std::string const& num1, std::string const& num2);
 std::string multiply_big_numbers(std::string const& num1, std::string const& num2);
 std::string divide_big_numbers(std::string const& num1, std::string const& num2);
 std::string increment_big_numbers(std::string const& num1);
 std::string decrement_big_numbers(std::string const& num1);
+
+//comparison
+bool is_equal(std::string const& num1, std::string const& num2);
+bool less_than(std::string const& num1, std::string const& num2);
+bool less_equal(std::string const& num1, std::string const& num2);
+bool greater_than(std::string const& num1, std::string const& num2);
+bool greater_equal(std::string const& num1, std::string const& num2);

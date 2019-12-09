@@ -38,6 +38,6 @@ T Get_Value_Add_Zero_If_Missing(std::map<T,T> & m, T const& key){
     if (Exists_In_Map(m,key)){
         return m[key];
     }
-    m[key] = 0;
+    m[key] = "0";
     return m[key];
 }
