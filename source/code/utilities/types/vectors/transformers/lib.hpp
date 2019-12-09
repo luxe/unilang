@@ -59,7 +59,12 @@ T& Mode_Index(std::vector<T> & t, size_t index, size_t base, Index_Mode mode){
   else if (mode == Index_Mode::RELATIVE){
     return Relative_Mode_Index(t,index, base);
   }
-  return Immediate_Mode_Index(t,index);
+  else if (mode == Index_Mode::IMMEDIATE){
+    return Immediate_Mode_Index(t,index);
+    }
+    
+    std::cout << "unknown" << std::endl;
+    return Immediate_Mode_Index(t,index);
 }
 template<typename T>
 T& Mode_Index(std::vector<T> & t, Moded_Index m){
@@ -138,6 +143,7 @@ void Mode_Print(std::vector<T> & t, size_t & pc, Index_Mode m){
 //main op codes
 template<typename T>
 void Mode_Set(std::vector<T> & t, size_t & pc, size_t & relative_base, T const& input){
+    //std::cout << "SSSS" << std::endl;
 
 }
 template<typename T>
