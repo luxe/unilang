@@ -55,10 +55,10 @@ std::vector<std::string> Read_Each_Line_Of_File_Into_Vector(std::string const& f
 		std::getline(infile, line);
 	}
 	infile.close();
-	auto all = Read_Entire_File_Into_String(file);
-	if (Last_Char(all) == '\n'){
-		lines.emplace_back();
-	}
+	// auto all = Read_Entire_File_Into_String(file);
+	// if (Last_Char(all) == '\n'){
+	// 	lines.emplace_back();
+	// }
 
 	return lines;
 }

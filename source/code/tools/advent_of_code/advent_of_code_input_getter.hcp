@@ -10,23 +10,33 @@ class
 ❪"code/utilities/web/automate/browser/default_browser_settings_getter"❫
 ❪"code/utilities/web/automate/browser/browser_creator"❫
 ❪"code/utilities/web/automate/navigation/browser_navigator"❫
+❪"code/utilities/streams/filestreams/read_all/lib"❫
+❪"code/utilities/streams/filestreams/write_all/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ❪pybind11/embed.h❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Get(std::string const& day) ❰
 
     std::cout << "day " << day << "..." << std::endl;
+
+    //where to get the input from
+    std::string url = "https://adventofcode.com/2019/day/" + day + "/input";
+    std::string file = "/home/laptop/Desktop/advent_" + day + ".txt";
     
-    
-    auto lines = Get_From_Website(day);
+    std::vector<std::string> lines;
+    if (File_Exists(file)){
+        lines = Read_Each_Line_Of_File_Into_Vector(file);
+    }
+    else{
+        lines = Get_From_Website(url);
+        Write_Each_Line_Of_Vector_Into_File(file,lines);
+    }
     
     return lines;
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Get_From_Website(std::string const& day) ❰
-
-    //where to get the input from
-    std::string url = "https://adventofcode.com/2019/day/" + day + "/input";
+◀private: static▶ std::vector<std::string> ☀Get_From_Website(std::string const& url) ❰
 
     //get the input (we have to use a browser driver because we need to be logged in)
     pybind11::scoped_interpreter py_guard{};
@@ -38,6 +48,8 @@ class
     //there's some html cruft to remove
     Keep_End_Chars_Until_Char_Is_Found(lines[0],'>');
     Remove_Last_Element(lines);
+    
+    //cache the file locally so we don't have to keep querying the server.
     
     //maybe advent of code should use raw text for a REST API next time.
     
