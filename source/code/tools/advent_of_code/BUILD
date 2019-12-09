@@ -75,6 +75,11 @@ hcp(name = "int_code_computer", deps = [
     "//code/utilities/data_structures/point:point_line_to_points",
     "//code/utilities/types/int:int",
     "//code/tools/advent_of_code:int_code_computer_state",
+    "//code/tools/advent_of_code:int_code_instruction",
+])
+
+hcp(name = "int_code_instruction", deps = [
+    "//code/utilities/data_structures:index_mode",
 ])
 
 hcp(name = "int_code_computer_state", deps = [])

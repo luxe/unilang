@@ -1,6 +1,7 @@
 class
 ❪vector❫
 ❪"code/tools/advent_of_code/int_code_computer_state"❫
+❪"code/tools/advent_of_code/int_code_instruction"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
@@ -44,59 +45,58 @@ class
     size_t current_input = 0;
     std::vector<int> outputs;
     
-    auto op_code = Int::get_last_n_digits(state.memory[state.pc],2);
-    Index_Mode i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],2));
-    Index_Mode i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],3));
-    Index_Mode i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],4));
+    
+    Int_Code_Instruction instruction;
+    instruction.op_code = Int::get_last_n_digits(state.memory[state.pc],2);
+    instruction.arg1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],2));
+    instruction.arg2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],3));
+    instruction.arg3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],4));
     
     
-    while(op_code != opcode_stop){
+    while(instruction.op_code != opcode_stop){
         
-        if (op_code == opcode_add){
-            //std::cout << "add" << std::endl;
-            Mode_Linear_Addition(state.memory,state.pc,state.relative_base,i1,i2,i3);
+        if (instruction.op_code == opcode_add){
+            Mode_Linear_Addition(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
-        else if (op_code == opcode_mul){
-            //std::cout << "mul" << std::endl;
-            Mode_Linear_Multiply(state.memory,state.pc,state.relative_base,i1,i2,i3);
+        else if (instruction.op_code == opcode_mul){
+            Mode_Linear_Multiply(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
-        else if (op_code == opcode_input){
+        else if (instruction.op_code == opcode_input){
             
             if (inputs.size() <= current_input ){
                 std::cerr << "input out of range" << std::endl;
                 exit(0);
             }
-            std::cout << "input" << std::endl;
             Position_Mode_Set(state.memory,state.pc,inputs[current_input]);
             ++current_input;
         }
-        else if (op_code == opcode_output){
-            outputs.emplace_back(Mode_Get(state.memory,state.pc,state.relative_base,i1));
+        else if (instruction.op_code == opcode_output){
+            outputs.emplace_back(Mode_Get(state.memory,state.pc,state.relative_base,instruction.arg1));
             if (return_on_output){
                 return outputs;
             }
         }
-        else if (op_code == jump_if_true){
-            Mode_Jump_If_True(state.memory,state.pc,state.relative_base,i1,i2);
+        else if (instruction.op_code == jump_if_true){
+            Mode_Jump_If_True(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
         }
-        else if (op_code == jump_if_false){
-            Mode_Jump_If_False(state.memory,state.pc,state.relative_base,i1,i2);
+        else if (instruction.op_code == jump_if_false){
+            Mode_Jump_If_False(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
         }
-        else if (op_code == less_than){
-            Mode_Jump_Less_Than(state.memory,state.pc,state.relative_base,i1,i2,i3);
+        else if (instruction.op_code == less_than){
+            Mode_Jump_Less_Than(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
-        else if (op_code == equals){
-            Mode_Jump_Equals(state.memory,state.pc,state.relative_base,i1,i2,i3);
+        else if (instruction.op_code == equals){
+            Mode_Jump_Equals(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
-        else if (op_code == adjust_relative_base){
+        else if (instruction.op_code == adjust_relative_base){
             state.relative_base += state.memory[state.pc+1];
             state.pc += 2;
         }
         
-        op_code = Int::get_last_n_digits(state.memory[state.pc],2);
-        i1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],2));
-        i2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],3));
-        i3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],4));
+        instruction.op_code = Int::get_last_n_digits(state.memory[state.pc],2);
+        instruction.arg1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],2));
+        instruction.arg2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],3));
+        instruction.arg3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(state.memory[state.pc],4));
     }
     
     return outputs;
