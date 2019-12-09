@@ -47,15 +47,23 @@ T& Immediate_Mode_Index(std::vector<T> & t, size_t index){
   return t[index];
 }
 template<typename T>
-T& Mode_Index(std::vector<T> & t, size_t index, Index_Mode mode){
+T& Relative_Mode_Index(std::vector<T> & t, size_t index, size_t base){
+  return t[t[base + index]];
+}
+
+template<typename T>
+T& Mode_Index(std::vector<T> & t, size_t index, size_t base, Index_Mode mode){
   if (mode == Index_Mode::POSITION){
     return Position_Mode_Index(t,index);
+  }
+  else if (mode == Index_Mode::RELATIVE){
+    return Relative_Mode_Index(t,index, base);
   }
   return Immediate_Mode_Index(t,index);
 }
 template<typename T>
 T& Mode_Index(std::vector<T> & t, Moded_Index m){
-  return Mode_Index(t,m.index,m.mode);
+  return Mode_Index(t,m.index,0,m.mode);
 }
 
 
@@ -77,13 +85,6 @@ void Position_Mode_Linear_Addition(std::vector<T> & t, size_t & pc){
     Position_Mode_Index(t,pc+3) = a+b;
     pc += 4;
 }
-template<typename T>
-void Mode_Linear_Addition(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mode m2, Index_Mode m3){
-    auto a = Mode_Index(t,pc+1,m1);
-    auto b = Mode_Index(t,pc+2,m2);
-    Mode_Index(t,pc+3,m3) = a+b;
-    pc += 4;
-}
 
 
 
@@ -98,13 +99,6 @@ void Position_Mode_Linear_Multiply(std::vector<T> & t, size_t & pc){
     auto a = Position_Mode_Index(t,pc+1);
     auto b = Position_Mode_Index(t,pc+2);
     Position_Mode_Index(t,pc+3) = a*b;
-    pc += 4;
-}
-template<typename T>
-void Mode_Linear_Multiply(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mode m2, Index_Mode m3){
-    auto a = Mode_Index(t,pc+1,m1);
-    auto b = Mode_Index(t,pc+2,m2);
-    Mode_Index(t,pc+3,m3) = a*b;
     pc += 4;
 }
 template<typename T>
@@ -136,21 +130,40 @@ int Position_Mode_Get(std::vector<T> & t, size_t & pc){
 }
 template<typename T>
 void Mode_Print(std::vector<T> & t, size_t & pc, Index_Mode m){
-    std::cout << Mode_Index(t,pc+1,m) << std::endl;
+    std::cout << Mode_Index(t,pc+1,0,m) << std::endl;
     pc += 2;
 }
+
+
+//main op codes
 template<typename T>
-int Mode_Get(std::vector<T> & t, size_t & pc, Index_Mode m){
-    auto val = Mode_Index(t,pc+1,m);
+void Mode_Set(std::vector<T> & t, size_t & pc, size_t & relative_base, T const& input){
+
+}
+template<typename T>
+int Mode_Get(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m){
+    auto val = Mode_Index(t,pc+1,relative_base,m);
     pc += 2;
     return val;
 }
-
-
 template<typename T>
-void Mode_Jump_If_True(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mode m2){
-    auto a = Mode_Index(t,pc+1,m1);
-    auto b = Mode_Index(t,pc+2,m2);
+void Mode_Linear_Addition(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+    auto a = Mode_Index(t,pc+1,relative_base,m1);
+    auto b = Mode_Index(t,pc+2,relative_base,m2);
+    Mode_Index(t,pc+3,relative_base,m3) = a+b;
+    pc += 4;
+}
+template<typename T>
+void Mode_Linear_Multiply(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+    auto a = Mode_Index(t,pc+1,relative_base,m1);
+    auto b = Mode_Index(t,pc+2,relative_base,m2);
+    Mode_Index(t,pc+3,relative_base,m3) = a*b;
+    pc += 4;
+}
+template<typename T>
+void Mode_Jump_If_True(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m1, Index_Mode m2){
+    auto a = Mode_Index(t,pc+1,relative_base,m1);
+    auto b = Mode_Index(t,pc+2,relative_base,m2);
     if (a != 0){
         pc = b;
     }
@@ -159,9 +172,9 @@ void Mode_Jump_If_True(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mod
     }
 }
 template<typename T>
-void Mode_Jump_If_False(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mode m2){
-    auto a = Mode_Index(t,pc+1,m1);
-    auto b = Mode_Index(t,pc+2,m2);
+void Mode_Jump_If_False(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m1, Index_Mode m2){
+    auto a = Mode_Index(t,pc+1,relative_base,m1);
+    auto b = Mode_Index(t,pc+2,relative_base,m2);
     if (a == 0){
         pc = b;
     }
@@ -170,26 +183,26 @@ void Mode_Jump_If_False(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mo
     }
 }
 template<typename T>
-void Mode_Jump_Less_Than(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mode m2, Index_Mode m3){
-    auto a = Mode_Index(t,pc+1,m1);
-    auto b = Mode_Index(t,pc+2,m2);
+void Mode_Jump_Less_Than(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+    auto a = Mode_Index(t,pc+1,relative_base,m1);
+    auto b = Mode_Index(t,pc+2,relative_base,m2);
     if (a < b){
-        Mode_Index(t,pc+3,m3) = 1;
+        Mode_Index(t,pc+3,relative_base,m3) = 1;
     }
     else{
-        Mode_Index(t,pc+3,m3) = 0;
+        Mode_Index(t,pc+3,relative_base,m3) = 0;
     }
     pc += 4;
 }
 template<typename T>
-void Mode_Jump_Equals(std::vector<T> & t, size_t & pc, Index_Mode m1, Index_Mode m2, Index_Mode m3){
-    auto a = Mode_Index(t,pc+1,m1);
-    auto b = Mode_Index(t,pc+2,m2);
+void Mode_Jump_Equals(std::vector<T> & t, size_t & pc, size_t & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+    auto a = Mode_Index(t,pc+1,relative_base,m1);
+    auto b = Mode_Index(t,pc+2,relative_base,m2);
     if (a == b){
-        Mode_Index(t,pc+3,m3) = 1;
+        Mode_Index(t,pc+3,relative_base,m3) = 1;
     }
     else{
-        Mode_Index(t,pc+3,m3) = 0;
+        Mode_Index(t,pc+3,relative_base,m3) = 0;
     }
     pc += 4;
 }

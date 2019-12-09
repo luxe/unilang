@@ -52,4 +52,5 @@ enum_cpp(name = "index_mode",
 values = [
 "position"
 ,"immediate"
+,"relative"
 ])
