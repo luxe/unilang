@@ -19,3 +19,5 @@ std::string add_big_numbers(std::string const& num1, std::string const& num2);
 std::string subtract_big_numbers(std::string const& num1, std::string const& num2);
 std::string multiply_big_numbers(std::string const& num1, std::string const& num2);
 std::string divide_big_numbers(std::string const& num1, std::string const& num2);
+std::string increment_big_numbers(std::string const& num1);
+std::string decrement_big_numbers(std::string const& num1);

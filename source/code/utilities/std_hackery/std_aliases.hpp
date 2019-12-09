@@ -16,5 +16,6 @@ using string_grid = std::vector<std::vector<std::string>>;
 using string_grids = std::vector<std::vector<std::vector<std::string>>>;
 
 //maps
+using string_map = std::map<std::string,std::string>;
 using long_map = std::map<long,long>;
 using ulong_map = std::map<unsigned long,unsigned long>;

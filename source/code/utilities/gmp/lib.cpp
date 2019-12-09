@@ -80,3 +80,16 @@ std::string divide_big_numbers(std::string const& num1, std::string const& num2)
 	auto result = a / b;
 	return to_string(result);
 }
+std::string increment_big_numbers(std::string const& num1)
+{
+	mpz_class a(num1);
+	auto result = a + 1;
+	return to_string(result);
+	
+}
+std::string decrement_big_numbers(std::string const& num1)
+{
+	mpz_class a(num1);
+	auto result = a - 1;
+	return to_string(result);
+}

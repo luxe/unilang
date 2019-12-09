@@ -68,6 +68,12 @@ void Exit_With_Black_Message_Error(std::string const& message){
 //+-----------------------------+
 //| Exiting Based on Conditions |
 //+-----------------------------+
+void Exit_If_Not_Equal(std::string const& x, std::string const& y){
+	if (x != y){
+		std::cout << x << " != " << y << std::endl;
+		exit(EXIT_FAILURE);
+	}
+}
 void Exit_If_Not_Equal(int const& x, int const& y){
 	if (x != y){
 		std::cout << std::to_string(x) << " != " << std::to_string(y) << std::endl;
