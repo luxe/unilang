@@ -2,6 +2,7 @@
 #include <utility>
 #include <map>
 #include <unordered_map>
+#include <iostream>
 
 //overloading on map type
 template <typename X, typename Y>
@@ -39,5 +40,6 @@ T Get_Value_Add_Zero_If_Missing(std::map<T,T> & m, T const& key){
         return m[key];
     }
     m[key] = "0";
+    std::cout << "{K: " << key << " V: " << m[key] << "}" << std::endl;
     return m[key];
 }

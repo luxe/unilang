@@ -34,7 +34,8 @@ mpz_class Factorial(mpz_class n){
 //observers
 std::string to_string(mpz_class const& num){
 	
-	return num.get_str(10);
+	auto answer = num.get_str(10);
+	return answer;
 }
 mpz_class to_mpz_class(char c){
 

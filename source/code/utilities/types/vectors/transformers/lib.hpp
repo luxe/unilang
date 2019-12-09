@@ -134,7 +134,7 @@ void Position_Mode_Set_Input(std::vector<T> & t, T & pc){
     std::cout << "input: ";
     std::cout.flush();
     std::cin >> input;
-    Get_Position_Mode_Index(t,add_big_numbers(pc,"1")) = input;
+    //Set_Mode_Index(t,extra,add_big_numbers(pc,"1"),"0",Index_Mode::POSITION,input);
     pc = add_big_numbers(pc,"2");
 }
 template<typename T>
@@ -146,12 +146,12 @@ void Position_Mode_Set(std::vector<T> & t, string_map & extra, T & pc, T const& 
 
 template<typename T>
 void Position_Mode_Print(std::vector<T> & t, T & pc){
-    std::cout << Get_Position_Mode_Index(t,add_big_numbers(pc,"1")) << std::endl;
+    //std::cout << Get_Position_Mode_Index(t,add_big_numbers(pc,"1")) << std::endl;
     pc = add_big_numbers(pc,"2");
 }
 template<typename T>
 void Mode_Print(std::vector<T> & t, T & pc, Index_Mode m){
-    std::cout << Get_Mode_Index(t,add_big_numbers(pc,"1"),"0",m) << std::endl;
+    //std::cout << Get_Mode_Index(t,add_big_numbers(pc,"1"),"0",m) << std::endl;
     pc = add_big_numbers(pc,"2");
 }
 
@@ -160,12 +160,12 @@ void Mode_Print(std::vector<T> & t, T & pc, Index_Mode m){
 template<typename T>
 void Mode_Set(std::vector<T> & t, T & pc, T & relative_base, T const& input){
     std::cout << "SSSS" << std::endl;
-
 }
 template<typename T>
 T Mode_Get(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m){
     auto val = Get_Mode_Index(t,extra,add_big_numbers(pc,"1"),relative_base,m);
     pc = add_big_numbers(pc,"2");
+    std::cout << "get: " << val << std::endl;
     return val;
 }
 template<typename T>
@@ -174,6 +174,7 @@ void Mode_Linear_Addition(std::vector<T> & t, string_map & extra, T & pc, T & re
     auto b = Get_Mode_Index(t,extra,add_big_numbers(pc,"2"),relative_base,m2);
     Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,add_big_numbers(a,b));
     pc = add_big_numbers(pc,"4");
+    std::cout << "add: " << a << " " << b << std::endl;
 }
 template<typename T>
 void Mode_Linear_Multiply(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
@@ -181,6 +182,7 @@ void Mode_Linear_Multiply(std::vector<T> & t, string_map & extra, T & pc, T & re
     auto b = Get_Mode_Index(t,extra,add_big_numbers(pc,"2"),relative_base,m2);
     Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,multiply_big_numbers(a,b));
     pc = add_big_numbers(pc,"4");
+    std::cout << "mult: " << a << " " << b << std::endl;
 }
 template<typename T>
 void Mode_Jump_If_True(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2){
@@ -192,6 +194,7 @@ void Mode_Jump_If_True(std::vector<T> & t, string_map & extra, T & pc, T & relat
     else{
         pc = add_big_numbers(pc,"3");
     }
+    std::cout << "jump_if_true" << std::endl;
 }
 template<typename T>
 void Mode_Jump_If_False(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2){
@@ -203,6 +206,7 @@ void Mode_Jump_If_False(std::vector<T> & t, string_map & extra, T & pc, T & rela
     else{
         pc = add_big_numbers(pc,"3");
     }
+    std::cout << "jump_if_false" << std::endl;
 }
 template<typename T>
 void Mode_Jump_Less_Than(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
@@ -215,6 +219,7 @@ void Mode_Jump_Less_Than(std::vector<T> & t, string_map & extra, T & pc, T & rel
         Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,"0");
     }
     pc = add_big_numbers(pc,"4");
+    std::cout << "jump_less_than" << std::endl;
 }
 template<typename T>
 void Mode_Jump_Equals(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
@@ -227,6 +232,7 @@ void Mode_Jump_Equals(std::vector<T> & t, string_map & extra, T & pc, T & relati
         Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,"0");
     }
     pc = add_big_numbers(pc,"4");
+    std::cout << "jump_equals" << std::endl;
 }
 
 
