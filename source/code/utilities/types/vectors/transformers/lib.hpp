@@ -8,6 +8,7 @@
 #include "code/utilities/data_structures/index_mode.hpp"
 #include "code/utilities/data_structures/index/moded_index.hpp"
 #include "code/utilities/types/map/lib.hpp"
+#include "code/utilities/std_hackery/std_aliases.hpp"
 
 //whoops.. pre-pre-jstd is really needed
 template <typename T>
@@ -38,7 +39,7 @@ int Accumulate(std::vector<T> const& v, Fun f){
 
 
 template<typename T>
-T Index_Into_Available_Container(std::vector<T> & t, std::map<long,long> & extra, size_t index){
+T Index_Into_Available_Container(std::vector<T> & t, ulong_map & extra, size_t index){
     if (index >= 0 && index < t.size()){
         return t[index];
     }
@@ -46,7 +47,7 @@ T Index_Into_Available_Container(std::vector<T> & t, std::map<long,long> & extra
     return Get_Value_Add_Zero_If_Missing(extra,index);
 }
 template<typename T>
-void Set_Index_Into_Available_Container(std::vector<T> & t, std::map<long,long> & extra, size_t index, long value){
+void Set_Index_Into_Available_Container(std::vector<T> & t, ulong_map & extra, size_t index, long value){
     if (index >= 0 && index < t.size()){
         t[index] = value;
         return;
@@ -60,37 +61,37 @@ void Set_Index_Into_Available_Container(std::vector<T> & t, std::map<long,long> 
 
 //directly / indirectly indexing into a vector
 template<typename T>
-T Get_Position_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index){
+T Get_Position_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index){
     
   auto new_index = Index_Into_Available_Container(t,extra,index);
   return Index_Into_Available_Container(t,extra,new_index);
   
 }
 template<typename T>
-T Get_Immediate_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index){
+T Get_Immediate_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index){
     
   return Index_Into_Available_Container(t,extra,index);
 }
 template<typename T>
-T Get_Relative_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, size_t base){
+T Get_Relative_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index, size_t base){
   
   auto derived_index = base + index;
   auto new_index = Index_Into_Available_Container(t,extra,derived_index);
   return Index_Into_Available_Container(t,extra,new_index);
 }
 template<typename T>
-void Set_Position_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, long set_value){
+void Set_Position_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index, long set_value){
     
     auto new_index = Index_Into_Available_Container(t,extra,index);
     Set_Index_Into_Available_Container(t,extra,new_index,set_value);
 }
 template<typename T>
-void Set_Immediate_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, long set_value){
+void Set_Immediate_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index, long set_value){
   
     Set_Index_Into_Available_Container(t,extra,index,set_value);
 }
 template<typename T>
-void Set_Relative_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, size_t base, long set_value){
+void Set_Relative_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index, size_t base, long set_value){
     auto derived_index = base + index;
     auto new_index = Index_Into_Available_Container(t,extra,derived_index);
     Set_Index_Into_Available_Container(t,extra,new_index,set_value);
@@ -100,7 +101,7 @@ void Set_Relative_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, si
 
 
 template<typename T>
-T Get_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, size_t base, Index_Mode mode){
+T Get_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index, size_t base, Index_Mode mode){
     
     if (mode == Index_Mode::POSITION){ return Get_Position_Mode_Index(t,extra,index); }
     if (mode == Index_Mode::RELATIVE){ return Get_Relative_Mode_Index(t,extra,index, base); }
@@ -110,7 +111,7 @@ T Get_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, 
     return Get_Immediate_Mode_Index(t,extra,index);
 }
 template<typename T>
-void Set_Mode_Index(std::vector<T> & t, std::map<long,long> & extra, size_t index, size_t base, Index_Mode mode, long set_value){
+void Set_Mode_Index(std::vector<T> & t, ulong_map & extra, size_t index, size_t base, Index_Mode mode, long set_value){
     
     if (mode == Index_Mode::POSITION){ return Set_Position_Mode_Index(t,extra,index,set_value); }
     if (mode == Index_Mode::RELATIVE){ return Set_Relative_Mode_Index(t,extra,index, base,set_value); }
@@ -135,7 +136,7 @@ void Position_Mode_Set_Input(std::vector<T> & t, size_t & pc){
     pc += 2;
 }
 template<typename T>
-void Position_Mode_Set(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, T const& input){
+void Position_Mode_Set(std::vector<T> & t, ulong_map & extra, size_t & pc, T const& input){
     Set_Mode_Index(t,extra,pc+1,0,Index_Mode::POSITION,input);
     pc += 2;
 }
@@ -160,20 +161,20 @@ void Mode_Set(std::vector<T> & t, size_t & pc, long & relative_base, T const& in
 
 }
 template<typename T>
-T Mode_Get(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m){
+T Mode_Get(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m){
     auto val = Get_Mode_Index(t,extra,pc+1,relative_base,m);
     pc += 2;
     return val;
 }
 template<typename T>
-void Mode_Linear_Addition(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+void Mode_Linear_Addition(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
     auto a = Get_Mode_Index(t,extra,pc+1,relative_base,m1);
     auto b = Get_Mode_Index(t,extra,pc+2,relative_base,m2);
     Set_Mode_Index(t,extra,pc+3,relative_base,m3,a+b);
     pc += 4;
 }
 template<typename T>
-void Mode_Linear_Multiply(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+void Mode_Linear_Multiply(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
     auto a = Get_Mode_Index(t,extra,pc+1,relative_base,m1);
     auto b = Get_Mode_Index(t,extra,pc+2,relative_base,m2);
     Set_Mode_Index(t,extra,pc+3,relative_base,m3,a*b);
@@ -181,7 +182,7 @@ void Mode_Linear_Multiply(std::vector<T> & t, std::map<long,long> & extra, size_
     pc += 4;
 }
 template<typename T>
-void Mode_Jump_If_True(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2){
+void Mode_Jump_If_True(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2){
     auto a = Get_Mode_Index(t,extra,pc+1,relative_base,m1);
     auto b = Get_Mode_Index(t,extra,pc+2,relative_base,m2);
     if (a != 0){
@@ -192,7 +193,7 @@ void Mode_Jump_If_True(std::vector<T> & t, std::map<long,long> & extra, size_t &
     }
 }
 template<typename T>
-void Mode_Jump_If_False(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2){
+void Mode_Jump_If_False(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2){
     auto a = Get_Mode_Index(t,extra,pc+1,relative_base,m1);
     auto b = Get_Mode_Index(t,extra,pc+2,relative_base,m2);
     if (a == 0){
@@ -203,7 +204,7 @@ void Mode_Jump_If_False(std::vector<T> & t, std::map<long,long> & extra, size_t 
     }
 }
 template<typename T>
-void Mode_Jump_Less_Than(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+void Mode_Jump_Less_Than(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
     auto a = Get_Mode_Index(t,extra,pc+1,relative_base,m1);
     auto b = Get_Mode_Index(t,extra,pc+2,relative_base,m2);
     if (a < b){
@@ -215,7 +216,7 @@ void Mode_Jump_Less_Than(std::vector<T> & t, std::map<long,long> & extra, size_t
     pc += 4;
 }
 template<typename T>
-void Mode_Jump_Equals(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
+void Mode_Jump_Equals(std::vector<T> & t, ulong_map & extra, size_t & pc, long & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
     auto a = Get_Mode_Index(t,extra,pc+1,relative_base,m1);
     auto b = Get_Mode_Index(t,extra,pc+2,relative_base,m2);
     if (a == b){

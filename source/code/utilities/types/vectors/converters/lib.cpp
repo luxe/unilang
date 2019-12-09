@@ -54,7 +54,16 @@ std::vector<long> VecStringToVecLong(std::vector<std::string> const& list){
     std::vector<long> result;
     
     for (auto const& it: list){
-        result.push_back(as_signed(it));
+        result.push_back(as_long(it));
+    }
+    
+    return result;
+}
+std::vector<unsigned long> VecStringToVecULong(std::vector<std::string> const& list){
+    std::vector<unsigned long> result;
+    
+    for (auto const& it: list){
+        result.push_back(as_unsigned_long(it));
     }
     
     return result;

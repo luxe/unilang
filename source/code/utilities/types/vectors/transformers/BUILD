@@ -16,6 +16,7 @@ cc_library(
 "//code/utilities/data_structures:index_mode",
 "//code/utilities/data_structures/index:moded_index",
 "//code/utilities/types/map:lib",
+"//code/utilities/std_hackery:std_aliases",
 "@boost//:range",
 ]
 )

@@ -10,7 +10,6 @@ bool Exists_In_Map(std::map<X,Y> const& m, X const& item);
 template <typename X, typename Y>
 bool Exists_In_Unordered_Map(std::unordered_map<X,Y> const& m, X const& item);
 
-long Get_Value_Add_Zero_If_Missing(std::map<long,long> & m, long const& key);
 
 
 //overloading on map types
@@ -32,4 +31,13 @@ void Throw_On_Failure_To_Insert_Item(Container & c, First f, Second s, Exception
   if (!result.second){
     throw e;
   }
+}
+
+template <typename T>
+T Get_Value_Add_Zero_If_Missing(std::map<T,T> & m, T const& key){
+    if (Exists_In_Map(m,key)){
+        return m[key];
+    }
+    m[key] = 0;
+    return m[key];
 }

@@ -59,3 +59,24 @@ std::string add_big_numbers(std::string const& num1, std::string const& num2)
 	auto result = a + b;
 	return to_string(result);
 }
+std::string subtract_big_numbers(std::string const& num1, std::string const& num2)
+{
+	mpz_class a(num1);
+	mpz_class b(num2);
+	auto result = a - b;
+	return to_string(result);
+}
+std::string multiply_big_numbers(std::string const& num1, std::string const& num2)
+{
+	mpz_class a(num1);
+	mpz_class b(num2);
+	auto result = a * b;
+	return to_string(result);
+}
+std::string divide_big_numbers(std::string const& num1, std::string const& num2)
+{
+	mpz_class a(num1);
+	mpz_class b(num2);
+	auto result = a / b;
+	return to_string(result);
+}

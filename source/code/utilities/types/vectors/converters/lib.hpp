@@ -13,7 +13,7 @@ std::vector<std::pair<char,int>> Get_As_Each_Element_A_Char_And_Int(std::vector<
 std::vector<std::vector<int>> VecVecStringToVecVecInt(std::vector<std::vector<std::string>> const& lists);
 std::vector<int> VecStringToVecInt(std::vector<std::string> const& list);
 std::vector<long> VecStringToVecLong(std::vector<std::string> const& list);
-
+std::vector<unsigned long> VecStringToVecULong(std::vector<std::string> const& list);
 
 std::string Squeeze_Into_String(std::vector<std::string> v);
 
