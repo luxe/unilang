@@ -49,6 +49,7 @@ hcp(name = "advent_of_code_input_getter", deps = [
     "//code/utilities/streams/filestreams/read_all:lib",
     "//code/utilities/streams/filestreams/write_all:lib",
     "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+    "//code/utilities/filesystem/paths:lib",
 ])
 
 hcp(name = "int_code_computer", deps = [
