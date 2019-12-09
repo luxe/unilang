@@ -15,6 +15,7 @@ cc_library(
 "//code/utilities/types/strings/observers/converting:lib",
 "//code/utilities/data_structures:index_mode",
 "//code/utilities/data_structures/index:moded_index",
+"//code/utilities/types/map:lib",
 "@boost//:range",
 ]
 )

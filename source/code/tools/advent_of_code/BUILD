@@ -287,6 +287,8 @@ hcp(name = "day_9", deps = [
     "//code/utilities/types/general:lib",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/vectors/converters:lib",
+    "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
@@ -302,7 +304,7 @@ hcp(name = "day_9", deps = [
     "//code/utilities/data_structures/point:point_line_intersections_getter",
     "//code/utilities/data_structures/point:point_line_to_points",
     "//code/utilities/types/int:int",
-    "//code/utilities/types/strings/observers/counters:lib",
+    "//code/tools/advent_of_code:int_code_computer",
 ])
 
 

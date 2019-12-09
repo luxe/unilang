@@ -40,8 +40,18 @@ std::vector<std::vector<int>> VecVecStringToVecVecInt(std::vector<std::vector<st
     
     return results;
 }
+
 std::vector<int> VecStringToVecInt(std::vector<std::string> const& list){
     std::vector<int> result;
+    
+    for (auto const& it: list){
+        result.push_back(as_signed(it));
+    }
+    
+    return result;
+}
+std::vector<long> VecStringToVecLong(std::vector<std::string> const& list){
+    std::vector<long> result;
     
     for (auto const& it: list){
         result.push_back(as_signed(it));

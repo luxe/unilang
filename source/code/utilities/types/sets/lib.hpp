@@ -11,6 +11,8 @@ void Delete_From_Set(std::set<T> & s, T const& item_to_delete);
 template <typename T>
 bool Exists_In_Set(std::set<T> const& s, T const& item);
 
+//int Get_From_Set_Add_Assumed_Zero_If_Missing(std::set<int> const& s, int const& item);
+
 //functions
 template <typename T>
 void Add_To_Set(std::set<T> & s, T const& item_to_add){

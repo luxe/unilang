@@ -25,7 +25,7 @@ class
 ❪"code/utilities/types/int/int"❫
 ⚞⚟
 
-◀public: static▶ std::vector<int> ☀Run(Int_Code_Computer_State & state, std::vector<int> const& inputs) ❰
+◀public: static▶ std::vector<long> ☀Run(Int_Code_Computer_State & state, std::vector<long> const& inputs) ❰
 
 
     // settings
@@ -41,7 +41,7 @@ class
     int adjust_relative_base = 9;
 
     size_t current_input = 0;
-    std::vector<int> outputs;
+    std::vector<long> outputs;
     
     
     auto instruction = Extract_Instruction(state);
@@ -50,10 +50,10 @@ class
     while(instruction.op_code != opcode_stop){
         
         if (instruction.op_code == opcode_add){
-            Mode_Linear_Addition(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
+            Mode_Linear_Addition(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
         else if (instruction.op_code == opcode_mul){
-            Mode_Linear_Multiply(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
+            Mode_Linear_Multiply(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
         else if (instruction.op_code == opcode_input){
             
@@ -61,26 +61,26 @@ class
                 std::cerr << "input out of range" << std::endl;
                 exit(0);
             }
-            Position_Mode_Set(state.memory,state.pc,inputs[current_input]);
+            Position_Mode_Set(state.memory,state.extra_mem,state.pc,inputs[current_input]);
             ++current_input;
         }
         else if (instruction.op_code == opcode_output){
-            outputs.emplace_back(Mode_Get(state.memory,state.pc,state.relative_base,instruction.arg1));
+            outputs.emplace_back(Mode_Get(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1));
             if (state.return_on_output){
                 return outputs;
             }
         }
         else if (instruction.op_code == jump_if_true){
-            Mode_Jump_If_True(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
+            Mode_Jump_If_True(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
         }
         else if (instruction.op_code == jump_if_false){
-            Mode_Jump_If_False(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
+            Mode_Jump_If_False(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
         }
         else if (instruction.op_code == less_than){
-            Mode_Jump_Less_Than(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
+            Mode_Jump_Less_Than(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
         else if (instruction.op_code == equals){
-            Mode_Jump_Equals(state.memory,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
+            Mode_Jump_Equals(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
         else if (instruction.op_code == adjust_relative_base){
             state.relative_base += state.memory[state.pc+1];

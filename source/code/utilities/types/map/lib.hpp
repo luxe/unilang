@@ -10,6 +10,8 @@ bool Exists_In_Map(std::map<X,Y> const& m, X const& item);
 template <typename X, typename Y>
 bool Exists_In_Unordered_Map(std::unordered_map<X,Y> const& m, X const& item);
 
+long Get_Value_Add_Zero_If_Missing(std::map<long,long> & m, long const& key);
+
 
 //overloading on map types
 template <typename X, typename Y>

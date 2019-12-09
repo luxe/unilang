@@ -12,6 +12,7 @@ std::string Get_As_String_With_Delim_In_Between_Each_Element(std::vector<std::st
 std::vector<std::pair<char,int>> Get_As_Each_Element_A_Char_And_Int(std::vector<std::string> const& v);
 std::vector<std::vector<int>> VecVecStringToVecVecInt(std::vector<std::vector<std::string>> const& lists);
 std::vector<int> VecStringToVecInt(std::vector<std::string> const& list);
+std::vector<long> VecStringToVecLong(std::vector<std::string> const& list);
 
 
 std::string Squeeze_Into_String(std::vector<std::string> v);
