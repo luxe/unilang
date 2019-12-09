@@ -147,12 +147,6 @@ void Position_Mode_Print(std::vector<T> & t, size_t & pc){
     pc += 2;
 }
 template<typename T>
-int Position_Mode_Get(std::vector<T> & t, size_t & pc){
-    auto val = Get_Position_Mode_Index(t,pc+1);
-    pc += 2;
-    return val;
-}
-template<typename T>
 void Mode_Print(std::vector<T> & t, size_t & pc, Index_Mode m){
     std::cout << Get_Mode_Index(t,pc+1,0,m) << std::endl;
     pc += 2;
@@ -166,7 +160,7 @@ void Mode_Set(std::vector<T> & t, size_t & pc, long & relative_base, T const& in
 
 }
 template<typename T>
-int Mode_Get(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m){
+T Mode_Get(std::vector<T> & t, std::map<long,long> & extra, size_t & pc, long & relative_base, Index_Mode m){
     auto val = Get_Mode_Index(t,extra,pc+1,relative_base,m);
     pc += 2;
     return val;
