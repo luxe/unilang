@@ -11,6 +11,9 @@ bool Exists_In_Map(std::map<X,Y> const& m, X const& item);
 template <typename X, typename Y>
 bool Exists_In_Unordered_Map(std::unordered_map<X,Y> const& m, X const& item);
 
+template <typename X, typename Y>
+void Add_To_Map(std::map<X,Y> & m, X const& key, Y const& val);
+
 
 
 //overloading on map types
@@ -40,6 +43,12 @@ T Get_Value_Add_Zero_If_Missing(std::map<T,T> & m, T const& key){
         return m[key];
     }
     m[key] = "0";
-    std::cout << "{K: " << key << " V: " << m[key] << "}" << std::endl;
+    //std::cout << "out {K: " << key << " V: " << m[key] << "}" << std::endl;
     return m[key];
+}
+
+template <typename X, typename Y>
+void Add_To_Map(std::map<X,Y> & m, X const& key, Y const& val){
+  m[key] = val;
+  //std::cout << "in {K: " << key << " V: " << m[key] << "}" << std::endl;
 }

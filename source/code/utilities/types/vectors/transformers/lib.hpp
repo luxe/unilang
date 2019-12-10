@@ -54,8 +54,7 @@ void Set_Index_Into_Available_Container(std::vector<T> & t, string_map & extra, 
         t[as_signed(index)] = value;
         return;
     }
-    //std::cout << "setting map" << std::endl;
-    extra[index] = value;
+    Add_To_Map(extra,index,value);
     return;
 }
 
@@ -65,23 +64,25 @@ void Set_Index_Into_Available_Container(std::vector<T> & t, string_map & extra, 
 template<typename T>
 T Get_Position_Mode_Index(std::vector<T> & t, string_map & extra, std::string index){
     
+  //std::cout << "position index with: " << index << std::endl;
   auto new_index = Index_Into_Available_Container(t,extra,index);
   return Index_Into_Available_Container(t,extra,new_index);
   
 }
 template<typename T>
 T Get_Immediate_Mode_Index(std::vector<T> & t, string_map & extra, std::string index){
-    
+  //std::cout << "immediate index with: " << index << std::endl;
   return Index_Into_Available_Container(t,extra,index);
 }
 template<typename T>
 T Get_Relative_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base){
   
-  std::cout << index << "--" << base << std::endl;
-  auto derived_index = add_big_numbers(base,index);
-  std::cout << "relavtive:" << derived_index << std::endl;
-  auto new_index = Index_Into_Available_Container(t,extra,derived_index);
-  return Index_Into_Available_Container(t,extra,new_index);
+  //std::cout << "->" << index << std::endl;
+  auto start_index = Index_Into_Available_Container(t,extra,index);
+  //std::cout << "->>" << start_index << std::endl;
+  auto derived_index = add_big_numbers(base,start_index);
+  //std::cout << "->>>" << derived_index << std::endl;
+  return Index_Into_Available_Container(t,extra,derived_index);
 }
 template<typename T>
 void Set_Position_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string set_value){
@@ -96,9 +97,9 @@ void Set_Immediate_Mode_Index(std::vector<T> & t, string_map & extra, std::strin
 }
 template<typename T>
 void Set_Relative_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base, T set_value){
-    auto derived_index = add_big_numbers(base,index);
-    auto new_index = Index_Into_Available_Container(t,extra,derived_index);
-    Set_Index_Into_Available_Container(t,extra,new_index,set_value);
+    auto start_index = Index_Into_Available_Container(t,extra,index);
+    auto derived_index = add_big_numbers(base,start_index);
+    Set_Index_Into_Available_Container(t,extra,derived_index,set_value);
 }
 
 
@@ -161,13 +162,13 @@ void Mode_Print(std::vector<T> & t, T & pc, Index_Mode m){
 //main op codes
 template<typename T>
 void Mode_Set(std::vector<T> & t, T & pc, T & relative_base, T const& input){
-    std::cout << "SSSS" << std::endl;
+    //std::cout << "SSSS" << std::endl;
 }
 template<typename T>
 T Mode_Get(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m){
     auto val = Get_Mode_Index(t,extra,add_big_numbers(pc,"1"),relative_base,m);
     pc = add_big_numbers(pc,"2");
-    std::cout << "get: " << val << std::endl;
+    //std::cout << "get: " << val << std::endl;
     return val;
 }
 template<typename T>
@@ -176,7 +177,7 @@ void Mode_Linear_Addition(std::vector<T> & t, string_map & extra, T & pc, T & re
     auto b = Get_Mode_Index(t,extra,add_big_numbers(pc,"2"),relative_base,m2);
     Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,add_big_numbers(a,b));
     pc = add_big_numbers(pc,"4");
-    std::cout << "add: " << a << " " << b << std::endl;
+    //std::cout << "add: " << a << " " << b << std::endl;
 }
 template<typename T>
 void Mode_Linear_Multiply(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
@@ -184,7 +185,7 @@ void Mode_Linear_Multiply(std::vector<T> & t, string_map & extra, T & pc, T & re
     auto b = Get_Mode_Index(t,extra,add_big_numbers(pc,"2"),relative_base,m2);
     Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,multiply_big_numbers(a,b));
     pc = add_big_numbers(pc,"4");
-    std::cout << "mult: " << a << " " << b << std::endl;
+    //std::cout << "mult: " << a << " " << b << std::endl;
 }
 template<typename T>
 void Mode_Jump_If_True(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2){
@@ -196,7 +197,7 @@ void Mode_Jump_If_True(std::vector<T> & t, string_map & extra, T & pc, T & relat
     else{
         pc = add_big_numbers(pc,"3");
     }
-    std::cout << "jump_if_true" << std::endl;
+    //std::cout << "jump_if_true" << std::endl;
 }
 template<typename T>
 void Mode_Jump_If_False(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2){
@@ -208,7 +209,7 @@ void Mode_Jump_If_False(std::vector<T> & t, string_map & extra, T & pc, T & rela
     else{
         pc = add_big_numbers(pc,"3");
     }
-    std::cout << "jump_if_false" << std::endl;
+    //std::cout << "jump_if_false" << std::endl;
 }
 template<typename T>
 void Mode_Jump_Less_Than(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
@@ -221,7 +222,7 @@ void Mode_Jump_Less_Than(std::vector<T> & t, string_map & extra, T & pc, T & rel
         Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,"0");
     }
     pc = add_big_numbers(pc,"4");
-    std::cout << "jump_less_than" << std::endl;
+    //std::cout << "jump_less_than" << std::endl;
 }
 template<typename T>
 void Mode_Jump_Equals(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
@@ -229,12 +230,13 @@ void Mode_Jump_Equals(std::vector<T> & t, string_map & extra, T & pc, T & relati
     auto b = Get_Mode_Index(t,extra,add_big_numbers(pc,"2"),relative_base,m2);
     if (a == b){
         Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,"1");
+        //std::cout << "jump_equals=true" << std::endl;
     }
     else{
         Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,"0");
+        //std::cout << "jump_equals=false" << std::endl;
     }
     pc = add_big_numbers(pc,"4");
-    std::cout << "jump_equals" << std::endl;
 }
 
 

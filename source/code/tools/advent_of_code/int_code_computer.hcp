@@ -30,6 +30,8 @@ class
 ◀public: static▶ strings ☀Run(Int_Code_Computer_State & state, strings const& inputs) ❰
 
 
+    
+
     // settings
     int opcode_stop = 99;
     int opcode_add = 1;
@@ -49,7 +51,6 @@ class
     auto instruction = Extract_Instruction(state);
     
     while(instruction.op_code != opcode_stop){
-        std::cout << "op: " << instruction.op_code << std::endl;
         
         if (instruction.op_code == opcode_add){
             Mode_Linear_Addition(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
@@ -71,6 +72,7 @@ class
             if (state.return_on_output){
                 return outputs;
             }
+            //std::cout << "outs so far:" << outputs << std::endl;
         }
         else if (instruction.op_code == jump_if_true){
             Mode_Jump_If_True(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2);
@@ -85,10 +87,15 @@ class
             Mode_Jump_Equals(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,instruction.arg2,instruction.arg3);
         }
         else if (instruction.op_code == adjust_relative_base){
-            state.relative_base += add_big_numbers(state.relative_base,state.memory[as_signed(add_big_numbers(state.pc,"1"))]);
-            std::cout << as_signed(add_big_numbers(state.pc,"1")) << std::endl;
+            
+            auto final_index = as_signed(add_big_numbers(state.pc,"1"));
+            //std::cout << "final index:" << final_index << std::endl;
+            //std::cout << "relative base: " << state.relative_base << std::endl;
+            //std::cout << state.memory[final_index] << std::endl;
+            state.relative_base = add_big_numbers(state.relative_base,state.memory[final_index]);
+            //std::cout << as_signed(add_big_numbers(state.pc,"1")) << std::endl;
             state.pc = add_big_numbers(state.pc,"2");
-            std::cout << "new base: " <<  state.relative_base << std::endl;
+            //std::cout << "new base: " <<  state.relative_base << std::endl;
         }
         
         instruction = Extract_Instruction(state);
@@ -103,5 +110,7 @@ class
     instruction.arg1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(as_signed(state.memory[as_signed(state.pc)]),2));
     instruction.arg2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(as_signed(state.memory[as_signed(state.pc)]),3));
     instruction.arg3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(as_signed(state.memory[as_signed(state.pc)]),4));
+    //std::cout << std::endl << "instruction: " << "op[" << instruction.op_code << "] " << "arg1[" << instruction.arg1 << "] " << "arg2[" << instruction.arg2<< "] " << "arg2[" << instruction.arg3 << "]" << std::endl;
+    //std::cout << "mem: " << state.memory << std::endl;
     return instruction;
 ❱
