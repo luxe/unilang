@@ -74,7 +74,9 @@ std::string multiply_big_numbers(std::string const& num1, std::string const& num
 	mpz_class a(num1);
 	mpz_class b(num2);
 	auto result = a * b;
-	return to_string(result);
+	auto result_str = to_string(result);
+	//std::cout << num1 <<"*" << num2 <<"=" << result_str << std::endl;
+	return result_str;
 }
 std::string divide_big_numbers(std::string const& num1, std::string const& num2)
 {
