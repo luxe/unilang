@@ -50,5 +50,5 @@ T Get_Value_Add_Zero_If_Missing(std::map<T,T> & m, T const& key){
 template <typename X, typename Y>
 void Add_To_Map(std::map<X,Y> & m, X const& key, Y const& val){
   m[key] = val;
-  //std::cout << "in {K: " << key << " V: " << m[key] << "}" << std::endl;
+  std::cout << "in {K: " << key << " V: " << m[key] << "}" << std::endl;
 }

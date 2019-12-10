@@ -64,7 +64,7 @@ class
                 std::cerr << "input out of range" << std::endl;
                 exit(0);
             }
-            Position_Mode_Set(state.memory,state.extra_mem,state.pc,inputs[current_input]);
+            Mode_Set(state.memory,state.extra_mem,state.pc,state.relative_base,instruction.arg1,inputs[current_input]);
             ++current_input;
         }
         else if (instruction.op_code == opcode_output){
@@ -88,17 +88,22 @@ class
         }
         else if (instruction.op_code == adjust_relative_base){
             
-            auto final_index = as_signed(add_big_numbers(state.pc,"1"));
+            auto val = Get_Mode_Index(state.memory,state.extra_mem,add_big_numbers(state.pc,"1"),state.relative_base,instruction.arg1);
+            state.relative_base = add_big_numbers(state.relative_base,val);
+            
+            //auto final_index = as_signed(add_big_numbers(state.pc,"1"));
+            //std::cout << "final:" << final_index << std::endl;
             //std::cout << "final index:" << final_index << std::endl;
             //std::cout << "relative base: " << state.relative_base << std::endl;
             //std::cout << state.memory[final_index] << std::endl;
-            state.relative_base = add_big_numbers(state.relative_base,state.memory[final_index]);
+            //state.relative_base = add_big_numbers(state.relative_base,state.memory[final_index]);
             //std::cout << as_signed(add_big_numbers(state.pc,"1")) << std::endl;
             state.pc = add_big_numbers(state.pc,"2");
             //std::cout << "new base: " <<  state.relative_base << std::endl;
         }
         
         instruction = Extract_Instruction(state);
+        
     }
     
     return outputs;
@@ -110,7 +115,6 @@ class
     instruction.arg1 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(as_signed(state.memory[as_signed(state.pc)]),2));
     instruction.arg2 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(as_signed(state.memory[as_signed(state.pc)]),3));
     instruction.arg3 = static_cast<Index_Mode>(Int::get_nth_digit_from_back(as_signed(state.memory[as_signed(state.pc)]),4));
-    std::cout << std::endl << "instruction: " << "op[" << instruction.op_code << "] " << "arg1[" << instruction.arg1 << "] " << "arg2[" << instruction.arg2<< "] " << "arg2[" << instruction.arg3 << "]" << std::endl;
-    //std::cout << "mem: " << state.memory << std::endl;
+    //std::cout << std::endl << "instruction: " << "op[" << instruction.op_code << "] " << "arg1[" << instruction.arg1 << "] " << "arg2[" << instruction.arg2<< "] " << "arg2[" << instruction.arg3 << "]" << std::endl;
     return instruction;
 ❱

@@ -77,12 +77,14 @@ T Get_Immediate_Mode_Index(std::vector<T> & t, string_map & extra, std::string i
 template<typename T>
 T Get_Relative_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base){
   
-  //std::cout << "->" << index << std::endl;
   auto start_index = Index_Into_Available_Container(t,extra,index);
-  //std::cout << "->>" << start_index << std::endl;
   auto derived_index = add_big_numbers(base,start_index);
-  //std::cout << "->>>" << derived_index << std::endl;
   return Index_Into_Available_Container(t,extra,derived_index);
+    
+    //auto offset = add_big_numbers(index,base);
+    //std::cout << index << " " << base << std::endl;
+    //auto new_index = Index_Into_Available_Container(t,extra,offset);
+    //return Index_Into_Available_Container(t,extra,offset);
 }
 template<typename T>
 void Set_Position_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string set_value){
@@ -97,9 +99,16 @@ void Set_Immediate_Mode_Index(std::vector<T> & t, string_map & extra, std::strin
 }
 template<typename T>
 void Set_Relative_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base, T set_value){
+    
+    //std::cout << index << " " << base << std::endl;
+    //auto offset = add_big_numbers(index,base);
+    //auto new_index = Index_Into_Available_Container(t,extra,offset);
+    //Set_Index_Into_Available_Container(t,extra,offset,set_value);
+    
     auto start_index = Index_Into_Available_Container(t,extra,index);
     auto derived_index = add_big_numbers(base,start_index);
     Set_Index_Into_Available_Container(t,extra,derived_index,set_value);
+    std::cout << derived_index << " = " << set_value << std::endl;
 }
 
 
@@ -109,8 +118,9 @@ template<typename T>
 T Get_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base, Index_Mode mode){
     
     if (mode == Index_Mode::POSITION){ return Get_Position_Mode_Index(t,extra,index); }
-    if (mode == Index_Mode::RELATIVE){ return Get_Relative_Mode_Index(t,extra,index, base); }
     if (mode == Index_Mode::IMMEDIATE){ return Get_Immediate_Mode_Index(t,extra,index); }
+    if (mode == Index_Mode::RELATIVE){ return Get_Relative_Mode_Index(t,extra,index, base); }
+    //if (mode == Index_Mode::RELATIVE){ return Get_Immediate_Mode_Index(t,extra,index); }
     
     std::cout << "unknown" << std::endl;
     return Get_Immediate_Mode_Index(t,extra,index);
@@ -119,8 +129,9 @@ template<typename T>
 void Set_Mode_Index(std::vector<T> & t, string_map & extra, std::string index, std::string base, Index_Mode mode, std::string set_value){
     
     if (mode == Index_Mode::POSITION){ return Set_Position_Mode_Index(t,extra,index,set_value); }
-    if (mode == Index_Mode::RELATIVE){ return Set_Relative_Mode_Index(t,extra,index, base,set_value); }
     if (mode == Index_Mode::IMMEDIATE){ return Set_Immediate_Mode_Index(t,extra,index,set_value); }
+    if (mode == Index_Mode::RELATIVE){ return Set_Relative_Mode_Index(t,extra,index, base,set_value); }
+    //if (mode == Index_Mode::RELATIVE){ return Set_Immediate_Mode_Index(t,extra,index,set_value); }
     
     std::cout << "unknown" << std::endl;
     return;
@@ -140,11 +151,6 @@ void Position_Mode_Set_Input(std::vector<T> & t, T & pc){
     //Set_Mode_Index(t,extra,add_big_numbers(pc,"1"),"0",Index_Mode::POSITION,input);
     pc = add_big_numbers(pc,"2");
 }
-template<typename T>
-void Position_Mode_Set(std::vector<T> & t, string_map & extra, T & pc, T const& input){
-    Set_Mode_Index(t,extra,add_big_numbers(pc,"1"),"0",Index_Mode::POSITION,input);
-    pc = add_big_numbers(pc,"2");
-}
 
 
 template<typename T>
@@ -161,8 +167,9 @@ void Mode_Print(std::vector<T> & t, T & pc, Index_Mode m){
 
 //main op codes
 template<typename T>
-void Mode_Set(std::vector<T> & t, T & pc, T & relative_base, T const& input){
-    //std::cout << "SSSS" << std::endl;
+void Mode_Set(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, T const& input){
+    Set_Mode_Index(t,extra,add_big_numbers(pc,"1"),relative_base,m1,input);
+    pc = add_big_numbers(pc,"2");
 }
 template<typename T>
 T Mode_Get(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m){
@@ -215,7 +222,7 @@ template<typename T>
 void Mode_Jump_Less_Than(std::vector<T> & t, string_map & extra, T & pc, T & relative_base, Index_Mode m1, Index_Mode m2, Index_Mode m3){
     auto a = Get_Mode_Index(t,extra,add_big_numbers(pc,"1"),relative_base,m1);
     auto b = Get_Mode_Index(t,extra,add_big_numbers(pc,"2"),relative_base,m2);
-    if (a < b){
+    if (less_than(a,b)){
         Set_Mode_Index(t,extra,add_big_numbers(pc,"3"),relative_base,m3,"1");
     }
     else{
