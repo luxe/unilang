@@ -18,6 +18,7 @@ std::string Bazel_Derived_Path_To_Self_Unilang();
 //+---------------------------------------+
 //THESE FUNCTIONS WILL CHANGE THE STATE OF THE CURRENT WORKING DIRECTORY
 void Set_Path(std::string const& path);
+void Possibly_Set_Path(bool const& set, std::string const& path);
 void Set_Path_If_Not_Empty(std::string const& path);
 void Step_Into_Folder(std::string const folder_name);
 void Step_Out_Of_Folder();

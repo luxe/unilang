@@ -41,7 +41,13 @@ std::string Bazel_Derived_Path_To_Self_Unilang(){
 //THESE FUNCTIONS WILL CHANGE THE STATE OF THE CURRENT WORKING DIRECTORY
 void Set_Path(std::string const& path) {
 	boost::filesystem::current_path(path);
- }
+}
+void Possibly_Set_Path(bool const& set, std::string const& path)
+{
+	if (set){
+		Set_Path(path);
+	}
+}
 void Set_Path_If_Not_Empty(std::string const& path) {
     if (!path.empty()){
         Set_Path(path);

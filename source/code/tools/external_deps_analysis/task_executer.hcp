@@ -20,28 +20,9 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
-    //settings
-    auto settings = Default_Settings();
+    auto settings = Get_Settings(options);
     
-    //set via program_options
-    if (!options.Dep().empty()){
-        settings.dep_name = options.Dep();
-    }
-    if (!options.Run_Dir().empty()){
-        settings.run_path = options.Run_Dir();
-    }
-    if (!options.Output_Dir().empty()){
-        settings.result_path = options.Output_Dir();
-    }
-    if (!options.Bazel().empty()){
-        settings.bazel_wrapper = options.Bazel();
-    }
-    
-    
-    //possibly move into bazel managed repo
-    if (settings.use_run_path){
-        Set_Path(settings.run_path);
-    }
+    Possibly_Set_Path(settings.use_run_path,settings.run_path);
     
     //start the analysis at a particular dependency
     Analysis_State state;
@@ -70,6 +51,29 @@ class
     
     Output_Graphviz_Info(settings,state);
 ❱
+
+◀private: static▶ void ☀Get_Settings(Program_Options const& options) ❰
+
+    //settings
+    auto settings = Default_Settings();
+    
+    //set via program_options
+    if (!options.Dep().empty()){
+        settings.dep_name = options.Dep();
+    }
+    if (!options.Run_Dir().empty()){
+        settings.run_path = options.Run_Dir();
+    }
+    if (!options.Output_Dir().empty()){
+        settings.result_path = options.Output_Dir();
+    }
+    if (!options.Bazel().empty()){
+        settings.bazel_wrapper = options.Bazel();
+    }
+    
+    return settings;
+❱
+
 
 ◀private: static▶ Settings ☀Default_Settings()❰
     Settings settings;
