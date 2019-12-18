@@ -16,6 +16,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/graphviz:graphviz_image_maker",
     "//code/tools/external_deps_analysis/program_options:lib",
+    "//code/tools/external_deps_analysis/settings:settings_getter",
 ])
 
 hcp(name = "settings", deps = [

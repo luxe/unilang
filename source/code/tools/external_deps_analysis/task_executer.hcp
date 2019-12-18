@@ -14,13 +14,14 @@ class
 ❪"code/utilities/types/sets/lib"❫
 ❪"code/utilities/graphviz/graphviz_image_maker"❫
 ❪"code/tools/external_deps_analysis/program_options/program_options"❫
+❪"code/tools/external_deps_analysis/settings/settings_getter"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
-    auto settings = Get_Settings(options);
+    auto settings = Settings_Getter::Get(options);
     
     Possibly_Set_Path(settings.use_run_path,settings.run_path);
     
@@ -50,40 +51,6 @@ class
     });
     
     Output_Graphviz_Info(settings,state);
-❱
-
-◀private: static▶ Settings ☀Get_Settings(Program_Options const& options) ❰
-
-    //settings
-    auto settings = Default_Settings();
-    
-    //set via program_options
-    if (!options.Dep().empty()){
-        settings.dep_name = options.Dep();
-    }
-    if (!options.Run_Dir().empty()){
-        settings.run_path = options.Run_Dir();
-    }
-    if (!options.Output_Dir().empty()){
-        settings.result_path = options.Output_Dir();
-    }
-    if (!options.Bazel().empty()){
-        settings.bazel_wrapper = options.Bazel();
-    }
-    
-    return settings;
-❱
-
-
-◀private: static▶ Settings ☀Default_Settings()❰
-    Settings settings;
-    settings.use_run_path = true;
-    settings.run_path = "/home/thickey/Desktop/na";
-    settings.result_path = "/home/thickey/Desktop/results";
-    settings.bazel_wrapper = "./bazel";
-    settings.dep_name = "cuda";
-    settings.verbose = true;
-    return settings;
 ❱
 
 ◀private: static▶ void ☀Verbose_Querying_Message(Settings const& settings, std::string const& dep)❰
