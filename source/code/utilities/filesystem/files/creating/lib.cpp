@@ -11,9 +11,11 @@ void Write_To_File(std::string path_to_file, std::string content)
 {
 	std::ofstream outfile(path_to_file);
 	outfile << content;
+    outfile.close();
 }
 void Write_To_File(std::string path_to_file, std::wstring content)
 {
 	std::wofstream outfile(path_to_file);
 	outfile << content;
+    outfile.close();
 }
