@@ -1,5 +1,5 @@
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
-load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar", "pkg_deb")
+load("@rules_pkg//:pkg.bzl", "pkg_tar", "pkg_deb")
 load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
 
 def distributable_cpp_main(name,description,depends=[],deps=[]):
