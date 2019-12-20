@@ -7,6 +7,6 @@ hcp(name = "settings", deps = [
 ])
 
 hcp(name = "settings_getter", deps = [
-    "//code/tools/external_deps_analysis/settings:settings"
-    "//code/tools/external_deps_analysis/program_options:program_options",
+    "//code/tools/external_deps_analysis/settings:settings",
+    "//code/tools/external_deps_analysis/program_options:lib",
 ])
