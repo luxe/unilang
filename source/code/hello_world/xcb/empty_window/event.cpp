@@ -83,7 +83,6 @@ void event_loop() {
 }
 
 int main(void) {
-  int i;
   /* Open the connection to the X server */
   c = xcb_connect (NULL, NULL);
   /* Get the first screen */

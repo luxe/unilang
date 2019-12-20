@@ -9,5 +9,8 @@ cc_library(
     ],
     srcs = [
         "url.cpp",
-    ]
+    ],
+    copts = [
+        "-Wno-everything",
+    ],
 )

@@ -13,5 +13,8 @@ cc_library(
     includes = ["include"],
     deps = [
         "@sqlite3//:sqlite3",
-    ]
+    ],
+    copts = [
+        "-Wno-everything",
+    ],
 )   
