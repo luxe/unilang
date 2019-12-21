@@ -27,6 +27,7 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/mario/engine:physics_state",
     "//code/utilities/sound/sdl:sdl_audio",
     "//code/utilities/x11/geometry:window_geometry_getter",
+    "//code/tools/mario:game_settings",
 ])
 
 hcp(name = "mario_documentation_getter", deps = [
@@ -35,6 +36,10 @@ hcp(name = "mario_documentation_getter", deps = [
     "//code/utilities/converters:lib",
     "//code/utilities/json/functions:lib",
     "//code/utilities/documentation:common_documentation_getter",
+])
+
+hcp(name = "game_settings", deps = [
+    "//code/utilities/x11/main_state:setup_display_settings",
 ])
 
 

@@ -6,6 +6,7 @@ class
 ❪"code/utilities/x11/sprite/sprite_window_creator"❫
 ❪"code/tools/mario/sprites/sprites_loader"❫
 ❪"code/tools/mario/sound/sounds_loader"❫
+❪"code/tools/mario/game_settings"❫
 ⚯
 ❪"code/utilities/sound/music_player"❫
 ❪iostream❫
@@ -43,18 +44,19 @@ class
 //http://www.rahul.net/kenton/40errs.html
 
 ◀public: static▶ void ☀Run() ❰
+
+
+    Game_Settings g;
+    g.play_music = true;
+    g.play_sound_effects = true;
     
     //create the main display (connect to the X Server). Basically just get everything setup to use X11.
     //hoping this is all typical x11 boilerplate.
     //I'm not sure I did it all correctly, but wanted to abstract it away.
     //hopefully customizable enough for most use cases and I don't have to dig into this much.
-    Setup_Display_Settings settings;
-    settings.syncronize_debug_mode = false;
-    settings.set_error_handler = false;
-    settings.check_for_shape_extension = true;
-    
-    bool play_music = true;
-    bool play_sound_effects = true;
+    g.x11.syncronize_debug_mode = false;
+    g.x11.set_error_handler = false;
+    g.x11.check_for_shape_extension = true;
     
     //enable SDL stuff
     SDL_Init(SDL_INIT_AUDIO);
@@ -62,7 +64,7 @@ class
     
     
     
-    auto state = X11_Main_State_Creator::Create(settings);
+    auto state = X11_Main_State_Creator::Create(g.x11);
     
     //we intend to spy on keyboard/mouse events everywhere.
     //this is like a keylogger.  You could be moving a cusor in
@@ -74,9 +76,7 @@ class
     auto sounds = Sounds_Loader::Load();
     
     //start some music
-    if (play_music){
-        Music_Player::Play(sounds.main_theme.full_path);
-    }
+    Music_Player::Maybe_Play(g.play_music,sounds.main_theme.full_path);
     
     auto phys = Initial_Mario_Physics();
     
