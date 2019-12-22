@@ -14,5 +14,5 @@ hcp(name = "repo_transferer", deps = [
 cc_binary(
     name = "transfer-self-repo",
     srcs = ["main.cc"],
-    deps = ["//code/self-transfer:repo_transferer"],
+    deps = ["//code/tools/self-transfer:repo_transferer"],
 )
