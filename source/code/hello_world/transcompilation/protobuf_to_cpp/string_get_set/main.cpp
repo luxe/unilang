@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "code/hello_world/transcompilation/protobuf_to_cpp/string_get_set/example.pb.h"
+#include "code/hello_world/transcompilation/protobuf_to_cpp/empty/string_get_set/example.pb.h"
 int main(){
 
     // I would have just a set "hello world" as the default
