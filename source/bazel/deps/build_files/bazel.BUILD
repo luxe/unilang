@@ -5,14 +5,11 @@
 # )
 
 
-#compile protobuf file
 proto_library(
    name = "spawn_proto",
    srcs = ["src/main/protobuf/spawn.proto"],
 )
-
-# #compile cpp file
-# native.cc_proto_library(
-#     name = pobject,
-#     deps = [":" + ptarget],
-# )
+cc_proto_library(
+    name = "spawn_proto_cpp",
+    deps = [":spawn_proto"],
+)
