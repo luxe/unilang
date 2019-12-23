@@ -17,6 +17,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/graphviz:graphviz_image_maker",
     "//code/tools/repo_tools/external_deps_analysis/program_options:lib",
     "//code/tools/repo_tools/external_deps_analysis/settings:settings_getter",
+    "//code/utilities/bazel:bazel_runner",
 ])
 
 hcp(name = "analysis_state", deps = [

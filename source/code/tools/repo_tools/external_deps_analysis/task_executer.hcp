@@ -16,6 +16,7 @@ class
 ❪"code/tools/repo_tools/external_deps_analysis/program_options/program_options"❫
 ❪"code/tools/repo_tools/external_deps_analysis/settings/settings_getter"❫
 ⚯
+❪"code/utilities/bazel/bazel_runner"❫
 ⚞⚟
 
 
@@ -98,7 +99,7 @@ class
 ◀private: static▶ void ☀Explore_The_Direct_Relationships(Settings const& settings, Analysis_State & state, std::string const& dep)❰
 
     //bazel query to get direct 3rd party dependencies
-    auto results = Get_Direct_Dependencies(settings,dep);
+    auto results = Bazel_Runner::Get_Direct_Dependencies(settings.bazel_wrapper,dep);
     
     Verbose_Direct_Dependencies_Message(settings,results);
     
@@ -107,44 +108,6 @@ class
     
     //add deps to explore
     for (auto const& it: results){state.deps_to_explore.push(it);}
-❱
-
-
-◀private: static▶ std::string ☀Get_Bazel_Query_Command(Settings const& settings, std::string const& dep_name) ❰
-    std::string command = settings.bazel_wrapper;
-    command += " query 'rdeps(...,@" + dep_name + "//...)' ";
-    command += "--implicit_deps ";
-    command += "--nohost_deps ";
-    command += "--keep_going 2> /dev/null ";
-    std::cout << std::endl << command << std::endl;
-    return command;
-❱
-
-◀private: static▶ std::string ☀Get_Bazel_Query_Command2(Settings const& settings, std::string const& dep_name) ❰
-    std::string command = settings.bazel_wrapper;
-    command += " query 'deps(@" + dep_name + "//...)' ";
-    command += "--noimplicit_deps ";
-    command += "--nohost_deps ";
-    command += "--keep_going 2> /dev/null ";
-    std::cout << std::endl << command << std::endl;
-    return command;
-❱
-
-◀private: static▶ std::vector<std::string> ☀Get_Direct_Dependencies(Settings const& settings, std::string const& dep_name)❰
-
-    auto command = Get_Bazel_Query_Command(settings,dep_name);
-    auto results = Get_Each_Line_Of_Shell_Command(command);
-    Remove_If(results,[&](std::string s){
-        return !Begins_With(s,"@");
-    });
-    
-    for (auto & it: results){
-        Remove_Everything_After_Found_Instance(it,"//");
-        Remove_First_Char(it);
-    }
-    
-    Sort_And_Remove_Duplicates(results);
-    return results;
 ❱
 
 ◀private: static▶ std::string ☀Pop_Front(std::queue<std::string> & q)❰
