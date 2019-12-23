@@ -1,6 +1,6 @@
 #include <iostream>
-#include "code/tools/external_deps_analysis/task_executer.hpp"
-#include "code/tools/external_deps_analysis/program_options/program_options.hpp"
+#include "code/tools/repo_tools/external_deps_analysis/task_executer.hpp"
+#include "code/tools/repo_tools/external_deps_analysis/program_options/program_options.hpp"
 
 
 int main(int const argc, char** const argv){

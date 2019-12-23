@@ -19,8 +19,8 @@ hcp(name = "software_deployer", deps = [
     "//code/tools/deskstock:deskstock_documentation_getter",
     "//code/tools/noogle:noogle_documentation_getter",
     "//code/tools/gcalviz:gcalviz_documentation_getter",
-    "//code/tools/external_deps_analysis:external_deps_analysis_documentation_getter",
-    "//code/tools/shared_object_trace:shared_object_trace_documentation_getter",
+    "//code/tools/repo_tools/external_deps_analysis:external_deps_analysis_documentation_getter",
+    "//code/tools/repo_tools/shared_object_trace:shared_object_trace_documentation_getter",
     
     "//code/utilities/pdf:pdf_settings",
     "//code/utilities/pdf:pdf_creator",

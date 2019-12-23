@@ -1,6 +1,6 @@
 #include <iostream>
-#include "code/tools/shared_object_trace/task_executer.hpp"
-#include "code/tools/shared_object_trace/program_options/program_options.hpp"
+#include "code/tools/repo_tools/shared_object_trace/task_executer.hpp"
+#include "code/tools/repo_tools/shared_object_trace/program_options/program_options.hpp"
 
 
 int main(int const argc, char** const argv){
