@@ -18,6 +18,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/external_deps_analysis/program_options:lib",
     "//code/tools/repo_tools/external_deps_analysis/settings:settings_getter",
     "//code/utilities/bazel:bazel_runner",
+    "//code/utilities/types/queue:lib",
 ])
 
 hcp(name = "analysis_state", deps = [
