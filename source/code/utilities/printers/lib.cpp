@@ -28,6 +28,19 @@ void Output_And_Flush(std::string const& message){
   std::cout << message; std::cout.flush();
   return;
 }
+void Maybe_Output_And_Flush(bool const& output, std::string const& message)
+{
+  if (output){
+    Output_And_Flush(message);
+  }
+}
+void Maybe_Output_And_Flush(bool const& output, std::vector<std::string> const& v)
+{
+   if (output){
+    std::cout << v << std::endl;
+   }
+}
+
 void Output_And_Flush_With_Newline(std::string const& message){
   std::cout << message << std::endl;
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "code/utilities/printers/prettyprint.hpp"
 
 
@@ -13,6 +14,8 @@ void Move_Cursor_Up();
 void Clear_Terminal_Up_N_Lines(int n);
 
 void Output_And_Flush(std::string const& message);
+void Maybe_Output_And_Flush(bool const& output, std::string const& message);
+void Maybe_Output_And_Flush(bool const& output, std::vector<std::string> const& v);
 void Output_And_Flush_With_Newline(std::string const& message);
 void Print_Newline();
 

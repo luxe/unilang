@@ -4,6 +4,7 @@ class
 ❪utility❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/printers/lib"❫
 ❪"code/tools/repo_tools/external_deps_analysis/settings/settings"❫
 ❪"code/tools/repo_tools/external_deps_analysis/analysis_state"❫
 ❪"code/utilities/filesystem/paths/lib"❫
@@ -23,17 +24,23 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
+    //get the settings and start in the appropriate directory.
     auto settings = Settings_Getter::Get(options);
-    
     Possibly_Set_Path(settings.use_run_path,settings.run_path);
     
-    //start the analysis at a particular dependency
+    //start the analysis at a particular dependency.
     Analysis_State state;
     state.deps_to_explore.push(settings.dep_name);
     
-    //build all the relationships
+    //build all the relationships.
+    //we keep popping of the queue till its empty.
+    //while analyzing a popped item, we may add more items onto the queue.
     Observe_Each_Item_In_Queue_Avoiding_Duplicates(state.deps_to_explore,[&](std::queue<std::string> & deps_to_explore, std::string const& dep){
-        Verbose_Querying_Message(settings,dep);
+        
+        //debug message
+        std::string message = "querying " + dep + "... ";
+        Maybe_Output_And_Flush(settings.verbose,message);
+        
         Explore_The_Direct_Relationships(settings,state,dep);
     });
     
@@ -43,18 +50,6 @@ class
     });
     
     Output_Graphviz_Info(settings,state);
-❱
-
-◀private: static▶ void ☀Verbose_Querying_Message(Settings const& settings, std::string const& dep)❰
-    if (settings.verbose){
-        std::cout << "querying " << dep << "... ";
-        std::cout.flush();
-    }
-❱
-◀private: static▶ void ☀Verbose_Direct_Dependencies_Message(Settings const& settings, std::vector<std::string> const& results)❰
-    if (settings.verbose){
-        std::cout << results << std::endl;
-    }
 ❱
 
 ◀private: static▶ void ☀Output_Graphviz_Info(Settings const& settings, Analysis_State const& state)❰
@@ -92,11 +87,11 @@ class
     //bazel query to get direct 3rd party dependencies
     auto results = Bazel_Runner::Get_Direct_Dependencies(settings.bazel_wrapper,dep);
     
-    Verbose_Direct_Dependencies_Message(settings,results);
+    Maybe_Output_And_Flush(settings.verbose,results);
     
     //add relationships
     for (auto const& it: results){state.relationships.emplace_back(dep,it);}
     
-    //add deps to explore
+    //add the next set of deps to explore
     for (auto const& it: results){state.deps_to_explore.push(it);}
 ❱
