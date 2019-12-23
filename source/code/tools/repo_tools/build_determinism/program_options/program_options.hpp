@@ -17,7 +17,7 @@ class Program_Options {
 	//+----------------------------------------------------------+
 	//| USER FLAGS                                               |
 	//+----------------------------------------------------------+
-        std::string Dep() const;
+        std::string Target() const;
         std::string Run_Dir() const;
         std::string Output_Dir() const;
         std::string Bazel() const;

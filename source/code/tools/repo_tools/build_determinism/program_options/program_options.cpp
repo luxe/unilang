@@ -28,7 +28,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	using namespace boost::program_options;
 
 	//Program Description
-	options_description desc("constructs graph for third party dependance on a third party dependency");
+	options_description desc("test for build determinism on a particular target");
 
 	//Program Flags
 	desc.add_options()
@@ -36,7 +36,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//these are flag descriptions of that can be passed into the class.
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
-	("dep",value<std::string>(),"third party dep name (applied as '@DEP//...')")
+	("target",value<std::string>(),"what you would pass to bazel build")
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
@@ -101,10 +101,10 @@ void Program_Options::Check_For_Mandatory_Flags_Not_Passed(){
 	}
 	return;
 }
-std::string Program_Options::Dep() const{
+std::string Program_Options::Target() const{
 	std::string data;
-	if (vm.count("dep")){
-		data = vm["dep"].as<std::string>();
+	if (vm.count("target")){
+		data = vm["target"].as<std::string>();
 	}
 
 	return data;

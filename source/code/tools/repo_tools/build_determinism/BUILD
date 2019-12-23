@@ -8,6 +8,8 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/printers:lib",
     "//code/tools/repo_tools/build_determinism/program_options:lib",
     "//code/utilities/bazel:bazel_runner",
+    "//code/tools/repo_tools/build_determinism/settings:settings_getter",
+    "//code/utilities/filesystem/paths:lib",
 ])
 
 distributable_cpp_main(

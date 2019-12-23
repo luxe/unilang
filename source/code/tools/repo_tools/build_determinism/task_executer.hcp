@@ -4,14 +4,19 @@ class
 ❪utility❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/tools/repo_tools/build_determinism/program_options/program_options"❫
+❪"code/tools/repo_tools/build_determinism/settings/settings_getter"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
-    std::cout << "hello world" << std::endl;
-    Bazel_Runner::Get_Spawn_Information("./bazel","//atg/hello_world/cuda:helo_world_nvcc");
+    //get the settings and start in the appropriate directory.
+    auto settings = Settings_Getter::Get(options);
+    Possibly_Set_Path(settings.use_run_path,settings.run_path);
+    
+    Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper,settings.target_name);
 ❱
