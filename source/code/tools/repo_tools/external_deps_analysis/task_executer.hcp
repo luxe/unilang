@@ -32,20 +32,10 @@ class
     state.deps_to_explore.push(settings.dep_name);
     
     //build all the relationships
-    while (!state.deps_to_explore.empty()){
-        
-        //since we are now exploring this dependency, remove it from the queue
-        auto dep = Pop_Front(state.deps_to_explore);
-        
-        
-        //if we haven't yet explored this dependency do so, and add it to the set so we don't do it again
-        if (!Exists_In_Set(state.dep_explored,dep)){
-            state.dep_explored.insert(dep);
-            
-            Verbose_Querying_Message(settings,dep);
-            Explore_The_Direct_Relationships(settings,state,dep);
-        }
-    }
+    Observe_Each_Item_In_Queue_Avoiding_Duplicates(state.deps_to_explore,[&](std::queue<std::string> & deps_to_explore, std::string const& dep){
+        Verbose_Querying_Message(settings,dep);
+        Explore_The_Direct_Relationships(settings,state,dep);
+    });
     
     //remove cycles
     Remove_If(state.relationships,[&](std::pair<std::string,std::string> p){
