@@ -19,6 +19,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/external_deps_analysis/settings:settings_getter",
     "//code/utilities/bazel:bazel_runner",
     "//code/utilities/types/queue:lib",
+    "//code/tools/repo_tools/external_deps_analysis:external_deps_visualizer",
 ])
 
 hcp(name = "analysis_state", deps = [
@@ -31,6 +32,21 @@ hcp(name = "external_deps_analysis_documentation_getter", deps = [
     "//code/utilities/json/functions:lib",
     "//code/tools/repo_tools/external_deps_analysis/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",
+])
+
+hcp(name = "external_deps_visualizer", deps = [
+    "//code/utilities/shell:lib",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/types/sets:lib",
+    "//code/utilities/graphviz:graphviz_image_maker",
+    "//code/tools/repo_tools/external_deps_analysis/settings:settings",
+    "//code/tools/repo_tools/external_deps_analysis:analysis_state",
+    "//code/utilities/types/strings/observers/path:lib",
+    "//code/utilities/data_structures/unique_counter:unique_counter",
 ])
 
 distributable_cpp_main(

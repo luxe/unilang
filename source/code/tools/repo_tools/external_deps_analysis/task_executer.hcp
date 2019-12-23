@@ -19,6 +19,7 @@ class
 ⚯
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/utilities/types/queue/lib"❫
+❪"code/tools/repo_tools/external_deps_analysis/external_deps_visualizer"❫
 ⚞⚟
 
 
@@ -49,37 +50,7 @@ class
         return p.first == p.second;
     });
     
-    Output_Graphviz_Info(settings,state);
-❱
-
-◀private: static▶ void ☀Output_Graphviz_Info(Settings const& settings, Analysis_State const& state)❰
-
-    std::vector<std::string> relationships_strs;
-    for (auto const& it: state.relationships){
-        std::string line = "";
-        line += "\"";
-        line += it.first;
-        line += "\"";
-        line += " -> ";
-        line += "\"";
-        line += it.second;
-        line += "\"";
-        relationships_strs.emplace_back(line);
-    }
-    
-    std::string x;
-    Append_With_Newline(x,"digraph results {");
-    //Append_With_Newline(x,"splines=false;");
-    Append_With_Newline(x,"node [");
-    Append_With_Newline(x,"fontname=\"Arial\",");
-    //Append_With_Newline(x,"shape = plaintext,");
-    Append_With_Newline(x,"height=.1");
-    Append_With_Newline(x,"]");
-    for (auto const& it: relationships_strs){
-        Append_With_Newline(x,it);
-    }
-    Append_With_Newline(x,"}");
-    Graphviz_Image_Maker::Make(x,settings.result_path,settings.dep_name);
+    External_Deps_Visualizer::Visualize(settings,state);
 ❱
 
 ◀private: static▶ void ☀Explore_The_Direct_Relationships(Settings const& settings, Analysis_State & state, std::string const& dep)❰
