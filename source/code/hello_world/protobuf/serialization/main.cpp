@@ -9,7 +9,9 @@ int main(){
     message.set_foo("hello world");
     
     //serialize
-    std::ofstream ofs("/home/laptop/Desktop/sensor.data", std::ios_base::out | std::ios_base::binary);
+    std::ofstream ofs("/home/laptop/Desktop/message.serialized", std::ios_base::out | std::ios_base::binary);
     message.SerializeToOstream(&ofs);
+    
+    
     return 0;
 }
