@@ -6,10 +6,10 @@ package(
 )
 
 cpp_proto_object(
-  name = "example"
+  name = "message"
 )
 
 cpp_main(
     name = "main",
-    deps = [":example_cpp_proto"]
+    deps = [":message_cpp_proto"]
 )
