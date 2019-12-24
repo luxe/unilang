@@ -30,10 +30,11 @@ int main(){
     GOOGLE_PROTOBUF_VERIFY_VERSION;
     demo::Message message;
     message.set_foo("hello world");
+    std::string path = "/home/laptop/Desktop/message.serialized";
     
     //serialize
-     Serialize(message,"/home/laptop/Desktop/message.serialized");
-     auto t = Deserialize<demo::Message>("/home/laptop/Desktop/message.serialized");
+     Serialize(message,path);
+     auto t = Deserialize<demo::Message>(path);
      std::cout << t.foo() << std::endl;
     
     //deserialze
