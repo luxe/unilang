@@ -9,6 +9,9 @@ class
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/shell/lib"❫
+❪"code/utilities/random/lib"❫
+❪"src/main/protobuf/spawn.pb.h"❫
+❪"code/utilities/serialization/protobuf"❫
 ⚯
 ⚞⚟
 
@@ -29,15 +32,22 @@ class
     return results;
 ❱
 
-◀public: static▶ void ☀Get_Spawn_Information(std::string const& bazel_wrapper, std::string const& target)❰
+◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, std::string const& target)❰
 
-    std::string file_name = "~/Desktop/log.json";
+    //clean
+    Clean(bazel_wrapper);
+    
+    //build
+    std::string file_name = Random_Tmp_Filename();
     auto command = Get_Create_Spawn_File_Command(bazel_wrapper,target,file_name);
     execute(command);
+    
+    //extract
+    auto spawns = Deserialize_Multiple_From_Json_File<tools::protos::SpawnExec>(file_name);
+    return spawns;
 ❱
 
 ◀public: static▶ void ☀Clean(std::string const& bazel_wrapper)❰
-
     auto command = Clean_Command(bazel_wrapper);
     execute(command);
 ❱

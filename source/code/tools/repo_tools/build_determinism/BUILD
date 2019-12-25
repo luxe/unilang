@@ -10,9 +10,8 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/bazel:bazel_runner",
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
     "//code/utilities/filesystem/paths:lib",
-    #"@bazel//:spawn_proto_cpp",
+    "@bazel//:spawn_proto_cpp",
     "//code/utilities/serialization:protobuf",
-    "//code/hello_world/protobuf:spawn_proto_cpp",
     "//code/utilities/json/functions:lib",
 ])
 

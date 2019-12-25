@@ -33,7 +33,7 @@ std::vector<std::string> Read_Jsons_From_File(std::string const& path)
     try{
       nlohmann::json j;
       i >> j;
-      results.emplace_back(j.dump(2));
+      results.emplace_back(j.dump(0));
     }catch(...){
       return results;
     }

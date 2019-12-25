@@ -1,5 +1,8 @@
+#pragma once
 #include <fstream>
 #include <iostream>
+#include "code/utilities/json/functions/lib.hpp"
+#include <google/protobuf/util/json_util.h>
 
 template <typename T>
 void Serialize(T const& t, std::string const& path){
@@ -20,4 +23,18 @@ T Deserialize(std::string const& path){
         std::cerr << "failed to deserialize" << std::endl;
     }
     return t;
+}
+
+template <typename T>
+std::vector<T> Deserialize_Multiple_From_Json_File(std::string const& path){
+    auto j_blobs = Read_Jsons_From_File(path);
+    std::vector<T> results;
+    for (auto const& it: j_blobs){
+        T x;
+        google::protobuf::util::JsonParseOptions options;
+        JsonStringToMessage(it, &x, options);
+        results.emplace_back(x);
+    }
+    
+    return results;
 }

@@ -9,4 +9,8 @@ hcp(name = "bazel_runner", deps = [
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/shell:lib",
+    "//code/utilities/random:lib",
+    "@bazel//:spawn_proto_cpp",
+    "//code/utilities/serialization:protobuf",
+    "//code/utilities/json/functions:lib",
 ])

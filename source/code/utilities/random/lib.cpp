@@ -8,6 +8,11 @@ std::string Random_Tmp_Directory(){
     folder += xg::newGuid().str();
     return folder;
 }
+std::string Random_Tmp_Filename(){
+    std::string folder = "/tmp/";
+    folder += xg::newGuid().str();
+    return folder;
+}
 
 
 namespace global{

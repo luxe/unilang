@@ -7,6 +7,7 @@
 
 
 std::string Random_Tmp_Directory();
+std::string Random_Tmp_Filename();
 
 
 template<typename T>
