@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include "nlohmann/json.hpp"
 #include "code/utilities/streams/filestreams/lib.hpp"
 #include "code/utilities/streams/filestreams/read_all/lib.hpp"
@@ -53,6 +54,9 @@ void Read_Json_From_File(T & t, std::string const& path){
     auto j = nlohmann::json::parse(str);
     t = j.get<T>();
 }
+
+std::vector<std::string> Read_Jsons_From_File(std::string const& path);
+
 
 template <typename T>
 void Print_Json(T const& t){

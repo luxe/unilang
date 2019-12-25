@@ -5,9 +5,13 @@ class
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/json/functions/lib"❫
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/tools/repo_tools/build_determinism/program_options/program_options"❫
 ❪"code/tools/repo_tools/build_determinism/settings/settings_getter"❫
+❪"code/hello_world/protobuf/spawn.pb.h"❫
+❪"code/utilities/serialization/protobuf"❫
+❪google/protobuf/util/json_util.h❫
 ⚯
 ⚞⚟
 
@@ -15,8 +19,30 @@ class
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
     //get the settings and start in the appropriate directory.
-    auto settings = Settings_Getter::Get(options);
-    Possibly_Set_Path(settings.use_run_path,settings.run_path);
+    // auto settings = Settings_Getter::Get(options);
+    // Possibly_Set_Path(settings.use_run_path,settings.run_path);
     
-    Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper,settings.target_name);
+    // Bazel_Runner::Clean(settings.bazel_wrapper);
+    // Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper,settings.target_name);
+
+    auto j_blobs = Read_Jsons_From_File("/home/laptop/Desktop/log.json");
+    //std::cout << j_blobs[1] << std::endl;
+    
+    //parse out of json
+    tools::protos::SpawnExec x;
+    google::protobuf::util::JsonParseOptions options2;
+    JsonStringToMessage(j_blobs[0], &x, options2);
+    
+    for (auto & it: *x.mutable_inputs()){
+        std::cout << *it.mutable_digest()->mutable_hash() << std::endl;
+    }
+    
+    
+
+     //tools::protos::SpawnExec x;
+     //auto it = Deserialize<tools::protos::SpawnExec>("/home/laptop/Desktop/log.json");
+
+  // std::string json;
+  // google::protobuf::util::MessageToJsonString(it, &json);
+  // std::cout << json << std::endl;
 ❱

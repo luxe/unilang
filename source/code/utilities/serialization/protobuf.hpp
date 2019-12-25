@@ -15,6 +15,7 @@ T Deserialize(std::string const& path){
     T t;
     std::ifstream ifs(path, std::ios_base::binary);
     bool was_successful = t.ParseFromIstream(&ifs);
+    //bool was_successful = t.ParsePartialFromIstream(&ifs);
     if (!was_successful){
         std::cerr << "failed to deserialize" << std::endl;
     }

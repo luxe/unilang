@@ -4,8 +4,8 @@ package(
 
 cc_library(
     name = "lib",
-    srcs = glob(["*.cpp"]),
-    hdrs = glob(["*.hpp"]),
+    srcs = ["lib.cpp"],
+    hdrs = ["lib.hpp"],
     deps = [
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/streams/filestreams/read_all:lib",

@@ -1,8 +1,5 @@
 #load("//bazel/cookbook/protobuf:cpp.bzl", "cpp_proto_object")
-
-# cpp_proto_object(
-#     name = "src/main/protobuf/spawn.proto"
-# )
+package(default_visibility = ["//visibility:public"])
 
 
 proto_library(

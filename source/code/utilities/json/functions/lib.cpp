@@ -1,5 +1,6 @@
 #include "nlohmann/json.hpp"
 #include "code/utilities/streams/filestreams/lib.hpp"
+#include <iostream>
 
 bool Is_Valid_JSON_File(std::string const& file_name){
   bool valid = true;
@@ -20,4 +21,23 @@ bool Is_Valid_JSON_String(std::string const& json_string){
   }
   
   return valid;
+}
+
+
+std::vector<std::string> Read_Jsons_From_File(std::string const& path)
+{
+  std::vector<std::string> results;
+  
+  std::ifstream i(path);
+  while (i){
+    try{
+      nlohmann::json j;
+      i >> j;
+      results.emplace_back(j.dump(2));
+    }catch(...){
+      return results;
+    }
+  }
+  
+  return results;
 }
