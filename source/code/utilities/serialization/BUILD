@@ -10,3 +10,12 @@ cc_library(
     "@boost//:serialization",
     ]
 )
+
+cc_library(
+    name = "protobuf",
+    srcs = ["protobuf.cpp"],
+    hdrs = ["protobuf.hpp"],
+    deps = [
+    ]
+)
+
