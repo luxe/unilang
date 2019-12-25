@@ -21,23 +21,19 @@ T Deserialize(std::string const& path){
         std::cerr << "failed to deserialize" << std::endl;
     }
     return t;
-    
 }
 
 int main(){
 
     //construct
-    GOOGLE_PROTOBUF_VERIFY_VERSION;
     demo::Message message;
     message.set_foo("hello world");
     std::string path = "/home/laptop/Desktop/message.serialized";
     
-    //serialize
-     Serialize(message,path);
-     auto t = Deserialize<demo::Message>(path);
-     std::cout << t.foo() << std::endl;
-    
-    //deserialze
+    //serialize / de-serialize
+    Serialize(message,path);
+    auto t = Deserialize<demo::Message>(path);
+    std::cout << t.foo() << std::endl;
     
     
     return 0;

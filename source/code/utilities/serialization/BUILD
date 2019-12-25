@@ -3,9 +3,9 @@ package(
 )
 
 cc_library(
-    name = "lib",
-    srcs = glob(["*.cpp"]),
-    hdrs = glob(["*.hpp"]),
+    name = "boost",
+    srcs = ["boost.cpp"],
+    hdrs = ["boost.hpp"],
     deps = [
     "@boost//:serialization",
     ]
