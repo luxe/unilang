@@ -6,6 +6,9 @@
 #include "code/utilities/types/char/optional_letter_case.hpp"
 
 
+std::string Random_Tmp_Directory();
+
+
 template<typename T>
 auto Get_Random_Index(T const& container) -> std::size_t {
   std::random_device random_device;
