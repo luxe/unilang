@@ -23,6 +23,8 @@ std::vector<std::string> Get_FIFO_Special_Files_Of_Path_With_The_File_Extension(
 std::vector<std::string> Get_Character_Special_Files_Of_Path_With_The_File_Extension(std::string const& file_extension, std::string path = ".");
 std::vector<std::string> Get_Block_Special_Files_Of_Path_With_The_File_Extension(std::string const& file_extension, std::string path = ".");
 
+std::string First_Filename_Found_At_Current_Path(std::vector<std::string> const& file_names);
+
 //getting files from a path based on basename
 std::vector<std::string> Get_Everything_At_Path_With_The_Basename(std::string const& base_name, std::string path = ".");
 bool Path_Contains_File_With_Basename(std::string const& base_name, std::string path = ".");

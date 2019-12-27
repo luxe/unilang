@@ -23,7 +23,11 @@ class
         settings.result_path = options.Output_Dir();
     }
     if (!options.Bazel().empty()){
-        settings.bazel_wrapper = options.Bazel();
+        settings.bazel_wrapper.derive = false;
+        settings.bazel_wrapper.program_name = options.Bazel();
+    }
+    else{
+        settings.bazel_wrapper.derive = true;
     }
     
     return settings;
@@ -35,7 +39,12 @@ class
     settings.use_run_path = true;
     settings.run_path = "/home/thickey/Desktop/main-na";
     settings.result_path = "/home/thickey/Desktop/build_determinism_results";
-    settings.bazel_wrapper = "./bazel";
+    
+    settings.bazel_wrapper.derive = false;
+    settings.bazel_wrapper.program_name = "./bazel";
+    settings.bazel_wrapper.search_derive_programs.emplace_back("bazel");
+    settings.bazel_wrapper.search_derive_programs.emplace_back("bazel_wrapper");
+    
     settings.target_name = "//atg/hello_world/cuda:hello_world_nvcc";
     settings.verbose = true;
     return settings;

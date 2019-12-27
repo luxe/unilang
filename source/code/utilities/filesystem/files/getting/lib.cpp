@@ -14,6 +14,19 @@
 #include "code/utilities/streams/filestreams/read_all/lib.hpp"
 #include <dirent.h>
 
+std::string First_Filename_Found_At_Current_Path(std::vector<std::string> const& file_names)
+{
+    auto files = Get_Everything_At_Path();
+    for (auto const& it: file_names){
+        for (auto const& x: files){
+            if (it == x){
+                return it;
+            }
+        }
+    }
+    return "";
+}
+
 std::vector<std::string> Get_Everything_At_Path(std::string path){
     std::vector<std::string> elements;
     struct dirent* entry;

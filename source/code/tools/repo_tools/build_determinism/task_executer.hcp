@@ -10,17 +10,26 @@ class
 ❪"code/tools/repo_tools/build_determinism/settings/settings_getter"❫
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/utilities/serialization/protobuf"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
-    //get the settings and start in the appropriate directory.
+    //get the settings
     auto settings = Settings_Getter::Get(options);
+    
+    //start in the appropriate directory
     Possibly_Set_Path(settings.use_run_path,settings.run_path);
     
-    auto spawns = Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper,settings.target_name);
+    //try to derive the correct bazel program if not known
+    if (settings.bazel_wrapper.derive){
+        settings.bazel_wrapper.program_name = Derive_Program_Name(settings);
+    }
+    
+    
+    auto spawns = Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper.program_name,settings.target_name);
     std::cout << spawns.size() << std::endl;
     
     for (auto & spawn: spawns){
@@ -28,4 +37,20 @@ class
             std::cout << *it.mutable_digest()->mutable_hash() << std::endl;
         }
     }
+❱
+
+◀private: static▶ std::string ☀Derive_Program_Name(Settings const& settings) ❰
+    auto program_name = First_Filename_Found_At_Current_Path(settings.bazel_wrapper.search_derive_programs);
+    
+    //use global installed bazel
+    if (program_name.empty()){
+        program_name = "bazel";
+    }
+    
+    //use the local found bazel wrapper
+    else{
+        program_name = "./" + program_name;
+    }
+    
+    return program_name;
 ❱
