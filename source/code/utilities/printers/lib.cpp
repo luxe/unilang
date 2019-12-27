@@ -34,6 +34,13 @@ void Maybe_Output_And_Flush(bool const& output, std::string const& message)
     Output_And_Flush(message);
   }
 }
+void Maybe_Output_And_Flush_With_Newline(bool const& output, std::string message)
+{
+  if (output){
+    message += "\n";
+    Output_And_Flush(message);
+  }
+}
 void Maybe_Output_And_Flush(bool const& output, std::vector<std::string> const& v)
 {
    if (output){

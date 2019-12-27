@@ -15,6 +15,7 @@ void Clear_Terminal_Up_N_Lines(int n);
 
 void Output_And_Flush(std::string const& message);
 void Maybe_Output_And_Flush(bool const& output, std::string const& message);
+void Maybe_Output_And_Flush_With_Newline(bool const& output, std::string message);
 void Maybe_Output_And_Flush(bool const& output, std::vector<std::string> const& v);
 void Output_And_Flush_With_Newline(std::string const& message);
 void Print_Newline();

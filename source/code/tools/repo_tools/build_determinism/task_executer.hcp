@@ -4,6 +4,7 @@ class
 ❪utility❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/printers/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/tools/repo_tools/build_determinism/program_options/program_options"❫
@@ -25,6 +26,7 @@ class
     
     //we might clone or move into an existing folder.
     //either way, we will be at the root of the repository.
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"cloning repo...");
     Move_Into_Repo(settings);
     
     //try to derive the correct bazel program if its not known.
@@ -32,7 +34,10 @@ class
         settings.bazel_wrapper.program_name = Derive_Program_Name(settings);
     }
     
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
     auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.target_name);
+    
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
     auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.target_name);
     
     //initial sanity check
