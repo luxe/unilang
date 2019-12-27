@@ -2,7 +2,19 @@
 #include "code/utilities/shell/lib.hpp"
 #include "code/utilities/filesystem/paths/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
+#include "code/utilities/random/lib.hpp"
 
+
+std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
+{
+	auto dir = Random_Tmp_Directory();
+	std::string command = "git clone ";
+	command += ssh_url;
+	command += " ";
+	command += dir;
+	execute(command);
+	return dir;
+}
 
 bool Inside_Git_Repository(){
 	return Directory_Exists_In_Current_Directory_Or_Any_Parents(".git");

@@ -8,6 +8,7 @@ cc_library(
     hdrs = ["lib.hpp"],
     deps = [
 "//code/utilities/shell:lib",
+"//code/utilities/random:lib",
 "//code/utilities/filesystem/paths:lib",
 ]
 )

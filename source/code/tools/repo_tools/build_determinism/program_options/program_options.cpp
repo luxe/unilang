@@ -37,6 +37,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
 	("target",value<std::string>(),"what you would pass to bazel build")
+	    ("url",value<std::string>(),"git url to clone with")
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
@@ -129,6 +130,14 @@ std::string Program_Options::Bazel() const{
 	std::string data;
 	if (vm.count("bazel")){
 		data = vm["bazel"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Url() const{
+	std::string data;
+	if (vm.count("url")){
+		data = vm["url"].as<std::string>();
 	}
 
 	return data;

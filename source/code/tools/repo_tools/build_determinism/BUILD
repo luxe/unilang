@@ -14,6 +14,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/serialization:protobuf",
     "//code/utilities/json/functions:lib",
     "//code/utilities/filesystem/files/getting:lib",
+    "//code/utilities/git-related:lib",
 ])
 
 distributable_cpp_main(

@@ -11,32 +11,52 @@ class
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/utilities/serialization/protobuf"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/git-related/lib"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
-    //get the settings
+    //get the default settings modified by user's program options.
     auto settings = Settings_Getter::Get(options);
     
-    //start in the appropriate directory
-    Possibly_Set_Path(settings.use_run_path,settings.run_path);
+    //we might clone or move into an existing folder.
+    //either way, we will be at the root of the repository.
+    Move_Into_Repo(settings);
     
-    //try to derive the correct bazel program if not known
+    //try to derive the correct bazel program if its not known.
     if (settings.bazel_wrapper.derive){
         settings.bazel_wrapper.program_name = Derive_Program_Name(settings);
     }
     
     
-    auto spawns = Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper.program_name,settings.target_name);
-    std::cout << spawns.size() << std::endl;
+    auto spawns1 = Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper.program_name,settings.target_name);
+    auto spawns2 = Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper.program_name,settings.target_name);
     
-    for (auto & spawn: spawns){
-        for (auto & it: *spawn.mutable_inputs()){
-            std::cout << *it.mutable_digest()->mutable_hash() << std::endl;
-        }
+    if (spawns1.size() == spawns2.size()){
+        std::cout << "same number of spawned commands" << std::endl;
     }
+    else{
+        std::cerr << "different number of spawned actions" << std::endl;
+    }
+    
+    // for (auto & spawn: spawns){
+    //     for (auto & it: *spawn.mutable_inputs()){
+    //         std::cout << *it.mutable_digest()->mutable_hash() << std::endl;
+    //     }
+    // }
+❱
+
+◀private: static▶ void ☀Move_Into_Repo(Settings const& settings) ❰
+
+    if (settings.repo.use_clone){
+        auto path_name = Download_Repo_To_Random_Name_In_Temp_Folder(settings.repo.clone_url);
+        Set_Path(path_name);
+    }
+    
+    //start in the appropriate directory
+    Possibly_Set_Path(settings.repo.use_run_path,settings.repo.run_path);
 ❱
 
 ◀private: static▶ std::string ☀Derive_Program_Name(Settings const& settings) ❰
