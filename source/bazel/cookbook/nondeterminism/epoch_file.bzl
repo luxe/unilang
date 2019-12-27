@@ -1,6 +1,6 @@
 def create_file_with_epoch(name):
     
-    target_name = name + "_epoch"
+    target_name = name
     outfile = name + "_epoch"
     
     native.genrule(
