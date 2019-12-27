@@ -5,6 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "bazel_runner", deps = [
     "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/transformers/appending:lib",

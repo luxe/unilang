@@ -12,7 +12,7 @@ std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
 	command += ssh_url;
 	command += " ";
 	command += dir;
-	execute(command);
+	execute_quietly(command);
 	return dir;
 }
 
