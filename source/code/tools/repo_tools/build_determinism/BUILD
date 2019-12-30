@@ -40,6 +40,15 @@ hcp(name = "spawn_pair_determinism_checker", deps = [
     "//code/utilities/printers:lib",
 ])
 
+hcp(name = "build_determinism_documentation_getter", deps = [
+    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/utilities/converters:lib",
+    "//code/utilities/json/functions:lib",
+    "//code/tools/repo_tools/build_determinism/program_options:lib",
+    "//code/utilities/documentation:common_documentation_getter",
+])
+
 hcp(name = "determinism_problem_getter", deps = [
     "@bazel//:spawn_proto_cpp",
     "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
