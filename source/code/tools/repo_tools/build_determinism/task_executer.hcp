@@ -50,28 +50,33 @@ class
     //this will help us target where the nondeterminism actually starts and what tools are responsible.
     auto filtered_results = Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
-    
     //tell the user which programs we think are nondeterministic
-    auto programs = Guess_Nondeterministic_Programs(filtered_results);
+    Report_Nondeterminisic_Programs(filtered_results);
+    
+    //tell the user the determinism problems
+    Report_Nondeterminism_Problems(filtered_results);
+❱
+
+◀private: static▶ void ☀Report_Nondeterminisic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+
+    auto programs = Guess_Nondeterministic_Programs(command_pairs);
     if (programs.empty()){
-        std::cout << "no programs were nondeterministic" << std::endl;
+        std::cout << "No programs were nondeterministic." << std::endl;
     }
     else{
-        std::cerr << "The following programs seems nondeterministic: ";
+        std::cerr << "The following programs were nondeterministic: ";
         std::cerr << programs;
         std::cerr << std::endl;
     }
-    
-    //tell the user the determinism problems
-    for (auto const& it: filtered_results){
+❱
+◀private: static▶ void ☀Report_Nondeterminism_Problems(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+
+    for (auto const& it: command_pairs){
         auto problems = Determinism_Problem_Getter::Get(it);
         for (auto const& problem: problems){
             std::cerr << problem.message << std::endl;
         }
-        //std::cout << "---" << std::endl;
     }
-    
-    
 ❱
 
 ◀private: static▶ std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> ☀Filter_By_Subcommands_That_Cause_Nondeterminism(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
@@ -82,9 +87,6 @@ class
         if (Subcommand_Caused_Nondeterminsim(problems)){
             result.emplace_back(it);
         }
-        else{
-            std::cout << "here" << std::endl;
-        }
     }
     
     return result;
@@ -93,13 +95,13 @@ class
 ◀private: static▶ bool ☀Subcommand_Caused_Nondeterminsim(std::vector<Determinism_Problem> const& problems)❰
     for (auto const& it: problems){
         if (it.type == Determinism_Problem_Type::INPUT_SIZE){
-            //return false;
+            return false;
         }
         if (it.type == Determinism_Problem_Type::MISSING_INPUT){
-            //return false;
+            return false;
         }
         if (it.type == Determinism_Problem_Type::WRONG_INPUT_HASH){
-            //return false;
+            return false;
         }
     }
     return true;
