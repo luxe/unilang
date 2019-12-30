@@ -41,6 +41,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
+        ("verbose","show verbose progress")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -142,3 +143,5 @@ std::string Program_Options::Url() const{
 
 	return data;
 }
+bool Program_Options::Verbose() const{
+return vm.count("verbose");}

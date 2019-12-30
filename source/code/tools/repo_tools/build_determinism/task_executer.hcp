@@ -13,8 +13,9 @@ class
 ❪"code/utilities/serialization/protobuf"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/git-related/lib"❫
-❪"code/tools/repo_tools/build_determinism/spawn_pairings"❫
+❪"code/tools/repo_tools/build_determinism/data/spawn_pairings"❫
 ❪"code/utilities/types/map/lib"❫
+❪"code/tools/repo_tools/build_determinism/spawn_pairer"❫
 ⚯
 ⚞⚟
 
@@ -48,7 +49,7 @@ class
         std::cerr << "different number of spawned actions (" << spawns1.size() << " != " << spawns2.size() << ")" << std::endl;
     }
     
-    auto pairings = Build_Matches_And_Unpairable_Spawns(spawns1,spawns2);
+    auto pairings = Spawn_Pairer::Build_Matches_And_Unpairable_Spawns(spawns1,spawns2);
     std::cout << pairings.pairs.size() << " matches" << std::endl;
     
     auto nondeterminisim_matches = Get_Nondeterminism_Matches(pairings);
@@ -134,28 +135,6 @@ class
         m.insert({it.path(),it.digest()});
     }
     return m;
-❱
-
-
-◀private: static▶ Spawn_Pairings ☀Build_Matches_And_Unpairable_Spawns(std::unordered_map<std::string,tools::protos::SpawnExec> & s1, std::unordered_map<std::string,tools::protos::SpawnExec> & s2) ❰
-
-    Spawn_Pairings pairings;
-    for (auto const& it: s1){
-        auto found = s2.find(it.first);
-        if (found != s2.end()){
-            pairings.pairs.emplace_back(it.second,found->second);
-            Delete_From_Unordered_Map(s2,it.first);
-        }
-        else{
-            pairings.unpaired1.emplace_back(it.second);
-        }
-    }
-    
-    for (auto const& it: s2){
-        pairings.unpaired2.emplace_back(it.second);
-    }
-    
-    return pairings;
 ❱
 
 

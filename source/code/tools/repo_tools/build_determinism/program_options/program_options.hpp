@@ -22,6 +22,7 @@ class Program_Options {
         std::string Target() const;
         std::string Output_Dir() const;
         std::string Bazel() const;
+        bool Verbose() const;
 
         
         std::string Get_Help_Message();

@@ -15,12 +15,15 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/json/functions:lib",
     "//code/utilities/filesystem/files/getting:lib",
     "//code/utilities/git-related:lib",
-    "//code/tools/repo_tools/build_determinism:spawn_pairings",
+    "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
     "//code/utilities/types/map:lib",
+    "//code/tools/repo_tools/build_determinism:spawn_pairer",
 ])
 
-hcp(name = "spawn_pairings", deps = [
+hcp(name = "spawn_pairer", deps = [
     "@bazel//:spawn_proto_cpp",
+    "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
+    "//code/utilities/types/map:lib",
 ])
 
 distributable_cpp_main(
