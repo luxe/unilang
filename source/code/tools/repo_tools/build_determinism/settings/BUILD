@@ -6,6 +6,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 hcp(name = "settings", deps = [
     "//code/tools/repo_tools/build_determinism/settings:bazel_wrapper",
     "//code/tools/repo_tools/build_determinism/settings:repo_location",
+    "//code/utilities/bazel:spawn_strategy",
 ])
 
 hcp(name = "bazel_wrapper", deps = [

@@ -14,6 +14,7 @@ class
 ❪"code/utilities/random/lib"❫
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/utilities/serialization/protobuf"❫
+❪"code/utilities/bazel/spawn_strategy"❫
 ⚯
 ⚞⚟
 
@@ -34,25 +35,12 @@ class
     return results;
 ❱
 
-◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, std::string const& target)❰
 
-    //clean
-    Clean(bazel_wrapper);
-    
-    //build
-    std::string file_name = Random_Tmp_Filename();
-    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,target,file_name);
-    execute_quietly(command);
-    
-    //extract
-    auto spawns = Deserialize_Multiple_From_Json_File<tools::protos::SpawnExec>(file_name);
-    return spawns;
-❱
+◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target)❰
 
-◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, std::string const& target)❰
-
-    auto spawns = Get_Spawn_Information(bazel_wrapper,target);
+    auto spawns = Get_Spawn_Information(bazel_wrapper,spawn_strategy,target);
     
+    //turn the response into a map where the key is the spawn subcommand
     std::unordered_map<std::string,tools::protos::SpawnExec> results;
     for (auto & spawn: spawns){
         
@@ -66,6 +54,20 @@ class
     }
     
     return results;
+❱
+◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target)❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //build
+    std::string file_name = Random_Tmp_Filename();
+    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,spawn_strategy,target,file_name);
+    execute_quietly(command);
+    
+    //extract
+    auto spawns = Deserialize_Multiple_From_Json_File<tools::protos::SpawnExec>(file_name);
+    return spawns;
 ❱
 
 ◀public: static▶ void ☀Clean(std::string const& bazel_wrapper)❰
@@ -99,10 +101,29 @@ class
     return command;
 ❱
 
-◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, std::string const& target, std::string const& file_name) ❰
+
+
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target, std::string const& file_name) ❰
+
+    if (spawn_strategy == Spawn_Strategy::LOCAL){
+        return Get_Create_Spawn_File_Command_Local_Build(bazel_wrapper,target,file_name);
+    }
+    return Get_Create_Spawn_File_Command_Remote_Build(bazel_wrapper,target,file_name);
+❱
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command_Local_Build(std::string const& bazel_wrapper, std::string const& target, std::string const& file_name) ❰
     std::string command = bazel_wrapper;
     command += " build ";
     command += target;
+    command += " --execution_log_json_file=";
+    //command += " --execution_log_binary_file=";
+    command += file_name;
+    return command;
+❱
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command_Remote_Build(std::string const& bazel_wrapper, std::string const& target, std::string const& file_name) ❰
+    std::string command = bazel_wrapper;
+    command += " build ";
+    command += target;
+    command += " --config=remote --noremote_accept_cached";
     command += " --execution_log_json_file=";
     //command += " --execution_log_binary_file=";
     command += file_name;

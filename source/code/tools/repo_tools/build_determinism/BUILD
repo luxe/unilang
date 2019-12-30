@@ -18,6 +18,10 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
     "//code/utilities/types/map:lib",
     "//code/tools/repo_tools/build_determinism:spawn_pairer",
+    "//code/tools/repo_tools/build_determinism:spawn_pair_determinism_checker",
+    "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
+    "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
+    "//code/tools/repo_tools/build_determinism/data:determinism_problem",
 ])
 
 hcp(name = "spawn_pairer", deps = [
@@ -25,6 +29,35 @@ hcp(name = "spawn_pairer", deps = [
     "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
     "//code/utilities/types/map:lib",
 ])
+
+hcp(name = "spawn_pair_determinism_checker", deps = [
+    "@bazel//:spawn_proto_cpp",
+    "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
+    "//code/tools/repo_tools/build_determinism/data:determinism_pairings",
+    "//code/tools/repo_tools/build_determinism/data:determinism_problem",
+    "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
+    "//code/utilities/types/map:lib",
+    "//code/utilities/printers:lib",
+])
+
+hcp(name = "determinism_problem_getter", deps = [
+    "@bazel//:spawn_proto_cpp",
+    "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
+    "//code/tools/repo_tools/build_determinism/data:determinism_pairings",
+    "//code/tools/repo_tools/build_determinism/data:determinism_problem",
+    "//code/utilities/types/map:lib",
+    "//code/utilities/printers:lib",
+])
+
+hcp(name = "determinism_ab_runner", deps = [
+    "//code/utilities/printers:lib",
+    "//code/utilities/bazel:bazel_runner",
+    "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
+    "//code/tools/repo_tools/build_determinism:spawn_pairer",
+    "//code/tools/repo_tools/build_determinism:spawn_pair_determinism_checker",
+    "//code/tools/repo_tools/build_determinism/settings:settings",
+])
+
 
 distributable_cpp_main(
     name = "build_determinism",

@@ -2,6 +2,7 @@ class
 ❪iostream❫
 ❪string❫
 ❪utility❫
+❪set❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/printers/prettyprint"❫
 ❪"code/utilities/printers/lib"❫
@@ -14,8 +15,12 @@ class
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/git-related/lib"❫
 ❪"code/tools/repo_tools/build_determinism/data/spawn_pairings"❫
+❪"code/tools/repo_tools/build_determinism/data/determinism_problem"❫
 ❪"code/utilities/types/map/lib"❫
 ❪"code/tools/repo_tools/build_determinism/spawn_pairer"❫
+❪"code/tools/repo_tools/build_determinism/spawn_pair_determinism_checker"❫
+❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
+❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
 ⚯
 ⚞⚟
 
@@ -25,9 +30,12 @@ class
     //get the default settings modified by user's program options.
     auto settings = Settings_Getter::Get(options);
     
-    //we might clone or move into an existing folder.
-    //either way, we will be at the root of the repository.
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,"cloning repo...");
+    //before starting the analysis, we clone or move into an existing repo.
+    //either way this is done, we will end at the root of a repository.
+    //NOTE: we want to avoid cloning the repo more than once from a branch as it may change.
+    //for example, master would be changing frequently and me affect results.
+    //so instead we use the same repository for the whole analysis.
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
     Move_Into_Repo(settings);
     
     //try to derive the correct bazel program if its not known.
@@ -35,100 +43,79 @@ class
         settings.bazel_wrapper.program_name = Derive_Program_Name(settings);
     }
     
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
-    auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.target_name);
+    auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
     
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
-    auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.target_name);
-    
-    auto pairings = Spawn_Pairer::Build_Matches_And_Unpairable_Spawns(spawns1,spawns2);
-    std::cout << "subcommands: " << pairings.pairs.size() << " matches " << pairings.unpaired1.size() + pairings.unpaired2.size() << " non-matches" << std::endl;
-    
-    auto nondeterminisim_matches = Get_Nondeterminism_Matches(pairings);
-    std::cout << nondeterminisim_matches.size() << " nondeterminisim commands" << std::endl;
+    //if the inputs are already nondeterministic there was probably nondeterminism further up the subcommand graph.
+    //we should filter down to only the commands that had deterministic input but created nondeterministic output.
+    //this will help us target where the nondeterminism actually starts and what tools are responsible.
+    auto filtered_results = Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
     
+    //tell the user which programs we think are nondeterministic
+    auto programs = Guess_Nondeterministic_Programs(filtered_results);
+    if (programs.empty()){
+        std::cout << "no programs were nondeterministic" << std::endl;
+    }
+    else{
+        std::cerr << "The following programs seems nondeterministic: ";
+        std::cerr << programs;
+        std::cerr << std::endl;
+    }
     
-    // for (auto & spawn: spawns){
-    //     for (auto & it: *spawn.mutable_inputs()){
-    //         std::cout << *it.mutable_digest()->mutable_hash() << std::endl;
-    //     }
-    // }
+    //tell the user the determinism problems
+    for (auto const& it: filtered_results){
+        auto problems = Determinism_Problem_Getter::Get(it);
+        for (auto const& problem: problems){
+            std::cerr << problem.message << std::endl;
+        }
+        //std::cout << "---" << std::endl;
+    }
+    
+    
 ❱
 
-◀private: static▶ std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> ☀Get_Nondeterminism_Matches(Spawn_Pairings const& pairings)❰
-
-    std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> results;
-    for (auto const& it: pairings.pairs){
-        if (!File_Hash_Nondeterminism(it)){
-            results.emplace_back(it);
+◀private: static▶ std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> ☀Filter_By_Subcommands_That_Cause_Nondeterminism(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+    std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> result;
+    
+    for (auto const& it: command_pairs){
+        auto problems = Determinism_Problem_Getter::Get(it);
+        if (Subcommand_Caused_Nondeterminsim(problems)){
+            result.emplace_back(it);
+        }
+        else{
+            std::cout << "here" << std::endl;
         }
     }
     
-    return results;
+    return result;
 ❱
 
-◀private: static▶ bool ☀File_Hash_Nondeterminism(std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec> const& match)❰
-
-    auto s1_input_set = Get_Input_Map(match.first);
-    auto s1_output_set = Get_Output_Map(match.first);
-    auto s2_input_set = Get_Input_Map(match.second);
-    auto s2_output_set = Get_Output_Map(match.second);
-    
-    if (s1_input_set.size() != s2_input_set.size()){
-        std::cerr << "wrong input size" << std::endl;
-        return false;
-    }
-    
-    if (s1_output_set.size() != s2_output_set.size()){
-        std::cerr << "wrong output size" << std::endl;
-        return false;
-    }
-    
-    for (auto const& it: s1_input_set){
-        auto find = s2_input_set.find(it.first);
-        if (find == s2_input_set.end()){
-            std::cerr << "input missing across runs" << std::endl;
-            return false;
+◀private: static▶ bool ☀Subcommand_Caused_Nondeterminsim(std::vector<Determinism_Problem> const& problems)❰
+    for (auto const& it: problems){
+        if (it.type == Determinism_Problem_Type::INPUT_SIZE){
+            //return false;
         }
-        
-        if (it.second.hash() != find->second.hash()){
-            std::cerr << "input hashes don't match" << std::endl;
-            return false;
+        if (it.type == Determinism_Problem_Type::MISSING_INPUT){
+            //return false;
+        }
+        if (it.type == Determinism_Problem_Type::WRONG_INPUT_HASH){
+            //return false;
         }
     }
-    
-    for (auto const& it: s1_output_set){
-        auto find = s2_output_set.find(it.first);
-        if (find == s2_output_set.end()){
-            std::cerr << "output missing across runs" << std::endl;
-            return false;
-        }
-        
-        if (it.second.hash() != find->second.hash()){
-            std::cerr << "output hashes don't match" << std::endl;
-            return false;
-        }
-    }
-
     return true;
 ❱
 
-◀private: static▶ std::map<std::string,tools::protos::Digest> ☀Get_Input_Map(tools::protos::SpawnExec const& s)❰
-    std::map<std::string,tools::protos::Digest> m;
-    for (auto & it: s.inputs()){
-        m.insert({it.path(),it.digest()});
+◀private: static▶ std::set<std::string> ☀Guess_Nondeterministic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+    std::set<std::string> programs;
+    for (auto const& it: command_pairs){
+        auto command_args = it.first.command_args();
+        if (!command_args.empty()){
+            programs.insert(command_args[0]);
+        }
     }
-    return m;
+    
+    return programs;
 ❱
-◀private: static▶ std::map<std::string,tools::protos::Digest> ☀Get_Output_Map(tools::protos::SpawnExec const& s)❰
-    std::map<std::string,tools::protos::Digest> m;
-    for (auto & it: s.actual_outputs()){
-        m.insert({it.path(),it.digest()});
-    }
-    return m;
-❱
-
 
 ◀private: static▶ void ☀Move_Into_Repo(Settings const& settings) ❰
 

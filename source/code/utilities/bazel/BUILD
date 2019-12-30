@@ -1,6 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+
+
+enum_cpp(name = "spawn_strategy",
+values = [
+"local"
+,"remote"
+])
 
 
 hcp(name = "bazel_runner", deps = [
@@ -14,4 +22,5 @@ hcp(name = "bazel_runner", deps = [
     "@bazel//:spawn_proto_cpp",
     "//code/utilities/serialization:protobuf",
     "//code/utilities/json/functions:lib",
+    "//code/utilities/bazel:spawn_strategy",
 ])
