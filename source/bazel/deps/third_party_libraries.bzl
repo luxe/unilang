@@ -112,6 +112,7 @@ load("//bazel/deps/get:libmagic.bzl", "libmagic")
 load("//bazel/deps/get:fluxcapacitor.bzl", "fluxcapacitor")
 load("//bazel/deps/get:tardis.bzl", "tardis")
 load("//bazel/deps/get:chinese_syllable_sounds.bzl", "chinese_syllable_sounds")
+load("//bazel/deps/get:scrabble_words.bzl", "scrabble_words")
 def third_party_libraries():
     bazel()
     boost()
@@ -223,3 +224,4 @@ def third_party_libraries():
     fluxcapacitor()
     tardis()
     chinese_syllable_sounds()
+    scrabble_words()
