@@ -41,16 +41,8 @@ class
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
     auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.target_name);
     
-    //initial sanity check
-    if (spawns1.size() == spawns2.size()){
-        std::cout << "same number of spawned commands (" << spawns1.size() << ")" << std::endl;
-    }
-    else{
-        std::cerr << "different number of spawned actions (" << spawns1.size() << " != " << spawns2.size() << ")" << std::endl;
-    }
-    
     auto pairings = Spawn_Pairer::Build_Matches_And_Unpairable_Spawns(spawns1,spawns2);
-    std::cout << pairings.pairs.size() << " matches" << std::endl;
+    std::cout << "subcommands: " << pairings.pairs.size() << " matches " << pairings.unpaired1.size() + pairings.unpaired2.size() << " non-matches" << std::endl;
     
     auto nondeterminisim_matches = Get_Nondeterminism_Matches(pairings);
     std::cout << nondeterminisim_matches.size() << " nondeterminisim commands" << std::endl;
