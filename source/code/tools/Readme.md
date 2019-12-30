@@ -8,4 +8,6 @@ Tools may include:
 - useful desktop tools
 - programs for my job
 - fun games
-- learning tools (such as flash cards)
+- learning tools
+
+anything with a main() basically
