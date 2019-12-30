@@ -22,6 +22,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
     "//code/tools/repo_tools/build_determinism/data:determinism_problem",
+    "//code/utilities/types/vectors/observers:lib",
 ])
 
 hcp(name = "spawn_pairer", deps = [

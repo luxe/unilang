@@ -8,6 +8,7 @@
 #include <utility>
 
 std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs);
+std::string Get_As_Space_Seperated_String(std::vector<std::string> strs);
 std::string Table_As_Column_Aligned(std::vector<std::vector<std::string>> table);
 size_t Longest_Element_Size(std::vector<std::string> strs);
 

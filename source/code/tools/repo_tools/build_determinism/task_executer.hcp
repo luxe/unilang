@@ -8,6 +8,7 @@ class
 ❪"code/utilities/printers/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/bazel/bazel_runner"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/tools/repo_tools/build_determinism/program_options/program_options"❫
 ❪"code/tools/repo_tools/build_determinism/settings/settings_getter"❫
 ❪"src/main/protobuf/spawn.pb.h"❫
@@ -57,8 +58,24 @@ class
     Report_Nondeterminism_Problems(filtered_results);
     
     //give the user the subcommands that caused the problem
-    //Report_Subcommand_That_Caused_Problems(filtered_results);
+    Report_Subcommand_That_Caused_Problems(filtered_results);
 ❱
+
+◀private: static▶ void ☀Report_Subcommand_That_Caused_Problems(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+
+    if (!command_pairs.empty()){
+        std::cerr << "see the following subcommands:" << std::endl;
+        for (auto const& it: command_pairs){
+            auto command_args = it.first.command_args();
+            std::vector<std::string> v;
+            for (auto const& it: command_args){
+                v.emplace_back(it);
+            }
+            std::cout << Get_As_Space_Seperated_String(v) << std::endl;
+        }
+    }
+❱
+
 
 ◀private: static▶ void ☀Report_Nondeterminisic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
 
