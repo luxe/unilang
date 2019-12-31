@@ -54,3 +54,9 @@ values = [
 ,"immediate"
 ,"relative"
 ])
+
+enum_cpp(name = "headedness",
+values = [
+"left"
+,"right"
+])
