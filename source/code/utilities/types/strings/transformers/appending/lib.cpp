@@ -41,6 +41,13 @@ std::string& Append_In_DQuotes(std::string & str, char const& part){
         str += '"';
         return str;
 }
+std::string& Append_Key_Value(std::string & str, std::string const& key, std::string const& val){
+        Append(str,key);
+        Append(str,"=\"");
+        Append(str,val);
+        Append(str,"\" ");
+        return str;
+}
 
 std::string& Append_N_Times(std::string & str, std::string const& part, unsigned int number_of_times){
         for (unsigned int i = 0; i < number_of_times; ++i){

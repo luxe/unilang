@@ -27,11 +27,92 @@ class
 ❱
 
 ◀private: static▶ void ☀Create_Third_Party_Get_Files(Dependency_Specifications const& all_specs)❰
+
+    auto path = Bazel_Deps_Get_Directory();
+    Set_Path(path);
+    
+    for (auto const& it: all_specs.specs){
+        if (Should_Print_Get_File(it)){
+            auto source_data  = Create_Get_File_Content(it);
+            Write_To_File(it.lib_name + ".bzl",source_data);
+        }
+    }
 ❱
 
 
+◀private: static▶ bool ☀Should_Print_Get_File(Dependency_Specification const& spec)❰
+
+    //since not every dependency has been converted or supported for programmatic generation yet,
+    //we will only generate these "get files" if they have actual locations on where to get the code.
+    if (spec.locations.empty()){
+        return false;
+    }
+    return true;
+❱
 
 
+◀private: static▶ std::string ☀Create_Get_File_Content(Dependency_Specification const& spec)❰
+    std::string result;
+    
+    Append_With_Newline(result,Generated_Comment_Getter::Get());
+    Append_With_Newline(result,"load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")");
+    Append_With_Newline(result,"");
+    Append(result,"def ");
+    Append(result,spec.lib_name);
+    Append_With_Newline("():");
+    Append(result,"    ");
+    Append_With_Newline(result,"http_archive(");
+    
+    //add name
+    Append(result,"        ");
+    Append_Key_Value(result,"name",spec.lib_name);
+    Append_With_Newline(result,",");
+    
+    //add build file
+    Append(result,"        ");
+    Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + spec.lib_name + ".BUILD");
+    Append_With_Newline(result,",");
+    
+    //add sha256
+    Append(result,"        ");
+    Append_Key_Value(result,"sha256",spec.locations[0].sha256);
+    Append_With_Newline(result,",");
+    
+    //add strip prefix
+    Append(result,"        ");
+    Append_Key_Value(result,"strip_prefix",spec.lib_name + "-" + spec.locations[0].at_commit);
+    Append_With_Newline(result,",");
+    
+    //add urls
+    Append(result,"        ");
+    Append_With_Newline(result,"urls = [");
+    
+    for (auto const& it: spec.locations){
+        Append(result,"            ");
+        Append_In_DQuotes(result,"https://github.com/" + it.owner_name + "/" + it.repo_name + "/archive/" + it.at_commit + ".tar.gz");
+        Append_With_Newline(result,",");
+    }
+    
+    Append(result,"        ");
+    Append(result,"]");
+    
+    if (!spec.patch_cmds.empty()){
+        Append_With_Newline(result,",");
+        Append(result,"patch_cmds = [");
+        for (auto const& it: spec.patch_cmds){
+            Append(result,"            ");
+            Append_In_DQuotes(result,it);
+            Append_With_Newline(result,",");
+        }
+        Append_With_Newline(result,"],");
+    }
+    
+    Append_With_Newline(result,"");
+    Append(result,"    ");
+    Append_With_Newline(result,")");
+    
+    return result;
+❱
 
 ◀private: static▶ std::string ☀Create_Main_Third_Party_Sourcing_File(Dependency_Specifications const& all_specs)❰
     std::string result;
@@ -40,20 +121,20 @@ class
     
     //add load statements
     for (auto const& it: all_specs.specs){
-        result += "load(\"//bazel/deps/get:";
-        result += it.lib_name;
-        result += ".bzl";
-        result += "\"";
-        result += ", \"";
-        result += it.lib_name;
-        result += "\")\n";
+        Append(result,"load(\"//bazel/deps/get:");
+        Append(result,it.lib_name);
+        Append(result,".bzl");
+        Append(result,"\"");
+        Append(result,", \"");
+        Append(result,it.lib_name);
+        Append(result,"\")\n");
     }
     
-    result += "def third_party_libraries():\n";
+    Append_With_Newline(result,"def third_party_libraries():");
     for (auto const& it: all_specs.specs){
-        result += "    ";
-        result += it.lib_name;
-        result += "()\n";
+        Append(result,"    ");
+        Append(result,it.lib_name);
+        Append_With_Newline(result,"()");
     }
     
     return result;
@@ -66,4 +147,7 @@ class
 //path utilities
 ◀private: static▶ std::string ☀Bazel_Deps_Directory()❰
     return Bazel_Workspace_Directory() + "/bazel/deps/";
+❱
+◀private: static▶ std::string ☀Bazel_Deps_Get_Directory()❰
+    return Bazel_Workspace_Directory() + "/bazel/deps/get/";
 ❱
