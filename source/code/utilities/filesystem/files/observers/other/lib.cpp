@@ -2,6 +2,7 @@
 #include "code/utilities/filesystem/files/getting/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
 #include "code/utilities/types/strings/transformers/trimming/lib.hpp"
+#include "code/utilities/filesystem/files/observers/lstat_wrap/lib.hpp"
 #include <sstream>
 #include <fstream>
 #include <algorithm>

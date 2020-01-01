@@ -32,5 +32,6 @@ cc_library(
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/shell:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ]
 )
