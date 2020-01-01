@@ -85,9 +85,6 @@ int main(){
     std::cout << it.first << " " << it.second << "\n";
   }
   
-  
-  //std::sort(std::begin(m),std::end(m),[](auto x, auto y){return true;});
-  
 }
 
 
