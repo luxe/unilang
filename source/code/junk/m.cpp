@@ -1,14 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <utility>
-#include <tuple>
-#include <map>
-#include <algorithm>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <iomanip>
-
+//encryption
 int XorCheckSum(std::string const& s){
   int x = 0;
   for (auto const& it: s){
@@ -17,6 +7,7 @@ int XorCheckSum(std::string const& s){
   return x;
 }
 
+//string convert
 std::string AsHexString(int c){
   std::ostringstream s;
   s << std::hex << std::uppercase << c;
@@ -25,14 +16,8 @@ std::string AsHexString(int c){
 
 
 
-std::map<std::string,int> m{
-{"A", 5},
-{"B", 2},
-{"C", 8},
-{"D", 4}
-};
 
-
+//types/pair
 template<typename A, typename B>
 std::pair<B,A> flip_pair(const std::pair<A,B> &p)
 {
@@ -50,43 +35,12 @@ std::multimap<B,A> flip_map(const M<A,B,Args...> &src)
     return dst;
 }
 
+
+//vectors/creators
 template <typename... T>
 auto make_vector(T&&... args)
 {
     using first_type = typename std::tuple_element<0, std::tuple<T...>>::type;
     return std::vector<first_type>{std::forward<T>(args)...};
 }
-
-struct Object{};
-
-
-void function(unsigned int i){
-  std::cout << i << std::endl;
-}
-
-int main(){
- 
-  auto v1 = make_vector(1,2,3);
-  
-  //std::vector<int>    v1{1,2,3};
-  //std::vector<double>  v2{1.1,2.2,3.3};
-  //std::vector<Object> v3{Object{},Object{},Object{}};
-  
-  //auto v1 = make_vector(1,2,3);
-  //auto v2 = make_vector(1.1,2.2,3.3);
-  //auto v3 = make_vector(Object{},Object{},Object{});
-  
-  
-  function(-1);
-  
-  
-  auto i = flip_map(m);
-  for (auto it: i){
-    std::cout << it.first << " " << it.second << "\n";
-  }
-  
-}
-
-
-
 
