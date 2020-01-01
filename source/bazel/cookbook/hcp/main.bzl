@@ -14,9 +14,9 @@ def hcp(name,deps=[]):
         name = hcp_target_name,
         srcs = [explicit_hcp_file],
         outs = [explicit_cpp_file,explicit_hpp_file],
-        tools = ["//code/transcompilers/hcp-compiler/official:hcp-compiler"],
+        tools = ["//code/tools/transcompilers/hcp-compiler/official:hcp-compiler"],
         cmd = """
-    $(location //code/transcompilers/hcp-compiler/official:hcp-compiler) $(SRCS) -o $(@D)
+    $(location //code/tools/transcompilers/hcp-compiler/official:hcp-compiler) $(SRCS) -o $(@D)
         """
     )
       

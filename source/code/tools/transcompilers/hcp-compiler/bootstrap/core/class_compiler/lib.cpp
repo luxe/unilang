@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include "code/transcompilers/hcp-compiler/bootstrap/core/class_compiler/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/class_compiler/lib.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
 #include "code/utilities/types/strings/observers/path/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"

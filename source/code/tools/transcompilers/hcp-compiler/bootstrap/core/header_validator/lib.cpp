@@ -1,4 +1,4 @@
-#include "code/transcompilers/hcp-compiler/bootstrap/core/header_validator/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/header_validator/lib.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
 #include "code/utilities/exits/lib.hpp"
 #include "code/utilities/types/wstrings/transformers/other/lib.hpp"

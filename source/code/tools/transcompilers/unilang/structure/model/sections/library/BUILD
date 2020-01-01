@@ -3,5 +3,5 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "library_section", deps = [
-"//code/transcompilers/unilang/structure/model/sections:library_dependency",
+"//code/tools/transcompilers/unilang/structure/model/sections:library_dependency",
 ])

@@ -3,5 +3,5 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "attribute_style_to_string_converter", deps = [
-"//code/transcompilers/unilang/options/sections/method/attributes/specific/parts:attribute_style",
+"//code/tools/transcompilers/unilang/options/sections/method/attributes/specific/parts:attribute_style",
 ])

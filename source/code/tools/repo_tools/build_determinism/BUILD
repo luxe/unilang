@@ -42,8 +42,8 @@ hcp(name = "spawn_pair_determinism_checker", deps = [
 ])
 
 hcp(name = "build_determinism_documentation_getter", deps = [
-    "//code/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
     "//code/utilities/json/functions:lib",
     "//code/tools/repo_tools/build_determinism/program_options:lib",

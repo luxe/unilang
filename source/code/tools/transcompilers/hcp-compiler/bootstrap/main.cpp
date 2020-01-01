@@ -1,6 +1,6 @@
 #include <locale>
-#include "code/transcompilers/hcp-compiler/bootstrap/program_options/program_options_creator.hpp"
-#include "code/transcompilers/hcp-compiler/bootstrap/core/task_executer.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/program_options/program_options_creator.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/task_executer.hpp"
 #include "code/utilities/locale/lib.hpp"
 
 void Immediate_Checks_On_Filename_Sent_To_Compiler(std::string const& file_name);

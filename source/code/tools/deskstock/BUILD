@@ -5,19 +5,19 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
 
 hcp(name = "deskstock_runner", deps = [
-"//code/transcompilers/unilang/tokens:generic_token",
+"//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
 "//code/utilities/exits:lib",
 "//code/utilities/locale:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/filesystem/files/creating:lib",
-"//code/transcompilers/unilang/tokens:get_tokens",
+"//code/tools/transcompilers/unilang/tokens:get_tokens",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/upload:file_uploader",
-"//code/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
-"//code/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
+"//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
+"//code/tools/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
 "//code/utilities/chinese:chinese_translations",
 "//code/utilities/time/date:lib",
 "//code/utilities/time/sleeping:lib",
@@ -68,8 +68,8 @@ hcp(name = "default_settings_getter", deps = [
 ])
 
 hcp(name = "deskstock_documentation_getter", deps = [
-    "//code/transcompilers/unilang/structure/model:structure",
-    "//code/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/utilities/converters:lib",
     "//code/tools/deskstock/settings:startup_settings",
     "//code/utilities/json/functions:lib",

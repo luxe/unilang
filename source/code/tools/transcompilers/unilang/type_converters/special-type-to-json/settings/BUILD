@@ -8,7 +8,7 @@ hcp(name = "special_json_specifier_settings", deps = [
 ])
 
 hcp(name = "special_json_type", deps = [
-"//code/transcompilers/unilang/parser/body_parser:body_token_value",
+"//code/tools/transcompilers/unilang/parser/body_parser:body_token_value",
 ])
 
 hcp(name = "special_type_json_builder", deps = [

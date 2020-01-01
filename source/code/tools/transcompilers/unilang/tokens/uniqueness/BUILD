@@ -7,10 +7,10 @@ load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
 hcp(
     name = "unique_tokens_checker",
     deps = [
-        "//code/transcompilers/unilang/tokens:generic_token",
-        "//code/transcompilers/unilang/tokens:get_tokens",
-        "//code/transcompilers/unilang/language-and-theme-creator/sublime:global",
-        "//code/transcompilers/unilang/language-and-theme-creator/sublime:unilang_file_creator",
+        "//code/tools/transcompilers/unilang/tokens:generic_token",
+        "//code/tools/transcompilers/unilang/tokens:get_tokens",
+        "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
+        "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:unilang_file_creator",
         "//code/utilities/types/general:lib",
         "//code/utilities/exits:lib",
         "//code/utilities/types/vectors/observers:lib",
@@ -18,6 +18,6 @@ hcp(
         ]
 )
 gtest(name = "uniqueness_test",
-      deps = ["//code/transcompilers/unilang/tokens:get_tokens",
-      "//code/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker"]
+      deps = ["//code/tools/transcompilers/unilang/tokens:get_tokens",
+      "//code/tools/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker"]
 )

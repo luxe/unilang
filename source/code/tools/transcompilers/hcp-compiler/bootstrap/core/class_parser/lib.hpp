@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <fstream>
-#include "code/transcompilers/hcp-compiler/bootstrap/core/structure/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/structure/lib.hpp"
 
 class Hcp_Class_Parser {
 

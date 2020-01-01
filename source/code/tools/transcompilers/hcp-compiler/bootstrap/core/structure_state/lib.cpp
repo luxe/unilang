@@ -1,4 +1,4 @@
-#include "code/transcompilers/hcp-compiler/bootstrap/core/structure_state/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/structure_state/lib.hpp"
 
 /**
  * \brief converts a Structure_State to a string representation.

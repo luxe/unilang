@@ -1,5 +1,5 @@
-#include "code/transcompilers/hcp-compiler/bootstrap/core/class_parser/lib.hpp"
-#include "code/transcompilers/hcp-compiler/bootstrap/core/class_structure_creator/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/class_parser/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/class_structure_creator/lib.hpp"
 
 
 

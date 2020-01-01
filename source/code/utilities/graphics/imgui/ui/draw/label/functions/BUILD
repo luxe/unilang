@@ -19,7 +19,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/style:label_style_chooser",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_length_getter",
     "//code/utilities/graphics/imgui/ui/draw/label:positioned_label",
-    "//code/ide/frame/logic:frame_elements",
+    "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
     "//code/utilities/mouse/state:mouse_state",
@@ -30,7 +30,7 @@ hcp(name="faced_label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/label:positioned_faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
-    "//code/ide/frame/logic:frame_elements",
+    "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/mouse/state:mouse_state",
 ])
 

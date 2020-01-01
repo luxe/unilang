@@ -1,14 +1,14 @@
 #include <locale>
 #include <iostream>
-#include "code/transcompilers/unilang/main/program_options/program_options_creator.hpp"
-#include "code/transcompilers/unilang/main/root_exception_handler.hpp"
-#include "code/transcompilers/unilang/main/composed_program_options/composed_program_options.hpp"
-#include "code/transcompilers/unilang/main/composed_program_options/program_options_composer.hpp"
-#include "code/transcompilers/unilang/main/root_settings/root_settings.hpp"
-#include "code/transcompilers/unilang/main/root_settings/root_settings_getter.hpp"
-#include "code/transcompilers/unilang/main/task_executer.hpp"
-#include "code/transcompilers/unilang/main/program_input.hpp"
-#include "code/transcompilers/unilang/main/program_input_validator.hpp"
+#include "code/tools/transcompilers/unilang/main/program_options/program_options_creator.hpp"
+#include "code/tools/transcompilers/unilang/main/root_exception_handler.hpp"
+#include "code/tools/transcompilers/unilang/main/composed_program_options/composed_program_options.hpp"
+#include "code/tools/transcompilers/unilang/main/composed_program_options/program_options_composer.hpp"
+#include "code/tools/transcompilers/unilang/main/root_settings/root_settings.hpp"
+#include "code/tools/transcompilers/unilang/main/root_settings/root_settings_getter.hpp"
+#include "code/tools/transcompilers/unilang/main/task_executer.hpp"
+#include "code/tools/transcompilers/unilang/main/program_input.hpp"
+#include "code/tools/transcompilers/unilang/main/program_input_validator.hpp"
 
 //This is a boilerplate main that I think is nice to have in every program I write.  
 //No matter how small a program is, it inevitably grows,

@@ -6,6 +6,6 @@ hcp(name = "type_relationships", deps = [
 ])
 
 hcp(name = "import_relationship", deps = [
-"//code/transcompilers/unilang/parser:token_value",
+"//code/tools/transcompilers/unilang/parser:token_value",
 "type_relationships"
 ])

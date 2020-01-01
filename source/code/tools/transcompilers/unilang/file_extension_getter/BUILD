@@ -3,10 +3,10 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "file_extension_getter", deps = [
-"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
-"//code/transcompilers/unilang/file_extension_getter/lookup_table:file_extension_lookup_table_getter",
+"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/tools/transcompilers/unilang/file_extension_getter/lookup_table:file_extension_lookup_table_getter",
 "//code/utilities/types/map:lib",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:to_source_language",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:to_source_language",
 ])
 

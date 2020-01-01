@@ -1,3 +1,4 @@
+package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
@@ -6,7 +7,7 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = [
     "//code/utilities/locale:lib",
-    "//code/deploy:software_deployer"
+    "//code/tools/deploy:software_deployer"
     ],
 )
 
@@ -28,10 +29,10 @@ hcp(name = "software_deployer", deps = [
     "//code/utilities/filesystem/files/moving:lib",
     "//code/utilities/git-related:git_updater",
     
-    "//code/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/transcompilers/unilang/main:program_input",
-    "//code/transcompilers/unilang/structure/model:structure",
-    "//code/transcompilers/unilang/main/root_settings:root_settings_getter",
-    "//code/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/main:program_input",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/main/root_settings:root_settings_getter",
+    "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
     "//code/tools/mario:mario_documentation_getter",
 ])

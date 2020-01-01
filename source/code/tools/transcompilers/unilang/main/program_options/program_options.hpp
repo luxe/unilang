@@ -1,8 +1,8 @@
 
 #pragma once
 #include "program_options_default.hpp"
-#include "code/transcompilers/unilang/user-frontend/artifact_actions/artifact_type.hpp"
-#include "code/transcompilers/unilang/options/compiler/chosen_exporter.hpp"
+#include "code/tools/transcompilers/unilang/user-frontend/artifact_actions/artifact_type.hpp"
+#include "code/tools/transcompilers/unilang/options/compiler/chosen_exporter.hpp"
 
 //Boost Libraries
 #include "boost/program_options.hpp"

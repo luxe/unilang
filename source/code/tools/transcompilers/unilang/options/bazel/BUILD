@@ -5,19 +5,19 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 cpp_object(name = "bazel_build_object")
 
 hcp(name = "bazel_load_data", deps = [
-"//code/transcompilers/unilang/options/bazel:bazel_build_object"
+"//code/tools/transcompilers/unilang/options/bazel:bazel_build_object"
 ])
 
 hcp(name = "bazel_load_db_settings", deps = [
-"//code/transcompilers/unilang/options/bazel:bazel_load_data"
+"//code/tools/transcompilers/unilang/options/bazel:bazel_load_data"
 ])
 
 hcp(name = "build_rule_settings", deps = [
-"//code/transcompilers/unilang/options/bazel:bazel_load_db_settings",
-"//code/transcompilers/unilang/options/sections:portion_options",
+"//code/tools/transcompilers/unilang/options/bazel:bazel_load_db_settings",
+"//code/tools/transcompilers/unilang/options/sections:portion_options",
 ])
 
 hcp(name = "language_to_build_object", deps = [
-"//code/transcompilers/unilang/options/bazel:bazel_build_object",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/tools/transcompilers/unilang/options/bazel:bazel_build_object",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
 ])

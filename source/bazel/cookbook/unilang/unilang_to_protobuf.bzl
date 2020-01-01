@@ -11,8 +11,8 @@ def unilang_to_protobuf(name,deps=[]):
         name = protobuf_target_name,
         srcs = [explicit_unilang_file],
         outs = [explicit_proto_file],
-        tools = ["//code/transcompilers/unilang/main:unilang-transcompiler"],
+        tools = ["//code/tools/transcompilers/unilang/main:unilang-transcompiler"],
         cmd = """
-    $(location //code/transcompilers/unilang/main:unilang-transcompiler) --input_files $(SRCS) --dir $(@D) --exporter trevor --languages PROTOBUF --style normal --build-only
+    $(location //code/tools/transcompilers/unilang/main:unilang-transcompiler) --input_files $(SRCS) --dir $(@D) --exporter trevor --languages PROTOBUF --style normal --build-only
         """
     )

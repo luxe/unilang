@@ -4,13 +4,13 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name = "dependency_specifications", deps = [
-    "//code/reflexivity/deps_define/data:dependency_specification"
+    "//code/tools/reflexivity/deps_define/data:dependency_specification"
 ])
 hcp(name = "dependency_specification", deps = [
-    "//code/reflexivity/deps_define/data:dependency_location",
+    "//code/tools/reflexivity/deps_define/data:dependency_location",
 ])
 hcp(name = "dependency_specifications_getter", deps = [
-    "//code/reflexivity/deps_define/data:dependency_specifications"
+    "//code/tools/reflexivity/deps_define/data:dependency_specifications"
 ])
 
 hcp(name = "dependency_location", deps = [

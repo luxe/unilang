@@ -1,6 +1,6 @@
 #pragma once
-#include "code/transcompilers/hcp-compiler/bootstrap/program_options/program_options.hpp"
-#include "code/transcompilers/hcp-compiler/bootstrap/program_options/program_options_checker.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/program_options/program_options.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/program_options/program_options_checker.hpp"
 
 class Program_Options_Creator{
 

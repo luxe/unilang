@@ -26,8 +26,8 @@ hcp(name = "analysis_state", deps = [
 ])
 
 hcp(name = "external_deps_analysis_documentation_getter", deps = [
-    "//code/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
     "//code/utilities/json/functions:lib",
     "//code/tools/repo_tools/external_deps_analysis/program_options:lib",

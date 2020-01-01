@@ -11,7 +11,7 @@ hcp(name = "special_comparison_settings", deps = [
 ])
 
 hcp(name = "special_comparison_type", deps = [
-"//code/transcompilers/unilang/parser/body_parser:body_token_value"
+"//code/tools/transcompilers/unilang/parser/body_parser:body_token_value"
 ])
 
 hcp(name = "special_type_comparison_builder", deps = [

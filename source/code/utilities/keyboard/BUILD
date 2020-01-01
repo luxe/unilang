@@ -5,6 +5,6 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "key_detector", deps = [
     "@imgui//:imgui_sdl_opengl3",
-    "//code/ide/settings:ide_settings",
+    "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
 ])

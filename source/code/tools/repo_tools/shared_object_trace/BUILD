@@ -53,8 +53,8 @@ hcp(name = "so_ldd_correlation_visualizer", deps = [
 ])
 
 hcp(name = "shared_object_trace_documentation_getter", deps = [
-    "//code/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
     "//code/utilities/json/functions:lib",
     "//code/tools/repo_tools/shared_object_trace/program_options:lib",

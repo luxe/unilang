@@ -3,8 +3,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include "code/transcompilers/hcp-compiler/bootstrap/core/structure/lib.hpp"
-#include "code/transcompilers/hcp-compiler/bootstrap/core/structure_state/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/structure/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/structure_state/lib.hpp"
 
 
 class Class_Structure_Creator{

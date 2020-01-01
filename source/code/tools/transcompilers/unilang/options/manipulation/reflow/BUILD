@@ -3,9 +3,9 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "comment_reflow_settings", deps = [
-"//code/transcompilers/unilang/options/manipulation/reflow:greedy_reflow_settings",
-"//code/transcompilers/unilang/options/manipulation/reflow:knuth_plass_reflow_settings",
-"//code/transcompilers/unilang/options/manipulation/reflow:reflow_algorithm"
+"//code/tools/transcompilers/unilang/options/manipulation/reflow:greedy_reflow_settings",
+"//code/tools/transcompilers/unilang/options/manipulation/reflow:knuth_plass_reflow_settings",
+"//code/tools/transcompilers/unilang/options/manipulation/reflow:reflow_algorithm"
 ])
 
 hcp(name = "greedy_reflow_settings")

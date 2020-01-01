@@ -66,26 +66,26 @@ values =
 ])
 
 hcp(name = "artifact_guesser", deps = [
-"//code/transcompilers/unilang/structure/model:structure",
-"//code/transcompilers/unilang/dependency_graph_creator:code_graph",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_guess_settings",
+"//code/tools/transcompilers/unilang/structure/model:structure",
+"//code/tools/transcompilers/unilang/dependency_graph_creator:code_graph",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_actions",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_guess_settings",
 "//code/utilities/types/vectors/operators:lib",
 ])
 
 
 hcp(name = "artifact_actions", deps = [
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
 ])
 
 hcp(name = "artifact_guess_settings", deps = [
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type"
 ])
 
 
 hcp(name = "to_source_language", deps = [
 "//code/utilities/types/vectors/operators:lib",
-"//code/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
-"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
 ])

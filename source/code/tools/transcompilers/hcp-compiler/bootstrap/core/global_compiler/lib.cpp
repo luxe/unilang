@@ -1,4 +1,4 @@
-#include "code/transcompilers/hcp-compiler/bootstrap/core/global_compiler/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/global_compiler/lib.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "code/utilities/types/wstrings/transformers/trimming/lib.hpp"

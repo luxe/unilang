@@ -1,5 +1,5 @@
 
-#include "code/transcompilers/hcp-compiler/bootstrap/program_options/program_options_checker.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/program_options/program_options_checker.hpp"
 
 void Program_Options_Checker::Check(Program_Options const& program_options) {
 
@@ -15,7 +15,7 @@ void Program_Options_Checker::Validate_Through_Regular_Expressions(Program_Optio
 }
 
 void Program_Options_Checker::Validate_Through_User_Injected_Code(Program_Options const& program_options) {
-	#include "code/transcompilers/hcp-compiler/bootstrap/program_options/program_options_user_check_code.hpp"
+	#include "code/tools/transcompilers/hcp-compiler/bootstrap/program_options/program_options_user_check_code.hpp"
 
 	return;
 }

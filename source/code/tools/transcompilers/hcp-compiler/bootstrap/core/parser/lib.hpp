@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "code/transcompilers/hcp-compiler/bootstrap/core/structure/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/structure/lib.hpp"
 
 class Hcp_Parser {
 

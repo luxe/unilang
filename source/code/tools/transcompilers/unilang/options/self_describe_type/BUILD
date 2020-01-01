@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 cpp_object(name = "type_property_word")
 
 hcp(name = "weighted_type_property_word",deps=[
-"//code/transcompilers/unilang/options/self_describe_type:type_property_word"
+"//code/tools/transcompilers/unilang/options/self_describe_type:type_property_word"
 ])
 
 hcp(name = "type_properties_to_identifier_words", deps = [

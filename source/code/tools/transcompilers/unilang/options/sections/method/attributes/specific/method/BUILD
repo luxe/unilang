@@ -8,7 +8,7 @@ hcp(name = "method_attribute_settings", deps = [
 "method_attribute_line_breaking_settings",
 ])
 hcp(name = "method_unused_settings", deps = [
-"//code/transcompilers/unilang/options/sections/method/attributes/specific/parts:attribute_usage_note",
-"//code/transcompilers/unilang/options/sections/method/attributes/specific/parts:attribute_style",
-"//code/transcompilers/unilang/options/sections/method/attributes/specific/parts/placements:all_method_attribute_placements",
+"//code/tools/transcompilers/unilang/options/sections/method/attributes/specific/parts:attribute_usage_note",
+"//code/tools/transcompilers/unilang/options/sections/method/attributes/specific/parts:attribute_style",
+"//code/tools/transcompilers/unilang/options/sections/method/attributes/specific/parts/placements:all_method_attribute_placements",
 ])

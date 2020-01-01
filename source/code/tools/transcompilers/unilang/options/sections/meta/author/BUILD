@@ -12,7 +12,7 @@ cpp_object(
 
 hcp(
 	name = "meta_author_tag_options",
-	deps = ["//code/transcompilers/unilang/options/sections/meta/other:meta_tag_existence_option",
+	deps = ["//code/tools/transcompilers/unilang/options/sections/meta/other:meta_tag_existence_option",
 	"author_order_method",
 	"meta_author_print_method"]
 )

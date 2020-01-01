@@ -6,8 +6,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(
     name = "token_builder",
     deps = [
-        "//code/transcompilers/unilang/tokens:all_language_tokens",
-        "//code/transcompilers/unilang/tokens:token_name",
+        "//code/tools/transcompilers/unilang/tokens:all_language_tokens",
+        "//code/tools/transcompilers/unilang/tokens:token_name",
         "//code/utilities/converters:lib",
     ]
 )

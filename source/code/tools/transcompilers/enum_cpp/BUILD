@@ -15,5 +15,5 @@ cc_binary(
     name = "enum_cpp",
     srcs = ["main.cc"],
     deps = ["enum_cpp_maker","enum",
-    "//code/transcompilers/enum_cpp/program_options:lib"],
+    "//code/tools/transcompilers/enum_cpp/program_options:lib"],
 )

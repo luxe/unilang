@@ -9,8 +9,8 @@ hcp(
 )
 hcp(
     name = "token_bdf_settings_getter",
-    deps = ["//code/transcompilers/unilang/tokens/bdf:token_bdf_settings",
+    deps = ["//code/tools/transcompilers/unilang/tokens/bdf:token_bdf_settings",
         "//code/utilities/bdf/glyph:glyphs",
-        "//code/transcompilers/unilang/language-and-theme-creator/font:predefined_characters",
+        "//code/tools/transcompilers/unilang/language-and-theme-creator/font:predefined_characters",
     ]
 )

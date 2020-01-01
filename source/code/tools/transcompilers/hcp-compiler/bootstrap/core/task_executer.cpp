@@ -1,9 +1,9 @@
-#include "code/transcompilers/hcp-compiler/bootstrap/core/task_executer.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/task_executer.hpp"
 #include "code/utilities/exits/lib.hpp"
 #include "code/utilities/types/strings/observers/path/lib.hpp"
 #include "code/utilities/filesystem/files/observers/lstat_wrap/lib.hpp"
-#include "code/transcompilers/hcp-compiler/bootstrap/core/parser/lib.hpp"
-#include "code/transcompilers/hcp-compiler/bootstrap/core/compiler/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/parser/lib.hpp"
+#include "code/tools/transcompilers/hcp-compiler/bootstrap/core/compiler/lib.hpp"
 
  void Task_Executer::Execute_Needed_Tasks(Program_Options const& program_options){
      //process each file at a time

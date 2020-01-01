@@ -1,10 +1,10 @@
 #include "code/utilities/graphics/imgui/mechanics.hpp"
 #include "code/utilities/graphics/imgui/ui/ui_renders.hpp"
-#include "code/ide/settings/ide_settings.hpp"
-#include "code/ide/settings/ide_settings_getter.hpp"
-#include "code/ide/frame/frame_renderer.hpp"
-#include "code/ide/frame/logic/frame_logic_updater.hpp"
-#include "code/ide/frame/logic/frame_elements.hpp"
+#include "code/tools/ide/settings/ide_settings.hpp"
+#include "code/tools/ide/settings/ide_settings_getter.hpp"
+#include "code/tools/ide/frame/frame_renderer.hpp"
+#include "code/tools/ide/frame/logic/frame_logic_updater.hpp"
+#include "code/tools/ide/frame/logic/frame_elements.hpp"
 
 
 //other programming editors for inspiration:

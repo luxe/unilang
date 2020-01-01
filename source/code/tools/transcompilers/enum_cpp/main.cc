@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
-#include "code/transcompilers/enum_cpp/enum_cpp_maker.hpp"
-#include "code/transcompilers/enum_cpp/enum.hpp"
-#include "code/transcompilers/enum_cpp/program_options/program_options_creator.hpp"
+#include "code/tools/transcompilers/enum_cpp/enum_cpp_maker.hpp"
+#include "code/tools/transcompilers/enum_cpp/enum.hpp"
+#include "code/tools/transcompilers/enum_cpp/program_options/program_options_creator.hpp"
 
 int main(int argc, char** argv){
 

@@ -11,12 +11,12 @@ hcp(name = "pulse_transferer", deps = [
 ])
 
 hcp(name = "transfer_account_settings", deps = [
-"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings"
+"//code/tools/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings"
 ])
 
 hcp(name = "pulse_action_getter", deps = [
-"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
-"//code/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
+"//code/tools/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",
+"//code/tools/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/filesystem/paths:lib",

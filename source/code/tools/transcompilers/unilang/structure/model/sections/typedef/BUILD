@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "typedef_argument", deps = [
-"//code/transcompilers/unilang/parser:token_value"
+"//code/tools/transcompilers/unilang/parser:token_value"
 ])
 
 hcp(name = "typedef_section", deps = [
@@ -13,10 +13,10 @@ hcp(name = "typedef_section", deps = [
 hcp(name = "typedef_item", deps = [
 "typedef_argument",
 "typedef_result",
-"//code/transcompilers/unilang/parser:token_value",
-"//code/transcompilers/unilang/structure/model/sections:structure_enums",
+"//code/tools/transcompilers/unilang/parser:token_value",
+"//code/tools/transcompilers/unilang/structure/model/sections:structure_enums",
 ])
 
 hcp(name = "typedef_result", deps = [
-"//code/transcompilers/unilang/parser:token_value"
+"//code/tools/transcompilers/unilang/parser:token_value"
 ])

@@ -4,11 +4,11 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "export_file_settings", deps = [
-"//code/transcompilers/unilang/structure/model/sections/meta:code_type",
-"//code/transcompilers/unilang/structure/print/export_file_settings:file_type",
-"//code/transcompilers/unilang/structure/print/export_file_settings:special_file_type",
-"//code/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
-"//code/transcompilers/unilang/structure/print/export_file_settings:export_path_settings",
+"//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
+"//code/tools/transcompilers/unilang/structure/print/export_file_settings:file_type",
+"//code/tools/transcompilers/unilang/structure/print/export_file_settings:special_file_type",
+"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_path_settings",
 ])
 
 #what the particular exported file represents

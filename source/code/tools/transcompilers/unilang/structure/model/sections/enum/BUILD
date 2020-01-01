@@ -3,5 +3,5 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "enum_section", deps = [
-"//code/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
+"//code/tools/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 ])

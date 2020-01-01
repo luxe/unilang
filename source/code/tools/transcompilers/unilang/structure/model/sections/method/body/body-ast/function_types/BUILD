@@ -3,5 +3,5 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "function_call_local", deps = [
-"//code/transcompilers/unilang/parser/body_parser:body_token_value"
+"//code/tools/transcompilers/unilang/parser/body_parser:body_token_value"
 ])

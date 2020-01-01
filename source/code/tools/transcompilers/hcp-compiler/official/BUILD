@@ -7,8 +7,8 @@ bootstrap_hcp(
 bootstrap_hcp(
     name = "class_structure_creator",
 	deps = ["class_structure","header_validator",
-"//code/transcompilers/hcp-compiler/official/structure_state:lib",
-"//code/transcompilers/hcp-compiler/official/unicode_parser_symbols:lib",
+"//code/tools/transcompilers/hcp-compiler/official/structure_state:lib",
+"//code/tools/transcompilers/hcp-compiler/official/unicode_parser_symbols:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/exits:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
@@ -22,8 +22,8 @@ bootstrap_hcp(
 bootstrap_hcp(
     name = "global_structure_creator",
 	deps = ["class_structure","header_validator",
-"//code/transcompilers/hcp-compiler/official/structure_state:lib",
-"//code/transcompilers/hcp-compiler/official/unicode_parser_symbols:lib",
+"//code/tools/transcompilers/hcp-compiler/official/structure_state:lib",
+"//code/tools/transcompilers/hcp-compiler/official/unicode_parser_symbols:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/exits:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
@@ -59,7 +59,7 @@ bootstrap_hcp(
 
 bootstrap_hcp(
     name = "global_compiler",
-    deps = ["//code/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
+    deps = ["//code/tools/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
 	"//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/transformers/casing:lib",
@@ -74,7 +74,7 @@ bootstrap_hcp(
 
 bootstrap_hcp(
     name = "class_compiler",
-    deps = ["//code/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
+    deps = ["//code/tools/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
 	"//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/transformers/casing:lib",
@@ -103,7 +103,7 @@ bootstrap_hcp(
 
 bootstrap_hcp(
     name = "task_executer",
-    deps = ["//code/transcompilers/hcp-compiler/official/program_options:lib",
+    deps = ["//code/tools/transcompilers/hcp-compiler/official/program_options:lib",
 	"//code/utilities/exits:lib",
 	"//code/utilities/types/strings/observers/path:lib",
 	"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
@@ -117,7 +117,7 @@ bootstrap_hcp(
 cc_binary(
     name = "hcp-compiler",
     srcs = ["main.cpp"],
-    deps = ["//code/transcompilers/hcp-compiler/official/program_options:lib",
+    deps = ["//code/tools/transcompilers/hcp-compiler/official/program_options:lib",
             "//code/utilities/locale:lib",
             "task_executer"],
 )

@@ -2,8 +2,8 @@
 #include <vector>
 #include <utility>
 #include <functional>
-#include "code/transcompilers/unilang/tokens/token_name.hpp"
-#include "code/transcompilers/unilang/parser/token_value.hpp"
+#include "code/tools/transcompilers/unilang/tokens/token_name.hpp"
+#include "code/tools/transcompilers/unilang/parser/token_value.hpp"
 
 namespace Parser{
     

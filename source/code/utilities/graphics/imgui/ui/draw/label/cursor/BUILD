@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="label_cursor_selection", deps = [
 "//code/utilities/data_structures/position:position",
-"//code/ide/settings:label_cursor",
+"//code/tools/ide/settings:label_cursor",
 ])
 
 hcp(name="label_cursor_mover", deps = [

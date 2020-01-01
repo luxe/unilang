@@ -74,4 +74,4 @@ alias small="printf '\e[8;22;100t'"
 
 # because I can't figure out how to actually extract binaries out of bazel in a reasonable way
 # TODO: don't use full path
-alias unilang="~/Desktop/unilang/source/bazel-bin/code/transcompilers/unilang/main/unilang-transcompiler"
+alias unilang="~/Desktop/unilang/source/bazel-bin/code/tools/transcompilers/unilang/main/unilang-transcompiler"

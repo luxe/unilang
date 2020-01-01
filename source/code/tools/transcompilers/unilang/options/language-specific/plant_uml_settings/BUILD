@@ -12,7 +12,7 @@ values =
 
 hcp(name = "plant_uml_settings", deps = [
 "//code/utilities/types/strings/transformers/casing:case_format_style",
-"//code/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 ":skin_param_settings",
 ":show_hide_settings",
 ":description_section_settings"

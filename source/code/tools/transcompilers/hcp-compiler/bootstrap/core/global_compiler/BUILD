@@ -6,7 +6,7 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
+    deps = ["//code/tools/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
 	"//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/wstrings/transformers/trimming:lib",

@@ -7,5 +7,5 @@ hcp(name = "define_check_settings",
 deps = ["define_check_method"
 ])
 hcp(name = "define_check_end_comment_settings",
-deps = ["//code/transcompilers/unilang/options/comment/language_default:comment_style"
+deps = ["//code/tools/transcompilers/unilang/options/comment/language_default:comment_style"
 ])
