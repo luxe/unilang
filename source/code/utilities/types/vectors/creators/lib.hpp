@@ -2,7 +2,14 @@
 #include <string>
 #include <vector>
 
-std::vector<std::string> Get_Comma_Seperated_Values_From_File(std::string const& path_to_file);
+template <typename... T>
+auto make_vector(T&&... args)
+{
+    using first_type = typename std::tuple_element<0, std::tuple<T...>>::type;
+    return std::vector<first_type>{std::forward<T>(args)...};
+}
+
+
 
 template<typename T>
 std::vector<std::vector<T>> Create_N_By_N_Vector(int x, int y, T value){
@@ -24,6 +31,6 @@ std::vector<std::vector<T>> Create_A_Square_Vector(int size, T value){
 }
 
 
-
+std::vector<std::string> Get_Comma_Seperated_Values_From_File(std::string const& path_to_file);
 std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Question_Marks(int x, int y);
 std::vector<std::vector<std::string>> Create_N_By_N_Vector_Of_Strs(int x, int y, std::string const& str);

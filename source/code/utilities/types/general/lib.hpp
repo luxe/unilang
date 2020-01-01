@@ -15,6 +15,26 @@
 //}
 
 
+
+//types/pair
+template<typename A, typename B>
+std::pair<B,A> flip_pair(const std::pair<A,B> &p)
+{
+    return std::pair<B,A>(p.second, p.first);
+}
+
+// flips an associative container of A,B pairs to B,A pairs
+template<typename A, typename B, template<class,class,class...> class M, class... Args>
+M<B,A> flip_map(const M<A,B,Args...> &src)
+{
+    M<B,A> dst;
+    std::transform(src.begin(), src.end(),
+                   std::inserter(dst, dst.begin()),
+                   flip_pair<A,B>);
+    return dst;
+}
+
+
 template <typename Fun>
 void Nested_Loop(size_t i_start, size_t i_end,size_t j_start, size_t j_end, Fun fun){
   bool stop = false;

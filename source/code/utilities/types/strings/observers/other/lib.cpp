@@ -115,6 +115,13 @@ size_t height(std::string const& str)
     return count;
 }
 
+int XorCheckSum(std::string const& s){
+  int x = 0;
+  for (auto const& it: s){
+    x ^= it;
+  }
+  return x;
+}
 
 
 
