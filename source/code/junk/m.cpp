@@ -4,6 +4,25 @@
 #include <tuple>
 #include <map>
 #include <algorithm>
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <iomanip>
+
+int XorCheckSum(std::string const& s){
+  int x = 0;
+  for (auto const& it: s){
+    x ^= it;
+  }
+  return x;
+}
+
+std::string AsHexString(int c){
+  std::ostringstream s;
+  s << std::hex << std::uppercase << c;
+  return s.str();
+}
+
 
 
 std::map<std::string,int> m{

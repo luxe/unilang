@@ -5,6 +5,8 @@
 #include <sstream>
 #include <fstream>
 #include <algorithm>
+#include <sys/stat.h>
+#include <dirent.h>
 
 std::string Get_File_That_Symbolic_Link_Points_To(std::string const& path_to_symbolic_link){
   return execute("readlink " + path_to_symbolic_link);
@@ -47,4 +49,20 @@ bool Is_A_Dynamic_Executable_According_to_Ldd(std::string const& path)
   
   return results == "not a dynamic executable";
   
+}
+
+std::optional<std::time_t> Last_Modification_Time_If_File_Exists(std::string path_to_file){
+  
+  //starts out with no time, because we don't know if the file exists
+  std::optional<std::time_t> potential_time;
+  
+  //if the file exists, we derive the last modification time
+  if (File_Exists(path_to_file)){
+    struct stat fileInfo;
+    lstat(path_to_file.c_str(), &fileInfo);
+    potential_time = fileInfo.st_mtime;
+  }
+  
+  //return an optional modification time
+  return potential_time;
 }
