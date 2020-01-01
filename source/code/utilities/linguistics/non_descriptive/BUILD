@@ -1,0 +1,9 @@
+# var
+# data
+# datam
+# value
+# variable
+# key
+# thing
+# object
+# obj
