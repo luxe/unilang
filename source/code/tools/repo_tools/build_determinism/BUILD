@@ -23,6 +23,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
     "//code/tools/repo_tools/build_determinism/data:determinism_problem",
     "//code/utilities/types/vectors/observers:lib",
+    "//code/tools/repo_tools/build_determinism:reporter",
 ])
 
 hcp(name = "spawn_pairer", deps = [
@@ -66,6 +67,21 @@ hcp(name = "determinism_ab_runner", deps = [
     "//code/tools/repo_tools/build_determinism:spawn_pairer",
     "//code/tools/repo_tools/build_determinism:spawn_pair_determinism_checker",
     "//code/tools/repo_tools/build_determinism/settings:settings",
+])
+
+hcp(name = "reporter", deps = [
+    "//code/utilities/shell:lib",
+    "//code/utilities/printers:lib",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "@bazel//:spawn_proto_cpp",
+    "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
+    "//code/tools/repo_tools/build_determinism/data:determinism_problem",
+    "//code/utilities/types/map:lib",
+    "//code/tools/repo_tools/build_determinism:spawn_pairer",
+    "//code/tools/repo_tools/build_determinism:spawn_pair_determinism_checker",
+    "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
+    "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
 ])
 
 

@@ -1,0 +1,126 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪set❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/printers/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"src/main/protobuf/spawn.pb.h"❫
+❪"code/tools/repo_tools/build_determinism/data/spawn_pairings"❫
+❪"code/tools/repo_tools/build_determinism/data/determinism_problem"❫
+❪"code/utilities/types/map/lib"❫
+❪"code/tools/repo_tools/build_determinism/spawn_pairer"❫
+❪"code/tools/repo_tools/build_determinism/spawn_pair_determinism_checker"❫
+❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
+❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
+⚯
+⚞⚟
+
+
+
+◀public: static▶ void ☀Report(Determinism_Pairings const& results)❰
+
+    //if the inputs are already nondeterministic there was probably nondeterminism further up the subcommand graph.
+    //we should filter down to only the commands that had deterministic input but created nondeterministic output.
+    //this will help us target where the nondeterminism actually starts and what tools are responsible.
+    auto filtered_results = Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
+    
+    //tell the user which programs we think are nondeterministic
+    Report_Nondeterminisic_Programs(filtered_results);
+    
+    //tell the user the determinism problems
+    Report_Nondeterminism_Problems(filtered_results);
+    
+    //give the user the subcommands that caused the problem
+    Report_Subcommand_That_Caused_Problems(filtered_results);
+❱
+
+◀private: static▶ std::set<std::string> ☀Guess_Nondeterministic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+    std::set<std::string> programs;
+    for (auto const& it: command_pairs){
+        auto command_args = it.first.command_args();
+        if (!command_args.empty()){
+            programs.insert(command_args[0]);
+        }
+    }
+    
+    return programs;
+❱
+◀private: static▶ bool ☀Subcommand_Caused_Nondeterminsim(std::vector<Determinism_Problem> const& problems)❰
+    for (auto const& it: problems){
+        if (it.type == Determinism_Problem_Type::INPUT_SIZE){
+            return false;
+        }
+        if (it.type == Determinism_Problem_Type::MISSING_INPUT){
+            return false;
+        }
+        if (it.type == Determinism_Problem_Type::WRONG_INPUT_HASH){
+            return false;
+        }
+    }
+    return true;
+❱
+◀private: static▶ std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> ☀Filter_By_Subcommands_That_Cause_Nondeterminism(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+    std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> result;
+    
+    for (auto const& it: command_pairs){
+        auto problems = Determinism_Problem_Getter::Get(it);
+        if (Subcommand_Caused_Nondeterminsim(problems)){
+            result.emplace_back(it);
+        }
+    }
+    
+    return result;
+❱
+◀private: static▶ void ☀Report_Subcommand_That_Caused_Problems(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+
+    if (!command_pairs.empty()){
+        std::cerr << "see the following subcommands:" << std::endl;
+        for (auto const& it: command_pairs){
+            auto command_args = it.first.command_args();
+            std::vector<std::string> v;
+            for (auto const& it: command_args){
+                v.emplace_back(it);
+            }
+            std::cout << Get_As_Space_Seperated_String(v) << std::endl;
+        }
+    }
+❱
+
+
+◀private: static▶ void ☀Report_Nondeterminisic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+
+    auto programs = Guess_Nondeterministic_Programs(command_pairs);
+    if (programs.empty()){
+        std::cout << "No programs were nondeterministic." << std::endl;
+    }
+    else{
+        
+        if (programs.size() == 1){
+            std::cerr << "The following program was nondeterministic: ";
+            std::string program_name = "";
+            for (auto const& it: programs){
+                program_name = it;
+            }
+            std::cerr << program_name;
+            std::cerr << std::endl;
+        }
+        else{
+            std::cerr << "The following programs were nondeterministic: ";
+            std::cerr << programs;
+            std::cerr << std::endl;
+        }
+    }
+❱
+◀private: static▶ void ☀Report_Nondeterminism_Problems(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+
+    for (auto const& it: command_pairs){
+        auto problems = Determinism_Problem_Getter::Get(it);
+        for (auto const& problem: problems){
+            std::cerr << problem.message << std::endl;
+        }
+    }
+❱
