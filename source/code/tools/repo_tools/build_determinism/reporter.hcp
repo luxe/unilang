@@ -16,12 +16,13 @@ class
 ❪"code/tools/repo_tools/build_determinism/spawn_pair_determinism_checker"❫
 ❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
 ❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
+❪"code/tools/repo_tools/build_determinism/settings/report_settings"❫
 ⚯
 ⚞⚟
 
 
 
-◀public: static▶ void ☀Report(Determinism_Pairings const& results)❰
+◀public: static▶ void ☀Report(Determinism_Pairings const& results, Report_Settings const& settings)❰
 
     //if the inputs are already nondeterministic there was probably nondeterminism further up the subcommand graph.
     //we should filter down to only the commands that had deterministic input but created nondeterministic output.
@@ -29,13 +30,19 @@ class
     auto filtered_results = Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
     //tell the user which programs we think are nondeterministic
-    Report_Nondeterminisic_Programs(filtered_results);
+    if (settings.print_nondeterministic_programs){
+        Report_Nondeterminisic_Programs(filtered_results);
+    }
     
     //tell the user the determinism problems
-    Report_Nondeterminism_Problems(filtered_results);
+    if (settings.print_nondeterministic_problems){
+        Report_Nondeterminism_Problems(filtered_results);
+    }
     
     //give the user the subcommands that caused the problem
-    Report_Subcommand_That_Caused_Problems(filtered_results);
+    if (settings.print_nondeterministic_subcommands){
+        Report_Subcommand_That_Caused_Problems(filtered_results);
+    }
 ❱
 
 ◀private: static▶ std::set<std::string> ☀Guess_Nondeterministic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰

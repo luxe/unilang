@@ -82,6 +82,7 @@ hcp(name = "reporter", deps = [
     "//code/tools/repo_tools/build_determinism:spawn_pair_determinism_checker",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
+    "//code/tools/repo_tools/build_determinism/settings:report_settings",
 ])
 
 
