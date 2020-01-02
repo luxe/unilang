@@ -25,6 +25,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/types/vectors/observers:lib",
     "//code/tools/repo_tools/build_determinism:reporter",
     "//code/utilities/git-related/repo_establisher:repo_establisher",
+    "//code/utilities/bazel/wrapper:bazel_wrapper_deriver",
 ])
 
 hcp(name = "spawn_pairer", deps = [
