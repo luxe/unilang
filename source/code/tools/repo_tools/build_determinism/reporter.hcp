@@ -66,20 +66,6 @@ class
     
     return programs;
 ❱
-◀private: static▶ bool ☀Subcommand_Caused_Nondeterminsim(std::vector<Determinism_Problem> const& problems)❰
-    for (auto const& it: problems){
-        if (it.type == Determinism_Problem_Type::INPUT_SIZE){
-            return false;
-        }
-        if (it.type == Determinism_Problem_Type::MISSING_INPUT){
-            return false;
-        }
-        if (it.type == Determinism_Problem_Type::WRONG_INPUT_HASH){
-            return false;
-        }
-    }
-    return true;
-❱
 ◀private: static▶ std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> ☀Filter_By_Subcommands_That_Cause_Nondeterminism(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
     std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> result;
     
@@ -91,6 +77,24 @@ class
     }
     
     return result;
+❱
+◀private: static▶ bool ☀Subcommand_Caused_Nondeterminsim(std::vector<Determinism_Problem> const& problems)❰
+    for (auto const& it: problems){
+        
+        //if anything is wrong with the input we forfeit the opportunity to prove
+        //that the subcommand is nondeterministic.  how could we?  It's already getting
+        //non deterministic input.
+        if (it.type == Determinism_Problem_Type::INPUT_SIZE){
+            return false;
+        }
+        if (it.type == Determinism_Problem_Type::MISSING_INPUT){
+            return false;
+        }
+        if (it.type == Determinism_Problem_Type::WRONG_INPUT_HASH){
+            return false;
+        }
+    }
+    return true;
 ❱
 ◀private: static▶ void ☀Report_Subcommand_That_Caused_Problems(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
 
@@ -179,6 +183,7 @@ class
     // Until we get a better overall API, we'll want to combine these strategies and also take into consideration the file extension as an easy assumption.
     // (eventhough file extension doesn't mean anything in linux).
     //this analyze tries to give a generic description of the file's file type.
+    //https://manpages.debian.org/testing/libmagic-dev/libmagic.3.en.html
     //https://github.com/file/file
 
     auto problems = Determinism_Problem_Getter::Get(s);
