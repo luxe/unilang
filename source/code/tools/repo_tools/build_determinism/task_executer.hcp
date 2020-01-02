@@ -42,21 +42,25 @@ class
     Repo_Establisher::Establish_And_Move_Into_Repo(settings.repo);
     
     //try to derive the correct bazel program if its not known.
-    if (settings.bazel_wrapper.derive){
-        settings.bazel_wrapper.program_name = Derive_Program_Name(settings);
-    }
+    Possibly_Derive_Bazel_Runner(settings.bazel_wrapper);
     
     auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
     Reporter::Report(results,settings.report);
     
 ❱
 
-◀private: static▶ std::string ☀Derive_Program_Name(Settings const& settings) ❰
-    auto program_name = First_Filename_Found_At_Current_Path(settings.bazel_wrapper.search_derive_programs);
+◀private: static▶ void ☀Possibly_Derive_Bazel_Runner(Bazel_Wrapper & settings)❰
+    if (settings.derive){
+        settings.program_name = Derive_Program_Name(settings);
+    }
+❱
+
+◀private: static▶ std::string ☀Derive_Program_Name(Bazel_Wrapper const& settings) ❰
+    auto program_name = First_Filename_Found_At_Current_Path(settings.search_derive_programs);
     
     //use global installed bazel
     if (program_name.empty()){
-        program_name = "bazel";
+        program_name = settings.default_program_name;
     }
     
     //use the local found bazel wrapper
