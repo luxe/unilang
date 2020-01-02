@@ -10,6 +10,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/bazel/wrapper:bazel_wrapper_deriver",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:reporter",
+    "//code/tools/repo_tools/build_determinism:subcommand_filter",
 ])
 
 hcp(name = "spawn_pairer", deps = [
@@ -46,6 +47,13 @@ hcp(name = "determinism_problem_getter", deps = [
     "//code/utilities/printers:lib",
 ])
 
+hcp(name = "subcommand_filter", deps = [
+    "@bazel//:spawn_proto_cpp",
+    "//code/tools/repo_tools/build_determinism/data:determinism_problem",
+    "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
+])
+
+
 hcp(name = "determinism_ab_runner", deps = [
     "//code/utilities/printers:lib",
     "//code/utilities/bazel:bazel_runner",
@@ -72,6 +80,7 @@ hcp(name = "reporter", deps = [
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/utilities/types/sets:lib",
+    "//code/tools/repo_tools/build_determinism:subcommand_filter",
 ])
 
 

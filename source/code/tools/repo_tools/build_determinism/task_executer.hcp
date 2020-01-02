@@ -5,6 +5,7 @@ class
 ❪"code/utilities/bazel/wrapper/bazel_wrapper_deriver"❫
 ❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
 ❪"code/tools/repo_tools/build_determinism/reporter"❫
+❪"code/tools/repo_tools/build_determinism/subcommand_filter"❫
 ⚯
 ⚞⚟
 
@@ -25,7 +26,13 @@ class
     //try to derive the correct bazel program if its not known.
     Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper);
     
+    //Perform the AB test and get back results.
     auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
+    
+    //Analyze the results for the user.
     Reporter::Report(results,settings.report);
+    
+    //Isolate the files that are nondeterministic
+    auto filtered_results = Subcommand_Filter::Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
 ❱

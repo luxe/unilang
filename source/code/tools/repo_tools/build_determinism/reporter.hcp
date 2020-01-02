@@ -20,6 +20,7 @@ class
 ❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
 ❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
 ❪"code/tools/repo_tools/build_determinism/settings/report_settings"❫
+❪"code/tools/repo_tools/build_determinism/subcommand_filter"❫
 ⚯
 ⚞⚟
 
@@ -30,7 +31,7 @@ class
     //if the inputs are already nondeterministic there was probably nondeterminism further up the subcommand graph.
     //we should filter down to only the commands that had deterministic input but created nondeterministic output.
     //this will help us target where the nondeterminism actually starts and what tools are responsible.
-    auto filtered_results = Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
+    auto filtered_results = Subcommand_Filter::Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
     //tell the user which programs we think are nondeterministic
     if (settings.print_nondeterministic_programs){
@@ -65,36 +66,6 @@ class
     }
     
     return programs;
-❱
-◀private: static▶ std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> ☀Filter_By_Subcommands_That_Cause_Nondeterminism(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
-    std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> result;
-    
-    for (auto const& it: command_pairs){
-        auto problems = Determinism_Problem_Getter::Get(it);
-        if (Subcommand_Caused_Nondeterminsim(problems)){
-            result.emplace_back(it);
-        }
-    }
-    
-    return result;
-❱
-◀private: static▶ bool ☀Subcommand_Caused_Nondeterminsim(std::vector<Determinism_Problem> const& problems)❰
-    for (auto const& it: problems){
-        
-        //if anything is wrong with the input we forfeit the opportunity to prove
-        //that the subcommand is nondeterministic.  how could we?  It's already getting
-        //non deterministic input.
-        if (it.type == Determinism_Problem_Type::INPUT_SIZE){
-            return false;
-        }
-        if (it.type == Determinism_Problem_Type::MISSING_INPUT){
-            return false;
-        }
-        if (it.type == Determinism_Problem_Type::WRONG_INPUT_HASH){
-            return false;
-        }
-    }
-    return true;
 ❱
 ◀private: static▶ void ☀Report_Subcommand_That_Caused_Problems(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
 
