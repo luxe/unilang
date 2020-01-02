@@ -7,6 +7,8 @@
 #include <utility>
 #include <functional>
 
+
+//TODO: turn into global functions
 template <typename T>
 class Unique_Counter{
   
