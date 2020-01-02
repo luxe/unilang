@@ -24,6 +24,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism/data:determinism_problem",
     "//code/utilities/types/vectors/observers:lib",
     "//code/tools/repo_tools/build_determinism:reporter",
+    "//code/utilities/git-related/repo_establisher:repo_establisher",
 ])
 
 hcp(name = "spawn_pairer", deps = [

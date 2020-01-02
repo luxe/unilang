@@ -5,14 +5,12 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "settings", deps = [
     "//code/tools/repo_tools/build_determinism/settings:bazel_wrapper",
-    "//code/tools/repo_tools/build_determinism/settings:repo_location",
+    "//code/utilities/git-related/repo_establisher:repo_location",
     "//code/tools/repo_tools/build_determinism/settings:report_settings",
     "//code/utilities/bazel:spawn_strategy",
 ])
 
 hcp(name = "bazel_wrapper", deps = [
-])
-hcp(name = "repo_location", deps = [
 ])
 hcp(name = "report_settings", deps = [
 ])

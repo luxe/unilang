@@ -23,6 +23,7 @@ class
 ❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
 ❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
 ❪"code/tools/repo_tools/build_determinism/reporter"❫
+❪"code/utilities/git-related/repo_establisher/repo_establisher"❫
 ⚯
 ⚞⚟
 
@@ -38,7 +39,7 @@ class
     //for example, master would be changing frequently and me affect results.
     //so instead we use the same repository for the whole analysis.
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
-    Move_Into_Repo(settings);
+    Repo_Establisher::Establish_And_Move_Into_Repo(settings.repo);
     
     //try to derive the correct bazel program if its not known.
     if (settings.bazel_wrapper.derive){
@@ -48,18 +49,6 @@ class
     auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
     Reporter::Report(results,settings.report);
     
-❱
-
-
-◀private: static▶ void ☀Move_Into_Repo(Settings const& settings) ❰
-
-    if (settings.repo.use_clone){
-        auto path_name = Download_Repo_To_Random_Name_In_Temp_Folder(settings.repo.clone_url);
-        Set_Path(path_name);
-    }
-    
-    //start in the appropriate directory
-    Possibly_Set_Path(settings.repo.use_run_path,settings.repo.run_path);
 ❱
 
 ◀private: static▶ std::string ☀Derive_Program_Name(Settings const& settings) ❰
