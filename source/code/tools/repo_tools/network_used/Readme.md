@@ -3,4 +3,5 @@ a better version of:
 strace -f -e trace=network ./build_everything 2>&1 | grep sin_addr
 strace -f -e trace=network ./build_everything 2>&1 | grep -oP 'connect.*inet_addr\("\K[^"]+'
 
-good to check that every network call is coming from trusted and controlled sources within an org
+good to check that every network call is coming from trusted and controlled sources within an org.
+strace is TOO SLOW
