@@ -4,13 +4,44 @@
 
 int main(void)
 {
-    std::string actual_file = "/bin/cp";
+    //std::string actual_file = "/bin/cp";
+    std::string actual_file = "/home/thickey/Desktop/test.o";
     const char *magic_full;
     magic_t magic_cookie;
     
-    /* MAGIC_MIME tells magic to return a mime of the file, 
-       but you can specify different things */
-    magic_cookie = magic_open(MAGIC_MIME);
+    // you can specify different things on open
+    
+    // MAGIC_NONE
+    // MAGIC_DEBUG
+    // MAGIC_SYMLINK
+    // MAGIC_COMPRESS
+    // MAGIC_DEVICES
+    // MAGIC_MIME_TYPE
+    // MAGIC_MIME_ENCODING
+    // MAGIC_CONTINUE
+    // MAGIC_CHECK
+    // MAGIC_PRESERVE_ATIME
+    // MAGIC_RAW
+    // MAGIC_ERROR
+    // MAGIC_NO_CHECK_APPTYPE
+    // MAGIC_NO_CHECK_ASCII
+    // MAGIC_NO_CHECK_COMPRESS
+    // MAGIC_NO_CHECK_ELF
+    // MAGIC_NO_CHECK_FORTRAN
+    // MAGIC_NO_CHECK_SOFT
+    // MAGIC_NO_CHECK_TAR
+    // MAGIC_NO_CHECK_TOKENS
+    // MAGIC_NO_CHECK_TROFF
+    
+    
+        auto flags = MAGIC_NONE;
+        flags |= MAGIC_MIME;
+        flags |= MAGIC_MIME_ENCODING;
+        flags |= MAGIC_CONTINUE;
+        flags |= MAGIC_COMPRESS;
+        flags |= MAGIC_RAW;
+
+    magic_cookie = magic_open(flags);
     
     if (magic_cookie == NULL) {
         printf("unable to initialize magic library\n");

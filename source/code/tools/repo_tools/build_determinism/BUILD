@@ -83,6 +83,9 @@ hcp(name = "reporter", deps = [
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
     "//code/tools/repo_tools/build_determinism/settings:report_settings",
+    "//code/utilities/types/strings/observers/splitting:lib",
+    "//code/utilities/types/strings/observers/path:lib",
+    "//code/utilities/types/sets:lib",
 ])
 
 

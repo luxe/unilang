@@ -21,6 +21,7 @@ class Program_Options {
 	    std::string Run_Dir() const;
         std::string Target() const;
         std::string Output_Dir() const;
+        bool Synthesize() const;
         std::string Bazel() const;
         bool Verbose() const;
 

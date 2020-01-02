@@ -8,6 +8,9 @@ class
 ❪"code/utilities/printers/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/sets/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/tools/repo_tools/build_determinism/data/spawn_pairings"❫
 ❪"code/tools/repo_tools/build_determinism/data/determinism_problem"❫
@@ -39,11 +42,18 @@ class
         Report_Nondeterminism_Problems(filtered_results);
     }
     
-    //give the user the subcommands that caused the problem
+    //tell the user the subcommands that caused the problem
     if (settings.print_nondeterministic_subcommands){
         Report_Subcommand_That_Caused_Problems(filtered_results);
     }
+    
+    //tell the user a set of synthesized statements on what is nondeterministic
+    if (settings.print_nondeterministic_synthesized_statements){
+        Report_Via_Synthesized_Statements(filtered_results);
+    }
 ❱
+
+
 
 ◀private: static▶ std::set<std::string> ☀Guess_Nondeterministic_Programs(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
     std::set<std::string> programs;
@@ -131,3 +141,81 @@ class
         }
     }
 ❱
+◀private: static▶ void ☀Report_Via_Synthesized_Statements(std::vector<std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec>> const& command_pairs)❰
+    std::set<std::string> statements;
+    for (auto const& it: command_pairs){
+        auto program_name = Get_Synthesized_Program_Name(it.first);
+        auto generic_file_types = Get_Synthesized_File_Types(it);
+        
+        //produce synthesized statements
+        for (auto const& it: generic_file_types){
+            std::string statement;
+            statement = program_name + " produces nondeterministic ";
+            statement += it;
+            statements.insert(statement);
+        }
+    }
+    
+    Print_On_Each_Line(statements);
+❱
+
+◀private: static▶ std::string ☀Get_Synthesized_Program_Name(tools::protos::SpawnExec const& s)❰
+        std::string program_name = "";
+        auto command_args = s.command_args();
+        if (!command_args.empty()){
+            program_name = command_args[0];
+        }
+        program_name = Get_Path_Basename(program_name);
+        return program_name;
+❱
+
+
+◀private: static▶ std::set<std::string> ☀Get_Synthesized_File_Types(std::pair<tools::protos::SpawnExec,tools::protos::SpawnExec> const& s)❰
+
+    // I was going to use libmagic but it just reports .o and .a file MIME types and MIME encodings.
+    // these are reported really generically, like: "binary"
+    // The "file" command does much better.
+    // It produces a better description (presumably because it does the extra work of parsing ELF files.
+    // Until we get a better overall API, we'll want to combine these strategies and also take into consideration the file extension as an easy assumption.
+    // (eventhough file extension doesn't mean anything in linux).
+    //this analyze tries to give a generic description of the file's file type.
+
+    auto problems = Determinism_Problem_Getter::Get(s);
+    std::set<std::string> file_types;
+    for (auto const& it: problems){
+        if (!it.file_path.empty()){
+            auto extension = Get_File_Extension(it.file_path);
+            //do more sophisticated analysis with libmagic and file
+            
+            if (extension == "o"){
+                file_types.insert("object files");
+            }
+            else if (extension == "a"){
+                file_types.insert("archive files");
+            }
+            else if (extension == "so"){
+                file_types.insert("shared objects");
+            }
+            else{
+                file_types.insert("files");
+            }
+        }
+    }
+    return file_types;
+❱
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

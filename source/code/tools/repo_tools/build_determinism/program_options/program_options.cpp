@@ -39,6 +39,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	("target",value<std::string>(),"what you would pass to bazel build")
 	    ("url",value<std::string>(),"git url to clone with")
         ("run_dir",value<std::string>(),"where to run the analysis")
+        ("synthesize_problems","synthesize the nondeterminism problems in a human friendly way")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
         ("verbose","show verbose progress")
@@ -143,5 +144,8 @@ std::string Program_Options::Url() const{
 
 	return data;
 }
+bool Program_Options::Synthesize() const{
+return vm.count("synthesize_problems");}
+
 bool Program_Options::Verbose() const{
 return vm.count("verbose");}

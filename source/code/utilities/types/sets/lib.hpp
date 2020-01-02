@@ -1,5 +1,6 @@
 #pragma once
 #include <set>
+#include <iostream>
 
 //forward declerations
 template <typename T>
@@ -12,6 +13,9 @@ template <typename T>
 bool Exists_In_Set(std::set<T> const& s, T const& item);
 
 //int Get_From_Set_Add_Assumed_Zero_If_Missing(std::set<int> const& s, int const& item);
+
+template <typename T>
+void Print_On_Each_Line(std::set<T> const& s);
 
 //functions
 template <typename T>
@@ -29,4 +33,12 @@ void Delete_From_Set(std::set<T> & s, T const& item_to_delete){
 template <typename T>
 bool Exists_In_Set(std::set<T> const& s, T const& item){
   return s.count(item);
+}
+
+template <typename T>
+void Print_On_Each_Line(std::set<T> const& s)
+{
+    for (auto const& it: s){
+        std::cout << it << '\n';
+    }
 }
