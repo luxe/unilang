@@ -24,6 +24,7 @@ class Program_Options {
         bool Synthesize() const;
         std::string Bazel() const;
         bool Verbose() const;
+        int Flaky() const;
 
         
         std::string Get_Help_Message();

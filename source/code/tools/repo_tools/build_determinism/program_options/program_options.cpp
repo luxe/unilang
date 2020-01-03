@@ -42,6 +42,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
         ("synthesize_problems","synthesize the nondeterminism problems in a human friendly way")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
+        ("flaky",value<int>(),"try the A/B tests in different environments n number of times to evaluate any flakiness of nondeterminism")
         ("verbose","show verbose progress")
 
 	//+----------------------------------------------------------+
@@ -140,6 +141,14 @@ std::string Program_Options::Url() const{
 	std::string data;
 	if (vm.count("url")){
 		data = vm["url"].as<std::string>();
+	}
+
+	return data;
+}
+int Program_Options::Flaky() const{
+	int data = 0;
+	if (vm.count("flaky")){
+		data = vm["flaky"].as<int>();
 	}
 
 	return data;
