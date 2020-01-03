@@ -9,6 +9,9 @@ class
 ❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
 ❪"code/utilities/random/lib"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/bazel/bazel_runner"❫
+❪"code/utilities/filesystem/files/moving/lib"❫
+❪"code/tools/repo_tools/build_determinism/file_isolator"❫
 ⚯
 ⚞⚟
 
@@ -30,7 +33,7 @@ class
     Reporter::Report(results,settings.report);
     
     
-    Isolate_Nondeterministic_Files(results,settings);
+    File_Isolator::Isolate_Nondeterministic_Files(results,settings);
 ❱
 
 ◀private: static▶ void ☀Setup_Workspace(Settings & settings) ❰
@@ -48,73 +51,6 @@ class
     else {
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"duplicating folder...");
         settings.b_path = Random_Tmp_Directory();
-        execute("cp -R " + settings.a_path + " " + settings.b_path);
+        Copy_File_To_Dir(settings.a_path,settings.b_path);
     }
-❱
-
-◀private: static▶ void ☀Isolate_Nondeterministic_Files(Determinism_Pairings const& results, Settings const& settings) ❰
-
-    //Isolate the files that are nondeterministic
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,"filtering results...");
-    auto filtered_results = Subcommand_Filter::Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
-    
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,"collecting nondeterministic objects...");
-    std::map<std::string,tools::protos::SpawnExec> file_map;
-    for (auto const& it: filtered_results){
-        auto problems = Determinism_Problem_Getter::Get(it);
-        for (auto const& problem: problems){
-            if (!problem.file_path.empty()){
-                file_map.insert({problem.file_path,it.first});
-            }
-        }
-    }
-    
-    std::string message = std::to_string(file_map.size()) + " files will need isolated";
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
-    
-    auto isolation_folder = Random_Tmp_Directory();
-    
-    if (settings.concurrency == Concurrency::PARALLEL){
-        for (auto const& it: file_map){
-            auto file_a = settings.a_path + "/" + it.first;
-            auto file_b = settings.b_path + "/" + it.first;
-            if (File_Exists(file_a)){
-                std::cout << file_a << " does exist" << std::endl;
-            }
-            else{
-                std::cerr << file_a << " does not exist" << std::endl;
-            }
-            
-            if (File_Exists(file_b)){
-                std::cout << file_a << " does exist" << std::endl;
-            }
-            else{
-                std::cerr << file_b << " does not exist" << std::endl;
-            }
-        }
-    }
-    
-    
-    
-    
-    else if (settings.concurrency == Concurrency::SEQUENTIAL){
-        for (auto const& it: file_map){
-            auto file_a = settings.a_path + "/" + it.first;
-            auto file_b = settings.b_path + "/" + it.first;
-            if (File_Exists(file_a)){
-                std::cout << file_a << " does exist" << std::endl;
-            }
-            else{
-                std::cerr << file_a << " does not exist" << std::endl;
-            }
-            
-            if (File_Exists(file_b)){
-                std::cout << file_a << " does exist" << std::endl;
-            }
-            else{
-                std::cerr << file_b << " does not exist" << std::endl;
-            }
-        }
-    }
-
 ❱
