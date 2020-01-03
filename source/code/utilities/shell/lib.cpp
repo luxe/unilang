@@ -1,4 +1,6 @@
 #include "code/utilities/shell/lib.hpp"
+#include "code/utilities/exits/lib.hpp"
+#include "code/utilities/shell/process_spawn/process_spawner.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
 #include <iostream>
 
@@ -77,7 +79,13 @@ void no_hup_execute_quietly_in_background(std::string const& cmd) {
     full_command += cmd;
     full_command += " >/dev/null 2>&1 &";
     exec(full_command);
-    
+}
+
+void Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(std::string const& cmd){
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(cmd);
+    if (results.return_code != 0){
+        Exit_With_Error(results.stderr);
+    }
 }
 
 //runs in the shell and gives you back the error (nothing is silenced)
