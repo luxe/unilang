@@ -12,6 +12,8 @@ class
 ❪"code/utilities/random/lib"❫
 ❪"code/utilities/shell/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
 ⚯
 ⚞⚟
 
@@ -63,8 +65,16 @@ class
     });
     
     std::thread t2([&](){
-        Set_Path(duplicated_folder);
-        spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.b_strategy,settings.target_name);
+        
+        //create a thread safe call to a different bazel wrapper
+        //NOTE: this will not work if global bazel is used
+        std::string new_bazel_wrapper = settings.bazel_wrapper.program_name;
+        if (Begins_With(new_bazel_wrapper,"./")){
+            Remove_First_N_Chars(new_bazel_wrapper,2);
+        }
+        new_bazel_wrapper = duplicated_folder + "/" + new_bazel_wrapper;
+        
+        spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(new_bazel_wrapper,settings.b_strategy,settings.target_name);
     });
     
     t1.join();

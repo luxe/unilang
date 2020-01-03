@@ -60,3 +60,10 @@ values = [
 "left"
 ,"right"
 ])
+
+enum_cpp(name = "concurrency",
+values = [
+"sequential"
+,"parallel"
+])
+

@@ -64,6 +64,8 @@ hcp(name = "determinism_ab_runner", deps = [
     "//code/utilities/random:lib",
     "//code/utilities/shell:lib",
     "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
 ])
 
 hcp(name = "reporter", deps = [
