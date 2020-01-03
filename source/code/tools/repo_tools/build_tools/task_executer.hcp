@@ -8,6 +8,7 @@ class
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
 ⚯
 ⚞⚟
 
@@ -23,13 +24,14 @@ class
     //for example, master would be changing frequently and me affect results.
     //so instead we use the same repository for the whole analysis.
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
-    Repo_Establisher::Establish_And_Move_Into_Repo(settings.repo);
+    auto path = Repo_Establisher::Establish_And_Get_Path(settings.repo);
     
     //try to derive the correct bazel program if its not known.
-    Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper);
+    Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper,path);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
-    auto spawns = Bazel_Runner::Get_Spawn_Information(settings.bazel_wrapper.program_name,settings.strategy,settings.target_name);
+    auto bazel = Prepend_Path_To_Program_Execution_Unless_Global_Call(settings.bazel_wrapper.program_name,path);
+    auto spawns = Bazel_Runner::Get_Spawn_Information(bazel,settings.strategy,settings.target_name);
     
     //calculate build tools used
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"calculate build tool usage...");

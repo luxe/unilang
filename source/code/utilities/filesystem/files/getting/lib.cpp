@@ -26,6 +26,18 @@ std::string First_Filename_Found_At_Current_Path(std::vector<std::string> const&
     }
     return "";
 }
+std::string First_Filename_Found_At_Path(std::vector<std::string> const& file_names, std::string const& path)
+{
+    auto files = Get_Everything_At_Path(path);
+    for (auto const& it: file_names){
+        for (auto const& x: files){
+            if (it == x){
+                return it;
+            }
+        }
+    }
+    return "";
+}
 
 std::vector<std::string> Get_Everything_At_Path(std::string path){
     std::vector<std::string> elements;

@@ -11,6 +11,9 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:reporter",
     "//code/tools/repo_tools/build_determinism:subcommand_filter",
+    "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
+    "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+    "//code/utilities/random:lib",
 ])
 
 hcp(name = "spawn_pairer", deps = [
@@ -66,6 +69,7 @@ hcp(name = "determinism_ab_runner", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/types/strings/observers/path:lib",
 ])
 
 hcp(name = "reporter", deps = [

@@ -16,7 +16,8 @@ std::string Bazel_Derived_Path_To_Self_Unilang();
 //+---------------------------------------+
 //| changing path / traversing filesystem |
 //+---------------------------------------+
-//THESE FUNCTIONS WILL CHANGE THE STATE OF THE CURRENT WORKING DIRECTORY
+//THESE FUNCTIONS WILL CHANGE THE STATE OF THE CURRENT WORKING DIRECTORY.
+//WHICH IS NOT THREAD SAFE.  THREADS SHARE THE SAME GLOBAL CWD.
 void Set_Path(std::string const& path);
 void Possibly_Set_Path(bool const& set, std::string const& path);
 void Set_Path_If_Not_Empty(std::string const& path);

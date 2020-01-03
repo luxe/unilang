@@ -8,3 +8,5 @@ bool File_Has_Extension(std::string const& path_to_file);
 std::string Get_File_Name(std::string const& str);
 std::string Get_First_Folder_Name(std::string const& str);
 bool File_Name_Starts_With(std::string const& str, std::string const& prefix);
+
+std::string Prepend_Path_To_Program_Execution_Unless_Global_Call(std::string const& program_execution, std::string const& path);

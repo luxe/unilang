@@ -3,6 +3,7 @@
 #include "code/utilities/types/general/lib.hpp"
 #include "boost/range/adaptor/reversed.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
+#include "code/utilities/types/strings/transformers/removing/lib.hpp"
 
 std::string Get_File_Extension(std::string const& str){
     std::string extension;
@@ -53,4 +54,15 @@ std::string Get_First_Folder_Name(std::string const& str){
 bool File_Name_Starts_With(std::string const& str, std::string const& prefix){
     auto file_name = Get_File_Name(str);
     return Begins_With(file_name,prefix);
+}
+
+
+std::string Prepend_Path_To_Program_Execution_Unless_Global_Call(std::string const& program_execution, std::string const& path)
+{
+    std::string new_path = program_execution;
+    if (Begins_With(new_path,"./")){
+        Remove_First_N_Chars(new_path,2);
+        new_path = path + "/" + new_path;
+    }
+    return new_path;
 }

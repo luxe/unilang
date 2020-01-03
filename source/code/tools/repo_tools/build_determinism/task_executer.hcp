@@ -6,6 +6,9 @@ class
 ❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
 ❪"code/tools/repo_tools/build_determinism/reporter"❫
 ❪"code/tools/repo_tools/build_determinism/subcommand_filter"❫
+❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
+❪"code/utilities/random/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ⚯
 ⚞⚟
 
@@ -15,16 +18,10 @@ class
     //get the default settings modified by user's program options.
     auto settings = Settings_Getter::Get(options);
     
-    //before starting the analysis, we either clone or move into an existing repo.
-    //This is chosen by the user and regardless of their choice, we will end up at the root of a repository.
-    //NOTE: we want to avoid cloning the repo more than once from a branch as the branch may change.
-    //for example, master would be changing frequently and me affect results.
-    //so instead we use the same repository for the whole analysis.
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
-    Repo_Establisher::Establish_And_Move_Into_Repo(settings.repo);
+    Setup_Workspace(settings);
     
     //try to derive the correct bazel program if its not known.
-    Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper);
+    Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper,settings.a_path);
     
     //Perform the AB test and get back results.
     auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
@@ -32,7 +29,67 @@ class
     //Analyze the results for the user.
     Reporter::Report(results,settings.report);
     
+    
+    Isolate_Nondeterministic_Files(results,settings);
+❱
+
+◀private: static▶ void ☀Setup_Workspace(Settings & settings) ❰
+
+    //before starting the analysis, we either clone or move into an existing repo.
+    //This is chosen by the user and regardless of their choice, we will end up at the root of a repository.
+    //NOTE: we want to avoid cloning the repo more than once from a branch as the branch may change.
+    //for example, master would be changing frequently and me affect results.
+    //so instead we use the same repository for the whole analysis.
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
+    settings.a_path = Repo_Establisher::Establish_And_Get_Path(settings.repo);
+    if (settings.concurrency == Concurrency::SEQUENTIAL){
+        settings.b_path = settings.a_path;
+    }
+    else {
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,"duplicating folder...");
+        settings.b_path = Random_Tmp_Directory();
+        execute("cp -R " + settings.a_path + " " + settings.b_path);
+    }
+❱
+
+◀private: static▶ void ☀Isolate_Nondeterministic_Files(Determinism_Pairings const& results, Settings const& settings) ❰
+
     //Isolate the files that are nondeterministic
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"filtering results...");
     auto filtered_results = Subcommand_Filter::Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,"collecting nondeterministic objects...");
+    std::map<std::string,tools::protos::SpawnExec> file_map;
+    for (auto const& it: filtered_results){
+        auto problems = Determinism_Problem_Getter::Get(it);
+        for (auto const& problem: problems){
+            if (!problem.file_path.empty()){
+                file_map.insert({problem.file_path,it.first});
+            }
+        }
+    }
+    
+    std::string message = std::to_string(file_map.size()) + " files will need isolated";
+    Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
+    
+    if (settings.concurrency == Concurrency::PARALLEL){
+        auto isolation_folder = Random_Tmp_Directory();
+        
+        for (auto const& it: file_map){
+            auto file_a = settings.a_path + "/" + it.first;
+            auto file_b = settings.b_path + "/" + it.first;
+            if (File_Exists(file_a)){
+            }
+            else{
+                std::cerr << file_a << " does not exist" << std::endl;
+            }
+            
+            if (File_Exists(file_b)){
+            }
+            else{
+                std::cerr << file_b << " does not exist" << std::endl;
+            }
+        }
+    }
+
 ❱
