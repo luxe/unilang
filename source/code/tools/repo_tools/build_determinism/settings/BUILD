@@ -8,6 +8,7 @@ hcp(name = "settings", deps = [
     "//code/utilities/git-related/repo_establisher:repo_location",
     "//code/tools/repo_tools/build_determinism/settings:report_settings",
     "//code/utilities/bazel:spawn_strategy",
+    "//code/utilities/data_structures:concurrency",
 ])
 
 hcp(name = "report_settings", deps = [

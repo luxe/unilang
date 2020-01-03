@@ -20,8 +20,14 @@ class
 
 ◀public: static▶ Determinism_Pairings ☀Do_AB_Test(Settings const& settings) ❰
     
-    //auto pairings = Run_AB_Test_Sequentially(settings);
-    auto pairings = Run_AB_Test_In_Parallel(settings);
+    //get pairings based on a specified concurrency model
+    Spawn_Pairings pairings;
+    if (settings.concurrency == Concurrency::SEQUENTIAL){
+        pairings = Run_AB_Test_Sequentially(settings);
+    }
+    else {
+        pairings = Run_AB_Test_In_Parallel(settings);
+    }
     
     std::string pair_results_message = "subcommands: " + std::to_string(pairings.pairs.size()) + " matches " + std::to_string(pairings.unpaired1.size() + pairings.unpaired2.size()) + " non-matches";
     Maybe_Output_And_Flush_With_Newline(settings.verbose,pair_results_message);
