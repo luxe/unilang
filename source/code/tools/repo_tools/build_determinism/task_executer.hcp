@@ -72,9 +72,32 @@ class
     std::string message = std::to_string(file_map.size()) + " files will need isolated";
     Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
     
+    auto isolation_folder = Random_Tmp_Directory();
+    
     if (settings.concurrency == Concurrency::PARALLEL){
-        auto isolation_folder = Random_Tmp_Directory();
-        
+        for (auto const& it: file_map){
+            auto file_a = settings.a_path + "/" + it.first;
+            auto file_b = settings.b_path + "/" + it.first;
+            if (File_Exists(file_a)){
+                std::cout << file_a << " does exist" << std::endl;
+            }
+            else{
+                std::cerr << file_a << " does not exist" << std::endl;
+            }
+            
+            if (File_Exists(file_b)){
+                std::cout << file_a << " does exist" << std::endl;
+            }
+            else{
+                std::cerr << file_b << " does not exist" << std::endl;
+            }
+        }
+    }
+    
+    
+    
+    
+    else if (settings.concurrency == Concurrency::SEQUENTIAL){
         for (auto const& it: file_map){
             auto file_a = settings.a_path + "/" + it.first;
             auto file_b = settings.b_path + "/" + it.first;
