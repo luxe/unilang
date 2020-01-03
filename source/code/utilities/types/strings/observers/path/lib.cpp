@@ -66,3 +66,11 @@ std::string Prepend_Path_To_Program_Execution_Unless_Global_Call(std::string con
     }
     return new_path;
 }
+
+std::string Prepend_Cd_Path(std::string const& program_execution, std::string const& path)
+{
+    std::string cmd;
+    cmd += "cd " + path + "; ";
+    cmd += program_execution;
+    return cmd;
+}

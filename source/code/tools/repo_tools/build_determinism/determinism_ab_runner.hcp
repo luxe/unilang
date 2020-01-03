@@ -44,11 +44,11 @@ class
 ◀private: static▶ Spawn_Pairings ☀Run_AB_Test_Sequentially(Settings const& settings) ❰
 
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"(Test A) building target...");
-    auto bazel_1 = Prepend_Path_To_Program_Execution_Unless_Global_Call(settings.bazel_wrapper.program_name,settings.a_path);
+    auto bazel_1 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.a_path);
     auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_strategy,settings.target_name);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"(Test B) building target...");
-    auto bazel_2 = Prepend_Path_To_Program_Execution_Unless_Global_Call(settings.bazel_wrapper.program_name,settings.b_path);
+    auto bazel_2 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.b_path);
     auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(settings.bazel_wrapper.program_name,settings.b_strategy,settings.target_name);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"Pairing together subcommands...");
@@ -65,12 +65,12 @@ class
     std::unordered_map<std::string,tools::protos::SpawnExec> spawns2;
     
     std::thread t1([&](){
-        auto bazel_1 = Prepend_Path_To_Program_Execution_Unless_Global_Call(settings.bazel_wrapper.program_name,settings.a_path);
+        auto bazel_1 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.a_path);
         spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_strategy,settings.target_name);
     });
     
     std::thread t2([&](){
-        auto bazel_2 = Prepend_Path_To_Program_Execution_Unless_Global_Call(settings.bazel_wrapper.program_name,settings.b_path);
+        auto bazel_2 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.b_path);
         spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_strategy,settings.target_name);
     });
     

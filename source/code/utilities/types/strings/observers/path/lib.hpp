@@ -10,3 +10,4 @@ std::string Get_First_Folder_Name(std::string const& str);
 bool File_Name_Starts_With(std::string const& str, std::string const& prefix);
 
 std::string Prepend_Path_To_Program_Execution_Unless_Global_Call(std::string const& program_execution, std::string const& path);
+std::string Prepend_Cd_Path(std::string const& program_execution, std::string const& path);
