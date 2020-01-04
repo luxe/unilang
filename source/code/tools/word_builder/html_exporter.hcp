@@ -23,7 +23,18 @@ class
 
 ◀private: static▶ std::string ☀As_Html_Format(std::vector<Puzzle> const& puzzles, Settings const& settings)❰
     
-    //build css
+    //build html sections
+    auto css = Get_Css();
+    auto body = Get_Body(puzzles,settings);
+    
+    //build html
+    std::string html = Basic_Html_Template_Getter::Get(css,body);
+    return html;
+❱
+
+
+◀private: static▶ std::string ☀Get_Css()❰
+
     std::string css;
     Append_With_Newline(css,"table { ");
     Append_With_Newline(css,"border: 0px solid black; ");
@@ -41,11 +52,55 @@ class
     
     Append_With_Newline(css,"table { padding-bottom: 60px; }");
     Append_With_Newline(css,"tr { text-align: center; }");
+    Append_With_Newline(css,"p { font-size: 10px; }");
+    return css;
+❱
+
+◀private: static▶ std::string ☀Get_Body(std::vector<Puzzle> const& puzzles, Settings const& settings)❰
+    std::string x;
     
-    //build body
-    std::string body;
+    //puzzles
+    for (auto const& it: puzzles){
+        Append_With_Newline(x,"<table>");
+        Append_With_Newline(x,"<tr>");
+        
+        Append_With_Newline(x,"<td>");
+        Append_With_Newline(x,it.letters);
+        Append_With_Newline(x,"</td>");
+        
+        Append_With_Newline(x,"<td>");
+        Append_With_Newline(x,std::to_string(it.words.size()));
+        Append_With_Newline(x,"</td>");
+
+        Append_With_Newline(x,"</tr>");
+        Append_With_Newline(x,"</table>");
+    }
     
-    //build html
-    std::string html = Basic_Html_Template_Getter::Get(css,body);
-    return html;
+    //put answers on bottom
+    Append_With_Newline(x,"<table>");
+    Append_With_Newline(x,"</table>");
+    Append_With_Newline(x,"<table>");
+    Append_With_Newline(x,"</table>");
+    Append_With_Newline(x,"<table>");
+    Append_With_Newline(x,"</table>");
+    Append_With_Newline(x,"<table>");
+    Append_With_Newline(x,"</table>");
+    Append_With_Newline(x,"<table>");
+    Append_With_Newline(x,"</table>");
+    Append_With_Newline(x,"<table>");
+    Append_With_Newline(x,"</table>");
+    
+    
+    //answers
+    for (auto const& it: puzzles){
+        Append_With_Newline(x,"<p>");
+        for (auto const& word: it.words){
+            Append_With_Newline(x,word);
+            Append_With_Newline(x," ");
+        }
+        Append_With_Newline(x,"</p>");
+    }
+    
+    
+    return x;
 ❱
