@@ -22,6 +22,7 @@ hcp(name = "crossword_puzzle_settings_getter", deps = [
     "//code/tools/crossword:crossword_words",
     "//code/utilities/colors:color_palettes",
     "//code/utilities/streams/filestreams/read_all:lib",
+    "//code/utilities/types/char:lib",
 ])
 
 hcp(name = "crossword_random_place_settings", deps = [

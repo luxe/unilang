@@ -42,7 +42,8 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
         ("synthesize_problems","synthesize the nondeterminism problems in a human friendly way")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
-        ("flaky",value<int>(),"try the A/B tests in different environments n number of times to evaluate any flakiness of nondeterminism")
+        ("environment_scan",value<int>(),"try the A/B tests in different environments n number of times to evaluate any flakiness of nondeterminism")
+        ("augmented_scan",value<int>(),"try the A/B tests with different augmentations on the environment n number of times to evaluate any flakiness of nondeterminism")
         ("verbose","show verbose progress")
 
 	//+----------------------------------------------------------+
@@ -92,9 +93,6 @@ void Program_Options::Process_Immediate_Options( boost::program_options::options
 
 void Program_Options::Check_For_Mandatory_Flags_Not_Passed(){
 	std::vector<std::string> flags_not_passed;
-	//if(!vm.count("input_files")){flags_not_passed.push_back("input_files");}
-	//if(!vm.count("exporter")){flags_not_passed.push_back("exporter");}
-	//if(!vm.count("language")){flags_not_passed.push_back("language");}
 
 	if (!flags_not_passed.empty()){
 		std::cerr << "you need to pass the following flags still:\n";
@@ -145,10 +143,18 @@ std::string Program_Options::Url() const{
 
 	return data;
 }
-int Program_Options::Flaky() const{
+int Program_Options::Environment_Scan() const{
 	int data = 0;
-	if (vm.count("flaky")){
-		data = vm["flaky"].as<int>();
+	if (vm.count("environment_scan")){
+		data = vm["environment_scan"].as<int>();
+	}
+
+	return data;
+}
+int Program_Options::Augmented_Scan() const{
+	int data = 0;
+	if (vm.count("augmented_scan")){
+		data = vm["augmented_scan"].as<int>();
 	}
 
 	return data;

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <map>
 
 //observers
 bool Is_A_Control_Character(char const& c);
@@ -45,6 +46,7 @@ char From_Binary(std::string const& str);
 
 int as_number(char const& c);
 
+std::map<std::string,double> Standard_Char_Likelyhood_In_Words();
 
 
 //character for bars

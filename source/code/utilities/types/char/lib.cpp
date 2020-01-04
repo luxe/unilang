@@ -214,3 +214,35 @@ int as_number(char const& c){
     if (c == '8'){ return 8;}   if (c == '9'){ return 9;}
     return 0;
 }
+
+std::map<std::string,double> Standard_Char_Likelyhood_In_Words()
+{
+    std::map<std::string,double> char_likelyhood;
+    char_likelyhood.insert({"A",7.731310380600402});
+    char_likelyhood.insert({"B",1.8591674378486283});
+    char_likelyhood.insert({"C",4.00857436453624});
+    char_likelyhood.insert({"D",3.3550443159468637});
+    char_likelyhood.insert({"E",11.280240648067918});
+    char_likelyhood.insert({"F",1.1918838256126723});
+    char_likelyhood.insert({"G",2.802386832731124});
+    char_likelyhood.insert({"H",2.499729840714085});
+    char_likelyhood.insert({"I",9.033969337412247});
+    char_likelyhood.insert({"J",0.16661459960429031});
+    char_likelyhood.insert({"K",0.938110928385194});
+    char_likelyhood.insert({"L",5.229851520456461});
+    char_likelyhood.insert({"M",2.8964219121776016});
+    char_likelyhood.insert({"N",6.692169703257041});
+    char_likelyhood.insert({"O",6.629846411989964});
+    char_likelyhood.insert({"P",3.0010668835800134});
+    char_likelyhood.insert({"Q",0.16901164926840867});
+    char_likelyhood.insert({"R",6.983077222330286});
+    char_likelyhood.insert({"S",9.62828047052906});
+    char_likelyhood.insert({"T",6.522725799131168});
+    char_likelyhood.insert({"U",3.3091860051595514});
+    char_likelyhood.insert({"V",0.9202312956446393});
+    char_likelyhood.insert({"W",0.7690206873245193});
+    char_likelyhood.insert({"X",0.28355918649635825});
+    char_likelyhood.insert({"Y",1.616004432577084});
+    char_likelyhood.insert({"Z",0.48251430861817945});
+    return char_likelyhood;
+}
