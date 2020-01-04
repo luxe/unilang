@@ -13,12 +13,12 @@ std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c)
 	str.erase(std::remove(str.begin(), str.end(), c), str.end());
 	return str;
 }
-std::string& Remove_First_Instance_Of_Char(std::string & str, char const& c)
-{
-    //auto found = str.find(c);
-    //if (found != str.end()){
-        str.erase(str.find(c));
-    //}
+std::string& Remove_First_Instance_Of_Char(std::string & str, char const& c){
+    auto index = str.find(c);
+    if (index != std::string::npos) {
+        str.erase(index,1);
+    }
+    
         return str;
 }
 
