@@ -18,23 +18,6 @@ class
 ⚯
 ⚞⚟
 
-◀public: static▶ std::vector<std::string> ☀Get_Direct_Dependencies(std::string const& bazel_wrapper, std::string const& dep_name)❰
-
-    auto command = Get_Bazel_Direct_Implicit_Dep_Query_Command(bazel_wrapper,dep_name);
-    auto results = Get_Each_Line_Of_Shell_Command(command);
-    Remove_If(results,[&](std::string s){
-        return !Begins_With(s,"@");
-    });
-    
-    for (auto & it: results){
-        Remove_Everything_After_Found_Instance(it,"//");
-        Remove_First_Char(it);
-    }
-    
-    Sort_And_Remove_Duplicates(results);
-    return results;
-❱
-
 
 ◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Run_Environment const& run_environment, std::string const& target)❰
 
@@ -90,26 +73,6 @@ class
 ◀private: static▶ std::string ☀Clean_Command(std::string const& bazel_wrapper) ❰
     std::string command = bazel_wrapper;
     command += " clean";
-    return command;
-❱
-
-
-//Doing reverse dependency queries
-◀private: static▶ std::string ☀Get_Bazel_Direct_Implicit_Dep_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
-    std::string command = bazel_wrapper;
-    command += " query 'rdeps(...,@" + dep_name + "//...)' ";
-    command += "--implicit_deps ";
-    command += "--nohost_deps ";
-    command += "--keep_going 2> /dev/null ";
-    return command;
-❱
-
-◀private: static▶ std::string ☀Get_Bazel_Direct_Implicit_NoDep_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
-    std::string command = bazel_wrapper;
-    command += " query 'deps(@" + dep_name + "//...)' ";
-    command += "--noimplicit_deps ";
-    command += "--nohost_deps ";
-    command += "--keep_going 2> /dev/null ";
     return command;
 ❱
 
