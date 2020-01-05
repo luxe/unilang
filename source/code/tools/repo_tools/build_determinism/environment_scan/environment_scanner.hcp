@@ -9,6 +9,7 @@ class
 ❪"code/tools/repo_tools/build_determinism/subcommand_filter"❫
 ❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
 ❪"code/utilities/random/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/utilities/filesystem/files/moving/lib"❫
@@ -17,89 +18,86 @@ class
 ⚯
 ⚞⚟
 
-◀public: static▶ void ☀Do_Multi_Environment_AB_Test(Settings settings) ❰
+◀public: static▶ void ☀Do_Multi_Environment_AB_Test(Settings const& settings) ❰
     
     Environment_Scan_Results results;
     
+    //do A/B determinism experiments multiple times on different kinds of environments
     for (size_t i = 0; i < settings.environment_scan; ++i){
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"on iteration " + std::to_string(i));
         
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing local/local test");
-        {
-            settings.a_strategy = Spawn_Strategy::LOCAL;
-            settings.b_strategy = Spawn_Strategy::LOCAL;
-            auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
-            if (d_results.nondeterministic.empty()){
-                ++results.local_local.first;
-            }
-            else{
-                ++results.local_local.second;
-            }
-        }
+        Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::LOCAL,Spawn_Strategy::LOCAL,results.local_local);
         
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing remote/remote test");
-        {
-            settings.a_strategy = Spawn_Strategy::REMOTE;
-            settings.b_strategy = Spawn_Strategy::REMOTE;
-            auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
-            if (d_results.nondeterministic.empty()){
-                ++results.remote_remote.first;
-            }
-            else{
-                ++results.remote_remote.second;
-            }
-        }
+        Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::REMOTE,Spawn_Strategy::REMOTE,results.remote_remote);
 
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing local/remote test");
-        {
-            settings.a_strategy = Spawn_Strategy::LOCAL;
-            settings.b_strategy = Spawn_Strategy::REMOTE;
-            auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
-            if (d_results.nondeterministic.empty()){
-                ++results.local_remote.first;
-            }
-            else{
-                ++results.local_remote.second;
-            }
-        }
+        Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::LOCAL,Spawn_Strategy::REMOTE,results.local_remote);
     }
     
+    std::string str_results;
+    
     //show results
-    std::cout << "                 D  ND" << std::endl;
-    std::cout << "LOCAL  | LOCAL  " << results.local_local << std::endl;
-    std::cout << "REMOTE | REMOTE " << results.remote_remote << std::endl;
-    std::cout << "LOCAL  | REMOTE " << results.local_remote << std::endl;
+    Append_With_Newline(str_results,"                 D  ND");
+    Append(str_results,"LOCAL  | LOCAL  ");
+    Append_With_Newline(str_results,Stream_Str(results.local_local));
+    Append(str_results,"REMOTE | REMOTE ");
+    Append_With_Newline(str_results,Stream_Str(results.remote_remote));
+    Append(str_results,"LOCAL  | REMOTE ");
+    Append_With_Newline(str_results,Stream_Str(results.local_remote));
     
     //synthesize results
     
     //understanding local builds
-    if (results.local_local.first > 0 && results.local_local.second == 0){
-        std::cout << "building locally is always deterministic." << std::endl;
-    }
-    else if (results.local_local.first > 0 && results.local_local.second > 0){
-        std::cout << "building locally is sometimes nondeterministic." << std::endl;
-    }
-    else if (results.local_local.first == 0 && results.local_local.second > 0){
-        std::cout << "building locally is always nondeterministic." << std::endl;
-    }
+    Append_With_Newline_Unless_Empty(str_results,Express_Determinism_Of_Action("building locally",results.local_local));
     
     //understanding remote builds
-    if (results.remote_remote.first > 0 && results.remote_remote.second == 0){
-        std::cout << "building remotely is always deterministic." << std::endl;
-    }
-    else if (results.remote_remote.first > 0 && results.remote_remote.second > 0){
-        std::cout << "building remotely is sometimes nondeterministic." << std::endl;
-    }
-    else if (results.remote_remote.first == 0 && results.remote_remote.second > 0){
-        std::cout << "building remotely is always nondeterministic." << std::endl;
-    }
+    Append_With_Newline_Unless_Empty(str_results,Express_Determinism_Of_Action("building remotely",results.remote_remote));
     
     //understanding differences between local/remote builds together
     if (results.local_local.first > 0 && results.local_local.second == 0){
         if (results.remote_remote.first > 0 && results.remote_remote.second == 0){
             if (results.local_remote.second > 0){
-                std::cout << "local builds and remote builds are differently deterministic." << std::endl;
+                Append_With_Newline(str_results,"local builds and remote builds are differently deterministic.");;
             }
         }
     }
 ❱
+
+
+◀private: static▶ std::string ☀Express_Determinism_Of_Action(std::string const& action, std::pair<int,int> const& results)❰
+    if (results.first > 0 && results.second == 0){
+        return action + " is always deterministic.";
+    }
+    else if (results.first > 0 && results.second > 0){
+         return action + " building remotely is sometimes nondeterministic.";
+    }
+    else if (results.first == 0 && results.second > 0){
+         return action + " building remotely is always nondeterministic.";
+    }
+    return "";
+❱
+
+◀private: static▶ void ☀Do_AB_Experiment_With_Environment_Combination(Settings settings, Spawn_Strategy s1, Spawn_Strategy s2, std::pair<int,int> & results)❰
+
+    //set new strategy
+    settings.a_strategy = s1;
+    settings.b_strategy = s2;
+    
+    //run experiment and record determinism results
+    auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+    Increment_Determinism_Results(d_results,results);
+❱
+
+◀private: static▶ void ☀Increment_Determinism_Results(Determinism_Pairings const& d_results, std::pair<int,int> & results)❰
+
+    //record whether the experiment was deterministic or not
+    if (d_results.nondeterministic.empty()){
+        ++results.first;
+    }
+    else{
+        ++results.second;
+    }
+❱
+

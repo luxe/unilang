@@ -6,6 +6,13 @@ std::string& Append_With_Newline(std::string & str_to_append_to, std::string con
         str_to_append_to += append + "\n";
         return str_to_append_to;
 }
+std::string& Append_With_Newline_Unless_Empty(std::string & str, std::string const& part){
+        if (!str.empty()){
+                Append_With_Newline(str,part);
+        }
+        return str;
+}
+
 std::string& Append_With_Newline(std::string & str_to_append_to, char const& append){
         str_to_append_to += append;
         str_to_append_to += "\n";

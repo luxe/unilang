@@ -3,9 +3,16 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <sstream>
 #include "code/utilities/printers/prettyprint.hpp"
 
 
+template <typename T>
+std::string Stream_Str(T const& t){
+  std::stringstream ss;
+  ss << t;
+  return ss.str();
+}
 
 void Clear_Terminal();
 void Clear_Terminal2();

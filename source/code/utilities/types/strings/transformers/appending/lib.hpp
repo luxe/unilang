@@ -4,6 +4,7 @@
 //APPENDING
 //appending to string
 std::string& Append_With_Newline(std::string & str, std::string const& part);
+std::string& Append_With_Newline_Unless_Empty(std::string & str, std::string const& part);
 std::string& Append_With_Newline(std::string & str, char const& part);
 std::string& Append_With_Space(std::string & str, std::string const& part);
 std::string& Append_With_Space(std::string & str, char const& part);

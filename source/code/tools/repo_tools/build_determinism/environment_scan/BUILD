@@ -21,4 +21,5 @@ hcp(name = "environment_scanner", deps = [
     "//code/utilities/filesystem/files/moving:lib",
     "//code/tools/repo_tools/build_determinism:file_isolator",
     "//code/tools/repo_tools/build_determinism/environment_scan:environment_scan_results",
+    "//code/utilities/types/strings/transformers/appending:lib",
 ])
