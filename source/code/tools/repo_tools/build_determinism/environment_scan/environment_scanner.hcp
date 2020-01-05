@@ -13,28 +13,27 @@ class
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/utilities/filesystem/files/moving/lib"❫
 ❪"code/tools/repo_tools/build_determinism/file_isolator"❫
+❪"code/tools/repo_tools/build_determinism/environment_scan/environment_scan_results"❫
 ⚯
 ⚞⚟
 
 ◀public: static▶ void ☀Do_Multi_Environment_AB_Test(Settings settings) ❰
-
-    std::pair<int,int> local_local {0,0};
-    std::pair<int,int> remote_remote {0,0};
-    std::pair<int,int> local_remote {0,0};
     
-    for (size_t i = 0; i < settings.flaky; ++i){
+    Environment_Scan_Results results;
+    
+    for (size_t i = 0; i < settings.environment_scan; ++i){
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"on iteration " + std::to_string(i));
         
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing local/local test");
         {
             settings.a_strategy = Spawn_Strategy::LOCAL;
             settings.b_strategy = Spawn_Strategy::LOCAL;
-            auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
-            if (results.nondeterministic.empty()){
-                ++local_local.first;
+            auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+            if (d_results.nondeterministic.empty()){
+                ++results.local_local.first;
             }
             else{
-                ++local_local.second;
+                ++results.local_local.second;
             }
         }
         
@@ -42,12 +41,12 @@ class
         {
             settings.a_strategy = Spawn_Strategy::REMOTE;
             settings.b_strategy = Spawn_Strategy::REMOTE;
-            auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
-            if (results.nondeterministic.empty()){
-                ++remote_remote.first;
+            auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+            if (d_results.nondeterministic.empty()){
+                ++results.remote_remote.first;
             }
             else{
-                ++remote_remote.second;
+                ++results.remote_remote.second;
             }
         }
 
@@ -55,50 +54,50 @@ class
         {
             settings.a_strategy = Spawn_Strategy::LOCAL;
             settings.b_strategy = Spawn_Strategy::REMOTE;
-            auto results = Determinism_Ab_Runner::Do_AB_Test(settings);
-            if (results.nondeterministic.empty()){
-                ++local_remote.first;
+            auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+            if (d_results.nondeterministic.empty()){
+                ++results.local_remote.first;
             }
             else{
-                ++local_remote.second;
+                ++results.local_remote.second;
             }
         }
     }
     
     //show results
     std::cout << "                 D  ND" << std::endl;
-    std::cout << "LOCAL  | LOCAL  " << local_local << std::endl;
-    std::cout << "REMOTE | REMOTE " << remote_remote << std::endl;
-    std::cout << "LOCAL  | REMOTE " << local_remote << std::endl;
+    std::cout << "LOCAL  | LOCAL  " << results.local_local << std::endl;
+    std::cout << "REMOTE | REMOTE " << results.remote_remote << std::endl;
+    std::cout << "LOCAL  | REMOTE " << results.local_remote << std::endl;
     
     //synthesize results
     
     //understanding local builds
-    if (local_local.first > 0 && local_local.second == 0){
+    if (results.local_local.first > 0 && results.local_local.second == 0){
         std::cout << "building locally is always deterministic." << std::endl;
     }
-    else if (local_local.first > 0 && local_local.second > 0){
+    else if (results.local_local.first > 0 && results.local_local.second > 0){
         std::cout << "building locally is sometimes nondeterministic." << std::endl;
     }
-    else if (local_local.first == 0 && local_local.second > 0){
+    else if (results.local_local.first == 0 && results.local_local.second > 0){
         std::cout << "building locally is always nondeterministic." << std::endl;
     }
     
     //understanding remote builds
-    if (remote_remote.first > 0 && remote_remote.second == 0){
+    if (results.remote_remote.first > 0 && results.remote_remote.second == 0){
         std::cout << "building remotely is always deterministic." << std::endl;
     }
-    else if (remote_remote.first > 0 && remote_remote.second > 0){
+    else if (results.remote_remote.first > 0 && results.remote_remote.second > 0){
         std::cout << "building remotely is sometimes nondeterministic." << std::endl;
     }
-    else if (remote_remote.first == 0 && remote_remote.second > 0){
+    else if (results.remote_remote.first == 0 && results.remote_remote.second > 0){
         std::cout << "building remotely is always nondeterministic." << std::endl;
     }
     
     //understanding differences between local/remote builds together
-    if (local_local.first > 0 && local_local.second == 0){
-        if (remote_remote.first > 0 && remote_remote.second == 0){
-            if (local_remote.second > 0){
+    if (results.local_local.first > 0 && results.local_local.second == 0){
+        if (results.remote_remote.first > 0 && results.remote_remote.second == 0){
+            if (results.local_remote.second > 0){
                 std::cout << "local builds and remote builds are differently deterministic." << std::endl;
             }
         }
