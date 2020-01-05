@@ -49,6 +49,17 @@ class
     return results;
 ❱
 
+◀private: static▶ void ☀Do_AB_Experiment_With_Environment_Combination(Settings settings, Run_Environment s1, Run_Environment s2, std::pair<int,int> & results)❰
+
+    //set new strategy
+    settings.a_build.environment = s1;
+    settings.b_build.environment = s2;
+    
+    //run experiment and record determinism results
+    auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+    Increment_Determinism_Results(d_results,results);
+❱
+
 
 ◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& results)❰
 
@@ -56,12 +67,9 @@ class
     
     //show results
     Append_With_Newline(x,"                 D  ND");
-    Append(x,"LOCAL  | LOCAL  ");
-    Append_With_Newline(x,Stream_Str(results.local_local));
-    Append(x,"REMOTE | REMOTE ");
-    Append_With_Newline(x,Stream_Str(results.remote_remote));
-    Append(x,"LOCAL  | REMOTE ");
-    Append_With_Newline(x,Stream_Str(results.local_remote));
+    Append_Row(x,"LOCAL  | LOCAL  ",results.local_local);
+    Append_Row(x,"REMOTE | REMOTE ",results.remote_remote);
+    Append_Row(x,"LOCAL  | REMOTE ",results.local_remote);
     
     //synthesize results
     
@@ -72,15 +80,14 @@ class
     Append_With_Newline_Unless_Empty(x,Express_Determinism_Of_Action("building remotely",results.remote_remote));
     
     //understanding differences between local/remote builds together
-    if (results.local_local.first > 0 && results.local_local.second == 0){
-        if (results.remote_remote.first > 0 && results.remote_remote.second == 0){
-            if (results.local_remote.second > 0){
-                Append_With_Newline(x,"local builds and remote builds are differently deterministic.");;
-            }
-        }
-    }
+    Append_With_Newline_Unless_Empty(x,Express_Determinism_Of_Mixed_Actions("local builds and remote builds",results.local_local,results.remote_remote,results.local_remote));
     
     return x;
+❱
+
+◀private: static▶ void ☀Append_Row(std::string & x, std::string const& name, std::pair<int,int> const& results)❰
+    Append(x,name);
+    Append_With_Newline(x,Stream_Str(results));
 ❱
 
 ◀private: static▶ std::string ☀Express_Determinism_Of_Action(std::string const& action, std::pair<int,int> const& results)❰
@@ -96,15 +103,15 @@ class
     return "";
 ❱
 
-◀private: static▶ void ☀Do_AB_Experiment_With_Environment_Combination(Settings settings, Run_Environment s1, Run_Environment s2, std::pair<int,int> & results)❰
-
-    //set new strategy
-    settings.a_build.environment = s1;
-    settings.b_build.environment = s2;
-    
-    //run experiment and record determinism results
-    auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
-    Increment_Determinism_Results(d_results,results);
+◀private: static▶ std::string ☀Express_Determinism_Of_Mixed_Actions(std::string const& action, std::pair<int,int> const& a1, std::pair<int,int> const& a2, std::pair<int,int> const& combined)❰
+    if (a1.first > 0 && a1.second == 0){
+        if (a2.first > 0 && a2.second == 0){
+            if (combined.second > 0){
+                return action + " are differently deterministic.";
+            }
+        }
+    }
+    return "";
 ❱
 
 ◀private: static▶ void ☀Increment_Determinism_Results(Determinism_Pairings const& d_results, std::pair<int,int> & results)❰
