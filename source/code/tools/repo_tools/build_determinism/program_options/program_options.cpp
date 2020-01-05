@@ -43,7 +43,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
         ("environment_scan",value<int>(),"try the A/B tests in different environments n number of times to evaluate any flakiness of nondeterminism")
-        ("augmented_scan",value<int>(),"try the A/B tests with different augmentations on the environment n number of times to evaluate any flakiness of nondeterminism")
+        ("augment_scan",value<int>(),"try the A/B tests with different augmentations on the environment n number of times to evaluate any flakiness of nondeterminism")
         ("verbose","show verbose progress")
 
 	//+----------------------------------------------------------+
@@ -153,8 +153,8 @@ int Program_Options::Environment_Scan() const{
 }
 int Program_Options::Augmented_Scan() const{
 	int data = 0;
-	if (vm.count("augmented_scan")){
-		data = vm["augmented_scan"].as<int>();
+	if (vm.count("augment_scan")){
+		data = vm["augment_scan"].as<int>();
 	}
 
 	return data;
