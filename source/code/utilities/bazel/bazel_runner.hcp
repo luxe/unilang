@@ -14,7 +14,7 @@ class
 ❪"code/utilities/random/lib"❫
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/utilities/serialization/protobuf"❫
-❪"code/utilities/bazel/spawn_strategy"❫
+❪"code/utilities/bazel/run_environment"❫
 ⚯
 ⚞⚟
 
@@ -36,9 +36,9 @@ class
 ❱
 
 
-◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target)❰
+◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Run_Environment const& run_environment, std::string const& target)❰
 
-    auto spawns = Get_Spawn_Information(bazel_wrapper,spawn_strategy,target);
+    auto spawns = Get_Spawn_Information(bazel_wrapper,run_environment,target);
     
     //turn the response into a map where the key is the spawn subcommand
     std::unordered_map<std::string,tools::protos::SpawnExec> results;
@@ -55,14 +55,14 @@ class
     
     return results;
 ❱
-◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target)❰
+◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, Run_Environment const& run_environment, std::string const& target)❰
 
     //clean
     Clean(bazel_wrapper);
     
     //build
     std::string file_name = Random_Tmp_Filename();
-    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,spawn_strategy,target,file_name);
+    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,run_environment,target,file_name);
     Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
     
     //extract
@@ -71,8 +71,8 @@ class
 ❱
 
 
-◀public: static▶ void ☀Build_Target(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target)❰
-    auto command = Get_Create_Build_Target_Command(bazel_wrapper,spawn_strategy,target);
+◀public: static▶ void ☀Build_Target(std::string const& bazel_wrapper, Run_Environment const& run_environment, std::string const& target)❰
+    auto command = Get_Create_Build_Target_Command(bazel_wrapper,run_environment,target);
     Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
 ❱
 
@@ -115,9 +115,9 @@ class
 
 
 //Doing target builds
-◀private: static▶ std::string ☀Get_Create_Build_Target_Command(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target) ❰
+◀private: static▶ std::string ☀Get_Create_Build_Target_Command(std::string const& bazel_wrapper, Run_Environment const& run_environment, std::string const& target) ❰
 
-    if (spawn_strategy == Spawn_Strategy::LOCAL){
+    if (run_environment == Run_Environment::LOCAL){
         return Get_Create_Build_Target_Command_Local_Build(bazel_wrapper,target);
     }
     return Get_Create_Build_Target_Command_Remote_Build(bazel_wrapper,target);
@@ -141,9 +141,9 @@ class
 //Doing target builds while creating an execution log
 //command += " --execution_log_binary_file=";
 //I had trouble reading in the binary format
-◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Spawn_Strategy const& spawn_strategy, std::string const& target, std::string const& file_name) ❰
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Run_Environment const& run_environment, std::string const& target, std::string const& file_name) ❰
 
-    if (spawn_strategy == Spawn_Strategy::LOCAL){
+    if (run_environment == Run_Environment::LOCAL){
         return Get_Create_Spawn_File_Command_Local_Build(bazel_wrapper,target,file_name);
     }
     return Get_Create_Spawn_File_Command_Remote_Build(bazel_wrapper,target,file_name);

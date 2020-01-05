@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 
-enum_cpp(name = "spawn_strategy",
+enum_cpp(name = "run_environment",
 values = [
 "local"
 ,"remote"
@@ -22,5 +22,5 @@ hcp(name = "bazel_runner", deps = [
     "@bazel//:spawn_proto_cpp",
     "//code/utilities/serialization:protobuf",
     "//code/utilities/json/functions:lib",
-    "//code/utilities/bazel:spawn_strategy",
+    "//code/utilities/bazel:run_environment",
 ])
