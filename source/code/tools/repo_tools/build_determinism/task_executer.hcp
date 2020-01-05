@@ -23,10 +23,15 @@ class
     //get the default settings modified by user's program options.
     auto settings = Settings_Getter::Get(options);
     
+    //this will decide which directories to do the analysis in.
+    //it might clone and copy folders, it might use existing paths given by the user.
     Setup_Workspace(settings);
     
     //try to derive the correct bazel program if its not known.
     Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper,settings.a_path);
+    
+    //at this point we have the directories we want to operate in, and knowledge of how to run bazel within them.
+    //we move onto doing some kind of analysis.
     
     if (settings.environment_scan != 0){
         Environment_Scanner::Do_Multi_Environment_AB_Test(settings);
