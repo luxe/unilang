@@ -38,12 +38,12 @@ class
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"(Test A) building target...");
     auto bazel_1 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.a_path);
     Possibly_Augment_System(settings);
-    auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_build.environment,settings.target_name);
+    auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_build,settings.target_name);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"(Test B) building target...");
     auto bazel_2 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.b_path);
     Possibly_Augment_System(settings);
-    auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_build.environment,settings.target_name);
+    auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_build,settings.target_name);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"Pairing together subcommands...");
     auto pairings = Spawn_Pairer::Build_Matches_And_Unpairable_Spawns(spawns1,spawns2);
@@ -61,13 +61,13 @@ class
     std::thread t1([&](){
         auto bazel_1 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.a_path);
         Possibly_Augment_System(settings);
-        spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_build.environment,settings.target_name);
+        spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_build,settings.target_name);
     });
     
     std::thread t2([&](){
         auto bazel_2 = Prepend_Cd_Path(settings.bazel_wrapper.program_name,settings.b_path);
         Possibly_Augment_System(settings);
-        spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_build.environment,settings.target_name);
+        spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_build,settings.target_name);
     });
     
     t1.join();

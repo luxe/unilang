@@ -40,6 +40,7 @@ hcp(name = "bazel_runner", deps = [
     "//code/utilities/serialization:protobuf",
     "//code/utilities/json/functions:lib",
     "//code/utilities/bazel:run_environment",
+    "//code/utilities/bazel:build_settings",
 ])
 
 hcp(name = "bazel_query_runner", deps = [
