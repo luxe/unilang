@@ -4,9 +4,20 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 
+#customly defined environments (not really a bazel concept per se)
 enum_cpp(name = "run_environment",
 values = [
 "local"
+,"remote"
+])
+
+#https://docs.bazel.build/versions/master/user-manual.html#strategy-options
+enum_cpp(name = "spawn_strategy",
+values = [
+"local"
+,"sandboxed"
+,"worker"
+,"docker"
 ,"remote"
 ])
 
