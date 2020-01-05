@@ -19,11 +19,7 @@ class
     
     auto puzzles = Create_Puzzles(settings);
     
-    Html_Exporter::Export(puzzles,settings,settings.puzzle_output_file);
-    
-    //std::cout << settings.words.size() << " words" << std::endl;
-    //std::cout << "letters: " << p1.letters << std::endl;
-    //std::cout << p1.words.size() << " answers" << std::endl;
+    Html_Exporter::Export(puzzles,settings);
     
 ❱
 
@@ -39,13 +35,15 @@ class
     //but its what seems to be whats available when I link the data to the binary with "data=".
     settings.words = Read_Each_Line_Of_File_Into_Vector("external/scrabble_words/2019.txt");
     
-    settings.word_length = 8;
+    settings.letter_amount = 8;
+    settings.min_word_size = 4;
     
     settings.puzzle_amount = 6;
     settings.min_words_in_puzzle = 5;
     settings.max_words_in_puzzle = 50;
     
     settings.puzzle_output_file = "/home/laptop/Desktop/word_build.html";
+    settings.puzzle_pdf_file = "/home/laptop/Desktop/word_build.pdf";
     
     return settings;
 ❱
@@ -66,7 +64,7 @@ class
 ◀private: static▶ Puzzle ☀Create_Puzzle(Settings const& settings)❰
 
     //create random letters based on probability
-    auto letters = Get_N_Random_Letters(settings.letter_probability,settings.word_length);
+    auto letters = Get_N_Random_Letters(settings.letter_probability,settings.letter_amount);
     
     
     
@@ -74,7 +72,7 @@ class
     std::vector<std::string> answers;
     for (auto const& it: settings.words){
         
-        if (it.size() >= 4){
+        if (it.size() >= settings.min_word_size){
             if (Letters_Exist_In_Word(letters,it)){
                 answers.emplace_back(it);
             }
@@ -89,9 +87,9 @@ class
 
 ❱
 
-◀private: static▶ std::string ☀Get_N_Random_Letters(std::map<std::string,double> const& letter_probability, int const& word_length)❰
+◀private: static▶ std::string ☀Get_N_Random_Letters(std::map<std::string,double> const& letter_probability, int const& letter_amount)❰
     std::string letters;
-    for (size_t i = 0; i < word_length; ++i){
+    for (size_t i = 0; i < letter_amount; ++i){
         letters += Get_Random_By_Probability(letter_probability);
     }
     return letters;
