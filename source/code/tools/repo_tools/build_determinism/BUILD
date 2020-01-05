@@ -35,6 +35,22 @@ hcp(name = "file_isolator", deps = [
     "//code/utilities/filesystem/files/moving:lib",
 ])
 
+hcp(name = "scan_utilities", deps = [
+    "//code/tools/repo_tools/build_determinism/settings:settings_getter",
+    "//code/utilities/printers:lib",
+    "//code/utilities/git-related/repo_establisher:repo_establisher",
+    "//code/utilities/bazel/wrapper:bazel_wrapper_deriver",
+    "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
+    "//code/tools/repo_tools/build_determinism:reporter",
+    "//code/tools/repo_tools/build_determinism:subcommand_filter",
+    "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
+    "//code/utilities/random:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+    "//code/utilities/bazel:bazel_runner",
+    "//code/utilities/filesystem/files/moving:lib",
+])
+
 hcp(name = "spawn_pairer", deps = [
     "@bazel//:spawn_proto_cpp",
     "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
