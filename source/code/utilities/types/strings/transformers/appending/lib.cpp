@@ -7,7 +7,7 @@ std::string& Append_With_Newline(std::string & str_to_append_to, std::string con
         return str_to_append_to;
 }
 std::string& Append_With_Newline_Unless_Empty(std::string & str, std::string const& part){
-        if (!str.empty()){
+        if (!part.empty()){
                 Append_With_Newline(str,part);
         }
         return str;
