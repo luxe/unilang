@@ -20,6 +20,16 @@ class
 
 ◀public: static▶ void ☀Do_Multi_Environment_AB_Test(Settings const& settings) ❰
     
+    //run the environment scan tests
+    auto results = Do_Test(settings);
+    
+    //print the results
+    auto str_results = Get_Printable_Results(results);
+    std::cout << str_results << std::endl;
+❱
+
+◀private: static▶ Environment_Scan_Results ☀Do_Test(Settings const& settings) ❰
+
     Environment_Scan_Results results;
     
     //do A/B determinism experiments multiple times on different kinds of environments
@@ -36,35 +46,42 @@ class
         Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::LOCAL,Spawn_Strategy::REMOTE,results.local_remote);
     }
     
-    std::string str_results;
+    return results;
+❱
+
+
+◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& results)❰
+
+    std::string x;
     
     //show results
-    Append_With_Newline(str_results,"                 D  ND");
-    Append(str_results,"LOCAL  | LOCAL  ");
-    Append_With_Newline(str_results,Stream_Str(results.local_local));
-    Append(str_results,"REMOTE | REMOTE ");
-    Append_With_Newline(str_results,Stream_Str(results.remote_remote));
-    Append(str_results,"LOCAL  | REMOTE ");
-    Append_With_Newline(str_results,Stream_Str(results.local_remote));
+    Append_With_Newline(x,"                 D  ND");
+    Append(x,"LOCAL  | LOCAL  ");
+    Append_With_Newline(x,Stream_Str(results.local_local));
+    Append(x,"REMOTE | REMOTE ");
+    Append_With_Newline(x,Stream_Str(results.remote_remote));
+    Append(x,"LOCAL  | REMOTE ");
+    Append_With_Newline(x,Stream_Str(results.local_remote));
     
     //synthesize results
     
     //understanding local builds
-    Append_With_Newline_Unless_Empty(str_results,Express_Determinism_Of_Action("building locally",results.local_local));
+    Append_With_Newline_Unless_Empty(x,Express_Determinism_Of_Action("building locally",results.local_local));
     
     //understanding remote builds
-    Append_With_Newline_Unless_Empty(str_results,Express_Determinism_Of_Action("building remotely",results.remote_remote));
+    Append_With_Newline_Unless_Empty(x,Express_Determinism_Of_Action("building remotely",results.remote_remote));
     
     //understanding differences between local/remote builds together
     if (results.local_local.first > 0 && results.local_local.second == 0){
         if (results.remote_remote.first > 0 && results.remote_remote.second == 0){
             if (results.local_remote.second > 0){
-                Append_With_Newline(str_results,"local builds and remote builds are differently deterministic.");;
+                Append_With_Newline(x,"local builds and remote builds are differently deterministic.");;
             }
         }
     }
+    
+    return x;
 ❱
-
 
 ◀private: static▶ std::string ☀Express_Determinism_Of_Action(std::string const& action, std::pair<int,int> const& results)❰
     if (results.first > 0 && results.second == 0){
