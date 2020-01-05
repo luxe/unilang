@@ -16,6 +16,8 @@ class
 ❪"code/utilities/serialization/protobuf"❫
 ❪"code/utilities/bazel/build_settings"❫
 ⚯
+❪"code/utilities/flags/data/flags"❫
+❪"code/utilities/flags/flag_util"❫
 ⚞⚟
 
 
@@ -106,25 +108,39 @@ class
 //I had trouble reading in the binary format
 ◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Build_Settings const& settings, std::string const& target, std::string const& file_name) ❰
 
-    if (settings.environment == Run_Environment::LOCAL){
-        return Get_Create_Spawn_File_Command_Local_Build(bazel_wrapper,target,file_name);
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    Flag_Util::Add_Flag(flags,"execution_log_json_file",file_name);
+    
+    //remote specific flags
+    if (settings.environment == Run_Environment::REMOTE){
+        Flag_Util::Add_Flag(flags,"config","remote");
+        Flag_Util::Add_Flag(flags,"noremote_accept_cached");
     }
-    return Get_Create_Spawn_File_Command_Remote_Build(bazel_wrapper,target,file_name);
-❱
-◀private: static▶ std::string ☀Get_Create_Spawn_File_Command_Local_Build(std::string const& bazel_wrapper, std::string const& target, std::string const& file_name) ❰
+    
+    //spawn strategy flags
+    if (settings.strategy == Spawn_Strategy::LOCAL){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","local");
+    }
+    else if (settings.strategy == Spawn_Strategy::SANDBOXED){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","sandboxed");
+    }
+    else if (settings.strategy == Spawn_Strategy::WORKER){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","worker");
+    }
+    else if (settings.strategy == Spawn_Strategy::DOCKER){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","docker");
+    }
+    else if (settings.strategy == Spawn_Strategy::REMOTE){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","remote");
+    }
+    
+    
+    //turn flags into cli command
     std::string command = bazel_wrapper;
-    command += " build ";
-    command += target;
-    command += " --execution_log_json_file=";
-    command += file_name;
-    return command;
-❱
-◀private: static▶ std::string ☀Get_Create_Spawn_File_Command_Remote_Build(std::string const& bazel_wrapper, std::string const& target, std::string const& file_name) ❰
-    std::string command = bazel_wrapper;
-    command += " build ";
-    command += target;
-    command += " --config=remote --noremote_accept_cached";
-    command += " --execution_log_json_file=";
-    command += file_name;
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
     return command;
 ❱
