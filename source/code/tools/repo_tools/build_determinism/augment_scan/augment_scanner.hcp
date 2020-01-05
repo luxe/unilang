@@ -1,0 +1,85 @@
+class
+❪"code/tools/repo_tools/build_determinism/settings/settings_getter"❫
+❪"code/utilities/printers/lib"❫
+❪"code/utilities/printers/prettyprint"❫
+❪"code/utilities/git-related/repo_establisher/repo_establisher"❫
+❪"code/utilities/bazel/wrapper/bazel_wrapper_deriver"❫
+❪"code/tools/repo_tools/build_determinism/determinism_ab_runner"❫
+❪"code/tools/repo_tools/build_determinism/reporter"❫
+❪"code/tools/repo_tools/build_determinism/subcommand_filter"❫
+❪"code/tools/repo_tools/build_determinism/determinism_problem_getter"❫
+❪"code/utilities/random/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/bazel/bazel_runner"❫
+❪"code/utilities/filesystem/files/moving/lib"❫
+❪"code/tools/repo_tools/build_determinism/file_isolator"❫
+❪"code/tools/repo_tools/build_determinism/augment_scan/augment_scan_results"❫
+⚯
+❪"code/tools/repo_tools/build_determinism/scan_utilities"❫
+⚞⚟
+
+◀public: static▶ void ☀Do_Multi_Environment_AB_Test(Settings const& settings) ❰
+    
+    //run the environment scan tests
+    auto results = Do_Test(settings);
+    
+    //print the results
+    auto str_results = Get_Printable_Results(results);
+    std::cout << str_results << std::endl;
+❱
+
+◀private: static▶ Augment_Scan_Results ☀Do_Test(Settings const& settings) ❰
+
+    Augment_Scan_Results results;
+    
+    //do A/B determinism experiments multiple times on different kinds of local augmentations
+    for (size_t i = 0; i < settings.environment_scan; ++i){
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,"on iteration " + std::to_string(i));
+        
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing standalone/standalone test");
+        Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::LOCAL,Spawn_Strategy::LOCAL,results.sandbox_sandbox);
+        
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing sandbox/sandbox test");
+        Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::SANDBOXED,Spawn_Strategy::SANDBOXED,results.standalone_standalone);
+
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing standalone/sandbox test");
+        Do_AB_Experiment_With_Environment_Combination(settings,Spawn_Strategy::LOCAL,Spawn_Strategy::SANDBOXED,results.standalone_sandbox);
+    }
+    
+    return results;
+❱
+
+◀private: static▶ void ☀Do_AB_Experiment_With_Environment_Combination(Settings settings, Spawn_Strategy s1, Spawn_Strategy s2, std::pair<int,int> & results)❰
+
+    //set new strategy
+    settings.a_build.environment = Run_Environment::LOCAL;
+    settings.b_build.environment = Run_Environment::LOCAL;
+    settings.a_build.strategy = s1;
+    settings.b_build.strategy = s2;
+    
+    //run experiment and record determinism results
+    auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+    Scan_Utilities::Increment_Determinism_Results(d_results,results);
+❱
+
+
+◀private: static▶ std::string ☀Get_Printable_Results(Augment_Scan_Results const& results)❰
+
+    std::string x;
+    
+    //show results
+    Append_With_Newline       (x,"                         D  ND");
+    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",results.standalone_standalone);
+    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",results.sandbox_sandbox);
+    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",results.standalone_sandbox);
+    
+    //synthesize results
+    
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building outside sandbox",results.standalone_standalone));
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building with sandbox",results.sandbox_sandbox));
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("building with and without sandbox",results.standalone_standalone,results.sandbox_sandbox,results.standalone_sandbox));
+    
+    return x;
+❱
+

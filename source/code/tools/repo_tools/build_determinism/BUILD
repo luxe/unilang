@@ -18,6 +18,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/filesystem/files/moving:lib",
     "//code/tools/repo_tools/build_determinism:file_isolator",
     "//code/tools/repo_tools/build_determinism/environment_scan:environment_scanner",
+    "//code/tools/repo_tools/build_determinism/augment_scan:augment_scanner",
 ])
 
 hcp(name = "file_isolator", deps = [
