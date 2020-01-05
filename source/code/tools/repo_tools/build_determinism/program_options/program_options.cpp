@@ -39,6 +39,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	("target",value<std::string>(),"what you would pass to bazel build")
 	    ("url",value<std::string>(),"git url to clone with")
         ("run_dir",value<std::string>(),"where to run the analysis")
+        ("branch",value<std::string>(),"which branch to run the experiment on")
         ("synthesize_problems","synthesize the nondeterminism problems in a human friendly way")
         ("output_dir",value<std::string>(),"the directory to output graph artifacts")
         ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
@@ -115,6 +116,14 @@ std::string Program_Options::Run_Dir() const{
 	std::string data;
 	if (vm.count("run_dir")){
 		data = vm["run_dir"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Branch() const{
+	std::string data;
+	if (vm.count("branch")){
+		data = vm["branch"].as<std::string>();
 	}
 
 	return data;

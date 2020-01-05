@@ -19,6 +19,7 @@ class Program_Options {
 	//+----------------------------------------------------------+
 	    std::string Url() const;
 	    std::string Run_Dir() const;
+        std::string Branch() const;
         std::string Target() const;
         std::string Output_Dir() const;
         bool Synthesize() const;
