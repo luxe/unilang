@@ -7,11 +7,16 @@ hcp(name = "settings", deps = [
     "//code/utilities/bazel/wrapper:bazel_wrapper",
     "//code/utilities/git-related/repo_establisher:repo_location",
     "//code/tools/repo_tools/build_determinism/settings:report_settings",
-    "//code/utilities/bazel:run_environment",
     "//code/utilities/data_structures:concurrency",
+    "//code/tools/repo_tools/build_determinism/settings:build_settings",
 ])
 
 hcp(name = "report_settings", deps = [
+])
+
+hcp(name = "build_settings", deps = [
+    "//code/utilities/bazel:run_environment",
+    "//code/utilities/bazel:spawn_strategy",
 ])
 
 hcp(name = "settings_getter", deps = [

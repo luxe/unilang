@@ -1,0 +1,82 @@
+class
+❪string❫
+❪iostream❫
+❪set❫
+❪"code/utilities/flags"❫
+⚯
+⚞⚟
+
+
+//Adding cli arguments in different ways
+◀public: static▶ void ☀Add_Flag(Flags & flags, std::string const& flag, std::string const& value)❰
+    Flag f;
+    f.name = flag;
+    f.value = value;
+    flags.all.emplace_back(f);
+❱
+◀public: static▶ void ☀Add_Flag(Flags & flags, std::string const& flag)❰
+    Flag f;
+    f.name = flag;
+    f.value = "";
+    flags.all.emplace_back(f);
+❱
+◀public: static▶ void ☀Add_Value(Flags & flags, std::string const& value)❰
+    Flag f;
+    f.name = "";
+    f.value = value;
+    flags.all.emplace_back(f);
+❱
+◀public: static▶ void ☀Add_Flags(Flags & flags, Flags const& flags2)❰
+    
+    for (auto const& it: flags2.all){
+        flags.all.emplace_back(it);
+    }
+❱
+
+
+//Representing cli arguments in command line form
+◀public: static▶ std::string ☀In_Cli_Form(Flags const& flags)❰
+
+    std::vector<std::string> args;
+    for (auto const& it: flags.all){
+        if (Is_Key_Only(it)){
+            args.emplace_back(Get_As_Standard_Flag_Format(it));
+        }
+        else if (Is_Value_Only(it)){
+            args.emplace_back(it.value);
+        }
+        else if (Is_Key_And_Value(it)){
+            std::string arg;
+            arg += Get_As_Standard_Flag_Format(it);
+            arg += "=";
+            arg += it.value;
+            args.emplace_back(arg);
+        }
+        
+    }
+❱
+
+//checking the kind of argument
+◀private: static▶ bool ☀Is_Key_Only(Flag const& flag)❰
+    return !flag.name.empty() && flag.value.empty();
+❱
+◀private: static▶ bool ☀Is_Value_Only(Flag const& flag)❰
+    return flag.name.empty() && !flag.value.empty();
+❱
+◀private: static▶ bool ☀Is_Key_And_Value(Flag const& flag)❰
+    return !flag.name.empty() && !flag.value.empty();
+❱
+
+◀private: static▶ std::string ☀Get_As_Standard_Flag_Format(Flag const& flag)❰
+
+    std::string arg;
+    if (flag.name.size() == 1){
+        arg += "-";
+        arg += flag.name;
+    }
+    else if (flag.name.size() > 1){
+        arg += "--";
+        arg += flag.name;
+    }
+    return arg;
+❱

@@ -14,7 +14,8 @@ values = [
 #https://docs.bazel.build/versions/master/user-manual.html#strategy-options
 enum_cpp(name = "spawn_strategy",
 values = [
-"local"
+"default"
+,"local"
 ,"sandboxed"
 ,"worker"
 ,"docker"
