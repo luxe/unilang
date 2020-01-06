@@ -99,23 +99,27 @@ class
         
         execute("nm -a " + file_a + " > " + file_a + "_nm_debug_symbols.txt");
         execute("nm -a " + file_b + " > " + file_b + "_nm_debug_symbols.txt");
-        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_debug_symbols.txt");
+        Create_Diff_File_If_Different(isolation_folder,Get_File_Name(it.first),file_a,file_b,"_nm_debug_symbols.txt");
         
         execute("nm -C " + file_a + " > " + file_a + "_nm_symbols_demangled.txt");
         execute("nm -C " + file_b + " > " + file_b + "_nm_symbols_demangled.txt");
-        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_symbols_demangled.txt");
+        Create_Diff_File_If_Different(isolation_folder,Get_File_Name(it.first),file_a,file_b,"_nm_symbols_demangled.txt");
         
         execute("nm -g " + file_a + " > " + file_a + "_nm_external_symbols.txt");
         execute("nm -g " + file_b + " > " + file_b + "_nm_external_symbols.txt");
-        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_external_symbols.txt");
+        Create_Diff_File_If_Different(isolation_folder,Get_File_Name(it.first),file_a,file_b,"_nm_external_symbols.txt");
         
         execute("nm --synthetic " + file_a + " > " + file_a + "_nm_synthetic.txt");
         execute("nm --synthetic " + file_b + " > " + file_b + "_nm_synthetic.txt");
-        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_synthetic.txt");
+        Create_Diff_File_If_Different(isolation_folder,Get_File_Name(it.first),file_a,file_b,"_nm_synthetic.txt");
         
         execute("nm -u " + file_a + " > " + file_a + "_nm_undefined_symbols.txt");
         execute("nm -u " + file_b + " > " + file_b + "_nm_undefined_symbols.txt");
-        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_undefined_symbols.txt");
+        Create_Diff_File_If_Different(isolation_folder,Get_File_Name(it.first),file_a,file_b,"_nm_undefined_symbols.txt");
+        
+        execute("readelf -a " + file_a + " > " + file_a + "_readelf_all.txt");
+        execute("readelf -a " + file_b + " > " + file_b + "_readelf_all.txt");
+        Create_Diff_File_If_Different(isolation_folder,Get_File_Name(it.first),file_a,file_b,"_readelf_all.txt");
     }
 ❱
 
@@ -125,7 +129,7 @@ class
     std::string diff_command = "diff " + file_a + extension + " " + file_b + extension;
     auto diff = execute(diff_command);
     if (!diff.empty()){
-        execute(diff_command + " > " + isolation_folder + "/" + base_name + extension);
+        execute(diff_command + " > " + isolation_folder + "/" + base_name + "_diff_" + extension);
     }
 ❱
 
