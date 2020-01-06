@@ -15,6 +15,19 @@ std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
 	execute_quietly(command);
 	return dir;
 }
+std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url, std::string branch)
+{
+	auto dir = Random_Tmp_Directory();
+	std::string command = "git clone ";
+	command += "--branch ";
+	command += branch;
+	command += " ";
+	command += ssh_url;
+	command += " ";
+	command += dir;
+	execute_quietly(command);
+	return dir;
+}
 
 bool Inside_Git_Repository(){
 	return Directory_Exists_In_Current_Directory_Or_Any_Parents(".git");

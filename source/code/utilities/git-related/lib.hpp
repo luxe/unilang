@@ -15,6 +15,7 @@ std::string Git_Hosted_User();
 
 //returns path to a newly cloned repo
 std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url);
+std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url, std::string branch);
 
 //transformers
 void Create_Repo_On_Github(std::string const& user_name, std::string const& autorization, std::string const& project_name, std::string const& description);
