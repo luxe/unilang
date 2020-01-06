@@ -57,19 +57,8 @@ class
         for (auto const& it: file_map){
             auto file_a = settings.a_path + "/" + it.first;
             auto file_b = settings.b_path + "/" + it.first;
-            if (File_Exists(file_a)){
-                Copy_File_To_Dir(file_a,isolation_folder_a);
-            }
-            else{
-                std::cerr << file_a << " does not exist" << std::endl;
-            }
-            
-            if (File_Exists(file_b)){
-                Copy_File_To_Dir(file_b,isolation_folder_b);
-            }
-            else{
-                std::cerr << file_b << " does not exist" << std::endl;
-            }
+            Copy_File_To_Dir_And_Report_Problems(file_a,isolation_folder_a);
+            Copy_File_To_Dir_And_Report_Problems(file_b,isolation_folder_b);
         }
     }
     
@@ -79,12 +68,7 @@ class
         //copy files from previous build
         for (auto const& it: file_map){
             auto file_b = settings.b_path + "/" + it.first;
-            if (File_Exists(file_b)){
-                Copy_File_To_Dir(file_b,isolation_folder_b);
-            }
-            else{
-                std::cerr << file_b << " does not exist" << std::endl;
-            }
+            Copy_File_To_Dir_And_Report_Problems(file_b,isolation_folder_b);
         }
         
         //do another build to regenerate the nondeterministic files
@@ -95,14 +79,18 @@ class
         //copy files from previous build
         for (auto const& it: file_map){
             auto file_a = settings.a_path + "/" + it.first;
-            if (File_Exists(file_a)){
-                Copy_File_To_Dir(file_a,isolation_folder_a);
-            }
-            else{
-                std::cerr << file_a << " does not exist" << std::endl;
-            }
+            Copy_File_To_Dir_And_Report_Problems(file_a,isolation_folder_a);
         }
     }
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"files have been isolated to " + isolation_folder);
+❱
+
+◀private: static▶ void ☀Copy_File_To_Dir_And_Report_Problems(std::string const& file, std::string const& folder)❰
+    if (File_Exists(file)){
+        Copy_File_To_Dir(file,folder);
+    }
+    else{
+        std::cerr << file << " does not exist." << std::endl;
+    }
 ❱
