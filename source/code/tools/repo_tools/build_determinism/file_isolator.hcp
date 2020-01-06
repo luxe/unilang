@@ -11,6 +11,7 @@ class
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/utilities/filesystem/files/moving/lib"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
 ⚯
 ⚞⚟
 
@@ -37,7 +38,8 @@ class
     if (!file_map.empty()){
         std::string message = std::to_string(file_map.size()) + " files will need isolated";
         Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
-        Isolate_Nondeterministic_Files(file_map,settings);
+        auto isolation_folder = Isolate_Nondeterministic_Files(file_map,settings);
+        Create_Differences(file_map,isolation_folder,settings);
     }
     else{
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"there are no files to isolate because there were no nondeterministic behavior observed");
@@ -45,7 +47,7 @@ class
 
 ❱
 
-◀private: static▶ void ☀Isolate_Nondeterministic_Files(std::map<std::string,tools::protos::SpawnExec> const& file_map, Settings const& settings) ❰
+◀private: static▶ std::string ☀Isolate_Nondeterministic_Files(std::map<std::string,tools::protos::SpawnExec> const& file_map, Settings const& settings) ❰
 
     auto isolation_folder = Random_Tmp_Directory();
     auto isolation_folder_a = isolation_folder + "/a";
@@ -84,6 +86,47 @@ class
     }
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"files have been isolated to " + isolation_folder);
+    
+    return isolation_folder;
+❱
+
+
+◀private: static▶ void ☀Create_Differences(std::map<std::string,tools::protos::SpawnExec> const& file_map, std::string const& isolation_folder, Settings const& settings)❰
+    
+    for (auto const& it: file_map){
+        auto file_a = isolation_folder + "/a/" + Get_File_Name(it.first);
+        auto file_b = isolation_folder + "/b/" + Get_File_Name(it.first);
+        
+        execute("nm -a " + file_a + " > " + file_a + "_nm_debug_symbols.txt");
+        execute("nm -a " + file_b + " > " + file_b + "_nm_debug_symbols.txt");
+        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_debug_symbols.txt");
+        
+        execute("nm -C " + file_a + " > " + file_a + "_nm_symbols_demangled.txt");
+        execute("nm -C " + file_b + " > " + file_b + "_nm_symbols_demangled.txt");
+        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_symbols_demangled.txt");
+        
+        execute("nm -g " + file_a + " > " + file_a + "_nm_external_symbols.txt");
+        execute("nm -g " + file_b + " > " + file_b + "_nm_external_symbols.txt");
+        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_external_symbols.txt");
+        
+        execute("nm --synthetic " + file_a + " > " + file_a + "_nm_synthetic.txt");
+        execute("nm --synthetic " + file_b + " > " + file_b + "_nm_synthetic.txt");
+        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_synthetic.txt");
+        
+        execute("nm -u " + file_a + " > " + file_a + "_nm_undefined_symbols.txt");
+        execute("nm -u " + file_b + " > " + file_b + "_nm_undefined_symbols.txt");
+        Create_Diff_File_If_Different(isolation_folder,it.first,file_a,file_b,"_nm_undefined_symbols.txt");
+    }
+❱
+
+
+◀private: static▶ void ☀Create_Diff_File_If_Different(std::string const& isolation_folder, std::string const& base_name, std::string const& file_a, std::string const& file_b, std::string const& extension)❰
+
+    std::string diff_command = "diff " + file_a + extension + " " + file_b + extension;
+    auto diff = execute(diff_command);
+    if (!diff.empty()){
+        execute(diff_command + " > " + isolation_folder + "/" + base_name + extension);
+    }
 ❱
 
 ◀private: static▶ void ☀Copy_File_To_Dir_And_Report_Problems(std::string const& file, std::string const& folder)❰

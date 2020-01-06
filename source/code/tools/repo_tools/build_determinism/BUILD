@@ -34,6 +34,7 @@ hcp(name = "file_isolator", deps = [
     "//code/utilities/random:lib",
     "//code/utilities/bazel:bazel_runner",
     "//code/utilities/filesystem/files/moving:lib",
+    "//code/utilities/types/strings/observers/path:lib",
 ])
 
 hcp(name = "scan_utilities", deps = [
