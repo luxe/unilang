@@ -15,12 +15,13 @@ class
 ⚞⚟
 
 
-◀public: static▶ void ☀Isolate_Nondeterministic_Files(Determinism_Pairings const& results, Settings const& settings) ❰
+◀public: static▶ void ☀Attempt_To_Isolate_Nondeterministic_Files(Determinism_Pairings const& results, Settings const& settings) ❰
 
-    //Isolate the files that are nondeterministic
+    //Isolate subcommands that are nondeterministic
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"filtering results...");
     auto filtered_results = Subcommand_Filter::Filter_By_Subcommands_That_Cause_Nondeterminism(results.nondeterministic);
     
+    //Convert results into specific files that are nondeterministic
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"collecting nondeterministic objects...");
     std::map<std::string,tools::protos::SpawnExec> file_map;
     for (auto const& it: filtered_results){
@@ -32,9 +33,20 @@ class
         }
     }
     
-    std::string message = std::to_string(file_map.size()) + " files will need isolated";
-    Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
-    
+    //decide whether to actually isolate files
+    if (!file_map.empty()){
+        std::string message = std::to_string(file_map.size()) + " files will need isolated";
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
+        Isolate_Nondeterministic_Files(file_map,settings);
+    }
+    else{
+        Maybe_Output_And_Flush_With_Newline(settings.verbose,"there are no files to isolate because there were no nondeterministic behavior observed");
+    }
+
+❱
+
+◀private: static▶ void ☀Isolate_Nondeterministic_Files(std::map<std::string,tools::protos::SpawnExec> const& file_map, Settings const& settings) ❰
+
     auto isolation_folder = Random_Tmp_Directory();
     auto isolation_folder_a = isolation_folder + "/a";
     auto isolation_folder_b = isolation_folder + "/b";
@@ -93,5 +105,4 @@ class
     }
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"files have been isolated to " + isolation_folder);
-
 ❱
