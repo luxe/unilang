@@ -17,6 +17,7 @@ class
 ⚯
 ❪"code/tools/repo_tools/build_determinism/scans/environment_scan/environment_scanner"❫
 ❪"code/tools/repo_tools/build_determinism/scans/augment_scan/augment_scanner"❫
+❪"code/tools/repo_tools/build_determinism/scan_utilities"❫
 ⚞⚟
 
 
@@ -55,8 +56,9 @@ class
     auto scan_results = Perform_Requested_Scans(settings);
     Print_Needed_Scan_Info(settings,scan_results);
     
-    
-    Do_Regular_AB_Test(settings);
+    if (settings.default_diagnosis){
+        Do_Regular_AB_Test(settings);
+    }
 ❱
 
 ◀private: static▶ Scan_Results ☀Perform_Requested_Scans(Settings const& settings)❰
@@ -75,6 +77,47 @@ class
 
 ◀private: static▶ void ☀Print_Needed_Scan_Info(Settings const& settings, Scan_Results const& results)❰
 ❱
+
+
+◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& results)❰
+
+    std::string x;
+    
+    //show results
+    Append_With_Newline       (x,"                 D  ND");
+    Scan_Utilities::Append_Row(x,"LOCAL  | LOCAL  ",results.local_local);
+    Scan_Utilities::Append_Row(x,"REMOTE | REMOTE ",results.remote_remote);
+    Scan_Utilities::Append_Row(x,"LOCAL  | REMOTE ",results.local_remote);
+    
+    //synthesize results
+    
+    //understanding local builds
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building locally",results.local_local));
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building remotely",results.remote_remote));
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("local builds and remote builds",results.local_local,results.remote_remote,results.local_remote));
+    
+    return x;
+❱
+◀private: static▶ std::string ☀Get_Printable_Results(Augment_Scan_Results const& results)❰
+
+    std::string x;
+    
+    //show results
+    Append_With_Newline       (x,"                          D  ND");
+    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",results.standalone_standalone);
+    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",results.sandbox_sandbox);
+    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",results.standalone_sandbox);
+    
+    //synthesize results
+    
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building outside sandbox",results.standalone_standalone));
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building with sandbox",results.sandbox_sandbox));
+    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("building with and without sandbox",results.standalone_standalone,results.sandbox_sandbox,results.standalone_sandbox));
+    
+    return x;
+❱
+
+
 
 
 ◀private: static▶ void ☀Setup_Workspace(Settings & settings) ❰
