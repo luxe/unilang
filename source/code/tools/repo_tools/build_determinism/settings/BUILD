@@ -9,6 +9,7 @@ hcp(name = "settings", deps = [
     "//code/tools/repo_tools/build_determinism/settings:report_settings",
     "//code/utilities/data_structures:concurrency",
     "//code/utilities/bazel:build_settings",
+    "//code/utilities/bazel/config:bazel_config_settings",
 ])
 
 hcp(name = "report_settings", deps = [

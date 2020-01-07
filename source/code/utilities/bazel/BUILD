@@ -43,6 +43,7 @@ hcp(name = "bazel_runner", deps = [
     "//code/utilities/bazel:build_settings",
     "//code/utilities/flags/data:flags",
     "//code/utilities/flags:flag_util",
+    "//code/utilities/bazel/config:bazel_config_settings",
 ])
 
 hcp(name = "bazel_query_runner", deps = [

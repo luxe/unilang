@@ -15,15 +15,16 @@ class
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/utilities/serialization/protobuf"❫
 ❪"code/utilities/bazel/build_settings"❫
+❪"code/utilities/bazel/config/bazel_config_settings"❫
 ⚯
 ❪"code/utilities/flags/data/flags"❫
 ❪"code/utilities/flags/flag_util"❫
 ⚞⚟
 
 
-◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Build_Settings const& settings, std::string const& target)❰
+◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
 
-    auto spawns = Get_Spawn_Information(bazel_wrapper,settings,target);
+    auto spawns = Get_Spawn_Information(bazel_wrapper,settings,config_settings,target);
     
     //turn the response into a map where the key is the spawn subcommand
     std::unordered_map<std::string,tools::protos::SpawnExec> results;
@@ -40,14 +41,14 @@ class
     
     return results;
 ❱
-◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, Build_Settings const& settings, std::string const& target)❰
+◀public: static▶ std::vector<tools::protos::SpawnExec> ☀Get_Spawn_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
 
     //clean
     Clean(bazel_wrapper);
     
     //build
     std::string file_name = Random_Tmp_Filename();
-    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,settings,target,file_name);
+    auto command = Get_Create_Spawn_File_Command(bazel_wrapper,settings,config_settings,target,file_name);
     Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
     
     //extract
@@ -56,9 +57,9 @@ class
 ❱
 
 
-◀public: static▶ void ☀Build_Target(std::string const& bazel_wrapper, Build_Settings const& settings, std::string const& target)❰
+◀public: static▶ void ☀Build_Target(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
     Clean(bazel_wrapper);
-    auto command = Get_Create_Build_Target_Command(bazel_wrapper,settings,target);
+    auto command = Get_Create_Build_Target_Command(bazel_wrapper,settings,config_settings,target);
     Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
 ❱
 
@@ -81,25 +82,52 @@ class
 
 
 //Doing target builds
-◀private: static▶ std::string ☀Get_Create_Build_Target_Command(std::string const& bazel_wrapper, Build_Settings const& settings, std::string const& target) ❰
+◀private: static▶ std::string ☀Get_Create_Build_Target_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target) ❰
 
-    if (settings.environment == Run_Environment::LOCAL){
-        return Get_Create_Build_Target_Command_Local_Build(bazel_wrapper,target);
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    
+    //remote specific flags
+    if (settings.environment == Run_Environment::REMOTE){
+        for (auto const& it: config_settings.remote_configs){
+            Flag_Util::Add_Flag(flags,"config",it);
+        }
+        Flag_Util::Add_Flag(flags,"noremote_accept_cached");
     }
-    return Get_Create_Build_Target_Command_Remote_Build(bazel_wrapper,target);
-❱
-◀private: static▶ std::string ☀Get_Create_Build_Target_Command_Local_Build(std::string const& bazel_wrapper, std::string const& target) ❰
+    
+    //local specific flags
+    else{
+        for (auto const& it: config_settings.local_configs){
+            Flag_Util::Add_Flag(flags,"config",it);
+        }
+    }
+    
+    //spawn strategy flags
+    if (settings.strategy == Spawn_Strategy::LOCAL){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","local");
+    }
+    else if (settings.strategy == Spawn_Strategy::SANDBOXED){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","sandboxed");
+    }
+    else if (settings.strategy == Spawn_Strategy::WORKER){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","worker");
+    }
+    else if (settings.strategy == Spawn_Strategy::DOCKER){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","docker");
+    }
+    else if (settings.strategy == Spawn_Strategy::REMOTE){
+        Flag_Util::Add_Flag(flags,"spawn_strategy","remote");
+    }
+    
+    
+    //turn flags into cli command
     std::string command = bazel_wrapper;
-    command += " build ";
-    command += target;
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
     return command;
-❱
-◀private: static▶ std::string ☀Get_Create_Build_Target_Command_Remote_Build(std::string const& bazel_wrapper, std::string const& target) ❰
-    std::string command = bazel_wrapper;
-    command += " build ";
-    command += target;
-    command += " --config=remote --noremote_accept_cached";
-    return command;
+    
 ❱
 
 
@@ -107,7 +135,7 @@ class
 //Doing target builds while creating an execution log
 //command += " --execution_log_binary_file=";
 //I had trouble reading in the binary format
-◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Build_Settings const& settings, std::string const& target, std::string const& file_name) ❰
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& file_name) ❰
 
     //decide flags
     Flags flags;
@@ -117,8 +145,17 @@ class
     
     //remote specific flags
     if (settings.environment == Run_Environment::REMOTE){
-        Flag_Util::Add_Flag(flags,"config","remote");
+        for (auto const& it: config_settings.remote_configs){
+            Flag_Util::Add_Flag(flags,"config",it);
+        }
         Flag_Util::Add_Flag(flags,"noremote_accept_cached");
+    }
+    
+    //local specific flags
+    else{
+        for (auto const& it: config_settings.local_configs){
+            Flag_Util::Add_Flag(flags,"config",it);
+        }
     }
     
     //spawn strategy flags
