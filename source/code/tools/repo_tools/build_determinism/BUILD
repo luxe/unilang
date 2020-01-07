@@ -8,6 +8,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/printers:lib",
     "//code/utilities/git-related/repo_establisher:repo_establisher",
     "//code/utilities/bazel/wrapper:bazel_wrapper_deriver",
+    "//code/utilities/bazel/config:bazel_config_deriver",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:reporter",
     "//code/tools/repo_tools/build_determinism:subcommand_filter",
