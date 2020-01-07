@@ -20,7 +20,7 @@ hcp(name = "augment_scanner", deps = [
     "//code/utilities/bazel:bazel_runner",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/tools/repo_tools/build_determinism:file_isolator",
-    "//code/tools/repo_tools/build_determinism/augment_scan:augment_scan_results",
+    "//code/tools/repo_tools/build_determinism/scans/augment_scan:augment_scan_results",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/tools/repo_tools/build_determinism:scan_utilities",
 ])

@@ -17,8 +17,9 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/bazel:bazel_runner",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/tools/repo_tools/build_determinism:file_isolator",
-    "//code/tools/repo_tools/build_determinism/environment_scan:environment_scanner",
-    "//code/tools/repo_tools/build_determinism/augment_scan:augment_scanner",
+    "//code/tools/repo_tools/build_determinism/scans/environment_scan:environment_scanner",
+    "//code/tools/repo_tools/build_determinism/scans/augment_scan:augment_scanner",
+    "//code/tools/repo_tools/build_determinism/scans:scan_results",
 ])
 
 hcp(name = "file_isolator", deps = [
