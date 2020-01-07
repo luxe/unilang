@@ -80,6 +80,19 @@ class
 ❱
 
 ◀private: static▶ void ☀Print_Needed_Scan_Info(Settings const& settings, Scan_Results const& results)❰
+
+    if (settings.environment_scan != 0 && settings.augmented_scan == 0){
+        auto results = Get_Printable_Results(results.environment);
+        std::cout << results << std::endl;
+    }
+    else if (settings.environment_scan == 0 && settings.augmented_scan != 0){
+        auto results = Get_Printable_Results(results.augment);
+        std::cout << results << std::endl;
+    }
+    else if (settings.environment_scan != 0 && settings.augmented_scan != 0){
+        auto results = Get_Printable_Results(results.environment,results.augment);
+        std::cout << results << std::endl;
+    }
 ❱
 
 
@@ -117,6 +130,21 @@ class
     Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building outside sandbox",results.standalone_standalone));
     Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building with sandbox",results.sandbox_sandbox));
     Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("building with and without sandbox",results.standalone_standalone,results.sandbox_sandbox,results.standalone_sandbox));
+    
+    return x;
+❱
+◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& e_results, Augment_Scan_Results const& a_results)❰
+
+    std::string x;
+    
+    //show results
+    Append_With_Newline       (x,"                          D  ND");
+    Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_results.local_local);
+    Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_results.remote_remote);
+    Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_results.local_remote);
+    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_results.standalone_standalone);
+    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_results.sandbox_sandbox);
+    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_results.standalone_sandbox);
     
     return x;
 ❱
