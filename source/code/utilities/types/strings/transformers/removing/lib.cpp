@@ -30,6 +30,10 @@ std::string& Remove_Spaces(std::string & str)
 {
     return Remove_All_Instances_Of_Char(str,' ');
 }
+std::string& Remove_Double_Quotes(std::string & str)
+{
+    return Remove_All_Instances_Of_Char(str,'"');
+}
 std::string& Remove_Match_If_It_Is_Found_At_Beginning_Or_End(std::string & str, std::string const& match){
         if (Begins_Or_Ends_With(str,match)){
                 Remove_Match_Found_At_Beginning_Or_End(str,match);
