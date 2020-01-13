@@ -1,13 +1,25 @@
 #include "csv/reader.hpp"
 #include "code/utilities/csv/csv_extractor.hpp"
+#include "code/utilities/shell/lib.hpp"
 #include <iostream>
+
+std::string Get_Hostname_Of_Ip_With_Host_Program(std::string const& ip){
+    auto x = execute("host " + ip);
+    return x;
+}
+
+std::string Get_Hostname_Of_Ip_With_Dig_Program(std::string const& ip){
+    auto x = execute("dig +short -x " + ip);
+    return x;
+}
 
 int main(){
     
     
     auto ips = Csv_Extractor::Get_Column_Values_Of_Double_Quoted("/home/thickey/Desktop/wireshark.csv", "Address");
     for (auto const& it: ips){
-        std::cout << it << std::endl;
+        auto host = Get_Hostname_Of_Ip_With_Dig_Program(it);
+        std::cout << it << " " << host << std::endl;
     }
     // exit(0);
     

@@ -5,5 +5,5 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["//code/utilities/csv:csv_extractor","//code/utilities/printers:lib"],
+    deps = ["//code/utilities/csv:csv_extractor","//code/utilities/printers:lib","//code/utilities/shell:lib"],
 )
