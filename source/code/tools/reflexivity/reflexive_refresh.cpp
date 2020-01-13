@@ -14,7 +14,11 @@
 
 // Parts of the repository (this repository, right here) need generated programatically.  
 // The reason we need to generate parts programatically, is so we can try to automatically upgrade portions of the repo infrastructure.
-// Like most things, more possibilities open up, when the repo infrastructure is expressed in a data model
+// Like most things, more possibilities open up, when the repo infrastructure is expressed in a data model.
+
+//other bazel reflectivity tools:
+//https://github.com/bazelbuild/buildtools
+//https://github.com/spotify/bazel-tools
 
 
 int main(int argc, char** argv){
