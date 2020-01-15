@@ -7,6 +7,8 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/network_used/settings:settings",
     "//code/tools/repo_tools/network_used/program_options:lib",
     "//code/tools/repo_tools/network_used/settings:settings_getter",
+    "//code/utilities/tshark:tshark_spawner",
+    "//code/utilities/processes:lib",
 ])
 distributable_cpp_main(
     name = "network_used",

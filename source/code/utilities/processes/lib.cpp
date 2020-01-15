@@ -20,3 +20,7 @@ std::string Wait_Until_We_Have_A_Pid_Of(std::string const& process_name)
     
     return pid;
 }
+void Send_Ctrl_C_To_Pid(std::string const& pid)
+{
+    execute("sudo kill -SIGINT " + pid);
+}
