@@ -182,6 +182,9 @@ std::string Full_Path_To_Desktop(){
 	dir += "/Desktop/";
 	return dir;
 }
+std::string Full_Path_For_Desktop_File(std::string const& file){
+	return Full_Path_To_Desktop() + file;
+}
 
 std::string Full_Path_To_Home_Config_File(std::string const& config_for)
 {

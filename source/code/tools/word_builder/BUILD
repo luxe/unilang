@@ -27,6 +27,7 @@ hcp(name = "word_builder_game_maker", deps = [
     "//code/tools/word_builder/settings:settings",
     "//code/tools/word_builder/data:puzzle",
     "//code/tools/word_builder:html_exporter",
+    "//code/utilities/filesystem/paths:lib",
 ])
 
 hcp(name = "html_exporter", deps = [
