@@ -10,7 +10,7 @@ hcp(name = "augment_scanner", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
     "//code/utilities/printers:lib",
     "//code/utilities/git-related/repo_establisher:repo_establisher",
-    "//code/utilities/bazel/wrapper:bazel_wrapper_deriver",
+    "//code/utilities/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
     "//code/tools/repo_tools/build_determinism:reporter",
     "//code/tools/repo_tools/build_determinism:subcommand_filter",
