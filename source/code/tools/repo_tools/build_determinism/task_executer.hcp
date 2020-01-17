@@ -20,6 +20,7 @@ class
 ❪"code/tools/repo_tools/build_determinism/scans/augment_scan/augment_scanner"❫
 ❪"code/tools/repo_tools/build_determinism/scan_utilities"❫
 ❪"code/utilities/bazel/setup/bazel_setup_deriver"❫
+❪"code/tools/repo_tools/build_determinism/scan_utilities"❫
 ⚞⚟
 
 
@@ -47,7 +48,7 @@ class
     
     //this will decide which directories to do the analysis in.
     //it might clone and copy folders, it might use existing paths given by the user.
-    Setup_Workspace(settings);
+    Setup_AB_Workspace(settings);
     
     //derive different parts of how the bazel repo is setup
     Bazel_Setup_Deriver::Possibly_Derive_Parts_Of_Bazel_Setup(settings.setup,settings.a_path);
@@ -56,7 +57,7 @@ class
     //we move onto doing some kind of analysis.
     
     auto scan_results = Perform_Requested_Scans(settings);
-    Print_Needed_Scan_Info(settings,scan_results);
+    Scan_Results_Printer::Print_Needed_Scan_Info(settings,scan_results);
     
     if (settings.default_diagnosis){
         Do_Regular_AB_Test(settings);
@@ -67,7 +68,7 @@ class
 
     Scan_Results results;
     if (settings.environment_scan != 0){
-        results.environment_scan_performed = true;
+        results.environ;ment_scan_performed = true;
         results.environment = Environment_Scanner::Do_Multi_Environment_AB_Test(settings);
     }
     if (settings.augmented_scan != 0){
@@ -77,80 +78,10 @@ class
     return results;
 ❱
 
-◀private: static▶ void ☀Print_Needed_Scan_Info(Settings const& settings, Scan_Results const& results)❰
-
-    if (settings.environment_scan != 0 && settings.augmented_scan == 0){
-        auto str = Get_Printable_Results(results.environment);
-        std::cout << str << std::endl;
-    }
-    else if (settings.environment_scan == 0 && settings.augmented_scan != 0){
-        auto str = Get_Printable_Results(results.augment);
-        std::cout << str << std::endl;
-    }
-    else if (settings.environment_scan != 0 && settings.augmented_scan != 0){
-        auto str = Get_Printable_Results(results.environment,results.augment);
-        std::cout << str << std::endl;
-    }
-❱
-
-
-◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& results)❰
-
-    std::string x;
-    
-    //show results
-    Append_With_Newline       (x,"                 D  ND");
-    Scan_Utilities::Append_Row(x,"LOCAL  | LOCAL  ",results.local_local);
-    Scan_Utilities::Append_Row(x,"REMOTE | REMOTE ",results.remote_remote);
-    Scan_Utilities::Append_Row(x,"LOCAL  | REMOTE ",results.local_remote);
-    
-    //synthesize results
-    
-    //understanding local builds
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building locally",results.local_local));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building remotely",results.remote_remote));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("local builds and remote builds",results.local_local,results.remote_remote,results.local_remote));
-    
-    return x;
-❱
-◀private: static▶ std::string ☀Get_Printable_Results(Augment_Scan_Results const& results)❰
-
-    std::string x;
-    
-    //show results
-    Append_With_Newline       (x,"                          D  ND");
-    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",results.standalone_standalone);
-    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",results.sandbox_sandbox);
-    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",results.standalone_sandbox);
-    
-    //synthesize results
-    
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building outside sandbox",results.standalone_standalone));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building with sandbox",results.sandbox_sandbox));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("building with and without sandbox",results.standalone_standalone,results.sandbox_sandbox,results.standalone_sandbox));
-    
-    return x;
-❱
-◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& e_results, Augment_Scan_Results const& a_results)❰
-
-    std::string x;
-    
-    //show results
-    Append_With_Newline       (x,"                          D  ND");
-    Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_results.local_local);
-    Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_results.remote_remote);
-    Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_results.local_remote);
-    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_results.standalone_standalone);
-    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_results.sandbox_sandbox);
-    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_results.standalone_sandbox);
-    
-    return x;
-❱
 
 
 
-
-◀private: static▶ void ☀Setup_Workspace(Settings & settings) ❰
+◀private: static▶ void ☀Setup_AB_Workspace(Settings & settings) ❰
 
     //before starting the analysis, we either clone or move into an existing repo.
     //This is chosen by the user and regardless of their choice, we will end up at the root of a repository.
@@ -171,6 +102,13 @@ class
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"A test folder established: " + settings.a_path);
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"B test folder established: " + settings.b_path);
 ❱
+
+
+//◀private: static▶ std::vector<std::string> ☀Create_N_Repos()❰
+//❱
+
+
+
 
 ◀private: static▶ void ☀Do_Regular_AB_Test(Settings const& settings) ❰
 
