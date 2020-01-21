@@ -34,3 +34,28 @@ class
     
     std::cout << results << std::endl;
 ❱
+
+/*
+#!/bin/bash
+mapfile -t lines < <(./bazel query --output label_kind '//external:*' 2>/dev/null)
+for line in "${lines[@]}"
+do
+        kind=${line% //external:*}
+        repo=${line##* //external:}
+        case $kind in
+        'bind rule')
+                # These yield "not a repository" errors when queried.
+                continue
+                ;;
+        'source file')
+                # This eliminates @WORKSPACE -- we might want to revisit this.
+                continue
+                ;;
+        esac
+        query_pattern="@${repo}//...:all"
+        if      ./bazel query --noshow_progress "$query_pattern" > /dev/null
+        then    echo "PASS: $query_pattern (${kind})"
+        else    echo "FAIL: $query_pattern (${kind})"
+        fi
+done
+*/
