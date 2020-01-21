@@ -12,6 +12,10 @@ std::string Bazel_Working_Directory();
 std::string Bazel_Workspace_Directory();
 std::string Bazel_Derived_Root_Of_Repo();
 std::string Bazel_Derived_Path_To_Self_Unilang();
+std::string Bazel_Derived_Path_To_Essays();
+
+void Move_To_Bazel_Derived_Path_To_Self_Unilang();
+void Move_To_Bazel_Derived_Path_To_Essays();
 
 //+---------------------------------------+
 //| changing path / traversing filesystem |

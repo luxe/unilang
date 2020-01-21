@@ -23,7 +23,48 @@ class
 ❪"code/utilities/secret/secret_getter"❫
 ❪"code/utilities/filesystem/files/temp_file"❫
 ❪"code/utilities/pdf/pdf_creator"❫
+❪"code/tools/transcompilers/unilang/user-frontend/file_to_structure_converter"❫
+❪"code/utilities/upload/file_upload_settings"❫
+❪"code/utilities/upload/file_uploader"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
+
+    //Unicode please
+    Set_English_UTF8_Locale();
+    
+    std::string markdown_file = Full_Path_For_Desktop_File("number_signs.md");
+    auto to_raw_pdf = Full_Path_For_Desktop_File("number_signs-pdf.md");
+    auto to_manual_pdf = Full_Path_For_Desktop_File("number_signs.pdf");
+    auto to_latex_template = Full_Path_For_Desktop_File("number_signs.tx");
+    
+    //move somewhere
+    Move_To_Bazel_Derived_Path_To_Essays();
+    
+    //convert to unilang structure
+    auto structure = File_To_Structure_Converter::Convert("number_signs.unilang");
+    
+    //convert to markdown
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+    auto contributors = input.settings.compiler_settings.trevor.contributors;
+    auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
+    auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
+    Write_To_File(markdown_file,result);
+    
+    //build pdf documentation
+    Pdf_Settings pdf_settings;
+    pdf_settings.latex_template = to_latex_template;
+    pdf_settings.md_format = to_raw_pdf;
+    pdf_settings.resulting_pdf = to_manual_pdf;
+    Pdf_Creator::Create_Pdf(structure,pdf_settings);
+    
+    File_Upload_Settings upload_settings;
+    upload_settings.upload_to_dropbox = false;
+    upload_settings.upload_to_github = true;
+
+    upload_settings.local_file_name = to_manual_pdf;
+    upload_settings.remote_file_name = "essays/number_signs.pdf";
+    File_Uploader::Upload(upload_settings);
+    
 ❱

@@ -34,6 +34,19 @@ std::string Bazel_Derived_Path_To_Self_Unilang(){
 	auto x = Bazel_Workspace_Directory();
 	return x + "/code/external_projects/self/";
 }
+std::string Bazel_Derived_Path_To_Essays(){
+	auto x = Bazel_Workspace_Directory();
+	return x + "/code/literature/essays/";
+}
+
+void Move_To_Bazel_Derived_Path_To_Self_Unilang(){
+	auto p = Bazel_Derived_Path_To_Self_Unilang();
+	Set_Path(p);
+}
+void Move_To_Bazel_Derived_Path_To_Essays(){
+	auto p = Bazel_Derived_Path_To_Essays();
+	Set_Path(p);
+}
 
 //+---------------------------------------+
 //| changing path / traversing filesystem |

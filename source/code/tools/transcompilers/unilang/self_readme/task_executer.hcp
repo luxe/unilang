@@ -23,6 +23,7 @@ class
 ❪"code/utilities/secret/secret_getter"❫
 ❪"code/utilities/filesystem/files/temp_file"❫
 ❪"code/utilities/pdf/pdf_creator"❫
+❪"code/tools/transcompilers/unilang/user-frontend/file_to_structure_converter"❫
 ⚞⚟
 
 //garbage deps (needs fixed)
@@ -37,7 +38,7 @@ class
     Set_English_UTF8_Locale();
 
     //move somewhere
-    Move_To_Unilang_Docs_Place_In_Repo();
+    Move_To_Bazel_Derived_Path_To_Self_Unilang();
     
     //the files we are reading/building
     auto from = "unilang_docs.unilang";
@@ -53,7 +54,7 @@ class
     input.settings = Root_Settings_Getter::Get();
     
     //build markdown documentation
-    auto structure = Get_Unilang_Structure_From_File(from);
+    auto structure = File_To_Structure_Converter::Convert(from);
     auto contributors = input.settings.compiler_settings.trevor.contributors;
     auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
     auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
@@ -76,24 +77,6 @@ class
     Upload(upload_to_dropbox,to_manual_pdf);
 ❱
 
-◀private: static▶ Structure ☀Get_Unilang_Structure_From_File(std::string const& file)❰
-
-    //parse it
-    Program_Input input;
-    input.settings = Root_Settings_Getter::Get();
-    input.options.input_files.emplace_back(file);
-    auto graphs = Code_Graphs_Creator::Turn_Files_Into_Code_Graphs(input);
-    
-    //ensure the parse was good
-    if (graphs.size() != 1){
-        Exit_With_Error("we should have parsed out a single code graph");
-    }
-    
-    //build markdown documentation
-    auto structure = graphs[0].structure;
-    return structure;
-❱
-
 ◀private: static▶ void ☀Upload(bool const& upload_to_dropbox, std::string const& to_manual_pdf)❰
 
     //upload pdf to dropbox
@@ -106,10 +89,4 @@ class
         d_settings.strategy = Upload_To_Dropbox_Strategy::CURL_LIB;
         Dropbox_Uploader::Upload(d_settings);
     }
-❱
-
-
-◀private: static▶ void ☀Move_To_Unilang_Docs_Place_In_Repo() ❰
-    auto build_from = Bazel_Derived_Path_To_Self_Unilang();
-    Set_Path(build_from);
 ❱

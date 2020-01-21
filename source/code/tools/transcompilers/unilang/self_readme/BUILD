@@ -25,6 +25,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/pdf:pdf_settings",
 "//code/utilities/filesystem/files:temp_file",
 "//code/utilities/pdf:pdf_creator",
+"//code/tools/transcompilers/unilang/user-frontend:file_to_structure_converter",
 ])
 
 cc_binary(

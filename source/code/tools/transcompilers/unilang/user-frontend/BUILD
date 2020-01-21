@@ -109,6 +109,16 @@ hcp(name = "after_artifact_actions", deps = [
 "//code/utilities/filesystem/paths:lib",
 ])
 
+
+hcp(name = "file_to_structure_converter", deps = [
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/main/root_settings:root_settings_getter",
+    "//code/tools/transcompilers/unilang/user-frontend:code_graphs_creator",
+    "//code/tools/transcompilers/unilang/dependency_graph_creator:code_graph",
+    "//code/utilities/types/general:lib",
+    "//code/utilities/exits:lib",
+])
+
 hcp(name = "language_guesser", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/dependency_graph_creator:code_graph",
