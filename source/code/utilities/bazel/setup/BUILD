@@ -6,6 +6,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(name = "bazel_setup", deps = [
     "//code/utilities/bazel/setup/config:bazel_config_deriver",
     "//code/utilities/bazel/setup/wrapper:bazel_wrapper_deriver",
+    "//code/utilities/bazel/setup/docker:bazel_dockerfile_settings",
 ])
 
 hcp(name = "bazel_setup_deriver", deps = [
