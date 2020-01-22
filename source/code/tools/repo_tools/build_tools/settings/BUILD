@@ -8,6 +8,7 @@ hcp(name = "settings", deps = [
     "//code/utilities/git-related/repo_establisher:repo_location",
     "//code/utilities/bazel:build_settings",
     "//code/utilities/bazel/setup/config:bazel_config_settings",
+    "//code/utilities/bazel/setup:bazel_setup",
 ])
 
 

@@ -33,9 +33,23 @@ class
     return settings.run_path;
 ❱
 
-◀public: static▶ std::string ☀Establish_N_Repos(Repo_Location const& settings, int const& count) ❰
+◀public: static▶ std::vector<std::string> ☀Establish_N_Repos(Repo_Location const& settings, int const& count) ❰
 
-   //todo
+    //all the paths that point to fresh repos
+    std::vector<std::string> paths;
+    
+   //clone and get a fresh repo
+   auto original_clone = Establish_And_Get_Path(settings.repo);
+   paths.emplace_back(original_clone);
+   
+   //copy the fresh repo the number of extra times needed
+   for (size_t i = 1; i < count; ++i){
+        auto new_path = Random_Tmp_Directory();
+        Copy_Folder_To_Path(original_clone,new_path);
+        paths.emplace_back(new_path);
+   }
+   
+   return paths;
 ❱
 
 

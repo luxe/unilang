@@ -18,10 +18,11 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/bazel:bazel_runner",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/tools/repo_tools/build_determinism:file_isolator",
-    "//code/tools/repo_tools/build_determinism/scans/scanner",
+    "//code/tools/repo_tools/build_determinism/scans:scanner",
     "//code/tools/repo_tools/build_determinism/scans:scan_results",
     "//code/tools/repo_tools/build_determinism:scan_utilities",
     "//code/utilities/bazel/setup:bazel_setup_deriver",
+    "//code/tools/repo_tools/build_determinism/scans:scan_results_printer",
 ])
 
 hcp(name = "file_isolator", deps = [

@@ -17,6 +17,7 @@ hcp(name = "bazel_setup_deriver", deps = [
     "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     "//code/utilities/bazel/setup/config:bazel_config_deriver",
     "//code/utilities/bazel/setup/wrapper:bazel_wrapper_deriver",
+    "//code/utilities/bazel/setup/docker:bazel_dockerfile_deriver",
     "//code/utilities/bazel/setup:bazel_setup",
     "//code/utilities/printers:lib",
 ])
