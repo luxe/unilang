@@ -2,6 +2,8 @@
 
 //Boost Libraries
 #include "boost/program_options.hpp"
+#include <vector>
+#include <string>
 
 class Program_Options {
 
@@ -18,9 +20,12 @@ class Program_Options {
 	//| USER FLAGS                                               |
 	//+----------------------------------------------------------+
 	    std::string Url() const;
-	    std::string Run_Dir() const;
-        std::string Branch() const;
         std::string Target() const;
+        
+        
+        std::vector<std::string> Run_Dirs() const;
+        std::vector<std::string> Branches() const;
+        
         std::string Output_Dir() const;
         bool Synthesize() const;
         std::string Bazel() const;

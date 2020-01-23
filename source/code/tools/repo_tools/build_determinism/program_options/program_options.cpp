@@ -36,15 +36,23 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//these are flag descriptions of that can be passed into the class.
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
+	
+	//what target we are building and where
 	("target",value<std::string>(),"what you would pass to bazel build")
-	    ("url",value<std::string>(),"git url to clone with")
-        ("run_dir",value<std::string>(),"where to run the analysis")
-        ("branch",value<std::string>(),"which branch to run the experiment on")
+	("url",value<std::string>(),"git url to clone with")
+	
+	
+	//how to setup the repo(s) for multi A/B testing
+    ("run_dirs",value<std::vector<std::string>>(),"which directories to run the analysis")
+    ("branches",value<std::vector<std::string>>(),"which branches to run the analysis")
+        
+        
         ("synthesize_problems","synthesize the nondeterminism problems in a human friendly way")
-        ("output_dir",value<std::string>(),"the directory to output graph artifacts")
-        ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
         ("environment_scan",value<int>(),"try the A/B tests in different environments n number of times to evaluate any flakiness of nondeterminism")
         ("augment_scan",value<int>(),"try the A/B tests with different augmentations on the environment n number of times to evaluate any flakiness of nondeterminism")
+        
+        ("output_dir",value<std::string>(),"the directory to output artifacts")
+        ("bazel",value<std::string>(),"the name of the bazel runner (useful if repo has a bazel wrapper or using bazelisk)")
         ("verbose","show verbose progress")
 
 	//+----------------------------------------------------------+
@@ -112,18 +120,18 @@ std::string Program_Options::Target() const{
 
 	return data;
 }
-std::string Program_Options::Run_Dir() const{
-	std::string data;
-	if (vm.count("run_dir")){
-		data = vm["run_dir"].as<std::string>();
+std::vector<std::string> Program_Options::Run_Dirs() const{
+	std::vector<std::string> data;
+	if (vm.count("run_dirs")){
+		data = vm["run_dirs"].as<std::string>();
 	}
 
 	return data;
 }
-std::string Program_Options::Branch() const{
-	std::string data;
-	if (vm.count("branch")){
-		data = vm["branch"].as<std::string>();
+std::vector<std::string> Program_Options::Branches() const{
+	std::vector<std::string> data;
+	if (vm.count("branches")){
+		data = vm["branches"].as<std::string>();
 	}
 
 	return data;
