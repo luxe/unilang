@@ -75,25 +75,20 @@ class
     //for example, master would be changing frequently and me affect results.
     //so instead we use the same repository for the whole analysis.
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
-    settings.a_path = Repo_Establisher::Establish_And_Get_Path(settings.repo);
     if (settings.concurrency == Concurrency::SEQUENTIAL){
-        settings.b_path = settings.a_path;
+        auto paths = Repo_Establisher::Establish_N_Repos(settings.repo,1);
+        settings.a_path = paths[0];
+        settings.b_path = paths[0];
     }
     else {
-        Maybe_Output_And_Flush_With_Newline(settings.verbose,"duplicating folder...");
-        settings.b_path = Random_Tmp_Directory();
-        Copy_File_To_Dir(settings.a_path,settings.b_path);
+        auto paths = Repo_Establisher::Establish_N_Repos(settings.repo,2);
+        settings.a_path = paths[0];
+        settings.b_path = paths[1];
     }
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"A test folder established: " + settings.a_path);
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"B test folder established: " + settings.b_path);
 ❱
-
-
-//◀private: static▶ std::vector<std::string> ☀Create_N_Repos()❰
-//❱
-
-
 
 
 ◀private: static▶ void ☀Do_Regular_AB_Test(Settings const& settings) ❰
