@@ -12,30 +12,7 @@ class
     //settings
     auto settings = Default_Settings();
     
-    //set via program_options
-    if (!options.Url().empty()){
-        settings.repo.use_clone = true;
-        settings.repo.clone_url = options.Url();
-    }
-    else{
-        settings.repo.use_clone = false;
-    }
-       
-    if (!options.Run_Dir().empty()){
-        settings.repo.use_run_path = true;
-        settings.repo.run_path = options.Run_Dir();
-    }
-    else{
-        settings.repo.use_run_path = false;
-    }
-    
-    if (!options.Branch().empty()){
-        settings.repo.switch_branches = true;
-        settings.repo.branch_name = options.Branch();
-    }
-    else{
-        settings.repo.switch_branches = false;
-    }
+    settings.repos = Build_Repo_Locations(options);
     
     
     if (!options.Target().empty()){
@@ -79,17 +56,49 @@ class
 ❱
 
 
+◀private: static▶ std::vector<Repo_Location> ☀Build_Repo_Locations(Program_Options const& options)❰
+    std::vector<Repo_Location> repos;
+    
+    //add all the repo locations that are branches
+    for (auto const& it: options.Branches()){
+        Repo_Location x;
+        Set_Url(x,options);
+        x.use_run_path = false;
+        x.switch_branches = true;
+        x.branch_name = it;
+        repos.emplace_back(x);
+    }
+    
+    //add all the repo locations that are existing paths
+    for (auto const& it: options.Run_Dirs()){
+        Repo_Location x;
+        Set_Url(x,options);
+        x.use_run_path = true;
+        x.switch_branches = false;
+        x.run_path = = it;
+        repos.emplace_back(x);
+    }
+    
+    return repos;
+❱
+
+◀private: static▶ void ☀Set_Url(Repo_Location & repo, Program_Options const& options)❰
+
+    //set via program_options
+    if (!options.Url().empty()){
+        repo.use_clone = true;
+        repo.clone_url = options.Url();
+    }
+    else{
+        repo.use_clone = false;
+    }
+    
+❱
+
 ◀private: static▶ Settings ☀Default_Settings()❰
     Settings settings;
     
     settings.verbose = false;
-    
-    //setting up repo
-    settings.repo.use_run_path = false;
-    settings.repo.run_path = "/home/thickey/Desktop/main-na";
-    
-    settings.repo.switch_branches = false;
-    settings.repo.branch_name = "master";
     
     //calling bazel
     settings.setup.bazel_wrapper.derive = false;
@@ -119,3 +128,4 @@ class
     
     return settings;
 ❱
+
