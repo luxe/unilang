@@ -7,15 +7,19 @@
 // we use RAII to clean it up afterwards
 class Temp_File {
     public:
-    Temp_File(std::string const& path, std::string const& content){
+    Temp_File(std::string const& path, std::string const& content, bool keep=false){
         file_name = path;
+        keep_ = keep;
         Write_To_File(file_name,content);
     }
     
     ~Temp_File(){
-        Delete_File(file_name);
+        if (!keep_){
+            Delete_File(file_name);
+        }
     }
     
     private:
+        bool keep_;
         std::string file_name;
 };
