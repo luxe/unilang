@@ -11,16 +11,51 @@ class
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Sentence const& s, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
-    std::string text;
     
+    
+    if (Should_Skip_Producing_Table_Data(s,settings)){
+        return "";
+    }
+    
+
+    if (settings.tables.as_list){
+        return Markdown_Table_As_List_Format(s,settings);
+    }
+
+    return Traditional_Markdown_Table_Format(s,settings);
+❱
+
+◀private: static▶ bool ☀Should_Skip_Producing_Table_Data(Sentence const& s, Markdown_Settings const& settings)❰
+
     //decide not to do it at all
     if (!settings.tables.print){
-        return text;
+        return true;
     }
     if (s.tables.empty()){
-        return text;
+        return true;
+    }
+    return false;
+❱
+
+
+◀private: static▶ std::string ☀Markdown_Table_As_List_Format(Sentence const& s, Markdown_Settings const& settings)❰
+
+    std::string text;
+    Append_A_Newline(text);
+    
+    for (auto const& table: s.tables){
+        for (auto const& it: table.rows){
+            Append(text," - ");
+            Append_With_Newline(text, as_string(it.name.value));
+        }
     }
     
+    return text;
+❱
+
+◀private: static▶ std::string ☀Traditional_Markdown_Table_Format(Sentence const& s, Markdown_Settings const& settings)❰
+
+    std::string text;
     Append_A_Newline(text);
     
     for (auto const& table: s.tables){
@@ -60,6 +95,8 @@ class
     
     return text;
 ❱
+
+
 
 ◀private: static▶ std::string ☀Space_Bar_Space(Markdown_Settings const& settings)❰
     std::string text;
