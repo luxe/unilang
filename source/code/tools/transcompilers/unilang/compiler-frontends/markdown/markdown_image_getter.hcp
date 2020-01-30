@@ -41,6 +41,9 @@ class
 
 ◀private: static▶ std::string ☀Classic_Markdown_Image(Sentence_Image const& i, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
+    
+    Append_With_Newline(text,"<p align=\"center\">");
+    
     Append(text,settings.image.alternative_text_start_marker);
     Append(text,as_string(i.alternative_text.value));
     Append(text,settings.image.alternative_text_end_marker);
@@ -50,7 +53,22 @@ class
     Append(text,settings.image.hover_text_start_marker);
     Append(text,as_string(i.hover_text.value));
     Append(text,settings.image.hover_text_end_marker);
-    Append_With_Newline(text,settings.image.image_path_end_marker);
+    Append(text,settings.image.image_path_end_marker);
+    
+    if (!Image_Has_No_Specified_Dimensions(i)){
+        Append(text,"{ ");
+        Append(text,"width=\"");
+        Append(text,as_string(i.size.width.value));
+        Append(text,"\" ");
+        Append(text,"height=\"");
+        Append(text,as_string(i.size.height.value));
+        Append(text,"\" .center }");
+    }
+    
+    Append_A_Newline(text);
+    Append_With_Newline(text,"</p>");
+    
+    Append_A_Newline(text);
     Append_A_Newline(text);
     return text;
 ❱
@@ -76,5 +94,6 @@ class
     if (settings.image.wrap_in_p_tags){
         Append_With_Newline(text,"</p>");
     }
+    Append_A_Newline(text);
     return text;
 ❱
