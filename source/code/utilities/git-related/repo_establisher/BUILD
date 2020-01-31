@@ -10,4 +10,6 @@ hcp(name = "repo_establisher", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/git-related:lib",
     "//code/utilities/git-related/repo_establisher:repo_location",
+    "//code/utilities/random:lib",
+    "//code/utilities/filesystem/files/moving:lib",
 ])

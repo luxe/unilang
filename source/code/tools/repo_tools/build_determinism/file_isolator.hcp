@@ -12,11 +12,12 @@ class
 ❪"code/utilities/bazel/bazel_runner"❫
 ❪"code/utilities/filesystem/files/moving/lib"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/tools/repo_tools/build_determinism/settings/ab_settings"❫
 ⚯
 ⚞⚟
 
 
-◀public: static▶ void ☀Attempt_To_Isolate_Nondeterministic_Files(Determinism_Pairings const& results, Settings const& settings) ❰
+◀public: static▶ void ☀Attempt_To_Isolate_Nondeterministic_Files(Determinism_Pairings const& results, Settings const& settings, Ab_Settings const& ab_settings) ❰
 
     //Isolate subcommands that are nondeterministic
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"filtering results...");
@@ -38,7 +39,7 @@ class
     if (!file_map.empty()){
         std::string message = std::to_string(file_map.size()) + " files will need isolated";
         Maybe_Output_And_Flush_With_Newline(settings.verbose,message);
-        auto isolation_folder = Isolate_Nondeterministic_Files(file_map,settings);
+        auto isolation_folder = Isolate_Nondeterministic_Files(file_map,settings,ab_settings);
         Create_Differences(file_map,isolation_folder,settings);
     }
     else{
@@ -47,7 +48,7 @@ class
 
 ❱
 
-◀private: static▶ std::string ☀Isolate_Nondeterministic_Files(std::map<std::string,tools::protos::SpawnExec> const& file_map, Settings const& settings) ❰
+◀private: static▶ std::string ☀Isolate_Nondeterministic_Files(std::map<std::string,tools::protos::SpawnExec> const& file_map, Settings const& settings, Ab_Settings const& ab_settings) ❰
 
     auto isolation_folder = Random_Tmp_Directory();
     auto isolation_folder_a = isolation_folder + "/a";
@@ -57,8 +58,8 @@ class
     
     if (settings.concurrency == Concurrency::PARALLEL){
         for (auto const& it: file_map){
-            auto file_a = settings.a_path + "/" + it.first;
-            auto file_b = settings.b_path + "/" + it.first;
+            auto file_a = ab_settings.a_path + "/" + it.first;
+            auto file_b = ab_settings.b_path + "/" + it.first;
             Copy_File_To_Dir_And_Report_Problems(file_a,isolation_folder_a);
             Copy_File_To_Dir_And_Report_Problems(file_b,isolation_folder_b);
         }
@@ -69,18 +70,18 @@ class
         
         //copy files from previous build
         for (auto const& it: file_map){
-            auto file_b = settings.b_path + "/" + it.first;
+            auto file_b = ab_settings.b_path + "/" + it.first;
             Copy_File_To_Dir_And_Report_Problems(file_b,isolation_folder_b);
         }
         
         //do another build to regenerate the nondeterministic files
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"we must do a rebuild since we did single sequential directory");
-        auto bazel = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,settings.a_path);
-        Bazel_Runner::Build_Target(bazel,settings.a_build,settings.setup.config_settings,settings.target_name);
+        auto bazel = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,ab_settings.a_path);
+        Bazel_Runner::Build_Target(bazel,ab_settings.a_build,settings.setup.config_settings,settings.target_name);
         
         //copy files from previous build
         for (auto const& it: file_map){
-            auto file_a = settings.a_path + "/" + it.first;
+            auto file_a = ab_settings.a_path + "/" + it.first;
             Copy_File_To_Dir_And_Report_Problems(file_a,isolation_folder_a);
         }
     }

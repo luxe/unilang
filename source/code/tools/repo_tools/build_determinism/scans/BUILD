@@ -13,6 +13,7 @@ hcp(name = "scan_results_printer", deps = [
     "//code/tools/repo_tools/build_determinism/scans:scan_results",
     "//code/tools/repo_tools/build_determinism:scan_utilities",
     "//code/utilities/printers:lib",
+    
 ])
 
 hcp(name = "scanner", deps = [
@@ -20,4 +21,5 @@ hcp(name = "scanner", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
     "//code/tools/repo_tools/build_determinism/scans/environment_scan:environment_scanner",
     "//code/tools/repo_tools/build_determinism/scans/augment_scan:augment_scanner",
+    "//code/tools/repo_tools/build_determinism/settings:ab_settings",
 ])

@@ -15,35 +15,36 @@ class
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/tools/repo_tools/build_determinism/settings/ab_settings"❫
 ⚯
 ⚞⚟
 
 
-◀public: static▶ Determinism_Pairings ☀Do_AB_Test(Settings const& settings) ❰
+◀public: static▶ Determinism_Pairings ☀Do_AB_Test(Settings const& settings, Ab_Settings const& ab_settings) ❰
     
     //get pairings based on a specified concurrency model
     Spawn_Pairings pairings;
     if (settings.concurrency == Concurrency::SEQUENTIAL){
-        pairings = Run_AB_Test_Sequentially(settings);
+        pairings = Run_AB_Test_Sequentially(settings,ab_settings);
     }
     else {
-        pairings = Run_AB_Test_In_Parallel(settings);
+        pairings = Run_AB_Test_In_Parallel(settings,ab_settings);
     }
     
     return Produce_Subcommand_Pairings(settings,pairings);
 ❱
 
-◀private: static▶ Spawn_Pairings ☀Run_AB_Test_Sequentially(Settings const& settings) ❰
+◀private: static▶ Spawn_Pairings ☀Run_AB_Test_Sequentially(Settings const& settings, Ab_Settings const& ab_settings) ❰
 
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"(Test A) building target...");
-    auto bazel_1 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,settings.a_path);
+    auto bazel_1 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,ab_settings.a_path);
     Possibly_Augment_System(settings);
-    auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_build,settings.setup.config_settings,settings.target_name);
+    auto spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,ab_settings.a_build,settings.setup.config_settings,settings.target_name);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"(Test B) building target...");
-    auto bazel_2 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,settings.b_path);
+    auto bazel_2 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,ab_settings.b_path);
     Possibly_Augment_System(settings);
-    auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_build,settings.setup.config_settings,settings.target_name);
+    auto spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,ab_settings.b_build,settings.setup.config_settings,settings.target_name);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"Pairing together subcommands...");
     auto pairings = Spawn_Pairer::Build_Matches_And_Unpairable_Spawns(spawns1,spawns2);
@@ -51,7 +52,7 @@ class
     return pairings;
 ❱
 
-◀private: static▶ Spawn_Pairings ☀Run_AB_Test_In_Parallel(Settings const& settings) ❰
+◀private: static▶ Spawn_Pairings ☀Run_AB_Test_In_Parallel(Settings const& settings, Ab_Settings const& ab_settings) ❰
 
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"Building in parallel...");
@@ -59,15 +60,15 @@ class
     std::unordered_map<std::string,tools::protos::SpawnExec> spawns2;
     
     std::thread t1([&](){
-        auto bazel_1 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,settings.a_path);
+        auto bazel_1 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,ab_settings.a_path);
         Possibly_Augment_System(settings);
-        spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,settings.a_build,settings.setup.config_settings,settings.target_name);
+        spawns1 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_1,ab_settings.a_build,settings.setup.config_settings,settings.target_name);
     });
     
     std::thread t2([&](){
-        auto bazel_2 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,settings.b_path);
+        auto bazel_2 = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,ab_settings.b_path);
         Possibly_Augment_System(settings);
-        spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,settings.b_build,settings.setup.config_settings,settings.target_name);
+        spawns2 = Bazel_Runner::Get_Spawn_Information_As_Cmd_Map(bazel_2,ab_settings.b_build,settings.setup.config_settings,settings.target_name);
     });
     
     t1.join();

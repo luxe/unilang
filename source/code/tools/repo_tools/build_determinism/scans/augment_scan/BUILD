@@ -23,4 +23,5 @@ hcp(name = "augment_scanner", deps = [
     "//code/tools/repo_tools/build_determinism/scans/augment_scan:augment_scan_results",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/tools/repo_tools/build_determinism:scan_utilities",
+    "//code/tools/repo_tools/build_determinism/settings:ab_settings",
 ])

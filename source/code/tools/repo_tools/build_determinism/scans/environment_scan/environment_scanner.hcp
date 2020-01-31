@@ -15,22 +15,23 @@ class
 ❪"code/utilities/filesystem/files/moving/lib"❫
 ❪"code/tools/repo_tools/build_determinism/file_isolator"❫
 ❪"code/tools/repo_tools/build_determinism/scans/environment_scan/environment_scan_results"❫
+❪"code/tools/repo_tools/build_determinism/settings/ab_settings"❫
 ⚯
 ❪"code/tools/repo_tools/build_determinism/scan_utilities"❫
 ⚞⚟
 
-◀public: static▶ Environment_Scan_Results ☀Do_Multi_Environment_AB_Test(Settings const& settings) ❰
+◀public: static▶ std::vector<Environment_Scan_Results> ☀Do_Multi_Environment_AB_Test(Settings const& settings, std::vector<Ab_Settings> const& ab_settings) ❰
     
-    //run the environment scan tests
-    auto results = Do_Test(settings);
-    return results;
+    std::vector<Environment_Scan_Results> all_results;
+    for (auto const& it: ab_settings){
+        auto x = Do_Test(settings,it);
+        all_results.emplace_back(x);
+    }
     
-    //print the results
-    //auto str_results = Get_Printable_Results(results);
-    //std::cout << str_results << std::endl;
+    return all_results;
 ❱
 
-◀private: static▶ Environment_Scan_Results ☀Do_Test(Settings const& settings) ❰
+◀private: static▶ Environment_Scan_Results ☀Do_Test(Settings const& settings, Ab_Settings const& ab_settings) ❰
 
     Environment_Scan_Results results;
     
@@ -39,26 +40,26 @@ class
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"on iteration " + std::to_string(i));
         
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing local/local test");
-        Do_AB_Experiment_With_Environment_Combination(settings,Run_Environment::LOCAL,Run_Environment::LOCAL,results.local_local);
+        Do_AB_Experiment_With_Environment_Combination(settings,ab_settings,Run_Environment::LOCAL,Run_Environment::LOCAL,results.local_local);
         
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing remote/remote test");
-        Do_AB_Experiment_With_Environment_Combination(settings,Run_Environment::REMOTE,Run_Environment::REMOTE,results.remote_remote);
+        Do_AB_Experiment_With_Environment_Combination(settings,ab_settings,Run_Environment::REMOTE,Run_Environment::REMOTE,results.remote_remote);
 
         Maybe_Output_And_Flush_With_Newline(settings.verbose,"doing local/remote test");
-        Do_AB_Experiment_With_Environment_Combination(settings,Run_Environment::LOCAL,Run_Environment::REMOTE,results.local_remote);
+        Do_AB_Experiment_With_Environment_Combination(settings,ab_settings,Run_Environment::LOCAL,Run_Environment::REMOTE,results.local_remote);
     }
     
     return results;
 ❱
 
-◀private: static▶ void ☀Do_AB_Experiment_With_Environment_Combination(Settings settings, Run_Environment s1, Run_Environment s2, std::pair<int,int> & results)❰
+◀private: static▶ void ☀Do_AB_Experiment_With_Environment_Combination(Settings settings, Ab_Settings ab_settings, Run_Environment s1, Run_Environment s2, std::pair<int,int> & results)❰
 
     //set new strategy
-    settings.a_build.environment = s1;
-    settings.b_build.environment = s2;
+    ab_settings.a_build.environment = s1;
+    ab_settings.b_build.environment = s2;
     
     //run experiment and record determinism results
-    auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings);
+    auto d_results = Determinism_Ab_Runner::Do_AB_Test(settings,ab_settings);
     Scan_Utilities::Increment_Determinism_Results(d_results,results);
 ❱
 

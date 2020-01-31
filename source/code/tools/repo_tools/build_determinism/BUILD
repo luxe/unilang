@@ -23,6 +23,8 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism:scan_utilities",
     "//code/utilities/bazel/setup:bazel_setup_deriver",
     "//code/tools/repo_tools/build_determinism/scans:scan_results_printer",
+    "//code/tools/repo_tools/build_determinism/settings:ab_settings",
+    "//code/utilities/json/functions:lib",
 ])
 
 hcp(name = "file_isolator", deps = [
@@ -39,6 +41,7 @@ hcp(name = "file_isolator", deps = [
     "//code/utilities/bazel:bazel_runner",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/utilities/types/strings/observers/path:lib",
+    "//code/tools/repo_tools/build_determinism/settings:ab_settings",
 ])
 
 hcp(name = "scan_utilities", deps = [
@@ -111,6 +114,7 @@ hcp(name = "determinism_ab_runner", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/observers/path:lib",
+    "//code/tools/repo_tools/build_determinism/settings:ab_settings",
 ])
 
 hcp(name = "reporter", deps = [
