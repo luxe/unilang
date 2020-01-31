@@ -123,7 +123,7 @@ std::string Program_Options::Target() const{
 std::vector<std::string> Program_Options::Run_Dirs() const{
 	std::vector<std::string> data;
 	if (vm.count("run_dirs")){
-		data = vm["run_dirs"].as<std::string>();
+		data = vm["run_dirs"].as<std::vector<std::string>>();
 	}
 
 	return data;
@@ -131,7 +131,7 @@ std::vector<std::string> Program_Options::Run_Dirs() const{
 std::vector<std::string> Program_Options::Branches() const{
 	std::vector<std::string> data;
 	if (vm.count("branches")){
-		data = vm["branches"].as<std::string>();
+		data = vm["branches"].as<std::vector<std::string>>();
 	}
 
 	return data;

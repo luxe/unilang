@@ -10,6 +10,7 @@ hcp(name = "settings", deps = [
     "//code/utilities/data_structures:concurrency",
     "//code/utilities/bazel:build_settings",
     "//code/utilities/bazel/setup:bazel_setup",
+    "//code/tools/repo_tools/build_determinism/settings:ab_settings",
 ])
 
 hcp(name = "report_settings", deps = [
@@ -19,4 +20,8 @@ hcp(name = "settings_getter", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings",
     "//code/tools/repo_tools/build_determinism/program_options:lib",
     "//code/utilities/bazel/setup/wrapper:bazel_wrapper",
+])
+
+hcp(name = "ab_settings", deps = [
+    "//code/utilities/bazel:build_settings",
 ])
