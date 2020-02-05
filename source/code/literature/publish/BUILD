@@ -9,7 +9,6 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/locale:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
-"//code/utilities/filesystem/files/creating:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/filesystem/paths:lib",
@@ -28,6 +27,10 @@ hcp(name = "task_executer", deps = [
 "//code/tools/transcompilers/unilang/user-frontend:file_to_structure_converter",
 "//code/utilities/upload:file_upload_settings",
 "//code/utilities/upload:file_uploader",
+"//code/utilities/html:basic_html_template_getter",
+"//code/utilities/html:html_list_maker",
+"//code/utilities/filesystem/files/creating:lib",
+"//code/utilities/types/strings/transformers/appending:lib",
 ])
 
 cc_binary(

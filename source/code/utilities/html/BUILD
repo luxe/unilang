@@ -8,3 +8,10 @@ hcp(name="basic_html_template_getter",deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
 ])
+
+hcp(name="html_list_maker",deps = [
+    "//code/utilities/types/vectors/creators:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
+])
