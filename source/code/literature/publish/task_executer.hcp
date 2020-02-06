@@ -30,6 +30,7 @@ class
 ❪"code/utilities/html/html_list_maker"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/literature/publish/essay_list_maker"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -47,12 +48,11 @@ class
     //publish essays
     std::cout << "generating essays" << std::endl;
     for (auto const& it: all_essays){
-        //Generate_Essay(it);
+        Generate_Essay(it);
     }
     
     std::cout << "essay list" << std::endl;
-    auto link_and_names = Gather_Links_And_Names(all_essays);
-    Generate_Essay_List(link_and_names);
+    Essay_List_Maker::Make(all_essays);
     
     
 ❱
@@ -71,7 +71,7 @@ class
     pdf_settings.latex_template = to_latex_template;
     pdf_settings.md_format = to_raw_pdf;
     pdf_settings.resulting_pdf = to_manual_pdf;
-    Pdf_Creator::Create_Pdf(structure,pdf_settings);
+    //Pdf_Creator::Create_Pdf(structure,pdf_settings);
     
     //upload to github
     File_Upload_Settings upload_settings;
@@ -79,92 +79,5 @@ class
     upload_settings.upload_to_github = true;
     upload_settings.local_file_name = to_manual_pdf;
     upload_settings.remote_file_name = "essays/" + basename + ".pdf";
-    File_Uploader::Upload(upload_settings);
-❱
-
-◀private: static▶ std::vector<std::pair<std::string,std::string>> ☀Gather_Links_And_Names(std::vector<std::string> const& all_essays) ❰
-    std::vector<std::pair<std::string,std::string>> x;
-    for (auto const& it: all_essays){
-        auto structure = File_To_Structure_Converter::Convert(it + ".unilang");
-        auto title = as_string(structure.literature.paragraphs[0].title.value);
-        auto link = it + ".pdf";
-        x.emplace_back(link,title);
-    }
-    return x;
-❱
-
-◀private: static▶ void ☀Generate_Essay_List(std::vector<std::pair<std::string,std::string>> const& link_and_names) ❰
-    
-    
-    //build html sections
-    auto css = Get_Css();
-    
-    //body
-    std::string body;
-    Append_With_Newline(body,"<div>");
-    Append_With_Newline(body,"<h2>Essays</h2>");
-    Append_With_Newline(body,Html_List_Maker::Get(link_and_names));
-    Append_With_Newline(body,"</div>");
-    
-    //build html
-    std::string html = Basic_Html_Template_Getter::Get("Essays",css,body);
-    
-    auto local_file_name = Full_Path_For_Desktop_File("essays.html");
-    Write_To_File(local_file_name,html);
-    
-    
-    //upload to github
-    File_Upload_Settings upload_settings;
-    upload_settings.upload_to_dropbox = false;
-    upload_settings.upload_to_github = true;
-    upload_settings.local_file_name = local_file_name;
-    upload_settings.remote_file_name = "essays/essays.html";
-    File_Uploader::Upload(upload_settings);
-    
-❱
-
-
-
-◀private: static▶ std::string ☀Get_Css()❰
-
-    std::string css;
-    
-    Append_With_Newline(css,"div {");
-    //Append_With_Newline(css,"  width: 200px;");
-    Append_With_Newline(css,"  margin: 30px;");
-    Append_With_Newline(css,"}");
-
-    Append_With_Newline(css,"h2 {");
-    Append_With_Newline(css,"  font: 400 40px/1.5 Helvetica, Verdana, sans-serif;");
-    Append_With_Newline(css,"  margin: 0;");
-    Append_With_Newline(css,"  padding: 0;");
-    Append_With_Newline(css,"}");
-
-    Append_With_Newline(css,"ul {");
-    Append_With_Newline(css,"  list-style-type: none;");
-    Append_With_Newline(css,"  margin: 0;");
-    Append_With_Newline(css,"  padding: 0;");
-    Append_With_Newline(css,"}");
-
-    Append_With_Newline(css,"li {");
-    Append_With_Newline(css,"  font: 200 20px/1.5 Helvetica, Verdana, sans-serif;");
-    Append_With_Newline(css,"  padding-top: 22px;");
-    //Append_With_Newline(css,"  border-bottom: 1px solid #ccc;");
-    Append_With_Newline(css,"}");
-
-    Append_With_Newline(css,"li:last-child {");
-    Append_With_Newline(css,"  border: none;");
-    Append_With_Newline(css,"}");
-
-    Append_With_Newline(css,"li a {");
-    Append_With_Newline(css,"  text-decoration: none;");
-    Append_With_Newline(css,"  color: #000;");
-    Append_With_Newline(css,"  display: block;");
-    //Append_With_Newline(css,"  width: 200px;");
-    Append_With_Newline(css,"}");
-
-    Append_With_Newline(css,"li a:hover {");
-    //Append_With_Newline(css,"  background: #f6f6f6;");
-    Append_With_Newline(css,"}");
-    return css;
+    //File_Uploader::Upload(upload_settings);
 ❱
