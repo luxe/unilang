@@ -63,6 +63,7 @@ hcp(name = "essay_list_maker", deps = [
 "//code/utilities/html:html_list_maker",
 "//code/utilities/filesystem/files/creating:lib",
 "//code/utilities/types/strings/transformers/appending:lib",
+"//code/utilities/types/strings/transformers/casing:case_modifier",
 ])
 
 cc_binary(
