@@ -11,18 +11,18 @@ class
 
 
     std::string str;
-    if (results.size() == 1){
+    if (std::max(results.environment.size(),results.augment.size()) == 1){
         if (settings.environment_scan != 0 && settings.augmented_scan == 0){
-            str = Get_Printable_Results(results.environment[0]);
+            str = Get_Printable_Results(results.environment);
         }
         else if (settings.environment_scan == 0 && settings.augmented_scan != 0){
-            str = Get_Printable_Results(results.augment[0]);
+            str = Get_Printable_Results(results.augment);
         }
         else if (settings.environment_scan != 0 && settings.augmented_scan != 0){
-            str = Get_Printable_Results(results.environment[0],results.augment[0]);
+            str = Get_Printable_Results(results.environment,results.augment);
         }
     }
-    else if (results.size() == 2){
+    else if (std::max(results.environment.size(),results.augment.size()) == 2){
         if (settings.environment_scan != 0 && settings.augmented_scan == 0){
             str = Get_Printable_Results(results.environment);
         }
@@ -38,55 +38,66 @@ class
 ❱
 
 
-◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& results)❰
+◀private: static▶ std::string ☀Get_Printable_Results(std::vector<Environment_Scan_Results> const& results)❰
 
     std::string x;
     
-    //show results
-    Append_With_Newline       (x,"                 D  ND");
-    Scan_Utilities::Append_Row(x,"LOCAL  | LOCAL  ",results.local_local);
-    Scan_Utilities::Append_Row(x,"REMOTE | REMOTE ",results.remote_remote);
-    Scan_Utilities::Append_Row(x,"LOCAL  | REMOTE ",results.local_remote);
+    for (auto const& result: results){
     
-    //synthesize results
-    
-    //understanding local builds
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building locally",results.local_local));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building remotely",results.remote_remote));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("local builds and remote builds",results.local_local,results.remote_remote,results.local_remote));
+        //show results
+        Append_With_Newline       (x,"                 D  ND");
+        Scan_Utilities::Append_Row(x,"LOCAL  | LOCAL  ",result.local_local);
+        Scan_Utilities::Append_Row(x,"REMOTE | REMOTE ",result.remote_remote);
+        Scan_Utilities::Append_Row(x,"LOCAL  | REMOTE ",result.local_remote);
+        
+        //synthesize result
+        
+        //understanding local builds
+        Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building locally",result.local_local));
+        Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building remotely",result.remote_remote));
+        Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("local builds and remote builds",result.local_local,result.remote_remote,result.local_remote));
+    }
     
     return x;
 ❱
-◀private: static▶ std::string ☀Get_Printable_Results(Augment_Scan_Results const& results)❰
+◀private: static▶ std::string ☀Get_Printable_Results(std::vector<Augment_Scan_Results> const& results)❰
+
+    std::string x;
+    
+    for (auto const& result: results){
+    
+        //show results
+        Append_With_Newline       (x,"                          D  ND");
+        Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",result.standalone_standalone);
+        Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",result.sandbox_sandbox);
+        Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",result.standalone_sandbox);
+        
+        //synthesize results
+        
+        Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building outside sandbox",result.standalone_standalone));
+        Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building with sandbox",result.sandbox_sandbox));
+        Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("building with and without sandbox",result.standalone_standalone,result.sandbox_sandbox,result.standalone_sandbox));
+    }
+    
+    return x;
+❱
+◀private: static▶ std::string ☀Get_Printable_Results(std::vector<Environment_Scan_Results> const& e_results, std::vector<Augment_Scan_Results> const& a_results)❰
 
     std::string x;
     
     //show results
     Append_With_Newline       (x,"                          D  ND");
-    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",results.standalone_standalone);
-    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",results.sandbox_sandbox);
-    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",results.standalone_sandbox);
     
-    //synthesize results
-    
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building outside sandbox",results.standalone_standalone));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Action("building with sandbox",results.sandbox_sandbox));
-    Append_With_Newline_Unless_Empty(x,Scan_Utilities::Express_Determinism_Of_Mixed_Actions("building with and without sandbox",results.standalone_standalone,results.sandbox_sandbox,results.standalone_sandbox));
-    
-    return x;
-❱
-◀private: static▶ std::string ☀Get_Printable_Results(Environment_Scan_Results const& e_results, Augment_Scan_Results const& a_results)❰
-
-    std::string x;
-    
-    //show results
-    Append_With_Newline       (x,"                          D  ND");
-    Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_results.local_local);
-    Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_results.remote_remote);
-    Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_results.local_remote);
-    Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_results.standalone_standalone);
-    Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_results.sandbox_sandbox);
-    Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_results.standalone_sandbox);
+    for (auto const& e_result: e_results){
+        Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_result.local_local);
+        Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_result.remote_remote);
+        Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_result.local_remote);
+    }
+    for (auto const& a_result: a_results){
+        Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_result.standalone_standalone);
+        Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_result.sandbox_sandbox);
+        Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_result.standalone_sandbox);
+    }
     
     return x;
 ❱
