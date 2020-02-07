@@ -1,0 +1,52 @@
+class
+❪string❫
+❪stdio.h❫
+❪curl/curl.h❫
+❪"code/utilities/git-related/upload/github_upload_settings"❫
+⚯
+❪"code/utilities/types/char/lib.hpp"❫
+❪"code/utilities/shell/lib.hpp"❫
+❪"code/utilities/streams/filestreams/read_all/lib.hpp"❫
+❪sys/stat.h❫
+❪iostream❫
+❪"code/utilities/shell/lib.hpp"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/git-related/update/git_updater"❫
+⚞⚟
+
+
+//upload files to personal github static hosting
+◀public: static▶ void ☀Upload(Github_Upload_Settings const& settings, std::string const& local_file_path, std::string const& github_file_path)❰
+
+  //go to repo we are adding things to
+  std::string repo_path = Get_Cloned_Repo_Path();
+  
+  //MOVING DIRS IS NOT THREAD SAFE
+  
+  if (settings.pull_first){
+    Temporarily_Move_To_Path_To_Call_Function(repo_path,[&](){
+        execute("git pull");
+    });
+  }
+  
+  //move
+  if (settings.move_files_into){
+    std::string command = "cp -rf " + local_file_path + " " + repo_path + "/" + github_file_path;
+    execute(command);
+  }
+  
+  
+  //update
+  if (settings.update){
+    Temporarily_Move_To_Path_To_Call_Function(repo_path,[&](){
+        Git_Updater::Update_All_Changes(settings.update_settings);
+    });
+  }
+  
+❱
+
+◀public: static▶ std::string ☀Get_Cloned_Repo_Path()❰
+    std::string repo_path = Full_Path_To_Desktop() + "luxe.github.com";
+    return repo_path;
+❱

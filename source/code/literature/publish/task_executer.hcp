@@ -31,6 +31,7 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/literature/publish/essay_list_maker"❫
+❪"code/utilities/filesystem/files/existing_temp_file"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -75,11 +76,22 @@ class
     pdf_settings.resulting_pdf = to_manual_pdf;
     Pdf_Creator::Create_Pdf(structure,pdf_settings);
     
+    Existing_Temp_File created_pdf(pdf_settings.resulting_pdf);
+    
     //upload to github
     File_Upload_Settings upload_settings;
-    upload_settings.upload_to_dropbox = false;
-    upload_settings.upload_to_github = true;
+    
+    //generic
     upload_settings.local_file_name = to_manual_pdf;
     upload_settings.remote_file_name = "essays/" + basename + ".pdf";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
     File_Uploader::Upload(upload_settings);
 ❱

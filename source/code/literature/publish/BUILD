@@ -32,6 +32,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/filesystem/files/creating:lib",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/literature/publish:essay_list_maker",
+"//code/utilities/filesystem/files:existing_temp_file",
 ])
 
 hcp(name = "essay_list_maker", deps = [
