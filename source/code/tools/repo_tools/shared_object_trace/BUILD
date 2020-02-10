@@ -46,7 +46,7 @@ hcp(name = "so_ldd_correlation_visualizer", deps = [
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/types/sets:lib",
-    "//code/utilities/graphviz:graphviz_image_maker",
+    "//code/utilities/program/graphviz:graphviz_image_maker",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/tools/repo_tools/shared_object_trace:correlation_results",
     "//code/utilities/data_structures/unique_counter:unique_counter",
