@@ -10,6 +10,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/tshark:tshark_spawner",
     "//code/utilities/processes:lib",
     "//code/utilities/printers:lib",
+    "//code/utilities/git-related/repo_establisher:repo_establisher",
 ])
 distributable_cpp_main(
     name = "network_used",
@@ -20,4 +21,4 @@ distributable_cpp_main(
     description = "find out how the build uses the network",
     depends = [
     ],
-)
+)   

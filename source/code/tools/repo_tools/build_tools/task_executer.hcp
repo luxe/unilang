@@ -25,17 +25,17 @@ class
     //for example, master would be changing frequently and me affect results.
     //so instead we use the same repository for the whole analysis.
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"setting up repo...");
-    auto path = Repo_Establisher::Establish_And_Get_Path(settings.repo);
+    auto e_repo = Repo_Establisher::Establish_And_Get_Path(settings.repo);
     
     //try to derive the correct bazel program if its not known.
-    Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.bazel_wrapper,path);
+    Bazel_Wrapper_Deriver::Possibly_Derive_Bazel_Runner(settings.setup.bazel_wrapper,e_repo.path);
     
     //try to derive the correct bazel configs to use for the environments
-    Bazel_Config_Deriver::Possibly_Derive_Bazel_Config_Settings(settings.config_settings,path);
+    Bazel_Config_Deriver::Possibly_Derive_Bazel_Config_Settings(settings.setup.config_settings,e_repo.path);
     
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"building target...");
-    auto bazel = Prepend_Cd_Path(settings.bazel_wrapper.program_name,path);
-    auto spawns = Bazel_Runner::Get_Spawn_Information(bazel,settings.build,settings.config_settings,settings.target_name);
+    auto bazel = Prepend_Cd_Path(settings.setup.bazel_wrapper.program_name,e_repo.path);
+    auto spawns = Bazel_Runner::Get_Spawn_Information(bazel,settings.build,settings.setup.config_settings,settings.target_name);
     
     //calculate build tools used
     Maybe_Output_And_Flush_With_Newline(settings.verbose,"calculate build tool usage...");
