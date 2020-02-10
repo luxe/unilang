@@ -16,8 +16,8 @@ hcp(name = "pdf_creator",deps=[
     "//code/utilities/pdf:latex_template_getter",
     "//code/tools/transcompilers/unilang/main:program_input",
     "//code/utilities/shell:lib",
-    "//code/utilities/filesystem/files:temp_file",
-    "//code/utilities/filesystem/files:existing_temp_file",
+    "//code/utilities/filesystem/files/temp:temp_file",
+    "//code/utilities/filesystem/files/temp:existing_temp_file",
     "//code/utilities/shell/process_spawn:process_spawner",
 ])
 

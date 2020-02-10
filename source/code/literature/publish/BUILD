@@ -22,7 +22,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/secret:secret_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/utilities/pdf:pdf_settings",
-"//code/utilities/filesystem/files:temp_file",
+"//code/utilities/filesystem/files/temp:temp_file",
 "//code/utilities/pdf:pdf_creator",
 "//code/tools/transcompilers/unilang/user-frontend:file_to_structure_converter",
 "//code/utilities/upload:file_upload_settings",
@@ -32,7 +32,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/filesystem/files/creating:lib",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/literature/publish:essay_list_maker",
-"//code/utilities/filesystem/files:existing_temp_file",
+"//code/utilities/filesystem/files/temp:existing_temp_file",
 ])
 
 hcp(name = "essay_list_maker", deps = [
@@ -55,7 +55,7 @@ hcp(name = "essay_list_maker", deps = [
 "//code/utilities/secret:secret_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/utilities/pdf:pdf_settings",
-"//code/utilities/filesystem/files:temp_file",
+"//code/utilities/filesystem/files/temp:temp_file",
 "//code/utilities/pdf:pdf_creator",
 "//code/tools/transcompilers/unilang/user-frontend:file_to_structure_converter",
 "//code/utilities/upload:file_upload_settings",
