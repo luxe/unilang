@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "settings", deps = [
     "//code/utilities/program/bazel/setup/wrapper:bazel_wrapper",
-    "//code/utilities/git-related/repo_establisher:repo_location",
+    "//code/utilities/program/git/repo_establisher:repo_location",
     "//code/utilities/data_structures:concurrency",
     "//code/utilities/program/bazel:build_settings",
     "//code/utilities/program/bazel/setup/config:bazel_config_settings",

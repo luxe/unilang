@@ -6,5 +6,5 @@ hcp(name = "git_update_settings", deps = [])
 
 hcp(name="git_updater", deps = [
     "//code/utilities/shell:lib",
-    "//code/utilities/git-related/update:git_update_settings",
+    "//code/utilities/program/git/update:git_update_settings",
 ])

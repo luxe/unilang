@@ -7,11 +7,11 @@ hcp(name = "repo_location", deps = [])
 hcp(name = "repo_establisher", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/filesystem/paths:lib",
-    "//code/utilities/git-related:lib",
-    "//code/utilities/git-related/repo_establisher:repo_location",
+    "//code/utilities/program/git:lib",
+    "//code/utilities/program/git/repo_establisher:repo_location",
     "//code/utilities/random:lib",
     "//code/utilities/filesystem/files/moving:lib",
-    "//code/utilities/git-related/repo_establisher:established_repo",
+    "//code/utilities/program/git/repo_establisher:established_repo",
 ])
 
 hcp(name = "established_repo", deps = [])

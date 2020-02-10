@@ -25,5 +25,5 @@ hcp(name="git_setuper", deps = [
 cc_binary(
   name = "setup_git",
   srcs = ["setup_git.cpp"],
-  deps = ["//code/utilities/git-related:git_setuper"]
+  deps = ["//code/utilities/program/git:git_setuper"]
 )

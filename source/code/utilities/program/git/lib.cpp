@@ -1,4 +1,4 @@
-#include "code/utilities/git-related/lib.hpp"
+#include "code/utilities/program/git/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
 #include "code/utilities/filesystem/paths/lib.hpp"
 #include "code/utilities/shell/lib.hpp"

@@ -10,7 +10,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/program/tshark:tshark_spawner",
     "//code/utilities/processes:lib",
     "//code/utilities/printers:lib",
-    "//code/utilities/git-related/repo_establisher:repo_establisher",
+    "//code/utilities/program/git/repo_establisher:repo_establisher",
 ])
 distributable_cpp_main(
     name = "network_used",

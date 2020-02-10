@@ -6,7 +6,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_tools/settings:settings_getter",
     "//code/utilities/printers:lib",
-    "//code/utilities/git-related/repo_establisher:repo_establisher",
+    "//code/utilities/program/git/repo_establisher:repo_establisher",
     "//code/utilities/program/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/utilities/program/bazel/setup/config:bazel_config_deriver",
     "//code/utilities/program/bazel:bazel_runner",
