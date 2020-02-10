@@ -10,11 +10,22 @@ cc_library(
         "@bazel_tools//tools/jdk:jni_header",
         "@bazel_tools//tools/jdk:jni_md_header-linux",
     ],
+    # deps = [
+    #     "@bazel_tools//tools/jdk:jni_header",
+    #     "@bazel_tools//tools/jdk:jni_md_header-linux",
+    # ],
     includes = [
         "external/bazel_tools/tools/jdk/include",
         "external/bazel_tools/tools/jdk/include/linux",
     ],
+    copts = [
+    "-isystem","external/bazel_tools/tools/jdk/include",
+    "-isystem","external/bazel_tools/tools/jdk/include/linux",
+    "-isystem","external/local_jdk/include",
+    "-isystem","bazel-out/k8-fastbuild/bin/external/bazel_tools/tools/jdk/include",
+    "-isystem","bazel-out/k8-fastbuild/bin/external/bazel_tools/tools/jdk/include/linux"],
     alwayslink = True,
+    #strip_include_prefix = "code/hello_world/jni/src/",
 )
 
 cc_binary(
