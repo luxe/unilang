@@ -5,18 +5,12 @@ cc_library(
     srcs = [
         "Main.cc",
         "Main.h",
-        "@bazel_tools//tools/jdk:jni_header",
-        "@bazel_tools//tools/jdk:jni_md_header-linux",
-        "@local_jdk//:jni_header",
     ],
     hdrs = [
-        #"@bazel_tools//tools/jdk:jni_header",
-        #"@bazel_tools//tools/jdk:jni_md_header-linux",
-        #"@local_jdk//:jni_header",
-        #"@local_jdk//:jni_md_header-darwin"
+        "@bazel_tools//tools/jdk:jni_header",
+        "@bazel_tools//tools/jdk:jni_md_header-linux",
     ],
     includes = [
-        "external/local_jdk/include",
         "external/bazel_tools/tools/jdk/include",
         "external/bazel_tools/tools/jdk/include/linux",
     ],
