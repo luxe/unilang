@@ -23,8 +23,8 @@ values = [
 ])
 
 hcp(name = "build_settings", deps = [
-    "//code/utilities/bazel:run_environment",
-    "//code/utilities/bazel:spawn_strategy",
+    "//code/utilities/program/bazel:run_environment",
+    "//code/utilities/program/bazel:spawn_strategy",
 ])
 
 
@@ -39,11 +39,11 @@ hcp(name = "bazel_runner", deps = [
     "@bazel//:spawn_proto_cpp",
     "//code/utilities/serialization:protobuf",
     "//code/utilities/json/functions:lib",
-    "//code/utilities/bazel:run_environment",
-    "//code/utilities/bazel:build_settings",
+    "//code/utilities/program/bazel:run_environment",
+    "//code/utilities/program/bazel:build_settings",
     "//code/utilities/flags/data:flags",
     "//code/utilities/flags:flag_util",
-    "//code/utilities/bazel/setup/config:bazel_config_settings",
+    "//code/utilities/program/bazel/setup/config:bazel_config_settings",
 ])
 
 hcp(name = "bazel_query_runner", deps = [
@@ -57,5 +57,5 @@ hcp(name = "bazel_query_runner", deps = [
     "@bazel//:spawn_proto_cpp",
     "//code/utilities/serialization:protobuf",
     "//code/utilities/json/functions:lib",
-    "//code/utilities/bazel:run_environment",
+    "//code/utilities/program/bazel:run_environment",
 ])

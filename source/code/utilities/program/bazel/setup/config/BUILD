@@ -8,7 +8,7 @@ hcp(name = "bazel_config_settings", deps = [
 
 hcp(name = "bazel_config_deriver", deps = [
     "//code/utilities/filesystem/files/getting:lib",
-    "//code/utilities/bazel/setup/config:bazel_config_settings",
+    "//code/utilities/program/bazel/setup/config:bazel_config_settings",
     "//code/utilities/streams/filestreams/read_all:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/filesystem/files/observers/lstat_wrap:lib",

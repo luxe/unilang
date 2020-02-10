@@ -9,5 +9,5 @@ hcp(name = "bazel_wrapper", deps = [
 
 hcp(name = "bazel_wrapper_deriver", deps = [
     "//code/utilities/filesystem/files/getting:lib",
-    "//code/utilities/bazel/setup/wrapper:bazel_wrapper",
+    "//code/utilities/program/bazel/setup/wrapper:bazel_wrapper",
 ])
