@@ -84,5 +84,7 @@ java_binary(
     #javacopts = [ "-Djava.library.path=example" ],
     
     #works only if I do a full path.  relative fron runfiles doesn't work either.
+    #https://github.com/bazelbuild/bazel/issues/10754
+    #https://github.com/bazelbuild/bazel/issues/6958
     jvm_flags = [ "-Djava.library.path=." ],
 )
