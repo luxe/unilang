@@ -38,6 +38,15 @@ java_binary(
     name = "Main",
     srcs = [ "Main.java" ],
     main_class = "Main",
+    #resources = [ ":libmain-jni.so" ],
+    #runtime_deps = [ ":libmain-jni.so" ],
+    #use_testrunner = False,
+    #deploy_env = [ ":libmain-jni.so" ],
+    #create_executable = True,
+    #deps = [ ":libmain-jni.so" ],
     data = [ ":libmain-jni.so" ],
+    #javacopts = [ "-Djava.library.path=." ],
+    
+    #works only if I do a full path.  relative fron runfiles doesn't work either.
     jvm_flags = [ "-Djava.library.path=." ],
 )
