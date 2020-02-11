@@ -19,9 +19,9 @@ cc_library(
         "external/bazel_tools/tools/jdk/include/linux",
     ],
     copts = [
-    "-isystem","external/bazel_tools/tools/jdk/include",
-    "-isystem","external/bazel_tools/tools/jdk/include/linux",
-    "-isystem","external/local_jdk/include",
+    #"-isystem","external/bazel_tools/tools/jdk/include",
+    #"-isystem","external/bazel_tools/tools/jdk/include/linux",
+    #"-isystem","external/local_jdk/include",
     "-isystem","bazel-out/k8-fastbuild/bin/external/bazel_tools/tools/jdk/include",
     "-isystem","bazel-out/k8-fastbuild/bin/external/bazel_tools/tools/jdk/include/linux"],
     alwayslink = True,
@@ -45,7 +45,7 @@ java_binary(
     #create_executable = True,
     #deps = [ ":libmain-jni.so" ],
     data = [ ":libmain-jni.so" ],
-    #javacopts = [ "-Djava.library.path=." ],
+    #javacopts = [ "-Djava.library.path=example" ],
     
     #works only if I do a full path.  relative fron runfiles doesn't work either.
     jvm_flags = [ "-Djava.library.path=." ],
