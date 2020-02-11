@@ -1,0 +1,35 @@
+class
+❪string❫
+❪iostream❫
+❪set❫
+❪sys/types.h❫
+❪dirent.h❫
+❪errno.h❫
+⚯
+⚞⚟
+
+
+
+//this was supposed to be an optized way of checking to see if a path is a directory
+//without stating the file.  We are under the impression that stat is more expensive
+//than calling just opendir.  We are also under the impression that opendir is sufficient
+//for determining if a path is a directory or not.
+◀public: static▶ bool ☀Is_Directory(std::string const& path)❰
+    
+    //we were able to open the dir so we can assume its a directory
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        return true;
+    }
+    
+    //if we were unable to open the directory, we can check if
+    //it was because its not actually a directory.
+    if (errno == ENOTDIR)
+    {
+        return false;
+    }
+    
+    //if it was a different kind of error we can assume
+    //that because it wasn't the ENOTDIR error it is indeed a directory
+    return true;
+❱

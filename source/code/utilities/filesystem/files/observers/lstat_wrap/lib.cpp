@@ -3,6 +3,18 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
+template <typename Fun>
+void OnStat(std::string path_to_file, Fun fun){
+    struct stat fileInfo;
+    if (lstat(path_to_file.c_str(), &fileInfo) == 0){
+        fun(fileInfo);
+    }
+    else{
+      //file could not be stat'd.
+      //it probably doesn't exist.
+    }
+}
+
 size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file)
 {
   struct stat result;
