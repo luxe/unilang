@@ -1,6 +1,12 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name="opendir_wrap", deps = [
 ])
+
+cpp_main(
+    name = "is_dir",
+    deps = [":opendir_wrap"],
+)
