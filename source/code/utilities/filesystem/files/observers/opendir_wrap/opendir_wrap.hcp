@@ -17,17 +17,68 @@ class
     //we were able to open the dir so we can assume its a directory
     auto dir = opendir(path.c_str());
     if (dir != nullptr){
+        closedir(dir); //closing may fail
         return true;
     }
     
     //if we were unable to open the directory, we can check if
     //it was because its not actually a directory.
-    if (errno == ENOTDIR)
+    if (errno == ENOTDIR || errno == ENOENT)
     {
         return false;
     }
     
     //if it was a different kind of error we can assume
-    //that because it wasn't the ENOTDIR error it is indeed a directory
+    //it is indeed a directory.
+    //this is likely a bad assumption.
     return true;
 ❱
+
+◀public: static▶ bool ☀Is_Permission_Denied(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        closedir(dir); //closing may fail
+        return false;
+    }
+    
+    if (errno != EACCES){return false;}
+    return true;
+❱
+
+◀public: static▶ bool ☀Per_Process_Limit_Reached(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        closedir(dir); //closing may fail
+        return false;
+    }
+    
+    if (errno != EMFILE){return false;}
+    return true;
+❱
+
+◀public: static▶ bool ☀System_Wide_Limit_Reached(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        closedir(dir); //closing may fail
+        return false;
+    }
+    
+    if (errno != ENFILE){return false;}
+    return true;
+❱
+
+◀public: static▶ bool ☀Name_Is_Not_A_Directory(std::string const& path)❰
+
+    auto dir = opendir(path.c_str());
+    if (dir != nullptr){
+        closedir(dir); //closing may fail
+        return false;
+    }
+    
+    if (errno != ENOTDIR){return false;}
+    return true;
+❱
+
