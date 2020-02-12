@@ -28,7 +28,7 @@ hcp(name = "software_deployer", deps = [
     "//code/utilities/formats/pdf:pdf_settings",
     "//code/utilities/formats/pdf:pdf_creator",
     "//code/utilities/filesystem/files/moving:lib",
-    "//code/utilities/program/git/update:git_updater",
+    "//code/utilities/program/wrappers/git/update:git_updater",
     
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/main:program_input",

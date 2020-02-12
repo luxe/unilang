@@ -14,6 +14,6 @@ cpp_main(
         "//code/utilities/locale:lib",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
-        "//code/utilities/program_name:program_name_getter",
+        "//code/utilities/program/name:program_name_getter",
     ],
 )

@@ -1,0 +1,87 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪set❫
+❪"code/utilities/shell/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/program/wrappers/git/lib"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/repo_location"❫
+❪"code/utilities/random/lib"❫
+❪"code/utilities/filesystem/files/moving/lib"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/established_repo"❫
+⚯
+⚞⚟
+
+
+
+
+
+◀public: static▶ std::vector<Established_Repo> ☀Establish_N_Repos(Repo_Location const& settings, int const& count) ❰
+
+    //all the paths that point to fresh repos
+    std::vector<Established_Repo> x;
+    
+   //clone and get a fresh repo
+   auto original_clone = Establish_And_Get_Path(settings);
+   x.emplace_back(original_clone);
+   
+   //copy the fresh repo the number of extra times needed
+   for (size_t i = 1; i < count; ++i){
+    
+        Established_Repo repo;
+        repo.conceptual_name = settings.conceptual_name;
+        repo.path = Random_Tmp_Directory();
+        Copy_Folder_To_Path(original_clone.path,repo.path);
+        x.emplace_back(repo);
+   }
+   
+   return x;
+❱
+
+◀public: static▶ Established_Repo ☀Establish_And_Get_Path(Repo_Location const& settings) ❰
+
+    if (settings.use_clone){
+        return Established_Repo_Through_Clone(settings);
+    }
+    
+    return Established_Repo_Through_Existing(settings);
+❱
+
+◀private: static▶ Established_Repo ☀Established_Repo_Through_Existing(Repo_Location const& settings)❰
+    Established_Repo x;
+    x.conceptual_name = settings.conceptual_name;
+    x.path = settings.run_path;
+    return x;
+❱
+
+◀private: static▶ Established_Repo ☀Established_Repo_Through_Clone(Repo_Location const& settings)❰
+
+    Established_Repo x;
+    x.conceptual_name = settings.conceptual_name;
+    
+    if (settings.switch_branches){
+        x.path = Download_Repo_To_Random_Name_In_Temp_Folder(settings.clone_url,settings.branch_name);
+    }
+    else{
+      x.path = Download_Repo_To_Random_Name_In_Temp_Folder(settings.clone_url);
+    }
+    
+    return x;
+❱
+
+
+
+
+//DON'T USE
+//THIS IS NOT THREAD SAFE (because of path changing) (YOU SHOULD AVOID)
+◀private: static▶ void ☀Establish_And_Move_Into_Repo(Repo_Location const& settings) ❰
+
+    // if (settings.use_clone){
+    //     auto path_name = Established_Repo_Through_Clone(settings);
+    //     Set_Path(path_name);
+    // }
+    
+    // //start in the appropriate directory
+    // Possibly_Set_Path(settings.use_run_path,settings.run_path);
+❱

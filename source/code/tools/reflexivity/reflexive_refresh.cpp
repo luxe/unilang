@@ -8,7 +8,7 @@
 #include "code/tools/reflexivity/settings/reflexive_refresh_settings.hpp"
 #include "code/tools/reflexivity/settings/reflexive_refresh_settings_getter.hpp"
 #include "code/utilities/locale/lib.hpp"
-#include "code/utilities/program_name/program_name_getter.hpp"
+#include "code/utilities/program/name/program_name_getter.hpp"
 #include <errno.h>
 
 

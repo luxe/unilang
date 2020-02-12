@@ -15,7 +15,7 @@ cc_binary(
 hcp(name = "machine_provisioner",deps=[
 	"//code/utilities/shell:lib",
 	"//code/utilities/machine_setup:keygen_refresher",
-	"//code/utilities/program/git:git_setuper"
+	"//code/utilities/program/wrappers/git:git_setuper"
 ])
 
 cc_binary(
