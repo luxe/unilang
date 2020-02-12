@@ -9,7 +9,7 @@ hcp(name = "gcalviz_settings", deps = [
 
 hcp(name = "default_settings_getter", deps = [
     "//code/tools/gcalviz/settings:gcalviz_settings",
-    "//code/utilities/secret:secret_getter",
+    "//code/utilities/personal/secret:secret_getter",
     "//code/utilities/filesystem/paths:lib",
 ])
 

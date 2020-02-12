@@ -16,7 +16,7 @@ cc_binary(
   srcs = ["upload_to_dropbox.cpp"],
   deps = [
   "//code/utilities/web/dropbox:dropbox_uploader",
-  "//code/utilities/secret:secret_getter",
+  "//code/utilities/personal/secret:secret_getter",
   "//code/utilities/web/dropbox:dropbox_upload_settings"
 ])
 

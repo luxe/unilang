@@ -23,5 +23,5 @@ hcp(name = "processing_exporter", deps = [
 
 hcp(name = "processing_options_getter", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific:processing_options",
-"//code/utilities/life:company_getter"
+"//code/utilities/personal/life:company_getter"
 ])

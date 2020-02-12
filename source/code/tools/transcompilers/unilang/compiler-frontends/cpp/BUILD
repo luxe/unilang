@@ -18,5 +18,5 @@ hcp(name = "cpp_options_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/utilities/exits:lib",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/utilities/life:company_getter",
+"//code/utilities/personal/life:company_getter",
 ])

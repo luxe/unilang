@@ -34,5 +34,5 @@ hcp(name = "hidl_options_getter", deps = [
 "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/utilities/exits:lib",
-"//code/utilities/life:company_getter",
+"//code/utilities/personal/life:company_getter",
 ])

@@ -20,7 +20,7 @@ hcp(name = "task_executer", deps = [
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
 "//code/utilities/formats/pdf:latex_template_getter",
 "//code/utilities/web/dropbox:dropbox_uploader",
-"//code/utilities/secret:secret_getter",
+"//code/utilities/personal/secret:secret_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/utilities/formats/pdf:pdf_settings",
 "//code/utilities/filesystem/files/temp:temp_file",

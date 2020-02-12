@@ -44,7 +44,7 @@ hcp(name = "default_settings_getter", deps = [
     "//code/tools/noogle/settings:noogle_settings",
     "//code/utilities/web/chrome/driver:chrome_driver_selector",
     "//code/utilities/filesystem/paths:lib",
-    "//code/utilities/secret:secret_getter",
+    "//code/utilities/personal/secret:secret_getter",
     "//code/tools/noogle/settings:query_expand_settings",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/web/automate/browser:default_browser_settings_getter",

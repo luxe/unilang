@@ -1,5 +1,5 @@
 #include "code/utilities/web/dropbox/dropbox_uploader.hpp"
-#include "code/utilities/secret/secret_getter.hpp"
+#include "code/utilities/personal/secret/secret_getter.hpp"
 #include "code/utilities/web/dropbox/dropbox_upload_settings.hpp"
 #include <iostream>
 
