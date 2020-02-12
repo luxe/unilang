@@ -8,11 +8,11 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include "code/utilities/peripheral/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/formats/json/functions/lib.hpp"
-#include "code/tools/games/crossword/assets/assets_loader.hpp"
-#include "code/tools/games/crossword/state/game_state.hpp"
-#include "code/tools/games/crossword/state/game_state_getter.hpp"
-#include "code/tools/games/crossword/core/frame_renderer.hpp"
-#include "code/tools/games/crossword/core/state_updater.hpp"
+#include "code/tools/games/word_build/assets/assets_loader.hpp"
+#include "code/tools/games/word_build/state/game_state.hpp"
+#include "code/tools/games/word_build/state/game_state_getter.hpp"
+#include "code/tools/games/word_build/core/frame_renderer.hpp"
+#include "code/tools/games/word_build/core/state_updater.hpp"
 #include "code/utilities/graphics/sfml/game_loop.hpp"
 #include "code/utilities/graphics/sfml/standard_sfml_game_loop.hpp"
 

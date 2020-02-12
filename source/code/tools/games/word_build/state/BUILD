@@ -11,5 +11,5 @@ hcp(name = "game_state", deps = [
 
 hcp(name = "game_state_getter", deps = [
     "//code/utilities/peripheral/keyboard/joycons:joycons",
-    "//code/tools/games/crossword/state:game_state",
+    "//code/tools/games/word_build/state:game_state",
 ])
