@@ -25,8 +25,8 @@ hcp(name = "software_deployer", deps = [
     "//code/tools/repo_tools/build_determinism:build_determinism_documentation_getter",
     "//code/tools/repo_tools/build_tools:build_tools_documentation_getter",
     
-    "//code/utilities/pdf:pdf_settings",
-    "//code/utilities/pdf:pdf_creator",
+    "//code/utilities/formats/pdf:pdf_settings",
+    "//code/utilities/formats/pdf:pdf_creator",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/utilities/program/git/update:git_updater",
     

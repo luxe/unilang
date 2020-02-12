@@ -9,7 +9,7 @@
 #include "code/utilities/data_structures/index/moded_index.hpp"
 #include "code/utilities/types/map/lib.hpp"
 #include "code/utilities/std_hackery/std_aliases.hpp"
-#include "code/utilities/gmp/lib.hpp"
+#include "code/utilities/math/gmp/lib.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
 
 //whoops.. pre-pre-jstd is really needed

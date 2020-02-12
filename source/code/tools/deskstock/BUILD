@@ -18,7 +18,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/upload:file_uploader",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/tools/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
-"//code/utilities/chinese:chinese_translations",
+"//code/utilities/linguistics/chinese:chinese_translations",
 "//code/utilities/time/date:lib",
 "//code/utilities/time/sleeping:lib",
 "//code/utilities/types/strings/observers/splitting:lib",

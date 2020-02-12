@@ -1,5 +1,5 @@
 #include "code/utilities/random/lib.hpp"
-#include "code/utilities/gmp/lib.hpp"
+#include "code/utilities/math/gmp/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
 #include "crossguid/guid.hpp"
 

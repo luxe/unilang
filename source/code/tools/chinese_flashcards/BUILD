@@ -21,7 +21,7 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/upload:file_uploader",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/tools/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
-"//code/utilities/chinese:chinese_translations",
+"//code/utilities/linguistics/chinese:chinese_translations",
 "//code/utilities/time/date:lib",
 ])
 

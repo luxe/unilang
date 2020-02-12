@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 #include <thread>
-#include "code/utilities/gmp/lib.hpp"
+#include "code/utilities/math/gmp/lib.hpp"
 #include <iostream>
 #include "code/utilities/time/clock/clock.hpp"
 

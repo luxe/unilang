@@ -40,6 +40,6 @@ hcp(name = "html_exporter", deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/random:lib",
-    "//code/utilities/html:basic_html_template_getter",
+    "//code/utilities/formats/html:basic_html_template_getter",
     "//code/utilities/shell:lib",
 ])

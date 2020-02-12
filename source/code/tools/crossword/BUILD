@@ -75,5 +75,5 @@ hcp(name = "html_exporter", deps = [
     "//code/utilities/colors:color_palettes",
     "//code/utilities/random:lib",
     "//code/utilities/std_hackery:std_aliases",
-    "//code/utilities/html:basic_html_template_getter",
+    "//code/utilities/formats/html:basic_html_template_getter",
 ])

@@ -1,4 +1,4 @@
-#include "code/utilities/gmp/lib.hpp"
+#include "code/utilities/math/gmp/lib.hpp"
 #include <vector>
 #include <sstream>
 #include <iostream>

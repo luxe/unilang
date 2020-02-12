@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "code/utilities/gmp/lib.hpp"
+#include "code/utilities/math/gmp/lib.hpp"
 
 //basic constructs
 template <typename Boolean_Expression, typename Function>

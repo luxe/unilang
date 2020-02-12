@@ -18,6 +18,6 @@ cc_library(
 "//code/utilities/std_hackery:std_aliases",
 "//code/utilities/types/strings/observers/converting:lib",
 "@boost//:range",
-#include "code/utilities/gmp/lib.hpp"
+#include "code/utilities/math/gmp/lib.hpp"
 ]
 )

@@ -77,7 +77,7 @@ hcp(name = "int_code_computer", deps = [
     "//code/tools/advent_of_code:int_code_computer_state",
     "//code/tools/advent_of_code:int_code_instruction",
     "//code/utilities/std_hackery:std_aliases",
-    "//code/utilities/gmp:lib",
+    "//code/utilities/math/gmp:lib",
 ])
 
 hcp(name = "int_code_instruction", deps = [
