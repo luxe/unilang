@@ -6,7 +6,7 @@ cc_binary(
     name = "deploy",
     srcs = ["main.cpp"],
     deps = [
-    "//code/utilities/locale:lib",
+    "//code/utilities/program/common_actions/locale:lib",
     "//code/tools/deploy:software_deployer"
     ],
 )

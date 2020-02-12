@@ -33,7 +33,7 @@ hcp(name = "system_effect_settings", deps = [
 
 hcp(name = "startup_settings", deps = [
     "//code/utilities/system:check_installed_program_settings",
-    "//code/utilities/locale:locale_settings",
+    "//code/utilities/program/common_actions/locale:locale_settings",
 ])
 
 hcp(name = "user_command_settings", deps = [

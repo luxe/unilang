@@ -11,7 +11,7 @@ cc_library(
 
 
 hcp(name = "locale_setter",deps=[
-    "//code/utilities/locale:locale_settings",
+    "//code/utilities/program/common_actions/locale:locale_settings",
 ])
 
 hcp(name = "locale_settings",deps=[])

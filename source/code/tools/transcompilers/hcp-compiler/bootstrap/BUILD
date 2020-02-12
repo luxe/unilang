@@ -5,5 +5,5 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = ["//code/tools/transcompilers/hcp-compiler/bootstrap/program_options:lib",
             "//code/tools/transcompilers/hcp-compiler/bootstrap/core:core",
-            "//code/utilities/locale:lib"]
+            "//code/utilities/program/common_actions/locale:lib"]
 )
