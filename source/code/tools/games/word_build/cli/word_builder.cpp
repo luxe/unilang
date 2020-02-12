@@ -1,5 +1,5 @@
 #include <iostream>
-#include "code/tools/word_builder/word_builder_game_maker.hpp"
+#include "code/tools/games/word_build/cli/word_builder_game_maker.hpp"
 
 int main(int const argc, char** const argv){
     

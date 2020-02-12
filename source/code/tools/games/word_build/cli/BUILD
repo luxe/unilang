@@ -12,7 +12,7 @@ cc_binary(
     name = "word_builder",
     srcs = ["word_builder.cpp"],
     deps = [
-        "//code/tools/word_builder:word_builder_game_maker"
+        "//code/tools/games/word_build/cli:word_builder_game_maker"
     ],
     data = ["@scrabble_words//:all"],
 )
@@ -26,7 +26,7 @@ hcp(name = "word_builder_game_maker", deps = [
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/linguistics/build_word/game:build_word_puzzle",
     "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings_getter",
-    "//code/tools/word_builder:html_exporter",
+    "//code/tools/games/word_build/cli:html_exporter",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/linguistics/build_word/game:puzzle_builder",
 ])
