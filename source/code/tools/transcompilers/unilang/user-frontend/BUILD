@@ -19,7 +19,7 @@ hcp(name = "exception_handler", deps = [
 "//code/tools/transcompilers/unilang/validators/file_name:filename_exception",
 "//code/tools/transcompilers/unilang/parser/tokenizer:tokenizer_exception",
 "//code/tools/transcompilers/unilang/validators/stream:token_stream_validation_exception",
-"//code/utilities/std_hackery:lib",
+"//code/utilities/language_basic/std_hackery:lib",
 "//code/utilities/colors:lib",
 ])
 

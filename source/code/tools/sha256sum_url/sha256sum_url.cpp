@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cstdlib>
-#include "code/utilities/compression/lib.hpp"
+#include "code/utilities/formats/compression/lib.hpp"
 
 int main(int const argc, char** const argv){
     

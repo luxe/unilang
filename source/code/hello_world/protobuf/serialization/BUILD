@@ -11,5 +11,5 @@ cpp_proto_object(
 
 cpp_main(
     name = "main",
-    deps = [":message_cpp_proto","//code/utilities/serialization:protobuf"]
+    deps = [":message_cpp_proto","//code/utilities/formats/serialization:protobuf"]
 )

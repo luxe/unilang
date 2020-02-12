@@ -18,7 +18,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/types/strings/observers/path:lib",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/printers:lib",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/utilities/types/vectors/observers:lib",
     "//code/tools/repo_tools/shared_object_trace:so_ldd_correlation_visualizer",
     "//code/tools/repo_tools/shared_object_trace:ignore_deps",
@@ -62,7 +62,7 @@ hcp(name = "shared_object_trace_documentation_getter", deps = [
 ])
 
 hcp(name = "ignore_deps", deps = [
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
 ])
 
 

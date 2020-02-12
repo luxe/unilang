@@ -11,6 +11,6 @@ cc_binary(
     name = "sha256sum_url",
     srcs = ["sha256sum_url.cpp"],
     deps = [
-        "//code/utilities/compression:lib",
+        "//code/utilities/formats/compression:lib",
     ]
 )

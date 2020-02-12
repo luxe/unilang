@@ -32,7 +32,7 @@ hcp(name = "word_builder_game_maker", deps = [
 
 hcp(name = "html_exporter", deps = [
     "//code/utilities/colors:color_palettes",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/tools/word_builder/settings:settings",
     "//code/tools/word_builder/data:puzzle",
     "//code/utilities/types/vectors/creators:lib",

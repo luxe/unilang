@@ -1,4 +1,4 @@
-#include "code/utilities/compression/lib.hpp"
+#include "code/utilities/formats/compression/lib.hpp"
 #include "code/utilities/shell/lib.hpp"
 #include "code/utilities/types/strings/observers/columns/lib.hpp"
 

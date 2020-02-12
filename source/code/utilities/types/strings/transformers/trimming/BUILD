@@ -9,7 +9,7 @@ cc_library(
     deps = ["//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/converting:lib",
 "//code/utilities/language_basic/control_structures/looping:lib",
-"//code/utilities/std_hackery:lib",
+"//code/utilities/language_basic/std_hackery:lib",
 
 ]
 )

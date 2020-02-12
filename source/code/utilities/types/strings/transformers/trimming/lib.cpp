@@ -1,7 +1,7 @@
 #include "code/utilities/types/strings/transformers/trimming/lib.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
 #include "code/utilities/converters/lib.hpp"
-#include "code/utilities/std_hackery/lib.hpp"
+#include "code/utilities/language_basic/std_hackery/lib.hpp"
 #include "code/utilities/language_basic/control_structures/looping/lib.hpp"
 #include <algorithm>
 #include <functional>

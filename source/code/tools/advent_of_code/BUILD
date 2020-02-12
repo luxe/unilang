@@ -76,7 +76,7 @@ hcp(name = "int_code_computer", deps = [
     "//code/utilities/types/int:int",
     "//code/tools/advent_of_code:int_code_computer_state",
     "//code/tools/advent_of_code:int_code_instruction",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/utilities/math/gmp:lib",
 ])
 
@@ -85,7 +85,7 @@ hcp(name = "int_code_instruction", deps = [
 ])
 
 hcp(name = "int_code_computer_state", deps = [
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
 ])
 
 hcp(name = "day_1", deps = [
@@ -110,7 +110,7 @@ hcp(name = "day_1", deps = [
     "//code/utilities/data_structures/point:point_line_intersections_getter",
     "//code/utilities/data_structures/point:point_line_to_points",
     "//code/utilities/types/int:int",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
 ])
 
 hcp(name = "day_2", deps = [

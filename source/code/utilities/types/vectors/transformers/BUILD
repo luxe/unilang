@@ -15,7 +15,7 @@ cc_library(
 "//code/utilities/data_structures:index_mode",
 "//code/utilities/data_structures/index:moded_index",
 "//code/utilities/types/map:lib",
-"//code/utilities/std_hackery:std_aliases",
+"//code/utilities/language_basic/std_hackery:std_aliases",
 "//code/utilities/types/strings/observers/converting:lib",
 "@boost//:range",
 #include "code/utilities/math/gmp/lib.hpp"

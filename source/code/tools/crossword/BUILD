@@ -34,7 +34,7 @@ hcp(name = "crossword_maker", deps = [
     "//code/utilities/data_structures/point:point_mover",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/types/strings/transformers/casing:lib",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/tools/crossword/settings:crossword_puzzle_settings_getter",
     "//code/tools/crossword:random_word_placer",
     "//code/utilities/types/strings/transformers/casing:letter_case_setter",
@@ -46,7 +46,7 @@ hcp(name = "random_word_placer", deps = [
     "//code/utilities/data_structures/point:point_mover",
     "//code/tools/crossword/settings:crossword_puzzle_settings",
     "//code/utilities/data_structures/point:directional_point",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/tools/crossword/settings:crossword_puzzle_settings_getter",
     "//code/utilities/types/strings/transformers/casing:lib",
     "//code/utilities/types/vectors/creators:lib",
@@ -63,7 +63,7 @@ hcp(name = "random_word_placer", deps = [
 
 hcp(name = "crossword_words", deps = [
     "//code/utilities/types/vectors/transformers:lib",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
 ])
 
 hcp(name = "html_exporter", deps = [
@@ -74,6 +74,6 @@ hcp(name = "html_exporter", deps = [
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/colors:color_palettes",
     "//code/utilities/random:lib",
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/utilities/formats/html:basic_html_template_getter",
 ])

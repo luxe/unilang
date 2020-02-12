@@ -6,5 +6,5 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-deps = ["//code/utilities/std_hackery:lib"]
+deps = ["//code/utilities/language_basic/std_hackery:lib"]
 )

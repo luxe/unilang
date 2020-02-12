@@ -37,7 +37,7 @@ hcp(name = "bazel_runner", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/random:lib",
     "@bazel//:spawn_proto_cpp",
-    "//code/utilities/serialization:protobuf",
+    "//code/utilities/formats/serialization:protobuf",
     "//code/utilities/formats/json/functions:lib",
     "//code/utilities/program/wrappers/bazel:run_environment",
     "//code/utilities/program/wrappers/bazel:build_settings",
@@ -55,7 +55,7 @@ hcp(name = "bazel_query_runner", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/random:lib",
     "@bazel//:spawn_proto_cpp",
-    "//code/utilities/serialization:protobuf",
+    "//code/utilities/formats/serialization:protobuf",
     "//code/utilities/formats/json/functions:lib",
     "//code/utilities/program/wrappers/bazel:run_environment",
 ])

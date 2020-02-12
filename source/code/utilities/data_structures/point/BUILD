@@ -20,7 +20,7 @@ hcp(name = "point_mover", deps = [
 ])
 
 hcp(name = "point_range_checker", deps = [
-    "//code/utilities/std_hackery:std_aliases",
+    "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/utilities/data_structures/point:point",
 ])
 
