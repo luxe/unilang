@@ -6,10 +6,10 @@ cc_binary(
    name = "math_game",
    srcs = ["math_game.cpp"],
    deps = [
-    "//code/utilities/keyboard/joycons:joycon_horizontal_state",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
     "//code/utilities/formats/json/functions:lib",
-    "//code/utilities/keyboard/joycons:joycons",
-    "//code/utilities/keyboard/joycons:joycon_state_getter",
+    "//code/utilities/peripheral/keyboard/joycons:joycons",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
     "//code/tools/math_game/assets:assets_loader",
     "//code/tools/math_game/state:game_state",
     "//code/tools/math_game/core:frame_renderer",

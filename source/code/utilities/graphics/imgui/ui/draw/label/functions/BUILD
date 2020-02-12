@@ -22,7 +22,7 @@ hcp(name="label_drawer", deps = [
     "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
-    "//code/utilities/mouse/state:mouse_state",
+    "//code/utilities/peripheral/mouse/state:mouse_state",
 ])
 
 hcp(name="faced_label_drawer", deps = [
@@ -31,7 +31,7 @@ hcp(name="faced_label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label:positioned_faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame/logic:frame_elements",
-    "//code/utilities/mouse/state:mouse_state",
+    "//code/utilities/peripheral/mouse/state:mouse_state",
 ])
 
 hcp(name="label_text_bitmap_getter", deps = [

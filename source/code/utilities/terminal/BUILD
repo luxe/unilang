@@ -6,5 +6,5 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(name = "terminal_background_changer",deps=[
     "//code/utilities/math:math",
     "//code/utilities/shell:lib",
-    "//code/utilities/screen/good_bad:rgb_section",
+    "//code/utilities/peripheral/screen/good_bad:rgb_section",
 ])

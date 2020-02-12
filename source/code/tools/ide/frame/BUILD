@@ -32,10 +32,10 @@ hcp(
         "//code/tools/ide/frame:fullscreener",
         "//code/utilities/graphics/imgui:mechanics",
         "//code/tools/ide/frame:mouse_selection_drawer",
-        "//code/utilities/keyboard:key_detector",
+        "//code/utilities/peripheral/keyboard:key_detector",
         "//code/tools/ide/frame:label_cursor_action_doer",
         "//code/utilities/graphics/imgui/ui/draw/line:line_drawer",
-        "//code/utilities/mouse/state:mouse_position_getter",
+        "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap_drawer",
         "//code/tools/ide/frame/logic:frame_elements",
         "//code/utilities/types/variant:lib",
@@ -47,11 +47,11 @@ hcp(
 hcp(
     name = "mouse_frame_getter",
     deps = [
-        "//code/utilities/mouse/state:mouse_state",
+        "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/frame/logic:frame_elements",
         "//code/tools/ide/frame:mouse_selection_drawer",
-        "//code/utilities/mouse/state:mouse_position_getter",
+        "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -63,11 +63,11 @@ hcp(
 hcp(
     name = "label_frame_getter",
     deps = [
-        "//code/utilities/mouse/state:mouse_state",
+        "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/frame/logic:frame_elements",
         "//code/tools/ide/frame:mouse_selection_drawer",
-        "//code/utilities/mouse/state:mouse_position_getter",
+        "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -82,7 +82,7 @@ hcp(name = "fullscreener", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
-    "//code/utilities/keyboard:key_detector",
+    "//code/utilities/peripheral/keyboard:key_detector",
 ])
 
 hcp(name = "mouse_selection_drawer", deps = [
@@ -90,8 +90,8 @@ hcp(name = "mouse_selection_drawer", deps = [
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
     "//code/tools/ide/frame/logic:frame_elements",
-    "//code/utilities/mouse/state:mouse_state_getter",
-    "//code/utilities/mouse/state:mouse_state",
+    "//code/utilities/peripheral/mouse/state:mouse_state_getter",
+    "//code/utilities/peripheral/mouse/state:mouse_state",
 ])
 
 hcp(name = "view_anchor_adjuster", deps = [
@@ -99,8 +99,8 @@ hcp(name = "view_anchor_adjuster", deps = [
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
     "//code/tools/ide/frame/logic:frame_elements",
-    "//code/utilities/mouse/state:mouse_state_getter",
-    "//code/utilities/mouse/state:mouse_state",
+    "//code/utilities/peripheral/mouse/state:mouse_state_getter",
+    "//code/utilities/peripheral/mouse/state:mouse_state",
 ])
 
 hcp(name = "label_cursor_action_doer", deps = [
@@ -110,7 +110,7 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/utilities/graphics/imgui/ui:ui_renders",
     "//code/utilities/graphics/imgui/ui/window:window_renderer",
     "//code/utilities/graphics/imgui/ui/window:window_position_finder",
-    "//code/utilities/keyboard:key_detector",
+    "//code/utilities/peripheral/keyboard:key_detector",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame:text_box_action_decider",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_mover",
@@ -122,5 +122,5 @@ hcp(name = "text_box_action_decider", deps = [
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
     "//code/tools/ide/frame:text_box_action",
-    "//code/utilities/keyboard:key_detector",
+    "//code/utilities/peripheral/keyboard:key_detector",
 ])

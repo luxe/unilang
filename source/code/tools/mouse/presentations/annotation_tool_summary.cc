@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "code/utilities/mouse/mouse_controller.hpp"
+#include "code/utilities/peripheral/mouse/mouse_controller.hpp"
 #include "code/utilities/shell/lib.hpp"
 
 

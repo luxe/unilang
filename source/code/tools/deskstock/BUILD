@@ -23,9 +23,9 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/time/sleeping:lib",
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/types/strings/transformers/squeeze:lib",
-"//code/utilities/screen:screen_tint_setter",
+"//code/utilities/peripheral/screen:screen_tint_setter",
 "//code/utilities/stock:stock_getter",
-"//code/utilities/screen/good_bad:good_bad_screen_tint_settings",
+"//code/utilities/peripheral/screen/good_bad:good_bad_screen_tint_settings",
 "//code/tools/deskstock/settings:deskstock_settings",
 "//code/utilities/locale:locale_setter",
 "//code/utilities/web:lib",
@@ -49,12 +49,12 @@ hcp(name = "float_sourcer", deps = [
     "//code/utilities/shell:lib",
     "//code/utilities/types/strings/transformers/other:lib",
     "//code/utilities/types/vectors/operators:lib",
-    "//code/utilities/mouse:mouse_controller",
+    "//code/utilities/peripheral/mouse:mouse_controller",
 ])
 
 hcp(name = "system_effecter", deps = [
     "//code/tools/deskstock/settings:deskstock_state",
-    "//code/utilities/screen:screen_tint_setter",
+    "//code/utilities/peripheral/screen:screen_tint_setter",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/shell:lib",
     "//code/utilities/terminal/good_bad:good_bad_terminal_changer",

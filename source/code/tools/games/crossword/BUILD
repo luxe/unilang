@@ -6,10 +6,10 @@ cc_binary(
    name = "main",
    srcs = ["main.cpp"],
    deps = [
-    "//code/utilities/keyboard/joycons:joycon_horizontal_state",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
     "//code/utilities/formats/json/functions:lib",
-    "//code/utilities/keyboard/joycons:joycons",
-    "//code/utilities/keyboard/joycons:joycon_state_getter",
+    "//code/utilities/peripheral/keyboard/joycons:joycons",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
     "//code/tools/games/crossword/assets:assets_loader",
     "//code/tools/games/crossword/state:game_state",
     "//code/tools/games/crossword/core:frame_renderer",

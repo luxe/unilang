@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "code/utilities/mouse/mouse_controller.hpp"
+#include "code/utilities/peripheral/mouse/mouse_controller.hpp"
 
 
 //add points to move to and then speed at which to move

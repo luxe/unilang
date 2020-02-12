@@ -1,0 +1,80 @@
+class
+❪string❫
+❪"code/utilities/peripheral/screen/good_bad/rgb_section.hpp"❫
+❪"code/utilities/peripheral/screen/good_bad/good_bad_screen_tint_settings.hpp"❫
+❪"code/utilities/peripheral/screen/redshift/redshift_settings"❫
+❪"code/utilities/peripheral/screen/good_bad/mood_setting"❫
+⚯
+❪"code/utilities/streams/filestreams/lib.hpp"❫
+❪"code/utilities/filesystem/paths/lib.hpp"❫
+❪"code/utilities/shell/lib.hpp"❫
+❪"code/utilities/peripheral/screen/redshift/redshift_command_getter"❫
+❪"code/utilities/math/math"❫
+❪iostream❫
+⚞⚟
+
+
+◀public: static▶ void ☀Set_Rgb_Section(Redshift_Settings const& setting, Rgb_Section const& section, float percentage)❰
+    switch (section){
+        case Rgb_Section::RED: Set_Redness(setting,percentage); break;
+        case Rgb_Section::GREEN: Set_Greeness(setting,percentage); break;
+        case Rgb_Section::BLUE: Set_Blueness(setting,percentage); break;
+        default:;
+    }
+❱
+◀public: static▶ void ☀Set_Rgb_Section(Redshift_Settings setting, float red_pct, float green_pct, float blue_pct)❰
+
+    setting.red_gamma_correction -= red_pct;
+    setting.green_gamma_correction -= green_pct;
+    setting.blue_gamma_correction -= blue_pct;
+    auto command = Redshift_Command_Getter::Get(setting);
+    std::cout << command << std::endl;
+    no_hup_execute_quietly_in_background(command);
+❱
+◀public: static▶ void ☀Reset_Rgb_Section(Redshift_Settings const& setting)❰
+    Set_Redness(setting,0);
+❱
+
+
+
+
+◀private: static▶ void ☀Set_Redness(Redshift_Settings const& setting, float red_percentage)❰
+    auto command = Get_Redness_Redshift_Command(setting, red_percentage);
+    no_hup_execute_quietly_in_background(command);
+❱
+◀private: static▶ void ☀Set_Greeness(Redshift_Settings const& setting, float green_percentage)❰
+    auto command = Get_Greeness_Redshift_Command(setting, green_percentage);
+    no_hup_execute_quietly_in_background(command);
+❱
+◀private: static▶ void ☀Set_Blueness(Redshift_Settings const& setting, float blue_percentage)❰
+    auto command = Get_Blueness_Redshift_Command(setting, blue_percentage);
+    no_hup_execute_quietly_in_background(command);
+❱
+
+◀private: static▶ std::string ☀Get_Redness_Redshift_Command(Redshift_Settings setting, float red_percentage)❰
+    
+    //adjust for redness
+    float as_decimal = red_percentage;
+    setting.green_gamma_correction -= as_decimal;
+    setting.blue_gamma_correction -= as_decimal;
+    
+    return Redshift_Command_Getter::Get(setting);
+❱
+◀private: static▶ std::string ☀Get_Greeness_Redshift_Command(Redshift_Settings setting, float green_percentage)❰
+    
+    //adjust for redness
+    float as_decimal = green_percentage;
+    setting.red_gamma_correction -= as_decimal;
+    setting.blue_gamma_correction -= as_decimal;
+    
+    return Redshift_Command_Getter::Get(setting);
+❱
+◀private: static▶ std::string ☀Get_Blueness_Redshift_Command(Redshift_Settings setting, float blue_percentage)❰
+    
+    //adjust for redness
+    float as_decimal = blue_percentage;
+    setting.red_gamma_correction -= as_decimal;
+    setting.green_gamma_correction -= as_decimal;
+    
+    return Redshift_Command_Getter::Get(setting);
+❱

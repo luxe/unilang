@@ -18,7 +18,7 @@ hcp(
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/frame/logic:frame_elements",
         "//code/tools/ide/frame:mouse_selection_drawer",
-        "//code/utilities/mouse/state:mouse_position_getter",
+        "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -28,7 +28,7 @@ hcp(
         "//code/tools/ide/frame:mouse_frame_getter",
         "//code/tools/ide/frame:label_frame_getter",
         "//code/tools/ide/frame:view_anchor_adjuster",
-        "//code/utilities/mouse/state:mouse_state",
-        "//code/utilities/keyboard:key_detector",
+        "//code/utilities/peripheral/mouse/state:mouse_state",
+        "//code/utilities/peripheral/keyboard:key_detector",
     ],
 )

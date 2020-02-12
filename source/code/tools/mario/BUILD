@@ -10,7 +10,7 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar", "pkg_deb")
 
 
 hcp(name = "mario_runner", deps = [
-    "//code/utilities/sound:music_player",
+    "//code/utilities/peripheral/sound:music_player",
     "//code/utilities/x11/main_state:x11_main_state_creator",
     "//code/utilities/x11/sprite:sprite_loader",
     "//code/utilities/x11/sprite:sprite_window_creator",
@@ -25,7 +25,7 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/mario/sprites:sprites",
     "//code/tools/mario/sound:sounds_loader",
     "//code/tools/mario/engine:physics_state",
-    "//code/utilities/sound/sdl:sdl_audio",
+    "//code/utilities/peripheral/sound/sdl:sdl_audio",
     "//code/utilities/x11/geometry:window_geometry_getter",
     "//code/tools/mario:game_settings",
 ])

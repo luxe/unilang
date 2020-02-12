@@ -5,7 +5,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "mouse_binded_gama_slider",deps=[
     "//code/utilities/data_structures:optional_two_d_coordinate_dimension",
-    "//code/utilities/screen/good_bad:gama_slider",
+    "//code/utilities/peripheral/screen/good_bad:gama_slider",
 ])
 
 hcp(name = "mouse_terminal_settings",deps=[

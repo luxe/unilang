@@ -8,10 +8,10 @@ cc_binary(
    name = "joycons",
    srcs = ["joycons.cpp"],
    deps = [
-    "//code/utilities/keyboard/joycons:joycon_horizontal_state",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
     "//code/utilities/formats/json/functions:lib",
-    "//code/utilities/keyboard/joycons:joycons",
-    "//code/utilities/keyboard/joycons:joycon_state_getter",
+    "//code/utilities/peripheral/keyboard/joycons:joycons",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
     "@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
    linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
 )
@@ -21,7 +21,7 @@ cc_binary(
    srcs = ["f310_gamepads.cpp"],
    deps = [
     "//code/utilities/formats/json/functions:lib",
-    "//code/utilities/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
     "@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
    linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
 )
