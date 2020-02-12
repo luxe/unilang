@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "deskstock_state", deps = [
     "//code/tools/deskstock/settings:deskstock_settings",
-    "//code/utilities/config:config_monitor_settings",
+    "//code/utilities/program/inputs/config:config_monitor_settings",
 ])
 
 hcp(name = "deskstock_settings", deps = [

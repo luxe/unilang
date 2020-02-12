@@ -5,7 +5,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "noogle_state_getter", deps = [
     "//code/tools/noogle/state:noogle_state",
-    "//code/utilities/config:config_monitor",
+    "//code/utilities/program/inputs/config:config_monitor",
     "//code/tools/noogle/settings:default_settings_getter",
     "//code/tools/noogle:meta_settings",
 ])
@@ -14,7 +14,7 @@ hcp(name = "noogle_state", deps = [
     "//code/tools/noogle/state:noogle_running_stats",
     "//code/tools/noogle/state:message_queues",
     "//code/tools/noogle/settings:noogle_settings",
-    "//code/utilities/config:config_monitor_settings",
+    "//code/utilities/program/inputs/config:config_monitor_settings",
 ])
 
 hcp(name = "noogle_running_stats", deps = [

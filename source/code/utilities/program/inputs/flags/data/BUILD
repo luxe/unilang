@@ -5,5 +5,5 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name="flag", deps = [
 ])
 hcp(name="flags", deps = [
-    "//code/utilities/flags/data:flag",
+    "//code/utilities/program/inputs/flags/data:flag",
 ])

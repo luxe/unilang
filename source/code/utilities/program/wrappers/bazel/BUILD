@@ -41,8 +41,8 @@ hcp(name = "bazel_runner", deps = [
     "//code/utilities/formats/json/functions:lib",
     "//code/utilities/program/wrappers/bazel:run_environment",
     "//code/utilities/program/wrappers/bazel:build_settings",
-    "//code/utilities/flags/data:flags",
-    "//code/utilities/flags:flag_util",
+    "//code/utilities/program/inputs/flags/data:flags",
+    "//code/utilities/program/inputs/flags:flag_util",
     "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_settings",
 ])
 
