@@ -26,7 +26,7 @@ hcp(name = "f2si_c_options_getter", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 ])
 
 hcp(name = "uber_contributors_getter", deps = [

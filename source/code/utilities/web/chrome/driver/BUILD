@@ -14,7 +14,7 @@ hcp(name = "chrome_driver_selector", deps = [
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/filesystem/paths:lib",
-    "//code/utilities/exits:lib",
+    "//code/utilities/program/common_actions/exits:lib",
     "//code/utilities/web/chrome/driver:chrome_driver_selection_settings",
 ])
 

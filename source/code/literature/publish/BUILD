@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "task_executer", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/locale:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
@@ -38,7 +38,7 @@ hcp(name = "task_executer", deps = [
 hcp(name = "essay_list_maker", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/locale:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",

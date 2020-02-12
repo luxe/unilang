@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/shared_object_trace/program_options:lib",
-    "//code/utilities/exits:lib",
+    "//code/utilities/program/common_actions/exits:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/filesystem/files/getting:lib",
     "//code/tools/repo_tools/shared_object_trace:file_and_type",

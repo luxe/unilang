@@ -6,7 +6,7 @@ hcp(name = "header_adjuster", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/import:import_section",
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 ])
 
 hcp(name = "header_extension_deriver", deps = [

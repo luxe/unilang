@@ -9,6 +9,6 @@ cc_library(
     deps = [
 "//code/tools/transcompilers/hcp-compiler/bootstrap/core/class_compiler:lib",
 "//code/tools/transcompilers/hcp-compiler/bootstrap/core/global_compiler:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 ]
 )

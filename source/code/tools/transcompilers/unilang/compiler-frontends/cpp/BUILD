@@ -16,7 +16,7 @@ hcp(name = "cpp_options_getter", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/utilities/personal/life:company_getter",
 ])

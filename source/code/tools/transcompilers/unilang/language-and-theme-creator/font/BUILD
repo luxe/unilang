@@ -7,7 +7,7 @@ hcp(name = "unilang_font_creator", deps = [
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:unilang_file_creator",
 "//code/utilities/types/general:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",

@@ -8,7 +8,7 @@ cc_library(
     hdrs = ["lib.hpp"],
     deps = [
         "//code/utilities/types/strings/observers/converting:lib",
-        "//code/utilities/exits:lib",
+        "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/shell/process_spawn:process_spawner",
     ]
 )

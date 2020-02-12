@@ -1,6 +1,6 @@
 #include "code/tools/transcompilers/hcp-compiler/bootstrap/core/header_validator/lib.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
-#include "code/utilities/exits/lib.hpp"
+#include "code/utilities/program/common_actions/exits/lib.hpp"
 #include "code/utilities/types/wstrings/transformers/other/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "code/utilities/converters/lib.hpp"

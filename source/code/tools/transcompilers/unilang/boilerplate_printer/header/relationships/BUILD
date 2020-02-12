@@ -10,7 +10,7 @@ hcp(name = "import_relation_and_label_getter", deps = [
 "//code/tools/transcompilers/unilang/boilerplate_printer/header/relationships:type_relationship",
 "//code/tools/transcompilers/unilang/boilerplate_printer/header/relationships/derived_data:related_things_and_their_labels",
 "//code/utilities/types/vectors/transformers:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 ])
 
 hcp(name = "import_relationship_comment_deriver", deps = [

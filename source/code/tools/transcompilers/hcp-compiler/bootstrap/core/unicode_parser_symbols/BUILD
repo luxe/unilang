@@ -8,7 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = ["//code/tools/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/wstrings/transformers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/converters:lib",

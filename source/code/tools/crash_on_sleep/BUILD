@@ -7,7 +7,7 @@ load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
 distributable_cpp_main(
     name = "crash_on_sleep",
     deps = [
-        "//code/utilities/exits:lib"
+        "//code/utilities/program/common_actions/exits:lib"
     ],
     description = "Crash tools that sleep",
     depends = [

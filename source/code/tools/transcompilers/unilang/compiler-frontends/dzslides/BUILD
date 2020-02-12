@@ -27,6 +27,6 @@ hcp(name = "dzslides_exporter", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
 "//code/tools/transcompilers/unilang/file_extension_getter:file_extension_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/filesystem/files/creating:lib",
 ])

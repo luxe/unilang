@@ -1,4 +1,4 @@
-#include "code/utilities/signals/lib.hpp"
+#include "code/utilities/program/common_actions/signals/lib.hpp"
 #include <cstdlib>
 #include <signal.h>
 

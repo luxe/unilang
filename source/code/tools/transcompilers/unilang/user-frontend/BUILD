@@ -58,7 +58,7 @@ hcp(name = "program_input_enricher", deps = [
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/filesystem/files/getting:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/utilities/diagnostic:diagnostic_printer",
 ])
@@ -88,7 +88,7 @@ hcp(name = "after_artifact_actions", deps = [
 "//code/tools/transcompilers/unilang/structure/analyze:structure_static_analyzer",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/tools/transcompilers/unilang/main:program_input",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/tools/transcompilers/unilang/user-frontend:workspace_adjuster",
 "//code/tools/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
@@ -116,7 +116,7 @@ hcp(name = "file_to_structure_converter", deps = [
     "//code/tools/transcompilers/unilang/user-frontend:code_graphs_creator",
     "//code/tools/transcompilers/unilang/dependency_graph_creator:code_graph",
     "//code/utilities/types/general:lib",
-    "//code/utilities/exits:lib",
+    "//code/utilities/program/common_actions/exits:lib",
 ])
 
 hcp(name = "language_guesser", deps = [

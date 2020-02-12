@@ -20,7 +20,7 @@
 #include <math.h>
 #include <stdbool.h>
 #include <iostream>
-#include "code/utilities/exits/lib.hpp"
+#include "code/utilities/program/common_actions/exits/lib.hpp"
 
 #define MICROSECONDS 1000000 
 #define NANOSECONDS (MICROSECONDS*1000)

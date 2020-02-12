@@ -7,7 +7,7 @@ load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
 hcp(name = "deskstock_runner", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/utilities/types/general:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/locale:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/types/vectors/operators:lib",

@@ -10,7 +10,7 @@ bootstrap_hcp(
 "//code/tools/transcompilers/hcp-compiler/official/structure_state:lib",
 "//code/tools/transcompilers/hcp-compiler/official/unicode_parser_symbols:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/char:lib",
@@ -25,7 +25,7 @@ bootstrap_hcp(
 "//code/tools/transcompilers/hcp-compiler/official/structure_state:lib",
 "//code/tools/transcompilers/hcp-compiler/official/unicode_parser_symbols:lib",
 "//code/utilities/types/strings/observers/other:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/types/strings/observers/char:lib",
@@ -37,7 +37,7 @@ bootstrap_hcp(
 bootstrap_hcp(
     name = "header_validator",
 deps = ["//code/utilities/types/strings/observers/other:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/wstrings/transformers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/converters:lib",
@@ -54,7 +54,7 @@ deps = ["class_structure","global_structure_creator"]
 )
 bootstrap_hcp(
     name = "hcp_parser",
-	deps = ["hcp_class_parser","hcp_global_parser","class_structure","//code/utilities/exits:lib",]
+	deps = ["hcp_class_parser","hcp_global_parser","class_structure","//code/utilities/program/common_actions/exits:lib",]
 )
 
 bootstrap_hcp(
@@ -90,7 +90,7 @@ bootstrap_hcp(
 
 bootstrap_hcp(
     name = "hcp_compiler",
-	deps = ["class_compiler","global_compiler","//code/utilities/exits:lib",]
+	deps = ["class_compiler","global_compiler","//code/utilities/program/common_actions/exits:lib",]
 )
 
 bootstrap_hcp(
@@ -104,7 +104,7 @@ bootstrap_hcp(
 bootstrap_hcp(
     name = "task_executer",
     deps = ["//code/tools/transcompilers/hcp-compiler/official/program_options:lib",
-	"//code/utilities/exits:lib",
+	"//code/utilities/program/common_actions/exits:lib",
 	"//code/utilities/types/strings/observers/path:lib",
 	"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 	"//code/utilities/types/wstrings/transformers/other:lib",

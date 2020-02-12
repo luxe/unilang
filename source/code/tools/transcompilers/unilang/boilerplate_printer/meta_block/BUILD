@@ -29,7 +29,7 @@ hcp(name = "meta_block_printer", deps = [
 "//code/utilities/types/general:lib",
 "//code/utilities/converters:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/exits:lib",
+"//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/strings/observers/converting:lib",
 "//code/utilities/types/strings/transformers/other:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
