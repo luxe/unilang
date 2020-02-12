@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 
 hcp(name = "acronyms", deps = [
-        "//code/utilities/acronyms/data:acronym",
+        "//code/utilities/linguistics/acronyms/data:acronym",
 ])
 hcp(name = "acronym", deps = [
 ])
