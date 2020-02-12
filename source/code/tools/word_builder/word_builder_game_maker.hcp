@@ -1,7 +1,8 @@
 class
 ❪string❫
-❪"code/tools/word_builder/data/puzzle"❫
-❪"code/tools/word_builder/settings/settings"❫
+❪"code/utilities/linguistics/build_word/game/build_word_puzzle"❫
+❪"code/utilities/linguistics/build_word/game/puzzle_builder"❫
+❪"code/utilities/linguistics/build_word/game/settings/build_word_game_settings_getter"❫
 ⚯
 ❪iostream❫
 ❪"code/utilities/streams/filestreams/read_all/lib"❫
@@ -16,95 +17,10 @@ class
 
 ◀public: static▶ void ☀Make()❰
     
-    auto settings = Get_Settings();
+    auto settings = Build_Word_Game_Settings_Getter::Get();
     
-    auto puzzles = Create_Puzzles(settings);
+    auto puzzles = Puzzle_Builder::Create_Puzzles(settings);
     
     Html_Exporter::Export(puzzles,settings);
     
-❱
-
-◀private: static▶ Settings ☀Get_Settings()❰
-
-    Settings settings;
-    
-    //assume english standard likelyhood of letters
-    //these numbers might need recalculated based on the actual word list
-    settings.letter_probability = Standard_Char_Likelyhood_In_Words();
-    
-    //not sure if this is the correct relative path,
-    //but its what seems to be whats available when I link the data to the binary with "data=".
-    settings.words = Read_Each_Line_Of_File_Into_Vector("external/scrabble_words/2019.txt");
-    
-    settings.letter_amount = 8;
-    settings.min_word_size = 4;
-    
-    settings.puzzle_amount = 6;
-    settings.min_words_in_puzzle = 10;
-    settings.max_words_in_puzzle = 50;
-    
-    settings.puzzle_output_file = Full_Path_For_Desktop_File("word_build.html");
-    settings.puzzle_pdf_file = Full_Path_For_Desktop_File("word_build.pdf");
-    
-    return settings;
-❱
-
-◀private: static▶ std::vector<Puzzle> ☀Create_Puzzles(Settings const& settings)❰
-    std::vector<Puzzle> puzzles;
-    
-    while (puzzles.size() < settings.puzzle_amount){
-        auto p = Create_Puzzle(settings);
-        if (p.words.size() >= settings.min_words_in_puzzle && p.words.size() <= settings.max_words_in_puzzle){
-            puzzles.emplace_back(p);
-        }
-    }
-    
-    return puzzles;
-❱
-
-◀private: static▶ Puzzle ☀Create_Puzzle(Settings const& settings)❰
-
-    //create random letters based on probability
-    auto letters = Get_N_Random_Letters(settings.letter_probability,settings.letter_amount);
-    
-    
-    
-    //get answers
-    std::vector<std::string> answers;
-    for (auto const& it: settings.words){
-        
-        if (it.size() >= settings.min_word_size){
-            if (Letters_Exist_In_Word(letters,it)){
-                answers.emplace_back(it);
-            }
-        }
-    }
-    
-    //build puzzle
-    Puzzle p;
-    p.letters = letters;
-    p.words = answers;
-    return p;
-
-❱
-
-◀private: static▶ std::string ☀Get_N_Random_Letters(std::map<std::string,double> const& letter_probability, int const& letter_amount)❰
-    std::string letters;
-    for (size_t i = 0; i < letter_amount; ++i){
-        letters += Get_Random_By_Probability(letter_probability);
-    }
-    return letters;
-❱
-
-◀private: static▶ bool ☀Letters_Exist_In_Word(std::string letters, std::string const& word)❰
-
-    for (auto const& it: word){
-        if (Contains_Character(letters,it)){
-            Remove_First_Instance_Of_Char(letters,it);
-        }
-        else{
-            return false;
-        }
-    }
-    return true;
 ❱

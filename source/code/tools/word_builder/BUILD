@@ -24,17 +24,18 @@ hcp(name = "word_builder_game_maker", deps = [
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
-    "//code/tools/word_builder/settings:settings",
-    "//code/tools/word_builder/data:puzzle",
+    "//code/utilities/linguistics/build_word/game:build_word_puzzle",
+    "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings_getter",
     "//code/tools/word_builder:html_exporter",
     "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/linguistics/build_word/game:puzzle_builder",
 ])
 
 hcp(name = "html_exporter", deps = [
     "//code/utilities/colors:color_palettes",
     "//code/utilities/language_basic/std_hackery:std_aliases",
-    "//code/tools/word_builder/settings:settings",
-    "//code/tools/word_builder/data:puzzle",
+    "//code/utilities/linguistics/build_word/game:build_word_puzzle",
+    "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings",
     "//code/utilities/types/vectors/creators:lib",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/filesystem/files/creating:lib",
