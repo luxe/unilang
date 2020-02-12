@@ -18,5 +18,5 @@ hcp(name = "special_type_comparison_builder", deps = [
 "special_comparison_type",
 "special_comparison_functions",
 "//code/utilities/types/vectors/operators:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])

@@ -14,12 +14,12 @@ hcp(name = "input_struct_getter", deps = [
 "component_input",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "object_name_resolver", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
@@ -49,7 +49,7 @@ hcp(name = "api_printer", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/vectors/transformers:lib",

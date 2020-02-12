@@ -7,7 +7,7 @@ hcp(name = "enum_utility_function_shared", deps = [
 "//code/tools/transcompilers/unilang/options/sections/enum:enum_options",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/utilities/types/strings/transformers/casing:lib",
-"//code/utilities/converters:lib"
+"//code/utilities/types/converters:lib"
 ])
 
 hcp(name = "enum_utility_function_getter", deps = [
@@ -20,7 +20,7 @@ hcp(name = "enum_utility_function_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/value:enum_first_function_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/value:enum_last_function_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/value:enum_total_function_getter",

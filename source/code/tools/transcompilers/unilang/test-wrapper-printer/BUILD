@@ -28,7 +28,7 @@ hcp(name = "wrapper_interface_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
 "//code/tools/transcompilers/unilang/structure/print:data_member_printer",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
@@ -44,7 +44,7 @@ hcp(name = "wrapper_source_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
@@ -54,7 +54,7 @@ hcp(name = "in_out_design_test_wrapper_printer", deps = [
 "wrapper_interface_printer",
 "wrapper_source_printer",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "normal_design_test_wrapper_printer", deps = [
@@ -63,7 +63,7 @@ hcp(name = "normal_design_test_wrapper_printer", deps = [
 "wrapper_interface_printer",
 "wrapper_source_printer",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "test_wrapper_alias_helper_printer", deps = [
@@ -71,7 +71,7 @@ hcp(name = "test_wrapper_alias_helper_printer", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_utilities",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "test_wrapper_method_shared", deps = [
@@ -81,7 +81,7 @@ hcp(name = "test_wrapper_method_shared", deps = [
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_utilities",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "test_wrapper_methods_printer", deps = [
@@ -105,7 +105,7 @@ hcp(name = "test_wrapper_methods_printer", deps = [
 "va_list_part_getter",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib"
 ])
 
@@ -117,7 +117,7 @@ hcp(name = "test_wrapper_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/observers/comparing:lib",
 ])
@@ -136,6 +136,6 @@ hcp(name = "test_wrapper_special_method_printer", deps = [
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_method_shared",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])

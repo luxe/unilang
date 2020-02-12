@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "macro_resolver", deps = [
 "//code/tools/transcompilers/unilang/parser:parser_token",
 "//code/tools/transcompilers/unilang/options/parser:macro_resolving_settings",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",

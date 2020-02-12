@@ -33,7 +33,7 @@ hcp(name = "mario_runner", deps = [
 hcp(name = "mario_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/utilities/converters:lib",
+    "//code/utilities/types/converters:lib",
     "//code/utilities/formats/json/functions:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])

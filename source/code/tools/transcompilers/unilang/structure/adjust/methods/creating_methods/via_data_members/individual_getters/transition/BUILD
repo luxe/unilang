@@ -13,7 +13,7 @@ hcp(name = "transition_function_getter", deps = [
 "//code/tools/transcompilers/unilang/type_converters/special-type-to-comparison:special_type_comparison_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/printf:printf_code_generator",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters:boolean_expression_creator",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/vectors/operators:lib",

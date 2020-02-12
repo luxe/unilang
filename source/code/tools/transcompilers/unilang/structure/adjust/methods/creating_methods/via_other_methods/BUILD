@@ -8,6 +8,6 @@ hcp(name = "method_utility_function_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
 "//code/tools/transcompilers/unilang/structure/print:function_declaration_location",
 "//code/tools/transcompilers/unilang/options/manipulation/methods/via_other_methods:method_utility_function_options",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])

@@ -28,5 +28,5 @@ hcp(name = "dependency_looker_upper", deps = [
 "//code/tools/transcompilers/unilang/parser:structure_creator",
 "//code/tools/transcompilers/unilang/dependency_graph_creator:seen_structure_dependencies",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])

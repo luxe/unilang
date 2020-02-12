@@ -8,7 +8,7 @@ hcp(name = "update_with_bools_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
@@ -20,7 +20,7 @@ hcp(name = "update_with_enums_printer", deps = [
 "//code/tools/transcompilers/unilang/control-structure-printer/switch:switch_block_printer",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
@@ -34,7 +34,7 @@ hcp(name = "update_printer", deps = [
 "update_with_enums_printer",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/streams/filestreams:lib",
 ])

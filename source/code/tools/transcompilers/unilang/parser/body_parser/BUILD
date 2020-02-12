@@ -6,7 +6,7 @@ hcp(name = "body_token_parser", deps = [
 "body_token_value",
 "//code/tools/transcompilers/unilang/tokens:token_name",
 "//code/tools/transcompilers/unilang/parser:global_tokens_table_utilities",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
 "//code/tools/transcompilers/unilang/options/parser:parser_settings",
 ])

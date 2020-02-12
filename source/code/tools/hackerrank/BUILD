@@ -32,39 +32,39 @@ enum_cpp(
     ]
 )
 hcp(name = "bst_swap_solution_geeks_five_ptrs", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_four_ptrs", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_three_ptrs", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 
 hcp(name = "bst_swap_solution_sliding_window_two_ptrs", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 
 hcp(name = "bst_swap_solution_in_out", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_morris_hickey", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",

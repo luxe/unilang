@@ -13,7 +13,7 @@ hcp(name = "enum_to_str_getter", deps = [
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
 "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/general:lib",
 ])
@@ -29,7 +29,7 @@ hcp(name = "enum_to_str_inflection_count_getter", deps = [
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
 "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/general:lib",
 ])
@@ -45,7 +45,7 @@ hcp(name = "enum_to_str_plural_getter", deps = [
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
 "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/general:lib",
 ])
@@ -61,7 +61,7 @@ hcp(name = "enum_to_str_singular_getter", deps = [
 "//code/utilities/types/strings/transformers/inflection:inflection_converter",
 "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/general:lib",
 ])

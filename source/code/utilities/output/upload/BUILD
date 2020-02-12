@@ -8,7 +8,7 @@ hcp(name = "file_upload_settings", deps = [
 ])
 
 hcp(name = "file_uploader", deps = [
-"//code/utilities/upload:file_upload_settings",
+"//code/utilities/output/upload:file_upload_settings",
 "//code/utilities/web/dropbox:dropbox_uploader",
 "//code/utilities/personal/secret:secret_getter",
 "//code/utilities/program/wrappers/git/upload:github_uploader",

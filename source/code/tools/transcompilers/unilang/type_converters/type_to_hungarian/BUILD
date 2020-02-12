@@ -16,5 +16,5 @@ hcp(name = "data_member_to_hungarian_notation_converter", deps = [
 "//code/tools/transcompilers/unilang/options/hungarian:identifier_notation_settings",
 "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
-"//code/utilities/converters:lib"
+"//code/utilities/types/converters:lib"
 ])

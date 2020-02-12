@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_deriver",
@@ -29,7 +29,7 @@ hcp(name = "task_executer", deps = [
 
 hcp(name = "file_isolator", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
@@ -46,7 +46,7 @@ hcp(name = "file_isolator", deps = [
 
 hcp(name = "scan_utilities", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",
@@ -73,13 +73,13 @@ hcp(name = "spawn_pair_determinism_checker", deps = [
     "//code/tools/repo_tools/build_determinism/data:determinism_problem",
     "//code/tools/repo_tools/build_determinism:determinism_problem_getter",
     "//code/utilities/types/map:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
 ])
 
 hcp(name = "build_determinism_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/utilities/converters:lib",
+    "//code/utilities/types/converters:lib",
     "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/build_determinism/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",
@@ -91,7 +91,7 @@ hcp(name = "determinism_problem_getter", deps = [
     "//code/tools/repo_tools/build_determinism/data:determinism_pairings",
     "//code/tools/repo_tools/build_determinism/data:determinism_problem",
     "//code/utilities/types/map:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
 ])
 
 hcp(name = "subcommand_filter", deps = [
@@ -102,7 +102,7 @@ hcp(name = "subcommand_filter", deps = [
 
 
 hcp(name = "determinism_ab_runner", deps = [
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/program/wrappers/bazel:bazel_runner",
     "//code/tools/repo_tools/build_determinism/data:spawn_pairings",
     "//code/tools/repo_tools/build_determinism:spawn_pairer",
@@ -119,7 +119,7 @@ hcp(name = "determinism_ab_runner", deps = [
 
 hcp(name = "reporter", deps = [
     "//code/utilities/program/call:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/vectors/observers:lib",
     "@bazel//:spawn_proto_cpp",

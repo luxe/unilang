@@ -9,7 +9,7 @@ hcp(name = "language_file_creator", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
 ])
@@ -18,7 +18,7 @@ hcp(name = "reference_file_creator", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
@@ -29,7 +29,7 @@ hcp(name = "settings_file_creator", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
 ])
@@ -58,7 +58,7 @@ hcp(name = "theme_file_creator", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
 "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:shared",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
 ])

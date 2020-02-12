@@ -1,6 +1,6 @@
 #include "code/utilities/filesystem/files/transformers/lib.hpp"
 #include "code/utilities/streams/filestreams/lib.hpp"
-#include "code/utilities/printers/lib.hpp"
+#include "code/utilities/output/printers/lib.hpp"
 #include "code/utilities/types/strings/transformers/reverse/lib.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"

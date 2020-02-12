@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "value_constraints_to_interval_constraints", deps = [
 "//code/tools/transcompilers/unilang/constraint_exporter/interval_constraint:interval_constraint",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:value_constraints",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/char:lib",
 "//code/utilities/types/wstrings/transformers/other:lib",
 "//code/utilities/types/vectors/transformers:lib",
@@ -24,7 +24,7 @@ hcp(name = "concise_constraint_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
 "//code/tools/transcompilers/unilang/constraint_exporter:concise_constraint_line_exporter",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/utilities/filesystem/files/transformers:lib",
@@ -46,7 +46,7 @@ hcp(name = "concise_constraint_line_exporter", deps = [
 "value_constraints_to_interval_constraints",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 ])

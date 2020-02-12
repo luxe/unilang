@@ -39,5 +39,5 @@ hcp(name = "root_settings_getter", deps = [
 ])
 
 hcp(name = "initial_diagnostics", deps = [
-"//code/utilities/diagnostic:diagnostic_settings",
+"//code/utilities/output/diagnostic:diagnostic_settings",
 ])

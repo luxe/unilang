@@ -8,7 +8,7 @@ hcp(name = "augment_scan_results", deps = [
 
 hcp(name = "augment_scanner", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/tools/repo_tools/build_determinism:determinism_ab_runner",

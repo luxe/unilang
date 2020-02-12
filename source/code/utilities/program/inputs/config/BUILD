@@ -11,8 +11,8 @@ hcp(name = "config_monitor",deps=[
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 "//code/utilities/formats/json/functions:lib",
 "//code/utilities/streams/filestreams/read_all:lib",
-"//code/utilities/diagnostic:diagnostic_settings",
-"//code/utilities/diagnostic:diagnostic_printer",
+"//code/utilities/output/diagnostic:diagnostic_settings",
+"//code/utilities/output/diagnostic:diagnostic_printer",
 ])
 
 hcp(name = "config_monitor_settings", deps = [

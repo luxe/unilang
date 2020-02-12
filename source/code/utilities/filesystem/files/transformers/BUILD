@@ -8,7 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/printers:lib",
+"//code/utilities/output/printers:lib",
 "//code/utilities/types/strings/transformers/reverse:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",

@@ -18,7 +18,7 @@ cc_binary(
 
 hcp(name = "crossword_maker", deps = [
     "//code/utilities/types/vectors/creators:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/random:lib",
     "//code/utilities/data_structures:compass_direction",
@@ -53,7 +53,7 @@ hcp(name = "random_word_placer", deps = [
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/vectors/transformers:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/random:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",

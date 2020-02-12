@@ -21,7 +21,7 @@ hcp(name = "doxygen_data_getter_for_data_members", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:value_constraint_comment_deriver",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib"
 ])
 
@@ -68,6 +68,6 @@ hcp(name = "value_constraint_comment_deriver", deps = [
 "//code/tools/transcompilers/unilang/constraint_exporter:value_constraints_to_interval_constraints",
 "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
 "//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter:unilang_type_to_language_type_converter",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 

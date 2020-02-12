@@ -10,7 +10,7 @@ hcp(name = "good_api_creator", deps = [
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/structure/print:implicit_contract_adder",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
@@ -24,7 +24,7 @@ hcp(name = "deep_copy_creator", deps = [
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])

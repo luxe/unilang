@@ -12,7 +12,7 @@ hcp(name = "enum_argument_printer", deps = [
 "//code/tools/transcompilers/unilang/comment_creator:comment_creator",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "enum_boilerplate_printer", deps = [
@@ -24,7 +24,7 @@ hcp(name = "enum_boilerplate_printer", deps = [
 "//code/tools/transcompilers/unilang/enum_printer/core:enum_value_creator",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 
@@ -35,7 +35,7 @@ hcp(name = "enum_value_creator", deps = [
 "//code/utilities/types/strings/transformers/casing:case_format_style",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "enum_without_utility_values_printer", deps = [
@@ -49,7 +49,7 @@ hcp(name = "enum_without_utility_values_printer", deps = [
 "enum_boilerplate_printer",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/vectors/observers:lib",
@@ -63,7 +63,7 @@ hcp(name = "enum_with_utility_values_printer", deps = [
 "enum_boilerplate_printer",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/vectors/observers:lib",

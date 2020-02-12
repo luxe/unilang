@@ -6,7 +6,7 @@ hcp(name = "import_item", deps = [
 "//code/tools/transcompilers/unilang/parser:token_value",
 "//code/tools/transcompilers/unilang/structure/model/sections/import:import_type",
 "//code/tools/transcompilers/unilang/structure/model/sections/import/relationship:import_relationship",
-"//code/utilities/converters:lib"
+"//code/utilities/types/converters:lib"
 ])
 hcp(name = "import_section", deps=[
 "import_item"

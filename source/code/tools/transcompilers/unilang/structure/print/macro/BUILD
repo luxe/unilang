@@ -11,7 +11,7 @@ hcp(name = "single_macro_printer", deps = [
 "//code/tools/transcompilers/unilang/boilerplate_printer/extern_c:macro_define_check_getter",
 "//code/tools/transcompilers/unilang/boilerplate_printer/extern_c:macro_endif_getter",
 "//code/utilities/streams/filestreams:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",
 ])
 

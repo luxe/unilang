@@ -19,5 +19,5 @@ hcp(name = "bazel_setup_deriver", deps = [
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/utilities/program/wrappers/bazel/setup/docker:bazel_dockerfile_deriver",
     "//code/utilities/program/wrappers/bazel/setup:bazel_setup",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
 ])

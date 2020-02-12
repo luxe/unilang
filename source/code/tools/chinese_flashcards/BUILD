@@ -18,7 +18,7 @@ hcp(name = "task_executer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/main/root_settings:root_settings_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
-"//code/utilities/upload:file_uploader",
+"//code/utilities/output/upload:file_uploader",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/tools/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
 "//code/utilities/linguistics/chinese:chinese_translations",

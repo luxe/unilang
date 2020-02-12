@@ -13,7 +13,7 @@ hcp(name = "browser_navigator", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/web:lib",
     "//code/utilities/program/common_actions/exits:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/formats/json/functions:lib",
     "//code/utilities/types/strings/observers/splitting:lib",
 ])

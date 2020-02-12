@@ -27,7 +27,7 @@ hcp(name = "meta_block_printer", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/general:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/strings/observers/converting:lib",

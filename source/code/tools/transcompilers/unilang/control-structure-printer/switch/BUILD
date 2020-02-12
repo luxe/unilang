@@ -11,5 +11,5 @@ hcp(name = "switch_block", deps = [
 hcp(name = "switch_block_printer", deps = [
 "//code/tools/transcompilers/unilang/control-structure-printer/switch:switch_block",
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])

@@ -46,7 +46,7 @@ hcp(name = "structure_adjuster", deps = [
 
 hcp(name = "structure_normalizer", deps = [
 "//code/utilities/types/strings/transformers/trimming:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 ])
 
@@ -54,7 +54,7 @@ hcp(name = "casing_adjuster", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/utilities/types/strings/transformers/appending:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/tools/transcompilers/unilang/structure/print:struct_derivers",
 "//code/utilities/types/strings/transformers/casing:case_modifier",

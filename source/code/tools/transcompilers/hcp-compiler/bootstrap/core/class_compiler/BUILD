@@ -13,6 +13,6 @@ cc_library(
     "//code/utilities/types/wstrings/transformers/trimming:lib",
     "//code/utilities/types/wstrings/transformers/other:lib",
     "//code/utilities/types/strings/observers/path:lib",
-	"//code/utilities/converters:lib"
+	"//code/utilities/types/converters:lib"
 ]
 )

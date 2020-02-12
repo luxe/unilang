@@ -12,7 +12,7 @@ hcp(name = "scan_results_printer", deps = [
     "//code/tools/repo_tools/build_determinism/settings:settings_getter",
     "//code/tools/repo_tools/build_determinism/scans:scan_results",
     "//code/tools/repo_tools/build_determinism:scan_utilities",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     
 ])
 

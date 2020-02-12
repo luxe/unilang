@@ -1,5 +1,5 @@
 #include "code/utilities/types/strings/transformers/appending/lib.hpp"
-#include "code/utilities/converters/lib.hpp"
+#include "code/utilities/types/converters/lib.hpp"
 #include <algorithm>
 
 std::string& Append_With_Newline(std::string & str_to_append_to, std::string const& append){

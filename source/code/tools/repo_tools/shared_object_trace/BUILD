@@ -17,7 +17,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/shared_object_trace:correlated_so_ldd",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/utilities/types/vectors/operators:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/language_basic/std_hackery:std_aliases",
     "//code/utilities/types/vectors/observers:lib",
     "//code/tools/repo_tools/shared_object_trace:so_ldd_correlation_visualizer",
@@ -55,7 +55,7 @@ hcp(name = "so_ldd_correlation_visualizer", deps = [
 hcp(name = "shared_object_trace_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/utilities/converters:lib",
+    "//code/utilities/types/converters:lib",
     "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/shared_object_trace/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",

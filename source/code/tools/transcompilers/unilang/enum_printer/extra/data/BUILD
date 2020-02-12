@@ -9,7 +9,7 @@ hcp(name = "enum_utility_value_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/tools/transcompilers/unilang/structure/print:data_member_printer",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",

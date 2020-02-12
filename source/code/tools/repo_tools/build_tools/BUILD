@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/build_tools/settings:settings_getter",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_deriver",
@@ -19,7 +19,7 @@ hcp(name = "task_executer", deps = [
 hcp(name = "build_tools_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/utilities/converters:lib",
+    "//code/utilities/types/converters:lib",
     "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/build_tools/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",

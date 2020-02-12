@@ -14,7 +14,7 @@ hcp(name= "units_description_adder", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/tools/transcompilers/unilang/units_to_variable_suffix_converter:unit_suffix_lookuper",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "return_results_description_adder", deps = [
@@ -25,7 +25,7 @@ hcp(name = "return_results_description_adder", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/tools/transcompilers/unilang/doxygen_block_printer/method_getter/adders:units_description_adder",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "suggested_return_identifier_adder", deps = [
@@ -37,7 +37,7 @@ hcp(name = "suggested_return_identifier_adder", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/tools/transcompilers/unilang/doxygen_block_printer/method_getter/adders:units_description_adder",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "main_description_adder", deps = [
@@ -52,7 +52,7 @@ hcp(name = "main_description_adder", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/tools/transcompilers/unilang/units_to_variable_suffix_converter:unit_suffix_lookuper",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "contract_description_adder", deps = [
@@ -67,7 +67,7 @@ hcp(name = "contract_description_adder", deps = [
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
 "//code/tools/transcompilers/unilang/units_to_variable_suffix_converter:unit_suffix_lookuper",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 
 ])
 
@@ -84,7 +84,7 @@ hcp(name = "argument_description_adder", deps = [
 "//code/tools/transcompilers/unilang/units_to_variable_suffix_converter:unit_suffix_lookuper",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
 "//code/tools/transcompilers/unilang/doxygen_block_printer/method_getter/adders:units_description_adder",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/tools/transcompilers/unilang/options/comment/doxygen:doxygen_parameter_direction",

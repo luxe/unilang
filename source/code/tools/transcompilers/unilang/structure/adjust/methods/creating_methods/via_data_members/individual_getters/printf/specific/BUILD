@@ -13,7 +13,7 @@ hcp(name = "printf_print_statement_creator", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/type_converters/type-to-printf-specifier:printf_specifier_getter",
 "//code/tools/transcompilers/unilang/type_converters/special-type-to-printf:special_type_printf_specifier_getter",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 hcp(name = "printf_transition_statement_creator", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
@@ -27,5 +27,5 @@ hcp(name = "printf_transition_statement_creator", deps = [
 "//code/tools/transcompilers/unilang/type_converters/type-to-printf-specifier:printf_specifier_getter",
 "//code/tools/transcompilers/unilang/type_converters/special-type-to-printf:special_type_printf_specifier_getter",
 "//code/tools/transcompilers/unilang/type_converters/type-to-printf-specifier/settings:printf_specifier_settings",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])

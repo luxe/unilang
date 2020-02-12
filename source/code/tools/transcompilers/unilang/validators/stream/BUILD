@@ -17,5 +17,5 @@ hcp(name = "token_stream_validator", deps = [
 "//code/tools/transcompilers/unilang/options/parser:parser_settings",
 "//code/tools/transcompilers/unilang/validators/stream:token_stream_validation_exception",
 "//code/utilities/types/strings/observers/counters:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])

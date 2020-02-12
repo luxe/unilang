@@ -60,7 +60,7 @@ hcp(name = "program_input_enricher", deps = [
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/program/common_actions/exits:lib",
 "//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
-"//code/utilities/diagnostic:diagnostic_printer",
+"//code/utilities/output/diagnostic:diagnostic_printer",
 ])
 
 hcp(name = "transcompiler", deps = [
@@ -104,7 +104,7 @@ hcp(name = "after_artifact_actions", deps = [
 "//code/utilities/colors:lib",
 "//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_options_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/html_table:html_table_options_getter",
-"//code/utilities/diagnostic:diagnostic_printer",
+"//code/utilities/output/diagnostic:diagnostic_printer",
 "//code/tools/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_action_getter",
 "//code/utilities/filesystem/paths:lib",
 ])

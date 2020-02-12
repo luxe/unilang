@@ -4,7 +4,7 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
-#include "code/utilities/printers/prettyprint.hpp"
+#include "code/utilities/output/printers/prettyprint.hpp"
 
 
 template <typename T>

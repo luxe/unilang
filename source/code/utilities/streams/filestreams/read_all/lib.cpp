@@ -3,7 +3,7 @@
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
 #include "code/utilities/types/strings/transformers/trimming/lib.hpp"
 #include "code/utilities/types/strings/observers/splitting/lib.hpp"
-#include "code/utilities/converters/lib.hpp"
+#include "code/utilities/types/converters/lib.hpp"
 #include "code/utilities/types/vectors/converters/lib.hpp"
 #include <streambuf>
 

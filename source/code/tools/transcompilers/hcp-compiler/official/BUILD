@@ -12,7 +12,7 @@ bootstrap_hcp(
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/char:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/language_basic/multiple_relational_comparing:lib",
@@ -27,7 +27,7 @@ bootstrap_hcp(
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/char:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/language_basic/multiple_relational_comparing:lib",
@@ -40,7 +40,7 @@ deps = ["//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/program/common_actions/exits:lib",
 "//code/utilities/types/wstrings/transformers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/char:lib",]
 )
 
@@ -66,7 +66,7 @@ bootstrap_hcp(
     "//code/utilities/types/wstrings/transformers/trimming:lib",
     "//code/utilities/types/wstrings/transformers/other:lib",
     "//code/utilities/types/strings/observers/path:lib",
-	"//code/utilities/converters:lib",
+	"//code/utilities/types/converters:lib",
 	"class_structure",
     "include_file_printer"
 	]
@@ -82,7 +82,7 @@ bootstrap_hcp(
     "//code/utilities/types/wstrings/transformers/other:lib",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
-	"//code/utilities/converters:lib",
+	"//code/utilities/types/converters:lib",
 	"class_structure",
     "include_file_printer"
 	]
@@ -108,7 +108,7 @@ bootstrap_hcp(
 	"//code/utilities/types/strings/observers/path:lib",
 	"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 	"//code/utilities/types/wstrings/transformers/other:lib",
-	"//code/utilities/converters:lib",
+	"//code/utilities/types/converters:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "hcp_parser",
     "hcp_compiler",]
@@ -132,5 +132,5 @@ deps = [
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/utilities/types/wstrings/transformers/trimming:lib",
 "//code/utilities/types/wstrings/transformers/other:lib",
-"//code/utilities/converters:lib"
+"//code/utilities/types/converters:lib"
 ])

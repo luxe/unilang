@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "task_executer", deps = [
     "//code/utilities/program/call:lib",
-    "//code/utilities/printers:lib",
+    "//code/utilities/output/printers:lib",
     "//code/tools/repo_tools/external_deps_analysis/settings:settings",
     "//code/tools/repo_tools/external_deps_analysis:analysis_state",
     "//code/utilities/filesystem/paths:lib",
@@ -28,7 +28,7 @@ hcp(name = "analysis_state", deps = [
 hcp(name = "external_deps_analysis_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/utilities/converters:lib",
+    "//code/utilities/types/converters:lib",
     "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/external_deps_analysis/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",

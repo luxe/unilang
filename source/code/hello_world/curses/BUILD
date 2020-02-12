@@ -6,7 +6,7 @@ package(
 cpp_main(
     name = "basic",
     deps = [
-        "//code/utilities/printers:lib",
+        "//code/utilities/output/printers:lib",
         "//code/utilities/time/sleeping:lib"
     ],
 )

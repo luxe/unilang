@@ -15,7 +15,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/utilities/upload:file_uploader",
+"//code/utilities/output/upload:file_uploader",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_exporter",
 "//code/tools/transcompilers/unilang/compiler-frontends/slidy:slidy_exporter",
 "//code/utilities/linguistics/chinese:chinese_translations",
@@ -70,7 +70,7 @@ hcp(name = "default_settings_getter", deps = [
 hcp(name = "deskstock_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/utilities/converters:lib",
+    "//code/utilities/types/converters:lib",
     "//code/tools/deskstock/settings:startup_settings",
     "//code/utilities/formats/json/functions:lib",
     "//code/tools/deskstock:default_settings_getter",

@@ -7,7 +7,7 @@ hcp(name = "meta_author_printer", deps = [
 "//code/tools/transcompilers/unilang/options/sections/meta/author:meta_author_tag_options",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/general:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])
 
 hcp(name = "meta_blank_line_getter", deps = [
@@ -78,7 +78,7 @@ hcp(name = "meta_group_names_getter", deps = [
 "//code/tools/transcompilers/unilang/options/sections/meta:meta_options",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/general:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 ])
 

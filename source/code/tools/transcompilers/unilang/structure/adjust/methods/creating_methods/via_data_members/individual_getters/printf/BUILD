@@ -18,7 +18,7 @@ hcp(name = "printf_code_generator", deps = [
 "//code/tools/transcompilers/unilang/type_converters/type-to-printf-specifier/settings:printf_specifier_settings",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/printf/specific:printf_print_statement_creator",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/printf/specific:printf_transition_statement_creator",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/observers/other:lib",
 ])

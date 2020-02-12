@@ -8,7 +8,7 @@
 #include "code/utilities/types/strings/transformers/casing/lib.hpp"
 #include "code/utilities/types/wstrings/transformers/trimming/lib.hpp"
 #include "code/utilities/types/wstrings/transformers/other/lib.hpp"
-#include "code/utilities/converters/lib.hpp"
+#include "code/utilities/types/converters/lib.hpp"
 
 
 

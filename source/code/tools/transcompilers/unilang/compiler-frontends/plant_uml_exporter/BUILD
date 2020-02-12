@@ -8,7 +8,7 @@ hcp(name = "plant_uml_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/tools/transcompilers/unilang/structure/print:struct_derivers",
 "//code/utilities/types/strings/transformers/casing:case_modifier",

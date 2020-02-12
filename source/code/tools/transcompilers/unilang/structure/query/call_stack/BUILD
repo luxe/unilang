@@ -6,7 +6,7 @@ hcp(name = "direct_methods_called_by_methods_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/tools/transcompilers/unilang/options/comment/doxygen:doxygen_parameter_direction",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/tools/transcompilers/unilang/structure/query:argument_direction_decider",

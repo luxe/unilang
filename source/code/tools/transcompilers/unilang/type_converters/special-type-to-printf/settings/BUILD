@@ -13,6 +13,6 @@ hcp(name = "special_printf_type", deps = [
 
 hcp(name = "special_type_printf_builder", deps = [
 "special_printf_type",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/vectors/operators:lib",
 ])

@@ -11,7 +11,7 @@ hcp(name = "serializable_function_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/serialization/json:serialize_json_method_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/serialization/json:to_json_method_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/serialization/json:json_print_method_getter",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/vectors/operators:lib",

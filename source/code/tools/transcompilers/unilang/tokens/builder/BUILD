@@ -8,6 +8,6 @@ hcp(
     deps = [
         "//code/tools/transcompilers/unilang/tokens:all_language_tokens",
         "//code/tools/transcompilers/unilang/tokens:token_name",
-        "//code/utilities/converters:lib",
+        "//code/utilities/types/converters:lib",
     ]
 )

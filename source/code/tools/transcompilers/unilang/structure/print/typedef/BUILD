@@ -8,7 +8,7 @@ hcp(name = "typedef_printer", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/vectors/observers:lib",
 ])

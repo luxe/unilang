@@ -12,5 +12,5 @@ hcp(name = "enum_section_printer", deps = [
 "//code/tools/transcompilers/unilang/enum_printer/extra/data:enum_utility_value_printer",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/strings/transformers/other:lib",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 ])

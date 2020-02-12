@@ -16,7 +16,7 @@ hcp(name = "comparison_function_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/comparison:all_comparison_impl_schemes",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters:boolean_expression_creator",
-"//code/utilities/converters:lib",
+"//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
 ])
 
