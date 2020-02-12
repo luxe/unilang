@@ -7,5 +7,5 @@ hcp(name = "assets", deps = [
 
 hcp(name = "assets_loader", deps = [
     "@sfml//:sfml",
-    "//code/tools/games/word_build/assets:assets",
+    "//code/tools/games/word_build/gui/assets:assets",
 ])
