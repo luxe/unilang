@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name = "mouse_controller",deps=[
- "//code/utilities/xdo:lib",
+ "//code/utilities/x11/xdo:lib",
  "//code/utilities/data_structures/point:point",
  "//code/utilities/time/sleeping:lib",
  "//code/utilities/random:lib",
