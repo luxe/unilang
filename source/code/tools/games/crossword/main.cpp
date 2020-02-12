@@ -24,7 +24,7 @@ int main()
     auto state = Game_State_Getter::Get();
     
     Standard_Sfml_Game_Loop::Run(
-    "ILY 3000",
+    "Crossword",
     [&](sf::RenderWindow & window, sf::Time const& TimePerFrame){
         State_Updater::Run_Frame_Logic(window,TimePerFrame,state,assets);
     },
