@@ -56,7 +56,7 @@ hcp(name = "shared_object_trace_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/shared_object_trace/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])

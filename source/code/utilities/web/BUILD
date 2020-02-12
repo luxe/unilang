@@ -14,7 +14,7 @@ cc_library(
     "@curl",
     "//code/utilities/web:html_fetch_settings",
     "//code/utilities/web:web_json_extraction_settings",
-    "//code/utilities/json/extraction:json_extractor",
+    "//code/utilities/formats/json/extraction:json_extractor",
     ]
 )
 
@@ -30,5 +30,5 @@ hcp(name = "html_fetch_settings", deps = [
 
 hcp(name = "web_json_extraction_settings", deps = [
     "//code/utilities/web:html_fetch_settings",
-    "//code/utilities/json/extraction:json_extraction_settings",
+    "//code/utilities/formats/json/extraction:json_extraction_settings",
 ])

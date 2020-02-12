@@ -19,7 +19,7 @@ hcp(name = "noogle_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/tools/noogle/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])
@@ -127,7 +127,7 @@ hcp(name = "noogle_runner", deps = [
     "//code/utilities/signals:lib",
     "//code/tools/noogle/state:noogle_state_getter",
     "//code/utilities/web/search_engines:search_engine_url_deviser",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/tools/noogle:results_url_getter",
     "//code/tools/noogle:results_url_to_html_converter",
     "//code/tools/noogle:html_sanitizer",
@@ -175,7 +175,7 @@ hcp(name = "results_url_getter", deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/html:html_raw_text_getter",
     "//code/utilities/web/search_engines:search_engine_url_deviser",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/utilities/web/search_engines:search_engine_fetch_settings",
 ])
 

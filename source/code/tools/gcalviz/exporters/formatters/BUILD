@@ -10,7 +10,7 @@ hcp(name="gexf_formatter", deps = [
     "//code/utilities/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/utilities/data_structures/unique_counter:unique_counter",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/filesystem/paths:lib",
@@ -18,8 +18,8 @@ hcp(name="gexf_formatter", deps = [
     "//code/utilities/types/strings/observers/other:lib",
     "//code/tools/gcalviz/exporters/data:edge_data",
     "//code/tools/gcalviz/exporters/formatters:gexf_attribute",
-    "//code/utilities/json/extraction:json_extractor",
-    "//code/utilities/xml:xml_string_escaper",
+    "//code/utilities/formats/json/extraction:json_extractor",
+    "//code/utilities/formats/xml:xml_string_escaper",
 ])
 
 hcp(name="graphml_formatter", deps = [
@@ -29,7 +29,7 @@ hcp(name="graphml_formatter", deps = [
     "//code/utilities/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/utilities/data_structures/unique_counter:unique_counter",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/filesystem/paths:lib",
@@ -38,5 +38,5 @@ hcp(name="graphml_formatter", deps = [
 ])
 
 hcp(name="gexf_attribute", deps = [
-    "//code/utilities/json/extraction:json_extraction_settings",
+    "//code/utilities/formats/json/extraction:json_extraction_settings",
 ])

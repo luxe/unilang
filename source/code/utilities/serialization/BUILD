@@ -16,7 +16,7 @@ cc_library(
     srcs = ["protobuf.cpp"],
     hdrs = ["protobuf.hpp"],
     deps = [
-        "//code/utilities/json/functions:lib",
+        "//code/utilities/formats/json/functions:lib",
     ]
 )
 

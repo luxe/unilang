@@ -24,7 +24,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/program/bazel/setup:bazel_setup_deriver",
     "//code/tools/repo_tools/build_determinism/scans:scan_results_printer",
     "//code/tools/repo_tools/build_determinism/settings:ab_settings",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
 ])
 
 hcp(name = "file_isolator", deps = [
@@ -80,7 +80,7 @@ hcp(name = "build_determinism_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/build_determinism/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])

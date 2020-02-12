@@ -7,5 +7,5 @@ hcp(name = "json_attribute_check_settings", deps = [
 ])
 
 hcp(name = "json_attribute_checker", deps = [
-    "//code/utilities/json/attribute_check:json_attribute_check_settings",
+    "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
 ])

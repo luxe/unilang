@@ -16,7 +16,7 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/tools/gcalviz:meta_settings",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
     "//code/utilities/gcal/data:gcal_sorted_events",
     "//code/utilities/data_structures/unique_counter:unique_counter",
@@ -25,8 +25,8 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/time/date:rfc333_datetime_within_range_checker",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/json/attribute_check:json_attribute_check_settings",
-    "//code/utilities/json/attribute_check:json_attribute_checker",
+    "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
+    "//code/utilities/formats/json/attribute_check:json_attribute_checker",
     "//code/tools/gcalviz/exporters:connections_exporter",
     "//code/tools/gcalviz/exporters:metrics_exporter",
     "//code/utilities/web/automate/browser:browser_settings",
@@ -41,7 +41,7 @@ hcp(name = "gcalviz_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/utilities/converters:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])
 

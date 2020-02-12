@@ -29,7 +29,7 @@ hcp(name = "external_deps_analysis_documentation_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/utilities/converters:lib",
-    "//code/utilities/json/functions:lib",
+    "//code/utilities/formats/json/functions:lib",
     "//code/tools/repo_tools/external_deps_analysis/program_options:lib",
     "//code/utilities/documentation:common_documentation_getter",
 ])

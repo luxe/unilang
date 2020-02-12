@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SFML/Window/Joystick.hpp>
 #include "code/utilities/keyboard/F310_gamepad/functions/f310_gamepads_state_getter.hpp"
-#include "code/utilities/json/functions/lib.hpp"
+#include "code/utilities/formats/json/functions/lib.hpp"
 
 int main()
 {
