@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
-    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_selection",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
@@ -26,7 +26,7 @@ hcp(name="label_drawer", deps = [
 ])
 
 hcp(name="faced_label_drawer", deps = [
-    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/label:positioned_faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
@@ -36,7 +36,7 @@ hcp(name="faced_label_drawer", deps = [
 
 hcp(name="label_text_bitmap_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
-    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
     "//code/utilities/types/vectors/transformers:lib",

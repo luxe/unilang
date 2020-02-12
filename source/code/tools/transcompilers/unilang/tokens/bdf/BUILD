@@ -5,12 +5,12 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(
     name = "token_bdf_settings",
-    deps = ["//code/utilities/bdf/settings:bdf_settings"]
+    deps = ["//code/utilities/fonts/bdf/settings:bdf_settings"]
 )
 hcp(
     name = "token_bdf_settings_getter",
     deps = ["//code/tools/transcompilers/unilang/tokens/bdf:token_bdf_settings",
-        "//code/utilities/bdf/glyph:glyphs",
+        "//code/utilities/fonts/bdf/glyph:glyphs",
         "//code/tools/transcompilers/unilang/language-and-theme-creator/font:predefined_characters",
     ]
 )

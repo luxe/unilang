@@ -11,8 +11,8 @@ hcp(name = "comparison_function_getter", deps = [
 "//code/tools/transcompilers/unilang/options/sections/data_member:data_member_options",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
-"//code/utilities/relational-operator:relational_operator",
-"//code/utilities/relational-operator:relational_operator_converter",
+"//code/utilities/language_basic/relational-operator:relational_operator",
+"//code/utilities/language_basic/relational-operator:relational_operator_converter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/comparison:all_comparison_impl_schemes",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters:boolean_expression_creator",
@@ -21,5 +21,5 @@ hcp(name = "comparison_function_getter", deps = [
 ])
 
 hcp(name = "comparison_impl_scheme", deps = [
-	"//code/utilities/relational-operator:relational_operator"
+	"//code/utilities/language_basic/relational-operator:relational_operator"
 ])

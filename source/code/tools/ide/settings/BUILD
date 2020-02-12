@@ -8,7 +8,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw:cursor",
     "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
     "//code/utilities/graphics/imgui/ui/draw:cursor_mouse_connector",
-    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
@@ -28,7 +28,7 @@ hcp(name="background_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw:cursor",
     "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
     "//code/utilities/graphics/imgui/ui/draw:cursor_mouse_connector",
-    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
@@ -39,7 +39,7 @@ hcp(name="background_settings", deps = [
 
 hcp(name="ide_settings_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
-    "//code/utilities/bdf/settings:character_segment",
+    "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
