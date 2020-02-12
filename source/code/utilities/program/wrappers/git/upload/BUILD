@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="github_uploader", deps = [
     "//code/utilities/types/char:lib",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/streams/filestreams/read_all:lib",
     "//code/utilities/filesystem/files/getting:lib",
     "//code/utilities/filesystem/paths:lib",

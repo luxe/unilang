@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "pulse_settings")
 hcp(name = "pulse_transfer_action")
 hcp(name = "pulse_transferer", deps = [
-"pulse_settings","pulse_transfer_action","//code/utilities/shell:lib","//code/utilities/processes:lib",
+"pulse_settings","pulse_transfer_action","//code/utilities/program/call:lib","//code/utilities/program/processes:lib",
 "//code/utilities/colors:lib",
 "//code/utilities/types/strings/observers/splitting:lib",
 ])

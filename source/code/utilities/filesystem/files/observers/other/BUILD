@@ -17,7 +17,7 @@ hcp(name = "file_and_ldd_results", deps = [
 
 hcp(name = "ldd_results_getter", deps = [
     "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/types/strings/transformers/trimming:lib",
     "//code/utilities/types/strings/observers/splitting:lib",
     "//code/utilities/types/vectors/observers:lib",
@@ -30,7 +30,7 @@ cc_library(
     hdrs = ["lib.hpp"],
     deps = [
         "//code/utilities/filesystem/files/getting:lib",
-        "//code/utilities/shell:lib",
+        "//code/utilities/program/call:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ]

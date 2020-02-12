@@ -10,6 +10,6 @@ cc_library(
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 ]
 )

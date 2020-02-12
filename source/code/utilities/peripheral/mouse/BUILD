@@ -11,7 +11,7 @@ hcp(name = "mouse_controller",deps=[
  ])
 
 hcp(name = "mouse_resizer", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/language_basic/control_structures/looping:lib"
 ])

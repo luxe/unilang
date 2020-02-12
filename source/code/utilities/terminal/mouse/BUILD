@@ -16,7 +16,7 @@ hcp(name = "mouse_terminal_changer",deps=[
     "//code/utilities/terminal/mouse:mouse_terminal_settings",
     "//code/utilities/terminal:terminal_background_changer",
     "//code/utilities/math:math",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/data_structures/color:hsv_color",
     "//code/utilities/colors:hsv_to_rgb_converter",
 ])

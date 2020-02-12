@@ -10,7 +10,7 @@ cc_library(
     deps = [
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/types/strings/observers/splitting:lib",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "@curl",
     "//code/utilities/web:html_fetch_settings",
     "//code/utilities/web:web_json_extraction_settings",

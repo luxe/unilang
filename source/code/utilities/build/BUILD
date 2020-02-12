@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name="self_builder", deps = [
-    "//code/utilities/shell/process_spawn:process_spawner",
+    "//code/utilities/program/call/process_spawn:process_spawner",
     "//code/utilities/filesystem/paths:lib",
 ])
 

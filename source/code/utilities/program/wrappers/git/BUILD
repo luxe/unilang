@@ -7,7 +7,7 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     deps = [
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 "//code/utilities/random:lib",
 "//code/utilities/filesystem/paths:lib",
 ]
@@ -15,7 +15,7 @@ cc_library(
 
 hcp(name="git_setuper", deps = [
     "//code/utilities/types/char:lib",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/streams/filestreams/read_all:lib",
     "//code/utilities/filesystem/files/getting:lib",
     "//code/utilities/filesystem/paths:lib",

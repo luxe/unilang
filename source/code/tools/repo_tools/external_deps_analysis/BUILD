@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
 
 hcp(name = "task_executer", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/printers:lib",
     "//code/tools/repo_tools/external_deps_analysis/settings:settings",
     "//code/tools/repo_tools/external_deps_analysis:analysis_state",
@@ -35,7 +35,7 @@ hcp(name = "external_deps_analysis_documentation_getter", deps = [
 ])
 
 hcp(name = "external_deps_visualizer", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/types/strings/observers/other:lib",

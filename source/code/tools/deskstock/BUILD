@@ -24,7 +24,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/types/strings/transformers/squeeze:lib",
 "//code/utilities/peripheral/screen:screen_tint_setter",
-"//code/utilities/stock:stock_getter",
+"//code/utilities/web/endpoints/stock:stock_getter",
 "//code/utilities/peripheral/screen/good_bad:good_bad_screen_tint_settings",
 "//code/tools/deskstock/settings:deskstock_settings",
 "//code/utilities/program/common_actions/locale:locale_setter",
@@ -33,7 +33,7 @@ hcp(name = "deskstock_runner", deps = [
 "//code/utilities/config:config_monitor",
 "//code/utilities/config:config_monitor_settings",
 "//code/utilities/types/strings/transformers/search_replace:lib",
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 "//code/tools/deskstock/settings:deskstock_state",
 "//code/utilities/system:installed_programs_checker",
 "//code/utilities/terminal/good_bad:good_bad_terminal_changer",
@@ -46,7 +46,7 @@ hcp(name = "deskstock_runner", deps = [
 hcp(name = "float_sourcer", deps = [
     "//code/tools/deskstock/settings:deskstock_state",
     "//code/utilities/web:lib",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/types/strings/transformers/other:lib",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/peripheral/mouse:mouse_controller",
@@ -56,14 +56,14 @@ hcp(name = "system_effecter", deps = [
     "//code/tools/deskstock/settings:deskstock_state",
     "//code/utilities/peripheral/screen:screen_tint_setter",
     "//code/utilities/types/strings/transformers/search_replace:lib",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/terminal/good_bad:good_bad_terminal_changer",
     "//code/utilities/terminal/mouse:mouse_terminal_changer",
 ])
 
 hcp(name = "default_settings_getter", deps = [
 "//code/tools/deskstock/settings:deskstock_settings",
-"//code/utilities/stock:stock_getter",
+"//code/utilities/web/endpoints/stock:stock_getter",
 "//code/utilities/web:lib",
 ])
 

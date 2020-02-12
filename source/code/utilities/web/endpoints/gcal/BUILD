@@ -3,22 +3,22 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="gcal_getter", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/web:lib",
     "//code/utilities/program/common_actions/exits:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/gcal:gcal_credentials",
-    "//code/utilities/gcal:gcal_query",
-    "//code/utilities/gcal/data:gcal_room",
-    "//code/utilities/gcal/data:gcal_rooms",
+    "//code/utilities/web/endpoints/gcal:gcal_credentials",
+    "//code/utilities/web/endpoints/gcal:gcal_query",
+    "//code/utilities/web/endpoints/gcal/data:gcal_room",
+    "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
 ])
 
 hcp(name="gcal_query", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/web:lib",
     "//code/utilities/program/common_actions/exits:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/gcal:gcal_credentials",
+    "//code/utilities/web/endpoints/gcal:gcal_credentials",
 ])
 
 hcp(name="gcal_credentials", deps = [

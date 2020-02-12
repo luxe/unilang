@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "repo_location", deps = [])
 
 hcp(name = "repo_establisher", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/program/wrappers/git:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_location",

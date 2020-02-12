@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name="connections_exporter", deps = [
-    "//code/utilities/gcal/data:gcal_sorted_events",
+    "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/json/functions:lib",
@@ -24,7 +24,7 @@ hcp(name="connections_exporter", deps = [
 ])
 
 hcp(name="metrics_exporter", deps = [
-    "//code/utilities/gcal/data:gcal_sorted_events",
+    "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/json/functions:lib",
@@ -35,11 +35,11 @@ hcp(name="metrics_exporter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/gcal/data:gcal_rooms",
+    "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
 ])
 
 hcp(name="email_exporter", deps = [
-    "//code/utilities/gcal/data:gcal_sorted_events",
+    "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/json/functions:lib",
@@ -50,13 +50,13 @@ hcp(name="email_exporter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/gcal/data:gcal_rooms",
+    "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
     "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
     "//code/utilities/formats/json/attribute_check:json_attribute_checker",
 ])
 
 hcp(name="email_user_info_exporter", deps = [
-    "//code/utilities/gcal/data:gcal_sorted_events",
+    "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/json/functions:lib",
@@ -67,7 +67,7 @@ hcp(name="email_user_info_exporter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/gcal/data:gcal_rooms",
+    "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
     "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
     "//code/utilities/formats/json/attribute_check:json_attribute_checker",
     "@pybind11//:pybind11",
@@ -79,7 +79,7 @@ hcp(name="email_user_info_exporter", deps = [
 ])
 
 hcp(name="user_location_info_exporter", deps = [
-    "//code/utilities/gcal/data:gcal_sorted_events",
+    "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/json/functions:lib",
@@ -90,7 +90,7 @@ hcp(name="user_location_info_exporter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/comparing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/gcal/data:gcal_rooms",
+    "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
     "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
     "//code/utilities/formats/json/attribute_check:json_attribute_checker",
     "@pybind11//:pybind11",

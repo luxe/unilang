@@ -97,7 +97,7 @@ hcp(name = "after_artifact_actions", deps = [
 "//code/tools/transcompilers/unilang/f2si_frontend_compiler:uber_contributors_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/cpp:cpp_options_getter",
 "//code/utilities/types/vectors/operators:lib",
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 "//code/tools/transcompilers/unilang/f2si_frontend_compiler:file_transfer_settings_getter",
 "//code/tools/transcompilers/unilang/f2si_frontend_compiler:file_transferer",
 "//code/utilities/types/strings/observers/splitting:lib",

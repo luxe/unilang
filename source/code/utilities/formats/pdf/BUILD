@@ -15,10 +15,10 @@ hcp(name = "pdf_creator",deps=[
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/pdf:latex_template_getter",
     "//code/tools/transcompilers/unilang/main:program_input",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/filesystem/files/temp:temp_file",
     "//code/utilities/filesystem/files/temp:existing_temp_file",
-    "//code/utilities/shell/process_spawn:process_spawner",
+    "//code/utilities/program/call/process_spawn:process_spawner",
 ])
 
 hcp(name = "latex_template_getter", deps = [

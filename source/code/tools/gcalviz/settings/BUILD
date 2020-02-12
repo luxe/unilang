@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "gcalviz_settings", deps = [
-    "//code/utilities/gcal:gcal_credentials",
+    "//code/utilities/web/endpoints/gcal:gcal_credentials",
     "//code/tools/gcalviz/settings:export_settings",
 ])
 

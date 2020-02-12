@@ -7,7 +7,7 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-        "//code/utilities/shell:lib",
+        "//code/utilities/program/call:lib",
         "//code/utilities/types/strings/observers/columns:lib",
     ]
 )

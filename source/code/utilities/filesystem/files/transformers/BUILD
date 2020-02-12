@@ -12,7 +12,7 @@ cc_library(
 "//code/utilities/types/strings/transformers/reverse:lib",
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 "//code/utilities/types/general:lib",
 "//code/utilities/filesystem/files/getting:lib",
 "//code/utilities/types/strings/transformers/trimming:lib",

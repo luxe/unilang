@@ -5,7 +5,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(name = "chrome_version_getter", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/types/strings/observers/columns:lib",
     "//code/utilities/system:lib",
 ])

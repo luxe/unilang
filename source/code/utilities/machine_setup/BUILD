@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "keygen_refresher",deps=[
-	"//code/utilities/shell:lib"
+	"//code/utilities/program/call:lib"
 ])
 
 cc_binary(
@@ -13,7 +13,7 @@ cc_binary(
 )
 
 hcp(name = "machine_provisioner",deps=[
-	"//code/utilities/shell:lib",
+	"//code/utilities/program/call:lib",
 	"//code/utilities/machine_setup:keygen_refresher",
 	"//code/utilities/program/wrappers/git:git_setuper"
 ])

@@ -109,7 +109,7 @@ hcp(name = "determinism_ab_runner", deps = [
     "//code/tools/repo_tools/build_determinism:spawn_pair_determinism_checker",
     "//code/tools/repo_tools/build_determinism/settings:settings",
     "//code/utilities/random:lib",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
@@ -118,7 +118,7 @@ hcp(name = "determinism_ab_runner", deps = [
 ])
 
 hcp(name = "reporter", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/printers:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/vectors/observers:lib",

@@ -5,6 +5,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "stock_getter",deps=[
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 "//code/utilities/web:lib",
 ])

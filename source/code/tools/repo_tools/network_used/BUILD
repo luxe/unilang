@@ -8,7 +8,7 @@ hcp(name = "task_executer", deps = [
     "//code/tools/repo_tools/network_used/program_options:lib",
     "//code/tools/repo_tools/network_used/settings:settings_getter",
     "//code/utilities/program/wrappers/tshark:tshark_spawner",
-    "//code/utilities/processes:lib",
+    "//code/utilities/program/processes:lib",
     "//code/utilities/printers:lib",
     "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
 ])

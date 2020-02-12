@@ -4,5 +4,5 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "tshark_spawner",deps=[
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
 ])

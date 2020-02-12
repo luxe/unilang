@@ -16,5 +16,5 @@ cc_binary(
 )
 
 hcp(name = "tabtime_runner", deps = [
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
 ])

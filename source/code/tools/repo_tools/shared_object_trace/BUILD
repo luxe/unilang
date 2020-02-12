@@ -39,7 +39,7 @@ hcp(name = "correlation_results", deps = [
 
 hcp(name = "so_ldd_correlation_visualizer", deps = [
     "//code/tools/repo_tools/shared_object_trace:correlated_so_ldd",
-    "//code/utilities/shell:lib",
+    "//code/utilities/program/call:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/types/strings/observers/other:lib",

@@ -15,7 +15,7 @@ cc_library(
     name = "lib",
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
-    deps = ["//code/utilities/shell:lib"]
+    deps = ["//code/utilities/program/call:lib"]
 )
 
 cc_binary(

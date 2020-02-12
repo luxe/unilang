@@ -8,7 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
 	"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
-	"//code/utilities/shell:lib",
+	"//code/utilities/program/call:lib",
 	"//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/types/strings/observers/other:lib",
     "//code/utilities/types/strings/observers/front_back:lib",

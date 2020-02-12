@@ -8,7 +8,7 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     deps = [
-"//code/utilities/shell:lib",
+"//code/utilities/program/call:lib",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 "@boost//:filesystem",
 "@boost//:range",
