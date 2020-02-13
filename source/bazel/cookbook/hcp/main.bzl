@@ -1,7 +1,7 @@
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 #using the boot-strapped hcp compiler built from hcp files
-def hcp(name,deps=[]):
+def hcp(name,deps=[],data=[]):
 
     #the file names to use
     hcp_target_name = name + "_hcp"
@@ -24,4 +24,4 @@ def hcp(name,deps=[]):
     real_deps = list(deps)
     real_deps += ["@boost//:serialization"]
     real_deps += ["@nlohmann_json//:nlohmann_json"]
-    cpp_object(name,real_deps)
+    cpp_object(name,real_deps,data)

@@ -1,4 +1,4 @@
-def cpp_object(name,deps=[]):
+def cpp_object(name,deps=[],data=[]):
 
     #implicit file names
     explicit_cpp_file = name + ".cpp"
@@ -9,5 +9,6 @@ def cpp_object(name,deps=[]):
         name = name,
         srcs = [explicit_cpp_file],
         hdrs = [explicit_hpp_file],
+        data = data,
         deps = deps,
     )

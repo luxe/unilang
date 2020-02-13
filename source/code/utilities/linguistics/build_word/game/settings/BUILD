@@ -17,4 +17,6 @@ hcp(name = "build_word_game_settings_getter", deps = [
     "//code/utilities/types/strings/transformers/search_replace:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/utilities/types/strings/observers/other:lib",
-])
+]
+,data = ["@scrabble_words//:all"],
+)
