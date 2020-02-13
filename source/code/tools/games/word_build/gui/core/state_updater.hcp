@@ -24,21 +24,24 @@ class
     //make decisions based on user action
     state.controller_current = F310_Gamepads_State_Getter::Get();
     
+    
+    //possibly restart the game
     if (state.start_game){
         Start_Game(state,assets);
         state.start_game = false;
     }
     
+    //handle user input
     Handle_Player_Input(window,state,assets);
     
+    Update_Game_State(state,assets);
+    
+    //store previous user actions
     state.controller_previous = state.controller_current;
 ❱
 
 ◀private: static▶ void ☀Start_Game(Game_State & state, Assets & assets) ❰
 
-
-
-    
     //generate a new puzzle
     state.puzzle = Puzzle_Builder::Create_Puzzles(state.puzzle_build_settings)[0];
     
@@ -59,6 +62,11 @@ class
         width += 100;
     }
     
+    //reset the game timer
+    state.countdown.restart();
+    assets.countdown.setFont(assets.main_font);
+    assets.countdown.setCharacterSize(90);
+    assets.countdown.setPosition(500,100);
     
 ❱
 
@@ -106,6 +114,13 @@ class
     if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
         state.start_game = true;
     }
+❱
+
+◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
+
+    sf::Time elapsed_time = state.countdown.getElapsedTime();
+    long time_left = 120 - elapsed_time.asSeconds();
+    assets.countdown.setString(std::to_string(time_left));
 ❱
 
 
