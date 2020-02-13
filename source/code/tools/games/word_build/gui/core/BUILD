@@ -23,4 +23,5 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/math:math",
     "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
     "//code/utilities/linguistics/build_word/game:puzzle_builder",
+    "//code/utilities/types/vectors/observers:lib",
 ])

@@ -13,6 +13,7 @@ class
 ❪"code/tools/games/word_build/gui/assets/assets_loader"❫
 ❪"code/tools/games/word_build/gui/state/game_state"❫
 ❪"code/utilities/math/math"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚯
 ❪"code/utilities/peripheral/keyboard/joycons/joystick_rotating_checker"❫
 ❪"code/utilities/linguistics/build_word/game/puzzle_builder"❫
@@ -35,23 +36,22 @@ class
 
 ◀private: static▶ void ☀Start_Game(Game_State & state, Assets & assets) ❰
 
-    assets.letters.clear();
+
+
     
-    
+    //generate a new puzzle
     state.puzzle = Puzzle_Builder::Create_Puzzles(state.puzzle_build_settings)[0];
     
-    
-    
+    //turn the new puzzle into assets
+    assets.letters.clear();
     sf::Text temp;
     temp.setFont(assets.main_font);
     temp.setCharacterSize(150);
-    
     for (auto const& letter: state.puzzle.letters){
 
         temp.setString(letter);
         assets.letters.emplace_back(temp);
     }
-    
     
     int width = 200;
     for (auto & it: assets.letters){
@@ -81,6 +81,27 @@ class
     if (state.controller_current.left.left_joystick.horizontal_axis > -1){
         state.x += move_speed;
     }
+    
+    
+    
+    //set plalyer 1 selection
+    if (!state.controller_previous.left.arrows.left && state.controller_current.left.arrows.left){
+        Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
+    }
+    if (!state.controller_previous.left.arrows.right && state.controller_current.left.arrows.right){
+        Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
+    }
+    assets.p1_pointer.setPosition((state.p1_state.current_letter_selection*100) + 225,480);
+    
+    //set plalyer 2 selection
+    if (!state.controller_previous.right.arrows.left && state.controller_current.right.arrows.left){
+        Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
+    }
+    if (!state.controller_previous.right.arrows.right && state.controller_current.right.arrows.right){
+        Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
+    }
+    assets.p2_pointer.setPosition((state.p2_state.current_letter_selection*100) + 270,315);
+    
     
     if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
         state.start_game = true;

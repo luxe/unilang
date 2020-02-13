@@ -8,6 +8,7 @@ hcp(name = "game_state", deps = [
     "//code/utilities/data_structures/color:rgb_color",
     "//code/utilities/linguistics/build_word/game:build_word_puzzle",
     "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings",
+    "//code/tools/games/word_build/gui/state:user_state",
     "@sfml//:sfml",
 ])
 
@@ -16,4 +17,7 @@ hcp(name = "game_state_getter", deps = [
     "//code/tools/games/word_build/gui/state:game_state",
     "//code/utilities/linguistics/build_word/game:puzzle_builder",
     "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings_getter",
+])
+
+hcp(name = "user_state", deps = [
 ])
