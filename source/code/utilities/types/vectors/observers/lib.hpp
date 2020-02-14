@@ -260,6 +260,31 @@ auto Get_First_Object_Whose_Data_Member_Matches_Value(InputIt first, InputIt las
   return *first;
 }
 
+template <typename T>
+std::vector<std::vector<T>> Split_Every_N(std::vector<T> const& v, size_t amount){
+  std::vector<std::vector<T>> all;
+  
+  std::vector<T> temp;
+  size_t current = 0;
+  for (auto const& it: v){
+    
+    temp.emplace_back(it);
+    ++current;
+    
+    if (current == amount){
+      current = 0;
+      all.emplace_back(temp);
+      temp.clear();
+    }
+  }
+  
+  if (!temp.empty()){
+    all.emplace_back(temp);
+  }
+  
+  return all;
+}
+
 template<class InputIt, class MemberType>
 auto Split_By_Data_Member_Uniqueness(InputIt first, InputIt last, MemberType std::iterator_traits<InputIt>::value_type::* member_name){
 

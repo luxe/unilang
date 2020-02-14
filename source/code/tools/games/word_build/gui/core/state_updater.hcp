@@ -17,6 +17,7 @@ class
 ⚯
 ❪"code/utilities/peripheral/keyboard/joycons/joystick_rotating_checker"❫
 ❪"code/utilities/linguistics/build_word/game/puzzle_builder"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
@@ -62,11 +63,36 @@ class
         width += 100;
     }
     
+    //position the score
+    assets.score.setPosition(width,325);
+    
+    //position the answers
+    width += 250;
+    assets.answers.clear();
+    temp.setCharacterSize(40);
+    auto parts = Split_Every_N(state.puzzle.words,20);
+    for (auto const& row: parts){
+        
+        int height = 100;
+        for (auto const& col: row){
+            temp.setPosition(width,height);
+            temp.setString(col);
+            assets.answers.emplace_back(temp);
+            height += 40;
+        }
+        width += 250;
+    }
+    
+    
     //reset the game timer
     state.countdown.restart();
-    assets.countdown.setFont(assets.main_font);
-    assets.countdown.setCharacterSize(90);
-    assets.countdown.setPosition(500,100);
+    
+    //reset the user state
+    state.p1_state.current_letter_selection = 0;
+    state.p1_state.selected_letters.clear();
+    
+    state.p2_state.current_letter_selection = 0;
+    state.p2_state.selected_letters.clear();
     
 ❱
 
@@ -75,24 +101,24 @@ class
 
     //std::cout << state.controller_current.left.left_joystick.vertical_axis << std::endl;
 
-    int move_speed = 10;
+    // int move_speed = 10;
     
-    if (state.controller_current.left.left_joystick.vertical_axis > 1){
-        state.y -= move_speed;
-    }
-    if (state.controller_current.left.left_joystick.vertical_axis < -1){
-        state.y += move_speed;
-    }
-    if (state.controller_current.left.left_joystick.horizontal_axis < 1){
-        state.x -= move_speed;
-    }
-    if (state.controller_current.left.left_joystick.horizontal_axis > -1){
-        state.x += move_speed;
-    }
+    // if (state.controller_current.left.left_joystick.vertical_axis > 1){
+    //     state.y -= move_speed;
+    // }
+    // if (state.controller_current.left.left_joystick.vertical_axis < -1){
+    //     state.y += move_speed;
+    // }
+    // if (state.controller_current.left.left_joystick.horizontal_axis < 1){
+    //     state.x -= move_speed;
+    // }
+    // if (state.controller_current.left.left_joystick.horizontal_axis > -1){
+    //     state.x += move_speed;
+    // }
     
     
     
-    //set plalyer 1 selection
+    //set plalyer 1 pointer
     if (!state.controller_previous.left.arrows.left && state.controller_current.left.arrows.left){
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
     }
@@ -101,7 +127,30 @@ class
     }
     assets.p1_pointer.setPosition((state.p1_state.current_letter_selection*100) + 225,480);
     
-    //set plalyer 2 selection
+    //set player 1 selection
+    if (!state.controller_previous.left.buttons.right && state.controller_current.left.buttons.right){
+        if (!In_Vector(state.p1_state.selected_letters,state.p1_state.current_letter_selection)){
+            state.p1_state.selected_letters.emplace_back(state.p1_state.current_letter_selection);
+            
+            sf::RectangleShape rectangle(sf::Vector2f(80, 5));
+            rectangle.setPosition(210 + (100 * state.p1_state.current_letter_selection),455);
+            rectangle.setFillColor(sf::Color(22, 181, 43));
+            assets.p1_selections.emplace_back(rectangle);
+        }
+    }
+    
+    //drop player 1 selection
+    if (!state.controller_previous.left.buttons.down && state.controller_current.left.buttons.down){
+        state.p1_state.selected_letters.clear();
+        assets.p1_selections.clear();
+    }
+    
+    
+    
+    
+    
+    
+    //set plalyer 2 pointer
     if (!state.controller_previous.right.arrows.left && state.controller_current.right.arrows.left){
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
     }
@@ -110,7 +159,20 @@ class
     }
     assets.p2_pointer.setPosition((state.p2_state.current_letter_selection*100) + 270,315);
     
+    //set player 2 selection
+    if (!state.controller_previous.right.buttons.right && state.controller_current.right.buttons.right){
+        if (!In_Vector(state.p2_state.selected_letters,state.p2_state.current_letter_selection)){
+            state.p2_state.selected_letters.emplace_back(state.p2_state.current_letter_selection);
+        }
+    }
     
+    //drop player 2 selection
+    if (!state.controller_previous.right.buttons.down && state.controller_current.right.buttons.down){
+        state.p2_state.selected_letters.clear();
+    }
+    
+    
+    //restart the game
     if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
         state.start_game = true;
     }
@@ -118,9 +180,17 @@ class
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
 
+    //update timer
     sf::Time elapsed_time = state.countdown.getElapsedTime();
     long time_left = 120 - elapsed_time.asSeconds();
     assets.countdown.setString(std::to_string(time_left));
+    
+    //update score
+    std::string score = std::to_string(state.puzzle.words.size());
+    assets.score.setString(score);
+    
+    //update answers
+
 ❱
 
 
