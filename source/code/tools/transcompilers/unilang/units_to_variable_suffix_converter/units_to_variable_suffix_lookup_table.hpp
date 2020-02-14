@@ -327,6 +327,12 @@ static const std::unordered_map<std::string,std::string> UNITS_TO_VARIABLE_SUFFI
   ,{"zeptofarad","zF"}
   ,{"zettafarad","ZF"}
   
+  
+  //curvature
+  ,{"curvature","radpm"}
+  ,{"curvaturetwist","radpms"}
+  ,{"curvaturewrench","radpmss"}
+  
   //work
   ,{"foot pounds","lbf"}
   ,{"newton meters","Nm"}
