@@ -18,6 +18,7 @@ class
 ❪"code/utilities/peripheral/keyboard/joycons/joystick_rotating_checker"❫
 ❪"code/utilities/linguistics/build_word/game/puzzle_builder"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
@@ -97,10 +98,12 @@ class
     state.p1_state.current_letter_selection = 0;
     state.p1_state.selected_letters.clear();
     assets.p1.selections.clear();
+    assets.p1.score.setString("0");
     
     state.p2_state.current_letter_selection = 0;
     state.p2_state.selected_letters.clear();
     assets.p2.selections.clear();
+    assets.p2.score.setString("0");
     
 ❱
 
@@ -205,6 +208,8 @@ class
     if (found_index != -1){
         if (assets.answers[found_index].getFillColor() == state.color){
             assets.answers[found_index].setFillColor(user.color);
+            user_assets.score.setString(std::to_string(as_signed(user_assets.score.getString()) + 1));
+            
             user.selected_letters.clear();
             user_assets.selections.clear();
         }
@@ -213,7 +218,7 @@ class
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
 
-    int game_seconds = 10; //180;
+    int game_seconds = 180;
     
     //update timer
     sf::Time elapsed_time = state.countdown.getElapsedTime();
