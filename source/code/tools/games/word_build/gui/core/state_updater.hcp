@@ -31,11 +31,16 @@ class
         Start_Game(state,assets);
         state.start_game = false;
     }
+    else if (state.game_over){
+        Game_Over(state,assets);
+    }
+    else {
     
-    //handle user input
-    Handle_Player_Input(window,state,assets);
-    
-    Update_Game_State(state,assets);
+        //handle user input
+        Handle_Player_Input(window,state,assets);
+        
+        Update_Game_State(state,assets);
+    }
     
     //store previous user actions
     state.controller_previous = state.controller_current;
@@ -208,10 +213,25 @@ class
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
 
+    int game_seconds = 10; //180;
+    
     //update timer
     sf::Time elapsed_time = state.countdown.getElapsedTime();
-    long time_left = 120 - elapsed_time.asSeconds();
+    long time_left = game_seconds - elapsed_time.asSeconds();
     assets.countdown.setString(std::to_string(time_left));
+    
+    //end the game if the time has run out
+    if (time_left <= 0){
+        assets.countdown.setString("0");
+        
+        for (auto & it: assets.answers){
+            if (it.getFillColor() == state.color){
+                it.setFillColor(sf::Color(189, 170, 176));
+            }
+        }
+        
+        state.game_over = true;
+    }
     
     //update score
     std::string score = std::to_string(state.puzzle.words.size());
@@ -221,6 +241,15 @@ class
 
 ❱
 
+◀private: static▶ void ☀Game_Over(Game_State & state, Assets & assets) ❰
+
+    //restart the game
+    if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
+        state.start_game = true;
+        state.game_over = false;
+    }
+    
+❱
 
 
 
