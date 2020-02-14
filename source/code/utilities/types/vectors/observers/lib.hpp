@@ -6,6 +6,7 @@
 #include <set>
 #include <random>
 #include <utility>
+#include <optional>
 
 std::string Get_As_Comma_Seperated_String(std::vector<std::string> strs);
 std::string Get_As_Space_Seperated_String(std::vector<std::string> strs);
@@ -87,6 +88,15 @@ size_t Largest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,int>> const& 
 template<typename T>
 size_t Get_Index_Of_Element(std::vector<T> const& v, T const& element){
     return std::find(v.begin(), v.end(), element) - v.begin();
+}
+
+template<typename T>
+int Get_Index_Of_Element_If_Exists(std::vector<T> const& v, T const& element){
+    auto found = std::find(v.begin(), v.end(), element);
+    if (found == std::end(v)){
+      return -1;
+    }
+    return found - v.begin();
 }
 
 template<typename T>
