@@ -79,9 +79,9 @@ class
     //position the answers
     width += 250;
     assets.answers.clear();
-    temp.setCharacterSize(40);
+    temp.setCharacterSize(25);
     temp.setFillColor(state.color);
-    auto parts = Split_Every_N(state.puzzle.words,20);
+    auto parts = Split_Every_N(state.puzzle.words,24);
     for (auto const& row: parts){
         
         int height = 100;
@@ -91,7 +91,7 @@ class
             assets.answers.emplace_back(temp);
             height += 40;
         }
-        width += 250;
+        width += 180;
     }
     
     
@@ -203,6 +203,15 @@ class
     if (!state.controller_previous.right.center.start && state.controller_current.right.center.start){
         state.start_game = true;
     }
+    
+    if (!state.controller_previous.left.center.back && state.controller_current.left.center.back){
+        state.game_over = true;
+        Show_All_The_Answers(state,assets);
+    }
+    if (!state.controller_previous.right.center.back && state.controller_current.right.center.back){
+        state.game_over = true;
+        Show_All_The_Answers(state,assets);
+    }
 ❱
 
 ◀private: static▶ void ☀Player_Match_Check(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
@@ -255,11 +264,7 @@ class
     if (time_left <= 0){
         assets.countdown.setString("0");
         
-        for (auto & it: assets.answers){
-            if (it.getFillColor() == state.color){
-                it.setFillColor(sf::Color(189, 170, 176));
-            }
-        }
+        Show_All_The_Answers(state,assets);
         
         state.game_over = true;
     }
@@ -272,12 +277,63 @@ class
 
 ❱
 
+◀private: static▶ void ☀Show_All_The_Answers(Game_State & state, Assets & assets) ❰
+        for (auto & it: assets.answers){
+            if (it.getFillColor() == state.color){
+                it.setFillColor(sf::Color(189, 170, 176));
+            }
+        }
+❱
+
 ◀private: static▶ void ☀Game_Over(Game_State & state, Assets & assets) ❰
 
     //restart the game
     if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
         state.start_game = true;
         state.game_over = false;
+    }
+    
+    
+    if (state.controller_current.right.arrows.up){
+        for (auto & it: assets.answers){
+            it.move(0,-5);
+        }
+    }
+    if (state.controller_current.right.arrows.down){
+        for (auto & it: assets.answers){
+            it.move(0,5);
+        }
+    }
+    if (state.controller_current.right.arrows.left){
+        for (auto & it: assets.answers){
+            it.move(-5,0);
+        }
+    }
+    if (state.controller_current.right.arrows.right){
+        for (auto & it: assets.answers){
+            it.move(5,0);
+        }
+    }
+    
+    if (state.controller_current.left.arrows.up){
+        for (auto & it: assets.answers){
+            it.move(0,-5);
+        }
+    }
+    if (state.controller_current.left.arrows.down){
+        for (auto & it: assets.answers){
+            it.move(0,5);
+        }
+    }
+    if (state.controller_current.left.arrows.left){
+        for (auto & it: assets.answers){
+            it.move(-5,0);
+        }
+    }
+    if (state.controller_current.left.arrows.right){
+        for (auto & it: assets.answers){
+            it.move(5,0);
+        }
     }
     
 ❱
