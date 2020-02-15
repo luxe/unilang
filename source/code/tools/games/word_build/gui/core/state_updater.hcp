@@ -36,15 +36,19 @@ class
         Game_Over(state,assets);
     }
     else {
-    
-        //handle user input
-        Handle_Player_Input(window,state,assets);
-        
-        Update_Game_State(state,assets);
+        Regular_Game_Frame(state,assets);
     }
     
     //store previous user actions
     state.controller_previous = state.controller_current;
+❱
+
+◀private: static▶ void ☀Regular_Game_Frame(Game_State & state, Assets & assets) ❰
+
+    //handle user input
+    Handle_Player_Input(state,assets);
+
+    Update_Game_State(state,assets);
 ❱
 
 ◀private: static▶ void ☀Start_Game(Game_State & state, Assets & assets) ❰
@@ -108,7 +112,7 @@ class
 ❱
 
 
-◀private: static▶ void ☀Handle_Player_Input(sf::RenderWindow & window, Game_State & state, Assets & assets)❰
+◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets)❰
 
     //std::cout << state.controller_current.left.left_joystick.vertical_axis << std::endl;
 
@@ -196,6 +200,9 @@ class
     if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
         state.start_game = true;
     }
+    if (!state.controller_previous.right.center.start && state.controller_current.right.center.start){
+        state.start_game = true;
+    }
 ❱
 
 ◀private: static▶ void ☀Player_Match_Check(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
@@ -207,14 +214,31 @@ class
     auto found_index = Get_Index_Of_Element_If_Exists(state.puzzle.words,current_word);
     if (found_index != -1){
         if (assets.answers[found_index].getFillColor() == state.color){
-            assets.answers[found_index].setFillColor(user.color);
-            user_assets.score.setString(std::to_string(as_signed(user_assets.score.getString()) + 1));
-            
-            user.selected_letters.clear();
-            user_assets.selections.clear();
+            Player_Found_Answer(user,user_assets,assets,found_index);
         }
     }
 ❱
+
+◀private: static▶ void ☀Player_Found_Answer(User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
+
+    // set the color
+    assets.answers[index].setFillColor(user.color);
+    
+    //increment the player's score
+    user_assets.score.setString(std::to_string(as_signed(user_assets.score.getString()) + 1));
+    
+    //clear the player's selection
+    user.selected_letters.clear();
+    user_assets.selections.clear();
+    
+    Handle_User_Combo_Behaviour(user,user_assets);
+❱
+
+◀private: static▶ void ☀Handle_User_Combo_Behaviour(User_State & user, User_Assets & user_assets)❰
+    
+    
+❱
+
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
 
