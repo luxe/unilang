@@ -26,4 +26,6 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/map:lib",
+    "//code/utilities/types/vectors/observers:size_frequency_counter",
 ])

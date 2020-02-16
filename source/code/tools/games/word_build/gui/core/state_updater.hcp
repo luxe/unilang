@@ -20,6 +20,8 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/map/lib"❫
+❪"code/utilities/types/vectors/observers/size_frequency_counter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
@@ -98,6 +100,8 @@ class
         width += 180;
     }
     
+    assets.stats.setString("");
+    
     
     //reset the game timer
     state.countdown.restart();
@@ -109,7 +113,7 @@ class
     assets.p1.score.setString("0");
     state.p1_state.combo_countdown.restart();
     state.p1_state.current_combo = 0;
-    state.p1_state.combo_timeout_ms = state.p1_state.start_combo_timeout_ms;
+    state.p1_state.current_combo_timeout_ms = state.p1_state.start_combo_timeout_ms;
     
     state.p2_state.current_letter_selection = 0;
     state.p2_state.selected_letters.clear();
@@ -117,7 +121,7 @@ class
     assets.p2.score.setString("0");
     state.p2_state.combo_countdown.restart();
     state.p2_state.current_combo = 0;
-    state.p2_state.combo_timeout_ms = state.p1_state.start_combo_timeout_ms;
+    state.p2_state.current_combo_timeout_ms = state.p1_state.start_combo_timeout_ms;
 ❱
 
 
@@ -146,7 +150,7 @@ class
     //end the game and show all the answers
     if (!phases.previous.center.back && phases.current.center.back){
         state.game_over = true;
-        Show_All_The_Answers(state,assets);
+        End_Game_Changes(state,assets);
     }
 ❱
 
@@ -187,37 +191,6 @@ class
     }
 ❱
 
-
-// ◀private: static▶ void ☀Player_Selection_Changes(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
-
-//     //set plalyer pointer
-//     if (!state.controller.left.previous.arrows.left && state.controller.left.current.arrows.left){
-//         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
-//     }
-//     if (!state.controller.left.previous.arrows.right && state.controller.left.current.arrows.right){
-//         Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
-//     }
-//     assets.p1.pointer.setPosition((state.p1_state.current_letter_selection*100) + 225,480);
-    
-//     //set player selection
-//     if (!state.controller.left.previous.buttons.right && state.controller.left.current.buttons.right){
-//         if (!In_Vector(state.p1_state.selected_letters,state.p1_state.current_letter_selection)){
-//             state.p1_state.selected_letters.emplace_back(state.p1_state.current_letter_selection);
-            
-//             sf::RectangleShape rectangle(sf::Vector2f(80, 5));
-//             rectangle.setPosition(205 + (100 * state.p1_state.current_letter_selection),455);
-//             rectangle.setFillColor(state.p1_state.color);
-//             assets.p1.selections.emplace_back(rectangle);
-//         }
-//     }
-    
-//     //drop player selection
-//     if (!state.controller.left.previous.buttons.down && state.controller.left.current.buttons.down){
-//         state.p1_state.selected_letters.clear();
-//         assets.p1.selections.clear();
-//     }
-// ❱
-
 ◀private: static▶ void ☀Player_Match_Check(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
     std::string current_word;
     for (auto const& it: user.selected_letters){
@@ -256,6 +229,7 @@ class
     long since_last_combo = elapsed_time.asMilliseconds();
     if (since_last_combo <= user.current_combo_timeout_ms){
         ++user.current_combo;
+        Adjust_Current_Combo_Timeout_By_Current_Combo(user);
     }
     else{
         user.current_combo = 1;
@@ -312,10 +286,12 @@ class
         user_assets.success3.sound.play();
         user_assets.combo11.sound.play();
     }
-    
-    
 ❱
 
+◀private: static▶ void ☀Adjust_Current_Combo_Timeout_By_Current_Combo(User_State & user)❰
+    auto added_ms = user.current_combo * 1000;
+    user.current_combo_timeout_ms = user.start_combo_timeout_ms + added_ms;
+❱
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
 
@@ -330,7 +306,7 @@ class
     if (time_left <= 0){
         assets.countdown.setString("0");
         
-        Show_All_The_Answers(state,assets);
+        End_Game_Changes(state,assets);
         
         state.game_over = true;
     }
@@ -357,12 +333,47 @@ class
     }
 ❱
 
+◀private: static▶ void ☀End_Game_Changes(Game_State & state, Assets & assets) ❰
+
+    Show_All_The_Answers(state,assets);
+    Show_More_Stats(state,assets);
+❱
+
 ◀private: static▶ void ☀Show_All_The_Answers(Game_State & state, Assets & assets) ❰
         for (auto & it: assets.answers){
             if (it.getFillColor() == state.color){
                 it.setFillColor(sf::Color(189, 170, 176));
             }
         }
+❱
+
+◀private: static▶ void ☀Show_More_Stats(Game_State & state, Assets & assets) ❰
+
+    //get p1 words
+    std::vector<std::string> p1_words;
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.p1_state.color){
+            p1_words.emplace_back(it.getString());
+        }
+    }
+    
+    //get p2 words
+    std::vector<std::string> p2_words;
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.p2_state.color){
+            p2_words.emplace_back(it.getString());
+        }
+    }
+    
+    //get p1 and p2 frequencies
+    auto p1_freq = Size_Frequency_Counter::Get(p1_words);
+    auto p2_freq = Size_Frequency_Counter::Get(p2_words);
+    
+    auto p1_freq_str = To_String(p1_freq);
+    auto p2_freq_str = To_String(p2_freq);
+    
+    auto all_stats = p1_freq_str + "\n\n" + p2_freq_str;
+    assets.stats.setString(all_stats);
 ❱
 
 ◀private: static▶ void ☀Game_Over(Game_State & state, Assets & assets) ❰

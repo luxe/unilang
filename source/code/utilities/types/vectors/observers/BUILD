@@ -1,14 +1,18 @@
-package(
-    default_visibility = ["//visibility:public"],
-)
+package(default_visibility = ["//visibility:public"])
+load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 cc_library(
     name = "lib",
-    srcs = glob(["*.cpp"]),
-    hdrs = glob(["*.hpp"]),
-copts = ["--std=c++14"],
+    srcs = ["lib.cpp"],
+    hdrs = ["lib.hpp"],
+    copts = ["--std=c++14"],
     deps = [
-"//code/utilities/types/strings/observers/char:lib",
-"//code/utilities/types/general:lib",
-]
-)
+        "//code/utilities/types/strings/observers/char:lib",
+        "//code/utilities/types/general:lib",
+])
+
+
+hcp(name = "size_frequency_counter", deps = [
+    "//code/utilities/data_structures/unique_counter:unique_counter"
+])

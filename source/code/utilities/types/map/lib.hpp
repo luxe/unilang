@@ -61,3 +61,15 @@ void Delete_From_Unordered_Map(std::unordered_map<T,Y> & s, T const& item_to_del
     s.erase(s.find(item_to_delete));
   }
 }
+
+//overloading on map types
+template <typename X, typename Y>
+std::string To_String(std::map<X,Y> const& m){
+  std::string str;
+  
+  for (auto const& it: m){
+    str += std::to_string(it.first) + ": " + std::to_string(it.second) + "\n";
+  }
+  
+  return str;
+}
