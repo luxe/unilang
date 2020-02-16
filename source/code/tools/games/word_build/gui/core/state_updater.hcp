@@ -108,13 +108,16 @@ class
     assets.p1.selections.clear();
     assets.p1.score.setString("0");
     state.p1_state.combo_countdown.restart();
+    state.p1_state.current_combo = 0;
+    state.p1_state.combo_timeout_ms = state.p1_state.start_combo_timeout_ms;
     
     state.p2_state.current_letter_selection = 0;
     state.p2_state.selected_letters.clear();
     assets.p2.selections.clear();
     assets.p2.score.setString("0");
     state.p2_state.combo_countdown.restart();
-    
+    state.p2_state.current_combo = 0;
+    state.p2_state.combo_timeout_ms = state.p1_state.start_combo_timeout_ms;
 ❱
 
 
@@ -251,7 +254,7 @@ class
     //adjust the user's current combo based on current combo meter
     sf::Time elapsed_time = user.combo_countdown.getElapsedTime();
     long since_last_combo = elapsed_time.asMilliseconds();
-    if (since_last_combo <= 6000){
+    if (since_last_combo <= user.current_combo_timeout_ms){
         ++user.current_combo;
     }
     else{
@@ -347,7 +350,7 @@ class
     if (state.current_combo != 0){
         sf::Time elapsed_time = state.combo_countdown.getElapsedTime();
         long since_last_combo = elapsed_time.asMilliseconds();
-        auto bar_width = Math::map_value_across_range(since_last_combo,0,6000,600,0);
+        auto bar_width = Math::map_value_across_range(since_last_combo,0,state.current_combo_timeout_ms,600,0);
         auto current_size = asset.combo_bar.getSize();
         current_size.x = bar_width;
         asset.combo_bar.setSize(current_size);
@@ -366,6 +369,10 @@ class
 
     //restart the game when user is ready
     if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
+        state.start_game = true;
+        state.game_over = false;
+    }
+    if (!state.controller.right.previous.center.start && state.controller.right.current.center.start){
         state.start_game = true;
         state.game_over = false;
     }
