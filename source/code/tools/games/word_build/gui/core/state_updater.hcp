@@ -24,8 +24,10 @@ class
 ◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
     
     //make decisions based on user action
-    state.controller_current = F310_Gamepads_State_Getter::Get();
-    
+
+    auto controller_state = F310_Gamepads_State_Getter::Get();
+    state.controller.left.current = controller_state.left;
+    state.controller.right.current = controller_state.right;
     
     //possibly restart the game
     if (state.start_game){
@@ -40,7 +42,8 @@ class
     }
     
     //store previous user actions
-    state.controller_previous = state.controller_current;
+    state.controller.left.previous = controller_state.left;
+    state.controller.right.previous = controller_state.right;
 ❱
 
 ◀private: static▶ void ☀Regular_Game_Frame(Game_State & state, Assets & assets) ❰
@@ -74,7 +77,7 @@ class
     }
     
     //position the score
-    assets.score.setPosition(width,325);
+    assets.score.setPosition(width,335);
     
     //position the answers
     width += 250;
@@ -114,36 +117,36 @@ class
 
 ◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets)❰
 
-    //std::cout << state.controller_current.left.left_joystick.vertical_axis << std::endl;
+    //std::cout << state.controller.left.current.left_joystick.vertical_axis << std::endl;
 
     // int move_speed = 10;
     
-    // if (state.controller_current.left.left_joystick.vertical_axis > 1){
+    // if (state.controller.left.current.left_joystick.vertical_axis > 1){
     //     state.y -= move_speed;
     // }
-    // if (state.controller_current.left.left_joystick.vertical_axis < -1){
+    // if (state.controller.left.current.left_joystick.vertical_axis < -1){
     //     state.y += move_speed;
     // }
-    // if (state.controller_current.left.left_joystick.horizontal_axis < 1){
+    // if (state.controller.left.current.left_joystick.horizontal_axis < 1){
     //     state.x -= move_speed;
     // }
-    // if (state.controller_current.left.left_joystick.horizontal_axis > -1){
+    // if (state.controller.left.current.left_joystick.horizontal_axis > -1){
     //     state.x += move_speed;
     // }
     
     
     
     //set plalyer 1 pointer
-    if (!state.controller_previous.left.arrows.left && state.controller_current.left.arrows.left){
+    if (!state.controller.left.previous.arrows.left && state.controller.left.current.arrows.left){
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
     }
-    if (!state.controller_previous.left.arrows.right && state.controller_current.left.arrows.right){
+    if (!state.controller.left.previous.arrows.right && state.controller.left.current.arrows.right){
         Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
     }
     assets.p1.pointer.setPosition((state.p1_state.current_letter_selection*100) + 225,480);
     
     //set player 1 selection
-    if (!state.controller_previous.left.buttons.right && state.controller_current.left.buttons.right){
+    if (!state.controller.left.previous.buttons.right && state.controller.left.current.buttons.right){
         if (!In_Vector(state.p1_state.selected_letters,state.p1_state.current_letter_selection)){
             state.p1_state.selected_letters.emplace_back(state.p1_state.current_letter_selection);
             
@@ -155,7 +158,7 @@ class
     }
     
     //drop player 1 selection
-    if (!state.controller_previous.left.buttons.down && state.controller_current.left.buttons.down){
+    if (!state.controller.left.previous.buttons.down && state.controller.left.current.buttons.down){
         state.p1_state.selected_letters.clear();
         assets.p1.selections.clear();
     }
@@ -169,16 +172,16 @@ class
     
     
     //set plalyer 2 pointer
-    if (!state.controller_previous.right.arrows.left && state.controller_current.right.arrows.left){
+    if (!state.controller.right.previous.arrows.left && state.controller.right.current.arrows.left){
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
     }
-    if (!state.controller_previous.right.arrows.right && state.controller_current.right.arrows.right){
+    if (!state.controller.right.previous.arrows.right && state.controller.right.current.arrows.right){
         Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
     }
     assets.p2.pointer.setPosition((state.p2_state.current_letter_selection*100) + 270,315);
     
     //set player 2 selection
-    if (!state.controller_previous.right.buttons.right && state.controller_current.right.buttons.right){
+    if (!state.controller.right.previous.buttons.right && state.controller.right.current.buttons.right){
         if (!In_Vector(state.p2_state.selected_letters,state.p2_state.current_letter_selection)){
             state.p2_state.selected_letters.emplace_back(state.p2_state.current_letter_selection);
             
@@ -190,29 +193,59 @@ class
     }
     
     //drop player 2 selection
-    if (!state.controller_previous.right.buttons.down && state.controller_current.right.buttons.down){
+    if (!state.controller.right.previous.buttons.down && state.controller.right.current.buttons.down){
         state.p2_state.selected_letters.clear();
         assets.p2.selections.clear();
     }
     
     
     //restart the game
-    if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
+    if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
         state.start_game = true;
     }
-    if (!state.controller_previous.right.center.start && state.controller_current.right.center.start){
+    if (!state.controller.right.previous.center.start && state.controller.right.current.center.start){
         state.start_game = true;
     }
     
-    if (!state.controller_previous.left.center.back && state.controller_current.left.center.back){
+    if (!state.controller.left.previous.center.back && state.controller.left.current.center.back){
         state.game_over = true;
         Show_All_The_Answers(state,assets);
     }
-    if (!state.controller_previous.right.center.back && state.controller_current.right.center.back){
+    if (!state.controller.right.previous.center.back && state.controller.right.current.center.back){
         state.game_over = true;
         Show_All_The_Answers(state,assets);
     }
 ❱
+
+// ◀private: static▶ void ☀Player_Selection_Changes(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
+
+//     //set plalyer pointer
+//     if (!state.controller.left.previous.arrows.left && state.controller.left.current.arrows.left){
+//         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
+//     }
+//     if (!state.controller.left.previous.arrows.right && state.controller.left.current.arrows.right){
+//         Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
+//     }
+//     assets.p1.pointer.setPosition((state.p1_state.current_letter_selection*100) + 225,480);
+    
+//     //set player selection
+//     if (!state.controller.left.previous.buttons.right && state.controller.left.current.buttons.right){
+//         if (!In_Vector(state.p1_state.selected_letters,state.p1_state.current_letter_selection)){
+//             state.p1_state.selected_letters.emplace_back(state.p1_state.current_letter_selection);
+            
+//             sf::RectangleShape rectangle(sf::Vector2f(80, 5));
+//             rectangle.setPosition(205 + (100 * state.p1_state.current_letter_selection),455);
+//             rectangle.setFillColor(state.p1_state.color);
+//             assets.p1.selections.emplace_back(rectangle);
+//         }
+//     }
+    
+//     //drop player selection
+//     if (!state.controller.left.previous.buttons.down && state.controller.left.current.buttons.down){
+//         state.p1_state.selected_letters.clear();
+//         assets.p1.selections.clear();
+//     }
+// ❱
 
 ◀private: static▶ void ☀Player_Match_Check(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
     std::string current_word;
@@ -271,7 +304,7 @@ class
     
     //update score
     std::string score = std::to_string(state.puzzle.words.size());
-    assets.score.setString(score);
+    assets.score.setString(+ "=" +score);
     
     //update answers
 
@@ -288,49 +321,49 @@ class
 ◀private: static▶ void ☀Game_Over(Game_State & state, Assets & assets) ❰
 
     //restart the game
-    if (!state.controller_previous.left.center.start && state.controller_current.left.center.start){
+    if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
         state.start_game = true;
         state.game_over = false;
     }
     
     
-    if (state.controller_current.right.arrows.up){
+    if (state.controller.right.current.arrows.up){
         for (auto & it: assets.answers){
             it.move(0,-5);
         }
     }
-    if (state.controller_current.right.arrows.down){
+    if (state.controller.right.current.arrows.down){
         for (auto & it: assets.answers){
             it.move(0,5);
         }
     }
-    if (state.controller_current.right.arrows.left){
+    if (state.controller.right.current.arrows.left){
         for (auto & it: assets.answers){
             it.move(-5,0);
         }
     }
-    if (state.controller_current.right.arrows.right){
+    if (state.controller.right.current.arrows.right){
         for (auto & it: assets.answers){
             it.move(5,0);
         }
     }
     
-    if (state.controller_current.left.arrows.up){
+    if (state.controller.left.current.arrows.up){
         for (auto & it: assets.answers){
             it.move(0,-5);
         }
     }
-    if (state.controller_current.left.arrows.down){
+    if (state.controller.left.current.arrows.down){
         for (auto & it: assets.answers){
             it.move(0,5);
         }
     }
-    if (state.controller_current.left.arrows.left){
+    if (state.controller.left.current.arrows.left){
         for (auto & it: assets.answers){
             it.move(-5,0);
         }
     }
-    if (state.controller_current.left.arrows.right){
+    if (state.controller.left.current.arrows.right){
         for (auto & it: assets.answers){
             it.move(5,0);
         }

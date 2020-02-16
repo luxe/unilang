@@ -9,6 +9,7 @@ hcp(name = "game_state", deps = [
     "//code/utilities/linguistics/build_word/game:build_word_puzzle",
     "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings",
     "//code/tools/games/word_build/gui/state:user_state",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
     "@sfml//:sfml",
 ])
 
