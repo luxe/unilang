@@ -119,54 +119,29 @@ class
 
 
 ◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets)❰
-
-    //std::cout << state.controller.left.current.left_joystick.vertical_axis << std::endl;
-
-    // int move_speed = 10;
-    
-    // if (state.controller.left.current.left_joystick.vertical_axis > 1){
-    //     state.y -= move_speed;
-    // }
-    // if (state.controller.left.current.left_joystick.vertical_axis < -1){
-    //     state.y += move_speed;
-    // }
-    // if (state.controller.left.current.left_joystick.horizontal_axis < 1){
-    //     state.x -= move_speed;
-    // }
-    // if (state.controller.left.current.left_joystick.horizontal_axis > -1){
-    //     state.x += move_speed;
-    // }
-    
-    
-    
     
     Handle_Player_Selections(state,state.controller.left,state.p1_state,assets.p1);
     Handle_Player_Selections(state,state.controller.right,state.p2_state,assets.p2);
     
-    
     Player_Match_Check(state.p1_state,assets.p1,state,assets);
     Player_Match_Check(state.p2_state,assets.p2,state,assets);
     
+    Handle_Player_Game_Changes(state,state.controller.left,assets);
+    Handle_Player_Game_Changes(state,state.controller.right,assets);
     
     
-    
-    
-    
-    
+❱
+
+
+◀private: static▶ void ☀Handle_Player_Game_Changes(Game_State & state, F310_Gamepad_Phases const& phases, Assets & assets)❰
+
     //restart the game
-    if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
-        state.start_game = true;
-    }
-    if (!state.controller.right.previous.center.start && state.controller.right.current.center.start){
+    if (!phases.previous.center.start && phases.current.center.start){
         state.start_game = true;
     }
     
     //end the game and show all the answers
-    if (!state.controller.left.previous.center.back && state.controller.left.current.center.back){
-        state.game_over = true;
-        Show_All_The_Answers(state,assets);
-    }
-    if (!state.controller.right.previous.center.back && state.controller.right.current.center.back){
+    if (!phases.previous.center.back && phases.current.center.back){
         state.game_over = true;
         Show_All_The_Answers(state,assets);
     }
@@ -275,58 +250,58 @@ class
 
     //adjust the user's current combo based on current combo meter
     sf::Time elapsed_time = user.combo_countdown.getElapsedTime();
-    long since_last_combo = elapsed_time.asSeconds();
-    if (since_last_combo <= 6){
+    long since_last_combo = elapsed_time.asMilliseconds();
+    if (since_last_combo <= 6000){
         ++user.current_combo;
     }
     else{
-        user.current_combo = 0;
+        user.current_combo = 1;
     }
     user.combo_countdown.restart();
     
     
     //play sound based on current combo
-    if (user.current_combo == 0){
+    if (user.current_combo == 1){
         user_assets.success1.sound.play();
         user_assets.combo1.sound.play();
     }
-    else if (user.current_combo == 1){
+    else if (user.current_combo == 2){
         user_assets.success2.sound.play();
         user_assets.combo2.sound.play();
     }
-    else if (user.current_combo == 2){
+    else if (user.current_combo == 3){
         user_assets.success3.sound.play();
         user_assets.combo3.sound.play();
     }
-    else if (user.current_combo == 3){
+    else if (user.current_combo == 4){
         user_assets.success3.sound.play();
         user_assets.combo4.sound.play();
     }
-    else if (user.current_combo == 4){
+    else if (user.current_combo == 5){
         user_assets.success3.sound.play();
         user_assets.combo5.sound.play();
     }
-    else if (user.current_combo == 5){
+    else if (user.current_combo == 6){
         user_assets.success3.sound.play();
         user_assets.combo6.sound.play();
     }
-    else if (user.current_combo == 6){
+    else if (user.current_combo == 7){
         user_assets.success3.sound.play();
         user_assets.combo7.sound.play();
     }
-    else if (user.current_combo == 7){
+    else if (user.current_combo == 8){
         user_assets.success3.sound.play();
         user_assets.combo8.sound.play();
     }
-    else if (user.current_combo == 8){
+    else if (user.current_combo == 9){
         user_assets.success3.sound.play();
         user_assets.combo9.sound.play();
     }
-    else if (user.current_combo == 9){
+    else if (user.current_combo == 10){
         user_assets.success3.sound.play();
         user_assets.combo10.sound.play();
     }
-    else if (user.current_combo == 10){
+    else if (user.current_combo == 11){
         user_assets.success3.sound.play();
         user_assets.combo11.sound.play();
     }
@@ -361,8 +336,22 @@ class
     std::string score = std::to_string(state.puzzle.words.size());
     assets.score.setString(+ "=" +score);
     
-    //update answers
+    //update the combo bars
+    Update_Player_Combo_Bar(state.p1_state,assets.p1);
+    Update_Player_Combo_Bar(state.p2_state,assets.p2);
 
+❱
+
+◀private: static▶ void ☀Update_Player_Combo_Bar(User_State const& state, User_Assets & asset) ❰
+
+    if (state.current_combo != 0){
+        sf::Time elapsed_time = state.combo_countdown.getElapsedTime();
+        long since_last_combo = elapsed_time.asMilliseconds();
+        auto bar_width = Math::map_value_across_range(since_last_combo,0,6000,600,0);
+        auto current_size = asset.combo_bar.getSize();
+        current_size.x = bar_width;
+        asset.combo_bar.setSize(current_size);
+    }
 ❱
 
 ◀private: static▶ void ☀Show_All_The_Answers(Game_State & state, Assets & assets) ❰

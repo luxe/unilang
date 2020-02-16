@@ -1,0 +1,1 @@
+# pico2wave -w ~/Desktop/hello_world.wav "star. car. start. tart."; aplay ~/Desktop/hello_world.wav
