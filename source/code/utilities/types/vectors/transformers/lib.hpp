@@ -381,6 +381,13 @@ void Remove_Last_Element(std::vector<T>& vec){
     return;
 }
 template <typename T>
+void Safe_Pop_Back(std::vector<T>& vec){
+    if (!vec.empty()){
+        vec.pop_back();
+    }
+    return;
+}
+template <typename T>
 void Remove_Last_N_Elements(std::vector<T>& vec, size_t const& n){
     for (size_t i = 0; i < n; ++i) vec.pop_back();
     return;

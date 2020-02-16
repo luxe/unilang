@@ -25,4 +25,5 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/linguistics/build_word/game:puzzle_builder",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/types/vectors/transformers:lib",
 ])

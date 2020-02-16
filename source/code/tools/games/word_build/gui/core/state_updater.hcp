@@ -18,6 +18,7 @@ class
 ❪"code/utilities/peripheral/keyboard/joycons/joystick_rotating_checker"❫
 ❪"code/utilities/linguistics/build_word/game/puzzle_builder"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
@@ -136,32 +137,9 @@ class
     
     
     
-    //set plalyer 1 pointer
-    if (!state.controller.left.previous.arrows.left && state.controller.left.current.arrows.left){
-        Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
-    }
-    if (!state.controller.left.previous.arrows.right && state.controller.left.current.arrows.right){
-        Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p1_state.current_letter_selection);
-    }
-    assets.p1.pointer.setPosition((state.p1_state.current_letter_selection*100) + 225,480);
     
-    //set player 1 selection
-    if (!state.controller.left.previous.buttons.right && state.controller.left.current.buttons.right){
-        if (!In_Vector(state.p1_state.selected_letters,state.p1_state.current_letter_selection)){
-            state.p1_state.selected_letters.emplace_back(state.p1_state.current_letter_selection);
-            
-            sf::RectangleShape rectangle(sf::Vector2f(80, 5));
-            rectangle.setPosition(205 + (100 * state.p1_state.current_letter_selection),455);
-            rectangle.setFillColor(state.p1_state.color);
-            assets.p1.selections.emplace_back(rectangle);
-        }
-    }
-    
-    //drop player 1 selection
-    if (!state.controller.left.previous.buttons.down && state.controller.left.current.buttons.down){
-        state.p1_state.selected_letters.clear();
-        assets.p1.selections.clear();
-    }
+    Handle_Player_Selections(state,state.controller.left,state.p1_state,assets.p1);
+    Handle_Player_Selections(state,state.controller.right,state.p2_state,assets.p2);
     
     
     Player_Match_Check(state.p1_state,assets.p1,state,assets);
@@ -171,32 +149,6 @@ class
     
     
     
-    //set plalyer 2 pointer
-    if (!state.controller.right.previous.arrows.left && state.controller.right.current.arrows.left){
-        Set_Previous_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
-    }
-    if (!state.controller.right.previous.arrows.right && state.controller.right.current.arrows.right){
-        Set_Next_Index_In_Round_Robin(state.puzzle.letters,state.p2_state.current_letter_selection);
-    }
-    assets.p2.pointer.setPosition((state.p2_state.current_letter_selection*100) + 270,315);
-    
-    //set player 2 selection
-    if (!state.controller.right.previous.buttons.right && state.controller.right.current.buttons.right){
-        if (!In_Vector(state.p2_state.selected_letters,state.p2_state.current_letter_selection)){
-            state.p2_state.selected_letters.emplace_back(state.p2_state.current_letter_selection);
-            
-            sf::RectangleShape rectangle(sf::Vector2f(80, 5));
-            rectangle.setPosition(205 + (100 * state.p2_state.current_letter_selection),333);
-            rectangle.setFillColor(state.p2_state.color);
-            assets.p2.selections.emplace_back(rectangle);
-        }
-    }
-    
-    //drop player 2 selection
-    if (!state.controller.right.previous.buttons.down && state.controller.right.current.buttons.down){
-        state.p2_state.selected_letters.clear();
-        assets.p2.selections.clear();
-    }
     
     
     //restart the game
@@ -207,6 +159,7 @@ class
         state.start_game = true;
     }
     
+    //end the game and show all the answers
     if (!state.controller.left.previous.center.back && state.controller.left.current.center.back){
         state.game_over = true;
         Show_All_The_Answers(state,assets);
@@ -216,6 +169,44 @@ class
         Show_All_The_Answers(state,assets);
     }
 ❱
+
+
+◀private: static▶ void ☀Handle_Player_Selections(Game_State & state, F310_Gamepad_Phases const& phases, User_State & player_state, User_Assets & assets)❰
+
+    //set plalyer pointer
+    if (!phases.previous.arrows.left && phases.current.arrows.left){
+        Set_Previous_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
+    }
+    if (!phases.previous.arrows.right && phases.current.arrows.right){
+        Set_Next_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
+    }
+    assets.pointer.setPosition((player_state.current_letter_selection*100) + assets.pointer_x_offset,assets.pointer_y_offset);
+    
+    //set player selection
+    if (!phases.previous.buttons.right && phases.current.buttons.right){
+        if (!In_Vector(player_state.selected_letters,player_state.current_letter_selection)){
+            player_state.selected_letters.emplace_back(player_state.current_letter_selection);
+            
+            sf::RectangleShape rectangle(sf::Vector2f(80, 5));
+            rectangle.setPosition(205 + (100 * player_state.current_letter_selection),assets.selection_y_offset);
+            rectangle.setFillColor(player_state.color);
+            assets.selections.emplace_back(rectangle);
+        }
+    }
+    
+    //drop player selection
+    if (!phases.previous.buttons.down && phases.current.buttons.down){
+        Safe_Pop_Back(player_state.selected_letters);
+        Safe_Pop_Back(assets.selections);
+    }
+    
+    //backspace selection
+    if (!phases.previous.buttons.left && phases.current.buttons.left){
+        Safe_Pop_Back(player_state.selected_letters);
+        Safe_Pop_Back(assets.selections);
+    }
+❱
+
 
 // ◀private: static▶ void ☀Player_Selection_Changes(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
 
