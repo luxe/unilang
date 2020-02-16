@@ -107,11 +107,13 @@ class
     state.p1_state.selected_letters.clear();
     assets.p1.selections.clear();
     assets.p1.score.setString("0");
+    state.p1_state.combo_countdown.restart();
     
     state.p2_state.current_letter_selection = 0;
     state.p2_state.selected_letters.clear();
     assets.p2.selections.clear();
     assets.p2.score.setString("0");
+    state.p2_state.combo_countdown.restart();
     
 ❱
 
@@ -196,8 +198,8 @@ class
     
     //drop player selection
     if (!phases.previous.buttons.down && phases.current.buttons.down){
-        Safe_Pop_Back(player_state.selected_letters);
-        Safe_Pop_Back(assets.selections);
+        player_state.selected_letters.clear();
+        assets.selections.clear();
     }
     
     //backspace selection
@@ -268,10 +270,36 @@ class
 ❱
 
 ◀private: static▶ void ☀Handle_User_Combo_Behaviour(User_State & user, User_Assets & user_assets)❰
+
+
+
+    //adjust the user's current combo based on current combo meter
+    sf::Time elapsed_time = user.combo_countdown.getElapsedTime();
+    long since_last_combo = elapsed_time.asSeconds();
+    if (since_last_combo <= 6){
+        ++user.current_combo;
+    }
+    else{
+        user.current_combo = 0;
+    }
+    user.combo_countdown.restart();
     
+    
+    //play sound based on current combo
     if (user.current_combo == 0){
+        user_assets.success1.sound.play();
         user_assets.combo1.sound.play();
     }
+    else if (user.current_combo == 1){
+        user_assets.success2.sound.play();
+        user_assets.combo2.sound.play();
+    }
+    else {
+        user_assets.success3.sound.play();
+        user_assets.combo3.sound.play();
+    }
+    
+    
 ❱
 
 
@@ -311,13 +339,14 @@ class
 
 ◀private: static▶ void ☀Game_Over(Game_State & state, Assets & assets) ❰
 
-    //restart the game
+    //restart the game when user is ready
     if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
         state.start_game = true;
         state.game_over = false;
     }
     
     
+    //allow the user to move the answers around
     if (state.controller.right.current.arrows.up){
         for (auto & it: assets.answers){
             it.move(0,-5);
