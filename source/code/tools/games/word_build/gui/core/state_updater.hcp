@@ -2,6 +2,7 @@ class
 ❪string❫
 ❪iostream❫
 ❪vector❫
+❪thread❫
 ❪"code/tools/games/word_build/gui/assets/assets"❫
 ❪SFML/Window.hpp❫
 ❪SFML/Window/Joystick.hpp❫
@@ -22,6 +23,7 @@ class
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/utilities/types/map/lib"❫
 ❪"code/utilities/types/vectors/observers/size_frequency_counter"❫
+❪"code/utilities/linguistics/speak/word_speaker"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
@@ -32,17 +34,20 @@ class
     state.controller.left.current = controller_state.left;
     state.controller.right.current = controller_state.right;
     
-    //possibly restart the game
-    if (state.start_game){
+    if (state.phase == Game_Phase::MAIN_MENU){
+        //todo
+    }
+    else if (state.phase == Game_Phase::STARTING_GAME){
         Start_Game(state,assets);
-        state.start_game = false;
+        state.phase = Game_Phase::PLAYING_GAME;
     }
-    else if (state.game_over){
-        Game_Over(state,assets);
-    }
-    else {
+    else if(state.phase == Game_Phase::PLAYING_GAME){
         Regular_Game_Frame(state,assets);
     }
+    else if(state.phase == Game_Phase::END_GAME){
+        Game_Over(state,assets);
+    }
+    
     
     //store previous user actions
     state.controller.left.previous = controller_state.left;
@@ -145,12 +150,12 @@ class
 
     //restart the game
     if (!phases.previous.center.start && phases.current.center.start){
-        state.start_game = true;
+        state.phase = Game_Phase::STARTING_GAME;
     }
     
     //end the game and show all the answers
     if (!phases.previous.center.back && phases.current.center.back){
-        state.game_over = true;
+        state.phase = Game_Phase::END_GAME;
         End_Game_Changes(state,assets);
     }
 ❱
@@ -158,7 +163,7 @@ class
 
 ◀private: static▶ void ☀Handle_Player_Selections(Game_State & state, F310_Gamepad_Phases const& phases, User_State & player_state, User_Assets & assets)❰
 
-    //set plalyer pointer
+    //set player pointer
     if (!phases.previous.arrows.left && phases.current.arrows.left){
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
     }
@@ -219,6 +224,14 @@ class
     user_assets.selections.clear();
     
     Handle_User_Combo_Behaviour(user,user_assets);
+    
+    
+    //say the word (fire and forget style)
+    //we take things by copy because the scope is about to end.
+    auto word_to_say = assets.answers[index].getString().toAnsiString();
+    std::thread([=](){ 
+        Word_Speaker::Speak(word_to_say);
+    }).detach();
 ❱
 
 ◀private: static▶ void ☀Handle_User_Combo_Behaviour(User_State & user, User_Assets & user_assets)❰
@@ -309,7 +322,7 @@ class
         
         End_Game_Changes(state,assets);
         
-        state.game_over = true;
+        state.phase = Game_Phase::END_GAME;
     }
     
     //update score
@@ -345,6 +358,7 @@ class
             if (it.getFillColor() == state.color){
                 it.setFillColor(sf::Color(189, 170, 176));
             }
+            it.move(-600,0);
         }
 ❱
 
@@ -381,12 +395,10 @@ class
 
     //restart the game when user is ready
     if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
-        state.start_game = true;
-        state.game_over = false;
+        state.phase = Game_Phase::STARTING_GAME;
     }
     if (!state.controller.right.previous.center.start && state.controller.right.current.center.start){
-        state.start_game = true;
-        state.game_over = false;
+        state.phase = Game_Phase::STARTING_GAME;
     }
     
     
