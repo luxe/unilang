@@ -10,3 +10,7 @@ cpp_main(
     name = "is_dir",
     deps = [":opendir_wrap"],
 )
+cpp_main(
+    name = "dir_inode",
+    deps = [":opendir_wrap"],
+)
