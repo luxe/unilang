@@ -6,7 +6,6 @@ cc_library(
     name = "lib",
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
-    copts = ["--std=c++14"],
     deps = [
         "//code/utilities/types/strings/observers/char:lib",
         "//code/utilities/types/general:lib",
