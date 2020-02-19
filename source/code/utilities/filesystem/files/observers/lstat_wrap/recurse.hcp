@@ -62,8 +62,36 @@ class
   return m;
 ❱
 
+◀private: static▶ void ☀RecursiveLstatParallel(std::unordered_map<std::string,struct stat> & m, std::mutex & mut, std::filesystem::path const& path_to_file)❰
+  
+  std::filesystem::recursive_directory_iterator dirpos{ path_to_file };
+  std::vector<std::filesystem::path> paths;
+  std::copy(begin(dirpos), end(dirpos), std::back_inserter(paths));
+  
+  auto pool = Thread_Pool_Getter::Get_Max();
+  std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
+    
+      boost::asio::post(*pool, [&]() {
+          auto stat = Lstat(p);
+          {
+            std::unique_lock<std::mutex> lock(mut);
+            m.insert({p,stat});
+          }
+      });
+  });
+❱
+
 ◀public: static▶ std::unordered_map<std::string,struct stat> ☀RecursiveLstatParallel2(std::string const& path_to_file)❰
     std::unordered_map<std::string,struct stat> m;
+    std::mutex mut;
+    
+    auto pool = Thread_Pool_Getter::Get_Max();
+    for(auto& p: std::filesystem::directory_iterator(path_to_file)){
+        boost::asio::post(*pool, [&]() {
+            RecursiveLstatParallel(m,mut,p);
+        });
+    }
+    pool->join();
     
     return m;
 ❱

@@ -4,6 +4,6 @@
 
 int main(int argc, char *argv[]){
     std::cout << std::boolalpha;
-    auto m = Recurse::RecursiveLstatParallel(argv[1]);
+    auto m = Recurse::RecursiveLstatParallel2(argv[1]);
     std::cout << m.size() << std::endl;
 }
