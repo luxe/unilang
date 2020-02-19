@@ -1,4 +1,4 @@
-def cpp_main(name,deps=[]):
+def cpp_main(name,deps=[],copts=[]):
 
     #implicit file names
     explicit_cpp_file = name + ".cpp"
@@ -7,5 +7,6 @@ def cpp_main(name,deps=[]):
     native.cc_binary(
         name = name,
         srcs = [explicit_cpp_file],
+        copts = copts,
         deps = deps,
     )
