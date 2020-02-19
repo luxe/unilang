@@ -24,7 +24,7 @@ class
   
   
   std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
-      auto stat = Lstat(p);
+      auto stat = Lstat(p.string());
       {
         std::unique_lock<std::mutex> lock(mut);
         m.insert({p,stat});
@@ -49,7 +49,7 @@ class
   std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
     
       boost::asio::post(*pool, [&]() {
-          auto stat = Lstat(p);
+          auto stat = Lstat(p.string());
           {
             std::unique_lock<std::mutex> lock(mut);
             m.insert({p,stat});
@@ -64,21 +64,26 @@ class
 
 ◀private: static▶ void ☀RecursiveLstatParallel(std::unordered_map<std::string,struct stat> & m, std::mutex & mut, std::filesystem::path const& path_to_file)❰
   
+  //std::cout << path_to_file.string() << std::endl;
   std::filesystem::recursive_directory_iterator dirpos{ path_to_file };
-  std::vector<std::filesystem::path> paths;
-  std::copy(begin(dirpos), end(dirpos), std::back_inserter(paths));
   
-  auto pool = Thread_Pool_Getter::Get_Max();
-  std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
-    
-      boost::asio::post(*pool, [&]() {
-          auto stat = Lstat(p);
-          {
+  
+  for(auto& p: std::filesystem::recursive_directory_iterator(path_to_file)){
+        auto stat = Lstat(p.path().string());
+        {
             std::unique_lock<std::mutex> lock(mut);
-            m.insert({p,stat});
-          }
-      });
-  });
+            m.insert({p.path().string(),stat});
+        }
+  }
+❱
+
+◀private: static▶ std::vector<std::filesystem::path> ☀shallow_dirs(std::string const& path_to_file)❰
+    
+    std::vector<std::filesystem::path> results;
+    for(auto const& p: std::filesystem::directory_iterator(path_to_file)){
+        results.emplace_back(p.path());
+    }
+    return results;
 ❱
 
 ◀public: static▶ std::unordered_map<std::string,struct stat> ☀RecursiveLstatParallel2(std::string const& path_to_file)❰
@@ -86,10 +91,20 @@ class
     std::mutex mut;
     
     auto pool = Thread_Pool_Getter::Get_Max();
-    for(auto& p: std::filesystem::directory_iterator(path_to_file)){
-        boost::asio::post(*pool, [&]() {
-            RecursiveLstatParallel(m,mut,p);
-        });
+    for(auto const& p: std::filesystem::directory_iterator(path_to_file)){
+        if (p.is_directory()){
+            boost::asio::post(*pool, [&m,&mut,p]() {
+                RecursiveLstatParallel(m,mut,p.path());
+            });
+        }
+        else{
+            
+            auto stat = Lstat(p.path().string());
+            {
+                std::unique_lock<std::mutex> lock(mut);
+                m.insert({p.path().string(),stat});
+            }
+        }
     }
     pool->join();
     
