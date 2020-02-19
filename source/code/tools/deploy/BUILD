@@ -35,5 +35,5 @@ hcp(name = "software_deployer", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/tools/transcompilers/unilang/main/root_settings:root_settings_getter",
     "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
-    "//code/tools/mario:mario_documentation_getter",
+    "//code/tools/games/mario:mario_documentation_getter",
 ])
