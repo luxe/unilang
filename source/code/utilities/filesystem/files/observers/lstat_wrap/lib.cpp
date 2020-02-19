@@ -3,6 +3,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <filesystem>
+#include <algorithm>
+#include <thread>
+#include <mutex>
+#include <vector>
+#include <iostream>
+#include <unordered_map>
 
 struct stat Lstat(std::string path_to_file){
   struct stat fileInfo;
@@ -12,7 +18,30 @@ struct stat Lstat(std::string path_to_file){
   return fileInfo;
 }
 
-std::unordered_map<std::string,struct stat> RecursiveLstat(){
+std::unordered_map<std::string,struct stat> RecursiveLstat(std::string const& path_to_file){
+  
+  std::unordered_map<std::string,struct stat> m;
+  
+  std::filesystem::recursive_directory_iterator dirpos{ path_to_file };
+  std::vector<std::filesystem::path> paths;
+  std::copy(begin(dirpos), end(dirpos), std::back_inserter(paths));
+  
+  std::mutex mut; // we need some blocking mechanism for the output...
+  std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
+      auto stat = Lstat(p);
+      {
+        std::unique_lock<std::mutex> lock(mut);
+        m.insert({p,stat});
+      }
+  });
+  
+  return m;
+}
+
+std::unordered_map<std::string,struct stat> RecursiveLstatParallel(std::string const& path_to_file){
+  std::unordered_map<std::string,struct stat> m;
+  
+  return m;
 }
 
 template <typename Fun>

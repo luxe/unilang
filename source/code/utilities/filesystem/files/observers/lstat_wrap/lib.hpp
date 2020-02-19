@@ -2,8 +2,12 @@
 #include <string>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <unordered_map>
 
 struct stat Lstat(std::string path_to_file);
+
+std::unordered_map<std::string,struct stat> RecursiveLstat(std::string const& path_to_file);
+std::unordered_map<std::string,struct stat> RecursiveLstatParallel(std::string const& path_to_file);
     
 size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file);
 
