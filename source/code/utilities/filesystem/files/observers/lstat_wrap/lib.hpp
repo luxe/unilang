@@ -1,6 +1,10 @@
 #pragma once
 #include <string>
+#include <sys/types.h>
+#include <sys/stat.h>
 
+struct stat Lstat(std::string path_to_file);
+    
 size_t Last_Modified_Time_From_Epoch(std::string const& path_to_file);
 
 //checking characteristics of a single file
