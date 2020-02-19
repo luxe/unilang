@@ -18,32 +18,6 @@ struct stat Lstat(std::string path_to_file){
   return fileInfo;
 }
 
-std::unordered_map<std::string,struct stat> RecursiveLstat(std::string const& path_to_file){
-  
-  std::unordered_map<std::string,struct stat> m;
-  
-  std::filesystem::recursive_directory_iterator dirpos{ path_to_file };
-  std::vector<std::filesystem::path> paths;
-  std::copy(begin(dirpos), end(dirpos), std::back_inserter(paths));
-  
-  std::mutex mut; // we need some blocking mechanism for the output...
-  std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
-      auto stat = Lstat(p);
-      {
-        std::unique_lock<std::mutex> lock(mut);
-        m.insert({p,stat});
-      }
-  });
-  
-  return m;
-}
-
-std::unordered_map<std::string,struct stat> RecursiveLstatParallel(std::string const& path_to_file){
-  std::unordered_map<std::string,struct stat> m;
-  
-  return m;
-}
-
 template <typename Fun>
 void OnStat(std::string path_to_file, Fun fun){
     struct stat fileInfo;

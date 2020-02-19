@@ -9,7 +9,12 @@ cc_library(
     hdrs = ["lib.hpp"],
 )
 
+hcp(name = "recurse",
+    deps = ["//code/utilities/execution:thread_pool_getter",
+    "//code/utilities/filesystem/files/observers/lstat_wrap:lib"]
+);
+
 cpp_main(
     name = "time_rlstat",
-    deps = [":lib"],
+    deps = [":recurse"],
 )

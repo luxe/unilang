@@ -1,0 +1,60 @@
+class
+❪iostream❫
+❪boost/asio/thread_pool.hpp❫
+❪boost/asio/post.hpp❫
+❪thread❫
+❪memory❫
+❪filesystem❫
+❪boost/asio/post.hpp❫
+❪"code/utilities/execution/thread_pool_getter"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+⚯
+⚞⚟
+
+
+
+◀public: static▶ std::unordered_map<std::string,struct stat> ☀RecursiveLstat(std::string const& path_to_file)❰
+  
+  std::unordered_map<std::string,struct stat> m;
+  
+  std::filesystem::recursive_directory_iterator dirpos{ path_to_file };
+  std::vector<std::filesystem::path> paths;
+  std::copy(begin(dirpos), end(dirpos), std::back_inserter(paths));
+  
+  std::mutex mut; // we need some blocking mechanism for the output...
+  std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
+      auto stat = Lstat(p);
+      {
+        std::unique_lock<std::mutex> lock(mut);
+        m.insert({p,stat});
+      }
+  });
+  
+  return m;
+❱
+
+◀public: static▶ std::unordered_map<std::string,struct stat> ☀RecursiveLstatParallel(std::string const& path_to_file)❰
+  std::unordered_map<std::string,struct stat> m;
+  
+  std::filesystem::recursive_directory_iterator dirpos{ path_to_file };
+  std::vector<std::filesystem::path> paths;
+  std::copy(begin(dirpos), end(dirpos), std::back_inserter(paths));
+  
+  std::mutex mut; // we need some blocking mechanism for the output...
+  
+  auto pool = Thread_Pool_Getter::Get_Max();
+  std::for_each(std::begin(paths), std::end(paths), [&](const std::filesystem::path& p) {
+    
+      boost::asio::post(*pool, [&]() {
+          auto stat = Lstat(p);
+          {
+            std::unique_lock<std::mutex> lock(mut);
+            m.insert({p,stat});
+          }
+      });
+  });
+  
+  pool->join();
+  
+  return m;
+❱
