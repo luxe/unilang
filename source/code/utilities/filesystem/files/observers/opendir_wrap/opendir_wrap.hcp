@@ -9,9 +9,51 @@ class
 ❪stdio.h❫
 ❪stdlib.h❫
 ⚯
+❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
-//-1 for files
+//gather the pathnames and inode numbers via readdir (also separate out the directories)
+◀public: static▶ std::unordered_map<std::string,long> ☀Gather_Readdir_Seperate_Dirs(std::string const& path, std::vector<std::string> & dirs)❰
+    
+    std::unordered_map<std::string,long> m;
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        if (File_Name_Ends_With_Dir(entry->d_name)){
+            dirs.emplace_back(entry->d_name);
+        }
+        else{
+            m.insert({entry->d_name,entry->d_ino});
+        }
+    }
+    Proper_Close(dir);
+    return m;
+❱
+
+//gather the pathnames and inode numbers via readdir
+◀public: static▶ std::unordered_map<std::string,long> ☀Gather_Readdir(std::string const& path)❰
+    
+    std::unordered_map<std::string,long> m;
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        //std::cout << entry->d_name << " " << entry->d_ino << std::endl;
+        m.insert({entry->d_name,entry->d_ino});
+    }
+    Proper_Close(dir);
+    return m;
+❱
+
+◀public: static▶ void ☀Print_Readdir(std::string const& path)❰
+    DIR* dir = opendir(path.c_str());
+    struct dirent* entry;
+    while ((entry = readdir(dir)) != NULL){
+        std::cout << entry->d_name << " " << entry->d_ino << std::endl;
+    }
+    Proper_Close(dir);
+❱
+
+//-1 is returned for files
 ◀public: static▶ long ☀Get_Dir_Inode(std::string const& path)❰
 
     //we were able to open the dir so we can assume its a directory
@@ -25,6 +67,10 @@ class
     
     
     return -1;
+❱
+
+◀public: static▶ bool ☀File_Name_Ends_With_Dir(std::string const& path)❰
+    return Ends_With(path,"_dir");
 ❱
 
 ◀public: static▶ bool ☀Is_Directory(std::string const& path)❰
