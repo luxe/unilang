@@ -3,6 +3,7 @@ class
 ❪iostream❫
 ❪vector❫
 ❪thread❫
+❪algorithm❫
 ❪"code/tools/games/word_build/gui/assets/assets"❫
 ❪SFML/Window.hpp❫
 ❪SFML/Window/Joystick.hpp❫
@@ -182,17 +183,17 @@ class
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
         
         //was it a drag select?
-        if (phases.current.buttons.right){
-            Make_Selection(state,phases,player_state,assets);
-        }
+        // if (phases.current.buttons.right){
+        //     Make_Selection(state,phases,player_state,assets);
+        // }
     }
     if (!phases.previous.arrows.right && phases.current.arrows.right){
         Set_Next_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
         
         //was it a drag select?
-        if (phases.current.buttons.right){
-            Make_Selection(state,phases,player_state,assets);
-        }
+        // if (phases.current.buttons.right){
+        //     Make_Selection(state,phases,player_state,assets);
+        // }
     }
     assets.pointer.setPosition((player_state.current_letter_selection*100) + assets.pointer_x_offset,assets.pointer_y_offset);
     
@@ -440,17 +441,26 @@ class
     }
     
     
-    //allow the user to move the answers around
-    // if (state.controller.right.current.arrows.up){
-    //     for (auto & it: assets.answers){
-    //         it.move(0,move_speed * -1);
-    //     }
-    // }
-    // if (state.controller.right.current.arrows.down){
-    //     for (auto & it: assets.answers){
-    //         it.move(0,5);
-    //     }
-    // }
+    
+    //TODO: fix sorting
+    if (!state.controller.right.previous.buttons.right && state.controller.right.current.buttons.right){
+        std::cout << "sorting1" << std::endl;
+        std::sort(assets.answers.begin(),assets.answers.end(),[](sf::Text a, sf::Text b){
+            std::string str1 = a.getString();
+            std::string str2 = b.getString();
+            return str1.size() < str2.size();
+        });
+    }
+    if (!state.controller.left.previous.buttons.right && state.controller.left.current.buttons.right){
+        std::cout << "sorting2" << std::endl;
+        std::sort(assets.answers.begin(),assets.answers.end(),[](sf::Text a, sf::Text b){
+            std::string str1 = a.getString();
+            std::string str2 = b.getString();
+            return str1.size() < str2.size();
+        });
+    }
+    
+    
     
     int move_speed = 8;
     
@@ -470,16 +480,6 @@ class
         
     }
     
-    // if (state.controller.left.current.arrows.up){
-    //     for (auto & it: assets.answers){
-    //         it.move(0,move_speed * -1);
-    //     }
-    // }
-    // if (state.controller.left.current.arrows.down){
-    //     for (auto & it: assets.answers){
-    //         it.move(0,move_speed);
-    //     }
-    // }
     if (state.controller.left.current.arrows.left){
         for (auto & it: assets.answers){
             it.move(move_speed * -1,0);
