@@ -115,6 +115,7 @@ load("//bazel/deps/get:chinese_syllable_sounds.bzl", "chinese_syllable_sounds")
 load("//bazel/deps/get:scrabble_words.bzl", "scrabble_words")
 load("//bazel/deps/get:google_java_format.bzl", "google_java_format")
 load("//bazel/deps/get:fonts.bzl", "fonts")
+load("//bazel/deps/get:PuyoPuyoAssets.bzl", "PuyoPuyoAssets")
 def third_party_libraries():
     bazel()
     boost()
@@ -229,3 +230,4 @@ def third_party_libraries():
     scrabble_words()
     google_java_format()
     fonts()
+    PuyoPuyoAssets()
