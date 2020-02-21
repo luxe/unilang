@@ -8,9 +8,9 @@ def PuyoPuyoAssets():
     http_archive(
         name="PuyoPuyoAssets" ,
         build_file="//bazel/deps/build_files:PuyoPuyoAssets.BUILD" ,
-        sha256="d5f82b94c08e9df7072ff3ed6f3c95055b6286fce6f23fc273756a0b84c6bfa7" ,
-        strip_prefix="PuyoPuyoAssets-2ce4510bb4f4f823d9ff18c301f1bc57d9efd74f" ,
+        sha256="8acfbf5b95c0520df76370d481d2898e9c7f0e2233232694c5105f12644a572b" ,
+        strip_prefix="PuyoPuyoAssets-c44e7bf9cff612fb63948fa96c51ff13a2ac8e41" ,
         urls = [
-            "https://github.com/Unilang/PuyoPuyoAssets/archive/2ce4510bb4f4f823d9ff18c301f1bc57d9efd74f.tar.gz",
+            "https://github.com/Unilang/PuyoPuyoAssets/archive/c44e7bf9cff612fb63948fa96c51ff13a2ac8e41.tar.gz",
         ]
     )
