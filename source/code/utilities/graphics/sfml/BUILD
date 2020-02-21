@@ -10,4 +10,5 @@ hcp(name="game_loop",deps = [
 hcp(name="standard_sfml_game_loop",deps = [
     "@sfml//:sfml",
     "//code/utilities/graphics/sfml:game_loop",
+    "//code/utilities/peripheral/display:all_video_modes_printer",
 ])
