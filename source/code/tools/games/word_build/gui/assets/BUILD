@@ -12,6 +12,7 @@ hcp(name = "assets_loader", deps = [
     "//code/tools/games/word_build/gui/assets:assets",
     "//code/utilities/peripheral/sound/sfml:sound_loader",
     "//code/utilities/fonts/font_files:droid_sans_mono",
+    "//code/utilities/assets:puyo",
 ])
 
 hcp(name = "user_assets", deps = [
