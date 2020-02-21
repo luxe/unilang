@@ -180,22 +180,25 @@ class
     //set player pointer
     if (!phases.previous.arrows.left && phases.current.arrows.left){
         Set_Previous_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
+        
+        //was it a drag select?
+        if (phases.current.buttons.right){
+            Make_Selection(state,phases,player_state,assets);
+        }
     }
     if (!phases.previous.arrows.right && phases.current.arrows.right){
         Set_Next_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
+        
+        //was it a drag select?
+        if (phases.current.buttons.right){
+            Make_Selection(state,phases,player_state,assets);
+        }
     }
     assets.pointer.setPosition((player_state.current_letter_selection*100) + assets.pointer_x_offset,assets.pointer_y_offset);
     
     //set player selection
     if (!phases.previous.buttons.right && phases.current.buttons.right){
-        if (!In_Vector(player_state.selected_letters,player_state.current_letter_selection)){
-            player_state.selected_letters.emplace_back(player_state.current_letter_selection);
-            
-            sf::RectangleShape rectangle(sf::Vector2f(80, 5));
-            rectangle.setPosition(205 + (100 * player_state.current_letter_selection),assets.selection_y_offset);
-            rectangle.setFillColor(player_state.color);
-            assets.selections.emplace_back(rectangle);
-        }
+        Make_Selection(state,phases,player_state,assets);
     }
     
     //drop player selection
@@ -208,6 +211,17 @@ class
     if (!phases.previous.buttons.left && phases.current.buttons.left){
         Safe_Pop_Back(player_state.selected_letters);
         Safe_Pop_Back(assets.selections);
+    }
+❱
+
+◀private: static▶ void ☀Make_Selection(Game_State & state, F310_Gamepad_Phases const& phases, User_State & player_state, User_Assets & assets)❰
+    if (!In_Vector(player_state.selected_letters,player_state.current_letter_selection)){
+        player_state.selected_letters.emplace_back(player_state.current_letter_selection);
+        
+        sf::RectangleShape rectangle(sf::Vector2f(80, 5));
+        rectangle.setPosition(205 + (100 * player_state.current_letter_selection),assets.selection_y_offset);
+        rectangle.setFillColor(player_state.color);
+        assets.selections.emplace_back(rectangle);
     }
 ❱
 
