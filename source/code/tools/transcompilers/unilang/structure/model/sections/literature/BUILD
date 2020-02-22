@@ -38,6 +38,10 @@ hcp(name = "outline_point", deps = [
 "//code/tools/transcompilers/unilang/parser:token_value"
 ])
 
+hcp(name = "thought_connection", deps = [
+"//code/tools/transcompilers/unilang/parser:token_value"
+])
+
 hcp(name = "code_line", deps = [
 "//code/tools/transcompilers/unilang/parser:token_value"
 ])
