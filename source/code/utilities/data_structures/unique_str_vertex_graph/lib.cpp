@@ -1,4 +1,5 @@
 #include "lib.hpp"
+#include <sstream>
 
 //methods
 bool Unique_Str_Vertex_Graph::Add(std::string const& t){
@@ -34,6 +35,12 @@ bool Unique_Str_Vertex_Graph::Connect(std::string const& x, std::string const& y
 
 void Unique_Str_Vertex_Graph::Print(){
   boost::write_graphviz(std::cout, graph,boost::make_label_writer(&names[0]));
+}
+
+std::string Unique_Str_Vertex_Graph::As_Graphviz(){
+  std::stringstream ss;
+  boost::write_graphviz(ss, graph,boost::make_label_writer(&names[0]));
+  return ss.str();
 }
 
 boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,std::string> Unique_Str_Vertex_Graph::Get_Underlining_Graph(){

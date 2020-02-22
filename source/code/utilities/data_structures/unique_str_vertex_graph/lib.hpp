@@ -12,6 +12,7 @@ class Unique_Str_Vertex_Graph{
   bool Add(std::string const& t);
   bool Connect(std::string const& x, std::string const& y);
   void Print(); //<- useful for debug
+  std::string As_Graphviz();
   boost::adjacency_list<boost::vecS,boost::vecS,boost::directedS,std::string> Get_Underlining_Graph();
 
   private:
