@@ -33,6 +33,8 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/literature/publish:essay_list_maker",
 "//code/utilities/filesystem/files/temp:existing_temp_file",
+"//code/utilities/data_structures/unique_str_vertex_graph:lib",
+"//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
 ])
 
 hcp(name = "essay_list_maker", deps = [

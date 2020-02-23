@@ -32,6 +32,9 @@ class
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/literature/publish/essay_list_maker"❫
 ❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
+❪"code/utilities/data_structures/unique_str_vertex_graph/lib"❫
+❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
+❪"code/utilities/filesystem/paths/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks() ❰
@@ -69,12 +72,7 @@ class
     //convert to unilang structure
     auto structure = File_To_Structure_Converter::Convert(basename + ".unilang");
     
-    for (auto const& x: structure.literature.paragraphs){
-        for (auto const& y: x.thought_connections){
-            std::cout << as_string(y.from.value) << " -> " << as_string(y.to.value) << std::endl;
-        }
-    }
-    exit(0);
+    Generate_Train_Of_Thought(structure,basename);
     
     //build pdf documentation
     Pdf_Settings pdf_settings;
@@ -100,5 +98,23 @@ class
     upload_settings.github_settings.pull_first = false;
     upload_settings.github_settings.update = false;
     
-    File_Uploader::Upload(upload_settings);
+    //File_Uploader::Upload(upload_settings);
 ❱
+
+◀private: static▶ void ☀Generate_Train_Of_Thought(Structure const& structure, std::string const& basename) ❰
+
+    Unique_Str_Vertex_Graph g;
+    for (auto const& x: structure.literature.paragraphs){
+        for (auto const& y: x.thought_connections){
+            auto from = as_string(y.from.value);
+            auto to = as_string(y.to.value);
+            g.Connect(from,to);
+        }
+    }
+    
+    Graphviz_Image_Maker::Make(g.As_Graphviz(),Full_Path_To_Desktop(),basename);
+❱
+
+
+
+
