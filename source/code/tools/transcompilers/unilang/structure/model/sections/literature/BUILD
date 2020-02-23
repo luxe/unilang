@@ -11,6 +11,7 @@ hcp(name = "paragraph", deps = [
 "//code/tools/transcompilers/unilang/parser:token_value",
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:sentence",
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:outline_point",
+"//code/tools/transcompilers/unilang/structure/model/sections/literature:thought_connection",
 ])
 
 hcp(name = "sentence", deps = [
