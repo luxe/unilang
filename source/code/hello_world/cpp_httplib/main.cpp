@@ -7,7 +7,7 @@ int main(void)
     Server svr;
 
     svr.Get("/hi", [](const Request& req, Response& res) {
-        res.set_content("Hello World!", "text/plain");
+        res.set_content("Hello Teresa!", "text/plain");
     });
 
     svr.Get(R"(/numbers/(\d+))", [&](const Request& req, Response& res) {
@@ -19,5 +19,5 @@ int main(void)
         svr.stop();
     });
 
-    svr.listen("localhost", 1234);
+    svr.listen("0.0.0.0", 8080);
 }
