@@ -20,11 +20,6 @@ hcp(name = "unilang_font_creator", deps = [
 "//code/tools/transcompilers/unilang/language-and-theme-creator/font:unilang_font_creation_settings_getter",
 ])
 
-hcp(name = "predefined_characters", deps = [
-"//code/utilities/fonts/bdf/settings:bdf_settings",
-"//code/utilities/fonts/bdf/glyph:glyphs",
-])
-
 hcp(name = "unilang_font", deps = [
 "//code/tools/transcompilers/unilang/tokens:generic_token",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
