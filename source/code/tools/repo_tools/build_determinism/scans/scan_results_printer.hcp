@@ -11,27 +11,14 @@ class
 
 
     std::string str;
-    if (std::max(results.environment.size(),results.augment.size()) == 1){
-        if (settings.environment_scan != 0 && settings.augmented_scan == 0){
-            str = Get_Printable_Results(results.environment);
-        }
-        else if (settings.environment_scan == 0 && settings.augmented_scan != 0){
-            str = Get_Printable_Results(results.augment);
-        }
-        else if (settings.environment_scan != 0 && settings.augmented_scan != 0){
-            str = Get_Printable_Results(results.environment,results.augment);
-        }
+    if (settings.environment_scan != 0 && settings.augmented_scan == 0){
+        str = Get_Printable_Results(results.environment);
     }
-    else if (std::max(results.environment.size(),results.augment.size()) == 2){
-        if (settings.environment_scan != 0 && settings.augmented_scan == 0){
-            str = Get_Printable_Results(results.environment);
-        }
-        else if (settings.environment_scan == 0 && settings.augmented_scan != 0){
-            str = Get_Printable_Results(results.augment);
-        }
-        else if (settings.environment_scan != 0 && settings.augmented_scan != 0){
-            str = Get_Printable_Results(results.environment,results.augment);
-        }
+    else if (settings.environment_scan == 0 && settings.augmented_scan != 0){
+        str = Get_Printable_Results(results.augment);
+    }
+    else if (settings.environment_scan != 0 && settings.augmented_scan != 0){
+        str = Get_Printable_Results(results.environment,results.augment);
     }
     
     std::cout << str << std::endl;
@@ -85,18 +72,28 @@ class
 
     std::string x;
     
-    //show results
-    Append_With_Newline       (x,"                          D  ND");
     
-    for (auto const& e_result: e_results){
-        Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_result.local_local);
-        Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_result.remote_remote);
-        Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_result.local_remote);
+    if (e_results.size() == 2 && a_results.size() == 2){
+        
+        //show results for multi branch
+        Append_With_Newline       (x,"                          D  ND");
+        Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_results[0].local_local,e_results[1].local_local);
+        Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_results[0].remote_remote,e_results[1].remote_remote);
+        Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_results[0].local_remote,e_results[1].local_remote);
+        Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_results[0].standalone_standalone,a_results[1].standalone_standalone);
+        Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_results[0].sandbox_sandbox,a_results[1].sandbox_sandbox);
+        Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_results[0].standalone_sandbox,a_results[1].standalone_sandbox);
     }
-    for (auto const& a_result: a_results){
-        Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_result.standalone_standalone);
-        Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_result.sandbox_sandbox);
-        Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_result.standalone_sandbox);
+    else{
+        
+        //show results for single branch
+        Append_With_Newline       (x,"                          D  ND  D  ND");
+        Scan_Utilities::Append_Row(x,"LOCAL       | LOCAL      ",e_results[0].local_local);
+        Scan_Utilities::Append_Row(x,"REMOTE      | REMOTE     ",e_results[0].remote_remote);
+        Scan_Utilities::Append_Row(x,"LOCAL       | REMOTE     ",e_results[0].local_remote);
+        Scan_Utilities::Append_Row(x,"STANDALONE  | STANDALONE ",a_results[0].standalone_standalone);
+        Scan_Utilities::Append_Row(x,"SANDBOX     | SANDBOX    ",a_results[0].sandbox_sandbox);
+        Scan_Utilities::Append_Row(x,"STANDALONE  | SANDBOX    ",a_results[0].standalone_sandbox);
     }
     
     return x;
