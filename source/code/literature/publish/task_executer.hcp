@@ -4,6 +4,7 @@ class
 ❪"code/tools/transcompilers/unilang/tokens/generic_token"❫
 ❪"code/tools/transcompilers/unilang/tokens/get_tokens"❫
 ❪"code/utilities/formats/pdf/pdf_settings"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/program/common_actions/exits/lib"❫
@@ -73,6 +74,7 @@ class
     auto structure = File_To_Structure_Converter::Convert(basename + ".unilang");
     
     Generate_Train_Of_Thought(structure,basename);
+    exit(0);
     
     //build pdf documentation
     Pdf_Settings pdf_settings;
@@ -103,18 +105,49 @@ class
 
 ◀private: static▶ void ☀Generate_Train_Of_Thought(Structure const& structure, std::string const& basename) ❰
 
-    Unique_Str_Vertex_Graph g;
-    for (auto const& x: structure.literature.paragraphs){
-        for (auto const& y: x.thought_connections){
+    // Unique_Str_Vertex_Graph g;
+    // for (auto const& x: structure.literature.paragraphs){
+    //     for (auto const& y: x.thought_connections){
+    //         auto from = as_string(y.from.value);
+    //         auto to = as_string(y.to.value);
+    //         g.Connect(from,to);
+    //     }
+    // }
+    
+    auto str = As_Graphviz(structure);
+    Graphviz_Image_Maker::Make(str,Full_Path_To_Desktop(),basename);
+❱
+
+◀private: static▶ std::string ☀As_Graphviz(Structure const& structure) ❰
+    std::string x;
+    
+    Append_With_Newline(x,"digraph results {");
+    //Append_With_Newline(x,"splines=false;");
+    Append_With_Newline(x,"node [");
+    Append_With_Newline(x,"fontname=\"Arial\",");
+    Append_With_Newline(x,"shape = plaintext,");
+    Append_With_Newline(x,"height=.1");
+    Append_With_Newline(x,"]");
+    
+    for (auto const& z: structure.literature.paragraphs){
+        for (auto const& y: z.thought_connections){
             auto from = as_string(y.from.value);
+            auto edge = as_string(y.edge.value);
             auto to = as_string(y.to.value);
-            g.Connect(from,to);
+            
+            Append_In_DQuotes(x,from);
+            Append(x," -> ");
+            Append_In_DQuotes(x,to);
+            Append(x,"[ xlabel=");
+            Append_In_DQuotes(x,edge);
+            Append_With_Newline(x,"]");
         }
     }
     
-    Graphviz_Image_Maker::Make(g.As_Graphviz(),Full_Path_To_Desktop(),basename);
+    Append_With_Newline(x,"}");
+    
+    return x;
 ❱
-
 
 
 
