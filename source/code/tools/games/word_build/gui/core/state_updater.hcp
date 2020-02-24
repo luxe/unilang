@@ -257,10 +257,10 @@ class
     
     //say the word (fire and forget style)
     //we take things by copy because the scope is about to end.
-    // auto word_to_say = assets.answers[index].getString().toAnsiString();
-    // std::thread([=](){ 
-    //     Word_Speaker::Speak(word_to_say);
-    // }).detach();
+    auto word_to_say = assets.answers[index].getString().toAnsiString();
+    std::thread([=](){ 
+        Word_Speaker::Speak(word_to_say);
+    }).detach();
 ❱
 
 ◀private: static▶ void ☀Handle_User_Combo_Behaviour(User_State & user, User_Assets & user_assets)❰
@@ -272,10 +272,12 @@ class
     long since_last_combo = elapsed_time.asMilliseconds();
     if (since_last_combo <= user.current_combo_timeout_ms){
         ++user.current_combo;
+        user_assets.combo_number.setString(std::to_string(user.current_combo));
         Adjust_Current_Combo_Timeout_By_Current_Combo(user);
     }
     else{
         user.current_combo = 1;
+        user_assets.combo_number.setString("1");
     }
     user.combo_countdown.restart();
     
@@ -375,11 +377,16 @@ class
         //the bar has run out
         if (current_size.x != 0 && bar_width == 0){
             asset.combo_out.sound.play();
+            asset.combo_number.setString("");
         }
         
         //resize the bar
         current_size.x = bar_width;
         asset.combo_bar.setSize(current_size);
+        
+        auto combo_number_pos = asset.combo_number.getPosition();
+        combo_number_pos.x = bar_width + 330;
+        asset.combo_number.setPosition(combo_number_pos);
     }
 ❱
 
