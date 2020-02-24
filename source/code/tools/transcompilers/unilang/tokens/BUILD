@@ -50,7 +50,7 @@ deps = [
     "//code/tools/transcompilers/unilang/tokens:token_name",
     "//code/tools/transcompilers/unilang/tokens:token_group",
     "//code/tools/transcompilers/unilang/tokens:all_language_tokens",
-    "//code/tools/transcompilers/unilang/tokens/bdf:token_bdf_settings_getter",
+    "//code/utilities/fonts/bdf/tokens:token_bdf_settings_getter",
 ]
 )
 
@@ -63,7 +63,7 @@ cc_binary(
 cpp_object(name="generic_token",deps=[
     "//code/tools/transcompilers/unilang/tokens:token_name",
     "//code/tools/transcompilers/unilang/tokens:token_group",
-    "//code/tools/transcompilers/unilang/tokens/bdf:token_bdf_settings",
+    "//code/utilities/fonts/bdf/tokens:token_bdf_settings",
     ]
 )
 
