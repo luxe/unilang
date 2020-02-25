@@ -55,7 +55,10 @@ class
     //publish essays
     std::cout << "generating essays..." << std::endl;
     for (auto const& it: all_essays){
-        Generate_Essay(it);
+        
+        auto structure = File_To_Structure_Converter::Convert(it + ".unilang");
+        Generate_Essay(structure,it);
+        Generate_Train_Of_Throught(structure,it);
     }
     
     std::cout << "essay list..." << std::endl;
@@ -64,17 +67,11 @@ class
     
 ❱
 
-◀private: static▶ void ☀Generate_Essay(std::string const& basename) ❰
+◀private: static▶ void ☀Generate_Essay(Structure const& structure, std::string const& basename) ❰
 
     auto to_raw_pdf = Full_Path_For_Desktop_File(basename + "-pdf.md");
     auto to_manual_pdf = Full_Path_For_Desktop_File(basename + ".pdf");
     auto to_latex_template = Full_Path_For_Desktop_File(basename + ".tx");
-    
-    //convert to unilang structure
-    auto structure = File_To_Structure_Converter::Convert(basename + ".unilang");
-    
-    Generate_Train_Of_Thought(structure,basename);
-    exit(0);
     
     //build pdf documentation
     Pdf_Settings pdf_settings;
@@ -85,10 +82,9 @@ class
     
     Existing_Temp_File created_pdf(pdf_settings.resulting_pdf);
     
-    //upload to github
-    File_Upload_Settings upload_settings;
     
-    //generic
+    //upload file
+    File_Upload_Settings upload_settings;
     upload_settings.local_file_name = to_manual_pdf;
     upload_settings.remote_file_name = "essays/" + basename + ".pdf";
     
@@ -100,19 +96,34 @@ class
     upload_settings.github_settings.pull_first = false;
     upload_settings.github_settings.update = false;
     
-    //File_Uploader::Upload(upload_settings);
+    File_Uploader::Upload(upload_settings);
 ❱
 
-◀private: static▶ void ☀Generate_Train_Of_Thought(Structure const& structure, std::string const& basename) ❰
+◀private: static▶ void ☀Generate_Train_Of_Throught(Structure const& structure, std::string const& basename) ❰
 
-    // Unique_Str_Vertex_Graph g;
-    // for (auto const& x: structure.literature.paragraphs){
-    //     for (auto const& y: x.thought_connections){
-    //         auto from = as_string(y.from.value);
-    //         auto to = as_string(y.to.value);
-    //         g.Connect(from,to);
-    //     }
-    // }
+    Generate_Train_Of_Thought(structure,basename);
+    auto dot_file_path = Full_Path_To_Desktop() + basename;
+    Existing_Temp_File created_dot_file(dot_file_path);
+    
+    //upload file
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = Full_Path_To_Desktop() + basename + ".png";
+    upload_settings.remote_file_name = "essays/" + basename + "-tot.png";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
+    File_Uploader::Upload(upload_settings);
+❱
+
+
+
+◀private: static▶ void ☀Generate_Train_Of_Thought(Structure const& structure, std::string const& basename) ❰
     
     auto str = As_Graphviz(structure);
     Graphviz_Image_Maker::Make(str,Full_Path_To_Desktop(),basename);
