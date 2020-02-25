@@ -8,3 +8,10 @@ hcp(name="link_list_styling",deps = [
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
 ])
+
+hcp(name="center_image_styling",deps = [
+    "//code/utilities/types/vectors/creators:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/filesystem/files/creating:lib",
+    "//code/utilities/types/strings/transformers/appending:lib",
+])
