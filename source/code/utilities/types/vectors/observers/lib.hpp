@@ -139,6 +139,20 @@ T& Safe_Index_Capped(std::vector<T> & v, size_t i){
 }
 
 template<typename T>
+size_t Adjust_Index_Capped(std::vector<T> const& v, size_t i){
+  //out of range
+  if (i < 0){
+    return 0;
+  }
+  if (i >= v.size()){
+    return v.size()-1;
+  }
+  
+  //in range, get
+  return i;
+}
+
+template<typename T>
 T Last_Element(std::vector<T> const& v){
     return v.back();
 }
