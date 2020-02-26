@@ -29,4 +29,15 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/types/map:lib",
     "//code/utilities/types/vectors/observers:size_frequency_counter",
     "//code/utilities/linguistics/speak:word_speaker",
+    "//code/utilities/types/strings/sfml:sfml_text",
+    "//code/tools/games/word_build/gui/core:start_game_phase",
+])
+
+hcp(name = "start_game_phase", deps = [
+    "@sfml//:sfml",
+    "//code/tools/games/word_build/gui/assets:assets",
+    "//code/tools/games/word_build/gui/state:game_state",
+    "//code/utilities/math:math",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/linguistics/build_word/game:puzzle_builder",
 ])
