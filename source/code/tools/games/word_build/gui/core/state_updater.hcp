@@ -25,8 +25,8 @@ class
 ❪"code/utilities/types/map/lib"❫
 ❪"code/utilities/types/vectors/observers/size_frequency_counter"❫
 ❪"code/utilities/linguistics/speak/word_speaker"❫
-❪"code/utilities/types/strings/sfml/sfml_text"❫
 ❪"code/tools/games/word_build/gui/core/start_game_phase"❫
+❪"code/tools/games/word_build/gui/core/game_over_phase"❫
 ⚞⚟
 
 
@@ -61,7 +61,7 @@ class
         Regular_Game_Frame(state,assets);
     }
     if(state.phase == Game_Phase::END_GAME){
-        Game_Over(state,assets);
+        Game_Over_Phase::Run_Phase(state,assets);
     }
     
     //store previous user actions
@@ -176,6 +176,7 @@ class
 
     // set the color
     assets.answers[index].setFillColor(user.color);
+    Add_Game_Answer(user,assets,index);
     
     //increment the player's score
     user_assets.score.setString(std::to_string(as_signed(user_assets.score.getString()) + 1));
@@ -193,6 +194,28 @@ class
     // std::thread([=](){ 
     //     Word_Speaker::Speak(word_to_say);
     // }).detach();
+❱
+
+◀private: static▶ void ☀Add_Game_Answer(User_State & user, Assets & assets, size_t index) ❰
+
+    sf::Text temp;
+    temp.setFont(assets.main_font);
+    temp.setCharacterSize(25);
+    temp.setFillColor(user.color);
+    
+    int width = 1250;
+    int height = 100;
+    
+    //modify width/height based on number of already gotten words
+    auto columns = assets.game_answers.size() % 24;
+    width += (columns * 180);
+    height += ((assets.game_answers.size() - (columns * 24)) * 40);
+    
+    temp.setPosition(width,height);
+    temp.setString(assets.answers[index].getString());
+    assets.game_answers.emplace_back(temp);
+    
+    
 ❱
 
 ◀private: static▶ void ☀Handle_User_Combo_Behaviour(User_State & user, User_Assets & user_assets)❰
@@ -368,69 +391,6 @@ class
     assets.p1.stats.setString(p1_freq_str);
     assets.p2.stats.setString(p2_freq_str);
 ❱
-
-◀private: static▶ void ☀Game_Over(Game_State & state, Assets & assets) ❰
-
-    //restart the game when user is ready
-    if (!state.controller.left.previous.center.start && state.controller.left.current.center.start){
-        state.phase = Game_Phase::STARTING_GAME;
-    }
-    if (!state.controller.right.previous.center.start && state.controller.right.current.center.start){
-        state.phase = Game_Phase::STARTING_GAME;
-    }
-    
-    
-    if (!state.controller.right.previous.buttons.right && state.controller.right.current.buttons.right){
-        Sfml_Text::Sort_By_Length(assets.answers);
-    }
-    if (!state.controller.left.previous.buttons.right && state.controller.left.current.buttons.right){
-        Sfml_Text::Sort_By_Length(assets.answers);
-    }
-    
-    if (!state.controller.right.previous.buttons.left && state.controller.right.current.buttons.left){
-        Sfml_Text::Alphabetize(assets.answers);
-    }
-    if (!state.controller.left.previous.buttons.left && state.controller.left.current.buttons.left){
-        Sfml_Text::Alphabetize(assets.answers);
-    }
-    
-    
-    
-    int move_speed = 10;
-    
-    if (state.controller.right.current.arrows.left){
-        for (auto & it: assets.answers){
-            it.move(move_speed * -1,0);
-        }
-        assets.p1.stats.move(move_speed * -1,0);
-        assets.p2.stats.move(move_speed * -1,0);
-    }
-    if (state.controller.right.current.arrows.right){
-        for (auto & it: assets.answers){
-            it.move(move_speed,0);
-        }
-        assets.p1.stats.move(move_speed,0);
-        assets.p2.stats.move(move_speed,0);
-        
-    }
-    
-    if (state.controller.left.current.arrows.left){
-        for (auto & it: assets.answers){
-            it.move(move_speed * -1,0);
-        }
-        assets.p1.stats.move(move_speed * -1,0);
-        assets.p2.stats.move(move_speed * -1,0);
-    }
-    if (state.controller.left.current.arrows.right){
-        for (auto & it: assets.answers){
-            it.move(move_speed,0);
-        }
-        assets.p1.stats.move(move_speed,0);
-        assets.p2.stats.move(move_speed,0);
-    }
-    
-❱
-
 
 
 
