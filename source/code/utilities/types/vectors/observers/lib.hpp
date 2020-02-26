@@ -124,6 +124,21 @@ T Safe_Index_Get(std::vector<T> const& v, size_t i, T if_missing){
 }
 
 template<typename T>
+T& Safe_Index_Capped(std::vector<T> & v, size_t i){
+  
+  //out of range
+  if (i < 0){
+    return v[0];
+  }
+  if (i >= v.size()){
+    return v[v.size()-1];
+  }
+  
+  //in range, get
+  return v[i];
+}
+
+template<typename T>
 T Last_Element(std::vector<T> const& v){
     return v.back();
 }
