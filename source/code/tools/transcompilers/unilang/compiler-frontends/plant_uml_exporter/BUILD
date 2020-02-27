@@ -18,7 +18,8 @@ hcp(name = "plant_uml_exporter", deps = [
 "//code/tools/transcompilers/unilang/options/manipulation:case_adjustment_settings",
 "//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
 "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
-"//code/utilities/filesystem/files/observers/lstat_wrap:lib"
+"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+"//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_customizations",
 ])
 
 
@@ -29,3 +30,13 @@ hcp(name = "plant_uml_options_getter", deps = [
 "//code/utilities/system:lib",
 "//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
 ])
+
+hcp(name = "plant_uml_customizations", deps = [
+"//code/tools/transcompilers/unilang/structure/model:structure",
+"//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+"//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
+"//code/utilities/types/strings/transformers/appending:lib",
+])
+
+
+
