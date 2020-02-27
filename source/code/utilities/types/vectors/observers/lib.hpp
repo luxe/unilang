@@ -218,7 +218,7 @@ const T& Get_Nth_Element(std::vector<T> const& container, size_t n) {
 }
 
 template<typename T>
-const T& Get_Random_Element(std::vector<T> const& container) {
+T& Get_Random_Element(std::vector<T> & container) {
 	std::random_device random_device;
 	std::mt19937 engine{random_device()};
 	std::uniform_int_distribution<int> dist(0, container.size() - 1);

@@ -103,7 +103,7 @@ class
     //end the game and show all the answers
     if (!phases.previous.center.back && phases.current.center.back){
         state.phase = Game_Phase::END_GAME;
-        End_Game_Changes(state,assets);
+        Skipped_End_Game_Changes(state,assets);
     }
 ❱
 
@@ -287,12 +287,10 @@ class
 ❱
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
-
-    int game_seconds = 180;
     
     //update timer
     sf::Time elapsed_time = state.countdown.getElapsedTime();
-    long time_left = game_seconds - elapsed_time.asSeconds();
+    long time_left = state.total_round_time_s - elapsed_time.asSeconds();
     assets.countdown.setString(std::to_string(time_left));
     
     //end the game if the time has run out
@@ -340,8 +338,30 @@ class
 
 ◀private: static▶ void ☀End_Game_Changes(Game_State & state, Assets & assets) ❰
 
+    auto p1_words = Get_P1_Words(state,assets);
+    auto p2_words = Get_P2_Words(state,assets);
+    
+    //adjust total victories
+    if (p1_words.size() > p2_words.size()){
+        state.p1_state.total_wins++;
+        Get_Random_Element(assets.p1.winGame).sound.play();
+    }
+    else if (p1_words.size() < p2_words.size()){
+        state.p2_state.total_wins++;
+        Get_Random_Element(assets.p2.winGame).sound.play();
+    }
+    
     Show_All_The_Answers(state,assets);
-    Show_More_Stats(state,assets);
+    Show_More_Stats(state,assets,p1_words,p2_words);
+❱
+
+◀private: static▶ void ☀Skipped_End_Game_Changes(Game_State & state, Assets & assets) ❰
+
+    auto p1_words = Get_P1_Words(state,assets);
+    auto p2_words = Get_P2_Words(state,assets);
+    
+    Show_All_The_Answers(state,assets);
+    Show_More_Stats(state,assets,p1_words,p2_words);
 ❱
 
 ◀private: static▶ void ☀Show_All_The_Answers(Game_State & state, Assets & assets) ❰
@@ -353,23 +373,8 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Show_More_Stats(Game_State & state, Assets & assets) ❰
+◀private: static▶ void ☀Show_More_Stats(Game_State & state, Assets & assets, std::vector<std::string> const& p1_words, std::vector<std::string> const& p2_words) ❰
 
-    //get p1 words
-    std::vector<std::string> p1_words;
-    for (auto & it: assets.answers){
-        if (it.getFillColor() == state.p1_state.color){
-            p1_words.emplace_back(it.getString());
-        }
-    }
-    
-    //get p2 words
-    std::vector<std::string> p2_words;
-    for (auto & it: assets.answers){
-        if (it.getFillColor() == state.p2_state.color){
-            p2_words.emplace_back(it.getString());
-        }
-    }
     
     //get p1 and p2 frequencies
     auto p1_freq = Size_Frequency_Counter::Get(p1_words);
@@ -381,11 +386,33 @@ class
     p1_freq_str += "= " + assets.p1.score.getString();
     p2_freq_str += "= " + assets.p2.score.getString();
     
+    p1_freq_str = "W: " + std::to_string(state.p1_state.total_wins) + "\n" + p1_freq_str;
+    p2_freq_str = "W: " + std::to_string(state.p2_state.total_wins) + "\n" + p2_freq_str;
+    
     assets.p1.stats.setString(p1_freq_str);
     assets.p2.stats.setString(p2_freq_str);
 ❱
 
 
+◀private: static▶ std::vector<std::string> ☀Get_P1_Words(Game_State & state, Assets & assets) ❰
+    std::vector<std::string> p1_words;
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.p1_state.color){
+            p1_words.emplace_back(it.getString());
+        }
+    }
+    return p1_words;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_P2_Words(Game_State & state, Assets & assets) ❰
+    std::vector<std::string> p2_words;
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.p2_state.color){
+            p2_words.emplace_back(it.getString());
+        }
+    }
+    return p2_words;
+❱
 
 
 
