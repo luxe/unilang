@@ -20,6 +20,7 @@ class
 ❪"code/tools/transcompilers/unilang/structure/adjust/structure_adjuster"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ❪"code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter/plant_uml_customizations"❫
+❪"code/utilities/types/strings/observers/comparing/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Plant_Uml_Settings const& settings)❰
@@ -132,53 +133,58 @@ class
 
   std::vector<Composition_Relationship> rels;
   
-  //find out if there are any composition relationships
-  //for each data member of a particular type
-  for (auto const& t: structure.types.types){
-    for (auto const& m: Struct_Derivers::Find_Data_Members_Of_Type(structure.data_members,t)){
-      
-      //check to see if that data member's type is another type
-      for (auto const& t2: structure.types.types){
-        
-        //check data member type
-        if (as_string(m.type.value) == as_string(t2.name.value)){
-          
-          Composition_Relationship rel;
-          rel.outer = as_string(t.name.value);
-          rel.inner = as_string(t2.name.value);
-          rels.emplace_back(rel);
-        }
-        
-        //check template parts of type
-        for (auto const& mt: m.type_specializations){
-          if (as_string(mt.type.value) == as_string(t2.name.value)){
-            
-            Composition_Relationship rel;
-            rel.outer = as_string(t.name.value);
-            rel.inner = as_string(mt.type.value);
-            rels.emplace_back(rel);
-          }
-        }
-        
-        //check enum parts of type
-        for (auto const& e: structure.enums.enumerated_types){
-          if (as_string(e.name.value) == as_string(m.type.value)){
-            Composition_Relationship rel;
-            rel.outer = as_string(t.name.value);
-            rel.inner = as_string(e.name.value);
-            rels.emplace_back(rel);
-          }
-        }
-      }
-      
-      
-      
-      
+  for (auto const& t1: structure.types.types){
+    for (auto const& t2: structure.types.types){
+      Decide_Relationship_Between_Types(rels,structure,t1,t2,settings);
     }
   }
   
   return rels;
 ❱
+
+
+
+◀private: static▶ void ☀Decide_Relationship_Between_Types(std::vector<Composition_Relationship> & rels, Structure & structure, Type_Item const& t1, Type_Item const& t2, Plant_Uml_Settings const& settings)❰
+
+  //find out if there are any composition relationships
+  //for each data member of a particular type
+  for (auto const& m: Struct_Derivers::Find_Data_Members_Of_Type(structure.data_members,t2)){
+      
+    //check data member type
+    if (Case_Insensitive_String_Compare(as_string(m.type.value),as_string(t1.name.value))){
+      
+      Composition_Relationship rel;
+      rel.outer = as_string(t2.name.value);
+      rel.inner = as_string(t1.name.value);
+      rels.emplace_back(rel);
+    }
+
+    //check template parts of type
+    for (auto const& mt: m.type_specializations){
+      if (Case_Insensitive_String_Compare(as_string(mt.type.value),as_string(t1.name.value))){
+        
+        Composition_Relationship rel;
+        rel.outer = as_string(t2.name.value);
+        rel.inner = as_string(t1.name.value);
+        rels.emplace_back(rel);
+      }
+    }
+
+    //check enum parts of type
+    for (auto const& e: structure.enums.enumerated_types){
+      if (Case_Insensitive_String_Compare(as_string(e.name.value),as_string(m.type.value))){
+        Composition_Relationship rel;
+        rel.outer = as_string(t2.name.value);
+        rel.inner = as_string(e.name.value);
+        rels.emplace_back(rel);
+      }
+    }
+  }
+  
+❱
+
+
+
 
 ◀private: static▶ void ☀Adjust_Names_For_Easier_Comparison(Structure & structure, Plant_Uml_Settings const& settings)❰
  Case_Adjustment_Settings case_settings;

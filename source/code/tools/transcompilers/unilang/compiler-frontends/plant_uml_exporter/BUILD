@@ -20,6 +20,7 @@ hcp(name = "plant_uml_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 "//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_customizations",
+"//code/utilities/types/strings/observers/comparing:lib",
 ])
 
 
