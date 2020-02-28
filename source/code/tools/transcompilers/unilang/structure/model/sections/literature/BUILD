@@ -12,6 +12,7 @@ hcp(name = "paragraph", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:sentence",
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:outline_point",
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:thought_connection",
+"//code/tools/transcompilers/unilang/structure/model/sections/literature/citation:citation",
 ])
 
 hcp(name = "sentence", deps = [
