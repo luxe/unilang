@@ -24,5 +24,5 @@ hcp(name = "boilerplate_printer", deps = [
 "//code/tools/transcompilers/unilang/boilerplate_printer/header:header_printer",
 "//code/tools/transcompilers/unilang/boilerplate_printer:include_guard_wrap_printer",
 "//code/tools/transcompilers/unilang/boilerplate_printer/extern_c:extern_wrap_printer",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 ])

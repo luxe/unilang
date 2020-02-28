@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "file_name_creator", deps = [
 "//code/tools/transcompilers/unilang/options/filesystem:general_filesystem_naming",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/tools/transcompilers/unilang/file_extension_getter:file_extension_getter",
 ])

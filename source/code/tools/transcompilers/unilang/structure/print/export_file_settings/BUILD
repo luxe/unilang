@@ -7,7 +7,7 @@ hcp(name = "export_file_settings", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:file_type",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:special_file_type",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_path_settings",
 ])
 

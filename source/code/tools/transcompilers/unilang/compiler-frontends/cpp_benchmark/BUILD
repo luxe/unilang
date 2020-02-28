@@ -9,7 +9,7 @@ hcp(name = "cpp_benchmark_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/tools/transcompilers/unilang/structure/print:file_printer",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 "//code/utilities/types/converters:lib",
 "//code/utilities/filesystem/paths:lib",
 "//code/utilities/types/strings/transformers/casing:case_modifier",

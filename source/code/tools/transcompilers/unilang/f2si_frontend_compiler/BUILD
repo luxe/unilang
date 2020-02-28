@@ -15,7 +15,7 @@ hcp(name = "f2si_c_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods:extra_methods_creator",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/utilities/filesystem/paths:lib",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 ])
 
 hcp(name = "f2si_contributors_getter", deps = [

@@ -180,7 +180,7 @@ hcp(name="hidl_data_member_printer", deps = [
 "//code/tools/transcompilers/unilang/options:general_options",
 "//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter:unilang_type_to_language_type_converter",
+"//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",

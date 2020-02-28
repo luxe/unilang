@@ -87,5 +87,5 @@ hcp(name = "artifact_guess_settings", deps = [
 hcp(name = "to_source_language", deps = [
 "//code/utilities/types/vectors/operators:lib",
 "//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 ])

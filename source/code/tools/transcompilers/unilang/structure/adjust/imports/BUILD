@@ -16,5 +16,5 @@ hcp(name = "import_adjuster", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust/imports:existing_import_adjuster",
 "//code/utilities/types/sets:lib",
 "//code/utilities/types/converters:lib",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter:unilang_type_to_language_type_converter",
+"//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 ])

@@ -23,7 +23,7 @@ hcp(name = "header_collector", deps = [
 "//code/utilities/types/sets:lib",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/types/strings/transformers/casing:case_format_style",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 ])
 
 hcp(name = "header_printer", deps = [
@@ -38,5 +38,5 @@ hcp(name = "header_printer", deps = [
 "//code/tools/transcompilers/unilang/boilerplate_printer/header/block:header_block_comment_getter",
 "//code/tools/transcompilers/unilang/comment_creator:comment_creator",
 "//code/utilities/streams/filestreams:lib",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:source_language",
+"//code/utilities/linguistics/computer:source_language",
 ])

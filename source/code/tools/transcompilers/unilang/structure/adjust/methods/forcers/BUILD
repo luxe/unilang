@@ -24,14 +24,14 @@ hcp(name = "immutable_value_to_immutable_ref_adjuster", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/utilities/types/converters:lib",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter:unilang_type_to_language_type_converter",
+"//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 ])
 
 hcp(name = "instantiate_and_return_injector_for_return_type", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/utilities/types/converters:lib",
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter:unilang_type_to_language_type_converter",
+"//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/types/vectors/transformers:lib",
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
