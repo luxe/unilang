@@ -3,12 +3,12 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "equivalent_type_deriver", deps = [
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:equivalent_language_types",
+"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:cross_language_type",
 "//code/utilities/types:tri_bool",
 ])
 
 hcp(name = "type_conversion_lookup_table", deps = [
-"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:equivalent_language_types"
+"//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages:cross_language_type"
 ])
 
 hcp(name = "unilang_type_to_language_type_table_getter", deps = [

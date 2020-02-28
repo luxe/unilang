@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(name = "equivalent_language_types", deps = [
+hcp(name = "cross_language_type", deps = [
 "//code/tools/transcompilers/unilang/type_converters/unilang-type-to-language-type-converter/languages/language_type:language_type",
 "//code/utilities/types:tri_bool",
 "//code/tools/transcompilers/unilang/options/self_describe_type:inferred_type_properties",
