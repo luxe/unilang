@@ -58,6 +58,7 @@ values =
 #Markup
 ,"HTML"
 ,"XML"
+,"BIBTEX"
 
 #Stlying
 ,"CSS"

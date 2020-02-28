@@ -122,7 +122,7 @@ hcp(name = "file_to_structure_converter", deps = [
 hcp(name = "language_guesser", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/dependency_graph_creator:code_graph",
-"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/utilities/formats/artifact:artifact_type",
 ])
 
 hcp(name = "workspace_adjuster", deps = [

@@ -4,6 +4,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "dependency_paths")
 hcp(name = "user_chosen_export_settings", deps = [
-"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/utilities/formats/artifact:artifact_type",
 "//code/tools/transcompilers/unilang/options/compiler:chosen_exporter"
 ])

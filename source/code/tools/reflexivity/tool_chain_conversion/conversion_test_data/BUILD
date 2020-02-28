@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "bazel_conversion_test", deps = [
-"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+"//code/utilities/formats/artifact:artifact_type",
 "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:bazel_conversion_test_file_contents",
 ])
 

@@ -8,7 +8,7 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     deps = [
         "@boost//:program_options",
-        "//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
+        "//code/utilities/formats/artifact:artifact_type",
         "//code/tools/transcompilers/unilang/options/compiler:chosen_exporter"
     ],
 )

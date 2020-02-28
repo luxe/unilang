@@ -6,7 +6,7 @@ hcp(name = "file_extension_getter", deps = [
 "//code/utilities/linguistics/computer:source_language",
 "//code/tools/transcompilers/unilang/file_extension_getter/lookup_table:file_extension_lookup_table_getter",
 "//code/utilities/types/map:lib",
-"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_type",
-"//code/tools/transcompilers/unilang/user-frontend/artifact_actions:to_source_language",
+"//code/utilities/formats/artifact:artifact_type",
+"//code/utilities/formats/artifact:to_source_language",
 ])
 
