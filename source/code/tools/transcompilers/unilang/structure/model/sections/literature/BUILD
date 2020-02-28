@@ -21,6 +21,7 @@ hcp(name = "sentence", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:sentence_image",
 "//code/tools/transcompilers/unilang/structure/model/sections/literature:code_line",
 "//code/tools/transcompilers/unilang/structure/model/sections/literature/table:sentence_table",
+"//code/tools/transcompilers/unilang/structure/model/sections/literature:reference_citation",
 ])
 
 hcp(name = "sentence_image", deps = [
@@ -45,5 +46,9 @@ hcp(name = "thought_connection", deps = [
 ])
 
 hcp(name = "code_line", deps = [
+"//code/tools/transcompilers/unilang/parser:token_value"
+])
+
+hcp(name = "reference_citation", deps = [
 "//code/tools/transcompilers/unilang/parser:token_value"
 ])
