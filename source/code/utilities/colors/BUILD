@@ -29,3 +29,7 @@ hcp(name="rectangle_shades",deps = [
     "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
 ])
 
+hcp(name="converters",deps = [
+    "//code/utilities/data_structures/color:rgb_color",
+    "@sfml//:sfml",
+])

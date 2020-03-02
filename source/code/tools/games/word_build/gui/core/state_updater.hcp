@@ -28,6 +28,8 @@ class
 ❪"code/tools/games/word_build/gui/core/start_game_phase"❫
 ❪"code/tools/games/word_build/gui/core/game_over_phase"❫
 ❪"code/tools/games/word_build/gui/core/title_game_phase"❫
+❪"code/utilities/colors/converters"❫
+❪"code/utilities/colors/color_transitioner"❫
 ⚞⚟
 
 
@@ -191,7 +193,20 @@ class
     //color the letter words of the user's just gotten combination
     //currently we do this just for fun
     for (auto const& it: user.selected_letters){
-        assets.letters[it].setFillColor(user.color);
+        
+        //but how do we colors them?
+        //lets slowly transition them from where they are
+        
+        //the transition from its current color to the player's color
+        Rgb_Color_Transition transition;
+        transition.from = Converters::From_SFML(assets.letters[it].getFillColor());
+        transition.to = Converters::From_SFML(user.color);
+        
+        //the granularity of the transition (take a step in that conversion)
+        auto transition_color = Color_Transitioner::Transition_Colors(transition,10)[1];
+        
+        //convert
+        assets.letters[it].setFillColor(Converters::To_SFML(transition_color));
     }
     
     //clear the player's selection

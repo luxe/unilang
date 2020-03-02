@@ -33,6 +33,8 @@ hcp(name = "state_updater", deps = [
     "//code/tools/games/word_build/gui/core:start_game_phase",
     "//code/tools/games/word_build/gui/core:game_over_phase",
     "//code/tools/games/word_build/gui/core:title_game_phase",
+    "//code/utilities/colors:converters",
+    "//code/utilities/colors:color_transitioner",
 ])
 
 hcp(name = "start_game_phase", deps = [
