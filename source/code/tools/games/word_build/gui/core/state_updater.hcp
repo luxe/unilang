@@ -168,12 +168,12 @@ class
     auto found_index = Get_Index_Of_Element_If_Exists(state.puzzle.words,current_word);
     if (found_index != -1){
         if (assets.answers[found_index].getFillColor() == state.color){
-            Player_Found_Answer(user,user_assets,assets,found_index);
+            Player_Found_Answer(state,user,user_assets,assets,found_index);
         }
     }
 ❱
 
-◀private: static▶ void ☀Player_Found_Answer(User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
+◀private: static▶ void ☀Player_Found_Answer(Game_State & state, User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
 
     // set the color
     assets.answers[index].setFillColor(user.color);
@@ -181,6 +181,13 @@ class
     
     //increment the player's score
     user_assets.score.setString(std::to_string(as_signed(user_assets.score.getString()) + 1));
+    
+    
+    //color the letter words of the user's just gotten combination
+    //currently we do this just for fun
+    for (auto const& it: user.selected_letters){
+        assets.letters[it].setFillColor(user.color);
+    }
     
     //clear the player's selection
     user.selected_letters.clear();
