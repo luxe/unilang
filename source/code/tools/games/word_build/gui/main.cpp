@@ -23,6 +23,7 @@ int main()
     auto assets = Assets_Loader::Load();
     auto state = Game_State_Getter::Get();
     
+    
     Standard_Sfml_Game_Loop::Run(
     "Word Build",
     [&](sf::RenderWindow & window, sf::Time const& TimePerFrame){
