@@ -32,6 +32,7 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/types/strings/sfml:sfml_text",
     "//code/tools/games/word_build/gui/core:start_game_phase",
     "//code/tools/games/word_build/gui/core:game_over_phase",
+    "//code/tools/games/word_build/gui/core:title_game_phase",
 ])
 
 hcp(name = "start_game_phase", deps = [
@@ -44,6 +45,15 @@ hcp(name = "start_game_phase", deps = [
 ])
 
 hcp(name = "game_over_phase", deps = [
+    "@sfml//:sfml",
+    "//code/tools/games/word_build/gui/assets:assets",
+    "//code/tools/games/word_build/gui/state:game_state",
+    "//code/utilities/math:math",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/types/strings/sfml:sfml_text",
+])
+
+hcp(name = "title_game_phase", deps = [
     "@sfml//:sfml",
     "//code/tools/games/word_build/gui/assets:assets",
     "//code/tools/games/word_build/gui/state:game_state",
