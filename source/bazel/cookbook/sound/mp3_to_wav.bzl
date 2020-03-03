@@ -11,6 +11,6 @@ def mp3_to_wav(name):
         srcs = [input],
         outs = [output],
         cmd = """
-              ffmpeg -i $(SRCS) $(OUTS)
+              ffmpeg -i $(SRCS) $(OUTS) 2>/dev/null
               """
     )
