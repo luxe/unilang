@@ -6,3 +6,18 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(name = "f310_gamepads_state_getter", deps = [
     "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads"
 ])
+
+
+enum_cpp(name = "f310_event",
+values = [
+"center_start_clicked"
+,"center_start_held"
+,"center_start_released"
+,"center_back_clicked"
+,"center_back_held"
+,"center_back_released"
+,"center_center_clicked"
+,"center_center_held"
+,"center_center_released"
+])
+#etc...
