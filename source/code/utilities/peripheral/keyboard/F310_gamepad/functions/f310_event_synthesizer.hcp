@@ -1,18 +1,25 @@
 class
 ❪string❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_gamepads"❫
+❪"code/utilities/peripheral/keyboard/F310_gamepad/functions/f310_event"❫
+❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_gamepad_phases"❫
 ⚯
 ❪SFML/Window/Joystick.hpp❫
 ⚞⚟
 
 
-◀public: static▶ std::vector<> ☀Get_Events()❰
-    F310_Gamepads x;
+◀public: static▶ std::vector<F310_Event> ☀Synthesize_Events(F310_Gamepad_Phases const& phases)❰
+    std::vector<F310_Event> events;
     
-    sf::Joystick::update();
-    
-    x.left = Extract_Left();
-    x.right = Extract_Right();
+    if (!phases.previous.center.start && phases.current.center.start){
+        events.emplace_back(F310_Event::CENTER_START_CLICKED);
+    }
+    if (phases.previous.center.start && phases.current.center.start){
+        events.emplace_back(F310_Event::CENTER_START_HELD);
+    }
+    if (phases.previous.center.start && !phases.current.center.start){
+        events.emplace_back(F310_Event::CENTER_START_RELEASED);
+    }
         
-    return x;
+    return events;
 ❱

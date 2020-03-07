@@ -21,3 +21,7 @@ values = [
 ,"center_center_released"
 ])
 #etc...
+
+hcp(name = "f310_event_synthesizer", deps = [
+    "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event"
+])
