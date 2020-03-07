@@ -13,9 +13,11 @@ values = [
 "center_start_clicked"
 ,"center_start_held"
 ,"center_start_released"
+
 ,"center_back_clicked"
 ,"center_back_held"
 ,"center_back_released"
+
 ,"center_center_clicked"
 ,"center_center_held"
 ,"center_center_released"
@@ -23,5 +25,6 @@ values = [
 #etc...
 
 hcp(name = "f310_event_synthesizer", deps = [
-    "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event"
+    "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepad_phases",
 ])
