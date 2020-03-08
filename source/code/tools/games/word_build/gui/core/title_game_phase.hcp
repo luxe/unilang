@@ -13,6 +13,7 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ⚯
 ❪"code/utilities/types/strings/sfml/sfml_text"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(Game_State & state, Assets & assets) ❰
@@ -25,4 +26,51 @@ class
         state.phase = Game_Phase::STARTING_GAME;
     }
     
+    Handle_Floating_Letters(state,assets);
+❱
+
+◀private: static▶ void ☀Handle_Floating_Letters(Game_State & state, Assets & assets) ❰
+
+    //add a floating letter
+    if (assets.floating_letters.size() < 10){
+        Moving_Text temp = Get_Random_Moving_Text(state,assets);
+        assets.floating_letters.emplace_back(temp);
+    }
+    
+    //update existing letters
+    for (auto & it: assets.floating_letters){
+        auto cur_pos = it.text.getPosition();
+        cur_pos.x += it.x_change;
+        cur_pos.y += it.y_change;
+        it.text.setPosition(cur_pos);
+    }
+    
+    //delete expired letters
+    Remove_If(assets.floating_letters,[&](Moving_Text const& it){
+        auto cur_pos = it.text.getPosition();
+        if (cur_pos.x > 1080){
+            return true;
+        }
+        if (cur_pos.x < -100){
+            return true;
+        }
+        if (cur_pos.y < -100){
+            return true;
+        }
+        return false;
+    });
+
+❱
+
+◀private: static▶ Moving_Text ☀Get_Random_Moving_Text(Game_State & state, Assets & assets)❰
+
+        Moving_Text temp;
+        temp.text.setFont(assets.main_font);
+        temp.text.setCharacterSize(100);
+        temp.text.setFillColor(state.p1_state.color);
+        temp.text.setString("A");
+        temp.text.setPosition(220,150);
+        temp.x_change = 2;
+        temp.y_change = 0;
+        return temp;
 ❱

@@ -5,6 +5,7 @@ hcp(name = "assets", deps = [
     "@sfml//:sfml",
     "//code/tools/games/word_build/gui/assets:user_assets",
     "//code/utilities/peripheral/sound/sfml:sound",
+    "//code/utilities/graphics/sfml/data:moving_text",
 ])
 
 hcp(name = "assets_loader", deps = [
