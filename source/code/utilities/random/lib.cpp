@@ -14,6 +14,11 @@ std::string Random_Tmp_Filename(){
     return folder;
 }
 
+bool Random_Bool(){
+    auto i = RandomIntFromRange(0,1);
+    return i;
+}
+
 
 namespace global{
 static gmp_randclass gen(gmp_randinit_default);

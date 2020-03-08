@@ -14,6 +14,7 @@ class
 ⚯
 ❪"code/utilities/types/strings/sfml/sfml_text"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/random/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(Game_State & state, Assets & assets) ❰
@@ -31,8 +32,10 @@ class
 
 ◀private: static▶ void ☀Handle_Floating_Letters(Game_State & state, Assets & assets) ❰
 
+    int total_alive_letters = 10;
+
     //add a floating letter
-    if (assets.floating_letters.size() < 10){
+    if (assets.floating_letters.size() < total_alive_letters){
         Moving_Text temp = Get_Random_Moving_Text(state,assets);
         assets.floating_letters.emplace_back(temp);
     }
@@ -48,29 +51,75 @@ class
     //delete expired letters
     Remove_If(assets.floating_letters,[&](Moving_Text const& it){
         auto cur_pos = it.text.getPosition();
-        if (cur_pos.x > 1080){
-            return true;
-        }
-        if (cur_pos.x < -100){
-            return true;
-        }
-        if (cur_pos.y < -100){
-            return true;
-        }
-        return false;
+        return Is_Position_Significantly_Outside_View(cur_pos);
     });
 
 ❱
+
+◀private: static▶ bool ☀Is_Position_Significantly_Outside_View(sf::Vector2<float> const& cur_pos) ❰
+
+        if (cur_pos.x > 1920 + 200){
+            return true;
+        }
+        if (cur_pos.x < -200){
+            return true;
+        }
+        if (cur_pos.y > 1080 + 200){
+            return true;
+        }
+        if (cur_pos.y < -200){
+            return true;
+        }
+        return false;
+❱
+
 
 ◀private: static▶ Moving_Text ☀Get_Random_Moving_Text(Game_State & state, Assets & assets)❰
 
         Moving_Text temp;
         temp.text.setFont(assets.main_font);
         temp.text.setCharacterSize(100);
-        temp.text.setFillColor(state.p1_state.color);
-        temp.text.setString("A");
-        temp.text.setPosition(220,150);
-        temp.x_change = 2;
-        temp.y_change = 0;
+        if (Random_Bool()){
+            temp.text.setFillColor(state.p1_state.color);
+        }
+        else{
+            temp.text.setFillColor(state.p2_state.color);
+        }
+        temp.text.setString(Random_Uppercase_Letter());
+        
+        auto side = RandomIntFromRange(1,4);
+        
+        int buffer = 50;
+        int x_res = 1920;
+        int y_res = 1080;
+        
+        //top
+        if (side == 1){
+            temp.text.setPosition(RandomIntFromRange(-100,x_res+100),buffer*-1);
+        }
+        
+        //left
+        else if (side == 2){
+            temp.text.setPosition(buffer*-1,RandomIntFromRange(-100,y_res+100));
+        }
+        
+        //bottom
+        else if (side == 3){
+            temp.text.setPosition(RandomIntFromRange(-100,x_res+100),y_res+buffer);
+        }
+        
+        //right
+        else if (side == 4){
+            temp.text.setPosition(x_res+buffer,RandomIntFromRange(-100,y_res+100));
+        }
+        
+        temp.x_change = RandomIntFromRange(1,15);
+        if (Random_Bool()){
+            temp.x_change *= -1;
+        }
+        temp.y_change = RandomIntFromRange(1,15);
+        if (Random_Bool()){
+            temp.y_change *= -1;
+        }
         return temp;
 ❱
