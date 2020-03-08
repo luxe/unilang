@@ -33,6 +33,7 @@ hcp(name = "state_updater", deps = [
     "//code/tools/games/word_build/gui/core:start_game_phase",
     "//code/tools/games/word_build/gui/core:game_over_phase",
     "//code/tools/games/word_build/gui/core:title_game_phase",
+    "//code/tools/games/word_build/gui/core:regular_game_phase",
     "//code/utilities/colors:converters",
     "//code/utilities/colors:color_transitioner",
     "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event_synthesizer",
@@ -63,4 +64,25 @@ hcp(name = "title_game_phase", deps = [
     "//code/utilities/math:math",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/sfml:sfml_text",
+])
+
+hcp(name = "regular_game_phase", deps = [
+    "@sfml//:sfml",
+    "//code/tools/games/word_build/gui/assets:assets",
+    "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
+    "//code/utilities/formats/json/functions:lib",
+    "//code/tools/games/word_build/gui/assets:assets_loader",
+    "//code/tools/games/word_build/gui/state:game_state",
+    "//code/utilities/math:math",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/peripheral/keyboard/joycons:joystick_rotating_checker",
+    "//code/utilities/linguistics/build_word/game:puzzle_builder",
+    "//code/utilities/types/vectors/transformers:lib",
+    "//code/utilities/types/strings/observers/converting:lib",
+    "//code/utilities/types/map:lib",
+    "//code/utilities/types/vectors/observers:size_frequency_counter",
+    "//code/utilities/linguistics/speak:word_speaker",
+    "//code/utilities/colors:converters",
+    "//code/utilities/colors:color_transitioner",
 ])
