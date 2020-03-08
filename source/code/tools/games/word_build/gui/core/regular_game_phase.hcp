@@ -1,0 +1,374 @@
+
+
+◀private: static▶ void ☀Regular_Game_Frame(Game_State & state, Assets & assets) ❰
+
+    //handle user input
+    Handle_Player_Input(state,assets);
+
+    Update_Game_State(state,assets);
+❱
+
+
+◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets)❰
+    
+    Handle_Player_Selections(state,state.controller.left,state.p1_state,assets.p1);
+    Handle_Player_Selections(state,state.controller.right,state.p2_state,assets.p2);
+    
+    Player_Match_Check(state.p1_state,assets.p1,state,assets);
+    Player_Match_Check(state.p2_state,assets.p2,state,assets);
+    
+    Handle_Player_Game_Changes(state,state.controller.left,assets);
+    Handle_Player_Game_Changes(state,state.controller.right,assets);
+    
+    
+❱
+
+
+◀private: static▶ void ☀Handle_Player_Game_Changes(Game_State & state, F310_Gamepad_Phases const& phases, Assets & assets)❰
+
+    //restart the game
+    if (!phases.previous.center.start && phases.current.center.start){
+        state.phase = Game_Phase::STARTING_GAME;
+    }
+    
+    //end the game and show all the answers
+    if (!phases.previous.center.back && phases.current.center.back){
+        state.phase = Game_Phase::END_GAME;
+        Skipped_End_Game_Changes(state,assets);
+    }
+    
+    //back to menu
+    if (!phases.previous.center.center && phases.current.center.center){
+        state.phase = Game_Phase::MAIN_MENU;
+    }
+❱
+
+
+◀private: static▶ void ☀Handle_Player_Selections(Game_State & state, F310_Gamepad_Phases const& phases, User_State & player_state, User_Assets & assets)❰
+
+    //set player pointer
+    if (!phases.previous.arrows.left && phases.current.arrows.left){
+        Set_Previous_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
+        
+        //was it a drag select?
+        // if (phases.current.buttons.right){
+        //     Make_Selection(state,phases,player_state,assets);
+        // }
+    }
+    if (!phases.previous.arrows.right && phases.current.arrows.right){
+        Set_Next_Index_In_Round_Robin(state.puzzle.letters,player_state.current_letter_selection);
+        
+        //was it a drag select?
+        // if (phases.current.buttons.right){
+        //     Make_Selection(state,phases,player_state,assets);
+        // }
+    }
+    assets.pointer.setPosition((player_state.current_letter_selection*100) + assets.pointer_x_offset,assets.pointer_y_offset);
+    
+    //set player selection
+    if (!phases.previous.buttons.right && phases.current.buttons.right){
+        Make_Selection(state,phases,player_state,assets);
+    }
+    
+    //drop player selection
+    if (!phases.previous.buttons.down && phases.current.buttons.down){
+        player_state.selected_letters.clear();
+        assets.selections.clear();
+    }
+    
+    //backspace selection
+    if (!phases.previous.buttons.left && phases.current.buttons.left){
+        Safe_Pop_Back(player_state.selected_letters);
+        Safe_Pop_Back(assets.selections);
+    }
+❱
+
+◀private: static▶ void ☀Make_Selection(Game_State & state, F310_Gamepad_Phases const& phases, User_State & player_state, User_Assets & assets)❰
+    if (!In_Vector(player_state.selected_letters,player_state.current_letter_selection)){
+        player_state.selected_letters.emplace_back(player_state.current_letter_selection);
+        
+        sf::RectangleShape rectangle(sf::Vector2f(80, 5));
+        rectangle.setPosition(205 + (100 * player_state.current_letter_selection),assets.selection_y_offset);
+        rectangle.setFillColor(player_state.color);
+        assets.selections.emplace_back(rectangle);
+    }
+❱
+
+◀private: static▶ void ☀Player_Match_Check(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
+    std::string current_word;
+    for (auto const& it: user.selected_letters){
+        current_word += state.puzzle.letters[it];
+    }
+    
+    auto found_index = Get_Index_Of_Element_If_Exists(state.puzzle.words,current_word);
+    if (found_index != -1){
+        if (assets.answers[found_index].getFillColor() == state.color){
+            Player_Found_Answer(state,user,user_assets,assets,found_index);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Player_Found_Answer(Game_State & state, User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
+
+    // set the color
+    assets.answers[index].setFillColor(user.color);
+    Add_Game_Answer(user,assets,index);
+    
+    //increment the player's score
+    user_assets.score.setString(std::to_string(as_signed(user_assets.score.getString()) + 1));
+    
+    
+    //color the letter words of the user's just gotten combination
+    //currently we do this just for fun
+    for (auto const& it: user.selected_letters){
+        
+        //but how do we colors them?
+        //lets slowly transition them from where they are
+        
+        //the transition from its current color to the player's color
+        Rgb_Color_Transition transition;
+        transition.from = Converters::From_SFML(assets.letters[it].getFillColor());
+        transition.to = Converters::From_SFML(user.color);
+        
+        //the granularity of the transition (take a step in that conversion)
+        auto transition_color = Color_Transitioner::Transition_Colors(transition,10)[1];
+        
+        //convert
+        assets.letters[it].setFillColor(Converters::To_SFML(transition_color));
+    }
+    
+    //clear the player's selection
+    user.selected_letters.clear();
+    user_assets.selections.clear();
+    
+    Handle_User_Combo_Behaviour(user,user_assets);
+    
+    
+    //say the word (fire and forget style)
+    //we take things by copy because the scope is about to end.
+    // auto word_to_say = assets.answers[index].getString().toAnsiString();
+    // std::thread([=](){ 
+    //     Word_Speaker::Speak(word_to_say);
+    // }).detach();
+❱
+
+◀private: static▶ void ☀Add_Game_Answer(User_State & user, Assets & assets, size_t index) ❰
+
+    sf::Text temp;
+    temp.setFont(assets.main_font);
+    temp.setCharacterSize(25);
+    temp.setFillColor(user.color);
+    
+    int width = 1250;
+    int height = 100;
+    
+    //modify width/height based on number of already gotten words
+    auto columns = assets.game_answers.size() / 24;
+    width += (columns * 180);
+    height += ((assets.game_answers.size() - (columns * 24)) * 40);
+    
+    temp.setPosition(width,height);
+    temp.setString(assets.answers[index].getString());
+    assets.game_answers.emplace_back(temp);
+    
+    
+❱
+
+◀private: static▶ void ☀Handle_User_Combo_Behaviour(User_State & user, User_Assets & user_assets)❰
+
+
+
+    //adjust the user's current combo based on current combo meter
+    sf::Time elapsed_time = user.combo_countdown.getElapsedTime();
+    long since_last_combo = elapsed_time.asMilliseconds();
+    if (since_last_combo <= user.current_combo_timeout_ms){
+        ++user.current_combo;
+        user_assets.combo_number.setString(std::to_string(user.current_combo));
+        Adjust_Current_Combo_Timeout_By_Current_Combo(user);
+    }
+    else{
+        user.current_combo = 1;
+        user_assets.combo_number.setString("1");
+    }
+    user.combo_countdown.restart();
+    
+    auto index = Adjust_Index_Capped(user_assets.goodMove,user.current_combo-1);
+    user_assets.goodMove[index].sound.play();
+    
+    //user_assets.goodMove[0].sound.play();
+    //std::cout << user_assets.goodMove.size() << std::endl;
+    
+    //play sound based on current combo
+    if (user.current_combo == 1){
+        user_assets.combo1.sound.play();
+    }
+    else if (user.current_combo == 2){
+        user_assets.combo2.sound.play();
+    }
+    else if (user.current_combo == 3){
+        user_assets.combo3.sound.play();
+    }
+    else if (user.current_combo == 4){
+        user_assets.combo4.sound.play();
+    }
+    else if (user.current_combo == 5){
+        user_assets.combo5.sound.play();
+    }
+    else if (user.current_combo == 6){
+        user_assets.combo6.sound.play();
+    }
+    else if (user.current_combo == 7){
+        user_assets.combo7.sound.play();
+    }
+    else if (user.current_combo == 8){
+        user_assets.combo8.sound.play();
+    }
+    else if (user.current_combo == 9){
+        user_assets.combo9.sound.play();
+    }
+    else if (user.current_combo == 10){
+        user_assets.combo10.sound.play();
+    }
+    else if (user.current_combo == 11){
+        user_assets.combo11.sound.play();
+    }
+    else {
+        user_assets.combo11.sound.play();
+    }
+❱
+
+◀private: static▶ void ☀Adjust_Current_Combo_Timeout_By_Current_Combo(User_State & user)❰
+    auto added_ms = user.current_combo * 1000;
+    user.current_combo_timeout_ms = user.start_combo_timeout_ms + added_ms;
+❱
+
+◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
+    
+    //update timer
+    sf::Time elapsed_time = state.countdown.getElapsedTime();
+    long time_left = state.total_round_time_s - elapsed_time.asSeconds();
+    assets.countdown.setString(std::to_string(time_left));
+    
+    //end the game if the time has run out
+    if (time_left <= 0){
+        assets.countdown.setString("0");
+        
+        End_Game_Changes(state,assets);
+        
+        state.phase = Game_Phase::END_GAME;
+    }
+    
+    //update score
+    std::string score = std::to_string(state.puzzle.words.size());
+    assets.score.setString(+ "=" +score);
+    
+    //update the combo bars
+    Update_Player_Combo_Bar(state.p1_state,assets.p1);
+    Update_Player_Combo_Bar(state.p2_state,assets.p2);
+
+❱
+
+◀private: static▶ void ☀Update_Player_Combo_Bar(User_State const& state, User_Assets & asset) ❰
+
+    if (state.current_combo != 0){
+        sf::Time elapsed_time = state.combo_countdown.getElapsedTime();
+        long since_last_combo = elapsed_time.asMilliseconds();
+        auto bar_width = Math::map_value_across_range(since_last_combo,0,state.current_combo_timeout_ms,600,0);
+        auto current_size = asset.combo_bar.getSize();
+        
+        //the bar has run out
+        if (current_size.x != 0 && bar_width == 0){
+            asset.combo_out.sound.play();
+            asset.combo_number.setString("");
+        }
+        
+        //resize the bar
+        current_size.x = bar_width;
+        asset.combo_bar.setSize(current_size);
+        
+        auto combo_number_pos = asset.combo_number.getPosition();
+        combo_number_pos.x = bar_width + 330;
+        asset.combo_number.setPosition(combo_number_pos);
+    }
+❱
+
+◀private: static▶ void ☀End_Game_Changes(Game_State & state, Assets & assets) ❰
+
+    auto p1_words = Get_P1_Words(state,assets);
+    auto p2_words = Get_P2_Words(state,assets);
+    
+    //adjust total victories
+    if (p1_words.size() > p2_words.size()){
+        state.p1_state.total_wins++;
+        Get_Random_Element(assets.p1.winGame).sound.play();
+    }
+    else if (p1_words.size() < p2_words.size()){
+        state.p2_state.total_wins++;
+        Get_Random_Element(assets.p2.winGame).sound.play();
+    }
+    
+    Show_All_The_Answers(state,assets);
+    Show_More_Stats(state,assets,p1_words,p2_words);
+❱
+
+◀private: static▶ void ☀Skipped_End_Game_Changes(Game_State & state, Assets & assets) ❰
+
+    auto p1_words = Get_P1_Words(state,assets);
+    auto p2_words = Get_P2_Words(state,assets);
+    
+    Show_All_The_Answers(state,assets);
+    Show_More_Stats(state,assets,p1_words,p2_words);
+❱
+
+◀private: static▶ void ☀Show_All_The_Answers(Game_State & state, Assets & assets) ❰
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.color){
+            it.setFillColor(state.base_text_color);
+        }
+        it.move(-600,0);
+    }
+❱
+
+◀private: static▶ void ☀Show_More_Stats(Game_State & state, Assets & assets, std::vector<std::string> const& p1_words, std::vector<std::string> const& p2_words) ❰
+
+    
+    //get p1 and p2 frequencies
+    auto p1_freq = Size_Frequency_Counter::Get(p1_words);
+    auto p2_freq = Size_Frequency_Counter::Get(p2_words);
+    
+    auto p1_freq_str = To_String(p1_freq);
+    auto p2_freq_str = To_String(p2_freq);
+    
+    p1_freq_str += "= " + assets.p1.score.getString();
+    p2_freq_str += "= " + assets.p2.score.getString();
+    
+    p1_freq_str = "W: " + std::to_string(state.p1_state.total_wins) + "\n" + p1_freq_str;
+    p2_freq_str = "W: " + std::to_string(state.p2_state.total_wins) + "\n" + p2_freq_str;
+    
+    assets.p1.stats.setString(p1_freq_str);
+    assets.p2.stats.setString(p2_freq_str);
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Get_P1_Words(Game_State & state, Assets & assets) ❰
+    std::vector<std::string> p1_words;
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.p1_state.color){
+            p1_words.emplace_back(it.getString());
+        }
+    }
+    return p1_words;
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_P2_Words(Game_State & state, Assets & assets) ❰
+    std::vector<std::string> p2_words;
+    for (auto & it: assets.answers){
+        if (it.getFillColor() == state.p2_state.color){
+            p2_words.emplace_back(it.getString());
+        }
+    }
+    return p2_words;
+❱
+
+
+
