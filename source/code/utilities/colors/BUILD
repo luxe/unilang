@@ -33,3 +33,10 @@ hcp(name="converters",deps = [
     "//code/utilities/data_structures/color:rgb_color",
     "@sfml//:sfml",
 ])
+
+hcp(name="screen_position_to_rgb",deps = [
+    "//code/utilities/data_structures:position",
+    "//code/utilities/data_structures/color:hsv_color",
+    "//code/utilities/colors:hsv_to_rgb_converter",
+    "//code/utilities/math:math",
+])
