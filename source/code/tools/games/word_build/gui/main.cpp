@@ -20,8 +20,8 @@ int main()
 {
     
     //get all the assets and game state
-    auto assets = Assets_Loader::Load();
     auto state = Game_State_Getter::Get();
+    auto assets = Assets_Loader::Load(state);
     
     
     Standard_Sfml_Game_Loop::Run(
