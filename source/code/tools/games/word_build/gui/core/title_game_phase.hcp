@@ -54,26 +54,27 @@ class
 ◀private: static▶ void ☀Handle_Player_Color_Change(User_State & state, F310_Gamepad_Phases const& phases, Assets & assets, std::vector<Moving_Text> & floating_letters) ❰
 
     int color_speed_change = 10;
+    int joystick_stength = 25;
     auto new_color = state.color;
-    if (phases.previous.left_joystick.vertical_axis < -25){
+    if (phases.previous.left_joystick.vertical_axis < joystick_stength*-1){
         state.color_position.y +=color_speed_change;
         Cap_Position(state.color_position);
         new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
 
     }
-    if (phases.previous.left_joystick.vertical_axis > 25){
+    if (phases.previous.left_joystick.vertical_axis > joystick_stength){
         state.color_position.y -=color_speed_change;
         Cap_Position(state.color_position);
         new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
 
     }
-    if (phases.previous.left_joystick.horizontal_axis < -25){
+    if (phases.previous.left_joystick.horizontal_axis < joystick_stength*-1){
         state.color_position.x -=color_speed_change;
         Cap_Position(state.color_position);
         new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
 
     }
-    if (phases.previous.left_joystick.horizontal_axis > 25){
+    if (phases.previous.left_joystick.horizontal_axis > joystick_stength){
         state.color_position.x +=color_speed_change;
         Cap_Position(state.color_position);
         new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
@@ -170,45 +171,45 @@ class
 
 ◀private: static▶ Moving_Text ☀Get_Random_Moving_Text(Game_State & state, Assets & assets, sf::Color const& color)❰
 
-        Moving_Text temp;
-        temp.text.setFont(assets.main_font);
-        temp.text.setCharacterSize(100);
-        temp.text.setFillColor(color);
-        temp.text.setString(Random_Uppercase_Letter());
-        
-        auto side = RandomIntFromRange(1,4);
-        
-        int buffer = 50;
-        int x_res = 1920;
-        int y_res = 1080;
-        
-        //top
-        if (side == 1){
-            temp.text.setPosition(RandomIntFromRange(-100,x_res+100),buffer*-1);
-        }
-        
-        //left
-        else if (side == 2){
-            temp.text.setPosition(buffer*-1,RandomIntFromRange(-100,y_res+100));
-        }
-        
-        //bottom
-        else if (side == 3){
-            temp.text.setPosition(RandomIntFromRange(-100,x_res+100),y_res+buffer);
-        }
-        
-        //right
-        else if (side == 4){
-            temp.text.setPosition(x_res+buffer,RandomIntFromRange(-100,y_res+100));
-        }
-        
-        temp.x_change = RandomIntFromRange(1,8);
-        if (Random_Bool()){
-            temp.x_change *= -1;
-        }
-        temp.y_change = RandomIntFromRange(1,8);
-        if (Random_Bool()){
-            temp.y_change *= -1;
-        }
-        return temp;
+    Moving_Text temp;
+    temp.text.setFont(assets.main_font);
+    temp.text.setCharacterSize(100);
+    temp.text.setFillColor(color);
+    temp.text.setString(Random_Uppercase_Letter());
+    
+    auto side = RandomIntFromRange(1,4);
+    
+    int buffer = 50;
+    int x_res = 1920;
+    int y_res = 1080;
+    
+    //top
+    if (side == 1){
+        temp.text.setPosition(RandomIntFromRange(-100,x_res+100),buffer*-1);
+    }
+    
+    //left
+    else if (side == 2){
+        temp.text.setPosition(buffer*-1,RandomIntFromRange(-100,y_res+100));
+    }
+    
+    //bottom
+    else if (side == 3){
+        temp.text.setPosition(RandomIntFromRange(-100,x_res+100),y_res+buffer);
+    }
+    
+    //right
+    else if (side == 4){
+        temp.text.setPosition(x_res+buffer,RandomIntFromRange(-100,y_res+100));
+    }
+    
+    temp.x_change = RandomIntFromRange(1,8);
+    if (Random_Bool()){
+        temp.x_change *= -1;
+    }
+    temp.y_change = RandomIntFromRange(1,8);
+    if (Random_Bool()){
+        temp.y_change *= -1;
+    }
+    return temp;
 ❱
