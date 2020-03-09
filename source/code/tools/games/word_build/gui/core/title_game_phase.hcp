@@ -46,31 +46,46 @@ class
     
     
     
-    //adjust player color
-    if (state.controller.left.previous.left_joystick.vertical_axis < -25){
-        state.p1_state.color_position.y +=1;
-        Cap_Position(state.p1_state.color_position);
-        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+    //adjust player colors
+    Handle_Player_Color_Change(state.p1_state,state.controller.left,assets,assets.floating_p1_letters);
+    Handle_Player_Color_Change(state.p2_state,state.controller.right,assets,assets.floating_p2_letters);
+❱
+
+◀private: static▶ void ☀Handle_Player_Color_Change(User_State & state, F310_Gamepad_Phases const& phases, Assets & assets, std::vector<Moving_Text> & floating_letters) ❰
+
+    int color_speed_change = 10;
+    auto new_color = state.color;
+    if (phases.previous.left_joystick.vertical_axis < -25){
+        state.color_position.y +=color_speed_change;
+        Cap_Position(state.color_position);
+        new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
 
     }
-    if (state.controller.left.previous.left_joystick.vertical_axis > 25){
-        state.p1_state.color_position.y -=1;
-        Cap_Position(state.p1_state.color_position);
-        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+    if (phases.previous.left_joystick.vertical_axis > 25){
+        state.color_position.y -=color_speed_change;
+        Cap_Position(state.color_position);
+        new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
 
     }
-    if (state.controller.left.previous.left_joystick.horizontal_axis < -25){
-        state.p1_state.color_position.x -=1;
-        Cap_Position(state.p1_state.color_position);
-        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+    if (phases.previous.left_joystick.horizontal_axis < -25){
+        state.color_position.x -=color_speed_change;
+        Cap_Position(state.color_position);
+        new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
 
     }
-    if (state.controller.left.previous.left_joystick.horizontal_axis > 25){
-        state.p1_state.color_position.x +=1;
-        Cap_Position(state.p1_state.color_position);
-        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+    if (phases.previous.left_joystick.horizontal_axis > 25){
+        state.color_position.x +=color_speed_change;
+        Cap_Position(state.color_position);
+        new_color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.color_position));
     }
     
+    //color has changed.  change all the letters too
+    if (new_color != state.color){
+        for (auto & it: floating_letters){
+            it.text.setFillColor(new_color);
+        }
+        state.color = new_color;
+    }
     
 ❱
 
@@ -105,16 +120,22 @@ class
 
 ◀private: static▶ void ☀Handle_Floating_Letters(Game_State & state, Assets & assets) ❰
 
-    int total_alive_letters = 200;
+    Add_Player_Letters(state,assets,assets.floating_p1_letters,state.p1_state.color);
+    Add_Player_Letters(state,assets,assets.floating_p2_letters,state.p2_state.color);
+❱
 
+◀private: static▶ void ☀Add_Player_Letters(Game_State & state, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
+
+    int total_alive_letters = 100;
+    
     //add a floating letter
-    if (assets.floating_letters.size() < total_alive_letters){
-        Moving_Text temp = Get_Random_Moving_Text(state,assets);
-        assets.floating_letters.emplace_back(temp);
+    if (floating_letters.size() < total_alive_letters){
+        Moving_Text temp = Get_Random_Moving_Text(state,assets,color);
+        floating_letters.emplace_back(temp);
     }
     
     //update existing letters
-    for (auto & it: assets.floating_letters){
+    for (auto & it: floating_letters){
         auto cur_pos = it.text.getPosition();
         cur_pos.x += it.x_change;
         cur_pos.y += it.y_change;
@@ -122,11 +143,10 @@ class
     }
     
     //delete expired letters
-    Remove_If(assets.floating_letters,[&](Moving_Text const& it){
+    Remove_If(floating_letters,[&](Moving_Text const& it){
         auto cur_pos = it.text.getPosition();
         return Is_Position_Significantly_Outside_View(cur_pos);
     });
-
 ❱
 
 ◀private: static▶ bool ☀Is_Position_Significantly_Outside_View(sf::Vector2<float> const& cur_pos) ❰
@@ -147,17 +167,12 @@ class
 ❱
 
 
-◀private: static▶ Moving_Text ☀Get_Random_Moving_Text(Game_State & state, Assets & assets)❰
+◀private: static▶ Moving_Text ☀Get_Random_Moving_Text(Game_State & state, Assets & assets, sf::Color const& color)❰
 
         Moving_Text temp;
         temp.text.setFont(assets.main_font);
         temp.text.setCharacterSize(100);
-        if (Random_Bool()){
-            temp.text.setFillColor(state.p1_state.color);
-        }
-        else{
-            temp.text.setFillColor(state.p2_state.color);
-        }
+        temp.text.setFillColor(color);
         temp.text.setString(Random_Uppercase_Letter());
         
         auto side = RandomIntFromRange(1,4);
