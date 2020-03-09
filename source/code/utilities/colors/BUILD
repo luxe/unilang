@@ -35,8 +35,9 @@ hcp(name="converters",deps = [
 ])
 
 hcp(name="screen_position_to_rgb",deps = [
-    "//code/utilities/data_structures:position",
+    "//code/utilities/data_structures/position:position",
     "//code/utilities/data_structures/color:hsv_color",
+    "//code/utilities/data_structures/color:rgb_color",
     "//code/utilities/colors:hsv_to_rgb_converter",
     "//code/utilities/math:math",
 ])

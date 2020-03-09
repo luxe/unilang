@@ -23,4 +23,5 @@ hcp(name = "game_state_getter", deps = [
 
 hcp(name = "user_state", deps = [
     "@sfml//:sfml",
+    "//code/utilities/data_structures/position:position",
 ])

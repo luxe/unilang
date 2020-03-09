@@ -66,6 +66,8 @@ hcp(name = "title_game_phase", deps = [
     "//code/utilities/types/strings/sfml:sfml_text",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/random:lib",
+    "//code/utilities/colors:screen_position_to_rgb",
+    "//code/utilities/colors:converters",
 ])
 
 hcp(name = "regular_game_phase", deps = [

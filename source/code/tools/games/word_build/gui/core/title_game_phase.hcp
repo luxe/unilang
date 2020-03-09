@@ -15,6 +15,9 @@ class
 ❪"code/utilities/types/strings/sfml/sfml_text"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/random/lib"❫
+❪"code/utilities/colors/screen_position_to_rgb"❫
+❪"code/utilities/colors/screen_position_to_rgb"❫
+❪"code/utilities/colors/converters"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(Game_State & state, Assets & assets) ❰
@@ -40,6 +43,46 @@ class
     if (!state.controller.right.previous.left_joystick.clicked && state.controller.right.current.left_joystick.clicked){
         Toggle_Colors(state,assets);
     }
+    
+    
+    
+    //adjust player color
+    if (state.controller.left.previous.left_joystick.vertical_axis < -25){
+        state.p1_state.color_position.y +=1;
+        Cap_Position(state.p1_state.color_position);
+        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+
+    }
+    if (state.controller.left.previous.left_joystick.vertical_axis > 25){
+        state.p1_state.color_position.y -=1;
+        Cap_Position(state.p1_state.color_position);
+        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+
+    }
+    if (state.controller.left.previous.left_joystick.horizontal_axis < -25){
+        state.p1_state.color_position.x -=1;
+        Cap_Position(state.p1_state.color_position);
+        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+
+    }
+    if (state.controller.left.previous.left_joystick.horizontal_axis > 25){
+        state.p1_state.color_position.x +=1;
+        Cap_Position(state.p1_state.color_position);
+        state.p1_state.color = Converters::To_SFML(Screen_Position_To_Rgb::Convert_Through_Hsv_Mapping(state.p1_state.color_position));
+    }
+    
+    
+❱
+
+◀private: static▶ void ☀Cap_Position(Position & pos) ❰
+    
+    int x_dim = 1920;
+    int y_dim = 1080;
+    
+    if (pos.x < 0){ pos.x = 0;}
+    if (pos.x > x_dim){ pos.x = x_dim;}
+    if (pos.y < 0){ pos.y = 0;}
+    if (pos.y > y_dim){ pos.y = y_dim;}
 ❱
 
 ◀private: static▶ void ☀Toggle_Colors(Game_State & state, Assets & assets) ❰
