@@ -124,17 +124,47 @@ class
 ❱
 
 ◀private: static▶ void ☀Player_Match_Check(User_State & user, User_Assets & user_assets, Game_State & state, Assets & assets)❰
+
+
+    auto current_word = Get_Current_Word_From_Selected_Letters(user,state);
+    
+    auto found_index = Get_Index_Of_Element_If_Exists(state.puzzle.words,current_word);
+    if (found_index != -1){
+        if (No_User_Has_Found_Word(found_index,assets,state)){
+            Player_Found_Answer(state,user,user_assets,assets,found_index);
+        }
+        else if (User_Did_Not_Find_Word_First(found_index,user,assets,state)){
+            Player_Found_Other_Players_Answer(state,user,user_assets,assets,found_index);
+        }
+    }
+❱
+
+◀private: static▶ std::string ☀Get_Current_Word_From_Selected_Letters(User_State & user, Game_State & state)❰
     std::string current_word;
     for (auto const& it: user.selected_letters){
         current_word += state.puzzle.letters[it];
     }
-    
-    auto found_index = Get_Index_Of_Element_If_Exists(state.puzzle.words,current_word);
-    if (found_index != -1){
-        if (assets.answers[found_index].getFillColor() == state.bg_color){
-            Player_Found_Answer(state,user,user_assets,assets,found_index);
-        }
+    return current_word;
+❱
+
+
+◀private: static▶ bool ☀No_User_Has_Found_Word(int found_index, Assets & assets, Game_State & state)❰
+    if (assets.answers[found_index].getFillColor() == state.bg_color){
+        return true;
     }
+    return false;
+❱
+
+◀private: static▶ bool ☀User_Did_Not_Find_Word_First(int found_index, User_State & user, Assets & assets, Game_State & state)❰
+    if (assets.answers[found_index].getFillColor() != state.bg_color && assets.answers[found_index].getFillColor() != user.color){
+        return true;
+    }
+    return false;
+❱
+
+◀private: static▶ void ☀Player_Found_Other_Players_Answer(Game_State & state, User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
+    assets.answers[index].setOutlineColor(user.color);
+    assets.answers[index].setOutlineThickness(2);
 ❱
 
 ◀private: static▶ void ☀Player_Found_Answer(Game_State & state, User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
