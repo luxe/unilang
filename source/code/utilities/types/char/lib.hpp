@@ -32,6 +32,8 @@ std::vector<char> Get_Lowercase_Letters();
 std::vector<char> Get_Uppercase_Letters();
 std::vector<char> Get_All_Cased_Letters();
 
+char Get_Next_Capital_Letter(char c);
+
 //get unicode characters (just easier)
 wchar_t Zero_Width_Space();
 wchar_t Zero_Width_Non_Breaking_Space();

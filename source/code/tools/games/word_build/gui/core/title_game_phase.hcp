@@ -14,6 +14,7 @@ class
 ⚯
 ❪"code/utilities/types/strings/sfml/sfml_text"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/random/lib"❫
 ❪"code/utilities/colors/screen_position_to_rgb"❫
 ❪"code/utilities/colors/screen_position_to_rgb"❫
@@ -26,6 +27,8 @@ class
     Handle_Player_Input(state,assets);
     
     //Handle_Floating_Letters(state,assets);
+    
+    Handle_Sliding_Letters(state,assets);
 ❱
 
 ◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets) ❰
@@ -162,11 +165,39 @@ class
 
 ◀private: static▶ void ☀Handle_Floating_Letters(Game_State & state, Assets & assets) ❰
 
-    Add_Player_Letters(state,assets,assets.floating_p1_letters,state.p1_state.color);
-    Add_Player_Letters(state,assets,assets.floating_p2_letters,state.p2_state.color);
+    Add_Random_Player_Letters(state,assets,assets.floating_p1_letters,state.p1_state.color);
+    Add_Random_Player_Letters(state,assets,assets.floating_p2_letters,state.p2_state.color);
 ❱
 
-◀private: static▶ void ☀Add_Player_Letters(Game_State & state, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
+
+◀private: static▶ void ☀Handle_Sliding_Letters(Game_State & state, Assets & assets) ❰
+
+    Add_Sliding_Player_Letter(state,assets,assets.floating_p1_letters,state.p1_state.color);
+    Add_Sliding_Player_Letter(state,assets,assets.floating_p2_letters,state.p2_state.color);
+❱
+
+◀private: static▶ void ☀Add_Sliding_Player_Letter(Game_State & state, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
+
+    int total_alive_letters = 200;
+    
+    //add a sliding letter
+    if (floating_letters.size() < total_alive_letters){
+        
+        if (floating_letters.empty()){
+            Moving_Text temp = Get_Sliding_Letter_A(state,assets,color);
+            floating_letters.emplace_back(temp);
+        }
+        else{
+            auto last_letter = floating_letters[floating_letters.size()-1];
+            Moving_Text temp = Get_Next_Sliding_Letter(state,assets,color,last_letter);
+            floating_letters.emplace_back(temp);
+        }
+    }
+    
+    Move_And_Expire_Letters(floating_letters);
+❱
+
+◀private: static▶ void ☀Add_Random_Player_Letters(Game_State & state, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
 
     int total_alive_letters = 100;
     
@@ -176,7 +207,11 @@ class
         floating_letters.emplace_back(temp);
     }
     
-    //update existing letters
+    Move_And_Expire_Letters(floating_letters);
+❱
+
+◀private: static▶ void ☀Move_And_Expire_Letters(std::vector<Moving_Text> & floating_letters)❰
+
     for (auto & it: floating_letters){
         auto cur_pos = it.text.getPosition();
         cur_pos.x += it.x_change;
@@ -208,6 +243,46 @@ class
         return false;
 ❱
 
+◀private: static▶ Moving_Text ☀Get_Sliding_Letter_A(Game_State & state, Assets & assets, sf::Color const& color)❰
+
+    Moving_Text temp;
+    temp.text.setFont(assets.main_font);
+    temp.text.setCharacterSize(100);
+    temp.text.setFillColor(color);
+    temp.text.setString("A");
+    
+    
+    if (color == state.p1_state.color){
+        temp.text.setPosition(500,100);
+    }
+    else{
+        temp.text.setPosition(500,820);
+    }
+    temp.x_change = -3;
+    temp.y_change = 0;
+    
+    return temp;
+❱
+
+◀private: static▶ Moving_Text ☀Get_Next_Sliding_Letter(Game_State & state, Assets & assets, sf::Color const& color, Moving_Text const& last_letter)❰
+
+    Moving_Text temp;
+    temp.text.setFont(assets.main_font);
+    temp.text.setCharacterSize(100);
+    temp.text.setFillColor(color);
+    
+    std::string new_str;
+    new_str += Get_Next_Capital_Letter(last_letter.text.getString()[0]);
+    temp.text.setString(new_str);
+    
+    auto new_pos = last_letter.text.getPosition();
+    new_pos.x += 80;
+    temp.text.setPosition(new_pos);
+    temp.x_change = -3;
+    temp.y_change = 0;
+    
+    return temp;
+❱
 
 ◀private: static▶ Moving_Text ☀Get_Random_Moving_Text(Game_State & state, Assets & assets, sf::Color const& color)❰
 

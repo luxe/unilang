@@ -68,6 +68,7 @@ hcp(name = "title_game_phase", deps = [
     "//code/utilities/random:lib",
     "//code/utilities/colors:screen_position_to_rgb",
     "//code/utilities/colors:converters",
+    "//code/utilities/types/char:lib",
 ])
 
 hcp(name = "regular_game_phase", deps = [

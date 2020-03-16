@@ -127,6 +127,38 @@ std::vector<char> Get_Uppercase_Letters(){
   x.emplace_back('Z');
   return x;
 }
+
+char Get_Next_Capital_Letter(char c)
+{
+  if (c == 'A') { return 'B'; }
+  if (c == 'B') { return 'C'; }
+  if (c == 'C') { return 'D'; }
+  if (c == 'D') { return 'E'; }
+  if (c == 'E') { return 'F'; }
+  if (c == 'F') { return 'G'; }
+  if (c == 'G') { return 'H'; }
+  if (c == 'H') { return 'I'; }
+  if (c == 'I') { return 'J'; }
+  if (c == 'J') { return 'K'; }
+  if (c == 'K') { return 'L'; }
+  if (c == 'L') { return 'M'; }
+  if (c == 'M') { return 'N'; }
+  if (c == 'N') { return 'O'; }
+  if (c == 'O') { return 'P'; }
+  if (c == 'P') { return 'Q'; }
+  if (c == 'Q') { return 'R'; }
+  if (c == 'R') { return 'S'; }
+  if (c == 'S') { return 'T'; }
+  if (c == 'T') { return 'U'; }
+  if (c == 'U') { return 'V'; }
+  if (c == 'V') { return 'W'; }
+  if (c == 'W') { return 'X'; }
+  if (c == 'X') { return 'Y'; }
+  if (c == 'Y') { return 'Z'; }
+  if (c == 'Z') { return 'A'; }
+  return c;
+}
+
 std::vector<char> Get_All_Cased_Letters(){
   auto x = Get_Lowercase_Letters();
   x += Get_Uppercase_Letters();
