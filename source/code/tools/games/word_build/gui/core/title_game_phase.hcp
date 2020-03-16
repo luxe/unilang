@@ -18,6 +18,7 @@ class
 ❪"code/utilities/colors/screen_position_to_rgb"❫
 ❪"code/utilities/colors/screen_position_to_rgb"❫
 ❪"code/utilities/colors/converters"❫
+❪"code/utilities/math/math"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(Game_State & state, Assets & assets) ❰
@@ -29,6 +30,43 @@ class
 
 ◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets) ❰
 
+    Possibly_Start_Game(state,assets);
+    
+    Handle_Color_Changes(state,assets);
+    
+    Adjust_User_Letter_Speed(state.controller.left.current,assets.floating_p1_letters);
+    Adjust_User_Letter_Speed(state.controller.right.current,assets.floating_p2_letters);
+    
+    
+❱
+
+◀private: static▶ void ☀Adjust_User_Letter_Speed(F310_Gamepad const& pad, std::vector<Moving_Text> & floating_letters) ❰
+
+    auto speed_up = pad.top.rt + 100;
+    auto speed_down = (pad.top.lt + 100) * -1;
+    auto speed_change = speed_up + speed_down;
+
+    if (speed_change != 0){
+        for (auto & it: floating_letters){
+            if (it.x_change > 0){
+                it.x_change += Math::map_value_across_range(speed_change,-200,200,-8,8);
+            }
+            else{
+                it.x_change -= Math::map_value_across_range(speed_change,-200,200,-8,8);
+            }
+            if (it.y_change > 0){
+                it.y_change += Math::map_value_across_range(speed_change,-200,200,-8,8);
+            }
+            else{
+                it.y_change -= Math::map_value_across_range(speed_change,-200,200,-8,8);
+            }
+        }
+    }
+❱
+
+
+◀private: static▶ void ☀Possibly_Start_Game(Game_State & state, Assets & assets) ❰
+
     //restart the game when user is ready
     if (!state.controller.left.previous.center.center && state.controller.left.current.center.center){
         state.phase = Game_Phase::STARTING_GAME;
@@ -36,6 +74,9 @@ class
     if (!state.controller.right.previous.center.center && state.controller.right.current.center.center){
         state.phase = Game_Phase::STARTING_GAME;
     }
+❱
+
+◀private: static▶ void ☀Handle_Color_Changes(Game_State & state, Assets & assets) ❰
     
     if (!state.controller.left.previous.left_joystick.clicked && state.controller.left.current.left_joystick.clicked){
         Toggle_Colors(state,assets);
@@ -43,8 +84,6 @@ class
     if (!state.controller.right.previous.left_joystick.clicked && state.controller.right.current.left_joystick.clicked){
         Toggle_Colors(state,assets);
     }
-    
-    
     
     //adjust player colors
     //I don't like this color selection.  TODO: make better.
@@ -204,7 +243,16 @@ class
         temp.text.setPosition(x_res+buffer,RandomIntFromRange(-100,y_res+100));
     }
     
-    temp.x_change = RandomIntFromRange(1,8);
+    
+    //get a random directional velocity, but they can't both be zero (no movement)
+    temp.x_change = RandomIntFromRange(0,8);
+    temp.y_change = RandomIntFromRange(0,8);
+    while (temp.x_change == 0 && temp.y_change == 0){
+        temp.x_change = RandomIntFromRange(0,8);
+        temp.y_change = RandomIntFromRange(0,8);
+    }
+    
+    
     if (Random_Bool()){
         temp.x_change *= -1;
     }
