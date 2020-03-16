@@ -162,6 +162,29 @@ class
     return false;
 ❱
 
+
+◀private: static▶ int ☀Words_Blocked_By_P1(Assets & assets, Game_State & state)❰
+
+    int results = 0;
+    for (auto const& it: assets.answers){
+        if (it.getFillColor() == state.p1_state.color && it.getOutlineColor() == state.p2_state.color){
+            results++;
+        }
+    }
+    return results;
+❱
+◀private: static▶ int ☀Words_Blocked_By_P2(Assets & assets, Game_State & state)❰
+
+    int results = 0;
+    for (auto const& it: assets.answers){
+        if (it.getFillColor() == state.p2_state.color && it.getOutlineColor() == state.p1_state.color){
+            results++;
+        }
+    }
+    return results;
+❱
+
+
 ◀private: static▶ void ☀Player_Found_Other_Players_Answer(Game_State & state, User_State & user, User_Assets & user_assets, Assets & assets, size_t index)❰
     assets.answers[index].setOutlineColor(user.color);
     assets.answers[index].setOutlineThickness(2);
@@ -426,8 +449,14 @@ class
     p1_freq_str += "= " + assets.p1.score.getString();
     p2_freq_str += "= " + assets.p2.score.getString();
     
-    p1_freq_str = "W: " + std::to_string(state.p1_state.total_wins) + "\n" + p1_freq_str;
-    p2_freq_str = "W: " + std::to_string(state.p2_state.total_wins) + "\n" + p2_freq_str;
+    p1_freq_str = "Wins: " + std::to_string(state.p1_state.total_wins) + "\n" + p1_freq_str + "\n";
+    p2_freq_str = "Wins: " + std::to_string(state.p2_state.total_wins) + "\n" + p2_freq_str + "\n";
+    
+    auto p1_blocks = Words_Blocked_By_P1(assets,state);
+    auto p2_blocks = Words_Blocked_By_P2(assets,state);
+    p1_freq_str += "actual: " + std::to_string(as_signed(assets.p1.score.getString()) + p2_blocks) + " (-" + std::to_string(p2_blocks) + ")";
+    p2_freq_str += "actual: " + std::to_string(as_signed(assets.p2.score.getString()) + p1_blocks) + " (-" + std::to_string(p1_blocks) + ")";
+    
     
     assets.p1.stats.setString(p1_freq_str);
     assets.p2.stats.setString(p2_freq_str);
