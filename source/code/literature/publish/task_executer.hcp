@@ -73,12 +73,13 @@ class
 ❱
 
 ◀private: static▶ void ☀Generate_Bibtex(Structure const& structure, std::string const& basename) ❰
-    auto to_bibtex = Full_Path_For_Desktop_File(basename + ".bibtex");
+    auto to_bibtex = Full_Path_For_Desktop_File(basename + ".bib");
     
     std::vector<Contributor> contributors;
     Bibtex_Settings settings;
     std::string content = Bibtex_Str_Getter::Get(structure,contributors,settings);
-    std::cout << content << std::endl;
+    Write_To_File(to_bibtex,content);
+    //std::cout << content << std::endl;
 ❱
 
 ◀private: static▶ void ☀Generate_Essay(Structure const& structure, std::string const& basename) ❰
@@ -86,12 +87,14 @@ class
     auto to_raw_pdf = Full_Path_For_Desktop_File(basename + "-pdf.md");
     auto to_manual_pdf = Full_Path_For_Desktop_File(basename + ".pdf");
     auto to_latex_template = Full_Path_For_Desktop_File(basename + ".tx");
+    auto bib_file = Full_Path_For_Desktop_File(basename + ".bib");
     
     //build pdf documentation
     Pdf_Settings pdf_settings;
     pdf_settings.latex_template = to_latex_template;
     pdf_settings.md_format = to_raw_pdf;
     pdf_settings.resulting_pdf = to_manual_pdf;
+    pdf_settings.bibtex_file = bib_file;
     Pdf_Creator::Create_Pdf(structure,pdf_settings);
     
     Existing_Temp_File created_pdf(pdf_settings.resulting_pdf);
