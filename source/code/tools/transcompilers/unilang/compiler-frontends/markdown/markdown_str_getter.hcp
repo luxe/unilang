@@ -31,6 +31,31 @@ class
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string text;
+    
+    // core content (each of the enriched paragraphs)
+    Append_With_Newline(text,Get_All_Paragraphs(structure,contributors,settings));
+    
+    // needed data for citations page
+    if (Should_Add_Citation_Finale(structure,settings)){
+        Append_With_Newline(text,Get_Citation_Finale(structure,settings));
+    }
+    
+    return text;
+❱
+
+◀private: static▶ bool ☀Should_Add_Citation_Finale(Structure const& structure, Markdown_Settings const& settings)❰
+    return true; //for now
+❱
+◀private: static▶ std::string ☀Get_Citation_Finale(Structure const& structure, Markdown_Settings const& settings)❰
+    std::string text;
+    Append_With_Newline(text,"\\newpage {References\\par}");
+    return text;
+❱
+
+
+◀private: static▶ std::string ☀Get_All_Paragraphs(Structure const& structure, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+
+    std::string text;
     for (auto const& it: structure.literature.paragraphs){
         
         const auto depth = as_signed(as_string(it.depth.value));

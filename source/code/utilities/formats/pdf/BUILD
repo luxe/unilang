@@ -14,6 +14,7 @@ hcp(name = "pdf_creator",deps=[
     "//code/utilities/program/common_actions/exits:lib",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/formats/pdf:latex_template_getter",
+    "//code/utilities/formats/pdf:csl_template_getter",
     "//code/tools/transcompilers/unilang/main:program_input",
     "//code/utilities/program/call:lib",
     "//code/utilities/filesystem/files/temp:temp_file",
@@ -22,4 +23,7 @@ hcp(name = "pdf_creator",deps=[
 ])
 
 hcp(name = "latex_template_getter", deps = [
+])
+
+hcp(name = "csl_template_getter", deps = [
 ])

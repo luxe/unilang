@@ -14,6 +14,7 @@ class
 ❪"code/utilities/program/common_actions/exits/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/formats/pdf/latex_template_getter"❫
+❪"code/utilities/formats/pdf/csl_template_getter"❫
 ❪"code/utilities/program/call/lib"❫
 ❪"code/utilities/filesystem/files/temp/temp_file"❫
 ❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
@@ -30,28 +31,50 @@ class
 //tlmgr install xcolor
 
 ◀public: static▶ void ☀Create_Pdf(Structure const& structure, Pdf_Settings const& pdf_settings)❰
-
+    
+    //get settings
     Program_Input input;
     input.settings = Root_Settings_Getter::Get();
     auto contributors = input.settings.compiler_settings.trevor.contributors;
     auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
     
-    auto garbage1 = Temp_File(pdf_settings.latex_template,Latex_Template_Getter::Get(),false);
+    //generate latex template
+    auto temp1_ = Temp_File(pdf_settings.latex_template,Latex_Template_Getter::Get(),false);
+    
+    //generate csl template
+    auto temp2_ = Temp_File(pdf_settings.csl_template,Csl_Template_Getter::Get_Chicago_Fullnote(),false);
+    
     md_settings.headers.allow_labeled_image_titles = false;
     md_settings.headers.h1_as_details_tags = false;
     md_settings.headers.h1_as_summary_tags = false;
     md_settings.tables.print = true;
     md_settings.tables.as_list = true;
     
+    auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
+    auto temp3_ = Temp_File(pdf_settings.md_format,result,false);
+    
+    //totally unrelated: prism file? -stats data research paper.  what is that?
     
     
+    auto command = Build_Pandoc_Command(pdf_settings);
+    
+    //std::cout << command << std::endl;
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    
+    if (results.return_code != 0){
+        std::cerr << results.stderr << std::endl;
+        Exit_With_Error("failed to create pdf");
+    }
+❱
+
+◀private: static▶ std::string ☀Build_Pandoc_Command(Pdf_Settings const& pdf_settings)❰
+
     std::vector<std::pair<std::string,std::string>> vars;
     vars.emplace_back("mainfont",pdf_settings.mainfont);
     vars.emplace_back("sansfont",pdf_settings.sansfont);
     vars.emplace_back("monofont",pdf_settings.monofont);
-    
-    auto result = Markdown_Str_Getter::Get(structure,contributors,md_settings);
-    auto garbage2 = Temp_File(pdf_settings.md_format,result,false);
+
     std::string command = "pandoc --toc -V -s ";
     
     if (!pdf_settings.bibtex_file.empty()){
@@ -66,6 +89,11 @@ class
         
         //seems to be a part of latex template but doesn't work
         command += " -V biblio-title=Bibliography ";
+        
+        command += " --csl ";
+        command += pdf_settings.csl_template;
+        command += " ";
+        
     }
     
     //add template
@@ -97,12 +125,5 @@ class
     command += " ";
     command += pdf_settings.md_format;
     
-    //std::cout << command << std::endl;
-    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
-    
-    
-    if (results.return_code != 0){
-        std::cerr << results.stderr << std::endl;
-        Exit_With_Error("failed to create pdf");
-    }
+    return command;
 ❱
