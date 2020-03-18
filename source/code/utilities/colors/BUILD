@@ -41,3 +41,11 @@ hcp(name="screen_position_to_rgb",deps = [
     "//code/utilities/colors:hsv_to_rgb_converter",
     "//code/utilities/math:math",
 ])
+
+hcp(name="sfml_color_pick_grid",deps = [
+    "@sfml//:sfml",
+])
+hcp(name="sfml_color_pick_hue_changer",deps = [
+    "@sfml//:sfml",
+])
+
