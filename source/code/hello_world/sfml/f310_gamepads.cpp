@@ -6,6 +6,8 @@
 
 int main()
 {
+    // i bought two Logitech Gamepad F310 controllers
+    //this dumps their state in json
     while (true){
         auto controllers = F310_Gamepads_State_Getter::Get();
         std::cout << As_JSON_String(controllers) << std::endl;
