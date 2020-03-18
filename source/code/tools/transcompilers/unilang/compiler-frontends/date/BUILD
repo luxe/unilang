@@ -18,7 +18,7 @@ hcp(name = "date_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
 "//code/utilities/types/vectors/observers:lib",
 "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
-"//code/tools/transcompilers/unilang/options/language-specific:processing_options",
+"//code/tools/transcompilers/unilang/options/language-specific/processing:processing_options",
 "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 "//code/utilities/time/calendar/tm_wrappers:lib"
 ])

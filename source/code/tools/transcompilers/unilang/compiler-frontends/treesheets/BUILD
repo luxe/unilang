@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "treesheets_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/tools/transcompilers/unilang/options/language-specific:treesheets_options",
+"//code/tools/transcompilers/unilang/options/language-specific/treesheets:treesheets_options",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",

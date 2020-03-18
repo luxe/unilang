@@ -6,7 +6,7 @@ hcp(name = "mermaid_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/tools/transcompilers/unilang/options/language-specific:mermaid_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/mermaid:mermaid_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",
@@ -23,5 +23,5 @@ hcp(name = "mermaid_exporter", deps = [
 ])
 
 hcp(name = "mermaid_settings_getter", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:mermaid_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/mermaid:mermaid_settings",
 ])
