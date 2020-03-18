@@ -29,7 +29,7 @@ hcp(name = "header_collector", deps = [
 hcp(name = "header_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/import:import_section",
 "//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
-"//code/tools/transcompilers/unilang/options/language-specific:hidl_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/hidl:hidl_export_settings",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/boilerplate_printer/header/unilang-convert:header_adjuster",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
