@@ -23,6 +23,7 @@ class
 
 ❪"code/tools/transcompilers/unilang/compiler-frontends/java/parts/methods_getter"❫
 ❪"code/tools/transcompilers/unilang/compiler-frontends/java/parts/data_members_getter"❫
+❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
@@ -31,7 +32,9 @@ class
     Append_With_Newline(text,Get_Package_Name(structure,contributors,settings));
     Append_With_Newline(text,Get_Imports(structure,contributors,settings));
     
-    //java, everythings a class:
+    //java, everything is a class:
+    text += Doxygen_Block_Printer::Get_Struct_Block(0,as_string(structure.meta.brief_description.value),as_string(structure.meta.detailed_description.value),Class_Name(structure,settings),settings.general.comment.doxygen);
+    text += "\n";
     Append_With_Newline(text,Class_Start(structure,contributors,settings));
     Append_With_Newline(text,Data_Members_Getter::Get(structure,contributors,settings));
     Append_With_Newline(text,Methods_Getter::Get(structure,contributors,settings));
@@ -91,7 +94,11 @@ class
 ◀private: static▶ std::string ☀Class_Start(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string str;
     str += "class ";
-    str += Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.file_casing,structure.name);
+    str += Class_Name(structure,settings);
     str += " {\n";
     return str;
+❱
+
+◀private: static▶ std::string ☀Class_Name(Structure const& structure, Java_Settings const& settings)❰
+    return Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.file_casing,structure.name);
 ❱
