@@ -15,6 +15,7 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/structure_adjuster"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/tools/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
@@ -22,8 +23,8 @@ class
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string text;
-    text += Get_Boilerplate(structure,contributors,settings);
-    text += Get_Package_Name(structure,contributors,settings);
+    Append_With_Newline(text,Get_Boilerplate(structure,contributors,settings));
+    Append_With_Newline(text,Get_Package_Name(structure,contributors,settings));
     
     return text;
 ❱
@@ -45,6 +46,17 @@ class
 ❱
 
 ◀private: static▶ std::string ☀Get_Package_Name(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+    
+    //convert the name spaces into package names
+    std::vector<std::string> packages;
+    for (auto const& it: structure.namespaces.namespaces){
+        packages.emplace_back(as_string(it.name.value));
+    }
+    
+    //put into java format
     std::string text;
+    text += "package ";
+    text += Get_As_String_With_Dot_In_Between_Each_Element(packages);
+    text += ";\n";
     return text;
 ❱
