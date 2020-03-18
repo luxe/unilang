@@ -9,6 +9,7 @@ hcp(name = "compiler", deps = [
 "//code/tools/transcompilers/unilang/main:program_input",
 "//code/tools/transcompilers/unilang/compiler-frontends/hidl:hidl_options_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/hidl:hidl_exporter",
+"//code/tools/transcompilers/unilang/compiler-frontends/java:java_exporter",
 "//code/tools/transcompilers/unilang/options/bazel:language_to_build_object",
 "//code/tools/transcompilers/unilang/user-frontend/artifact_actions:artifact_guesser",
 "//code/tools/transcompilers/unilang/compiler-frontends/bazel:bazel_rule_exporter",
