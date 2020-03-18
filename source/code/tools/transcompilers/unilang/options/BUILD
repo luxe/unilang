@@ -38,6 +38,7 @@ hcp(name = "foreign_language_export_settings", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific/slidy:slidy_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:processing_options",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
 "//code/tools/transcompilers/unilang/options/bazel:build_rule_settings",
 ])
 
