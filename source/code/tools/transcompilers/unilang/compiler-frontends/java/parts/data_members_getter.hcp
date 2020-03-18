@@ -6,6 +6,8 @@ class
 ❪"code/tools/transcompilers/unilang/contributor/contributor"❫
 ❪"code/tools/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/tools/transcompilers/unilang/options/language-specific/java/java_settings"❫
+❪"code/tools/transcompilers/unilang/options/general_options"❫
+❪"code/tools/transcompilers/unilang/options/language-specific/c/c_export_settings"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/converters/lib"❫
@@ -20,10 +22,23 @@ class
 ❪"code/tools/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string x;
+    
+    //TODO: FIX THIS.  DONT DO THIS:
+    //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
+    //THIS IS A TEMP HACK/FIX.
+    C_Export_Settings bad_temp;
+    bad_temp.portion = settings.portion;
+    bad_temp.general = settings.general;
+    
+    for (size_t i = 0; i < structure.data_members.data_members.size(); ++i){
+        x += Doxygen_Block_Printer::Get_Doxygen_Member_Item_Comment(structure.data_members.data_members[i],bad_temp,4);
+        x += "    ";
+    }
     
     return x;
 ❱
