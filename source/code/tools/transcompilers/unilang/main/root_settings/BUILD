@@ -31,6 +31,7 @@ hcp(name = "root_settings_getter", deps = [
 "//code/tools/transcompilers/unilang/compiler-frontends/cpp_benchmark:cpp_benchmark_options_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/mermaid:mermaid_settings_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_settings_getter",
+"//code/tools/transcompilers/unilang/compiler-frontends/java:java_settings_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/dzslides:dzslides_settings_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/slidy:slidy_settings_getter",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
