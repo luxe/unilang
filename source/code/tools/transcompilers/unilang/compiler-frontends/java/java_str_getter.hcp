@@ -19,12 +19,23 @@ class
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/tools/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+
+❪"code/tools/transcompilers/unilang/compiler-frontends/java/parts/methods_getter"❫
+❪"code/tools/transcompilers/unilang/compiler-frontends/java/parts/data_members_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string text;
     Append_With_Newline(text,Get_Boilerplate(structure,contributors,settings));
     Append_With_Newline(text,Get_Package_Name(structure,contributors,settings));
+    Append_With_Newline(text,Get_Imports(structure,contributors,settings));
+    
+    //java, everythings a class:
+    Append_With_Newline(text,Class_Start(structure,contributors,settings));
+    Append_With_Newline(text,Data_Members_Getter::Get(structure,contributors,settings));
+    Append_With_Newline(text,Methods_Getter::Get(structure,contributors,settings));
+    Append_With_Newline(text,"}");
     
     return text;
 ❱
@@ -59,4 +70,28 @@ class
     text += Get_As_String_With_Dot_In_Between_Each_Element(packages);
     text += ";\n";
     return text;
+❱
+
+◀private: static▶ std::string ☀Get_Imports(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+    
+    std::string imports;
+    for (auto const& it: structure.imports.interface_dependencies){
+        imports += "import ";
+        imports += as_string(it.name.value);
+        imports += ";\n";
+    }
+    for (auto const& it: structure.imports.implementation_dependencies){
+        imports += "import ";
+        imports += as_string(it.name.value);
+        imports += ";\n";
+    }
+    return imports;
+❱
+
+◀private: static▶ std::string ☀Class_Start(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+    std::string str;
+    str += "class ";
+    str += Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.file_casing,structure.name);
+    str += " {";
+    return str;
 ❱
