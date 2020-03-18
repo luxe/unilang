@@ -22,6 +22,7 @@ hcp(name = "java_exporter", deps = [
     "//code/utilities/types/char:lib",
     "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
     "//code/tools/transcompilers/unilang/compiler-frontends/java:java_str_getter",
+    "//code/tools/transcompilers/unilang/structure/print/filename:file_name_getter",
 ])
 
 hcp(name = "java_str_getter", deps = [
