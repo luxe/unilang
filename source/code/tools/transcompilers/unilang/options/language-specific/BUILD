@@ -9,10 +9,6 @@ hcp("hidl_export_settings",deps = [
 "//code/tools/transcompilers/unilang/options/bazel:build_rule_settings",
 ])
 
-hcp("csharp_export_settings",deps = [
-"//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings"
-])
-
 hcp("d_export_settings",deps = [
 "//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings"
 ])
@@ -28,8 +24,6 @@ hcp("mermaid_settings",deps = [
 "//code/tools/transcompilers/unilang/options/sections:portion_options",
 "//code/tools/transcompilers/unilang/options:general_options",
 ])
-
-hcp(name = "call_graph_options")
 
 hcp(name = "html_table_options", deps = [
 "//code/utilities/types/strings/transformers/casing:case_format_style",
