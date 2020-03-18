@@ -19,10 +19,10 @@ hcp(name = "general_options", deps = [
 
 hcp(name = "foreign_language_export_settings", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_export_settings",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_test_export_settings",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_benchmark_export_settings",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_fuzz_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_test_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_benchmark_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_fuzz_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:d_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:rust_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:csharp_export_settings",

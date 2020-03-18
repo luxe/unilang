@@ -246,7 +246,7 @@ hcp(name = "global_printer", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_export_settings",
 "//code/utilities/types/vectors/operators:lib",
 "//code/tools/transcompilers/unilang/structure/print:namespace_printer",
 "//code/tools/transcompilers/unilang/design/normal:method_sorting_and_grouping_order_printer",
@@ -261,7 +261,7 @@ hcp(name = "file_printer", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_export_settings",
 "//code/utilities/types/vectors/operators:lib",
 ])
 

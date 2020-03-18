@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "cpp_test_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/contributor:contributor",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_test_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_test_export_settings",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
 "//code/tools/transcompilers/unilang/structure/print:file_printer",
@@ -24,7 +24,7 @@ hcp(name = "cpp_test_exporter", deps = [
 ])
 
 hcp(name = "cpp_test_options_getter", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_test_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_test_export_settings",
 "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/utilities/program/common_actions/exits:lib",
@@ -35,7 +35,7 @@ hcp(name = "cpp_test_options_getter", deps = [
 
 hcp(name = "test_coverage_summary_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:cpp_test_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/cpp:cpp_test_export_settings",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/utilities/types/converters:lib",
 "//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
