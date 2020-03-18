@@ -37,4 +37,5 @@ hcp(name = "meta_block_printer", deps = [
 "//code/tools/transcompilers/unilang/options/sections/meta:meta_watermark_settings",
 "//code/utilities/types/strings/transformers/watermark:lib",
 "//code/utilities/types/vectors/observers:lib",
+"//code/utilities/licenses:apache_2_getter",
 ])

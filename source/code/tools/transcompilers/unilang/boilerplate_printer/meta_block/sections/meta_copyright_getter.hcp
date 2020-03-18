@@ -23,11 +23,7 @@ class
         }
         
         //possibly show company name first
-        if (options.show_company_before){
-            for (auto org: orgs){
-			 str += org.company_name + " ";
-            }
-        }
+        str += Beginning_Company_Names(options,orgs);
         
         //print copyright with possible date
         auto other_stuff = optional_tag_name + options.copyright_date_prefix_statement;
@@ -38,12 +34,44 @@ class
             str += " ";
         }
         
-        std::string date_part = Get_Date_Part(options.print_method,options,file_name);
-        Append_With_Newline(str,date_part + options.copyright_date_suffix_statement);
+        Append(str,Get_Date_Part(options.print_method,options,file_name));
+        
+        //possibly show company name last
+        str += Ending_Company_Names(options,orgs);
+        
+        Append_With_Newline(str,options.copyright_date_suffix_statement);
     }
     
     return str;
 ❱
+
+◀private: static▶ std::string ☀Beginning_Company_Names(Meta_Copyright_Tag_Options const& options, std::vector<Organization> const& orgs)❰
+
+    std::string str;
+    if (options.show_company_before){
+        for (auto org: orgs){
+         str += org.company_name + " ";
+        }
+    }
+    return str;
+❱
+
+◀private: static▶ std::string ☀Ending_Company_Names(Meta_Copyright_Tag_Options const& options, std::vector<Organization> const& orgs)❰
+
+    std::string str;
+    if (options.show_company_after){
+        for (auto org: orgs){
+            str += " ";
+            str += org.company_name + " ";
+        }
+    }
+    
+    if (!str.empty()){
+        str.back() = '.';
+    }
+    return str;
+❱
+
 
 ◀private: static▶ std::string ☀Get_Date_Part(Meta_Copyright_Print_Method const& method, Meta_Copyright_Tag_Options const& options, std::string const& file_name)❰
     std::string str;
