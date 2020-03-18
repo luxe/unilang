@@ -46,14 +46,9 @@ class
 
 ◀public: static▶ void ☀Run_Frame_Logic(sf::RenderWindow & window, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
     
-    //make decisions based on user action
 
-    auto controller_state = F310_Gamepads_State_Getter::Get();
-    state.controller.left.current = controller_state.left;
-    state.controller.right.current = controller_state.right;
-    
-    auto p1_events = F310_Event_Synthesizer::Synthesize_Events(state.controller.left);
-    auto p2_events= F310_Event_Synthesizer::Synthesize_Events(state.controller.right);
+    Set_Current_Controller_State(state);
+    auto events = Synthesize_Events(state.controller);
     
     if (state.phase == Game_Phase::MAIN_MENU){
         Title_Game_Phase::Run_Phase(state,assets);
@@ -69,7 +64,18 @@ class
         Game_Over_Phase::Run_Phase(state,assets);
     }
     
-    //store previous user actions
+    Set_Previous_Controller_State(state);
+❱
+
+◀private: static▶ void ☀Set_Current_Controller_State(Game_State & state)❰
+
+    auto controller_state = F310_Gamepads_State_Getter::Get();
+    state.controller.left.current = controller_state.left;
+    state.controller.right.current = controller_state.right;
+❱
+
+◀private: static▶ void ☀Set_Previous_Controller_State(Game_State & state)❰
+
     state.controller.left.previous = controller_state.left;
     state.controller.right.previous = controller_state.right;
 ❱

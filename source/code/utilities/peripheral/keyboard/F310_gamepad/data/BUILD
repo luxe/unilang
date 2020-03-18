@@ -20,3 +20,7 @@ hcp(name = "f310_gamepad_phases", deps = [
 hcp(name = "f310_gamepads_phases", deps = [
     "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepad_phases",
 ])
+
+hcp(name = "f310_events", deps = [
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_event",
+])

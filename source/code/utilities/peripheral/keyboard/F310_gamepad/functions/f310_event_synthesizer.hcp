@@ -1,48 +1,58 @@
 class
 ❪string❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/functions/f310_event"❫
+❪"code/utilities/peripheral/keyboard/F310_gamepad/functions/f310_events"❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_gamepad_phases"❫
+❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_gamepads_phases"❫
 ⚯
 ❪SFML/Window/Joystick.hpp❫
 ⚞⚟
 
+◀public: static▶ F310_Events ☀Synthesize_Events(F310_Gamepads_Phases const& phases)❰
+    F310_Events x;
+    
+    phases.left = Synthesize_Events(phases.left);
+    phases.right = Synthesize_Events(phases.right);
+    
+    return x;
+❱
 
 ◀public: static▶ std::vector<F310_Event> ☀Synthesize_Events(F310_Gamepad_Phases const& phases)❰
     std::vector<F310_Event> events;
     
-    //start
-    if (!phases.previous.center.start && phases.current.center.start){
-        events.emplace_back(F310_Event::CENTER_START_CLICKED);
-    }
-    if (phases.previous.center.start && phases.current.center.start){
-        events.emplace_back(F310_Event::CENTER_START_HELD);
-    }
-    if (phases.previous.center.start && !phases.current.center.start){
-        events.emplace_back(F310_Event::CENTER_START_RELEASED);
-    }
+    //arrows
+    Synthesize_Button_State(events,phases.previous.arrows.up,phases.current.arrows.up,F310_Event::ARROWS_UP_CLICKED,F310_Event::ARROWS_UP_HELD,F310_Event::ARROWS_UP_RELEASED);
+    Synthesize_Button_State(events,phases.previous.arrows.down,phases.current.arrows.down,F310_Event::ARROWS_DOWN_CLICKED,F310_Event::ARROWS_DOWN_HELD,F310_Event::ARROWS_DOWN_RELEASED);
+    Synthesize_Button_State(events,phases.previous.arrows.left,phases.current.arrows.left,F310_Event::ARROWS_LEFT_CLICKED,F310_Event::ARROWS_LEFT_HELD,F310_Event::ARROWS_LEFT_RELEASED);
+    Synthesize_Button_State(events,phases.previous.arrows.right,phases.current.arrows.right,F310_Event::ARROWS_RIGHT_CLICKED,F310_Event::ARROWS_RIGHT_HELD,F310_Event::ARROWS_RIGHT_RELEASED);
     
-    
-    //back
-    if (!phases.previous.center.back && phases.current.center.back){
-        events.emplace_back(F310_Event::CENTER_BACK_CLICKED);
-    }
-    if (phases.previous.center.back && phases.current.center.back){
-        events.emplace_back(F310_Event::CENTER_BACK_HELD);
-    }
-    if (phases.previous.center.back && !phases.current.center.back){
-        events.emplace_back(F310_Event::CENTER_BACK_RELEASED);
-    }
+    //buttons
+    Synthesize_Button_State(events,phases.previous.buttons.up,phases.current.buttons.up,F310_Event::BUTTONS_UP_CLICKED,F310_Event::BUTTONS_UP_HELD,F310_Event::BUTTONS_UP_RELEASED);
+    Synthesize_Button_State(events,phases.previous.buttons.down,phases.current.buttons.down,F310_Event::BUTTONS_DOWN_CLICKED,F310_Event::BUTTONS_DOWN_HELD,F310_Event::BUTTONS_DOWN_RELEASED);
+    Synthesize_Button_State(events,phases.previous.buttons.left,phases.current.buttons.left,F310_Event::BUTTONS_LEFT_CLICKED,F310_Event::BUTTONS_LEFT_HELD,F310_Event::BUTTONS_LEFT_RELEASED);
+    Synthesize_Button_State(events,phases.previous.buttons.right,phases.current.buttons.right,F310_Event::BUTTONS_RIGHT_CLICKED,F310_Event::BUTTONS_RIGHT_HELD,F310_Event::BUTTONS_RIGHT_RELEASED);
     
     //center
-    if (!phases.previous.center.center && phases.current.center.center){
-        events.emplace_back(F310_Event::CENTER_CENTER_CLICKED);
-    }
-    if (phases.previous.center.center && phases.current.center.center){
-        events.emplace_back(F310_Event::CENTER_CENTER_HELD);
-    }
-    if (phases.previous.center.center && !phases.current.center.center){
-        events.emplace_back(F310_Event::CENTER_CENTER_RELEASED);
-    }
+    Synthesize_Button_State(events,phases.previous.center.start,phases.current.center.start,F310_Event::CENTER_START_CLICKED,F310_Event::CENTER_START_HELD,F310_Event::CENTER_START_RELEASED);
+    Synthesize_Button_State(events,phases.previous.center.back,phases.current.center.back,F310_Event::CENTER_BACK_CLICKED,F310_Event::CENTER_BACK_HELD,F310_Event::CENTER_BACK_RELEASED);
+    Synthesize_Button_State(events,phases.previous.center.center,phases.current.center.center,F310_Event::CENTER_CENTER_CLICKED,F310_Event::CENTER_CENTER_HELD,F310_Event::CENTER_CENTER_RELEASED);
     
     return events;
 ❱
+
+◀private: static▶ void ☀Synthesize_Button_State(std::vector<F310_Event> & events, bool prev, bool cur, F310_Event e1, F310_Event e2, F310_Event e3)❰
+
+    if (!prev && cur){
+        events.emplace_back(e1);
+    }
+    if (prev && cur){
+        events.emplace_back(e2);
+    }
+    if (prev && !cur){
+        events.emplace_back(e3);
+    }
+❱
+
+
+
+
