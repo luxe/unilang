@@ -8,7 +8,7 @@ hcp(name = "stripped_unilang_type_with_qualifiers")
 
 hcp(name = "type_qualifier_dresser", deps = [
 "stripped_unilang_type_with_qualifiers",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:regular_argument_location",
 "//code/utilities/types/strings/transformers/appending:lib",
 ])
@@ -19,5 +19,5 @@ hcp(name = "type_qualifier_stripper", deps = [
 "//code/utilities/types/strings/observers/other:lib",
 "//code/utilities/types/strings/transformers/removing:lib",
 "//code/utilities/types/strings/transformers/stripping:lib",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 ])

@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "good_api_creator", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
@@ -18,7 +18,7 @@ hcp(name = "good_api_creator", deps = [
 
 hcp(name = "deep_copy_creator", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:implicit_contract_adder",
 "//code/tools/transcompilers/unilang/design/in-out:object_name_resolver",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",

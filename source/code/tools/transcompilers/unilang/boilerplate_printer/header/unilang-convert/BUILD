@@ -4,14 +4,14 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "header_adjuster", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/import:import_section",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/program/common_actions/exits:lib",
 ])
 
 hcp(name = "header_extension_deriver", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/import:import_section",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/utilities/types/strings/observers/path:lib",
 "//code/tools/transcompilers/unilang/file_extension_getter:file_extension_getter",
 "//code/utilities/linguistics/computer:source_language",

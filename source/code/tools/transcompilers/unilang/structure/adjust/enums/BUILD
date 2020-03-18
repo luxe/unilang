@@ -12,13 +12,13 @@ hcp(name = "enums_adjuster", deps = [
 
 hcp(name = "enum_standard_incrementer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 "//code/utilities/colors:lib"
 ])
 
 hcp(name = "enum_value_inserter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/enum/item:enum_item",
 ])

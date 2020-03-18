@@ -14,7 +14,7 @@ hcp(name = "doxygen_block_maker", deps = [
 hcp(name = "doxygen_data_getter_for_data_members", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
@@ -28,7 +28,7 @@ hcp(name = "doxygen_data_getter_for_data_members", deps = [
 hcp(name = "doxygen_data_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
@@ -61,7 +61,7 @@ hcp(name = "grammar_adjuster", deps = [
 ])
 
 hcp(name = "value_constraint_comment_deriver", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:value_constraints",
 "//code/tools/transcompilers/unilang/constraint_exporter/interval_constraint:interval_constraint",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",

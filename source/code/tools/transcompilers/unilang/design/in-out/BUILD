@@ -30,7 +30,7 @@ hcp(name = "component_struct_printer", deps = [
 "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 "component_input",
 "component_output",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/design/in-out:input_struct_getter",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/enum_printer:enum_section_printer",
@@ -46,7 +46,7 @@ hcp(name = "component_struct_printer", deps = [
 hcp(name = "api_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/utilities/types/converters:lib",
@@ -58,7 +58,7 @@ hcp(name = "api_printer", deps = [
 hcp(name = "in_out_design_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print/macro:macro_printer",
 "//code/tools/transcompilers/unilang/design/in-out:component_struct_printer",
 ])

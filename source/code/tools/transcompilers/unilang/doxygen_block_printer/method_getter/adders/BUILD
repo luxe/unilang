@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name= "units_description_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
@@ -20,7 +20,7 @@ hcp(name= "units_description_adder", deps = [
 hcp(name = "return_results_description_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
@@ -31,7 +31,7 @@ hcp(name = "return_results_description_adder", deps = [
 hcp(name = "suggested_return_identifier_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",
@@ -43,7 +43,7 @@ hcp(name = "suggested_return_identifier_adder", deps = [
 hcp(name = "main_description_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
@@ -58,7 +58,7 @@ hcp(name = "main_description_adder", deps = [
 hcp(name = "contract_description_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
@@ -74,7 +74,7 @@ hcp(name = "contract_description_adder", deps = [
 hcp(name = "argument_description_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/adjuster:literal_adjuster",
@@ -93,7 +93,7 @@ hcp(name = "argument_description_adder", deps = [
 
 hcp(name = "overload_note_adder", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_shared",

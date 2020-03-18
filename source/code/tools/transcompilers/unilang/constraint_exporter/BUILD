@@ -15,7 +15,7 @@ hcp(name = "value_constraints_to_interval_constraints", deps = [
 hcp(name = "concise_constraint_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/structure/model:structure",
@@ -37,7 +37,7 @@ hcp(name = "concise_constraint_exporter", deps = [
 hcp(name = "concise_constraint_line_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/structure/model:structure",
@@ -54,7 +54,7 @@ hcp(name = "concise_constraint_line_exporter", deps = [
 hcp(name = "if_chain_constraint_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/structure/model:structure",
@@ -71,7 +71,7 @@ hcp(name = "if_chain_constraint_exporter", deps = [
 ])
 
 hcp(name = "constraint_exporter", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/contributor:contributor",
 "//code/tools/transcompilers/unilang/constraint_exporter:concise_constraint_exporter",

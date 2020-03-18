@@ -7,7 +7,7 @@ hcp(name = "transition_function_getter", deps = [
 "//code/tools/transcompilers/unilang/options/sections/data_member:data_member_options",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
-"//code/tools/transcompilers/unilang/options/language-specific:c_language_version",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_language_version",
 "//code/tools/transcompilers/unilang/type_converters/special-type-to-comparison/settings:special_comparison_type",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/type_converters/special-type-to-comparison:special_type_comparison_getter",

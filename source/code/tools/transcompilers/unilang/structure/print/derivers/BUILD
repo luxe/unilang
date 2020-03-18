@@ -10,7 +10,7 @@ hcp(name = "struct_name_deriver", deps = [
 
 hcp(name = "type_name_deriver", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_argument",
 "//code/tools/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_result",
 "//code/tools/transcompilers/unilang/structure/model/sections/typedef:typedef_argument",
@@ -29,7 +29,7 @@ hcp(name = "structure_typename_deriver", deps = [
 
 hcp(name = "identifier_name_deriver", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_argument",
 "//code/tools/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_result",
 "//code/tools/transcompilers/unilang/options/sections:notation_settings",

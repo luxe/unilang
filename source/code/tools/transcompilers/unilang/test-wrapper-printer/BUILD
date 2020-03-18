@@ -10,14 +10,14 @@ hcp(name = "test_wrapper_utilities", deps = [
 
 hcp(name = "va_list_part_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 "//code/utilities/types/vectors/observers:lib",
 ])
 
 hcp(name = "wrapper_interface_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:stream_creator",
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_utilities",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
@@ -34,7 +34,7 @@ hcp(name = "wrapper_interface_printer", deps = [
 
 hcp(name = "wrapper_source_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/structure/print:stream_creator",
 "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
@@ -50,7 +50,7 @@ hcp(name = "wrapper_source_printer", deps = [
 
 hcp(name = "in_out_design_test_wrapper_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "wrapper_interface_printer",
 "wrapper_source_printer",
 "//code/utilities/streams/filestreams:lib",
@@ -59,7 +59,7 @@ hcp(name = "in_out_design_test_wrapper_printer", deps = [
 
 hcp(name = "normal_design_test_wrapper_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "wrapper_interface_printer",
 "wrapper_source_printer",
 "//code/utilities/streams/filestreams:lib",
@@ -68,7 +68,7 @@ hcp(name = "normal_design_test_wrapper_printer", deps = [
 
 hcp(name = "test_wrapper_alias_helper_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_utilities",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/converters:lib",
@@ -77,7 +77,7 @@ hcp(name = "test_wrapper_alias_helper_printer", deps = [
 hcp(name = "test_wrapper_method_shared", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_utilities",
 "//code/utilities/types/vectors/observers:lib",
 "//code/utilities/streams/filestreams:lib",
@@ -87,7 +87,7 @@ hcp(name = "test_wrapper_method_shared", deps = [
 hcp(name = "test_wrapper_methods_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/design/in-out:input_struct_getter",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
@@ -111,7 +111,7 @@ hcp(name = "test_wrapper_methods_printer", deps = [
 
 hcp(name = "test_wrapper_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "normal_design_test_wrapper_printer",
 "in_out_design_test_wrapper_printer",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
@@ -125,7 +125,7 @@ hcp(name = "test_wrapper_printer", deps = [
 hcp(name = "test_wrapper_special_method_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
 "//code/tools/transcompilers/unilang/design/in-out:input_struct_getter",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",

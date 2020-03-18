@@ -6,7 +6,7 @@ hcp(name = "shared_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/converters:lib",
@@ -27,7 +27,7 @@ cpp_object(name = "function_declaration_location")
 hcp(name = "doxygen_block_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_block_maker",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data",
 "//code/tools/transcompilers/unilang/doxygen_block_printer:doxygen_data_getter",
@@ -39,7 +39,7 @@ hcp(name = "doxygen_block_printer", deps = [
 hcp(name = "data_member_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/literal_suffix_getter/getter:literal_suffix_settings",
@@ -59,7 +59,7 @@ hcp(name = "method_body_token_printer", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/in-method-printers:body_param_in_method_printer",
 "//code/tools/transcompilers/unilang/in-method-printers:data_member_in_method_printer",
 "//code/tools/transcompilers/unilang/in-method-printers:method_call_in_method_printer",
@@ -80,7 +80,7 @@ hcp(name = "namespace_printer", deps = [
 ])
 
 hcp(name = "return_type_str_getter", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
@@ -92,7 +92,7 @@ hcp(name = "return_type_str_getter", deps = [
 ])
 
 hcp(name = "method_block_ender", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
@@ -113,7 +113,7 @@ hcp(name = "methods_printer", deps=[
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/tokens:token_name",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print:function_declaration_location",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
@@ -139,7 +139,7 @@ hcp(name = "method_signature_printer", deps=[
 "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 "//code/tools/transcompilers/unilang/tokens:token_name",
 "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print:function_declaration_location",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
@@ -178,7 +178,7 @@ hcp(name="hidl_data_member_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/types:type_section",
 "//code/tools/transcompilers/unilang/options/sections:portion_options",
 "//code/tools/transcompilers/unilang/options:general_options",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
 "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
@@ -191,7 +191,7 @@ hcp(name="hidl_data_member_printer", deps = [
 
 hcp(name = "object_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "object_file_printer",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/converters:lib",
@@ -200,7 +200,7 @@ hcp(name = "object_printer", deps = [
 
 hcp(name = "object_file_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/tools/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
 "//code/tools/transcompilers/unilang/design/normal:normal_design_printer",
@@ -215,7 +215,7 @@ hcp(name = "object_file_printer", deps = [
 
 hcp(name = "actual_structure_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/tools/transcompilers/unilang/design/normal:normal_design_printer",
 "//code/tools/transcompilers/unilang/design/in-out:in_out_design_printer",
@@ -228,7 +228,7 @@ hcp(name = "actual_structure_printer", deps = [
 hcp(name = "global_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:stream_creator",
 "//code/tools/transcompilers/unilang/boilerplate_printer/meta_block:meta_block_printer",
 "//code/tools/transcompilers/unilang/boilerplate_printer:code_wrap_printer",
@@ -255,7 +255,7 @@ hcp(name = "global_printer", deps = [
 
 hcp(name = "file_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/structure/print:global_printer",
 "//code/tools/transcompilers/unilang/structure/print:object_printer",
 "//code/utilities/streams/filestreams:lib",

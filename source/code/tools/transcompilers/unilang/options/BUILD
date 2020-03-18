@@ -14,11 +14,11 @@ hcp(name = "general_options", deps = [
 "//code/tools/transcompilers/unilang/options/design_strategy:in_out_export_api_style",
 "//code/tools/transcompilers/unilang/options/filesystem:general_filesystem_naming",
 "//code/tools/transcompilers/unilang/options:constraint_export_style",
-"//code/tools/transcompilers/unilang/options/language-specific:c_language_version",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_language_version",
 ])
 
 hcp(name = "foreign_language_export_settings", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:cpp_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:cpp_test_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific:cpp_benchmark_export_settings",

@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "f2si_c_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/print:file_printer",
 "//code/tools/transcompilers/unilang/test-wrapper-printer:test_wrapper_printer",
@@ -23,7 +23,7 @@ hcp(name = "f2si_contributors_getter", deps = [
 ])
 
 hcp(name = "f2si_c_options_getter", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/utilities/program/common_actions/exits:lib",

@@ -6,7 +6,7 @@ cpp_object(name = "type_relationship")
 
 hcp(name = "import_relation_and_label_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/boilerplate_printer/header/relationships:type_relationship",
 "//code/tools/transcompilers/unilang/boilerplate_printer/header/relationships/derived_data:related_things_and_their_labels",
 "//code/utilities/types/vectors/transformers:lib",

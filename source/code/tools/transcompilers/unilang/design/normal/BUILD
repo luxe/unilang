@@ -23,7 +23,7 @@ hcp(name = "subgroup_tag_printer", deps = [
 
 hcp(name = "method_sorting_and_grouping_order_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/design/normal/data:subgroup_sorted_methods",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/structure/print:methods_printer",
@@ -38,7 +38,7 @@ hcp(name = "method_sorting_and_grouping_order_printer", deps = [
 hcp(name = "normal_design_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/options/language-specific:c_export_settings",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
 "//code/tools/transcompilers/unilang/design/in-out:component_struct_printer",
 "//code/tools/transcompilers/unilang/structure/print/forward_declares:forward_declare_printer",
 "//code/tools/transcompilers/unilang/structure/print/typedef:typedef_printer",

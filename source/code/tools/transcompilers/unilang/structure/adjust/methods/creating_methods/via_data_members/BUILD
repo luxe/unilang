@@ -8,7 +8,7 @@ hcp(name = "data_member_utility_function_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
 "//code/tools/transcompilers/unilang/structure/print:function_declaration_location",
 "//code/tools/transcompilers/unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
-"//code/tools/transcompilers/unilang/options/language-specific:c_language_version",
+"//code/tools/transcompilers/unilang/options/language-specific/c:c_language_version",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters:printable_function_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/serialization:serializable_function_getter",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/transition:transition_function_getter",
