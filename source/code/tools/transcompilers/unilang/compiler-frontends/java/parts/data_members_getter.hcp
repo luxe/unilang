@@ -23,6 +23,8 @@ class
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
+❪"code/tools/transcompilers/unilang/structure/print/derivers/identifier_name_deriver"❫
+❪"code/utilities/linguistics/computer/types/generic/unilang_type_to_language_type_converter"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
@@ -38,7 +40,19 @@ class
     for (size_t i = 0; i < structure.data_members.data_members.size(); ++i){
         x += Doxygen_Block_Printer::Get_Doxygen_Member_Item_Comment(structure.data_members.data_members[i],bad_temp,4);
         x += "    ";
+        x += Get_Real_Type(structure.data_members.data_members[i]);
+        x += " ";
+        x += Identifier_Name_Deriver::Derive_Name(structure.data_members.data_members[i],bad_temp,false,true);
+        x += ";\n\n";
+
     }
     
     return x;
+❱
+
+
+◀public: static▶ std::string ☀Get_Real_Type(Data_Member_Item const& mem)❰
+    auto type       = as_string(mem.type.value);
+    auto real_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(type, Source_Language::JAVA).name;
+    return real_type;
 ❱
