@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name = "processing_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/tools/transcompilers/unilang/options/language-specific:html_table_options",
+"//code/tools/transcompilers/unilang/options/language-specific/html_table:html_table_options",
 "//code/utilities/types/strings/transformers/appending:lib",
 "//code/utilities/types/converters:lib",
 "//code/utilities/types/strings/observers/other:lib",

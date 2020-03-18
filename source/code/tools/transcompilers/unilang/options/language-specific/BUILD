@@ -15,11 +15,6 @@ hcp("mermaid_settings",deps = [
 "//code/tools/transcompilers/unilang/options:general_options",
 ])
 
-hcp(name = "html_table_options", deps = [
-"//code/utilities/types/strings/transformers/casing:case_format_style",
-"//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
-])
-
 hcp(name = "treesheets_options", deps = [
 "//code/utilities/types/strings/transformers/casing:case_format_style"
 ])

@@ -31,7 +31,7 @@ hcp(name = "foreign_language_export_settings", deps = [
 "//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
 "//code/tools/transcompilers/unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
 "//code/tools/transcompilers/unilang/options/language-specific/call_graph:call_graph_options",
-"//code/tools/transcompilers/unilang/options/language-specific:html_table_options",
+"//code/tools/transcompilers/unilang/options/language-specific/html_table:html_table_options",
 "//code/tools/transcompilers/unilang/options/language-specific:treesheets_options",
 "//code/tools/transcompilers/unilang/options/language-specific:mermaid_settings",
 "//code/tools/transcompilers/unilang/options/language-specific/dzslides:dzslides_settings",
