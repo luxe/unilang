@@ -16,10 +16,29 @@ class
 ❪"code/tools/transcompilers/unilang/structure/adjust/structure_adjuster"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/tools/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
+❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string text;
+    text += Get_Boilerplate(structure,contributors,settings);
+    
+    return text;
+❱
+
+◀private: static▶ std::string ☀Get_Boilerplate(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
+
+    std::string text;
+    
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::HIDL;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::NORMAL;
+    file_settings.file = File_Type::DATA;
+    
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
+    text += Boilerplate_Printer::Get_Top_Comment(structure,file_settings,settings.portion.meta,final_file_name);
     
     return text;
 ❱

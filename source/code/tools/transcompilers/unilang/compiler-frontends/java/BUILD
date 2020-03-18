@@ -3,25 +3,25 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "java_exporter", deps = [
-"//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
-"//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
-"//code/utilities/types/strings/transformers/appending:lib",
-"//code/utilities/types/converters:lib",
-"//code/utilities/types/strings/observers/other:lib",
-"//code/tools/transcompilers/unilang/structure/print:struct_derivers",
-"//code/utilities/types/strings/transformers/casing:case_modifier",
-"//code/utilities/program/call:lib",
-"//code/utilities/filesystem/paths:lib",
-"//code/tools/transcompilers/unilang/options/manipulation:case_adjustment_settings",
-"//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
-"//code/utilities/types/vectors/observers:lib",
-"//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
-"//code/utilities/types/vectors/operators:lib",
-"//code/utilities/types/char:lib",
-"//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
-"//code/tools/transcompilers/unilang/compiler-frontends/java:java_str_getter",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/types/converters:lib",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/tools/transcompilers/unilang/structure/print:struct_derivers",
+    "//code/utilities/types/strings/transformers/casing:case_modifier",
+    "//code/utilities/program/call:lib",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/tools/transcompilers/unilang/options/manipulation:case_adjustment_settings",
+    "//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/types/char:lib",
+    "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
+    "//code/tools/transcompilers/unilang/compiler-frontends/java:java_str_getter",
 ])
 
 hcp(name = "java_str_getter", deps = [
@@ -38,8 +38,14 @@ hcp(name = "java_str_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/types/strings/observers/converting:lib",
+    "//code/tools/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
+    "//code/tools/transcompilers/unilang/structure/print/filename:file_name_getter",
 ])
 
 hcp(name = "java_settings_getter", deps = [
-"//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
+    "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
+    "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/utilities/program/common_actions/exits:lib",
+    "//code/utilities/personal/life:company_getter",
 ])
