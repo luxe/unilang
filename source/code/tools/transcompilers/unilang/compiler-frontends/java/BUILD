@@ -28,7 +28,7 @@ hcp(name = "java_str_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/tools/transcompilers/unilang/contributor:contributor",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-    "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
+    "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/types/converters:lib",
     "//code/utilities/types/strings/transformers/casing:case_modifier",
