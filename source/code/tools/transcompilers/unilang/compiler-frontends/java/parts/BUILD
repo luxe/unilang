@@ -46,4 +46,10 @@ hcp(name = "methods_getter", deps = [
     "//code/tools/transcompilers/unilang/options:general_options",
     "//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
     "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
+    "//code/tools/transcompilers/unilang/structure/print:return_type_str_getter",
+    "//code/tools/transcompilers/unilang/structure/print:shared_printer",
+    "//code/tools/transcompilers/unilang/structure/print:function_declaration_location",
+    "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
+    "//code/utilities/types/general:lib",
+    "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
 ])

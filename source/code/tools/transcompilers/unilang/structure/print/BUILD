@@ -89,6 +89,7 @@ hcp(name = "return_type_str_getter", deps = [
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/types/converters:lib",
 "//code/utilities/types/general:lib",
+"//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
 ])
 
 hcp(name = "method_block_ender", deps = [

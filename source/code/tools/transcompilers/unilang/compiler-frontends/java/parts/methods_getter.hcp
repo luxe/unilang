@@ -6,6 +6,8 @@ class
 ❪"code/tools/transcompilers/unilang/contributor/contributor"❫
 ❪"code/tools/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/tools/transcompilers/unilang/options/language-specific/java/java_settings"❫
+❪"code/tools/transcompilers/unilang/structure/print/function_declaration_location"❫
+❪"code/tools/transcompilers/unilang/structure/model/sections/meta/code_type"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/converters/lib"❫
@@ -20,13 +22,105 @@ class
 ❪"code/tools/transcompilers/unilang/boilerplate_printer/boilerplate_printer"❫
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/tools/transcompilers/unilang/structure/print/return_type_str_getter"❫
+❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
+❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
+❪"code/utilities/types/general/lib"❫
+❪"code/tools/transcompilers/unilang/structure/print/derivers/type_name_deriver"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string x;
     
+    //TODO: FIX THIS.  DONT DO THIS:
+    //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
+    //THIS IS A TEMP HACK/FIX.
+    C_Export_Settings bad_temp;
+    bad_temp.portion = settings.portion;
+    bad_temp.general = settings.general;
+    
     for (auto it: structure.methods.methods){
+        x += Doxygen_Block_Printer::Get_Doxygen_Method_Comment(it,structure.methods.methods,bad_temp);
+        x += Get_Signature(it,settings);
+        x += "\n";
+        x += "{\n";
+        x += Get_Body();
+        x += "\n}\n";
     }
     
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Signature(Method_Item const& method, Java_Settings const& settings)❰
+
+    //TODO: FIX THIS.  DONT DO THIS:
+    //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
+    //THIS IS A TEMP HACK/FIX.
+    C_Export_Settings bad_temp;
+    bad_temp.portion = settings.portion;
+    bad_temp.general = settings.general;
+    
+    std::string x;
+    x += Possibly_Get_Static_Keyword(method,settings);
+    
+    std::string file_name = "";
+    x += Return_Type_Str_Getter::Get_Java(file_name,method,settings);
+    x += " ";
+    std::string filename = "";
+    x += Shared_Printer::Derive_Function_Name(file_name,Code_Type::PRODUCT_TYPE,method,bad_temp);
+    x += Get_Arguments(method,settings);
+    x += " {\n";
+    x += "\n}\n";
+    
+    
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Arguments(Method_Item const& method, Java_Settings const& settings)❰
+    std::string x;
+    x += "(";
+        Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(method.function_arguments
+         ,[&](Function_Argument arg){
+            
+           x += Get_Printable_Argument(arg,settings);
+           x += ", ";
+         }
+         ,[&](Function_Argument arg){
+           x += Get_Printable_Argument(arg,settings);
+         });
+        
+    x += ")";
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Printable_Argument(Function_Argument const& arg, Java_Settings const& settings)❰
+    std::string x;
+    
+   auto type = as_string(arg.type.value);
+   auto real_type = Type_Name_Deriver::Derive_Name(arg,Source_Language::JAVA);
+    x += real_type;
+    return x;
+❱
+
+◀private: static▶ std::string ☀Possibly_Get_Static_Keyword(Method_Item const& method, Java_Settings const& settings)❰
+      
+      std::string x;
+      
+    //TODO: MOVE OUT
+    std::string static_keyword = "static";
+    std::string static_keyword_spacer = " ";
+     
+     //static qualifier
+     if (method.storage == Storage_Specifier::STATIC){
+        Append(x,static_keyword);
+        Append(x,static_keyword_spacer);
+     }
+     return x;
+❱
+
+
+
+◀private: static▶ std::string ☀Get_Body()❰
+    std::string x;
     return x;
 ❱

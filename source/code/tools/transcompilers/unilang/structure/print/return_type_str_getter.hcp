@@ -2,6 +2,7 @@ class
 
 
 ❪"code/tools/transcompilers/unilang/options/language-specific/c/c_export_settings"❫
+❪"code/tools/transcompilers/unilang/options/language-specific/java/java_settings"❫
 ❪"code/tools/transcompilers/unilang/structure/model/sections/method/method_item"❫
 ⚯
 ❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
@@ -38,6 +39,17 @@ class
     return str;
 ❱
 
+◀public: static▶ std::string ☀Get_Java(std::string const& file_name, Method_Item const& method, Java_Settings const& options)❰
+
+    std::string str;
+    
+    //either print the return type (if there is one), or print the return type based on the fact that there isn't one
+    if (!method.return_results.empty()){str += Get_Non_Empty_Return_Type(method,options);}
+    else{ str += Add_Java_No_Return_Type(options);}
+    
+    return str;
+❱
+
 
 //C++ version
 ◀private: static▶ std::string ☀Add_Cpp_No_Return_Type(std::string const& file_name, Method_Item const& method, C_Export_Settings const& options)❰
@@ -55,6 +67,11 @@ class
 ◀private: static▶ std::string ☀Add_C_No_Return_Type(C_Export_Settings const& options)❰
   std::string str;
   str += Get_Void_Type(options) + " ";
+  return str;
+❱
+◀private: static▶ std::string ☀Add_Java_No_Return_Type(Java_Settings const& options)❰
+  std::string str;
+  str += "void ";
   return str;
 ❱
 
@@ -76,6 +93,15 @@ class
   
   //get type and specifiers
   str += Get_Real_Type_With_Specifiers(method,options);
+  
+  return str;
+❱
+
+◀private: static▶ std::string ☀Get_Non_Empty_Return_Type(Method_Item const& method, Java_Settings const& options)❰
+  std::string str;
+  
+  auto real_type = Type_Name_Deriver::Derive_Name(method.return_results[0],Source_Language::JAVA);
+  str = real_type + " ";
   
   return str;
 ❱
