@@ -52,4 +52,5 @@ hcp(name = "methods_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
     "//code/utilities/types/general:lib",
     "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
+    "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
 ])

@@ -27,6 +27,7 @@ class
 ❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
 ❪"code/utilities/types/general/lib"❫
 ❪"code/tools/transcompilers/unilang/structure/print/derivers/type_name_deriver"❫
+❪"code/tools/transcompilers/unilang/structure/print/derivers/identifier_name_deriver"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
@@ -41,7 +42,8 @@ class
     
     for (auto it: structure.methods.methods){
         x += Doxygen_Block_Printer::Get_Doxygen_Method_Comment(it,structure.methods.methods,bad_temp);
-        x += Get_Signature(it,settings);
+        x += "\n";
+        x += Get_Signature(structure.name,it,settings);
         x += "\n";
         x += "{\n";
         x += Get_Body();
@@ -51,7 +53,7 @@ class
     return x;
 ❱
 
-◀private: static▶ std::string ☀Get_Signature(Method_Item const& method, Java_Settings const& settings)❰
+◀private: static▶ std::string ☀Get_Signature(std::string const& name, Method_Item const& method, Java_Settings const& settings)❰
 
     //TODO: FIX THIS.  DONT DO THIS:
     //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
@@ -63,14 +65,10 @@ class
     std::string x;
     x += Possibly_Get_Static_Keyword(method,settings);
     
-    std::string file_name = "";
-    x += Return_Type_Str_Getter::Get_Java(file_name,method,settings);
+    x += Return_Type_Str_Getter::Get_Java(name,method,settings);
     x += " ";
-    std::string filename = "";
-    x += Shared_Printer::Derive_Function_Name(file_name,Code_Type::PRODUCT_TYPE,method,bad_temp);
+    x += Shared_Printer::Derive_Function_Name(name,Code_Type::PRODUCT_TYPE,method,bad_temp);
     x += Get_Arguments(method,settings);
-    x += " {\n";
-    x += "\n}\n";
     
     
     return x;
@@ -94,11 +92,21 @@ class
 ❱
 
 ◀private: static▶ std::string ☀Get_Printable_Argument(Function_Argument const& arg, Java_Settings const& settings)❰
+
+    //TODO: FIX THIS.  DONT DO THIS:
+    //WE SHOULD PASS GENERAL/PORTION into the data member printer as well
+    //THIS IS A TEMP HACK/FIX.
+    C_Export_Settings bad_temp;
+    bad_temp.portion = settings.portion;
+    bad_temp.general = settings.general;
+    
     std::string x;
     
    auto type = as_string(arg.type.value);
    auto real_type = Type_Name_Deriver::Derive_Name(arg,Source_Language::JAVA);
     x += real_type;
+    x += " ";
+    x += Identifier_Name_Deriver::Derive_Name(arg,bad_temp);
     return x;
 ❱
 
