@@ -26,3 +26,42 @@ If two queues had the same name, they would be instances of the same underlying 
     this.redis = redis;
     this.name = name;
 􏶳
+
+􏷐push a value onto the queue􏷏
+􏶠adds the value into the backend redis queue􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
+􏶴
+    redis.lpush(name,val);
+􏶳
+
+􏷐pop a value off of the queue􏷏
+􏶠takes the tail value at the end of the queue􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
+􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
+􏶴
+    return redis.brpop(1,name).get(1);
+􏶳
+
+􏷐clear the queue􏷏
+􏶠delete all elements in the queue so that it is empty􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒clear􏷑
+􏶴
+    redis.del(name);
+􏶳
+
+􏷐get size􏷏
+􏶠checks the current length of the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒size􏷑
+􏶾l􏶽􏶼length􏶻􏶺the current length of the queue􏶹
+􏶴
+    return redis.llen(name);
+􏶳
+
+􏷐check if the queue is empty􏷏
+􏶠checks whether the queue is empty; i.e. has no elements􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒empty􏷑
+􏶾bool􏶽􏶼is empty􏶻􏶺whether the queue is empty or not􏶹
+􏶴
+    return redis.llen(name) == 0;
+􏶳
