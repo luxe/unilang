@@ -46,7 +46,7 @@ class
         x += Get_Signature(structure.name,it,settings);
         x += "\n";
         x += "{\n";
-        x += Get_Body();
+        x += Get_Body(it,settings);
         x += "\n}\n";
     }
     
@@ -64,6 +64,8 @@ class
     
     std::string x;
     x += Possibly_Get_Static_Keyword(method,settings);
+    
+    x += Get_Visibility_Keyword(method,settings);
     
     x += Return_Type_Str_Getter::Get_Java(name,method,settings);
     x += " ";
@@ -126,9 +128,21 @@ class
      return x;
 ❱
 
+◀private: static▶ std::string ☀Get_Visibility_Keyword(Method_Item const& method, Java_Settings const& settings)❰
+    if (method.class_access == Class_Access::PUBLIC){
+        return "public ";
+    }
+    else if (method.class_access == Class_Access::PROTECTED){
+        return "protected ";
+    }
+    return "private ";
+❱
 
 
-◀private: static▶ std::string ☀Get_Body()❰
+◀private: static▶ std::string ☀Get_Body(Method_Item const& method, Java_Settings const& settings)❰
     std::string x;
+    for (auto const& it: method.body){
+        x += as_string(it.value);
+    }
     return x;
 ❱
