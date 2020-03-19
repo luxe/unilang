@@ -48,20 +48,20 @@ class
     
 
     Set_Current_Controller_State(state);
-    auto events = Synthesize_Events(state.controller);
+    auto events = F310_Event_Synthesizer::Synthesize_Events(state.controller);
     
     if (state.phase == Game_Phase::MAIN_MENU){
-        Title_Game_Phase::Run_Phase(state,assets);
+        Title_Game_Phase::Run_Phase(events,state,assets);
     }
     else if (state.phase == Game_Phase::STARTING_GAME){
-        Start_Game_Phase::Run_Phase(state,assets);
+        Start_Game_Phase::Run_Phase(events,state,assets);
         state.phase = Game_Phase::PLAYING_GAME;
     }
     else if(state.phase == Game_Phase::PLAYING_GAME){
-        Regular_Game_Phase::Run_Phase(state,assets);
+        Regular_Game_Phase::Run_Phase(events,state,assets);
     }
     else if(state.phase == Game_Phase::END_GAME){
-        Game_Over_Phase::Run_Phase(state,assets);
+        Game_Over_Phase::Run_Phase(events,state,assets);
     }
     
     Set_Previous_Controller_State(state);
@@ -76,8 +76,8 @@ class
 
 ◀private: static▶ void ☀Set_Previous_Controller_State(Game_State & state)❰
 
-    state.controller.left.previous = controller_state.left;
-    state.controller.right.previous = controller_state.right;
+    state.controller.left.previous = state.controller.left.current;
+    state.controller.right.previous = state.controller.right.current;
 ❱
 
 

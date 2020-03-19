@@ -58,5 +58,7 @@ values = [
 
 hcp(name = "f310_event_synthesizer", deps = [
     "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
     "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepad_phases",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
 ])

@@ -46,6 +46,7 @@ hcp(name = "start_game_phase", deps = [
     "//code/utilities/math:math",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/linguistics/build_word/game:puzzle_builder",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
 ])
 
 hcp(name = "game_over_phase", deps = [
@@ -55,6 +56,7 @@ hcp(name = "game_over_phase", deps = [
     "//code/utilities/math:math",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/strings/sfml:sfml_text",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
 ])
 
 hcp(name = "title_game_phase", deps = [
@@ -69,6 +71,7 @@ hcp(name = "title_game_phase", deps = [
     "//code/utilities/colors:screen_position_to_rgb",
     "//code/utilities/colors:converters",
     "//code/utilities/types/char:lib",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
 ])
 
 hcp(name = "regular_game_phase", deps = [
@@ -90,4 +93,5 @@ hcp(name = "regular_game_phase", deps = [
     "//code/utilities/linguistics/speak:word_speaker",
     "//code/utilities/colors:converters",
     "//code/utilities/colors:color_transitioner",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
 ])
