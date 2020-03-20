@@ -67,6 +67,28 @@ If two queues had the same name, they would be instances of the same underlying 
     redis.del(name);
 􏶳
 
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto the queue
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop into􏷑
+􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val;
+    do {
+      val = redis.brpoplpush(name, intoQueue.getName(), 1);
+      
+      // right here is an operation loss risk
+      if (Thread.currentThread().isInterrupted()) {
+        return null;
+      }
+    } while (val == null);
+    return val;
+􏶳
+
+
+
 􏷐get name􏷏
 􏶠get the name of the queue.  this is the redis key used for the list􏶡
 􏷘+􏷗􏴅Observer􏴆􏷒get name􏷑
