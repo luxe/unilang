@@ -5,6 +5,12 @@ Its important to know that the lifetime of the queue persists before and after t
 Therefore, two shard queues with the same name, would in fact be the same underlying redis queue􏷯
 􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
 
+good inspiration and alternatives
+https://github.com/redisson/redisson
+
+redis list operations:
+https://redis.io/commands#list
+
 
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
 
@@ -40,7 +46,9 @@ If two queues had the same name, they would be instances of the same underlying 
 􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
 􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
 􏶴
-    return redis.brpop(1,name).get(1);
+    //block indefinitely
+    int blockTimeout = 0;
+    return redis.brpop(blockTimeout,name).get(1);
 􏶳
 
 􏷐clear the queue􏷏
@@ -48,6 +56,39 @@ If two queues had the same name, they would be instances of the same underlying 
 􏷘+􏷗􏴅Transformer􏴆􏷒clear􏷑
 􏶴
     redis.del(name);
+􏶳
+
+􏷐peek the next queue value􏷏
+􏶠similar to a pop, peek will preserve the item in the queue.
+be careful about peeking with multiple threads.
+a thread that peeks cannot assume they will get that value when popping due to other threads􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒peek􏷑
+􏶾string􏶽􏶼peek_val􏶻􏶺the peeked value􏶹
+􏶴
+    return redis.lrange(name,-1,-1).get(0);
+􏶳
+
+􏷐observe an element at a particular index􏷏
+􏶠index must be in bounds􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒at􏷑
+􏶜􏶝􏷆long􏷅􏷄index􏷃􏷀the index􏶿
+􏶾String􏶽􏶼val􏶻􏶺the value at the index􏶹
+􏶴
+    return redis.lindex(name,index);
+􏶳
+
+􏷐check if value exists in the list􏷏
+􏶠O(n) not performant.  consider using a set􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒exists􏷑
+􏶜􏶝􏷆string􏷅􏷄search val􏷃􏷀the value to check for in the list􏶿
+􏶾bool􏶽􏶼exists􏶻􏶺whether or not the value exits in the list􏶹
+􏶴
+    for (long i = 0; i < size(); ++i){
+        if (at(i) == searchVal){
+            return true;
+        }
+    }
+    return false;
 􏶳
 
 􏷐get size􏷏
