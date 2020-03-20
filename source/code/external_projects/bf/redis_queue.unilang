@@ -2,7 +2,7 @@
 􏷲a redis queue􏷱
 􏷰a redis queue is an implementation of a queue data structure which internally uses a redis cluster to distribute the data across shards.
 Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
-Therefore, two shard queues with the same name, would in fact be the same underlying redis queue􏷯
+Therefore, two redis queues with the same name, would in fact be the same underlying redis queue􏷯
 􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
 
 good inspiration and alternatives
@@ -46,9 +46,7 @@ If two queues had the same name, they would be instances of the same underlying 
 􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
 􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
 􏶴
-    //block indefinitely
-    int blockTimeout = 0;
-    return redis.brpop(blockTimeout,name).get(1);
+    return redis.brpop(popTimeout(),name).get(1);
 􏶳
 
 􏷐remove element from list􏷏
@@ -144,4 +142,13 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶾bool􏶽􏶼is empty􏶻􏶺whether the queue is empty or not􏶹
 􏶴
     return redis.llen(name) == 0;
+􏶳
+
+􏷐pop timeout􏷏
+􏶠the amount of time in seconds to wait when we are unable to pop􏶡
+􏷘-􏷗􏴅Observer􏴆􏷒pop timeout􏷑
+􏶾int􏶽􏶼pop timeout􏶻􏵜seconds􏵝􏶺the number seconds to wait when unable to pop􏶹
+􏶴
+    //block indefinitely
+    return 0;
 􏶳
