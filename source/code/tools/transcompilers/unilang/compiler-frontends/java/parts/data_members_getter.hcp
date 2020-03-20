@@ -40,7 +40,8 @@ class
     for (size_t i = 0; i < structure.data_members.data_members.size(); ++i){
         x += Doxygen_Block_Printer::Get_Doxygen_Member_Item_Comment(structure.data_members.data_members[i],bad_temp,4);
         x += "    ";
-        x += Get_Specifiers(structure.data_members.data_members[i]);
+        x += Get_Visibility_Specifiers(structure.data_members.data_members[i]);
+        x += Posibily_Get_Final_Specifier(structure.data_members.data_members[i]);
         x += Get_Real_Type(structure.data_members.data_members[i]);
         x += " ";
         x += Identifier_Name_Deriver::Derive_Name(structure.data_members.data_members[i],bad_temp,false,true);
@@ -57,7 +58,7 @@ class
     auto real_type = Unilang_Type_To_Language_Type_Converter::Convert_To_Language_Type(type, Source_Language::JAVA).name;
     return real_type;
 ❱
-◀public: static▶ std::string ☀Get_Specifiers(Data_Member_Item const& mem)❰
+◀public: static▶ std::string ☀Get_Visibility_Specifiers(Data_Member_Item const& mem)❰
     std::string x;
     
     if (mem.class_access == Class_Access::PUBLIC){
@@ -70,7 +71,12 @@ class
         x += "private ";
     }
     
-    //x += " final ";
-    
     return x;
+❱
+
+◀public: static▶ std::string ☀Posibily_Get_Final_Specifier(Data_Member_Item const& mem)❰
+    if (mem.is_const){
+        return "final ";
+    }
+    return "";
 ❱
