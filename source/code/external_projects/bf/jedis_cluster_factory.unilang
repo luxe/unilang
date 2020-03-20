@@ -1,0 +1,64 @@
+􏶞o􏶟
+􏷲create a jedis cluster instance from proto configs􏷱
+􏷰a factory for creating a jedis cluster instance􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+
+􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
+􏷤􏷣􏷦com.google.common.collect.Lists􏷥
+􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦build.buildfarm.instance.shard.RedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.RedisShardBackplaneConfig􏷥
+􏷤􏷣􏷦redis.clients.jedis.HostAndPort􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisClusterPipeline􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPoolConfig􏷥
+􏷤􏷣􏷦rjava.net.URI􏷥
+􏷤􏷣􏷦rjavax.naming.ConfigurationException􏷥
+
+
+
+􏷐create a jedis cluster instance􏷏
+􏶠use proto configuration to connect to a redis cluster server and provide a jedis client􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒create􏷑
+􏶜􏶝􏷆RedisShardBackplaneConfig􏷅􏷄config􏷃􏷀configuration for connecting to a redis cluster server􏶿
+􏶾Supplier<JedisCluster>􏶽􏶼jedis􏶻􏶺an established jedis client used to operate on the redis cluster􏶹
+􏶴
+    return createJedisClusterFactory(parseUri(config.getRedisUri()), createJedisPoolConfig(config));
+􏶳
+
+􏷐create a jedis cluster instance􏷏
+􏶠use the URI and pool information to connect to a redis cluster server and provide a jedis client􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒create jedis cluster factory􏷑
+􏶜􏶝􏷆URI􏷅􏷄redis uri􏷃􏷀a valid uri to a redis instance􏶿
+􏶜􏶝􏷆RedisShardBackplaneConfig􏷅􏷄pool config􏷃􏷀configuration related to redis pools􏶿
+􏶾Supplier<JedisCluster>􏶽􏶼jedis􏶻􏶺an established jedis client used to operate on the redis cluster􏶹
+􏶴
+    return () -> new JedisCluster(new HostAndPort(redisUri.getHost(), redisUri.getPort()), poolConfig);
+􏶳
+
+􏷐create a jedis pool config􏷏
+􏶠use configuration to build the appropriate jedis pool configuration􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒create jedis pool config􏷑
+􏶜􏶝􏷆RedisShardBackplaneConfig􏷅􏷄config􏷃􏷀configuration for connecting to a redis cluster server􏶿
+􏶾JedisPoolConfig􏶽􏶼pool config􏶻􏶺a created jedis pool config􏶹
+􏶴
+    JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+    jedisPoolConfig.setMaxTotal(config.getJedisPoolMaxTotal());
+    return jedisPoolConfig;
+􏶳
+
+􏷐parse string URI into URI object􏷏
+􏶠convert the string representation of the URI into a URI object
+if the URI object is invalid a configuration exception will be thrown􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒parse uri􏷑􏶸ConfigurationException􏶷􏶶URI is not a valid format􏶵
+􏶜􏶝􏷆String􏷅􏷄uri􏷃􏷀a uri􏶿
+􏶾URI􏶽􏶼uri􏶻􏶺a parsed and valid URI􏶹
+􏶴
+    try {
+      return new URI(redisURI);
+    } catch (URISyntaxException e) {
+      throw new ConfigurationException(e.getMessage());
+    }
+􏶳
+

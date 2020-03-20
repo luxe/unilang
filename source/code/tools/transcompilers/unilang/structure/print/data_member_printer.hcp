@@ -5,6 +5,7 @@ class
 ❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
 ❪"code/tools/transcompilers/unilang/options/language-specific/c/c_export_settings"❫
 ❪"code/tools/transcompilers/unilang/structure/model/sections/meta/code_type"❫
+❪"code/utilities/linguistics/computer/source_language"❫
 ⚯
 ❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
 ❪"code/tools/transcompilers/unilang/literal_suffix_getter/getter/literal_suffix_settings"❫
@@ -184,18 +185,20 @@ class
 
 ◀private: static▶ void ☀Print_The_Default_Value(std::wofstream & out, Data_Member_Item const& it,C_Export_Settings const& options)❰
 
-    //decide whether to print the default value
-    std::string default_seperator = " = ";
-    if (!it.default_value.value.empty()){
-        Print_To_Stream(out,default_seperator);
-        auto language_type_name = Type_Name_Deriver::Derive_Name(it,Source_Language::CPP);
-        std::string literal = Literal_Adjuster::Get_Adjusted(language_type_name,as_string(it.default_value.value));
-        Print_To_Stream(out,literal);
-    }
+    Print_To_Stream(out,Possibly_Get_Default_Value(it,Source_Language::CPP));
 ❱
 
 ◀private: static▶ std::string ☀Possibly_Get_Default_Value(Data_Member_Item const& it, Source_Language const& source_language)❰
-  
+
+    std::string default_seperator = " = ";
+    std::string result;
+    if (!it.default_value.value.empty()){
+        result += default_seperator;
+        auto language_type_name = Type_Name_Deriver::Derive_Name(it,source_language);
+        std::string literal = Literal_Adjuster::Get_Adjusted(language_type_name,as_string(it.default_value.value));
+        result += literal;
+    }
+    return result;
 ❱
 
 

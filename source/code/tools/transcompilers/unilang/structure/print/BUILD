@@ -51,6 +51,7 @@ hcp(name = "data_member_printer", deps = [
 "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
 "//code/utilities/types/converters:lib",
 "//code/utilities/streams/filestreams:lib",
+"//code/utilities/linguistics/computer:source_language",
 ])
 
 hcp(name = "method_body_token_printer", deps = [
