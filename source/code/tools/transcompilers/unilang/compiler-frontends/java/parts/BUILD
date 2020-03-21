@@ -24,6 +24,7 @@ hcp(name = "data_members_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
     "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
     "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
+    "//code/utilities/linguistics/computer/keywords/visibility:visibility_keyword_getter",
 ])
 
 hcp(name = "methods_getter", deps = [
@@ -53,4 +54,5 @@ hcp(name = "methods_getter", deps = [
     "//code/utilities/types/general:lib",
     "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
     "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
+    "//code/utilities/linguistics/computer/keywords/visibility:visibility_keyword_getter",
 ])
