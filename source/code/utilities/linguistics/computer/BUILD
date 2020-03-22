@@ -39,7 +39,7 @@ values =
 ,"Processing"
 
 #DSLs
-,"bazel_skylark"
+,"bazel_starlark"
 ,"graphviz"
 
 #IDLs
@@ -64,6 +64,12 @@ values =
 ,"CSS"
 ,"SASS"
 ,"LESS"
+
+#Specification
+,"ALLOY"
+
+#Interactive Fiction
+,"INFORM_7"
 
 
 ])
