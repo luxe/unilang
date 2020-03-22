@@ -9,8 +9,8 @@ hcp(name = "assets", deps = [
 
 hcp(name = "assets_loader", deps = [
     "@sfml//:sfml",
-    "//code/tools/games/ur/gui/assets:assets",
+    "//code/tools/games/ur/assets:assets",
     "//code/utilities/peripheral/sound/sfml:sound_loader",
     "//code/utilities/fonts/font_files:droid_sans_mono",
-    "//code/tools/games/ur/gui/state:game_state",
+    "//code/tools/games/ur/state:game_state",
 ])
