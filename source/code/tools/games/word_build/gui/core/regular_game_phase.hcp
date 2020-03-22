@@ -102,14 +102,35 @@ class
     
     //drop player selection
     if (!phases.previous.buttons.down && phases.current.buttons.down){
-        player_state.selected_letters.clear();
-        assets.selections.clear();
+        if (!player_state.selected_letters.empty()){
+            Actually_Clear_Player_Selections(player_state,assets);
+        }
+        else {
+            Revive_Player_Selections(player_state,assets);
+        }
     }
     
     //backspace selection
     if (!phases.previous.buttons.left && phases.current.buttons.left){
         Safe_Pop_Back(player_state.selected_letters);
         Safe_Pop_Back(assets.selections);
+    }
+❱
+
+◀private: static▶ void ☀Actually_Clear_Player_Selections(User_State & player_state, User_Assets & assets)❰
+        player_state.last_selected_letters_before_clear = player_state.selected_letters;
+        player_state.selected_letters.clear();
+        assets.selections.clear();
+❱
+
+◀private: static▶ void ☀Revive_Player_Selections(User_State & player_state, User_Assets & assets)❰
+    player_state.selected_letters = player_state.last_selected_letters_before_clear;
+    
+    for (auto const& it: player_state.selected_letters){
+        sf::RectangleShape rectangle(sf::Vector2f(80, 5));
+        rectangle.setPosition(205 + (100 * it),assets.selection_y_offset);
+        rectangle.setFillColor(player_state.color);
+        assets.selections.emplace_back(rectangle);
     }
 ❱
 
@@ -222,8 +243,7 @@ class
     }
     
     //clear the player's selection
-    user.selected_letters.clear();
-    user_assets.selections.clear();
+    Actually_Clear_Player_Selections(user,user_assets);
     
     Handle_User_Combo_Behaviour(user,user_assets);
     
