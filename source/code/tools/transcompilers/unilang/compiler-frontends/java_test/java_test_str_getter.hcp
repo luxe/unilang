@@ -6,6 +6,7 @@ class
 ❪"code/tools/transcompilers/unilang/contributor/contributor"❫
 ❪"code/tools/transcompilers/unilang/structure/model/inlined_structures"❫
 ❪"code/tools/transcompilers/unilang/options/language-specific/java/java_test_settings"❫
+❪"code/tools/transcompilers/unilang/options/language-specific/c/c_export_settings"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/converters/lib"❫
@@ -21,6 +22,8 @@ class
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
+❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
+❪"code/tools/transcompilers/unilang/test_export/test_comment_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
@@ -120,7 +123,21 @@ class
     
     for (auto const& it: structure.methods.methods){
         for (auto const& j: it.unit_tests.test_cases){
+            
+            //add test comment
+            auto settings2 = dont_do_this(settings);
+            auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
+            result += Test_Comment_Getter::Get(structure,func_name,j,settings.test_case_attributes);
         }
     }
     return result;
+❱
+
+//TODO: REMOVE THIS
+◀private: static▶ C_Export_Settings ☀dont_do_this(Java_Test_Settings const& settings)❰
+    C_Export_Settings x;
+    x.portion = settings.portion;
+    x.general = settings.general;
+    x.manipulations = settings.manipulations;
+    return x;
 ❱

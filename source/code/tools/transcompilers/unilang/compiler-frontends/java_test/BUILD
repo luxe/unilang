@@ -44,6 +44,9 @@ hcp(name = "java_test_str_getter", deps = [
     "//code/tools/transcompilers/unilang/boilerplate_printer:boilerplate_printer",
     "//code/tools/transcompilers/unilang/structure/print/filename:file_name_getter",
     "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
+    "//code/tools/transcompilers/unilang/structure/print:shared_printer",
+    "//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
+    "//code/tools/transcompilers/unilang/test_export:test_comment_getter",
 ])
 
 hcp(name = "java_test_settings_getter", deps = [
