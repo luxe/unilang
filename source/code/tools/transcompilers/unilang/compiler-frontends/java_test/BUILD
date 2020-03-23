@@ -45,3 +45,11 @@ hcp(name = "java_test_str_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/print/filename:file_name_getter",
     "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
 ])
+
+hcp(name = "java_test_settings_getter", deps = [
+    "//code/tools/transcompilers/unilang/options/language-specific/java:java_test_settings",
+    "//code/tools/transcompilers/unilang/options/sections/meta/organizations:organization",
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/utilities/program/common_actions/exits:lib",
+    "//code/utilities/personal/life:company_getter",
+])
