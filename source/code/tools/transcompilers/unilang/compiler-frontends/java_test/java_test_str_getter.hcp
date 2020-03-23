@@ -24,6 +24,7 @@ class
 ❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
 ❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
 ❪"code/tools/transcompilers/unilang/test_export/test_comment_getter"❫
+❪"code/tools/transcompilers/unilang/test_export/test_body_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
@@ -128,9 +129,30 @@ class
             auto settings2 = dont_do_this(settings);
             auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
             result += Test_Comment_Getter::Get(structure,func_name,j,settings.test_case_attributes);
+            
+            result += "@Test";
+            result += "\n";
+            result += Get_Test_Signature(j,func_name,settings);
+            result += Test_Body_Getter::Get(j);
         }
     }
     return result;
+❱
+
+◀private: static▶ std::string ☀Get_Test_Signature(Test_Case const& test_case, std::string const& func_name, Java_Test_Settings const& settings)❰
+    
+    //extract all the data into strings
+    std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_name_casing,func_name + " " + as_string(test_case.name.value));
+    std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_tag_casing,as_string(test_case.tag.value));
+    
+    //build signature
+    std::string str;
+    str += "public void ";
+    str += test_name;
+    str += "()";
+    str += " throws Exception";
+    
+    return str;
 ❱
 
 //TODO: REMOVE THIS
