@@ -17,6 +17,14 @@
 􏷤􏷣􏷦javax.naming.ConfigurationException􏷥
 􏷤􏷣􏷦java.util.function.Supplier􏷥
 􏷤􏷣􏷦java.net.URISyntaxException􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 
 
 
@@ -27,6 +35,66 @@
 􏶾Supplier<JedisCluster>􏶽􏶼jedis􏶻􏶺an established jedis client used to operate on the redis cluster􏶹
 􏶴
     return createJedisClusterFactory(parseUri(config.getRedisUri()), createJedisPoolConfig(config));
+􏶳
+
+􏷐create a test jedis cluster instance􏷏
+􏶠use pre-defined proto configuration to connect to a redis cluster server and provide a jedis client􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒create test􏷑􏶸Exception􏶷􏶶configuration is not valid for creating jedis cluster client􏶵
+􏶾JedisCluster􏶽􏶼jedis􏶻􏶺an established test jedis client used to operate on a redis cluster􏶹
+􏶴
+    // create the a client to interact with redis.
+    // we assume you are running a local cluster of redis.
+    // configuration values (port chosen by redis create-clusters).
+    RedisShardBackplaneConfig config =
+        RedisShardBackplaneConfig.newBuilder()
+            .setRedisUri("redis://localhost:30001")
+            .setJedisPoolMaxTotal(3)
+            .build();
+    JedisCluster redis = JedisClusterFactory.create(config).get();
+    
+    //use the client to create an empty redis cluster
+    //this will prevent any persistent data across test runs
+    //it also means that tests will not be able to run in parallel.
+    deleteExistingKeys(redis);
+    
+    return redis;
+􏶳
+
+􏷐delete existing keys on a redis cluster􏷏
+􏶠delete all of the keys on a redis cluster and ensure that the database is empty􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete existing keys􏷑􏶸Exception􏶷􏶶failure to delete all existing keys􏶵
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    for (JedisPool pool: cluster.getClusterNodes().values()){
+        Jedis node = pool.getResource();
+        deleteExistingKeys(node);
+    }
+􏶳
+
+􏷐delete existing keys on a redis node􏷏
+􏶠delete all of the keys on a particular redis node and ensure that the node's contribution to the database is empty􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete existing keys􏷑􏶸Exception􏶷􏶶failure to delete all existing keys􏶵
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀an established jedis client to operate on a redis node􏶿
+􏶴
+    String nextCursor = "0";
+    Set<String> matchingKeys = new HashSet<>();
+    ScanParams params = new ScanParams();
+    params.match("*");
+
+    do {
+        ScanResult scanResult = node.scan(nextCursor, params);
+        List<String> keys = scanResult.getResult();
+        nextCursor = scanResult.getCursor();
+
+        matchingKeys.addAll(keys);
+
+    } while(!nextCursor.equals("0"));
+
+    if (matchingKeys.size() == 0) {
+      return;
+    }
+
+    node.del(matchingKeys.toArray(new String[matchingKeys.size()]));
 􏶳
 
 􏷐create a jedis cluster instance􏷏
