@@ -161,7 +161,14 @@ class
             
             result += Maybe_Get_Divider(settings.portion.method_options.test_case.before_test_case);
             
-            result += Add_Test_Comments(structure,it,j,settings);
+            
+            //add test comment
+            auto settings2 = dont_do_this(settings);
+            auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
+            result += Add_Test_Comments(structure,it,j,settings.test_case_attributes);
+            
+            
+            
             result += Get_Test_Signature(j,settings);
             result += Get_Test_Function_Body(j);
             
@@ -199,7 +206,7 @@ class
     return result;
 ❱
 
-◀private: static▶ std::string ☀Add_Test_Comments(Structure const& structure, Method_Item const& method, Test_Case const& test_case, Cpp_Test_Export_Settings const& settings)❰
+◀private: static▶ std::string ☀Add_Test_Comments(Structure const& structure, Method_Item const& method, Test_Case const& test_case, Test_Case_Attribute_Settings const& settings)❰
     std::string comment;
     
     std::string reason_for_testing = as_string(test_case.reason_for_testing.value);
@@ -210,23 +217,22 @@ class
     }
     
     //possibly attach comment onto test
-    if (settings.test_case_attributes.add_function_under_test){
-        comment += "// " + settings.test_case_attributes.function_under_test_title + ": ";
-        auto settings2 = dont_do_this(settings);
-        comment += Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,method,settings2);
+    if (settings.add_function_under_test){
+        comment += "// " + settings.function_under_test_title + ": ";
+        comment += func_name;
         comment += "\n";
     }
     
     //possibly attach comment onto test
-    if (settings.test_case_attributes.add_reason_for_testing){
-        comment += "// " + settings.test_case_attributes.reason_for_testing_title + ": ";
+    if (settings.add_reason_for_testing){
+        comment += "// " + settings.reason_for_testing_title + ": ";
         comment += reason_for_testing;
         comment += "\n";
     }
     
     //possibly attach comment onto test
-    if (settings.test_case_attributes.add_failure_explanation){
-        comment += "// " + settings.test_case_attributes.failure_explanation_title + ": ";
+    if (settings.add_failure_explanation){
+        comment += "// " + settings.failure_explanation_title + ": ";
         for (auto const& x: fail_reasons){
             comment += x;
             comment += "\n";
