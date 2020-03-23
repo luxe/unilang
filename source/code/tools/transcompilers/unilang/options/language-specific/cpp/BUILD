@@ -12,6 +12,7 @@ hcp("cpp_test_export_settings",deps = [
 "//code/tools/transcompilers/unilang/options/sections:portion_options",
 "//code/tools/transcompilers/unilang/options:general_options",
 "//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/tools/transcompilers/unilang/options:test_case_attribute_settings",
 ])
 
 hcp("cpp_fuzz_export_settings",deps = [

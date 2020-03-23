@@ -23,7 +23,104 @@ class
 ❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+◀public: static▶ std::string ☀Get(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    
+    structure.meta.brief_description.value = L"tests" + structure.meta.brief_description.value;
+    
     std::string text;
+    Append_With_Newline(text,Get_Boilerplate(structure,contributors,settings));
+    Append_With_Newline(text,Get_Package_Name(structure,contributors,settings));
+    Append_With_Newline(text,Get_Imports(structure,contributors,settings));
+    Append_With_Newline(text,Get_Class(structure,contributors,settings));
     return text;
+❱
+
+◀private: static▶ std::string ☀Get_Boilerplate(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
+    std::string text;
+    
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::JAVA;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::TEST;
+    file_settings.file = File_Type::DATA;
+    
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
+    text += Boilerplate_Printer::Get_Top_Comment(structure,file_settings,settings.portion.meta,final_file_name);
+    
+    return text;
+❱
+
+◀private: static▶ std::string ☀Get_Package_Name(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    
+    //convert the name spaces into package names
+    std::vector<std::string> packages;
+    for (auto const& it: structure.namespaces.namespaces){
+        packages.emplace_back(as_string(it.name.value));
+    }
+    
+    //put into java format
+    std::string text;
+    text += "package ";
+    text += Get_As_String_With_Dot_In_Between_Each_Element(packages);
+    text += ";\n";
+    return text;
+❱
+
+◀private: static▶ std::string ☀Get_Imports(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    
+    std::string imports;
+    for (auto const& it: structure.imports.test_dependencies){
+        imports += "import ";
+        imports += as_string(it.name.value);
+        imports += ";\n";
+    }
+    return imports;
+❱
+
+◀private: static▶ std::string ☀Get_Class(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
+    //java, everything is a class:
+    std::string text;
+    text += Doxygen_Block_Printer::Get_Struct_Block(0,as_string(structure.meta.brief_description.value),as_string(structure.meta.detailed_description.value),Class_Name(structure,settings),settings.general.comment.doxygen);
+    text += "\n";
+    Append_With_Newline(text,Class_Start(structure,contributors,settings));
+    Append_With_Newline(text,Get_Each_Unit_Test_Section(structure,settings));
+    Append_With_Newline(text,"}");
+    
+    return text;
+❱
+
+
+◀private: static▶ std::string ☀Class_Start(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    std::string str;
+    str += "public ";
+    str += "class ";
+    str += Class_Name(structure,settings);
+    str += " {\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Class_Name(Structure const& structure, Java_Test_Settings const& settings)❰
+    return Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.file_casing,structure.name) + "Test";
+❱
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ std::string ☀Get_Each_Unit_Test_Section(Structure const& structure, Java_Test_Settings const& settings)❰
+    std::string result;
+    
+    for (auto const& it: structure.methods.methods){
+        for (auto const& j: it.unit_tests.test_cases){
+        }
+    }
+    return result;
 ❱
