@@ -26,6 +26,7 @@ class
 ❪"code/utilities/types/char/lib"❫
 ❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
 ❪"code/tools/transcompilers/unilang/compiler-frontends/cpp_test/test_coverage_summary_getter"❫
+❪"code/tools/transcompilers/unilang/test_export/test_comment_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Cpp_Test_Export_Settings const& settings)❰
@@ -165,7 +166,7 @@ class
             //add test comment
             auto settings2 = dont_do_this(settings);
             auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
-            result += Add_Test_Comments(structure,it,j,settings.test_case_attributes);
+            result += Test_Comment_Getter::Get(structure,func_name,j,settings.test_case_attributes);
             
             
             
@@ -204,42 +205,6 @@ class
     result += as_string(test_case.body.value);
     result += "\n\n}\n\n";
     return result;
-❱
-
-◀private: static▶ std::string ☀Add_Test_Comments(Structure const& structure, Method_Item const& method, Test_Case const& test_case, Test_Case_Attribute_Settings const& settings)❰
-    std::string comment;
-    
-    std::string reason_for_testing = as_string(test_case.reason_for_testing.value);
-    
-    std::vector<std::string> fail_reasons;
-    for (auto const& x: test_case.reasons_for_failing){
-        fail_reasons.emplace_back(as_string(x.reason.value));
-    }
-    
-    //possibly attach comment onto test
-    if (settings.add_function_under_test){
-        comment += "// " + settings.function_under_test_title + ": ";
-        comment += func_name;
-        comment += "\n";
-    }
-    
-    //possibly attach comment onto test
-    if (settings.add_reason_for_testing){
-        comment += "// " + settings.reason_for_testing_title + ": ";
-        comment += reason_for_testing;
-        comment += "\n";
-    }
-    
-    //possibly attach comment onto test
-    if (settings.add_failure_explanation){
-        comment += "// " + settings.failure_explanation_title + ": ";
-        for (auto const& x: fail_reasons){
-            comment += x;
-            comment += "\n";
-        }
-    }
-    
-    return comment;
 ❱
 
 

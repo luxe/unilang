@@ -21,6 +21,7 @@ hcp(name = "cpp_test_exporter", deps = [
 "//code/utilities/types/char:lib",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/tools/transcompilers/unilang/compiler-frontends/cpp_test:test_coverage_summary_getter",
+"//code/tools/transcompilers/unilang/test_export:test_comment_getter",
 ])
 
 hcp(name = "cpp_test_options_getter", deps = [
