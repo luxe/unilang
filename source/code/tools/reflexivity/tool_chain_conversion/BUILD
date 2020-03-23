@@ -13,7 +13,7 @@ hcp(name = "tool_chain_conversion_refresher", deps = [
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:test_getter",
 "//code/tools/reflexivity/tool_chain_conversion:readme_creator",
-"//code/tools/transcompilers/unilang/file_extension_getter:file_extension_getter",
+"//code/utilities/linguistics/computer/file_extension:file_extension_getter",
 ])
 
 hcp(name = "readme_creator", deps = [

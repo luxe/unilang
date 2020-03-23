@@ -6,7 +6,7 @@ hcp(name = "file_name_creator", deps = [
 "//code/tools/transcompilers/unilang/options/filesystem:general_filesystem_naming",
 "//code/utilities/linguistics/computer:source_language",
 "//code/utilities/types/strings/transformers/casing:case_modifier",
-"//code/tools/transcompilers/unilang/file_extension_getter:file_extension_getter",
+"//code/utilities/linguistics/computer/file_extension:file_extension_getter",
 ])
 
 hcp(name = "file_name_getter", deps = [

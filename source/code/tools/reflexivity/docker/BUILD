@@ -10,7 +10,7 @@ hcp(name = "dockerfile_refresher", deps = [
 "//code/utilities/types/vectors/converters:lib",
 "//code/utilities/types/strings/transformers/casing:lib",
 "//code/tools/reflexivity/docker/data:apt_get_command",
-"//code/tools/transcompilers/unilang/file_extension_getter:file_extension_getter",
+"//code/utilities/linguistics/computer/file_extension:file_extension_getter",
 "//code/tools/reflexivity/docker/data:docker_settings_getter",
 "//code/tools/reflexivity/docker/data:docker_settings",
 "//code/tools/reflexivity/comment:generated_comment_getter",
