@@ -32,7 +32,11 @@ https://github.com/fppt/jedis-mock
 􏲏􏲐􏲍org.junit.Test􏲎
 􏲏􏲐􏲍org.junit.runner.RunWith􏲎
 􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+
 
 
 􏶨the unique name of the queue􏶧
@@ -319,18 +323,18 @@ null is returned if the thread is interrupted􏶡
 􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    String val;
+    List<String> val;
     do {
-      val = redis.brpop(1,name).get(1);
-      
+      val = redis.brpop(1, name);
+
       // right here is an operation loss risk
       if (Thread.currentThread().isInterrupted()) {
         return null;
       }
     } while (val == null);
-    
-    intoQueue.push(val);
-    return val;
+
+    intoQueue.push(val.get(1));
+    return val.get(1);
 􏶳
 􏴱transfer item effects sizes􏴲
 􏲝transferring items changes the size of the two queues􏲞
@@ -346,6 +350,41 @@ null is returned if the thread is interrupted􏶡
     queue1.popInto(queue2);
     
     //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱transfer item effects sizes with delayed push􏴲
+􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis, "queue-1");
+    RedisQueue queue2 = new RedisQueue(redis, "queue-2");
+    
+    // ACT
+    //start a delayed push
+    //we do this because internally
+    //the implementation may have a timeout while it checks for thread interruptions
+    //timeouts had caused an NPE, which this test was written for when fixing.
+    Thread push = new Thread(() -> {
+                try {
+                  TimeUnit.SECONDS.sleep(2);
+                  queue1.push("foo");
+                }
+                catch(Exception e) {
+                    throw new RuntimeException(e);
+                }
+              });
+    push.start();
+    
+    //waiting to pop
+    Thread popInto = new Thread(() -> queue1.popInto(queue2));
+    popInto.start();
+    push.join();
+    popInto.join();
+    
+    // ASSERT
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
 􏴮
@@ -556,21 +595,6 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(isEmpty).isFalse();
 􏴮
-
-
-􏷐􏷏
-􏶠􏶡
-􏷘+􏷗􏴅Observer􏴆􏷒key count per node􏷑
-􏶾List<Long>􏶽􏶼key counts􏶻􏶺􏶹
-􏶴
-    List<Long> keyCounts = new ArrayList<>();
-    for (JedisPool pool: redis.getClusterNodes().values()){
-        Jedis node = pool.getResource();
-        //keyCounts.add(node.keys("*").size());
-        keyCounts.add(node.dbSize());
-    }
-    return keyCounts;
-􏶳
 
 
 
