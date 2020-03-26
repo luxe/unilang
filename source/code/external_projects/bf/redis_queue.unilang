@@ -25,9 +25,11 @@ https://github.com/fppt/jedis-mock
 􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
 􏲏􏲐􏲍org.junit.runner.RunWith􏲎
@@ -702,29 +704,6 @@ a thread that peeks cannot assume they will get that value when popping due to o
         nextIndex += entries.size();
     } while (entries.size() == LIST_PAGE_SIZE);
 􏶳
-
-
-
-  abstract static class ListVisitor {
-    private static final int LIST_PAGE_SIZE = 10000;
-
-    protected abstract void visit(String entry);
-
-    // this can potentially operate over the same set of entries in multiple steps
-    public static void visit(JedisCluster jedis, String name, ListVisitor visitor) {
-      int index = 0;
-      int nextIndex = LIST_PAGE_SIZE;
-      List<String> entries;
-      do {
-        entries = jedis.lrange(name, index, nextIndex - 1);
-        for (String entry : entries) {
-          visitor.visit(entry);
-        }
-        index = nextIndex;
-        nextIndex += entries.size();
-      } while (entries.size() == LIST_PAGE_SIZE);
-    }
-  }
 
 
 􏷐pop timeout􏷏
