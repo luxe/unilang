@@ -278,6 +278,58 @@ hashtags are added to this base name􏶥
     assertThat(queue.size()).isEqualTo(0);
 􏴮
 
+TODO: add remove
+
+􏷐clear the queue􏷏
+􏶠delete all elements in the queue so that it is empty􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒clear􏷑
+􏶴
+    for (RedisQueue queue : queues) {
+        queue.clear();
+    }
+􏶳
+􏴱clearing empty is safe􏴲
+􏲝it is safe to clear an already empty queue􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.clear();
+􏴮
+􏴱clearing a full queue is safe􏴲
+􏲝it is safe to clear a  queue of values􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.clear();
+􏴮
+􏴱clearing sets size to zero􏴲
+􏲝clearing a queue sets its size to zero􏲞
+􏲛clearing a queue does not reflect the appropriate size􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.clear();
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
 
 􏷐get size􏷏
 􏶠checks the current length of the queue􏶡
