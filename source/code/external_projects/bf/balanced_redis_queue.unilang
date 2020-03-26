@@ -1,0 +1,51 @@
+􏶞o􏶟
+􏷲a balanced redis queue􏷱
+􏷰a balanced redis queue is an implementation of a queue data structure which internally uses multiple redis nodes to distribute the data across the cluster.
+Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
+Therefore, two redis queues with the same name, would in fact be the same underlying redis queues􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+
+􏶨the unique name of the queue􏶧
+􏶦the name is used as a template for the internal queues distributed across nodes
+hashtags are added to this base name􏶥
+􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬name􏶫􏶪􏶩
+
+􏶨internal queues used to distribute data across redis nodes􏶧
+􏶦although these are multiple queues, the balanced redis queue treats them as one in its interface􏶥
+􏶘-􏶙􏶰􏶯􏶮List<RedisQueue>􏶭􏶬queues􏶫􏶪􏶩
+
+􏷐constructor􏷏
+􏶠construct a named redis queue with an established redis cluster􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒redis_queue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶴
+    this.name = name;
+    for (String hashtag: hashtags){
+        queues.add(new RedisQueue(redis,name + "{" + hashtag + "}"));
+    }
+    
+􏶳
