@@ -53,7 +53,7 @@ hashtags are added to this base name􏶥
 􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶴
-    this.name = name;
+    this.name = unhashedName(name);
     List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
     createHashedQueues(redis,name,hashtags);
 􏶳
@@ -75,7 +75,7 @@ hashtags are added to this base name􏶥
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
 􏶴
-    this.name = name;
+    this.name = unhashedName(name);
     createHashedQueues(redis,name,hashtags);
     
 􏶳
@@ -442,6 +442,62 @@ null is returned if the thread is interrupted􏶡
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
 􏴮
+􏴱name has hashtag removed front􏴲
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"{hash}queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag removed back􏴲
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name{hash}");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag removed middle􏴲
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_{hash}name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+􏴱name has hashtag removed front back􏴲
+􏲝the name is stored without a hashtag􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"{hash}queue_name{hash}");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
 
 􏷐peek the next queue value􏷏
 􏶠similar to a pop, peek will preserve the item in the queue.
@@ -595,6 +651,15 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶾string􏶽􏶼queue name􏶻􏶺a valid queue name for one of the internal queues􏶹
 􏶴
     return name + "{" + hashtag + "}";
+􏶳
+
+􏷐remove any existing redis hashtag from the key name􏷏
+􏶠creates a valid key name with any existing hashtags removed􏶡
+􏷘-􏷗􏴅observer􏴆􏷒unhashed name􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶾string􏶽􏶼queue name􏶻􏶺a valid keyname without hashtags􏶹
+􏶴
+    return name.replaceAll("\\{.*?\\}", "");
 􏶳
 
 􏷐get the next queue in the round robin􏷏
