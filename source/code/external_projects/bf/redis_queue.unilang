@@ -32,6 +32,8 @@ https://github.com/fppt/jedis-mock
 􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
 􏲏􏲐􏲍org.junit.runner.RunWith􏲎
 􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
 􏲏􏲐􏲍java.lang.Thread􏲎
@@ -692,7 +694,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     int listPageSize = 10000;
     
     int index = 0;
-    int nextIndex = LIST_PAGE_SIZE;
+    int nextIndex = listPageSize;
     List<String> entries;
     
     do {
@@ -702,8 +704,39 @@ a thread that peeks cannot assume they will get that value when popping due to o
         }
         index = nextIndex;
         nextIndex += entries.size();
-    } while (entries.size() == LIST_PAGE_SIZE);
+    } while (entries.size() == listPageSize);
 􏶳
+􏴱check visit of each element􏴲
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+    
+    //ASSERT
+    assertThat(visited.size()).isEqualTo(5);
+    assertThat(visited.get(0)).isEqualTo("element 5");
+    assertThat(visited.get(1)).isEqualTo("element 4");
+    assertThat(visited.get(2)).isEqualTo("element 3");
+    assertThat(visited.get(3)).isEqualTo("element 2");
+    assertThat(visited.get(4)).isEqualTo("element 1");
+􏴮
 
 
 􏷐pop timeout􏷏
