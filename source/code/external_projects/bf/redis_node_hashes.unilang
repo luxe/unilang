@@ -25,6 +25,7 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
 􏲏􏲐􏲍java.lang.RuntimeException􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏􏲐􏲍java.util.List􏲎
 
 
 􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
@@ -35,12 +36,12 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏶴
 
     List<List<Integer>> slotRanges = getSlotRanges(cluster);
-    List<Strings> hashTags = new ArrayList<Strings>();
+    List<String> hashTags = new ArrayList<String>();
     for (List<Integer> slotRange: slotRanges){
     
         //we can use any slot that is in range for the node.
         //in this case, we will use the first slot.
-        hashTags.add(RedisSlotToHash.correlate(slotRange.at(0)));
+        hashTags.add(RedisSlotToHash.correlate(slotRange.get(0)));
     }
     return hashTags;
 􏶳
@@ -55,7 +56,7 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
     List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
     
     //ASSERT
-    assertThat(hashtags.empty()).isFalse();
+    assertThat(hashtags.isEmpty()).isFalse();
 􏴮
 
 
@@ -71,10 +72,10 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
     List<Object> slots = node.clusterSlots();
     
     //convert slot information into a list of slot ranges
-    List<List<Integer>> slotRanges = new ArrayList<List<Integer>>>();
+    List<List<Integer>> slotRanges = new ArrayList<List<Integer>>();
     for (Object slotInfoObj : slots) {
         List<Object> slotInfo = (List<Object>) slotInfoObj;
-        List<Integer> slotNums = getSlotRange(slotInfo);
+        List<Integer> slotNums = slotInfoToSlotRange(slotInfo);
         slotRanges.add(slotNums);
      }
     
@@ -92,7 +93,7 @@ there are some methods we can't call on the cluster, but will suffice on any of 
     //get any node in the cluster
     //we assume to have at least one.
     //any node can get information about the other nodes in the cluster.
-    JedisPool pool = (JedisPool)redis.getClusterNodes().values().toArray()[0];
+    JedisPool pool = (JedisPool)cluster.getClusterNodes().values().toArray()[0];
     Jedis node = pool.getResource();
     return node;
 􏶳
