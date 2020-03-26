@@ -29,6 +29,7 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏲏􏲐􏲍java.lang.RuntimeException􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
 
+
 􏶨the unique name of the queue􏶧
 􏶦the name is used as a template for the internal queues distributed across nodes
 hashtags are added to this base name􏶥
@@ -38,9 +39,13 @@ hashtags are added to this base name􏶥
 􏶦although these are multiple queues, the balanced redis queue treats them as one in its interface􏶥
 􏶘-􏶙􏶰􏶯􏶮List<RedisQueue>􏶭􏶬queues􏶫􏶪new ArrayList<RedisQueue>()􏶩
 
-􏶨the current queue to act on􏶧
+􏶨the current queue to act push on􏶧
 􏶦used in a round-robin fashion to ensure an even distribution of pushes and appropriate ordering of pops􏶥
-􏶘-􏶙􏶰􏶯􏶮long􏶭􏶬current queue􏶫􏶪0􏶩
+􏶘-􏶙􏶰􏶯􏶮i􏶭􏶬current push queue􏶫􏶪0􏶩
+
+􏶨the current queue to act pop on􏶧
+􏶦used in a round-robin fashion to ensure an even distribution of pushes and appropriate ordering of pops􏶥
+􏶘-􏶙􏶰􏶯􏶮i􏶭􏶬current pop queue􏶫􏶪0􏶩
 
 􏷐constructor􏷏
 􏶠construct a named redis queue with an established redis cluster􏶡
@@ -86,6 +91,202 @@ hashtags are added to this base name􏶥
     BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
 􏴮
 
+􏷐push a value onto the queue􏷏
+􏶠adds the value into one of the internal backend redis queues􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
+􏶴
+    queues.get(currentPushQueue).push(val);
+    currentPushQueue = nextQueueInRoundRobin(currentPushQueue);
+􏶳
+􏴱push without error􏴲
+􏲝the queue can have a value pushed onto it􏲞
+􏲛the queue is throwing an exception upon push􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+􏴮
+􏴱push different without error􏴲
+􏲝the queue can have the different values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing different values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+􏴮
+􏴱push same without error􏴲
+􏲝the queue can have the same values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing the same values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+􏴮
+􏴱push many􏴲
+􏲝the queue can have many values pushed into it􏲞
+􏲛the queue is throwing an exception upon pushing many values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱push increases size􏴲
+􏲝the queue size increases as elements are pushed􏲞
+􏲛the queue size is not accurately reflecting the pushes􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(1);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(7);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(8);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(9);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(10);
+􏴮
+
+􏷐pop a value off of the queue􏷏
+􏶠takes the tail value at the end of the conceptually balanced queue􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
+􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
+􏶴
+    //as a best effort, skip popping the current queue if
+    //there is the possibility of another internal queue having data
+    int startQueue = currentPopQueue;
+    while (queues.get(currentPopQueue).empty()){
+        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+        if (startQueue == currentPopQueue){
+            break;
+        }
+    }
+    
+    // we either found a queue that was not empty,
+    // or we did a full trip around all the queues
+    // and discovered all of them were empty.
+    // either way, we will attempt to pop where
+    // we ended up.
+    String val = queues.get(currentPopQueue).pop();
+    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    return val;
+􏶳
+􏴱value can be popped􏴲
+􏲝the queue can have a value pushed and popped off􏲞
+􏲛the queue was unable to push and pop the same value off􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.pop();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+􏴱value popped in order􏴲
+􏲝the queue can have a value pushed and popped off in the correct order􏲞
+􏲛the queue was unable to push and pop values in the correct order􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    String element1 = queue.pop();
+    String element2 = queue.pop();
+    String element3 = queue.pop();
+    String element4 = queue.pop();
+    String element5 = queue.pop();
+    String element6 = queue.pop();
+    
+    //ASSERT
+    assertThat(element1).isEqualTo("element 1");
+    assertThat(element2).isEqualTo("element 2");
+    assertThat(element3).isEqualTo("element 3");
+    assertThat(element4).isEqualTo("element 4");
+    assertThat(element5).isEqualTo("element 5");
+    assertThat(element6).isEqualTo("element 6");
+􏴮
+􏴱pop decreases size􏴲
+􏲝the queue size decreases as elements are popped􏲞
+􏲛the queue size is not accurately reflecting the pops􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(2);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(1);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+
+
+􏷐get size􏷏
+􏶠checks the current length of the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒size􏷑
+􏶾l􏶽􏶼length􏶻􏶺the current length of the queue􏶹
+􏶴
+    //the accumulated size of all of the queues
+    return queues.stream().mapToInt(i -> (int)i.size()).sum();
+􏶳
 
 􏷐create multiple queues for each of the hashes given􏷏
 􏶠create the multiple queues that will act as a single balanced queue􏶡
@@ -96,6 +297,40 @@ hashtags are added to this base name􏶥
 􏶴
     //create an internal queue for each of the provided hashtags
     for (String hashtag: hashtags){
-        queues.add(new RedisQueue(redis,name + "{" + hashtag + "}"));
+        queues.add(new RedisQueue(redis,hashedName(name,hashtag)));
     }
+􏶳
+
+􏷐append the hashtag value to the base queue name􏷏
+􏶠creates a valid queue name for one of the entire queues􏶡
+􏷘-􏷗􏴅observer􏴆􏷒hashed name􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆string􏷅􏷄hashtag􏷃􏷀a hashtag for an individual internal queue􏶿
+􏶾string􏶽􏶼queue name􏶻􏶺a valid queue name for one of the internal queues􏶹
+􏶴
+    return name + "{" + hashtag + "}";
+􏶳
+
+􏷐get the next queue in the round robin􏷏
+􏶠if we are currently on the last queue it becomes the first queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒next queue in round robin􏷑
+􏶜􏶝􏷆i􏷅􏷄index􏷃􏷀current queue index􏶿
+􏶾i􏶽􏶼adjusted current queue􏶻􏶺and adjusted val based on the current queue index􏶹
+􏶴
+    if (index >= queues.size()-1){
+        return 0;
+    }
+    return index+1;
+􏶳
+
+􏷐get the previous queue in the round robin􏷏
+􏶠if we are currently on the first queue it becomes the last queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒previous queue in round robin􏷑
+􏶜􏶝􏷆i􏷅􏷄index􏷃􏷀current queue index􏶿
+􏶾i􏶽􏶼adjusted current queue􏶻􏶺and adjusted val based on the current queue index􏶹
+􏶴
+    if (index == 0){
+        return queues.size()-1;
+    }
+    return index-1;
 􏶳

@@ -110,6 +110,19 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("foo");
     queue.push("foo");
 􏴮
+􏴱push many􏴲
+􏲝the queue can have many values pushed into it􏲞
+􏲛the queue is throwing an exception upon pushing many values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+􏴮
 􏴱push increases size􏴲
 􏲝the queue size increases as elements are pushed􏲞
 􏲛the queue size is not accurately reflecting the pushes􏲜
@@ -126,6 +139,20 @@ If two queues had the same name, they would be instances of the same underlying 
     assertThat(queue.size()).isEqualTo(2);
     queue.push("foo");
     assertThat(queue.size()).isEqualTo(3);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(7);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(8);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(9);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(10);
 􏴮
 
 􏷐pop a value off of the queue􏷏
@@ -162,14 +189,23 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("element 1");
     queue.push("element 2");
     queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
     String element1 = queue.pop();
     String element2 = queue.pop();
     String element3 = queue.pop();
+    String element4 = queue.pop();
+    String element5 = queue.pop();
+    String element6 = queue.pop();
     
     //ASSERT
     assertThat(element1).isEqualTo("element 1");
     assertThat(element2).isEqualTo("element 2");
     assertThat(element3).isEqualTo("element 3");
+    assertThat(element4).isEqualTo("element 4");
+    assertThat(element5).isEqualTo("element 5");
+    assertThat(element6).isEqualTo("element 6");
 􏴮
 􏴱pop decreases size􏴲
 􏲝the queue size decreases as elements are popped􏲞
@@ -183,6 +219,15 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("foo");
     queue.push("foo");
     queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
     assertThat(queue.size()).isEqualTo(3);
     queue.pop();
     assertThat(queue.size()).isEqualTo(2);
@@ -552,6 +597,22 @@ a thread that peeks cannot assume they will get that value when popping due to o
     queue.push("foo");
     assertThat(queue.size()).isEqualTo(1);
     queue.push("bar");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
     assertThat(queue.size()).isEqualTo(2);
     queue.pop();
     assertThat(queue.size()).isEqualTo(1);
