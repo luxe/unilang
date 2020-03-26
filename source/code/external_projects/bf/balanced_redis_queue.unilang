@@ -331,6 +331,163 @@ TODO: add remove
     assertThat(queue.size()).isEqualTo(0);
 􏴮
 
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto another queue
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop into􏷑
+􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val = queues.get(currentPopQueue).popInto(intoQueue);
+    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    return val;
+􏶳
+􏴱transfer item effects sizes􏴲
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    queue1.push("foo");
+    queue1.popInto(queue2);
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱transfer large queue􏴲
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue1.push("foo" + String.valueOf(i));
+    }
+    for (int i = 0; i < 1000; ++i){
+        queue1.popInto(queue2);
+    }
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1000);
+    
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱transfer item effects sizes with delayed push􏴲
+􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue1 = new BalancedRedisQueue(redis, "queue-1");
+    RedisQueue queue2 = new RedisQueue(redis, "queue-2");
+    
+    // ACT
+    //start a delayed push
+    //we do this because internally
+    //the implementation may have a timeout while it checks for thread interruptions
+    //timeouts had caused an NPE, which this test was written for when fixing.
+    Thread push = new Thread(() -> {
+                try {
+                  TimeUnit.SECONDS.sleep(2);
+                  queue1.push("foo");
+                }
+                catch(Exception e) {
+                    throw new RuntimeException(e);
+                }
+              });
+    push.start();
+    
+    //waiting to pop
+    Thread popInto = new Thread(() -> queue1.popInto(queue2));
+    popInto.start();
+    push.join();
+    popInto.join();
+    
+    // ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+
+􏷐get name􏷏
+􏶠get the name of the queue.  this is the redis key used as base name for internal queues􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the base name of the queue􏶹
+􏶴
+    return name;
+􏶳
+􏴱name is stored􏴲
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
+
+􏷐peek the next queue value􏷏
+􏶠similar to a pop, peek will preserve the item in the queue.
+be careful about peeking with multiple threads.
+a thread that peeks cannot assume they will get that value when popping due to other threads􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒peek􏷑
+􏶾string􏶽􏶼peek_val􏶻􏶺the peeked value􏶹
+􏶴
+    return queues.get(currentPopQueue).peek();
+􏶳
+􏴱value can be peeked􏴲
+􏲝the correct value is peeked from the queue􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baze");
+    String peeked = queue.peek();
+    
+    //ASSERT
+    assertThat(peeked).isEqualTo("foo");
+􏴮
+􏴱peeking is idempotent􏴲
+􏲝the same value is peeked from the queue if not popped􏲞
+􏲛peeking is not idempotent􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baze");
+    
+    //ASSERT
+    assertThat(queue.peek()).isEqualTo("foo");
+    assertThat(queue.peek()).isEqualTo("foo");
+    assertThat(queue.peek()).isEqualTo("foo");
+􏴮
+
 􏷐get size􏷏
 􏶠checks the current length of the queue􏶡
 􏷘+􏷗􏴅Observer􏴆􏷒size􏷑
@@ -339,6 +496,83 @@ TODO: add remove
     //the accumulated size of all of the queues
     return queues.stream().mapToInt(i -> (int)i.size()).sum();
 􏶳
+􏴱adjust push pop􏴲
+􏲝size adjusts with push and pop􏲞
+􏲛size is incorrectly reporting the expected queue size􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+   BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT / ASSERT
+    assertThat(queue.size()).isEqualTo(0);
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(1);
+    queue.push("bar");
+    assertThat(queue.size()).isEqualTo(2);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(3);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(4);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(5);
+    queue.push("baz");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(2);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(1);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
+
+􏷐check if the queue is empty􏷏
+􏶠checks whether the queue is empty; i.e. has no elements􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒empty􏷑
+􏶾bool􏶽􏶼is empty􏶻􏶺whether the queue is empty or not􏶹
+􏶴
+    for (RedisQueue queue : queues) {
+        if (!queue.empty()){
+            return false;
+        }
+    }
+    return true;
+􏶳
+􏴱empty on construction􏴲
+􏲝the queue is empty on construction􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isTrue();
+􏴮
+􏴱nonempty after pushes􏴲
+􏲝the queue is not empty after pushing a value􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isFalse();
+􏴮
 
 􏷐create multiple queues for each of the hashes given􏷏
 􏶠create the multiple queues that will act as a single balanced queue􏶡

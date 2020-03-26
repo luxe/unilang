@@ -361,7 +361,7 @@ If two queues had the same name, they would be instances of the same underlying 
 
 
 􏷐pop element into another queue􏷏
-􏶠this pops the element from one queue and pushes it onto the queue
+􏶠this pops the element from one queue and pushes it onto another queue
 it will wait indefinitely until the thread is interrupted
 null is returned if the thread is interrupted􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒pop into􏷑
@@ -397,6 +397,31 @@ null is returned if the thread is interrupted􏶡
     //ASSERT
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱transfer large queue􏴲
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue1.push("foo" + String.valueOf(i));
+    }
+    for (int i = 0; i < 1000; ++i){
+        queue1.popInto(queue2);
+    }
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1000);
+    
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
+    }
 􏴮
 􏴱transfer item effects sizes with delayed push􏴲
 􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
