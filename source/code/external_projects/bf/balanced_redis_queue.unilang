@@ -18,7 +18,9 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.BalancedRedisQueue􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍java.util.List􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
 􏲏􏲐􏲍org.junit.runner.RunWith􏲎
 􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
@@ -34,20 +36,66 @@ hashtags are added to this base name􏶥
 
 􏶨internal queues used to distribute data across redis nodes􏶧
 􏶦although these are multiple queues, the balanced redis queue treats them as one in its interface􏶥
-􏶘-􏶙􏶰􏶯􏶮List<RedisQueue>􏶭􏶬queues􏶫􏶪􏶩
+􏶘-􏶙􏶰􏶯􏶮List<RedisQueue>􏶭􏶬queues􏶫􏶪new ArrayList<RedisQueue>()􏶩
+
+􏶨the current queue to act on􏶧
+􏶦used in a round-robin fashion to ensure an even distribution of pushes and appropriate ordering of pops􏶥
+􏶘-􏶙􏶰􏶯􏶮long􏶭􏶬current queue􏶫􏶪0􏶩
 
 􏷐constructor􏷏
 􏶠construct a named redis queue with an established redis cluster􏶡
-􏷘+􏷗􏴅Constructor􏴆􏷒redis_queue􏷑
+􏷘+􏷗􏴅Constructor􏴆􏷒balanced redis queue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶴
+    this.name = name;
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    createHashedQueues(redis,name,hashtags);
+􏶳
+􏴱derive hashes constructs without error􏴲
+􏲝the queue can be constructed with a valid cluster instance and name􏲞
+􏲛the queue is throwing an exception upon construction􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+􏴮
+
+􏷐constructor􏷏
+􏶠construct a named redis queue with an established redis cluster􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒balanced redis queue􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
 􏶴
     this.name = name;
+    createHashedQueues(redis,name,hashtags);
     
+􏶳
+􏴱create hashes constructs without error􏴲
+􏲝the queue can be constructed with a valid cluster instance and name􏲞
+􏲛the queue is throwing an exception upon construction􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    
+    //ACT
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+􏴮
+
+
+􏷐create multiple queues for each of the hashes given􏷏
+􏶠create the multiple queues that will act as a single balanced queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒create hashed queues􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶴
     //create an internal queue for each of the provided hashtags
     for (String hashtag: hashtags){
         queues.add(new RedisQueue(redis,name + "{" + hashtag + "}"));
     }
-    
 􏶳

@@ -52,6 +52,7 @@ hcp(name = "data_member_printer", deps = [
 "//code/utilities/types/converters:lib",
 "//code/utilities/streams/filestreams:lib",
 "//code/utilities/linguistics/computer:source_language",
+"//code/utilities/linguistics/computer/types/default_initialize:default_initialize_getter",
 ])
 
 hcp(name = "method_body_token_printer", deps = [
