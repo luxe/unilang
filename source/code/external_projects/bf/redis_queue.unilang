@@ -682,7 +682,49 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(isEmpty).isFalse();
 􏴮
 
+􏷐visit each element in the queue􏷏
+􏶠enacts a visitor over each element in the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit􏷑
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    int listPageSize = 10000;
+    
+    int index = 0;
+    int nextIndex = LIST_PAGE_SIZE;
+    List<String> entries;
+    
+    do {
+        entries = redis.lrange(name, index, nextIndex - 1);
+        for (String entry : entries) {
+          visitor.visit(entry);
+        }
+        index = nextIndex;
+        nextIndex += entries.size();
+    } while (entries.size() == LIST_PAGE_SIZE);
+􏶳
 
+
+
+  abstract static class ListVisitor {
+    private static final int LIST_PAGE_SIZE = 10000;
+
+    protected abstract void visit(String entry);
+
+    // this can potentially operate over the same set of entries in multiple steps
+    public static void visit(JedisCluster jedis, String name, ListVisitor visitor) {
+      int index = 0;
+      int nextIndex = LIST_PAGE_SIZE;
+      List<String> entries;
+      do {
+        entries = jedis.lrange(name, index, nextIndex - 1);
+        for (String entry : entries) {
+          visitor.visit(entry);
+        }
+        index = nextIndex;
+        nextIndex += entries.size();
+      } while (entries.size() == LIST_PAGE_SIZE);
+    }
+  }
 
 
 􏷐pop timeout􏷏

@@ -48,3 +48,8 @@ hcp(name = "duplicated_identifier_information_with_parent_checker", deps = [
 "//code/utilities/types/strings/observers/splitting:lib",
 "//code/utilities/types/vectors/observers:lib",
 ])
+
+hcp(name = "virtual_method_checker", deps = [
+    "//code/tools/transcompilers/unilang/structure/model/sections:structure_enums",
+    "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
+])
