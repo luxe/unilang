@@ -1,0 +1,111 @@
+􏶞o􏶟
+􏷲a list of redis hashtags that each map to different nodes in the cluster􏷱
+􏷰when looking to evenly distribute keys across nodes, specific hashtags need obtained in which each hashtag hashes to a particular slot owned by a particular worker
+this class is used to obtain the hashtags needed to hit every node in the cluster􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+
+
+􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
+􏶠each hashtag will map to a slot on a different node􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒get evenly distributed hashes􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
+􏶴
+
+    List<List<Integer>> slotRanges = getSlotRanges(cluster);
+    List<Strings> hashTags = new ArrayList<Strings>();
+    for (List<Integer> slotRange: slotRanges){
+    
+        //we can use any slot that is in range for the node.
+        //in this case, we will use the first slot.
+        hashTags.add(RedisSlotToHash.correlate(slotRange.at(0)));
+    }
+    return hashTags;
+􏶳
+􏴱can retrieve distributed hashes􏴲
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    
+    //ASSERT
+    assertThat(hashtags.empty()).isFalse();
+􏴮
+
+
+􏷐get a list of slot ranges for each of the nodes in the cluster􏷏
+􏶠this information can be found from any of the redis nodes in the cluster􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get slot ranges􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶾List<List<Integer>>􏶽􏶼slot ranges􏶻􏶺slot ranges for all of the nodes in the cluster􏶹
+􏶴
+
+    //get slot information for each node
+    Jedis node = getAnyClusterNode(cluster);
+    List<Object> slots = node.clusterSlots();
+    
+    //convert slot information into a list of slot ranges
+    List<List<Integer>> slotRanges = new ArrayList<List<Integer>>>();
+    for (Object slotInfoObj : slots) {
+        List<Object> slotInfo = (List<Object>) slotInfoObj;
+        List<Integer> slotNums = getSlotRange(slotInfo);
+        slotRanges.add(slotNums);
+     }
+    
+    return slotRanges;
+    
+􏶳
+
+􏷐get any cluster node􏷏
+􏶠all redis nodes in a cluster seem to have information about all of the nodes
+there are some methods we can't call on the cluster, but will suffice on any of the cluster's nodes􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get any cluster node􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶾Jedis􏶽􏶼node􏶻􏶺a node in the redis cluster􏶹
+􏶴
+    //get any node in the cluster
+    //we assume to have at least one.
+    //any node can get information about the other nodes in the cluster.
+    JedisPool pool = (JedisPool)redis.getClusterNodes().values().toArray()[0];
+    Jedis node = pool.getResource();
+    return node;
+􏶳
+
+􏷐convert a jedis slotInfo object to a range or slot numbers􏷏
+􏶠every redis node has a range of slots represented as integers􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒slot info to slot range􏷑
+􏶜􏶝􏷆List<Object>􏷅􏷄slot info􏷃􏷀slot info objects from a redis node􏶿
+􏶾List<Integer>􏶽􏶼slot range􏶻􏶺the slot number range for the particular redis node􏶹
+􏶴
+    List<Integer> slotRange = new ArrayList<Integer>();
+    slotRange.add(((Long) slotInfo.get(0)).intValue());
+    slotRange.add(((Long) slotInfo.get(1)).intValue());
+    return slotRange;
+􏶳
+
