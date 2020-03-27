@@ -313,6 +313,117 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(queue.size()).isEqualTo(2);
 􏴮
+􏴱does not remove multiple􏴲
+􏲝remove does not remove all values that match (only 1)􏲞
+􏲛remove is no longer removing a single element􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("foo");
+    queue.push("foo");
+    queue.remove("foo");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(4);
+􏴮
+
+􏷐remove all elements that match from queue􏷏
+􏶠removes all matching elements from the queue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove all􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    return redis.lrem(name, 0, val) != 0;
+􏶳
+􏴱false on empty􏴲
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱false when value is missing􏴲
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.removeAll("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
+􏴱true when value exists􏴲
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱size changes when value is removed􏴲
+􏲝removing the value decreases the size􏲞
+􏲛the size does not accurately reflect the removal􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(2);
+􏴮
+􏴱does remove multiple􏴲
+􏲝remove removes all values that match (not just 1)􏲞
+􏲛remove is no longer removing all matching elements􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("foo");
+    queue.push("foo");
+    queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(queue.size()).isEqualTo(1);
+􏴮
 
 􏷐clear the queue􏷏
 􏶠delete all elements in the queue so that it is empty􏶡
@@ -718,6 +829,9 @@ a thread that peeks cannot assume they will get that value when popping due to o
     queue.push("element 3");
     queue.push("element 4");
     queue.push("element 5");
+    queue.push("element 6");
+    queue.push("element 7");
+    queue.push("element 8");
     
     // ACT
     List<String> visited = new ArrayList<String>();
@@ -730,12 +844,15 @@ a thread that peeks cannot assume they will get that value when popping due to o
     queue.visit(visitor);
     
     //ASSERT
-    assertThat(visited.size()).isEqualTo(5);
-    assertThat(visited.get(0)).isEqualTo("element 5");
-    assertThat(visited.get(1)).isEqualTo("element 4");
-    assertThat(visited.get(2)).isEqualTo("element 3");
-    assertThat(visited.get(3)).isEqualTo("element 2");
-    assertThat(visited.get(4)).isEqualTo("element 1");
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
 􏴮
 
 
