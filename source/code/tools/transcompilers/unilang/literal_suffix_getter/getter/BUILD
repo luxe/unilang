@@ -14,3 +14,7 @@ hcp(name = "literal_suffix_getter", deps = [
 ])
 
 hcp(name = "floating_point_literal_settings")
+
+hcp(name = "cpp_literal_suffix_settings", deps = [
+    "//code/tools/transcompilers/unilang/literal_suffix_getter/getter:literal_suffix_settings",
+])
