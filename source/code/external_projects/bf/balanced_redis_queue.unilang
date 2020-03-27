@@ -23,6 +23,7 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
 􏲏􏲐􏲍java.util.List􏲎
 􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
 􏲏􏲐􏲍org.junit.runner.RunWith􏲎
 􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
@@ -871,6 +872,139 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(visited.contains("element 6")).isTrue();
     assertThat(visited.contains("element 7")).isTrue();
     assertThat(visited.contains("element 8")).isTrue();
+􏴮
+
+􏷐check that the internal queues have evenly distributed the values􏷏
+􏶠we are checking that the size of all the internal queues are the same
+this means, the balanced queue will be evenly distributed on every n elements pushed, where n is the number of internal queues􏶡
+􏷘+􏷗􏴅observer􏴆􏷒is evenly distributed􏷑
+􏶾bool􏶽􏶼is evenly distributed􏶻􏶺whether or not the queues values are evenly distributed by internal queues􏶹
+􏶴
+    long size = queues.get(0).size();
+    for (RedisQueue queue: queues){
+        if (queue.size() != size){
+            return false;
+        }
+    }
+    return true;
+􏶳
+􏴱empty is evenly distributed􏴲
+􏲝an empty queue is always already evenly distributed􏲞
+􏲛evenly distributed is not working on the empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isTrue();
+􏴮
+􏴱four nodes four hundred pushes is even􏴲
+􏲝having 4 nodes and pushing 400 elements should show that the elements are evenly distributed􏲞
+􏲛queue is not evenly distributing as it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("node1","node2","node3","node4");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT
+    for (int i = 0; i < 400; ++i){
+        queue.push("foo");
+    }
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isTrue();
+􏴮
+􏴱four nodes four hundred one pushes is not even􏴲
+􏲝having 4 nodes and pushing 401 elements should show that the elements are not evenly distributed􏲞
+􏲛queue is incorrectly reporting an even distribution􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("node1","node2","node3","node4");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT
+    for (int i = 0; i < 401; ++i){
+        queue.push("foo");
+    }
+    Boolean isEvenlyDistributed = queue.isEvenlyDistributed();
+    
+    //ASSERT
+    assertThat(isEvenlyDistributed).isFalse();
+􏴮
+􏴱single node always evenly distributes􏴲
+􏲝having a single node means the values are always evenly distributed over that node􏲞
+􏲛queue is incorrectly reporting an even distribution􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("single_node");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT / ASSERT
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    
+􏴮
+􏴱two node example􏴲
+􏲝this example shows how a two internal queues affect the even distribution􏲞
+􏲛queue is incorrectly reporting an even distribution􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    List<String> hashtags = Arrays.asList("node_1","node_2");
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test",hashtags);
+    
+    //ACT / ASSERT
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.push("foo");
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isFalse();
+    queue.pop();
+    assertThat(queue.isEvenlyDistributed()).isTrue();
 􏴮
 
 􏷐create multiple queues for each of the hashes given􏷏
