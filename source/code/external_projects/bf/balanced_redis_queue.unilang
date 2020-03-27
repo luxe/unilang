@@ -57,7 +57,7 @@ hashtags are added to this base name􏶥
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶴
     this.name = unhashedName(name);
-    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis);
     createHashedQueues(redis,this.name,hashtags);
 􏶳
 􏴱derive hashes constructs without error􏴲
@@ -883,6 +883,13 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //create an internal queue for each of the provided hashtags
     for (String hashtag: hashtags){
         queues.add(new RedisQueue(redis,hashedName(name,hashtag)));
+    }
+    
+    //if there were no hashtags, we'll create a single internal queue
+    //so that the balanced redis queue can still function.
+    //we'll use the basename provided to create the single internal queue without a hashtag
+    if (hashtags.isEmpty()){
+        queues.add(new RedisQueue(redis,name));
     }
 􏶳
 

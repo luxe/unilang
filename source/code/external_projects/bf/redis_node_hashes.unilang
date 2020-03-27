@@ -27,6 +27,35 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
 􏲏􏲐􏲍java.util.List􏲎
 
+􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
+􏶠each hashtag will map to a slot on a different node
+if there is any issue in deriving the hashes (for example, the redis cluster is not setup) we will not return any hashtags􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒get evenly distributed hashes with fallback􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
+􏶴
+    List<String> hashTags = new ArrayList<String>();
+    try {
+        hashTags = getEvenlyDistributedHashes(cluster);
+        return hashTags;
+    }
+    catch (Exception e){
+    }
+    return hashTags;
+􏶳
+􏴱can retrieve distributed hashes􏴲
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis);
+    
+    //ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
 
 􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
 􏶠each hashtag will map to a slot on a different node􏶡
@@ -34,7 +63,6 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
 􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
 􏶴
-
     List<List<Integer>> slotRanges = getSlotRanges(cluster);
     List<String> hashTags = new ArrayList<String>();
     for (List<Integer> slotRange: slotRanges){
