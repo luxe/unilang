@@ -33,21 +33,26 @@ dat = data.frame(Parameter, OR, Lower, Upper)
 limit_line_height=.5
 limit_line_thickness=1
 point_estimate_thickness=.5
+title="Odds ratios of birth outcomes among excessive weight gain stratified by race: normal weight gain as reference group"
+x_label="bar"
+y_label="foo"
+
 
 dat$Parameter = factor(dat$Parameter, levels=c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")) 
 g = ggplot(data=dat, aes(x=Subparameter, y=OR, ymin=Lower, ymax=Upper, color=Parameter))
 g = g + geom_pointrange(aes(col=Subparameter), lwd=point_estimate_thickness)  
 g = g + geom_hline(aes(fill=Subparameter), yintercept =1, linetype=2)
-g = g + xlab("") + ylab("Odds ratios of birth outcomes among excessive weight gain stratified by race: normal weight gain as reference group")
+g = g + ggtitle(title)
+g = g + xlab(x_label) + ylab(y_label)
 g = g + geom_errorbar(aes(ymin=Lower, ymax=Upper, col=Subparameter), width=limit_line_height, cex=limit_line_thickness)
 g = g + facet_wrap(~Parameter, strip.position="left", nrow=9, scales = "free_y")
-g = g + theme(plot.title=element_text(size=16,face="bold"),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        axis.text.x=element_text(face="bold"),
-        axis.title=element_text(size=10,face="bold"),
-        strip.text.y = element_text(hjust=0,vjust = 1,angle=180,face="bold"))
-g + coord_flip() + theme_bw() #+ mytheme()
+# g = g + theme(plot.title=element_text(size=16,face="bold"),
+#         axis.text.y=element_blank(),
+#         axis.ticks.y=element_blank(),
+#         axis.text.x=element_text(face="bold"),
+#         axis.title=element_text(size=10,face="bold"),
+#         strip.text.y = element_text(hjust=0,vjust = 1,angle=180,face="bold"))
+g + coord_flip() + theme_bw() + theme(legend.position="none", axis.title = element_text(size = 8))
 
 
 
