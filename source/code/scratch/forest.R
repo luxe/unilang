@@ -20,20 +20,20 @@ mytheme <- function(base_size = 12, base_family = "sans"){
   )
 }
 
-Parameter  = c("Hip fx", "Vertebral fx", "Major fx", "Minor fx", "Hip fx", "Vertebral fx", "Major fx", "Minor fx")
-Sex = c(rep("Women", 4), rep("Men", 4))
-RR = c(2.53, 1.76, 1.60, 1.38, 3.52, 2.26, 2.01, 1.64)
-Lower = c(2.04, 1.43, 1.20, 1.10, 2.58, 1.72, 1.38, 1.16)
-Upper = c(3.13, 2.17, 2.13, 1.74, 4.80, 2.98, 2.92, 2.31)
+Parameter  = c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")
+Race = c("White","White","White","White","White","White","Black","Black","Black","Black","Black","Black")
+OR    = c(0.74, 0.63, 1.89, 0.61, 2.01, 0.82, 0.75, 0.71, 1.78, 0.66, 1.95, 0.76)
+Lower = c(0.73, 0.63, 1.87, 0.60, 1.99, 0.79, 0.73, 0.69, 1.74, 0.64, 1.89, 0.71)
+Upper = c(0.75, 0.64, 1.91, 0.62, 2.03, 0.85, 0.77, 0.72, 1.84, 0.67, 2.02, 0.81)
 
-dat = data.frame(Parameter, RR, Lower, Upper)
+dat = data.frame(Parameter, OR, Lower, Upper)
 
-dat$Parameter = factor(dat$Parameter, levels=c("Hip fx", "Vertebral fx", "Major fx", "Minor fx")) 
-g = ggplot(data=dat, aes(x=Sex, y=RR, ymin=Lower, ymax=Upper, color=Parameter))
-g = g + geom_pointrange(aes(col=Sex), lwd=0.8)  
-g = g + geom_hline(aes(fill=Sex), yintercept =1, linetype=2)
-g = g + xlab("") + ylab("Risk Ratio (95% Confidence Interval)")
-g = g + geom_errorbar(aes(ymin=Lower, ymax=Upper, col=Sex), width=0.5, cex=1)
+dat$Parameter = factor(dat$Parameter, levels=c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")) 
+g = ggplot(data=dat, aes(x=Race, y=OR, ymin=Lower, ymax=Upper, color=Parameter))
+g = g + geom_pointrange(aes(col=Race), lwd=0.8)  
+g = g + geom_hline(aes(fill=Race), yintercept =1, linetype=2)
+g = g + xlab("") + ylab("Odds ratios of birth outcomes among excessive weight gain stratified by race: normal weight gain as reference group")
+g = g + geom_errorbar(aes(ymin=Lower, ymax=Upper, col=Race), width=0.5, cex=1)
 g = g + facet_wrap(~Parameter, strip.position="left", nrow=9, scales = "free_y")
 g = g + theme(plot.title=element_text(size=16,face="bold"),
         axis.text.y=element_blank(),
@@ -46,6 +46,12 @@ g + coord_flip() + theme_bw() + theme(legend.position="none")
 
 
 
+
+#odds ratio
+# relative risk ratio
+
+
+# ** var, black/white, odds ratio, confidence interval
 # 1 1 0.74 0.73 0.75
 # 1 2 0.75 0.73 0.77
 # 2 1  0.63 0.63 0.64
