@@ -1,4 +1,6 @@
 library(ggplot2)
+
+
 ## Registered S3 methods overwritten by 'ggplot2':
 ##   method         from 
 ##   [.quosures     rlang
@@ -21,7 +23,7 @@ mytheme <- function(base_size = 12, base_family = "sans"){
 }
 
 Parameter  = c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")
-Race = c("White","White","White","White","White","White","Black","Black","Black","Black","Black","Black")
+Subparameter = c("White","White","White","White","White","White","Black","Black","Black","Black","Black","Black")
 OR    = c(0.74, 0.63, 1.89, 0.61, 2.01, 0.82, 0.75, 0.71, 1.78, 0.66, 1.95, 0.76)
 Lower = c(0.73, 0.63, 1.87, 0.60, 1.99, 0.79, 0.73, 0.69, 1.74, 0.64, 1.89, 0.71)
 Upper = c(0.75, 0.64, 1.91, 0.62, 2.03, 0.85, 0.77, 0.72, 1.84, 0.67, 2.02, 0.81)
@@ -33,11 +35,11 @@ limit_line_thickness=1
 point_estimate_thickness=.5
 
 dat$Parameter = factor(dat$Parameter, levels=c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")) 
-g = ggplot(data=dat, aes(x=Race, y=OR, ymin=Lower, ymax=Upper, color=Parameter))
-g = g + geom_pointrange(aes(col=Race), lwd=point_estimate_thickness)  
-g = g + geom_hline(aes(fill=Race), yintercept =1, linetype=2)
+g = ggplot(data=dat, aes(x=Subparameter, y=OR, ymin=Lower, ymax=Upper, color=Parameter))
+g = g + geom_pointrange(aes(col=Subparameter), lwd=point_estimate_thickness)  
+g = g + geom_hline(aes(fill=Subparameter), yintercept =1, linetype=2)
 g = g + xlab("") + ylab("Odds ratios of birth outcomes among excessive weight gain stratified by race: normal weight gain as reference group")
-g = g + geom_errorbar(aes(ymin=Lower, ymax=Upper, col=Race), width=limit_line_height, cex=limit_line_thickness)
+g = g + geom_errorbar(aes(ymin=Lower, ymax=Upper, col=Subparameter), width=limit_line_height, cex=limit_line_thickness)
 g = g + facet_wrap(~Parameter, strip.position="left", nrow=9, scales = "free_y")
 g = g + theme(plot.title=element_text(size=16,face="bold"),
         axis.text.y=element_blank(),
@@ -45,7 +47,7 @@ g = g + theme(plot.title=element_text(size=16,face="bold"),
         axis.text.x=element_text(face="bold"),
         axis.title=element_text(size=10,face="bold"),
         strip.text.y = element_text(hjust=0,vjust = 1,angle=180,face="bold"))
-g + coord_flip() + theme_bw() + theme(legend.position="none")
+g + coord_flip() + theme_bw() #+ mytheme()
 
 
 
