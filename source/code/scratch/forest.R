@@ -22,6 +22,13 @@ mytheme <- function(base_size = 12, base_family = "sans"){
   )
 }
 
+limit_line_height=.5
+limit_line_thickness=1
+point_estimate_thickness=.5
+title="Odds ratios of birth outcomes among excessive weight gain stratified by race: normal weight gain as reference group"
+x_label="Outcomes"
+y_label="Odds Ratio at 95% CI"
+
 Parameter  = c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")
 Subparameter = c("White","White","White","White","White","White","Black","Black","Black","Black","Black","Black")
 OR    = c(0.74, 0.63, 1.89, 0.61, 2.01, 0.82, 0.75, 0.71, 1.78, 0.66, 1.95, 0.76)
@@ -30,12 +37,6 @@ Upper = c(0.75, 0.64, 1.91, 0.62, 2.03, 0.85, 0.77, 0.72, 1.84, 0.67, 2.02, 0.81
 
 dat = data.frame(Parameter, OR, Lower, Upper)
 
-limit_line_height=.5
-limit_line_thickness=1
-point_estimate_thickness=.5
-title="Odds ratios of birth outcomes among excessive weight gain stratified by race: normal weight gain as reference group"
-x_label="bar"
-y_label="foo"
 
 
 dat$Parameter = factor(dat$Parameter, levels=c("Preterm birth", "SGA", "LGA", "LBW", "Macrosomia", "Low Apgar")) 
@@ -52,7 +53,14 @@ g = g + facet_wrap(~Parameter, strip.position="left", nrow=9, scales = "free_y")
 #         axis.text.x=element_text(face="bold"),
 #         axis.title=element_text(size=10,face="bold"),
 #         strip.text.y = element_text(hjust=0,vjust = 1,angle=180,face="bold"))
-g + coord_flip() + theme_bw() + theme(legend.position="none", axis.title = element_text(size = 8))
+g = g + coord_flip() + theme_bw() + theme(legend.position="none", axis.title = element_text(size = 8))
+
+
+png("myplot.png")
+
+ggsave(file="myplot2.png", width=11, height=6, dpi=100)
+print(g)
+dev.off()
 
 
 
