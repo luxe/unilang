@@ -16,7 +16,7 @@ mytheme <- function(base_size = 12, base_family = "sans"){
     strip.text = element_text(face = "bold", size = 12, color = "white"),
     legend.position = " ",
     legend.justification = "top", 
-    panel.border = element_rect(color = "grey", fill = NA, size = 0.5)
+    panel.border = element_rect(color = "grey", fill = NA, size = 1)
   )
 }
 
