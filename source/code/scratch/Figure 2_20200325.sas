@@ -42,6 +42,8 @@ ods graphics off;
 data adequatea;
 input variable racea OR LCL UCL;
 datalines;
+    
+** var, black/white, odds ratio, confidence interval
 1 1 0.74 0.73 0.75
 1 2 0.75 0.73 0.77
 2 1  0.63 0.63 0.64

@@ -42,3 +42,19 @@ g = g + theme(plot.title=element_text(size=16,face="bold"),
         axis.title=element_text(size=12,face="bold"),
         strip.text.y = element_text(hjust=0,vjust = 1,angle=180,face="bold"))
 g + coord_flip() + theme_bw() + theme(legend.position="none")
+
+
+
+
+# 1 1 0.74 0.73 0.75
+# 1 2 0.75 0.73 0.77
+# 2 1  0.63 0.63 0.64
+# 2 2 0.71 0.69 0.72
+# 3 1 1.89 1.87 1.91
+# 3 2 1.78 1.74 1.84
+# 4 1 0.61 0.60 0.62
+# 4 2 0.66 0.64 0.67
+# 5 1 2.01 1.99 2.03
+# 5 2 1.95 1.89 2.02
+# 6 1 0.82 0.79 0.85
+# 6 2 0.76 0.71 0.81
