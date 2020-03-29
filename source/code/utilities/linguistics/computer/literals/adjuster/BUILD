@@ -8,7 +8,7 @@ hcp(name = "literal_adjuster", deps = [
     "//code/tools/transcompilers/unilang/structure/print:shared_printer",
     "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
     "//code/utilities/linguistics/computer/literals/getter/data:literal_suffix_settings",
-    "//code/utilities/linguistics/computer/literals/getter/data:literal_suffix_getter",
+    "//code/utilities/linguistics/computer/literals/getter:literal_suffix_getter",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/linguistics/computer/literals/getter:cpp_literal_suffix_settings",
 ])

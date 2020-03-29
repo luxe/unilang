@@ -43,7 +43,7 @@ hcp(name = "data_member_printer", deps = [
 "//code/tools/transcompilers/unilang/structure/model/sections/meta:code_type",
 "//code/tools/transcompilers/unilang/structure/print:shared_printer",
 "//code/utilities/linguistics/computer/literals/getter/data:literal_suffix_settings",
-"//code/utilities/linguistics/computer/literals/getter/data:literal_suffix_getter",
+"//code/utilities/linguistics/computer/literals/getter:literal_suffix_getter",
 "//code/utilities/linguistics/computer/literals/adjuster:literal_adjuster",
 "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
 "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
