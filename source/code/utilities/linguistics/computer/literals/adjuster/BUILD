@@ -11,4 +11,6 @@ hcp(name = "literal_adjuster", deps = [
     "//code/utilities/linguistics/computer/literals/getter:literal_suffix_getter",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/linguistics/computer/literals/getter:cpp_literal_suffix_settings",
+    "//code/utilities/linguistics/computer/literals/getter:java_literal_suffix_settings",
+    "//code/utilities/linguistics/computer:source_language",
 ])

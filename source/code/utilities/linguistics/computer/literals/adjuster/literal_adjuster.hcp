@@ -1,7 +1,7 @@
 class
 
-
 ❪"code/utilities/linguistics/computer/literals/getter/data/floating_point_literal_settings"❫
+❪"code/utilities/linguistics/computer/source_language"❫
 ⚯
 ❪"code/tools/transcompilers/unilang/type_converters/type_to_hungarian/data_member_to_hungarian_notation_converter"❫
 ❪"code/tools/transcompilers/unilang/structure/print/shared_printer"❫
@@ -10,12 +10,31 @@ class
 ❪"code/utilities/linguistics/computer/literals/getter/literal_suffix_getter"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/linguistics/computer/literals/getter/cpp_literal_suffix_settings"❫
+❪"code/utilities/linguistics/computer/literals/getter/java_literal_suffix_settings"❫
 ⚞⚟
 
 
+//TODO: deprecate
 ◀public: static▶ std::string ☀Get_Adjusted(std::string actual_language_type, std::string literal)❰
-    //settings related to literals
-    Literal_Suffix_Settings settings = Cpp_Literal_Suffix_Settings::Get();
+  return Get_Adjusted_By_Language(actual_language_type,literal,Source_Language::CPP);
+❱
+
+//TODO: keep
+◀public: static▶ std::string ☀Get_Adjusted(std::string actual_language_type, std::string literal, Source_Language const& source_language)❰
+    return Get_Adjusted_By_Language(actual_language_type,literal,source_language);
+❱
+
+
+◀public: static▶ std::string ☀Get_Adjusted_By_Language(std::string actual_language_type, std::string literal, Source_Language const& source_language)❰
+    
+    //settings related to literal settings by language
+    Literal_Suffix_Settings settings;
+    if (source_language == Source_Language::CPP){
+      settings = Cpp_Literal_Suffix_Settings::Get();
+    }
+    else if (source_language == Source_Language::JAVA){
+      settings = Java_Literal_Suffix_Settings::Get();
+    }
     
     //add a moronic ".0" to the end of decimals in order to please the mentally brainwashed.
     //Doing this is meaningless and completely asinine, but I'm tired of hearing people comment about it.
@@ -26,9 +45,11 @@ class
     
     //add a stupid suffix literal if needed
     literal += Literal_Suffix_Getter::Get_Literal_Suffix(settings,actual_language_type);
-        
+    
     return literal;
 ❱
+
+
 
 ◀private: static▶ void ☀Potentially_Prefix_The_Zero_Point_If_Missing(Floating_Point_Literal_Settings const& settings, std::string const& type, std::string & literal)❰
   
