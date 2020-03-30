@@ -3,11 +3,55 @@ class
 ❪iostream❫
 ❪string❫
 ❪"code/utilities/games/ur/state/ur_game_state"❫
+❪"code/utilities/types/map/lib"❫
+❪"code/utilities/types/set/lib"❫
 ⚯
 ⚞⚟
 
-◀public: static▶ std::vector<int> ☀Player_Piece_Choices(Ur_Game_State const& x, int move_amount)❰
+◀public: static▶ std::vector<int> ☀Player_Piece_Choices(Ur_Game_State const& x, int const& move_amount)❰
     std::vector<int> available_pieces;
     
+    for (size_t i = 0; i < x.players[x.player_turn].pieces.size(); ++i){
+        if (Is_Piece_Moveable(x,x.players[x.player_turn].pieces[i],move_amount)){
+        }
+    }
+    
     return available_pieces;
+❱
+
+◀private: static▶ bool ☀Is_Piece_Moveable(Ur_Game_State const& x, Ur_Player const& piece, int const& move_amount)❰
+
+    //the path is invalid (going off the board maybe?)
+    //you have to land exactly on a space given the movement amount
+    auto ends_at_spot = Follow_Path_Or(x.players[x.player_turn].path,piece.current_spot,move_amount,"");
+    if (ends_at_spot.empty()){
+        return false;
+    }
+    
+    //if its a shared spot, you are okay to land there
+    if (Exists_In_Set(x.shared_spots,ends_at_spot)){
+        return true;
+    }
+    
+    //you can't land on your own piece
+    for (auto const& it: x.players[x.player_turn].pieces){
+        if (ends_at_spot == it.current_spot){
+            return false;
+        }
+    }
+    
+    //you can't land on other players if they are in a safe zone
+    for (int i =0 ; i < x.players.size(); ++i){
+        if (i != x.player_turn){
+            for (auto const& it: x.players[i].pieces){
+                if (ends_at_spot == it.current_spot){
+                    if (Exists_In_Set(x.safe_spots,ends_at_spot)){
+                        return false;
+                    }
+                }
+            }
+        }
+    }
+    
+    return true;
 ❱

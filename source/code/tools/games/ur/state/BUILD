@@ -10,6 +10,7 @@ hcp(name = "game_state", deps = [
     "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings",
     "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
     "//code/tools/games/ur:game_phase",
+    "//code/utilities/games/ur/state:ur_game_state",
     "@sfml//:sfml",
 ])
 
@@ -18,4 +19,5 @@ hcp(name = "game_state_getter", deps = [
     "//code/tools/games/ur/state:game_state",
     "//code/utilities/linguistics/build_word/game:puzzle_builder",
     "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings_getter",
+    "//code/utilities/games/ur:ur_state_getter",
 ])

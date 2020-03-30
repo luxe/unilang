@@ -10,4 +10,6 @@ hcp(name="ur_state_getter",deps = [
 
 hcp(name="ur_logic",deps = [
     "//code/utilities/games/ur/state:ur_game_state",
+    "//code/utilities/types/map:lib",
+    "//code/utilities/types/set:lib",
 ])
