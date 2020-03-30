@@ -1,9 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 
-hcp(name = "textured_sprite", deps = [
-    "@sfml//:sfml"
-])
 
 hcp(name = "title_screen_assets", deps = [
     "//code/tools/games/math_game/assets:textured_sprite",

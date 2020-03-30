@@ -10,3 +10,6 @@ hcp(name = "sound_loader",deps=[
     "//code/utilities/peripheral/sound/sfml:sound",
     "@sfml//:sfml"
 ])
+
+    "@sfml//:sfml"
+])
