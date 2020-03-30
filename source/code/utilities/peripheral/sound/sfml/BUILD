@@ -11,5 +11,6 @@ hcp(name = "sound_loader",deps=[
     "@sfml//:sfml"
 ])
 
+hcp(name = "music_loader",deps=[
     "@sfml//:sfml"
 ])

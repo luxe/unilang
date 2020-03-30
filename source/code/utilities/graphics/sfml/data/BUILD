@@ -4,3 +4,12 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 hcp(name = "moving_text", deps = [
     "@sfml//:sfml",
 ])
+
+hcp(name = "named_rectangle", deps = [
+    "@sfml//:sfml",
+])
+
+hcp(name = "named_rectangles", deps = [
+    "@sfml//:sfml",
+    "//code/utilities/graphics/sfml/data:named_rectangle",
+])

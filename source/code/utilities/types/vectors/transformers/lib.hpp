@@ -281,6 +281,12 @@ template <typename T>
 void Add(std::vector<T> & vec, T const& item){
     vec.emplace_back(item);
 }
+template <typename T>
+void Add_N(std::vector<T> & vec, T const& item, int num){
+    for (int i = 0; i < num; ++i){
+        vec.emplace_back(item);
+    }
+}
 void Add(std::vector<std::string> & vec, std::string const& item);
 
 

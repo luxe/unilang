@@ -43,4 +43,5 @@ hcp(name = "html_exporter", deps = [
     "//code/utilities/random:lib",
     "//code/utilities/formats/html:basic_html_template_getter",
     "//code/utilities/program/call:lib",
+    "//code/utilities/peripheral/printer:pdf_printer",
 ])
