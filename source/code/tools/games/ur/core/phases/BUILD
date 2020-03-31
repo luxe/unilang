@@ -9,7 +9,6 @@ hcp(name = "regular_game_phase", deps = [
     "//code/utilities/math:math",
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/peripheral/keyboard/joycons:joystick_rotating_checker",
-    "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/types/strings/observers/converting:lib",
     "//code/utilities/types/map:lib",
@@ -18,4 +17,5 @@ hcp(name = "regular_game_phase", deps = [
     "//code/utilities/colors:converters",
     "//code/utilities/colors:color_transitioner",
     "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event_synthesizer",
+    "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
 ])

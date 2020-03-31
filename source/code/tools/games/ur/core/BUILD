@@ -33,4 +33,5 @@ hcp(name = "state_updater", deps = [
     "//code/utilities/colors:converters",
     "//code/utilities/colors:color_transitioner",
     "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event_synthesizer",
+    "//code/tools/games/ur/core/phases:regular_game_phase",
 ])
