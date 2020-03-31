@@ -18,4 +18,5 @@ hcp(name = "regular_game_phase", deps = [
     "//code/utilities/colors:color_transitioner",
     "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event_synthesizer",
     "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
+    "//code/utilities/games/ur:ur_logic",
 ])

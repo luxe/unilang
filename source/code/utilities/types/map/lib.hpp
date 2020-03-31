@@ -18,7 +18,7 @@ template <typename T, typename Y>
 void Delete_From_Unordered_Map(std::unordered_map<T,Y> & s, T const& item_to_delete);
 
 template <typename T>
-T Follow_Path_Or(std::unordered_map<T,T> & path, T const& start, int const& amount, T const& or_result);
+T Follow_Path_Or(std::unordered_map<T,T> const& path, T const& start, int const& amount, T const& or_result);
 
 
 //overloading on map types
@@ -78,12 +78,12 @@ std::string To_String(std::map<X,Y> const& m){
 }
 
 template <typename T>
-T Follow_Path_Or(std::unordered_map<T,T> & path, T const& start, int const& amount, T const& or_result)
+T Follow_Path_Or(std::unordered_map<T,T> const& path, T const& start, int const& amount, T const& or_result)
 {
   T result = start;
   for (int i = 0; i < amount; ++i){
     if (Exists_In_Unordered_Map(path,result)){
-      result = path[result];
+      result = path.at(result);
     }
     else{
       return or_result;

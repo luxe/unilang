@@ -6,6 +6,7 @@ hcp(name = "assets", deps = [
     "//code/utilities/peripheral/sound/sfml:sound",
     "//code/utilities/graphics/sfml/data:moving_text",
     "//code/utilities/graphics/sfml/data:named_rectangles",
+    "//code/utilities/graphics/sfml/sprite:textured_sprite",
 ])
 
 hcp(name = "assets_loader", deps = [
@@ -14,4 +15,5 @@ hcp(name = "assets_loader", deps = [
     "//code/utilities/peripheral/sound/sfml:sound_loader",
     "//code/utilities/fonts/font_files:droid_sans_mono",
     "//code/tools/games/ur/state:game_state",
+    "//code/utilities/graphics/sfml/sprite:textured_sprite_loader",
 ])

@@ -16,7 +16,6 @@ class
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_events"❫
 ⚯
 ❪"code/utilities/peripheral/keyboard/joycons/joystick_rotating_checker"❫
-❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ❪"code/utilities/types/map/lib"❫
@@ -25,9 +24,80 @@ class
 ❪"code/utilities/colors/converters"❫
 ❪"code/utilities/colors/color_transitioner"❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/functions/f310_event_synthesizer"❫
+❪"code/utilities/games/ur/ur_logic"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(F310_Events const& events, Game_State & state, Assets & assets) ❰
     
+    
+    //handle player turns
+    for (auto const& event: events.left){
+        Handle_Player_Turn_Event(state,state.ur_state.players[0],event);
+    }
+    for (auto const& event: events.right){
+        Handle_Player_Turn_Event(state,state.ur_state.players[1],event);
+    }
+    
+    
+    //update graphics
+❱
+
+◀private: static▶ void ☀Handle_Player_Turn_Event(Game_State & state, Ur_Player_State & pstate, F310_Event const& event) ❰
+
+    //roll phase
+    if (pstate.phase == Player_Phase::ROLL){
+        if (event == F310_Event::BUTTONS_RIGHT_CLICKED){
+            Roll_Player_Dice(state,pstate);
+        }
+    }
+    
+    //choose phase
+    if (pstate.phase == Player_Phase::CHOOSE){
+        if (event == F310_Event::ARROWS_RIGHT_CLICKED){
+            Set_Next_Index_In_Round_Robin(pstate.possible_selections,pstate.piece_chosen);
+        }
+        else if (event == F310_Event::ARROWS_LEFT_CLICKED){
+            Set_Previous_Index_In_Round_Robin(pstate.possible_selections,pstate.piece_chosen);
+        }
+        else if (event == F310_Event::BUTTONS_RIGHT_CLICKED){
+            pstate.phase = Player_Phase::MOVE;
+        }
+    }
+    
+    //move phase
+    if (pstate.phase == Player_Phase::MOVE){
+    }
+
+
+
+    
+❱
+
+◀private: static▶ void ☀Roll_Player_Dice(Game_State & state, Ur_Player_State & pstate) ❰
+
+    //roll the 4 dice of the game
+    auto dice_1 = N_Sided_Dice::Roll(4);
+    auto dice_2 = N_Sided_Dice::Roll(4);
+    auto dice_3 = N_Sided_Dice::Roll(4);
+    auto dice_4 = N_Sided_Dice::Roll(4);
+    
+    //calculate the total
+    pstate.roll = 0;
+    if (dice_1 == 0){
+        pstate.roll++;
+    }
+    if (dice_2 == 0){
+        pstate.roll++;
+    }
+    if (dice_3 == 0){
+        pstate.roll++;
+    }
+    if (dice_4 == 0){
+        pstate.roll++;
+    }
+    
+    //indicate that the dice has been rolled
+    pstate.phase = Player_Phase::CHOOSE;
+    pstate.possible_selections = Ur_Logic::Player_Piece_Choices(state.ur_state,pstate.roll);
     
 ❱

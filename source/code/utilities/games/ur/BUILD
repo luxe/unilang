@@ -11,5 +11,6 @@ hcp(name="ur_state_getter",deps = [
 hcp(name="ur_logic",deps = [
     "//code/utilities/games/ur/state:ur_game_state",
     "//code/utilities/types/map:lib",
-    "//code/utilities/types/set:lib",
+    "//code/utilities/types/sets:lib",
+    "//code/utilities/random/dice:n_sided_dice",
 ])

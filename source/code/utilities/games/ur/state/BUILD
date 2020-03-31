@@ -12,4 +12,15 @@ hcp(name="ur_player",deps = [
 
 hcp(name="ur_player_state",deps = [
     "//code/utilities/games/ur/state:ur_player",
+    "//code/utilities/games/ur/state:player_phase",
+])
+
+
+
+
+enum_cpp(name = "player_phase",
+values = [
+"roll"
+,"choose"
+,"move"
 ])
