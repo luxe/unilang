@@ -46,31 +46,31 @@ class
 
     //roll phase
     if (pstate.phase == Player_Phase::ROLL){
-        if (event == F310_Event::BUTTONS_RIGHT_CLICKED){
-            Roll_Player_Dice(state,pstate);
-        }
+        Handle_Roll_Phase(state,pstate,event);
     }
     
     //choose phase
     if (pstate.phase == Player_Phase::CHOOSE){
-        if (event == F310_Event::ARROWS_RIGHT_CLICKED){
-            Set_Next_Index_In_Round_Robin(pstate.possible_selections,pstate.piece_chosen);
-        }
-        else if (event == F310_Event::ARROWS_LEFT_CLICKED){
-            Set_Previous_Index_In_Round_Robin(pstate.possible_selections,pstate.piece_chosen);
-        }
-        else if (event == F310_Event::BUTTONS_RIGHT_CLICKED){
-            pstate.phase = Player_Phase::MOVE;
-        }
+        Handle_Choose_Phase(state,pstate,event);
     }
     
     //move phase
     if (pstate.phase == Player_Phase::MOVE){
+        pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = 
     }
 
 
-
     
+❱
+
+◀private: static▶ void ☀Move_To_Next_Player(Game_State & state) ❰
+❱
+
+◀private: static▶ void ☀Handle_Roll_Phase(Game_State & state, Ur_Player_State & pstate, F310_Event const& event) ❰
+
+    if (event == F310_Event::BUTTONS_RIGHT_CLICKED){
+        Roll_Player_Dice(state,pstate);
+    }
 ❱
 
 ◀private: static▶ void ☀Roll_Player_Dice(Game_State & state, Ur_Player_State & pstate) ❰
@@ -99,5 +99,22 @@ class
     //indicate that the dice has been rolled
     pstate.phase = Player_Phase::CHOOSE;
     pstate.possible_selections = Ur_Logic::Player_Piece_Choices(state.ur_state,pstate.roll);
-    
+❱
+
+◀private: static▶ void ☀Handle_Choose_Phase(Game_State & state, Ur_Player_State & pstate, F310_Event const& event) ❰
+
+    if (!pstate.possible_selections.empty()){
+        if (event == F310_Event::ARROWS_RIGHT_CLICKED){
+            Set_Next_Index_In_Round_Robin(pstate.possible_selections,pstate.piece_chosen);
+        }
+        else if (event == F310_Event::ARROWS_LEFT_CLICKED){
+            Set_Previous_Index_In_Round_Robin(pstate.possible_selections,pstate.piece_chosen);
+        }
+        else if (event == F310_Event::BUTTONS_RIGHT_CLICKED){
+            pstate.phase = Player_Phase::MOVE;
+        }
+    }
+    else {
+        Move_To_Next_Player(state);
+    }
 ❱
