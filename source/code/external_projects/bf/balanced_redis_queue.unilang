@@ -183,20 +183,16 @@ hashtags are added to this base name􏶥
     assertThat(queue.size()).isEqualTo(10);
 􏴮
 
+
+
 􏷐pop a value off of the queue􏷏
 􏶠takes the tail value at the end of the conceptually balanced queue􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
 􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
 􏶴
-    //as a best effort, skip popping the current queue if
-    //there is the possibility of another internal queue having data
-    int startQueue = currentPopQueue;
-    while (queues.get(currentPopQueue).empty()){
-        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
-        if (startQueue == currentPopQueue){
-            break;
-        }
-    }
+    //Design Choice:
+    //We are not doing this adjustment as it may create an imbalance of cpu utilization
+    //AdjustCurrentPopQueue();
     
     // we either found a queue that was not empty,
     // or we did a full trip around all the queues
@@ -281,6 +277,32 @@ hashtags are added to this base name􏶥
     queue.pop();
     assertThat(queue.size()).isEqualTo(0);
 􏴮
+
+􏷐adjust current pop queue to non empty queue􏷏
+􏶠when asked to pop a value, the current pop queue may be empty
+however, other queues may not be empty
+instead of blocking on the empty queue when there are other values to pop, this adjustment is an attempt to change the roundrobin chosen internal queue to a nonempty one
+this is done by cycling through the internal queues until one is found that is not empty
+if they are all empty then the same internal queue will be chosen before the adjustment was attempted
+
+from a single-threaded push/pop paradigm, this adjustment would never be needed, and the internal queues would all be the same size (+/- 1 due to the current round robin index)
+however, the balanced queue supports delete operations, and there many other behaviors that might cause the internal queues to not be evenly sized allowing a potential opportunity for this adjustment
+
+this adjustment comes at a cost however, because we have to check the internal queues on whether they are empty when deciding to make the adjustment
+checking if a queue is empty is a redis operation itself and we check the internal queues in the same order each time
+so if the internal queues are never empty, the first internal queue will have a higher number of redis list operations on it (for the false-returning empty checks), resulting in higher cpu utilization of the corresponding node of the first internal queue􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒adjust current pop queue􏷑
+􏶴
+    //as a best effort, skip popping the current queue if its empty
+    //there is the possibility of another internal queue having data that can be popped
+    int startQueue = currentPopQueue;
+    while (queues.get(currentPopQueue).empty()){
+        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+        if (startQueue == currentPopQueue){
+            break;
+        }
+    }
+􏶳
 
 􏷐remove element from queue􏷏
 􏶠removes an element from a queue and specifies whether it was removed􏶡
