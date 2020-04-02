@@ -3,7 +3,7 @@
 􏷰a redis queue is an implementation of a queue data structure which internally uses redis to store and distribute the data.
 Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
 Therefore, two redis queues with the same name, would in fact be the same underlying redis queue􏷯
-􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
 
 good inspiration and alternatives
 https://github.com/redisson/redisson
@@ -27,8 +27,8 @@ https://github.com/fppt/jedis-mock
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 
-􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
-􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
 􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
@@ -241,13 +241,13 @@ If two queues had the same name, they would be instances of the same underlying 
     assertThat(queue.size()).isEqualTo(0);
 􏴮
 
-􏷐remove element from list􏷏
+􏷐remove element from queue􏷏
 􏶠removes an element from a list and specifies whether it was removed􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒remove􏷑
 􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
 􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
 􏶴
-    return redis.lrem(name, -1, val) != 0;
+    return remove(name,val);
 􏶳
 􏴱false on empty􏴲
 􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
@@ -332,6 +332,26 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(queue.size()).isEqualTo(4);
 􏴮
+
+􏷐remove element from dequeue􏷏
+􏶠removes an element from the dequeue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove from dequeue􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    return remove(getDequeueName(),val);
+􏶳
+
+􏷐remove element from queue via queue name􏷏
+􏶠removes an element from a list and specifies whether it was removed􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒remove􏷑
+􏶜􏶝􏷆string􏷅􏷄queue name􏷃􏷀the name of the queue to remove from􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    return redis.lrem(queueName, -1, val) != 0;
+􏶳
+
 
 􏷐remove all elements that match from queue􏷏
 􏶠removes all matching elements from the queue and specifies whether it was removed􏶡
@@ -474,30 +494,36 @@ If two queues had the same name, they would be instances of the same underlying 
     assertThat(queue.size()).isEqualTo(0);
 􏴮
 
-
-􏷐pop element into another queue􏷏
-􏶠this pops the element from one queue and pushes it onto another queue
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
 it will wait indefinitely until the thread is interrupted
 null is returned if the thread is interrupted􏶡
-􏷘+􏷗􏴅Transformer􏴆􏷒pop into􏷑
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    return popIntoSameSlot(name,getDequeueName());
+􏶳
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will wait until the timeout has expired
+null is returned if the timeout has expired􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑
+􏶜􏶝􏷆i􏷅􏷄timeout􏷃􏵘seconds􏵙􏷀timeout to wait if there is no item to dequeue􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    return redis.brpoplpush(name,getDequeueName(),timeout_s);
+􏶳
+
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop into cross slot􏷑
 􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    List<String> val = null;
-    do {
-      val = redis.brpop(1, name);
-      if (val != null){
-        intoQueue.push(val.get(1));
-        return val.get(1);
-      }
-
-      // right here is an operation loss risk
-      if (Thread.currentThread().isInterrupted()) {
-        break;
-      }
-    } while (val == null);
-    
-    return null;
+    return popIntoCrossSlot(name,intoQueue.getName());
 􏶳
 􏴱transfer item effects sizes􏴲
 􏲝transferring items changes the size of the two queues􏲞
@@ -510,7 +536,7 @@ null is returned if the thread is interrupted􏶡
     
     //ACT
     queue1.push("foo");
-    queue1.popInto(queue2);
+    queue1.popIntoCrossSlot(queue2);
     
     //ASSERT
     assertThat(queue1.size()).isEqualTo(0);
@@ -530,7 +556,7 @@ null is returned if the thread is interrupted􏶡
         queue1.push("foo" + String.valueOf(i));
     }
     for (int i = 0; i < 1000; ++i){
-        queue1.popInto(queue2);
+        queue1.popIntoCrossSlot(queue2);
     }
     
     //ASSERT
@@ -567,7 +593,7 @@ null is returned if the thread is interrupted􏶡
     push.start();
     
     //waiting to pop
-    Thread popInto = new Thread(() -> queue1.popInto(queue2));
+    Thread popInto = new Thread(() -> queue1.popIntoCrossSlot(queue2));
     popInto.start();
     push.join();
     popInto.join();
@@ -577,6 +603,148 @@ null is returned if the thread is interrupted􏶡
     assertThat(queue2.size()).isEqualTo(1);
 􏴮
 
+
+􏷐pop element into another queue via queue names􏷏
+􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒pop into cross slot􏷑
+􏶜􏶝􏷆string􏷅􏷄queue name from􏷃􏷀the queue name to pop from􏶿
+􏶜􏶝􏷆string􏷅􏷄queue name to􏷃􏷀the queue name to push to􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    List<String> val = null;
+    do {
+      val = redis.brpop(1, queueNameFrom);
+      if (val != null){
+        redis.lpush(queueNameTo,val.get(1));
+        return val.get(1);
+      }
+
+      // right here is an operation loss risk
+      if (Thread.currentThread().isInterrupted()) {
+        break;
+      }
+    } while (val == null);
+    
+    return null;
+􏶳
+
+􏷐pop element into another queue􏷏
+􏶠this pops the element from one queue and pushes it onto another queue assuming both queues are on the same slot
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted
+if the queues are not on the same slot the operation will fail with a cross slot exception􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒pop into same slot􏷑
+􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+     return popIntoSameSlot(name,intoQueue.getName());
+􏶳
+􏴱transfer item effects sizes􏴲
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis,"{same slot}queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"{same slot}queue-2");
+    
+    //ACT
+    queue1.push("foo");
+    queue1.popIntoSameSlot(queue2);
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱transfer large queue􏴲
+􏲝transferring items changes the size of the two queues􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis,"{same slot}queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"{same slot}queue-2");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue1.push("foo" + String.valueOf(i));
+    }
+    for (int i = 0; i < 1000; ++i){
+        queue1.popIntoSameSlot(queue2);
+    }
+    
+    //ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1000);
+    
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
+    }
+􏴮
+􏴱transfer item effects sizes with delayed push􏴲
+􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue1 = new RedisQueue(redis, "{same slot}queue-1");
+    RedisQueue queue2 = new RedisQueue(redis, "{same slot}queue-2");
+    
+    // ACT
+    //start a delayed push
+    //we do this because internally
+    //the implementation may have a timeout while it checks for thread interruptions
+    //timeouts had caused an NPE, which this test was written for when fixing.
+    Thread push = new Thread(() -> {
+                try {
+                  TimeUnit.SECONDS.sleep(2);
+                  queue1.push("foo");
+                }
+                catch(Exception e) {
+                    throw new RuntimeException(e);
+                }
+              });
+    push.start();
+    
+    //waiting to pop
+    Thread popInto = new Thread(() -> queue1.popIntoSameSlot(queue2));
+    popInto.start();
+    push.join();
+    popInto.join();
+    
+    // ASSERT
+    assertThat(queue1.size()).isEqualTo(0);
+    assertThat(queue2.size()).isEqualTo(1);
+􏴮
+
+
+􏷐pop element into another queue  via queue names􏷏
+􏶠this pops the element from one queue and pushes it onto another queue assuming both queues are on the same slot
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted
+if the queues are not on the same slot the operation will fail with a cross slot exception􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒pop into same slot􏷑
+􏶜􏶝􏷆string􏷅􏷄queue name from􏷃􏷀the queue name to pop from􏶿
+􏶜􏶝􏷆string􏷅􏷄queue name to􏷃􏷀the queue name to push to􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val = null;
+    while (true) {
+      val = redis.brpoplpush(queueNameFrom,queueNameTo,1);
+      if (val != null){
+        return val;
+      }
+
+      // right here is an operation loss risk
+      if (Thread.currentThread().isInterrupted()) {
+        break;
+      }
+    }
+    
+    return null;
+􏶳
 
 􏷐get name􏷏
 􏶠get the name of the queue.  this is the redis key used for the list􏶡
@@ -598,6 +766,28 @@ null is returned if the thread is interrupted􏶡
     
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
+􏴮
+
+􏷐get dequeue name􏷏
+􏶠get the name of the internal dequeue used by the queue.  this is the redis key used for the list􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    return name + "_dequeue";
+􏶳
+􏴱name is stored􏴲
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getDequeueName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name_dequeue");
 􏴮
 
 􏷐peek the next queue value􏷏
@@ -805,20 +995,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏷘+􏷗􏴅Observer􏴆􏷒visit􏷑
 􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
 􏶴
-    int listPageSize = 10000;
-    
-    int index = 0;
-    int nextIndex = listPageSize;
-    List<String> entries;
-    
-    do {
-        entries = redis.lrange(name, index, nextIndex - 1);
-        for (String entry : entries) {
-          visitor.visit(entry);
-        }
-        index = nextIndex;
-        nextIndex += entries.size();
-    } while (entries.size() == listPageSize);
+    visit(name,visitor);
 􏶳
 􏴱check visit of each element􏴲
 􏲝each element in the queue can be visited􏲞
@@ -884,6 +1061,36 @@ a thread that peeks cannot assume they will get that value when popping due to o
         assertThat(visited.contains("foo" + String.valueOf(i))).isTrue();
     }
 􏴮
+
+􏷐visit each element in the dequeue􏷏
+􏶠enacts a visitor over each element in the dequeue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit dequeue􏷑
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    visit(getDequeueName(),visitor);
+􏶳
+
+􏷐visit each element in the queue via queue name􏷏
+􏶠enacts a visitor over each element in the queue􏶡
+􏷘-􏷗􏴅Observer􏴆􏷒visit􏷑
+􏶜􏶝􏷆string􏷅􏷄queue name􏷃􏷀the name of the queue to visit􏶿
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    int listPageSize = 10000;
+    
+    int index = 0;
+    int nextIndex = listPageSize;
+    List<String> entries;
+    
+    do {
+        entries = redis.lrange(queueName, index, nextIndex - 1);
+        for (String entry : entries) {
+          visitor.visit(entry);
+        }
+        index = nextIndex;
+        nextIndex += entries.size();
+    } while (entries.size() == listPageSize);
+􏶳
 
 􏷐pop timeout􏷏
 􏶠the amount of time in seconds to wait when we are unable to pop􏶡

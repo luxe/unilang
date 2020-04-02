@@ -14,9 +14,14 @@ class
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/api_and_lifetime/api_and_lifetime_creator"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/forcers/function_unit_test_name_defaulter"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/comment_adjuster"❫
+❪"code/utilities/types/vectors/operators/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Adjust(Structure & structure, Struct_Manipulation_Settings const& settings)❰
+    
+    //other settings related to sorting
+    bool sort_methods = true;
+    
     
     bool create_extra_methods = false; //like reflection related only.. or?
     bool transform_and_add_lifetime_methods = false; //seems specific to C RAII
@@ -29,6 +34,35 @@ class
     bool comment_adjust_brief = true;
     bool comment_adjust_detail = true;
     
+    
+    if (sort_methods){
+
+        //get all the public
+        std::vector<Method_Item> public_methods;
+        for (auto const& it: structure.methods.methods){
+            if (it.class_access == Class_Access::PUBLIC){
+                public_methods.emplace_back(it);
+            }
+        }
+        
+        //get all the protected
+        std::vector<Method_Item> protected_methods;
+        for (auto const& it: structure.methods.methods){
+            if (it.class_access == Class_Access::PROTECTED){
+                protected_methods.emplace_back(it);
+            }
+        }
+        
+        //get all the private
+        std::vector<Method_Item> private_methods;
+        for (auto const& it: structure.methods.methods){
+            if (it.class_access == Class_Access::PRIVATE){
+                private_methods.emplace_back(it);
+            }
+        }
+        
+        structure.methods.methods = public_methods + protected_methods + private_methods;
+    }
     
     //add new methods based on settings and existing structure properties
     if (create_extra_methods){

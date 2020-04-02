@@ -15,4 +15,5 @@ hcp(name = "methods_adjuster", deps = [
 "//code/tools/transcompilers/unilang/structure/adjust/methods/forcers:instantiate_and_return_injector_for_return_type",
 "//code/tools/transcompilers/unilang/structure/adjust/methods/forcers:function_unit_test_name_defaulter",
 "//code/tools/transcompilers/unilang/structure/adjust:comment_adjuster",
+"//code/utilities/types/vectors/operators:lib",
 ])

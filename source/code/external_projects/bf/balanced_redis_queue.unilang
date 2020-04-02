@@ -3,7 +3,7 @@
 􏷰a balanced redis queue is an implementation of a queue data structure which internally uses multiple redis nodes to distribute the data across the cluster.
 Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
 Therefore, two redis queues with the same name, would in fact be the same underlying redis queues􏷯
-􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
 
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
 􏷤􏷣􏷦java.util.List􏷥
@@ -18,9 +18,9 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 􏷤􏷣􏷦java.util.Collections􏷥
 
-􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
-􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
-􏲏􏲐􏲍build.buildfarm.instance.shard.BalancedRedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.BalancedRedisQueue􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
 􏲏􏲐􏲍java.util.List􏲎
 􏲏􏲐􏲍java.util.ArrayList􏲎
@@ -58,9 +58,8 @@ hashtags are added to this base name􏶥
 􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶴
-    this.name = unhashedName(name);
     List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis);
-    createHashedQueues(redis,this.name,hashtags);
+    this(redis,name,hashtags);
 􏶳
 􏴱derive hashes constructs without error􏴲
 􏲝the queue can be constructed with a valid cluster instance and name􏲞
@@ -417,6 +416,20 @@ checking if a queue is empty is a redis operation itself􏶡
     assertThat(queue.size()).isEqualTo(0);
 􏴮
 
+􏷐remove element from dequeue􏷏
+􏶠removes an element from the dequeue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove from dequeue􏷑
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    for (RedisQueue queue: partialIterationQueueOrder()){
+        if (queue.removeFromDequeue(val)){
+            return true;
+        }
+    }
+    return false;
+􏶳
+
 􏷐remove all elements that match from queue􏷏
 􏶠removes all matching elements from the queue and specifies whether it was removed􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒remove all􏷑
@@ -574,7 +587,7 @@ null is returned if the thread is interrupted􏶡
 􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    String val = queues.get(currentPopQueue).popInto(intoQueue);
+    String val = queues.get(currentPopQueue).popIntoCrossSlot(intoQueue);
     currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
     return val;
 􏶳
@@ -664,10 +677,68 @@ null is returned if the thread is interrupted􏶡
 􏶜􏶝􏷆BalancedRedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    String val = queues.get(currentPopQueue).popInto(intoQueue.getInternalQueue(currentPopQueue));
+    String val = queues.get(currentPopQueue).popIntoCrossSlot(intoQueue.getInternalQueue(currentPopQueue));
     currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
     return val;
 􏶳
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will wait indefinitely until the thread is interrupted
+null is returned if the thread is interrupted􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    String val = queues.get(currentPopQueue).dequeue();
+    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    return val;
+􏶳
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will perform an exponential backoff
+null is returned if the overall backoff times out􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue exponential backoff􏷑
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    int currentTimeout_s = 1;
+    int maxTimeout_s = 8;
+    int startQueue = currentPopQueue;
+    
+    //try each of the internal queues with exponential backoff
+    while (currentTimeout_s <= maxTimeout_s){
+    
+        //try each of the queues with the current timeout
+        do {
+        
+            //try to dequeue (may timeout)
+            String val = queues.get(currentPopQueue).dequeue(currentTimeout_s);
+            currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+            
+            //success
+            if (val != null){
+                return val;
+            }
+        } while (currentPopQueue != startQueue);
+        
+        currentTimeout_s *= 2;
+    }
+    
+    
+    //exponential backoff has timed out
+    return null;
+􏶳
+
+
+
+
+    int startQueue = currentPopQueue;
+    while (queues.get(currentPopQueue).empty()){
+        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+        if (startQueue == currentPopQueue){
+            break;
+        }
+    }
 
 􏷐get the current pop queue􏷏
 􏶠get the queue that the balanced queue intends to pop from next􏶡
@@ -692,6 +763,14 @@ null is returned if the thread is interrupted􏶡
 􏶾RedisQueue􏶽􏶼internal queue􏶻􏶺the internal queue found at that index􏶹
 􏶴
     return queues.get(index);
+􏶳
+
+􏷐get dequeue name􏷏
+􏶠get the name of the internal dequeue used by the queue. since each internal queue has their own dequeue, this name is generic without the hashtag􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    return name + "_dequeue";
 􏶳
 
 
@@ -966,6 +1045,16 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(visited.contains("element 7")).isTrue();
     assertThat(visited.contains("element 8")).isTrue();
 􏴮
+
+􏷐visit each element in the dequeue􏷏
+􏶠enacts a visitor over each element in the dequeue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit dequeue􏷑
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    for (RedisQueue queue: fullIterationQueueOrder()){
+        queue.visitDequeue(visitor);
+    }
+􏶳
 
 􏷐check that the internal queues have evenly distributed the values􏷏
 􏶠we are checking that the size of all the internal queues are the same
