@@ -16,6 +16,7 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
+􏷤􏷣􏷦java.util.Collections􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.RedisQueue􏲎
@@ -190,9 +191,7 @@ hashtags are added to this base name􏶥
 􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
 􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
 􏶴
-    //Design Choice:
-    //We are not doing this adjustment as it may create an imbalance of cpu utilization
-    //AdjustCurrentPopQueue();
+    adjustCurrentPopQueue();
     
     // we either found a queue that was not empty,
     // or we did a full trip around all the queues
@@ -289,8 +288,7 @@ from a single-threaded push/pop paradigm, this adjustment would never be needed,
 however, the balanced queue supports delete operations, and there many other behaviors that might cause the internal queues to not be evenly sized allowing a potential opportunity for this adjustment
 
 this adjustment comes at a cost however, because we have to check the internal queues on whether they are empty when deciding to make the adjustment
-checking if a queue is empty is a redis operation itself and we check the internal queues in the same order each time
-so if the internal queues are never empty, the first internal queue will have a higher number of redis list operations on it (for the false-returning empty checks), resulting in higher cpu utilization of the corresponding node of the first internal queue􏶡
+checking if a queue is empty is a redis operation itself􏶡
 􏷘-􏷗􏴅Transformer􏴆􏷒adjust current pop queue􏷑
 􏶴
     //as a best effort, skip popping the current queue if its empty
@@ -310,7 +308,7 @@ so if the internal queues are never empty, the first internal queue will have a 
 􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
 􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
 􏶴
-    for (RedisQueue queue: queues){
+    for (RedisQueue queue: partialIterationQueueOrder()){
         if (queue.remove(val)){
             return true;
         }
@@ -400,6 +398,24 @@ so if the internal queues are never empty, the first internal queue will have a 
     //ASSERT
     assertThat(queue.size()).isEqualTo(4);
 􏴮
+􏴱many adds many deletes consistent size􏴲
+􏲝we can add many elements and delete many elements and the size is what we expect􏲞
+􏲛the size is not correct while deleting many times􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    BalancedRedisQueue queue = new BalancedRedisQueue(redis,"test");
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo");
+    }
+    
+    //ACT / ASSERT
+    for (int i = 0; i < 1000; ++i){
+        assertThat(queue.size()).isEqualTo(1000 - i);
+        queue.remove("foo");
+    }
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
 
 􏷐remove all elements that match from queue􏷏
 􏶠removes all matching elements from the queue and specifies whether it was removed􏶡
@@ -408,7 +424,7 @@ so if the internal queues are never empty, the first internal queue will have a 
 􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
 􏶴
     boolean removed = false;
-    for (RedisQueue queue: queues){
+    for (RedisQueue queue: fullIterationQueueOrder()){
         if (queue.removeAll(val)){
             removed = true;
         }
@@ -503,7 +519,7 @@ so if the internal queues are never empty, the first internal queue will have a 
 􏶠delete all elements in the queue so that it is empty􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒clear􏷑
 􏶴
-    for (RedisQueue queue : queues) {
+    for (RedisQueue queue : fullIterationQueueOrder()) {
         queue.clear();
     }
 􏶳
@@ -867,7 +883,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏷘+􏷗􏴅Observer􏴆􏷒empty􏷑
 􏶾bool􏶽􏶼is empty􏶻􏶺whether the queue is empty or not􏶹
 􏶴
-    for (RedisQueue queue : queues) {
+    for (RedisQueue queue : partialIterationQueueOrder()) {
         if (!queue.empty()){
             return false;
         }
@@ -909,7 +925,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏷘+􏷗􏴅Observer􏴆􏷒visit􏷑
 􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
 􏶴
-    for (RedisQueue queue: queues){
+    for (RedisQueue queue: fullIterationQueueOrder()){
         queue.visit(visitor);
     }
 􏶳
@@ -958,7 +974,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
 􏶾bool􏶽􏶼is evenly distributed􏶻􏶺whether or not the queues values are evenly distributed by internal queues􏶹
 􏶴
     long size = queues.get(0).size();
-    for (RedisQueue queue: queues){
+    for (RedisQueue queue: partialIterationQueueOrder()){
         if (queue.size() != size){
             return false;
         }
@@ -1145,4 +1161,32 @@ this means, the balanced queue will be evenly distributed on every n elements pu
         return queues.size()-1;
     }
     return index-1;
+􏶳
+
+􏷐list of queues in a particular order for full iteration over all of the queues􏷏
+􏶠an ordered list of queues for operations that assume to traverse over all of the queues
+some operations like clear() / size() require calling methods on all of the internal queues
+for those cases, this function represents the desired order of the queues􏶡
+􏷘-􏷗􏴅observer􏴆􏷒full iteration queue order􏷑
+􏶾List<RedisQueue>􏶽􏶼queues􏶻􏶺an ordered list of queues􏶹
+􏶴
+    // if we are going to iterate over all of the queues
+    // there will be no noticeable side effects from the order
+    return queues;
+􏶳
+
+􏷐list of queues in a particular order for a possibly partial iteration over all of the queues􏷏
+􏶠an ordered list of queues for operations that may end early without needing to perform the operation on all of the internal queues
+some operations like exists() / remove() can return early without processing over all of the internal queues
+for those cases, this function represents the desired order of the queues􏶡
+􏷘-􏷗􏴅observer􏴆􏷒partial iteration queue order􏷑
+􏶾List<RedisQueue>􏶽􏶼queues􏶻􏶺an ordered list of queues􏶹
+􏶴
+    // to improve cpu utilization, we can try randomizing
+    // the order we traverse the internal queues for operations
+    // that may return early
+    List<RedisQueue> randomQueues = new ArrayList<RedisQueue>();
+    randomQueues.addAll(queues);
+    Collections.shuffle(randomQueues);
+    return randomQueues;
 􏶳
