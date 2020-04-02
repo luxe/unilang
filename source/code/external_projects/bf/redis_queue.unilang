@@ -483,18 +483,21 @@ null is returned if the thread is interrupted􏶡
 􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    List<String> val;
+    List<String> val = null;
     do {
       val = redis.brpop(1, name);
+      if (val != null){
+        intoQueue.push(val.get(1));
+        return val.get(1);
+      }
 
       // right here is an operation loss risk
       if (Thread.currentThread().isInterrupted()) {
-        return null;
+        break;
       }
     } while (val == null);
-
-    intoQueue.push(val.get(1));
-    return val.get(1);
+    
+    return null;
 􏶳
 􏴱transfer item effects sizes􏴲
 􏲝transferring items changes the size of the two queues􏲞
@@ -854,7 +857,33 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(visited.contains("element 7")).isTrue();
     assertThat(visited.contains("element 8")).isTrue();
 􏴮
-
+􏴱visit many over page size􏴲
+􏲝add and visit many elements􏲞
+􏲛we are unable to visit all the elements when there are many of them􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    for (int i = 0; i < 2500; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+    
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+    
+    //ASSERT
+    assertThat(visited.size()).isEqualTo(2500);
+    for (int i = 0; i < 2500; ++i){
+        assertThat(visited.contains("foo" + String.valueOf(i))).isTrue();
+    }
+􏴮
 
 􏷐pop timeout􏷏
 􏶠the amount of time in seconds to wait when we are unable to pop􏶡
