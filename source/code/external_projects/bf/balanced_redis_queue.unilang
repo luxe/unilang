@@ -18,7 +18,7 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 􏷤􏷣􏷦java.util.Collections􏷥
 
-􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.BalancedRedisQueue􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
@@ -60,7 +60,7 @@ hashtags are added to this base name􏶥
 􏶴
     this(redis,name,RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis));
 􏶳
-􏴱derive hashes constructs without error􏴲
+􏴱derive hashes constructs without error􏴲􏴯redis􏴰
 􏲝the queue can be constructed with a valid cluster instance and name􏲞
 􏲛the queue is throwing an exception upon construction􏲜
 􏴭
@@ -82,7 +82,7 @@ hashtags are added to this base name􏶥
     createHashedQueues(redis,this.name,hashtags);
     
 􏶳
-􏴱create hashes constructs without error􏴲
+􏴱create hashes constructs without error􏴲􏴯redis􏴰
 􏲝the queue can be constructed with a valid cluster instance and name􏲞
 􏲛the queue is throwing an exception upon construction􏲜
 􏴭
@@ -102,7 +102,7 @@ hashtags are added to this base name􏶥
     queues.get(currentPushQueue).push(val);
     currentPushQueue = nextQueueInRoundRobin(currentPushQueue);
 􏶳
-􏴱push without error􏴲
+􏴱push without error􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed onto it􏲞
 􏲛the queue is throwing an exception upon push􏲜
 􏴭
@@ -113,7 +113,7 @@ hashtags are added to this base name􏶥
     //ACT
     queue.push("foo");
 􏴮
-􏴱push different without error􏴲
+􏴱push different without error􏴲􏴯redis􏴰
 􏲝the queue can have the different values pushed onto it􏲞
 􏲛the queue is throwing an exception upon pushing different values􏲜
 􏴭
@@ -125,7 +125,7 @@ hashtags are added to this base name􏶥
     queue.push("foo");
     queue.push("bar");
 􏴮
-􏴱push same without error􏴲
+􏴱push same without error􏴲􏴯redis􏴰
 􏲝the queue can have the same values pushed onto it􏲞
 􏲛the queue is throwing an exception upon pushing the same values􏲜
 􏴭
@@ -137,7 +137,7 @@ hashtags are added to this base name􏶥
     queue.push("foo");
     queue.push("foo");
 􏴮
-􏴱push many􏴲
+􏴱push many􏴲􏴯redis􏴰
 􏲝the queue can have many values pushed into it􏲞
 􏲛the queue is throwing an exception upon pushing many values􏲜
 􏴭
@@ -150,7 +150,7 @@ hashtags are added to this base name􏶥
         queue.push("foo" + String.valueOf(i));
     }
 􏴮
-􏴱push increases size􏴲
+􏴱push increases size􏴲􏴯redis􏴰
 􏲝the queue size increases as elements are pushed􏲞
 􏲛the queue size is not accurately reflecting the pushes􏲜
 􏴭
@@ -200,7 +200,7 @@ hashtags are added to this base name􏶥
     currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
     return val;
 􏶳
-􏴱value can be popped􏴲
+􏴱value can be popped􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed and popped off􏲞
 􏲛the queue was unable to push and pop the same value off􏲜
 􏴭
@@ -215,7 +215,7 @@ hashtags are added to this base name􏶥
     //ASSERT
     assertThat(val).isEqualTo("foo");
 􏴮
-􏴱value popped in order􏴲
+􏴱value popped in order􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed and popped off in the correct order􏲞
 􏲛the queue was unable to push and pop values in the correct order􏲜
 􏴭
@@ -245,7 +245,7 @@ hashtags are added to this base name􏶥
     assertThat(element5).isEqualTo("element 5");
     assertThat(element6).isEqualTo("element 6");
 􏴮
-􏴱pop decreases size􏴲
+􏴱pop decreases size􏴲􏴯redis􏴰
 􏲝the queue size decreases as elements are popped􏲞
 􏲛the queue size is not accurately reflecting the pops􏲜
 􏴭
@@ -313,7 +313,7 @@ checking if a queue is empty is a redis operation itself􏶡
     }
     return false;
 􏶳
-􏴱false on empty􏴲
+􏴱false on empty􏴲􏴯redis􏴰
 􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
 􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
 􏴭
@@ -327,7 +327,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱false when value is missing􏴲
+􏴱false when value is missing􏴲􏴯redis􏴰
 􏲝removing returns false because the queue does not contain the value to be removed􏲞
 􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
 􏴭
@@ -343,7 +343,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱true when value exists􏴲
+􏴱true when value exists􏴲􏴯redis􏴰
 􏲝removing returns true because the queue contained the value before removing􏲞
 􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
 􏴭
@@ -360,7 +360,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(success).isTrue();
 􏴮
-􏴱size changes when value is removed􏴲
+􏴱size changes when value is removed􏴲􏴯redis􏴰
 􏲝removing the value decreases the size􏲞
 􏲛the size does not accurately reflect the removal􏲜
 􏴭
@@ -377,7 +377,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(queue.size()).isEqualTo(2);
 􏴮
-􏴱does not remove multiple􏴲
+􏴱does not remove multiple􏴲􏴯redis􏴰
 􏲝remove does not remove all values that match (only 1)􏲞
 􏲛remove is no longer removing a single element􏲜
 􏴭
@@ -396,7 +396,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(queue.size()).isEqualTo(4);
 􏴮
-􏴱many adds many deletes consistent size􏴲
+􏴱many adds many deletes consistent size􏴲􏴯redis􏴰
 􏲝we can add many elements and delete many elements and the size is what we expect􏲞
 􏲛the size is not correct while deleting many times􏲜
 􏴭
@@ -443,7 +443,7 @@ checking if a queue is empty is a redis operation itself􏶡
     }
     return removed;
 􏶳
-􏴱false on empty􏴲
+􏴱false on empty􏴲􏴯redis􏴰
 􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
 􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
 􏴭
@@ -457,7 +457,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱false when value is missing􏴲
+􏴱false when value is missing􏴲􏴯redis􏴰
 􏲝removing returns false because the queue does not contain the value to be removed􏲞
 􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
 􏴭
@@ -473,7 +473,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱true when value exists􏴲
+􏴱true when value exists􏴲􏴯redis􏴰
 􏲝removing returns true because the queue contained the value before removing􏲞
 􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
 􏴭
@@ -490,7 +490,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(success).isTrue();
 􏴮
-􏴱size changes when value is removed􏴲
+􏴱size changes when value is removed􏴲􏴯redis􏴰
 􏲝removing the value decreases the size􏲞
 􏲛the size does not accurately reflect the removal􏲜
 􏴭
@@ -507,7 +507,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ASSERT
     assertThat(queue.size()).isEqualTo(2);
 􏴮
-􏴱does remove multiple􏴲
+􏴱does remove multiple􏴲􏴯redis􏴰
 􏲝remove removes all values that match (not just 1)􏲞
 􏲛remove is no longer removing all matching elements􏲜
 􏴭
@@ -535,7 +535,7 @@ checking if a queue is empty is a redis operation itself􏶡
         queue.clear();
     }
 􏶳
-􏴱clearing empty is safe􏴲
+􏴱clearing empty is safe􏴲􏴯redis􏴰
 􏲝it is safe to clear an already empty queue􏲞
 􏲛clearing a queue should not fail􏲜
 􏴭
@@ -546,7 +546,7 @@ checking if a queue is empty is a redis operation itself􏶡
     //ACT
     queue.clear();
 􏴮
-􏴱clearing a full queue is safe􏴲
+􏴱clearing a full queue is safe􏴲􏴯redis􏴰
 􏲝it is safe to clear a  queue of values􏲞
 􏲛clearing a queue should not fail􏲜
 􏴭
@@ -560,7 +560,7 @@ checking if a queue is empty is a redis operation itself􏶡
     queue.push("baz");
     queue.clear();
 􏴮
-􏴱clearing sets size to zero􏴲
+􏴱clearing sets size to zero􏴲􏴯redis􏴰
 􏲝clearing a queue sets its size to zero􏲞
 􏲛clearing a queue does not reflect the appropriate size􏲜
 􏴭
@@ -590,7 +590,7 @@ null is returned if the thread is interrupted􏶡
     currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
     return val;
 􏶳
-􏴱transfer item effects sizes􏴲
+􏴱transfer item effects sizes􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -607,7 +607,7 @@ null is returned if the thread is interrupted􏶡
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
 􏴮
-􏴱transfer large queue􏴲
+􏴱transfer large queue􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -632,7 +632,7 @@ null is returned if the thread is interrupted􏶡
         assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
     }
 􏴮
-􏴱transfer item effects sizes with delayed push􏴲
+􏴱transfer item effects sizes with delayed push􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -700,6 +700,18 @@ null is returned if the overall backoff times out􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒dequeue exponential backoff􏷑
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
+    //TODO(thickey):
+    //the conditions of this algorithm are as followed:
+    // - from a client's perspective we want to block indefinitely.
+    //   so this function should not return null under any normal circumstances.
+    // - from an implementation perspective however, we don't want to block indefinitely on any one internal queue.
+    // we choose a strategy that round-robins over the queues in different phases.
+    // 1. round-robin each queue with nonblocking calls for 1 second
+    // 2. switch to blocking calls at 1 second
+    // 3. exponentially increase timeout after each round-robin call
+    // 4. continue iterating over each queue at a maximally reached timeout.
+    
+
     int currentTimeout_s = 1;
     int maxTimeout_s = 8;
     int startQueue = currentPopQueue;
@@ -723,8 +735,22 @@ null is returned if the overall backoff times out􏶡
         currentTimeout_s *= 2;
     }
     
-    
     //exponential backoff has timed out
+    //we will now block indefinitely while
+    //trying each queue at the max timeout
+    while (true){
+    
+        //try to dequeue (may timeout)
+        String val = queues.get(currentPopQueue).dequeue(maxTimeout_s);
+        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+        
+        //success
+        if (val != null){
+            return val;
+        }
+    }
+    
+    
     return null;
 􏶳
 
@@ -781,7 +807,7 @@ null is returned if the overall backoff times out􏶡
 􏶴
     return name;
 􏶳
-􏴱name is stored􏴲
+􏴱name is stored􏴲􏴯redis􏴰
 􏲝the name can be received􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -795,7 +821,7 @@ null is returned if the overall backoff times out􏶡
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
 􏴮
-􏴱name has hashtag removed front􏴲
+􏴱name has hashtag removed front􏴲􏴯redis􏴰
 􏲝the name is stored without a hashtag􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -809,7 +835,7 @@ null is returned if the overall backoff times out􏶡
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
 􏴮
-􏴱name has hashtag colon removed front􏴲
+􏴱name has hashtag colon removed front􏴲􏴯redis􏴰
 􏲝the name is stored without a hashtag􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -824,7 +850,7 @@ null is returned if the overall backoff times out􏶡
     //ASSERT
     assertThat(name).isEqualTo(":QueuedOperations");
 􏴮
-􏴱name has hashtag removed back􏴲
+􏴱name has hashtag removed back􏴲􏴯redis􏴰
 􏲝the name is stored without a hashtag􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -838,7 +864,7 @@ null is returned if the overall backoff times out􏶡
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
 􏴮
-􏴱name has hashtag removed middle􏴲
+􏴱name has hashtag removed middle􏴲􏴯redis􏴰
 􏲝the name is stored without a hashtag􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -852,7 +878,7 @@ null is returned if the overall backoff times out􏶡
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
 􏴮
-􏴱name has hashtag removed front back􏴲
+􏴱name has hashtag removed front back􏴲􏴯redis􏴰
 􏲝the name is stored without a hashtag􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -876,7 +902,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     return queues.get(currentPopQueue).peek();
 􏶳
-􏴱value can be peeked􏴲
+􏴱value can be peeked􏴲􏴯redis􏴰
 􏲝the correct value is peeked from the queue􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -893,7 +919,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(peeked).isEqualTo("foo");
 􏴮
-􏴱peeking is idempotent􏴲
+􏴱peeking is idempotent􏴲􏴯redis􏴰
 􏲝the same value is peeked from the queue if not popped􏲞
 􏲛peeking is not idempotent􏲜
 􏴭
@@ -920,7 +946,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //the accumulated size of all of the queues
     return queues.stream().mapToInt(i -> (int)i.size()).sum();
 􏶳
-􏴱adjust push pop􏴲
+􏴱adjust push pop􏴲􏴯redis􏴰
 􏲝size adjusts with push and pop􏲞
 􏲛size is incorrectly reporting the expected queue size􏲜
 􏴭
@@ -968,7 +994,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     }
     return true;
 􏶳
-􏴱empty on construction􏴲
+􏴱empty on construction􏴲􏴯redis􏴰
 􏲝the queue is empty on construction􏲞
 􏲛empty is incorrectly reporting the expected queue state􏲜
 􏴭
@@ -982,7 +1008,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(isEmpty).isTrue();
 􏴮
-􏴱nonempty after pushes􏴲
+􏴱nonempty after pushes􏴲􏴯redis􏴰
 􏲝the queue is not empty after pushing a value􏲞
 􏲛empty is incorrectly reporting the expected queue state􏲜
 􏴭
@@ -1007,7 +1033,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
         queue.visit(visitor);
     }
 􏶳
-􏴱check visit of each element􏴲
+􏴱check visit of each element􏴲􏴯redis􏴰
 􏲝each element in the queue can be visited􏲞
 􏲛we are unable to visit each element in the queue􏲜
 􏴭
@@ -1069,7 +1095,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
     }
     return true;
 􏶳
-􏴱empty is evenly distributed􏴲
+􏴱empty is evenly distributed􏴲􏴯redis􏴰
 􏲝an empty queue is always already evenly distributed􏲞
 􏲛evenly distributed is not working on the empty queue􏲜
 􏴭
@@ -1083,7 +1109,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
     //ASSERT
     assertThat(isEvenlyDistributed).isTrue();
 􏴮
-􏴱four nodes four hundred pushes is even􏴲
+􏴱four nodes four hundred pushes is even􏴲􏴯redis􏴰
 􏲝having 4 nodes and pushing 400 elements should show that the elements are evenly distributed􏲞
 􏲛queue is not evenly distributing as it should􏲜
 􏴭
@@ -1101,7 +1127,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
     //ASSERT
     assertThat(isEvenlyDistributed).isTrue();
 􏴮
-􏴱four nodes four hundred one pushes is not even􏴲
+􏴱four nodes four hundred one pushes is not even􏴲􏴯redis􏴰
 􏲝having 4 nodes and pushing 401 elements should show that the elements are not evenly distributed􏲞
 􏲛queue is incorrectly reporting an even distribution􏲜
 􏴭
@@ -1119,7 +1145,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
     //ASSERT
     assertThat(isEvenlyDistributed).isFalse();
 􏴮
-􏴱single node always evenly distributes􏴲
+􏴱single node always evenly distributes􏴲􏴯redis􏴰
 􏲝having a single node means the values are always evenly distributed over that node􏲞
 􏲛queue is incorrectly reporting an even distribution􏲜
 􏴭
@@ -1147,7 +1173,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
     assertThat(queue.isEvenlyDistributed()).isTrue();
     
 􏴮
-􏴱two node example􏴲
+􏴱two node example􏴲􏴯redis􏴰
 􏲝this example shows how a two internal queues affect the even distribution􏲞
 􏲛queue is incorrectly reporting an even distribution􏲜
 􏴭

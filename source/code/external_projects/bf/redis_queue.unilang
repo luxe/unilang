@@ -27,7 +27,7 @@ https://github.com/fppt/jedis-mock
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 
-􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
 􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
@@ -39,7 +39,16 @@ https://github.com/fppt/jedis-mock
 􏲏􏲐􏲍java.lang.Thread􏲎
 􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
 􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
 
 
 
@@ -61,7 +70,7 @@ If two queues had the same name, they would be instances of the same underlying 
     this.redis = redis;
     this.name = name;
 􏶳
-􏴱constructs without error􏴲
+􏴱constructs without error􏴲􏴯redis􏴰
 􏲝the queue can be constructed with a valid cluster instance and name􏲞
 􏲛the queue is throwing an exception upon construction􏲜
 􏴭
@@ -89,7 +98,7 @@ If two queues had the same name, they would be instances of the same underlying 
 􏶴
     redis.lpush(name,val);
 􏶳
-􏴱push without error􏴲
+􏴱push without error􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed onto it􏲞
 􏲛the queue is throwing an exception upon push􏲜
 􏴭
@@ -114,7 +123,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     verify(redis, times(1)).lpush("test", "foo");
 􏴮
-􏴱push different without error􏴲
+􏴱push different without error􏴲􏴯redis􏴰
 􏲝the queue can have the different values pushed onto it􏲞
 􏲛the queue is throwing an exception upon pushing different values􏲜
 􏴭
@@ -126,7 +135,23 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("foo");
     queue.push("bar");
 􏴮
-􏴱push same without error􏴲
+􏴱push different without error􏴲􏴯mock􏴰
+􏲝the queue can have the different values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing different values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    
+    //ASSERT
+    verify(redis, times(1)).lpush("test", "foo");
+    verify(redis, times(1)).lpush("test", "bar");
+􏴮
+􏴱push same without error􏴲􏴯redis􏴰
 􏲝the queue can have the same values pushed onto it􏲞
 􏲛the queue is throwing an exception upon pushing the same values􏲜
 􏴭
@@ -138,7 +163,22 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("foo");
     queue.push("foo");
 􏴮
-􏴱push many􏴲
+􏴱push same without error􏴲􏴯mock􏴰
+􏲝the queue can have the same values pushed onto it􏲞
+􏲛the queue is throwing an exception upon pushing the same values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    
+    //ASSERT
+    verify(redis, times(2)).lpush("test", "foo");
+􏴮
+􏴱push many􏴲􏴯redis􏴰
 􏲝the queue can have many values pushed into it􏲞
 􏲛the queue is throwing an exception upon pushing many values􏲜
 􏴭
@@ -151,7 +191,25 @@ If two queues had the same name, they would be instances of the same underlying 
         queue.push("foo" + String.valueOf(i));
     }
 􏴮
-􏴱push increases size􏴲
+􏴱push many􏴲􏴯mock􏴰
+􏲝the queue can have many values pushed into it􏲞
+􏲛the queue is throwing an exception upon pushing many values􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    for (int i = 0; i < 1000; ++i){
+        queue.push("foo" + String.valueOf(i));
+    }
+    
+    //ASSERT
+    for (int i = 0; i < 1000; ++i){
+        verify(redis, times(1)).lpush("test","foo" + String.valueOf(i));
+    }
+􏴮
+􏴱push increases size􏴲􏴯redis􏴰
 􏲝the queue size increases as elements are pushed􏲞
 􏲛the queue size is not accurately reflecting the pushes􏲜
 􏴭
@@ -182,6 +240,31 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("foo");
     assertThat(queue.size()).isEqualTo(10);
 􏴮
+􏴱push increases size􏴲􏴯mock􏴰
+􏲝the queue size increases as elements are pushed􏲞
+􏲛the queue size is not accurately reflecting the pushes􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.size();
+    
+    //ASSERT
+    verify(redis, times(10)).lpush("test","foo");
+    verify(redis, times(1)).llen("test");
+􏴮
 
 􏷐pop a value off of the queue􏷏
 􏶠takes the tail value at the end of the queue􏶡
@@ -190,7 +273,7 @@ If two queues had the same name, they would be instances of the same underlying 
 􏶴
     return redis.brpop(popTimeout(),name).get(1);
 􏶳
-􏴱value can be popped􏴲
+􏴱value can be popped􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed and popped off􏲞
 􏲛the queue was unable to push and pop the same value off􏲜
 􏴭
@@ -205,7 +288,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(val).isEqualTo("foo");
 􏴮
-􏴱value popped in order􏴲
+􏴱value popped in order􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed and popped off in the correct order􏲞
 􏲛the queue was unable to push and pop values in the correct order􏲜
 􏴭
@@ -235,7 +318,7 @@ If two queues had the same name, they would be instances of the same underlying 
     assertThat(element5).isEqualTo("element 5");
     assertThat(element6).isEqualTo("element 6");
 􏴮
-􏴱pop decreases size􏴲
+􏴱pop decreases size􏴲􏴯redis􏴰
 􏲝the queue size decreases as elements are popped􏲞
 􏲛the queue size is not accurately reflecting the pops􏲜
 􏴭
@@ -273,7 +356,7 @@ If two queues had the same name, they would be instances of the same underlying 
 􏶴
     return remove(name,val);
 􏶳
-􏴱false on empty􏴲
+􏴱false on empty􏴲􏴯redis􏴰
 􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
 􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
 􏴭
@@ -287,7 +370,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱false when value is missing􏴲
+􏴱false when value is missing􏴲􏴯redis􏴰
 􏲝removing returns false because the queue does not contain the value to be removed􏲞
 􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
 􏴭
@@ -303,7 +386,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱true when value exists􏴲
+􏴱true when value exists􏴲􏴯redis􏴰
 􏲝removing returns true because the queue contained the value before removing􏲞
 􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
 􏴭
@@ -320,7 +403,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isTrue();
 􏴮
-􏴱size changes when value is removed􏴲
+􏴱size changes when value is removed􏴲􏴯redis􏴰
 􏲝removing the value decreases the size􏲞
 􏲛the size does not accurately reflect the removal􏲜
 􏴭
@@ -337,7 +420,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(queue.size()).isEqualTo(2);
 􏴮
-􏴱does not remove multiple􏴲
+􏴱does not remove multiple􏴲􏴯redis􏴰
 􏲝remove does not remove all values that match (only 1)􏲞
 􏲛remove is no longer removing a single element􏲜
 􏴭
@@ -385,7 +468,7 @@ If two queues had the same name, they would be instances of the same underlying 
 􏶴
     return redis.lrem(name, 0, val) != 0;
 􏶳
-􏴱false on empty􏴲
+􏴱false on empty􏴲􏴯redis􏴰
 􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
 􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
 􏴭
@@ -399,7 +482,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱false when value is missing􏴲
+􏴱false when value is missing􏴲􏴯redis􏴰
 􏲝removing returns false because the queue does not contain the value to be removed􏲞
 􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
 􏴭
@@ -415,7 +498,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
-􏴱true when value exists􏴲
+􏴱true when value exists􏴲􏴯redis􏴰
 􏲝removing returns true because the queue contained the value before removing􏲞
 􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
 􏴭
@@ -432,7 +515,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isTrue();
 􏴮
-􏴱size changes when value is removed􏴲
+􏴱size changes when value is removed􏴲􏴯redis􏴰
 􏲝removing the value decreases the size􏲞
 􏲛the size does not accurately reflect the removal􏲜
 􏴭
@@ -449,7 +532,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(queue.size()).isEqualTo(2);
 􏴮
-􏴱does remove multiple􏴲
+􏴱does remove multiple􏴲􏴯redis􏴰
 􏲝remove removes all values that match (not just 1)􏲞
 􏲛remove is no longer removing all matching elements􏲜
 􏴭
@@ -475,7 +558,7 @@ If two queues had the same name, they would be instances of the same underlying 
 􏶴
     redis.del(name);
 􏶳
-􏴱clearing empty is safe􏴲
+􏴱clearing empty is safe􏴲􏴯redis􏴰
 􏲝it is safe to clear an already empty queue􏲞
 􏲛clearing a queue should not fail􏲜
 􏴭
@@ -486,7 +569,7 @@ If two queues had the same name, they would be instances of the same underlying 
     //ACT
     queue.clear();
 􏴮
-􏴱clearing a full queue is safe􏴲
+􏴱clearing a full queue is safe􏴲􏴯redis􏴰
 􏲝it is safe to clear a  queue of values􏲞
 􏲛clearing a queue should not fail􏲜
 􏴭
@@ -500,7 +583,7 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("baz");
     queue.clear();
 􏴮
-􏴱clearing sets size to zero􏴲
+􏴱clearing sets size to zero􏴲􏴯redis􏴰
 􏲝clearing a queue sets its size to zero􏲞
 􏲛clearing a queue does not reflect the appropriate size􏲜
 􏴭
@@ -549,7 +632,7 @@ null is returned if the thread is interrupted􏶡
 􏶴
     return popIntoCrossSlot(name,intoQueue.getName());
 􏶳
-􏴱transfer item effects sizes􏴲
+􏴱transfer item effects sizes􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -566,7 +649,7 @@ null is returned if the thread is interrupted􏶡
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
 􏴮
-􏴱transfer large queue􏴲
+􏴱transfer large queue􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -591,7 +674,7 @@ null is returned if the thread is interrupted􏶡
         assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
     }
 􏴮
-􏴱transfer item effects sizes with delayed push􏴲
+􏴱transfer item effects sizes with delayed push􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -665,7 +748,7 @@ if the queues are not on the same slot the operation will fail with a cross slot
 􏶴
      return popIntoSameSlot(name,intoQueue.getName());
 􏶳
-􏴱transfer item effects sizes􏴲
+􏴱transfer item effects sizes􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -682,7 +765,7 @@ if the queues are not on the same slot the operation will fail with a cross slot
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
 􏴮
-􏴱transfer large queue􏴲
+􏴱transfer large queue􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -707,7 +790,7 @@ if the queues are not on the same slot the operation will fail with a cross slot
         assertThat(queue2.pop()).isEqualTo("foo" + String.valueOf(i));
     }
 􏴮
-􏴱transfer item effects sizes with delayed push􏴲
+􏴱transfer item effects sizes with delayed push􏴲􏴯redis􏴰
 􏲝transferring items changes the size of the two queues (even when the initial push is delayed)􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -777,7 +860,7 @@ if the queues are not on the same slot the operation will fail with a cross slot
 􏶴
     return name;
 􏶳
-􏴱name is stored􏴲
+􏴱name is stored􏴲􏴯redis􏴰
 􏲝the name can be received􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -799,7 +882,7 @@ if the queues are not on the same slot the operation will fail with a cross slot
 􏶴
     return name + "_dequeue";
 􏶳
-􏴱name is stored􏴲
+􏴱name is stored􏴲􏴯redis􏴰
 􏲝the name can be received􏲞
 􏲛name does not match what it should􏲜
 􏴭
@@ -823,7 +906,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     return redis.lrange(name,-1,-1).get(0);
 􏶳
-􏴱value can be peeked􏴲
+􏴱value can be peeked􏴲􏴯redis􏴰
 􏲝the correct value is peeked from the queue􏲞
 􏲛the queue sizes do not reflect the transfer􏲜
 􏴭
@@ -840,7 +923,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(peeked).isEqualTo("foo");
 􏴮
-􏴱peeking is idempotent􏴲
+􏴱peeking is idempotent􏴲􏴯redis􏴰
 􏲝the same value is peeked from the queue if not popped􏲞
 􏲛peeking is not idempotent􏲜
 􏴭
@@ -867,7 +950,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     return redis.lindex(name,index);
 􏶳
-􏴱check order􏴲
+􏴱check order􏴲􏴯redis􏴰
 􏲝the order of the values should be the opposite order they are pushed􏲞
 􏲛the indexes do not match the push order􏲜
 􏴭
@@ -899,7 +982,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     }
     return false;
 􏶳
-􏴱does exist􏴲
+􏴱does exist􏴲􏴯redis􏴰
 􏲝show that exists returns true when the value exists􏲞
 􏲛exists is incorrectly reporting the state of the queue􏲜
 􏴭
@@ -916,7 +999,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(exists).isTrue();
 􏴮
-􏴱does not exist􏴲
+􏴱does not exist􏴲􏴯redis􏴰
 􏲝show that exists returns false when the value does not exist􏲞
 􏲛exists is incorrectly reporting the state of the queue􏲜
 􏴭
@@ -941,7 +1024,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     return redis.llen(name);
 􏶳
-􏴱adjust push pop􏴲
+􏴱adjust push pop􏴲􏴯redis􏴰
 􏲝size adjusts with push and pop􏲞
 􏲛size is incorrectly reporting the expected queue size􏲜
 􏴭
@@ -984,7 +1067,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     return redis.llen(name) == 0;
 􏶳
-􏴱empty on construction􏴲
+􏴱empty on construction􏴲􏴯redis􏴰
 􏲝the queue is empty on construction􏲞
 􏲛empty is incorrectly reporting the expected queue state􏲜
 􏴭
@@ -998,7 +1081,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(isEmpty).isTrue();
 􏴮
-􏴱nonempty after pushes􏴲
+􏴱nonempty after pushes􏴲􏴯redis􏴰
 􏲝the queue is not empty after pushing a value􏲞
 􏲛empty is incorrectly reporting the expected queue state􏲜
 􏴭
@@ -1021,7 +1104,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     visit(name,visitor);
 􏶳
-􏴱check visit of each element􏴲
+􏴱check visit of each element􏴲􏴯redis􏴰
 􏲝each element in the queue can be visited􏲞
 􏲛we are unable to visit each element in the queue􏲜
 􏴭
@@ -1058,7 +1141,7 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(visited.contains("element 7")).isTrue();
     assertThat(visited.contains("element 8")).isTrue();
 􏴮
-􏴱visit many over page size􏴲
+􏴱visit many over page size􏴲􏴯redis􏴰
 􏲝add and visit many elements􏲞
 􏲛we are unable to visit all the elements when there are many of them􏲜
 􏴭

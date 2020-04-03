@@ -3,19 +3,24 @@ source ~/.zshrc
 
 function transcompile {
     unilang --input_files $1.unilang --exporter UBER --languages JAVA --style NORMAL --build-only;
-    cp $2.java $3; 
-    java -jar ~/Desktop/buildfarm/java_formatter.jar -i "${3}""${2}".java
+    transfer $2 $3;
 }
 
 function transcompile_test {
     unilang --input_files $1.unilang --exporter UBER --languages JAVA_TEST --style NORMAL --build-only;
-    cp $2.java $3; 
-    java -jar ~/Desktop/buildfarm/java_formatter.jar -i "${3}""${2}".java
+    transfer $2 $3;
+}
+
+function transfer {
+    cp $1.java $2; 
+    java -jar ~/Desktop/buildfarm/java_formatter.jar -i "${2}""${1}".java
 }
 
 #redis queues
 transcompile redis_queue RedisQueue ~/Desktop/buildfarm/src/main/java/build/buildfarm/instance/shard/queues/
 transcompile_test redis_queue RedisQueueTest ~/Desktop/buildfarm/src/test/java/build/buildfarm/instance/shard/queues/
+transfer RedisQueueMockTest ~/Desktop/buildfarm/src/test/java/build/buildfarm/instance/shard/queues/
+
 #transcompile redis_provision_queue RedisProvisionQueue ~/Desktop/buildfarm/src/main/java/build/buildfarm/instance/shard/queues/
 #transcompile redis_provision_queues RedisProvisionQueues ~/Desktop/buildfarm/src/main/java/build/buildfarm/instance/shard/queues/
 
