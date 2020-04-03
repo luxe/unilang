@@ -132,19 +132,41 @@ class
     
     for (auto const& it: structure.methods.methods){
         for (auto const& j: it.unit_tests.test_cases){
+            if (Should_Include_Test_Case(j,settings)){
             
-            //add test comment
-            auto settings2 = dont_do_this(settings);
-            auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
-            result += Test_Comment_Getter::Get(structure,func_name,j,settings.test_case_attributes);
-            
-            result += "@Test";
-            result += "\n";
-            result += Get_Test_Signature(j,func_name,settings);
-            result += Test_Body_Getter::Get(j);
+                //add test comment
+                auto settings2 = dont_do_this(settings);
+                auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
+                result += Test_Comment_Getter::Get(structure,func_name,j,settings.test_case_attributes);
+                
+                result += "@Test";
+                result += "\n";
+                result += Get_Test_Signature(j,func_name,settings);
+                result += Test_Body_Getter::Get(j);
+            }
         }
     }
     return result;
+❱
+
+◀private: static▶ bool ☀Should_Include_Test_Case(Test_Case const& test_case, Java_Test_Settings const& settings)❰
+    
+    //TODO: this should be a vector of strings, not just a string
+    auto tag_value = as_string(test_case.tag.value);
+    
+    
+    if (tag_value.empty()){
+        if (settings.include_test_cases_without_tags){
+            return true;
+        }
+    }
+    
+    for (auto const& it: settings.test_cases_include_because_tags){
+        if (it == tag_value){
+            return true;
+        }
+    }
+    return false;
 ❱
 
 ◀private: static▶ std::string ☀Get_Test_Signature(Test_Case const& test_case, std::string const& func_name, Java_Test_Settings const& settings)❰

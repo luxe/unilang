@@ -30,6 +30,18 @@ class
    
    Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::JAVA);
   
+  auto file_result = Create_CI_Tests(structure,contributors,settings);
+  auto file_result2 = Create_NonCI_Tests(structure,contributors,settings);
+  
+  //created files
+  std::vector<std::string> created;
+  created.emplace_back(file_result1);
+  created.emplace_back(file_result2);
+  return created;
+❱
+
+◀public: static▶ std::string ☀Create_CI_Tests(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
   //the file to create
   std::string source_code_filename = Get_File_Name(structure,settings);
   
@@ -41,11 +53,25 @@ class
   outfile << str <<'\n';
   outfile.close();
   
-  //created files
-  std::vector<std::string> created;
-  created.emplace_back(source_code_filename);
-  return created;
 ❱
+
+◀public: static▶ std::string ☀Create_NonCI_Tests(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
+  //the file to create
+  std::string source_code_filename = Get_File_Name(structure,settings);
+  
+  //get file content
+  std::string str = Java_Test_Str_Getter::Get(structure,contributors,settings);
+  
+  //write content to file
+  std::ofstream outfile(source_code_filename);
+  outfile << str <<'\n';
+  outfile.close();
+❱
+
+
+
+
 
 ◀private: static▶ std::string ☀Get_File_Name(Structure const& structure, Java_Test_Settings const& settings)❰
 
