@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_selection",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
@@ -18,7 +18,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_text_bitmap_getter",
     "//code/utilities/graphics/imgui/ui/draw/label/style:label_style_chooser",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_length_getter",
-    "//code/utilities/graphics/imgui/ui/draw/label:positioned_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:positioned_label",
     "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
@@ -27,7 +27,7 @@ hcp(name="label_drawer", deps = [
 
 hcp(name="faced_label_drawer", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/label:positioned_faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame/logic:frame_elements",
@@ -37,7 +37,7 @@ hcp(name="faced_label_drawer", deps = [
 hcp(name="label_text_bitmap_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
     "//code/utilities/types/vectors/transformers:lib",
     "//code/utilities/graphics/imgui/time:cycle_clock_checker",
@@ -47,5 +47,5 @@ hcp(name="label_text_bitmap_getter", deps = [
 ])
 
 hcp(name="label_length_getter", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/label:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
 ])
