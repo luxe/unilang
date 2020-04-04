@@ -1,5 +1,4 @@
-<img width="395" height="112" src=".readme/unilang-trimmed.png">
- [<img width="60" height="60" src=".readme/pdf_download.png">](https://www.dropbox.com/s/1qde65ekii8nyb9/unilang.pdf?dl=1)
+<img width="395" height="112" src=".readme/unilang-trimmed.png"> [<img width="60" height="60" src=".readme/pdf_download.png">](https://www.dropbox.com/s/1qde65ekii8nyb9/unilang.pdf?dl=1)
 
 **A universal programming language**
 
@@ -9,6 +8,9 @@
 
 <summary>Introduction</summary>
 
+
+
+## Summary
 Unilang is a project for everything related to programming.  It has a graphical / textual fronted for software development and unifies languages through transcompilation.  It was written to automate and improve the productivity of a sole developer.  You might find something useful in it as well.  
 
 
