@@ -15,7 +15,7 @@ Unilang is a project for everything related to programming.  It has a graphical 
 
 
 ## Philosophy
-The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming should be geared towards filling in concepts on a language meta-model and less about syntactical expressions being parsed into ASTs which then loosely correlate to pragmatic meaning.  A longer description for the rationale around Unilang is covered in the rest of this section.  
+The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang is focused on filling in concepts of a language meta-model and less about syntactical expressions being parsed into ASTs which may lose pragmatic meaning in their correlation.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
 
 
 ## GPL Shortcomings

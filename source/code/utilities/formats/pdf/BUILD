@@ -3,6 +3,8 @@ load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "pdf_settings",deps=[
+    "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
+    "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 ])
 
 hcp(name = "pdf_creator",deps=[
@@ -20,6 +22,8 @@ hcp(name = "pdf_creator",deps=[
     "//code/utilities/filesystem/files/temp:temp_file",
     "//code/utilities/filesystem/files/temp:existing_temp_file",
     "//code/utilities/program/call/process_spawn:process_spawner",
+    "//code/utilities/program/wrappers/pandoc:pandoc_pdf_generator",
+    "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
 ])
 
 hcp(name = "latex_template_getter", deps = [
