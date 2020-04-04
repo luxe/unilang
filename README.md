@@ -1,8 +1,4 @@
-<div>
-![Unilang](.readme/unilang-trimmed.png "Unilang"){ width="395" height="112" .center }
-</div>
-
-
+<img width="395" height="112" src=".readme/unilang-trimmed.png">
  [<img width="60" height="60" src=".readme/pdf_download.png">](https://www.dropbox.com/s/1qde65ekii8nyb9/unilang.pdf?dl=1)
 
 **A universal programming language**
@@ -67,5 +63,4 @@ Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)]
 There are no rules.  Make a ticket about anything.  We'll figure it out together.  
 
 
-\newpage {References\par}
 
