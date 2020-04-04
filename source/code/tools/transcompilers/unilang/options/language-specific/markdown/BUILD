@@ -1,6 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp("markdown_settings",deps = [
 "//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
@@ -22,6 +23,14 @@ hcp("outline_settings",deps = [
 ])
 
 hcp("markdown_image_settings",deps = [
+    "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_image_style",
+])
+
+enum_cpp(name = "markdown_image_style",
+values = [
+"classic"
+,"html"
+,"derive"
 ])
 
 hcp("markdown_code_settings",deps = [

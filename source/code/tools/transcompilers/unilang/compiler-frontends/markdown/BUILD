@@ -83,6 +83,8 @@ hcp(name = "markdown_image_getter", deps = [
 "//code/utilities/types/vectors/operators:lib",
 "//code/utilities/types/char:lib",
 "//code/utilities/types/strings/observers/converting:lib",
+"//code/tools/transcompilers/unilang/compiler-frontends/markdown/images:classic_markdown_image",
+"//code/tools/transcompilers/unilang/compiler-frontends/markdown/images:html_markdown_image",
 ])
 
 

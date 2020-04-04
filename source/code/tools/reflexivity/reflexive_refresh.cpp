@@ -10,6 +10,7 @@
 #include "code/utilities/program/common_actions/locale/lib.hpp"
 #include "code/utilities/program/name/program_name_getter.hpp"
 #include "code/tools/transcompilers/unilang/self_readme/unilang_documentation_generator.hpp"
+#include "code/literature/publish/essay_publisher.hpp"
 #include <errno.h>
 
 
@@ -63,6 +64,12 @@ int main(int argc, char** argv){
     if (settings.refresh_unilang_documentation){
         std::cout << "Refreshing Unilang Documentation..." << std::endl;
         Unilang_Documentation_Generator::Generate();
+    }
+    
+    //generate essays
+    if (settings.refresh_essays){
+        std::cout << "Refreshing Essays..." << std::endl;
+        Essay_Publisher::Generate_And_Publish();
     }
     
 }

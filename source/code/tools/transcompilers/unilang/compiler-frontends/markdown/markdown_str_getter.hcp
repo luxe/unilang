@@ -44,15 +44,27 @@ class
 ❱
 
 ◀private: static▶ bool ☀Should_Add_Citation_Finale(Structure const& structure, Markdown_Settings const& settings)❰
-    return true; //for now
-    //todo: only if citations are actually used on a sentence somewhere
+    
+    
+    //there's no citation sources
+    if (structure.literature.citations.empty()){
+        return false;
+    }
+    
+    //there are citation sources, and at least 1 sentence has a citation
+    for (auto const& p: structure.literature.paragraphs){
+        for (auto const& s: p.sentences){
+            if (!s.citations.empty()){
+                return true;
+            }
+        }
+    }
+    
+    return false;
 ❱
 ◀private: static▶ std::string ☀Get_Citation_Finale(Structure const& structure, Markdown_Settings const& settings)❰
     std::string text;
-    
-    if (!structure.literature.citations.empty()){
-        Append_With_Newline(text,"\\newpage {References\\par}");
-    }
+    Append_With_Newline(text,"\\newpage {References\\par}");
     return text;
 ❱
 

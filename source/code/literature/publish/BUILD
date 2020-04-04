@@ -2,7 +2,7 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "task_executer", deps = [
+hcp(name = "essay_publisher", deps = [
     "//code/tools/transcompilers/unilang/tokens:generic_token",
     "//code/utilities/types/general:lib",
     "//code/utilities/program/common_actions/exits:lib",

@@ -1,6 +1,6 @@
 #include <iostream>
-#include "code/literature/publish/task_executer.hpp"
+#include "code/literature/publish/essay_publisher.hpp"
 
 int main(){
-    Task_Executer::Execute_Needed_Tasks();
+    Essay_Publisher::Generate_And_Publish();
 }
