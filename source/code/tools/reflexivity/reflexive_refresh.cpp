@@ -9,6 +9,7 @@
 #include "code/tools/reflexivity/settings/reflexive_refresh_settings_getter.hpp"
 #include "code/utilities/program/common_actions/locale/lib.hpp"
 #include "code/utilities/program/name/program_name_getter.hpp"
+#include "code/tools/transcompilers/unilang/self_readme/unilang_documentation_generator.hpp"
 #include <errno.h>
 
 
@@ -46,13 +47,22 @@ int main(int argc, char** argv){
         Dockerfile_Refresher::Refresh();
     }
     
+    //repo's third party dependencies
     if (settings.refresh_deps_definitions){
         std::cout << "Generating 3rd party deps..." << std::endl;
         Deps_Definition_Refresher::Refresh();
     }
     
+    //compilation tests from language->language
     if (settings.refresh_toolchain_conversion_tests){
         std::cout << "Generating Tool Chain Conversions..." << std::endl;
         Tool_Chain_Conversion_Refresher::Refresh();
     }
+    
+    //generate unilang documentation
+    if (settings.refresh_unilang_documentation){
+        std::cout << "Refreshing Unilang Documentation..." << std::endl;
+        Unilang_Documentation_Generator::Generate();
+    }
+    
 }
