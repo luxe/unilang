@@ -39,6 +39,7 @@ hcp(name = "essay_publisher", deps = [
     "//code/tools/transcompilers/unilang/compiler-frontends/bibtex:bibtex_str_getter",
     "//code/literature/publish/publishers:latex_essay_publisher",
     "//code/literature/publish/publishers:clean_site_essay_publisher",
+    "//code/literature/publish:essay",
 ])
 
 hcp(name = "essay_list_maker", deps = [
@@ -73,6 +74,7 @@ hcp(name = "essay_list_maker", deps = [
     "//code/utilities/types/strings/transformers/casing:case_modifier",
     "//code/utilities/formats/html/style:link_list_styling",
     "//code/utilities/formats/html/full:list_of_links",
+    "//code/literature/publish:essay",
 ])
 
 
