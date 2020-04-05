@@ -15,3 +15,11 @@ hcp(name="centered_image",deps = [
     "//code/utilities/formats/html/body:html_list_maker",
     "//code/utilities/formats/html/style:center_image_styling",
 ])
+
+hcp(name="blog_essay",deps = [
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/formats/html:basic_html_template_getter",
+    "//code/utilities/formats/html/body:html_list_maker",
+    "//code/utilities/formats/html/style:normalize",
+    "//code/utilities/formats/html/style:simple_blog",
+])

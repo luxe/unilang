@@ -37,65 +37,61 @@ class
 ❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/tools/transcompilers/unilang/compiler-frontends/bibtex/bibtex_str_getter"❫
-❪"code/literature/publish/publishers/latex_essay_publisher"❫
-❪"code/literature/publish/publishers/clean_site_essay_publisher"❫
+❪"code/utilities/formats/html/full/blog_essay"❫
 ⚞⚟
 
-
-//apt-get install pandoc-citeproc
-
-◀public: static▶ void ☀Generate_And_Publish() ❰
-
-    //Unicode please
-    Set_English_UTF8_Locale();
+◀public: static▶ void ☀Generate(Structure const& structure, std::string const& essay_name) ❰
     
-    //move somewhere
-    Move_To_Bazel_Derived_Path_To_Essays();
     
-    auto all_essays = Get_Essays();
+    //create html file
+    auto body = Get_Body_Html(structure);
+    auto html = Blog_Essay::Get_Html(essay_name,body);
+    auto file_name = Full_Path_For_Desktop_File(essay_name + ".html");
+    Temp_File result(file_name,html);
     
-    //publish essays
-    std::cout << "generating essays..." << std::endl;
-    for (auto const& it: all_essays){
-        
-        if (it.style == Essay_Style::SCIENTIFIC){
-            Latex_Essay_Publisher::Generate(structure,it.name);
-        }
-        else if (it.style == Essay_Style::POETIC){
-            Clean_Site_Essay_Publisher::Generate(structure,it.name);
-        }
-    }
     
-    std::cout << "essay list..." << std::endl;
-    Essay_List_Maker::Make(all_essays);
+    //transfer
     
+    //upload file
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = file_name;
+    upload_settings.remote_file_name = "essays/" + essay_name + ".html";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
+    File_Uploader::Upload(upload_settings);
 ❱
 
 
-
-◀private: static▶ std::vector<Essay> ☀Get_Essays() ❰
-    std::vector<Essay> x;
-    Essay e;
+◀public: static▶ std::string ☀Get_Body_Html(Structure const& structure) ❰
+    std::string x;
     
-    e.name = "linguistics";
-    e.style = Essay_Style::POETIC;
-    x.emplace_back(e);
+    x += "<h2><a href=\"http://luxe.github.io/essays/essays.html\">Home</a></h2>";
+    x += "\n";
+    x += "<div class=\"container\">";
+    x += "\n";
     
-    e.name = "dyadic_meaning";
-    e.style = Essay_Style::SCIENTIFIC;
-    x.emplace_back(e);
+    for (auto const& p: structure.literature.paragraphs){
+        
+        x += "<h3>";
+        x += as_string(p.title.value);
+        x += "</h3>\n";
+        
+        x += "<p>";
+        for (auto const& s: p){
+            x += as_string(s.text.value);
+            x += "  ";
+        }
+        
+        x += "</p>";
+    }
     
-    e.name = "a_traffic_light";
-    e.style = Essay_Style::SCIENTIFIC;
-    x.emplace_back(e);
-    
-    e.name = "signification";
-    e.style = Essay_Style::SCIENTIFIC;
-    x.emplace_back(e);
-    
-    e.name = "ersatz";
-    e.style = Essay_Style::POETIC;
-    x.emplace_back(e);
-    
+    x += "</div>";
     return x;
 ❱

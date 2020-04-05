@@ -1,9 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:main.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
-load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(name = "essay_publisher", deps = [
+hcp(name = "latex_essay_publisher", deps = [
     "//code/tools/transcompilers/unilang/tokens:generic_token",
     "//code/utilities/types/general:lib",
     "//code/utilities/program/common_actions/exits:lib",
@@ -37,11 +36,9 @@ hcp(name = "essay_publisher", deps = [
     "//code/utilities/data_structures/unique_str_vertex_graph:lib",
     "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
     "//code/tools/transcompilers/unilang/compiler-frontends/bibtex:bibtex_str_getter",
-    "//code/literature/publish/publishers:latex_essay_publisher",
-    "//code/literature/publish/publishers:clean_site_essay_publisher",
 ])
 
-hcp(name = "essay_list_maker", deps = [
+hcp(name = "clean_site_essay_publisher", deps = [
     "//code/tools/transcompilers/unilang/tokens:generic_token",
     "//code/utilities/types/general:lib",
     "//code/utilities/program/common_actions/exits:lib",
@@ -70,20 +67,10 @@ hcp(name = "essay_list_maker", deps = [
     "//code/utilities/formats/html/body:html_list_maker",
     "//code/utilities/filesystem/files/creating:lib",
     "//code/utilities/types/strings/transformers/appending:lib",
-    "//code/utilities/types/strings/transformers/casing:case_modifier",
-    "//code/utilities/formats/html/style:link_list_styling",
-    "//code/utilities/formats/html/full:list_of_links",
-])
-
-
-enum_cpp(name = "essay_style",
-values = [
-"scientific"
-,"poetic"
-])
-
-
-
-hcp(name = "essay", deps = [
-    "//code/literature/publish:essay_style"
+    "//code/literature/publish:essay_list_maker",
+    "//code/utilities/filesystem/files/temp:existing_temp_file",
+    "//code/utilities/data_structures/unique_str_vertex_graph:lib",
+    "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
+    "//code/tools/transcompilers/unilang/compiler-frontends/bibtex:bibtex_str_getter",
+    "//code/utilities/formats/html/full:blog_essay",
 ])

@@ -35,19 +35,27 @@ class
 ⚞⚟
 
 
-◀public: static▶ void ☀Make(std::vector<std::string> const& all_essays) ❰
+◀public: static▶ void ☀Make(std::vector<Essay> const& all_essays) ❰
 
     auto link_and_names = Gather_Links_And_Names(all_essays);
     Generate_Essay_List(link_and_names);
 ❱
 
-◀private: static▶ std::vector<std::pair<std::string,std::string>> ☀Gather_Links_And_Names(std::vector<std::string> const& all_essays) ❰
+◀private: static▶ std::vector<std::pair<std::string,std::string>> ☀Gather_Links_And_Names(std::vector<Essay> const& all_essays) ❰
     std::vector<std::pair<std::string,std::string>> x;
     for (auto const& it: all_essays){
-        auto structure = File_To_Structure_Converter::Convert(it + ".unilang");
+        auto structure = File_To_Structure_Converter::Convert(it.name + ".unilang");
         //auto title = as_string(structure.literature.paragraphs[0].title.value);
         auto title = Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPITAL,structure.name);
-        auto link = it + ".pdf";
+        auto link = it.name;
+        
+        if (it.style == Essay_Style::SCIENTIFIC){
+            link += ".pdf";
+        }
+        else if (it.style == Essay_Style::POETIC){
+            link += ".html";
+        }
+        
         x.emplace_back(link,title);
     }
     return x;

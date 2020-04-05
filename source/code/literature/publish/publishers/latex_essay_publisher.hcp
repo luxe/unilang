@@ -1,0 +1,180 @@
+class
+
+❪"code/tools/transcompilers/unilang/structure/model/inlined_structures"❫
+❪"code/tools/transcompilers/unilang/tokens/generic_token"❫
+❪"code/tools/transcompilers/unilang/tokens/get_tokens"❫
+❪"code/utilities/formats/pdf/pdf_settings"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/program/common_actions/locale/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/tools/transcompilers/unilang/user-frontend/code_graphs_creator"❫
+❪"code/tools/transcompilers/unilang/dependency_graph_creator/code_graph"❫
+❪"code/tools/transcompilers/unilang/main/root_settings/root_settings_getter"❫
+❪"code/tools/transcompilers/unilang/compiler-frontends/markdown/markdown_str_getter"❫
+❪"code/tools/transcompilers/unilang/compiler-frontends/dzslides/dzslides_exporter"❫
+❪"code/utilities/formats/pdf/latex_template_getter"❫
+❪"code/utilities/web/dropbox/dropbox_uploader"❫
+❪"code/utilities/personal/secret/secret_getter"❫
+❪"code/utilities/filesystem/files/temp/temp_file"❫
+❪"code/utilities/formats/pdf/pdf_creator"❫
+❪"code/tools/transcompilers/unilang/user-frontend/file_to_structure_converter"❫
+❪"code/utilities/output/upload/file_upload_settings"❫
+❪"code/utilities/output/upload/file_uploader"❫
+❪"code/utilities/formats/html/basic_html_template_getter"❫
+❪"code/utilities/formats/html/body/html_list_maker"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/literature/publish/essay_list_maker"❫
+❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
+❪"code/utilities/data_structures/unique_str_vertex_graph/lib"❫
+❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/tools/transcompilers/unilang/compiler-frontends/bibtex/bibtex_str_getter"❫
+⚞⚟
+
+◀public: static▶ void ☀Generate(Structure const& structure, std::string const& essay_name) ❰
+
+    auto structure = File_To_Structure_Converter::Convert(essay_name + ".unilang");
+    Generate_Bibtex(structure,essay_name);
+    Existing_Temp_File bib_file(Full_Path_For_Desktop_File(essay_name + ".bib"));
+    
+    Generate_Essay(structure,essay_name);
+    Generate_Train_Of_Throught(structure,essay_name);
+        
+❱
+
+◀private: static▶ void ☀Generate_Bibtex(Structure const& structure, std::string const& basename) ❰
+    auto to_bibtex = Full_Path_For_Desktop_File(basename + ".bib");
+    
+    std::vector<Contributor> contributors;
+    Bibtex_Settings settings;
+    std::string content = Bibtex_Str_Getter::Get(structure,contributors,settings);
+    Write_To_File(to_bibtex,content);
+    //std::cout << content << std::endl;
+❱
+
+◀private: static▶ void ☀Generate_Essay(Structure const& structure, std::string const& basename) ❰
+
+    auto to_raw_pdf = Full_Path_For_Desktop_File(basename + "-pdf.md");
+    auto to_manual_pdf = Full_Path_For_Desktop_File(basename + ".pdf");
+    auto to_latex_template = Full_Path_For_Desktop_File(basename + ".tx");
+    auto to_csl_template = Full_Path_For_Desktop_File(basename + ".csl");
+    auto bib_file = Full_Path_For_Desktop_File(basename + ".bib");
+    
+    //build pdf documentation
+    Pdf_Settings pdf_settings;
+    pdf_settings.pandoc_settings.latex_template = to_latex_template;
+    pdf_settings.pandoc_settings.csl_template = to_csl_template;
+    pdf_settings.pandoc_settings.md_format = to_raw_pdf;
+    pdf_settings.pandoc_settings.resulting_pdf = to_manual_pdf;
+    pdf_settings.pandoc_settings.bibtex_file = bib_file;
+    pdf_settings.markdown_settings = Get_Pdf_Markdown_Settings();
+    
+    
+    Pdf_Creator::Create_Pdf(structure,pdf_settings);
+    
+    Existing_Temp_File created_pdf(pdf_settings.pandoc_settings.resulting_pdf);
+    
+    
+    //upload file
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = to_manual_pdf;
+    upload_settings.remote_file_name = "essays/" + basename + ".pdf";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
+    File_Uploader::Upload(upload_settings);
+❱
+
+◀private: static▶ Markdown_Settings ☀Get_Pdf_Markdown_Settings()❰
+
+    Program_Input input;
+    input.settings = Root_Settings_Getter::Get();
+
+    auto md_settings = input.settings.compiler_settings.trevor.settings.foreign_language.markdown;
+    md_settings.headers.allow_labeled_image_titles = false;
+    md_settings.headers.h1_as_details_tags = false;
+    md_settings.headers.h1_as_summary_tags = false;
+    md_settings.tables.print = true;
+    md_settings.tables.as_list = true;
+    md_settings.image.style = Markdown_Image_Style::CLASSIC;
+
+    return md_settings;
+❱
+
+◀private: static▶ void ☀Generate_Train_Of_Throught(Structure const& structure, std::string const& basename) ❰
+
+    Generate_Train_Of_Thought(structure,basename);
+    auto dot_file_path = Full_Path_To_Desktop() + basename;
+    auto png_file_path = Full_Path_To_Desktop() + basename + ".png";
+    
+    Existing_Temp_File created_dot_file(dot_file_path);
+    Existing_Temp_File created_png_file(png_file_path);
+    
+    //upload file
+    File_Upload_Settings upload_settings;
+    upload_settings.local_file_name = png_file_path;
+    upload_settings.remote_file_name = "essays/" + basename + "-tot.png";
+    
+    //dropbox specific
+    upload_settings.upload_to_dropbox = false;
+    
+    //github specific
+    upload_settings.upload_to_github = true;
+    upload_settings.github_settings.pull_first = false;
+    upload_settings.github_settings.update = false;
+    
+    File_Uploader::Upload(upload_settings);
+❱
+
+
+
+◀private: static▶ void ☀Generate_Train_Of_Thought(Structure const& structure, std::string const& basename) ❰
+    
+    auto str = As_Graphviz(structure);
+    Graphviz_Image_Maker::Make(str,Full_Path_To_Desktop(),basename);
+❱
+
+◀private: static▶ std::string ☀As_Graphviz(Structure const& structure) ❰
+    std::string x;
+    
+    Append_With_Newline(x,"digraph results {");
+    //Append_With_Newline(x,"splines=false;");
+    Append_With_Newline(x,"node [");
+    Append_With_Newline(x,"fontname=\"Arial\",");
+    Append_With_Newline(x,"shape = plaintext,");
+    Append_With_Newline(x,"height=.1");
+    Append_With_Newline(x,"]");
+    
+    for (auto const& z: structure.literature.paragraphs){
+        for (auto const& y: z.thought_connections){
+            auto from = as_string(y.from.value);
+            auto edge = as_string(y.edge.value);
+            auto to = as_string(y.to.value);
+            
+            Append_In_DQuotes(x,from);
+            Append(x," -> ");
+            Append_In_DQuotes(x,to);
+            Append(x,"[ label=");
+            Append_In_DQuotes(x,edge);
+            Append_With_Newline(x,"]");
+        }
+    }
+    
+    Append_With_Newline(x,"}");
+    
+    return x;
+❱
