@@ -73,4 +73,5 @@ hcp(name = "clean_site_essay_publisher", deps = [
     "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
     "//code/tools/transcompilers/unilang/compiler-frontends/bibtex:bibtex_str_getter",
     "//code/utilities/formats/html/full:blog_essay",
+    "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
 ])
