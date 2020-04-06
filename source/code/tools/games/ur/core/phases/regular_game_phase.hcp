@@ -32,12 +32,12 @@ class
     
     //handle player turns
 
-    if (state.ur_state.player_turn == 0){
+    if (state.ur_state.player_turn == 1){
         for (auto const& event: events.left){
             Handle_Player_Turn_Event(state,state.ur_state.players[0],event);
         }
     }
-    if (state.ur_state.player_turn == 1){
+    else if (state.ur_state.player_turn == 0){
         for (auto const& event: events.right){
             Handle_Player_Turn_Event(state,state.ur_state.players[1],event);
         }
@@ -90,20 +90,29 @@ class
         //move piece
         pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = new_spot;
         
-        //move to next player's turn
-        if (state.ur_state.player_turn == 1){
-            state.ur_state.player_turn = 0;
-        }
-        else {
-            state.ur_state.player_turn = 1;
-        }
+        Move_To_Next_Player(state);
     }
 
 
     
 ❱
 
+
+◀private: static▶ void ☀Prepare_Player_For_Turn(Ur_Player_State & pstate) ❰
+    pstate.phase = Player_Phase::ROLL;
+❱
+
+
 ◀private: static▶ void ☀Move_To_Next_Player(Game_State & state) ❰
+
+        if (state.ur_state.player_turn == 1){
+            state.ur_state.player_turn = 0;
+        }
+        else {
+            state.ur_state.player_turn = 1;
+        }
+        
+        Prepare_Player_For_Turn(state.ur_state.players[state.ur_state.player_turn]);
 ❱
 
 ◀private: static▶ void ☀Handle_Roll_Phase(Game_State & state, Ur_Player_State & pstate, F310_Event const& event) ❰
