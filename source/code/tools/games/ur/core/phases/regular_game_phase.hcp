@@ -78,13 +78,17 @@ class
     }
     
     //choose phase
-    if (pstate.phase == Player_Phase::CHOOSE){
+    else if (pstate.phase == Player_Phase::CHOOSE){
         Handle_Choose_Phase(state,pstate,event);
     }
     
     //move phase
-    if (pstate.phase == Player_Phase::MOVE){
-        pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = pstate.piece_chosen;
+    else if (pstate.phase == Player_Phase::MOVE){
+        auto current_spot = pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot;
+        auto new_spot = Follow_Path_Or(pstate.path,current_spot,pstate.roll,std::string(""));
+        
+        //move piece
+        pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = new_spot;
         
         //move to next player's turn
         if (state.ur_state.player_turn == 1){
