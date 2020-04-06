@@ -16,4 +16,5 @@ hcp(name = "assets_loader", deps = [
     "//code/utilities/fonts/font_files:droid_sans_mono",
     "//code/tools/games/ur/state:game_state",
     "//code/utilities/graphics/sfml/sprite:textured_sprite_loader",
+    "//code/utilities/fonts/sfml:font_loader",
 ])
