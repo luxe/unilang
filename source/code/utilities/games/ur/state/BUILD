@@ -23,4 +23,5 @@ values = [
 "roll"
 ,"choose"
 ,"move"
+,"wait"
 ])

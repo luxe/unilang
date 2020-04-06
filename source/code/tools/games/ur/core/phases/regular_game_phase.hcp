@@ -31,11 +31,16 @@ class
     
     
     //handle player turns
-    for (auto const& event: events.left){
-        Handle_Player_Turn_Event(state,state.ur_state.players[0],event);
+
+    if (state.ur_state.player_turn == 0){
+        for (auto const& event: events.left){
+            Handle_Player_Turn_Event(state,state.ur_state.players[0],event);
+        }
     }
-    for (auto const& event: events.right){
-        Handle_Player_Turn_Event(state,state.ur_state.players[1],event);
+    if (state.ur_state.player_turn == 1){
+        for (auto const& event: events.right){
+            Handle_Player_Turn_Event(state,state.ur_state.players[1],event);
+        }
     }
     
     
@@ -80,6 +85,14 @@ class
     //move phase
     if (pstate.phase == Player_Phase::MOVE){
         pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = pstate.piece_chosen;
+        
+        //move to next player's turn
+        if (state.ur_state.player_turn == 1){
+            state.ur_state.player_turn = 0;
+        }
+        else {
+            state.ur_state.player_turn = 1;
+        }
     }
 
 
@@ -122,6 +135,7 @@ class
     //indicate that the dice has been rolled
     pstate.phase = Player_Phase::CHOOSE;
     pstate.possible_selections = Ur_Logic::Player_Piece_Choices(state.ur_state,pstate.roll);
+    std::cout << pstate.possible_selections.size() << std::endl;
 ❱
 
 ◀private: static▶ void ☀Handle_Choose_Phase(Game_State & state, Ur_Player_State & pstate, F310_Event const& event) ❰
