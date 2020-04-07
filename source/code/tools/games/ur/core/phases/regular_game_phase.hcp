@@ -25,6 +25,7 @@ class
 ❪"code/utilities/colors/color_transitioner"❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/functions/f310_event_synthesizer"❫
 ❪"code/utilities/games/ur/ur_logic"❫
+❪"code/tools/games/ur/core/phases/roll_phase"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(F310_Events const& events, Game_State & state, Assets & assets) ❰
@@ -80,13 +81,13 @@ class
     //roll phase
     if (pstate.phase == Player_Phase::ROLL){
         assets.game_state.setString(assets.game_state.getString() + " roll");
-        Handle_Roll_Phase(state,pstate,events);
+        Roll_Phase::Run(state,pstate,events);
     }
     
     //choose phase
     else if (pstate.phase == Player_Phase::CHOOSE){
         assets.game_state.setString(assets.game_state.getString() + " choose");
-        Handle_Choose_Phase(state,pstate,events);
+        Handle_Choose_Phase(state,pstate,events,assets);
     }
     
     //move phase
@@ -94,10 +95,6 @@ class
         auto current_spot = pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot;
         auto new_spot = Follow_Path_Or(pstate.path,current_spot,pstate.roll,std::string(""));
         
-        if (new_spot == ""){
-            std::cerr << "not possible" << std::endl;
-            exit(0);
-        }
         
         //move piece
         pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = new_spot;
@@ -127,43 +124,7 @@ class
         Prepare_Player_For_Turn(state.ur_state.players[state.ur_state.player_turn]);
 ❱
 
-◀private: static▶ void ☀Handle_Roll_Phase(Game_State & state, Ur_Player_State & pstate, std::vector<F310_Event> const& events) ❰
-
-    if (In_Vector(events,F310_Event::BUTTONS_RIGHT_CLICKED)){
-        Roll_Player_Dice(state,pstate);
-    }
-❱
-
-◀private: static▶ void ☀Roll_Player_Dice(Game_State & state, Ur_Player_State & pstate) ❰
-
-    //roll the 4 dice of the game
-    auto dice_1 = N_Sided_Dice::Roll(4);
-    auto dice_2 = N_Sided_Dice::Roll(4);
-    auto dice_3 = N_Sided_Dice::Roll(4);
-    auto dice_4 = N_Sided_Dice::Roll(4);
-    
-    //calculate the total
-    pstate.roll = 0;
-    if (dice_1 == 0){
-        pstate.roll++;
-    }
-    if (dice_2 == 0){
-        pstate.roll++;
-    }
-    if (dice_3 == 0){
-        pstate.roll++;
-    }
-    if (dice_4 == 0){
-        pstate.roll++;
-    }
-    
-    //indicate that the dice has been rolled
-    pstate.phase = Player_Phase::CHOOSE;
-    pstate.possible_selections = Ur_Logic::Player_Piece_Choices(state.ur_state,pstate.roll);
-    std::cout << pstate.possible_selections.size() << std::endl;
-❱
-
-◀private: static▶ void ☀Handle_Choose_Phase(Game_State & state, Ur_Player_State & pstate, std::vector<F310_Event> const& events) ❰
+◀private: static▶ void ☀Handle_Choose_Phase(Game_State & state, Ur_Player_State & pstate, std::vector<F310_Event> const& events, Assets & assets) ❰
 
     if (!pstate.possible_selections.empty()){
         if (In_Vector(events,F310_Event::ARROWS_RIGHT_CLICKED)){
@@ -175,8 +136,14 @@ class
         else if (In_Vector(events,F310_Event::BUTTONS_RIGHT_CLICKED)){
             pstate.phase = Player_Phase::MOVE;
         }
+        
+        auto spot_name = pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot;
+        auto pos = Spot_Name_Position(assets.spots,spot_name);
+        assets.piece_selector.setPosition(pos);
     }
     else {
-        Move_To_Next_Player(state);
+        if (In_Vector(events,F310_Event::BUTTONS_RIGHT_CLICKED)){
+            Move_To_Next_Player(state);
+        }
     }
 ❱
