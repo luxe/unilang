@@ -125,19 +125,46 @@ class
 ◀private: static▶ void ☀Potentially_Capitalize(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
   if (grammar.puncuation.auto_capitalize_comments){
     CapitalizeFirstChar(comment_text);
+    
+    //might need to capitalize a sentence that is actually a quote
+    if (comment_text.size() >= 2){
+      if (comment_text[0] == '"'){
+        CapitalizeCharIndex(comment_text,1);
+      }
+    }
+    
+    
   }
 ❱
 ◀private: static▶ void ☀Potentially_Punctuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
   if (grammar.puncuation.auto_puncuate_comments){
-  
-      //decide whether there is currently puncuation at the end of the comment
-      bool puncuation_found = Has_Punctuation(comment_text,grammar);
-      
-      //add punctuation if there isn't already any
-      if (!puncuation_found){
-        comment_text += grammar.puncuation.default_puncuation;
+    
+      //ends with a quote. We need to put in the punctuation inside the quotes
+      if (Ends_With(comment_text,"\"")){
+        Quoted_Puncuate(comment_text,grammar);
+      }
+      else{
+        Non_Quoted_Puncuate(comment_text,grammar);
       }
   }
+❱
+
+◀private: static▶ void ☀Quoted_Puncuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+    Remove_Last_Char(comment_text);
+    Non_Quoted_Puncuate(comment_text,grammar);
+    comment_text += '"';
+❱
+
+◀private: static▶ void ☀Non_Quoted_Puncuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+    //decide whether there is currently puncuation at the end of the comment
+    bool puncuation_found = Has_Punctuation(comment_text,grammar);
+    
+    //add punctuation if there isn't already any
+    if (!puncuation_found){
+      comment_text += grammar.puncuation.default_puncuation;
+    }
 ❱
 
 ◀private: static▶ bool ☀Has_Punctuation(std::string const& sentence, Comment_Grammar_Settings const& grammar)❰

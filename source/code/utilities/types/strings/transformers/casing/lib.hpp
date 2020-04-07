@@ -3,6 +3,8 @@
 
     std::string& CapitalizeFirstChar(std::string & s);
     std::string& LowercaseFirstChar(std::string & s);
+    
+    std::string& CapitalizeCharIndex(std::string & s, size_t const& index);
 
     std::string& Uppercase(std::string &s);
     std::string As_Uppercase(std::string s);

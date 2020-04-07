@@ -19,6 +19,10 @@ std::string& LowercaseFirstChar(std::string & s){
         }
 		return s;
 }
+std::string& CapitalizeCharIndex(std::string & s, size_t const& index){
+    s[index] = toupper(s[index]);
+    return s;
+}
 std::string& Uppercase(std::string &str){
     std::transform(str.begin(), str.end(), str.begin(), ::toupper);
     return str;
