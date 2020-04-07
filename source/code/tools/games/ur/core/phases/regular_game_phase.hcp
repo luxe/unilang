@@ -86,7 +86,8 @@ class
     
     //choose phase
     else if (pstate.phase == Player_Phase::CHOOSE){
-        assets.game_state.setString(assets.game_state.getString() + " choose");
+        assets.game_state.setString(assets.game_state.getString() + " choose ");
+        assets.game_state.setString(assets.game_state.getString() + std::to_string(pstate.roll));
         Handle_Choose_Phase(state,pstate,events,assets);
     }
     
@@ -99,7 +100,7 @@ class
         //move piece
         pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot = new_spot;
         
-        Move_To_Next_Player(state);
+        Move_To_Next_Player(state,assets);
     }
 
 
@@ -107,12 +108,12 @@ class
 ❱
 
 
-◀private: static▶ void ☀Prepare_Player_For_Turn(Ur_Player_State & pstate) ❰
+◀private: static▶ void ☀Reset_Player_For_Turn(Ur_Player_State & pstate) ❰
     pstate.phase = Player_Phase::ROLL;
 ❱
 
 
-◀private: static▶ void ☀Move_To_Next_Player(Game_State & state) ❰
+◀private: static▶ void ☀Move_To_Next_Player(Game_State & state, Assets & assets) ❰
 
         if (state.ur_state.player_turn == 1){
             state.ur_state.player_turn = 0;
@@ -121,7 +122,9 @@ class
             state.ur_state.player_turn = 1;
         }
         
-        Prepare_Player_For_Turn(state.ur_state.players[state.ur_state.player_turn]);
+        Reset_Player_For_Turn(state.ur_state.players[0]);
+        Reset_Player_For_Turn(state.ur_state.players[1]);
+        assets.piece_selector.setPosition(-100,-100);
 ❱
 
 ◀private: static▶ void ☀Handle_Choose_Phase(Game_State & state, Ur_Player_State & pstate, std::vector<F310_Event> const& events, Assets & assets) ❰
@@ -139,11 +142,13 @@ class
         
         auto spot_name = pstate.pieces[pstate.possible_selections[pstate.piece_chosen]].current_spot;
         auto pos = Spot_Name_Position(assets.spots,spot_name);
+        pos.y -= 40;
+        pos.x += 40;
         assets.piece_selector.setPosition(pos);
     }
     else {
         if (In_Vector(events,F310_Event::BUTTONS_RIGHT_CLICKED)){
-            Move_To_Next_Player(state);
+            Move_To_Next_Player(state,assets);
         }
     }
 ❱
