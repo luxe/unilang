@@ -31,7 +31,6 @@ int main(int argc, char** argv){
     
     //things within the repository that need regenerated
     
-    
     //root repo stuff
     if (settings.refresh_bazel_wrapper){
         std::cout << "Generating Bazel Wrapper..." << std::endl;

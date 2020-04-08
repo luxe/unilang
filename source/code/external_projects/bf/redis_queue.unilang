@@ -411,6 +411,44 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.pop();
     assertThat(queue.size()).isEqualTo(0);
 􏴮
+􏴱pop decreases size􏴲􏴯mock􏴰
+􏲝the queue size decreases as elements are popped􏲞
+􏲛the queue size is not accurately reflecting the pops􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(Arrays.asList("test", "foo"));
+    when(redis.llen("test"))
+        .thenReturn(6L)
+        .thenReturn(5L)
+        .thenReturn(4L)
+        .thenReturn(3L)
+        .thenReturn(2L)
+        .thenReturn(1L)
+        .thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT / ASSERT
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    queue.push("foo");
+    assertThat(queue.size()).isEqualTo(6);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(5);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(4);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(3);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(2);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(1);
+    queue.pop();
+    assertThat(queue.size()).isEqualTo(0);
+􏴮
 
 􏷐remove element from queue􏷏
 􏶠removes an element from a list and specifies whether it was removed􏶡
@@ -434,6 +472,21 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
+􏴱false on empty􏴲􏴯mock􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", -1, "foo")).thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT
+    Boolean success = queue.remove("foo");
+
+    // ASSERT
+    assertThat(success).isFalse();
+􏴮
 􏴱false when value is missing􏴲􏴯redis􏴰
 􏲝removing returns false because the queue does not contain the value to be removed􏲞
 􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
@@ -450,12 +503,47 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
+􏴱false when value is missing􏴲􏴯mock􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", -1, "baz")).thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.remove("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
 􏴱true when value exists􏴲􏴯redis􏴰
 􏲝removing returns true because the queue contained the value before removing􏲞
 􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
 􏴭
     //ARRANGE
     JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.remove("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱true when value exists􏴲􏴯mock􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", -1, "bar")).thenReturn(1L);
     RedisQueue queue = new RedisQueue(redis,"test");
     
     //ACT
@@ -512,6 +600,24 @@ If two queues had the same name, they would be instances of the same underlying 
 􏶴
     return remove(getDequeueName(),val);
 􏶳
+􏴱remove a dequeue value􏴲􏴯mock􏴰
+􏲝we can remove an element from the dequeue􏲞
+􏲛we are either unable to get an element into the dequeue or unable to remove it􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test_dequeue", -1, "foo")).thenReturn(1L);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn("foo");
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT
+    queue.push("foo");
+    queue.dequeue();
+    boolean wasRemoved = queue.removeFromDequeue("foo");
+
+    // ASSERT
+    assertThat(wasRemoved).isEqualTo(true);
+􏴮
 
 􏷐remove element from queue via queue name􏷏
 􏶠removes an element from a list and specifies whether it was removed􏶡
@@ -546,6 +652,21 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
+􏴱false on empty􏴲􏴯mock􏴰
+􏲝removing returns false because the queue is empty and there is nothing to remove􏲞
+􏲛the queue was either not empty, or an error occured while removing from an empty queue􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", 0, "foo")).thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    Boolean success = queue.removeAll("foo");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
 􏴱false when value is missing􏴲􏴯redis􏴰
 􏲝removing returns false because the queue does not contain the value to be removed􏲞
 􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
@@ -562,12 +683,47 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(success).isFalse();
 􏴮
+􏴱false when value is missing􏴲􏴯mock􏴰
+􏲝removing returns false because the queue does not contain the value to be removed􏲞
+􏲛the queue was either contained the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", 0, "baz")).thenReturn(0L);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    Boolean success = queue.removeAll("baz");
+    
+    //ASSERT
+    assertThat(success).isFalse();
+􏴮
 􏴱true when value exists􏴲􏴯redis􏴰
 􏲝removing returns true because the queue contained the value before removing􏲞
 􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
 􏴭
     //ARRANGE
     JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean success = queue.removeAll("bar");
+    
+    //ASSERT
+    assertThat(success).isTrue();
+􏴮
+􏴱true when value exists􏴲􏴯mock􏴰
+􏲝removing returns true because the queue contained the value before removing􏲞
+􏲛the queue either did not contain the value or incorrectly reported a deletion􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrem("test", 0, "bar")).thenReturn(1L);
     RedisQueue queue = new RedisQueue(redis,"test");
     
     //ACT
@@ -633,6 +789,20 @@ If two queues had the same name, they would be instances of the same underlying 
     //ACT
     queue.clear();
 􏴮
+􏴱clearing empty is safe􏴲􏴯mock􏴰
+􏲝it is safe to clear an already empty queue􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.clear();
+    
+    //ASSERT
+    verify(redis, times(1)).del("test");
+􏴮
 􏴱clearing a full queue is safe􏴲􏴯redis􏴰
 􏲝it is safe to clear a  queue of values􏲞
 􏲛clearing a queue should not fail􏲜
@@ -646,6 +816,23 @@ If two queues had the same name, they would be instances of the same underlying 
     queue.push("bar");
     queue.push("baz");
     queue.clear();
+􏴮
+􏴱clearing a full queue is safe􏴲􏴯mock􏴰
+􏲝it is safe to clear a  queue of values􏲞
+􏲛clearing a queue should not fail􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    queue.clear();
+    
+    //ASSERT
+    verify(redis, times(1)).del("test");
 􏴮
 􏴱clearing sets size to zero􏴲􏴯redis􏴰
 􏲝clearing a queue sets its size to zero􏲞
@@ -674,6 +861,24 @@ null is returned if the thread is interrupted􏶡
 􏶴
     return popIntoSameSlot(name,getDequeueName());
 􏶳
+􏴱element can be dequeued􏴲􏴯mock􏴰
+􏲝the element is able to be dequeued􏲞
+􏲛something prevented the element from being dequeued􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn("foo");
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.dequeue();
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
+
+
 
 􏷐pop element into internal dequeue and return value􏷏
 􏶠this pops the element from one queue atomically into an internal list called the dequeue
@@ -685,6 +890,22 @@ null is returned if the timeout has expired􏶡
 􏶴
     return redis.brpoplpush(name,getDequeueName(),timeout_s);
 􏶳
+􏴱element can be dequeued with timeout􏴲􏴯mock􏴰
+􏲝the element is able to be dequeued􏲞
+􏲛something prevented the element from being dequeued􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpoplpush("test","test_dequeue",1)).thenReturn("foo");
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    String val = queue.dequeue(1);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("foo");
+􏴮
 
 􏷐pop element into another queue􏷏
 􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
@@ -938,6 +1159,20 @@ if the queues are not on the same slot the operation will fail with a cross slot
     //ASSERT
     assertThat(name).isEqualTo("queue_name");
 􏴮
+􏴱name is stored􏴲􏴯mock􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name");
+􏴮
 
 􏷐get dequeue name􏷏
 􏶠get the name of the internal dequeue used by the queue.  this is the redis key used for the list􏶡
@@ -947,6 +1182,20 @@ if the queues are not on the same slot the operation will fail with a cross slot
     return name + "_dequeue";
 􏶳
 􏴱name is stored􏴲􏴯redis􏴰
+􏲝the name can be received􏲞
+􏲛name does not match what it should􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"queue_name");
+    
+    //ACT
+    String name = queue.getDequeueName();
+    
+    //ASSERT
+    assertThat(name).isEqualTo("queue_name_dequeue");
+􏴮
+􏴱name is stored􏴲􏴯mock􏴰
 􏲝the name can be received􏲞
 􏲛name does not match what it should􏲜
 􏴭
