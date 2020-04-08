@@ -26,6 +26,12 @@ https://github.com/fppt/jedis-mock
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit.MILLISECONDS􏷥
+􏷤􏷣􏷦java.util.concurrent.ExecutorService􏷥
+􏷤􏷣􏷦java.util.concurrent.Executors􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeoutException􏷥
+􏷤􏷣􏷦java.util.concurrent.Future􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -906,6 +912,35 @@ null is returned if the timeout has expired􏶡
     //ASSERT
     assertThat(val).isEqualTo("foo");
 􏴮
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will wait until the timeout has expired
+it tries to provide faster timeout capabilities over standard redis
+null is returned if the timeout has expired􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒fast dequeue􏷑
+􏶜􏶝􏷆i􏷅􏷄timeout􏷃􏵘milliseconds􏵙􏷀timeout to wait if there is no item to dequeue􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    //try a nonblocking dequeue
+    String val = redis.rpoplpush(name,getDequeueName());
+    if (val != null){
+        return val;
+    }
+    
+    //try a blocking dequeue where we use the given timeout
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    Future<String> redisCall = executor.submit(() -> {
+        return redis.brpoplpush(name,getDequeueName(),0);
+    });
+    
+    try {
+        return redisCall.get(timeout_ms, TimeUnit.MILLISECONDS);
+    }
+    catch (Exception e){
+    }
+    return null;
+􏶳
 
 􏷐pop element into another queue􏷏
 􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
