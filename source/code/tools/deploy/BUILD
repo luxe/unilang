@@ -24,12 +24,11 @@ hcp(name = "software_deployer", deps = [
     "//code/tools/repo_tools/shared_object_trace:shared_object_trace_documentation_getter",
     "//code/tools/repo_tools/build_determinism:build_determinism_documentation_getter",
     "//code/tools/repo_tools/build_tools:build_tools_documentation_getter",
-    
+    "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
     "//code/utilities/formats/pdf:pdf_settings",
     "//code/utilities/formats/pdf:pdf_creator",
     "//code/utilities/filesystem/files/moving:lib",
     "//code/utilities/program/wrappers/git/update:git_updater",
-    
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/main:program_input",
     "//code/tools/transcompilers/unilang/structure/model:structure",
