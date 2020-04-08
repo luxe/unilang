@@ -43,12 +43,14 @@ https://github.com/fppt/jedis-mock
 􏲏􏲐􏲍java.util.function.Supplier􏲎
 􏲏􏲐􏲍org.mockito.Mock􏲎
 􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
 
 
 
@@ -288,6 +290,24 @@ If two queues had the same name, they would be instances of the same underlying 
     //ASSERT
     assertThat(val).isEqualTo("foo");
 􏴮
+􏴱value can be popped􏴲􏴯mock􏴰
+􏲝the queue can have a value pushed and popped off􏲞
+􏲛the queue was unable to push and pop the same value off􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class),any(String.class))).thenReturn(Arrays.asList("test","foo"));
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT
+    queue.push("foo");
+    String val = queue.pop();
+
+    // ASSERT
+    verify(redis, times(1)).lpush("test", "foo");
+    verify(redis, times(1)).brpop(1, "test");
+    assertThat(val).isEqualTo("foo");
+􏴮
 􏴱value popped in order􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed and popped off in the correct order􏲞
 􏲛the queue was unable to push and pop values in the correct order􏲜
@@ -311,6 +331,50 @@ If two queues had the same name, they would be instances of the same underlying 
     String element6 = queue.pop();
     
     //ASSERT
+    assertThat(element1).isEqualTo("element 1");
+    assertThat(element2).isEqualTo("element 2");
+    assertThat(element3).isEqualTo("element 3");
+    assertThat(element4).isEqualTo("element 4");
+    assertThat(element5).isEqualTo("element 5");
+    assertThat(element6).isEqualTo("element 6");
+􏴮
+􏴱value popped in order􏴲􏴯mock􏴰
+􏲝the queue can have a value pushed and popped off in the correct order􏲞
+􏲛the queue was unable to push and pop values in the correct order􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class),any(String.class)))
+    .thenReturn(Arrays.asList("test","element 1"))
+    .thenReturn(Arrays.asList("test","element 2"))
+    .thenReturn(Arrays.asList("test","element 3"))
+    .thenReturn(Arrays.asList("test","element 4"))
+    .thenReturn(Arrays.asList("test","element 5"))
+    .thenReturn(Arrays.asList("test","element 6"));
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    String element1 = queue.pop();
+    String element2 = queue.pop();
+    String element3 = queue.pop();
+    String element4 = queue.pop();
+    String element5 = queue.pop();
+    String element6 = queue.pop();
+    
+    //ASSERT
+    verify(redis, times(1)).lpush("test", "element 1");
+    verify(redis, times(1)).lpush("test", "element 2");
+    verify(redis, times(1)).lpush("test", "element 3");
+    verify(redis, times(1)).lpush("test", "element 4");
+    verify(redis, times(1)).lpush("test", "element 5");
+    verify(redis, times(1)).lpush("test", "element 6");
+    verify(redis, times(6)).brpop(1, "test");
     assertThat(element1).isEqualTo("element 1");
     assertThat(element2).isEqualTo("element 2");
     assertThat(element3).isEqualTo("element 3");
