@@ -46,20 +46,41 @@ class
     std::vector<std::pair<std::string,std::string>> x;
     for (auto const& it: all_essays){
         auto structure = File_To_Structure_Converter::Convert(it.name + ".unilang");
-        //auto title = as_string(structure.literature.paragraphs[0].title.value);
-        auto title = Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPITAL,structure.name);
+        auto title = Get_Title_Name_For_Link(structure);
         auto link = it.name;
         
-        if (it.style == Essay_Style::SCIENTIFIC){
-            link += ".pdf";
-        }
-        else if (it.style == Essay_Style::POETIC){
-            link += ".html";
-        }
+        link += Assumed_Extension(it);
         
         x.emplace_back(link,title);
     }
     return x;
+❱
+
+◀private: static▶ std::string ☀Get_Title_Name_For_Link(Structure const& structure) ❰
+
+    // Instead of relying on the file name, we expect the content of the file to have the title
+    // It should be the title of the first paragraph.
+    if (structure.literature.paragraphs.empty()){
+        auto title = as_string(structure.literature.paragraphs[0].title.value);
+        if (!title.empty()){
+            return title;
+        }
+    }
+    
+    //actually... we couldn't find the title in the content of the literature
+    //lets resort to the file name now instead.
+    return Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPITAL,structure.name);
+❱
+
+◀private: static▶ std::string ☀Assumed_Extension(Essay const& essay) ❰
+        if (essay.style == Essay_Style::SCIENTIFIC){
+            return ".pdf";
+        }
+        else if (essay.style == Essay_Style::POETIC){
+            return ".html";
+        }
+        
+        return ".txt";
 ❱
 
 ◀private: static▶ void ☀Generate_Essay_List(std::vector<std::pair<std::string,std::string>> const& link_and_names) ❰
