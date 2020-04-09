@@ -15,17 +15,41 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
 
-􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍redis.clients.jedis.Jedis􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisPool􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
 􏲏􏲐􏲍org.junit.runner.RunWith􏲎
 􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
 􏲏􏲐􏲍java.lang.Thread􏲎
 􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
 􏲏􏲐􏲍java.lang.RuntimeException􏲎
-􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
 􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+
 
 􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
 􏶠each hashtag will map to a slot on a different node
@@ -43,7 +67,7 @@ if there is any issue in deriving the hashes (for example, the redis cluster is 
     }
     return hashTags;
 􏶳
-􏴱can retrieve distributed hashes􏴲
+􏴱can retrieve distributed hashes􏴲􏴯redis􏴰
 􏲝an established redis cluster can be used to obtain distributed hashes􏲞
 􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
 􏴭
@@ -73,12 +97,32 @@ if there is any issue in deriving the hashes (for example, the redis cluster is 
     }
     return hashTags;
 􏶳
-􏴱can retrieve distributed hashes􏴲
+􏴱can retrieve distributed hashes􏴲􏴯redis􏴰
 􏲝an established redis cluster can be used to obtain distributed hashes􏲞
 􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
 􏴭
     //ARRANGE
     JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+    
+    //ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱can retrieve distributed hashes􏴲􏴯mock􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    //ARRANGE
+    Jedis node = mock(Jedis.class);
+    when(node.clusterSlots()).thenReturn(Arrays.asList(Arrays.asList(Arrays.asList(0,100))));
+    
+    Jedis pool = mock(JedisPool.class);
+    when(pool.getResource()).thenReturn(node);
+    
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.getClusterNodes()).thenReturn(Arrays.asList(pool));
     
     //ACT
     List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);

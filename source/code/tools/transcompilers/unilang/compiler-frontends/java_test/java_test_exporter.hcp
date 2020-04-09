@@ -24,6 +24,7 @@ class
 ❪"code/tools/transcompilers/unilang/doxygen_block_printer/grammar_adjuster"❫
 ❪"code/tools/transcompilers/unilang/compiler-frontends/java_test/java_test_str_getter"❫
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
+❪"code/tools/transcompilers/unilang/structure/query/mock_test_checker"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
@@ -31,12 +32,12 @@ class
    Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::JAVA);
   
   auto file_result1 = Create_CI_Tests(structure,contributors,settings);
-  auto file_result2 = Create_NonCI_Tests(structure,contributors,settings);
+  //auto file_result2 = Create_NonCI_Tests(structure,contributors,settings);
   
   //created files
   std::vector<std::string> created;
   created.emplace_back(file_result1);
-  created.emplace_back(file_result2);
+  //created.emplace_back(file_result2);
   return created;
 ❱
 
@@ -45,7 +46,11 @@ class
   //adjust settings
   settings.include_test_cases_without_tags = true;
   settings.test_cases_include_because_tags.emplace_back("mock");
-  structure.name += " mock";
+  settings.test_cases_include_because_tags.emplace_back("regular");
+  
+  if (Mock_Test_Checker::Has_Mock_Tests(structure)){
+    structure.name += " mock";
+  }
   
   //the file to create
   std::string source_code_filename = Get_File_Name(structure,settings);

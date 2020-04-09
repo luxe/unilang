@@ -1504,6 +1504,58 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(visited.contains("element 7")).isTrue();
     assertThat(visited.contains("element 8")).isTrue();
 􏴮
+􏴱check visit of each element􏴲􏴯mock􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    // MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class)))
+        .thenReturn(
+            Arrays.asList(
+                "element 1",
+                "element 2",
+                "element 3",
+                "element 4",
+                "element 5",
+                "element 6",
+                "element 7",
+                "element 8"));
+
+    // ARRANGE
+    RedisQueue queue = new RedisQueue(redis, "test");
+    queue.push("element 1");
+    queue.push("element 2");
+    queue.push("element 3");
+    queue.push("element 4");
+    queue.push("element 5");
+    queue.push("element 6");
+    queue.push("element 7");
+    queue.push("element 8");
+
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visit(visitor);
+
+    // ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
+
+
 􏴱visit many over page size􏴲􏴯redis􏴰
 􏲝add and visit many elements􏲞
 􏲛we are unable to visit all the elements when there are many of them􏲜

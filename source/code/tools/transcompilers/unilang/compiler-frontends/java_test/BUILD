@@ -24,6 +24,7 @@ hcp(name = "java_test_exporter", deps = [
     "//code/tools/transcompilers/unilang/doxygen_block_printer:grammar_adjuster",
     "//code/tools/transcompilers/unilang/compiler-frontends/java_test:java_test_str_getter",
     "//code/tools/transcompilers/unilang/structure/print/filename:file_name_getter",
+    "//code/tools/transcompilers/unilang/structure/query:mock_test_checker",
 ])
 
 hcp(name = "java_test_str_getter", deps = [

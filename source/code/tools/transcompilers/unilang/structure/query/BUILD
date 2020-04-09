@@ -53,3 +53,8 @@ hcp(name = "virtual_method_checker", deps = [
     "//code/tools/transcompilers/unilang/structure/model/sections:structure_enums",
     "//code/tools/transcompilers/unilang/structure/model/sections/method:method_item",
 ])
+
+hcp(name = "mock_test_checker", deps = [
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+])
