@@ -956,6 +956,60 @@ null is returned if the timeout has expired􏶡
     }
     return null;
 􏶳
+􏴱get value immediately􏴲􏴯mock􏴰
+􏲝the value can be received immediately􏲞
+􏲛the value was not received immediately as expected􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class), any(String.class))).thenReturn("value");
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.fastDequeue(1000);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+
+􏴱get value unavailable at first􏴲􏴯mock􏴰
+􏲝when the value is unavailable at first, ensure that is received before timeout􏲞
+􏲛the value was not received before timeout􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class), any(String.class))).thenReturn(null);
+    when(redis.brpoplpush(any(String.class), any(String.class), any(int.class) )).thenReturn("value");
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.fastDequeue(1000);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱simulate timeout􏴲􏴯mock􏴰
+􏲝simulate a timeout when waiting to pop􏲞
+􏲛we should return null in the event of a timeout􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.rpoplpush(any(String.class), any(String.class))).thenReturn(null);
+    when(redis.brpoplpush(any(String.class), any(String.class), any(int.class) )).thenThrow(new RuntimeException());
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    String val = queue.fastDequeue(1000);
+    
+    //ASSERT
+    assertThat(val).isEqualTo(null);
+􏴮
 
 􏷐pop element into another queue􏷏
 􏶠this pops the element from one queue and pushes it onto another queue possibly located on a different slot
@@ -1043,6 +1097,62 @@ null is returned if the thread is interrupted􏶡
     // ASSERT
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱first try􏴲􏴯mock􏴰
+􏲝the transfer is able to happen on the first try􏲞
+􏲛the transfer did not happen as it should have􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(Arrays.asList("container","value"));
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    String val = queue1.popIntoCrossSlot(queue2);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱second try􏴲􏴯mock􏴰
+􏲝the transfer is able to happen on the first try􏲞
+􏲛the transfer did not happen as it should have􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(null).thenReturn(Arrays.asList("container","value"));
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    String val = queue1.popIntoCrossSlot(queue2);
+    
+    //ASSERT
+    assertThat(val).isEqualTo("value");
+􏴮
+􏴱exercise thread interrupt􏴲􏴯mock􏴰
+􏲝the transfer is able to happen because of a thread interrupt􏲞
+􏲛the thread interrupt should cause null to be returned􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpop(any(int.class), any(String.class))).thenReturn(null);
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    Thread call = new Thread(() -> {
+        queue1.popIntoCrossSlot(queue2);
+    });
+    call.start();
+    call.interrupt();
+    
 􏴮
 
 
@@ -1159,6 +1269,26 @@ if the queues are not on the same slot the operation will fail with a cross slot
     // ASSERT
     assertThat(queue1.size()).isEqualTo(0);
     assertThat(queue2.size()).isEqualTo(1);
+􏴮
+􏴱exercise thread interrupt􏴲􏴯mock􏴰
+􏲝the transfer is able to happen because of a thread interrupt􏲞
+􏲛the thread interrupt should cause null to be returned􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.brpoplpush(any(String.class), any(String.class),any(int.class))).thenReturn(null);
+    
+    //ARRANGE
+    RedisQueue queue1 = new RedisQueue(redis,"queue-1");
+    RedisQueue queue2 = new RedisQueue(redis,"queue-2");
+    
+    //ACT
+    Thread call = new Thread(() -> {
+        queue1.popIntoSameSlot(queue2);
+    });
+    call.start();
+    call.interrupt();
+    
 􏴮
 
 
@@ -1286,6 +1416,26 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(peeked).isEqualTo("foo");
 􏴮
+􏴱value can be peeked􏴲􏴯mock􏴰
+􏲝the correct value is peeked from the queue􏲞
+􏲛the queue sizes do not reflect the transfer􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class))).thenReturn(Arrays.asList("foo"));
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baze");
+    String peeked = queue.peek();
+    
+    //ASSERT
+    assertThat(peeked).isEqualTo("foo");
+􏴮
 􏴱peeking is idempotent􏴲􏴯redis􏴰
 􏲝the same value is peeked from the queue if not popped􏲞
 􏲛peeking is not idempotent􏲜
@@ -1331,6 +1481,30 @@ a thread that peeks cannot assume they will get that value when popping due to o
     assertThat(queue.at(1)).isEqualTo("bar");
     assertThat(queue.at(2)).isEqualTo("foo");
 􏴮
+􏴱check order􏴲􏴯mock􏴰
+􏲝the order of the values should be the opposite order they are pushed􏲞
+􏲛the indexes do not match the push order􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lindex(any(String.class), any(Long.class)))
+    .thenReturn("baz")
+    .thenReturn("bar")
+    .thenReturn("foo");
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    
+    //ASSERT
+    assertThat(queue.at(0)).isEqualTo("baz");
+    assertThat(queue.at(1)).isEqualTo("bar");
+    assertThat(queue.at(2)).isEqualTo("foo");
+􏴮
 
 􏷐check if value exists in the list􏷏
 􏶠O(n) not performant.  consider using a set􏶡
@@ -1362,12 +1536,62 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(exists).isTrue();
 􏴮
+􏴱does exist􏴲􏴯mock􏴰
+􏲝show that exists returns true when the value exists􏲞
+􏲛exists is incorrectly reporting the state of the queue􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(3L);
+    when(redis.lindex(any(String.class), any(Long.class)))
+    .thenReturn("foo")
+    .thenReturn("bar")
+    .thenReturn("baz");
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean exists = queue.exists("bar");
+    
+    //ASSERT
+    assertThat(exists).isTrue();
+􏴮
 􏴱does not exist􏴲􏴯redis􏴰
 􏲝show that exists returns false when the value does not exist􏲞
 􏲛exists is incorrectly reporting the state of the queue􏲜
 􏴭
     //ARRANGE
     JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    queue.push("bar");
+    queue.push("baz");
+    Boolean exists = queue.exists("not here");
+    
+    //ASSERT
+    assertThat(exists).isFalse();
+􏴮
+􏴱does not exist􏴲􏴯mock􏴰
+􏲝show that exists returns false when the value does not exist􏲞
+􏲛exists is incorrectly reporting the state of the queue􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(3L);
+    when(redis.lindex(any(String.class), any(Long.class)))
+    .thenReturn("foo")
+    .thenReturn("bar")
+    .thenReturn("baz");
+    
+    //ARRANGE
     RedisQueue queue = new RedisQueue(redis,"test");
     
     //ACT
@@ -1444,12 +1668,49 @@ a thread that peeks cannot assume they will get that value when popping due to o
     //ASSERT
     assertThat(isEmpty).isTrue();
 􏴮
+􏴱empty on construction􏴲􏴯mock􏴰
+􏲝the queue is empty on construction􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(0L);
+    
+    //ARRANGE
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isTrue();
+􏴮
 􏴱nonempty after pushes􏴲􏴯redis􏴰
 􏲝the queue is not empty after pushing a value􏲞
 􏲛empty is incorrectly reporting the expected queue state􏲜
 􏴭
     //ARRANGE
     JedisCluster redis = JedisClusterFactory.createTest();
+    RedisQueue queue = new RedisQueue(redis,"test");
+    
+    //ACT
+    queue.push("foo");
+    Boolean isEmpty = queue.empty();
+    
+    //ASSERT
+    assertThat(isEmpty).isFalse();
+􏴮
+􏴱nonempty after pushes􏴲􏴯mock􏴰
+􏲝the queue is not empty after pushing a value􏲞
+􏲛empty is incorrectly reporting the expected queue state􏲜
+􏴭
+    //MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.llen(any(String.class)))
+    .thenReturn(1L);
+    
+    //ARRANGE
     RedisQueue queue = new RedisQueue(redis,"test");
     
     //ACT
@@ -1591,6 +1852,48 @@ a thread that peeks cannot assume they will get that value when popping due to o
 􏶴
     visit(getDequeueName(),visitor);
 􏶳
+􏴱check visit of each element􏴲􏴯mock􏴰
+􏲝each element in the queue can be visited􏲞
+􏲛we are unable to visit each element in the queue􏲜
+􏴭
+    // MOCK
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.lrange(any(String.class), any(Long.class), any(Long.class)))
+        .thenReturn(
+            Arrays.asList(
+                "element 1",
+                "element 2",
+                "element 3",
+                "element 4",
+                "element 5",
+                "element 6",
+                "element 7",
+                "element 8"));
+
+    // ARRANGE
+    RedisQueue queue = new RedisQueue(redis, "test");
+
+    // ACT
+    List<String> visited = new ArrayList<String>();
+    StringVisitor visitor =
+        new StringVisitor() {
+          public void visit(String entry) {
+            visited.add(entry);
+          }
+        };
+    queue.visitDequeue(visitor);
+
+    // ASSERT
+    assertThat(visited.size()).isEqualTo(8);
+    assertThat(visited.contains("element 1")).isTrue();
+    assertThat(visited.contains("element 2")).isTrue();
+    assertThat(visited.contains("element 3")).isTrue();
+    assertThat(visited.contains("element 4")).isTrue();
+    assertThat(visited.contains("element 5")).isTrue();
+    assertThat(visited.contains("element 6")).isTrue();
+    assertThat(visited.contains("element 7")).isTrue();
+    assertThat(visited.contains("element 8")).isTrue();
+􏴮
 
 􏷐visit each element in the queue via queue name􏷏
 􏶠enacts a visitor over each element in the queue􏶡

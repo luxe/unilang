@@ -5,6 +5,7 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
 
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦build.buildfarm.instance.shard.JedisClusterFactory􏷥
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦java.util.Set􏷥
 􏷤􏷣􏷦java.util.HashSet􏷥
@@ -15,10 +16,10 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
 
-􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
-􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍redis.clients.jedis.Jedis􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisPool􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
@@ -41,6 +42,8 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏲏􏲐􏲍org.mockito.Mock􏲎
 􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
 􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.HashMap􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
@@ -80,6 +83,42 @@ if there is any issue in deriving the hashes (for example, the redis cluster is 
     //ASSERT
     assertThat(hashtags.isEmpty()).isFalse();
 􏴮
+􏴱can retrieve distributed hashes􏴲􏴯mock􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    // ARRANGE
+    Jedis node = mock(Jedis.class);
+    when(node.clusterSlots()).thenReturn(Arrays.asList(Arrays.asList(0L, 100L)));
+
+    JedisPool pool = mock(JedisPool.class);
+    when(pool.getResource()).thenReturn(node);
+
+    JedisCluster redis = mock(JedisCluster.class);
+    Map<String, JedisPool> poolMap  = new HashMap<String, JedisPool>() {{
+        put("key1", pool);
+    }};
+    when(redis.getClusterNodes()).thenReturn(poolMap);
+
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis);
+
+    // ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱cannot retrieve distributed hashes􏴲􏴯mock􏴰
+􏲝without mocking we exercise the fallback behavior􏲞
+􏲛the fallback behavior does not result in successful completion of call􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithFallback(redis);
+    
+    // ASSERT
+    assertThat(hashtags.isEmpty()).isTrue();
+􏴮
 
 􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
 􏶠each hashtag will map to a slot on a different node􏶡
@@ -114,21 +153,30 @@ if there is any issue in deriving the hashes (for example, the redis cluster is 
 􏲝an established redis cluster can be used to obtain distributed hashes􏲞
 􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
 􏴭
-    //ARRANGE
+    // ARRANGE
     Jedis node = mock(Jedis.class);
-    when(node.clusterSlots()).thenReturn(Arrays.asList(Arrays.asList(Arrays.asList(0,100))));
-    
-    Jedis pool = mock(JedisPool.class);
+    when(node.clusterSlots()).thenReturn(Arrays.asList(Arrays.asList(0L, 100L)));
+
+    JedisPool pool = mock(JedisPool.class);
     when(pool.getResource()).thenReturn(node);
-    
+
     JedisCluster redis = mock(JedisCluster.class);
-    when(redis.getClusterNodes()).thenReturn(Arrays.asList(pool));
-    
-    //ACT
+    Map<String, JedisPool> poolMap  = new HashMap<String, JedisPool>() {{
+        put("key1", pool);
+    }};
+    when(redis.getClusterNodes()).thenReturn(poolMap);
+
+    // ACT
     List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
-    
-    //ASSERT
+
+    // ASSERT
     assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱can construct􏴲􏴯regular􏴰
+􏲝the object can be constructed􏲞
+􏲛the object cannot be constructed􏲜
+􏴭
+    RedisNodeHashes converter = new RedisNodeHashes();
 􏴮
 
 
