@@ -17,6 +17,8 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 􏷤􏷣􏷦java.util.Collections􏷥
+􏷤􏷣􏷦java.util.regex.Matcher􏷥
+􏷤􏷣􏷦java.util.regex.Pattern􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -37,8 +39,17 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 
 􏶨the unique name of the queue􏶧
 􏶦the name is used as a template for the internal queues distributed across nodes
-hashtags are added to this base name􏶥
+hashtags are added to this base name
+this name will not contain a redis hashtag􏶥
 􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬name􏶫􏶪􏶩
+
+􏶨the original hashtag of the name provided to the queue􏶧
+􏶦if the balanced queue is named with a hashtag, we store it, but will not be able to use it for the internal balanced queues
+they will need to have their own hashes that correlate to particular nodes
+however, if the balanced queue is unable to derive hashtags it will fallback to a single queue
+and rely on the original hashtag it was given
+if an original hashtag is not given, this will be empty􏶥
+􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬original hashtag􏶫􏶪􏶩
 
 􏶨internal queues used to distribute data across redis nodes􏶧
 􏶦although these are multiple queues, the balanced redis queue treats them as one in its interface􏶥
@@ -78,6 +89,7 @@ hashtags are added to this base name􏶥
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
 􏶴
+    this.originalHashtag = existingHash(name);
     this.name = unhashedName(name);
     createHashedQueues(redis,this.name,hashtags);
     
@@ -99,8 +111,7 @@ hashtags are added to this base name􏶥
 􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
 􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
 􏶴
-    queues.get(currentPushQueue).push(val);
-    currentPushQueue = nextQueueInRoundRobin(currentPushQueue);
+    queues.get(roundRobinPushIndex()).push(val);
 􏶳
 􏴱push without error􏴲􏴯redis􏴰
 􏲝the queue can have a value pushed onto it􏲞
@@ -189,15 +200,14 @@ hashtags are added to this base name􏶥
 􏷘+􏷗􏴅Transformer􏴆􏷒pop􏷑
 􏶾string􏶽􏶼pop_val􏶻􏶺the popped value􏶹
 􏶴
-    adjustCurrentPopQueue();
+    adjustToNonemptyQueue();
     
     // we either found a queue that was not empty,
     // or we did a full trip around all the queues
     // and discovered all of them were empty.
     // either way, we will attempt to pop where
     // we ended up.
-    String val = queues.get(currentPopQueue).pop();
-    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    String val = queues.get(roundRobinPopIndex()).pop();
     return val;
 􏶳
 􏴱value can be popped􏴲􏴯redis􏴰
@@ -287,13 +297,13 @@ however, the balanced queue supports delete operations, and there many other beh
 
 this adjustment comes at a cost however, because we have to check the internal queues on whether they are empty when deciding to make the adjustment
 checking if a queue is empty is a redis operation itself􏶡
-􏷘-􏷗􏴅Transformer􏴆􏷒adjust current pop queue􏷑
+􏷘-􏷗􏴅Transformer􏴆􏷒adjust to nonempty queue􏷑
 􏶴
     //as a best effort, skip popping the current queue if its empty
     //there is the possibility of another internal queue having data that can be popped
     int startQueue = currentPopQueue;
-    while (queues.get(currentPopQueue).empty()){
-        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    while (queues.get(currentPopQueue).empty()) {
+      currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
         if (startQueue == currentPopQueue){
             break;
         }
@@ -586,8 +596,7 @@ null is returned if the thread is interrupted􏶡
 􏶜􏶝􏷆RedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    String val = queues.get(currentPopQueue).popIntoCrossSlot(intoQueue);
-    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    String val = queues.get(roundRobinPopIndex()).popIntoCrossSlot(intoQueue);
     return val;
 􏶳
 􏴱transfer item effects sizes􏴲􏴯redis􏴰
@@ -676,8 +685,8 @@ null is returned if the thread is interrupted􏶡
 􏶜􏶝􏷆BalancedRedisQueue􏷅􏷄into queue􏷃􏷀the queue to obtain the popped the value􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    String val = queues.get(currentPopQueue).popIntoCrossSlot(intoQueue.getInternalQueue(currentPopQueue));
-    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    int queueIndex = roundRobinPopIndex();
+    String val = queues.get(queueIndex).popIntoCrossSlot(intoQueue.getInternalQueue(queueIndex));
     return val;
 􏶳
 
@@ -688,8 +697,7 @@ null is returned if the thread is interrupted􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    String val = queues.get(currentPopQueue).dequeue();
-    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    String val = queues.get(roundRobinPopIndex()).dequeue();
     return val;
 􏶳
 
@@ -723,8 +731,11 @@ null is returned if the overall backoff times out􏶡
         do {
         
             //try to dequeue (may timeout)
-            String val = queues.get(currentPopQueue).dequeue(currentTimeout_s);
-            currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+            String val = queues.get(roundRobinPopIndex()).dequeue(currentTimeout_s);
+            
+        if (Thread.currentThread().isInterrupted()) {
+          return null;
+        }
             
             //success
             if (val != null){
@@ -741,8 +752,11 @@ null is returned if the overall backoff times out􏶡
     while (true){
     
         //try to dequeue (may timeout)
-        String val = queues.get(currentPopQueue).dequeue(maxTimeout_s);
-        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+        String val = queues.get(roundRobinPopIndex()).dequeue(maxTimeout_s);
+        
+        if (Thread.currentThread().isInterrupted()) {
+          return null;
+        }
         
         //success
         if (val != null){
@@ -754,13 +768,6 @@ null is returned if the overall backoff times out􏶡
 
 
 
-    int startQueue = currentPopQueue;
-    while (queues.get(currentPopQueue).empty()){
-        currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
-        if (startQueue == currentPopQueue){
-            break;
-        }
-    }
 
 􏷐get the current pop queue􏷏
 􏶠get the queue that the balanced queue intends to pop from next􏶡
@@ -1225,9 +1232,17 @@ this means, the balanced queue will be evenly distributed on every n elements pu
     
     //if there were no hashtags, we'll create a single internal queue
     //so that the balanced redis queue can still function.
-    //we'll use the basename provided to create the single internal queue without a hashtag
+    //we'll use the basename provided to create the single internal queue and use the original hashtag provided.
+    //if there was no original hashtag, we will use a hashtag that corresponds to the first slot.
+    //note: we must build the balanced queues internal queue with a hashtag because it will dequeue to the same redis slot.
     if (hashtags.isEmpty()){
-        queues.add(new RedisQueue(redis,name));
+    
+        if (!originalHashtag.isEmpty()){
+            queues.add(new RedisQueue(redis, hashedName(name,originalHashtag)));
+        }
+        else{
+            queues.add(new RedisQueue(redis, hashedName(name,"06S")));
+        }
     }
 􏶳
 
@@ -1238,7 +1253,7 @@ this means, the balanced queue will be evenly distributed on every n elements pu
 􏶜􏶝􏷆string􏷅􏷄hashtag􏷃􏷀a hashtag for an individual internal queue􏶿
 􏶾string􏶽􏶼queue name􏶻􏶺a valid queue name for one of the internal queues􏶹
 􏶴
-    return name + "{" + hashtag + "}";
+    return "{" + hashtag + "}" + name;
 􏶳
 
 􏷐remove any existing redis hashtag from the key name􏷏
@@ -1248,6 +1263,53 @@ this means, the balanced queue will be evenly distributed on every n elements pu
 􏶾string􏶽􏶼queue name􏶻􏶺a valid keyname without hashtags􏶹
 􏶴
     return name.replaceAll("\\{.*?\\}", "");
+􏶳
+
+􏷐get the existing hashtag of the name􏷏
+􏶠parses out the first redis hashtag found
+if no hashtags are found, an empty string is returned􏶡
+􏷘-􏷗􏴅observer􏴆􏷒existing hash􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶾string􏶽􏶼hashtag􏶻􏶺the existing hashtag name found in the string (brackets are removed)􏶹
+􏶴
+    String regex = "\\{.*?\\}";
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(name);
+    
+    //hashtag found
+    if (matcher.find()){
+    
+        //extract from matcher
+        String hashtag = matcher.group(0);
+        
+        //remove brackets
+        hashtag = hashtag.substring(1, hashtag.length()-1);
+        
+        return hashtag;
+    }
+    
+    //hashtag not found
+    return "";
+􏶳
+
+􏷐get the current queue index for round-robin pushing􏷏
+􏶠adjusts the round-robin index for next call􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒round robin push index􏷑
+􏶾i􏶽􏶼queue index􏶻􏶺the current round-robin index􏶹
+􏶴
+    int currentIndex = currentPushQueue;
+    currentPushQueue = nextQueueInRoundRobin(currentPushQueue);
+    return currentIndex;
+􏶳
+
+􏷐get the current queue index for round-robin popping􏷏
+􏶠adjusts the round-robin index for next call􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒round robin pop index􏷑
+􏶾i􏶽􏶼queue index􏶻􏶺the current round-robin index􏶹
+􏶴
+    int currentIndex = currentPopQueue;
+    currentPopQueue = nextQueueInRoundRobin(currentPopQueue);
+    return currentIndex;
 􏶳
 
 􏷐get the next queue in the round robin􏷏
