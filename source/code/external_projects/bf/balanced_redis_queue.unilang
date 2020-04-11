@@ -19,6 +19,7 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏷤􏷣􏷦java.util.Collections􏷥
 􏷤􏷣􏷦java.util.regex.Matcher􏷥
 􏷤􏷣􏷦java.util.regex.Pattern􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.QueueStatus􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -38,6 +39,7 @@ Therefore, two redis queues with the same name, would in fact be the same underl
 􏲏􏲐􏲍org.mockito.Mock􏲎
 􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
 􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍build.buildfarm.v1test.QueueStatus􏲎
 􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
@@ -989,7 +991,7 @@ null is returned if the thread is interrupted􏶡
 􏶠this pops the element from one queue atomically into an internal list called the dequeue
 it will wait indefinitely until the thread is interrupted
 null is returned if the thread is interrupted􏶡
-􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑􏶸InterruptedException􏶷
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
     String val = queues.get(roundRobinPopIndex()).dequeue();
@@ -1450,6 +1452,28 @@ a thread that peeks cannot assume they will get that value when popping due to o
    //ASSERT
    assertThat(size).isEqualTo(0);
 􏴮
+
+
+
+􏷐get status information about the queue􏷏
+􏶠helpful for understanding the current load on the queue and how elements are balanced􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒status􏷑
+􏶾QueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
+􏶴
+    //get properties
+    long size = size();
+    List<Long> sizes = new ArrayList<>();
+    for (RedisQueue queue: queues){
+        sizes.add(queue.size());
+    }
+    
+    //build proto
+    QueueStatus status = QueueStatus.newBuilder()
+    .setSize(size)
+    .addAllInternalSizes(sizes)
+    .build();
+    return status;
+􏶳
 
 􏷐check if the queue is empty􏷏
 􏶠checks whether the queue is empty; i.e. has no elements􏶡
