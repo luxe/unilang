@@ -1,0 +1,80 @@
+class
+❪string❫
+❪vector❫
+❪iostream❫
+❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
+❪"code/utilities/semiotics/knowledge_builders/traffic_sign"❫
+❪"code/utilities/semiotics/triadic_knowledge"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Run()❰
+
+    auto knowledge = Traffic_Sign::Get();
+    
+    auto text = As_Graphviz(knowledge);
+    
+    auto out_path = Full_Path_To_Desktop();
+    auto out_file = "traffic_light";
+    Graphviz_Image_Maker::Make(text,out_path,out_file);
+❱
+
+
+
+◀private: static▶ std::string ☀As_Graphviz(Triadic_Knowledge const& k) ❰
+    std::string x;
+    
+    Append_With_Newline(x,"digraph results {");
+    //Append_With_Newline(x,"splines=false;");
+    Append_With_Newline(x,"node [");
+    Append_With_Newline(x,"fontname=\"Arial\",");
+    Append_With_Newline(x,"shape = plaintext,");
+    Append_With_Newline(x,"height=.1");
+    Append_With_Newline(x,"]");
+    
+    for (auto const& s: k.signs){
+        
+            //1st to 2nd
+            auto from = s.representation;
+            auto edge = "2";
+            auto to = s.object;
+            
+            Append_In_DQuotes(x,from);
+            Append(x," -> ");
+            Append_In_DQuotes(x,to);
+            Append(x,"[ label=");
+            Append_In_DQuotes(x,edge);
+            Append_With_Newline(x,"]");
+            
+            
+            //2nd to 3rd (1)
+            from = s.representation;
+            edge = "3";
+            to = s.interpretant;
+            
+            Append_In_DQuotes(x,from);
+            Append(x," -> ");
+            Append_In_DQuotes(x,to);
+            Append(x,"[ label=");
+            Append_In_DQuotes(x,edge);
+            Append_With_Newline(x,"]");
+            
+            //2nd to 3rd (1)
+            from = s.object;
+            edge = "3";
+            to = s.interpretant;
+            
+            Append_In_DQuotes(x,from);
+            Append(x," -> ");
+            Append_In_DQuotes(x,to);
+            Append(x,"[ label=");
+            Append_In_DQuotes(x,edge);
+            Append_With_Newline(x,"]");
+    }
+    
+    Append_With_Newline(x,"}");
+    
+    return x;
+❱
