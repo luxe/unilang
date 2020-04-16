@@ -50,3 +50,9 @@ hcp(name = "function_unit_test_name_defaulter", deps = [
 "//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
 "//code/utilities/types/converters:lib",
 ])
+
+hcp(name = "methods_sorter", deps = [
+"//code/tools/transcompilers/unilang/structure/model:structure",
+"//code/tools/transcompilers/unilang/options/manipulation:struct_manipulation_settings",
+"//code/utilities/types/converters:lib",
+])

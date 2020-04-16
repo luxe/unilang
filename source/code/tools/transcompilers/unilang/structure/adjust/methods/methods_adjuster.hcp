@@ -10,6 +10,7 @@ class
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/forcers/immutable_value_to_immutable_ref_adjuster"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/forcers/instantiate_and_return_injector_for_return_type"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/forcers/method_overload_adjuster"❫
+❪"code/tools/transcompilers/unilang/structure/adjust/methods/forcers/methods_sorter"❫
 ❪"code/tools/transcompilers/unilang/structure/print/derivers/structure_typename_deriver"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/api_and_lifetime/api_and_lifetime_creator"❫
 ❪"code/tools/transcompilers/unilang/structure/adjust/methods/forcers/function_unit_test_name_defaulter"❫
@@ -19,8 +20,11 @@ class
 
 ◀public: static▶ void ☀Adjust(Structure & structure, Struct_Manipulation_Settings const& settings)❰
     
-    //other settings related to sorting
+    //TODO: other settings related to sorting
+    //TODO: there is other method sorting code inside doxygen comment grouping
     bool sort_methods = true;
+    
+    bool drop_unused_methods = true;
     
     
     bool create_extra_methods = false; //like reflection related only.. or?
@@ -35,33 +39,18 @@ class
     bool comment_adjust_detail = true;
     
     
+    if (drop_unused_methods){
+        std::vector<Method_Item> methods;
+        for (auto const& it: structure.methods.methods){
+            if (!it.is_unused){
+                methods.emplace_back(it);
+            }
+        }
+        structure.methods.methods = methods;
+    }
+    
     if (sort_methods){
-
-        //get all the public
-        std::vector<Method_Item> public_methods;
-        for (auto const& it: structure.methods.methods){
-            if (it.class_access == Class_Access::PUBLIC){
-                public_methods.emplace_back(it);
-            }
-        }
-        
-        //get all the protected
-        std::vector<Method_Item> protected_methods;
-        for (auto const& it: structure.methods.methods){
-            if (it.class_access == Class_Access::PROTECTED){
-                protected_methods.emplace_back(it);
-            }
-        }
-        
-        //get all the private
-        std::vector<Method_Item> private_methods;
-        for (auto const& it: structure.methods.methods){
-            if (it.class_access == Class_Access::PRIVATE){
-                private_methods.emplace_back(it);
-            }
-        }
-        
-        structure.methods.methods = public_methods + protected_methods + private_methods;
+        Methods_Sorter::Sort(structure,settings);
     }
     
     //add new methods based on settings and existing structure properties
@@ -118,6 +107,6 @@ class
         }
     }
 ❱
-◀public: static▶ void ☀Transform_And_Add_Lifetime_Methods(Structure & structure, Struct_Manipulation_Settings const& settings)❰
+◀private: static▶ void ☀Transform_And_Add_Lifetime_Methods(Structure & structure, Struct_Manipulation_Settings const& settings)❰
 	//structure.methods = Api_And_Lifetime_Creator::Get_All_Methods_After_Necessary_Transformation(structure,settings);
 ❱
