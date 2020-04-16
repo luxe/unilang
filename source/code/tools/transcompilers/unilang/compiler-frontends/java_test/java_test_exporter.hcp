@@ -25,19 +25,24 @@ class
 ❪"code/tools/transcompilers/unilang/compiler-frontends/java_test/java_test_str_getter"❫
 ❪"code/tools/transcompilers/unilang/structure/print/filename/file_name_getter"❫
 ❪"code/tools/transcompilers/unilang/structure/query/mock_test_checker"❫
+❪"code/tools/transcompilers/unilang/structure/query/redis_test_checker"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::string> ☀Export(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
+  //created files
+  std::vector<std::string> created;
    
    Structure_Adjuster::Adjust(structure,settings.manipulations,Source_Language::JAVA);
   
   auto file_result1 = Create_CI_Tests(structure,contributors,settings);
-  auto file_result2 = Create_NonCI_Tests(structure,contributors,settings);
-  
-  //created files
-  std::vector<std::string> created;
   created.emplace_back(file_result1);
-  created.emplace_back(file_result2);
+  
+  if (Redis_Test_Checker::Has_Redis_Tests(structure)){
+    auto file_result2 = Create_NonCI_Tests(structure,contributors,settings);
+    created.emplace_back(file_result2);
+  }
+  
   return created;
 ❱
 

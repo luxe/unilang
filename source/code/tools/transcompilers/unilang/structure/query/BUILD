@@ -58,3 +58,8 @@ hcp(name = "mock_test_checker", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 ])
+
+hcp(name = "redis_test_checker", deps = [
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+])
