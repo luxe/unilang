@@ -54,6 +54,7 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
     "//code/utilities/graphics/imgui/ui/draw/label/style:default_label_styles",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:faced_label_converter",
 ])
 
 hcp(name="standard_bitmap_cursor", deps = [
