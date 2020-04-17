@@ -19,5 +19,5 @@ hcp(name="label_width_style", deps = [
 
 
 hcp(name="label_style_chooser", deps = [
-"//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
+"//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
 ])

@@ -11,15 +11,15 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
-    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/window:window_settings",
     "//code/tools/ide/settings:background_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
     "//code/tools/ide/settings:mouse",
     "//code/tools/ide/settings:label_cursor",
     "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
-    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:positioned_label",
-    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced:positioned_faced_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
 ])
 
 hcp(name="background_settings", deps = [
@@ -31,7 +31,7 @@ hcp(name="background_settings", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
-    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/window:window_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
     "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
@@ -40,7 +40,7 @@ hcp(name="background_settings", deps = [
 hcp(name="ide_settings_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap_drawer",

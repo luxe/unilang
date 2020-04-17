@@ -9,7 +9,7 @@ hcp(name="label_cursor_selection", deps = [
 
 hcp(name="label_cursor_mover", deps = [
 "//code/utilities/fonts/bdf/settings:character_segment",
-"//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
+"//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
 "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_selection",
 "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
 ])
