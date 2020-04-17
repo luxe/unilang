@@ -18,11 +18,26 @@ class
 ◀public: static▶ Frame_Elements ☀Draw(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Face_Grid & grid, Mouse_State const& mouse_state)❰
     Frame_Elements elements;
     
-    auto starting_pos = grid.pos;
+    auto start_pos = grid.pos;
+    auto current_pos = grid.pos;
+    
     for (size_t i = 0; i < grid.cell.size(); ++i){
-        elements.types += Faced_Label_Drawer::Draw(font_chars,grid.cell[i],starting_pos,mouse_state).types;
-        starting_pos.x += 100;
+        elements.types += Faced_Label_Drawer::Draw(font_chars,grid.cell[i],current_pos,mouse_state).types;
+        current_pos.x += Decide_Drawn_Width(grid.cell[i]);
+        
+        //line break cells if needed
+        if (grid.breaks[i] == Should_Line_Break::YES){
+            current_pos.y += Decide_Drawn_Height(grid.cell[i]);
+            current_pos.x = start_pos.x;
+        }
     }
     
     return elements;
+❱
+
+◀private: static▶ size_t ☀Decide_Drawn_Width(Faced_Label const& label)❰
+    return 100 -1;
+❱
+◀private: static▶ size_t ☀Decide_Drawn_Height(Faced_Label const& label)❰
+    return 14;
 ❱
