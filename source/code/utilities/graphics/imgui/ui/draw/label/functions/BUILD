@@ -28,7 +28,7 @@ hcp(name="label_drawer", deps = [
 hcp(name="faced_label_drawer", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced/regular:label_settings",
-    "//code/utilities/graphics/imgui/ui/draw/label:positioned_faced_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/complexity/faced:positioned_faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
