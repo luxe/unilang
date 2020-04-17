@@ -29,6 +29,7 @@ hcp(name="faced_label_drawer", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
@@ -44,6 +45,18 @@ hcp(name="label_text_bitmap_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
     "//code/utilities/graphics/imgui/ui/draw/label/style:label_style_chooser",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:label_length_getter",
+])
+
+hcp(name="grid_label_drawer", deps = [
+    "//code/utilities/fonts/bdf/settings:character_segment",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid:positioned_face_grid",
+    "//code/tools/ide/frame/logic:frame_elements",
+    "//code/utilities/peripheral/mouse/state:mouse_state",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/graphics/imgui/ui/draw/label/functions:faced_label_drawer",
 ])
 
 hcp(name="label_length_getter", deps = [
