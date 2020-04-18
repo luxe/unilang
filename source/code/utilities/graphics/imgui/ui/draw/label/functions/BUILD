@@ -23,6 +23,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
     "//code/utilities/peripheral/mouse/state:mouse_state",
+    "//code/utilities/data_structures/dimensions:two_d_dimensions",
 ])
 
 hcp(name="faced_label_drawer", deps = [

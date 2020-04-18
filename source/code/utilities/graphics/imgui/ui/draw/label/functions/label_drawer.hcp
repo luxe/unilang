@@ -17,6 +17,7 @@ class
 ❪"code/tools/ide/frame/logic/frame_elements"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/data_structures/dimensions/two_d_dimensions"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
@@ -26,6 +27,8 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/label_length_getter"❫
 ⚞⚟
 
+
+//draw it
 ◀public: static▶ Frame_Elements ☀Draw(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
     return Draw(font_chars,label.pos,label.label,mouse_state);
 ❱
@@ -75,17 +78,20 @@ class
 ❱
 
 
-◀public: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
 
-    //derive the width based on the characters of the label
-    if (style.width.grow_width){
-        const auto SOME_BUFFER_SPACE = 3;
-        auto box_width = Label_Length_Getter::Get_Message_Length(label) + SOME_BUFFER_SPACE;
-        return box_width;
-    }
+//size it
+◀public: static▶ Two_D_Dimensions ☀Get_Dimensions(Label_Settings label)❰
+    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
+    return Get_Dimensions(label,style);
     
-    //derive the width based on a fixed settings
-    return style.width.fixed_width;
+❱
+
+
+◀public: static▶  Two_D_Dimensions ☀Get_Dimensions(Label_Settings const& label, Label_Style const& style)❰
+    Two_D_Dimensions dim;
+    dim.x = Decide_Textbox_Width(label,style);
+    dim.y = 15;
+    return dim;
 ❱
 
 
@@ -118,6 +124,19 @@ class
     elements.types.emplace_back(settings);
 ❱
 
+◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
+
+    //derive the width based on the characters of the label
+    if (style.width.grow_width){
+        const auto SOME_BUFFER_SPACE = 3;
+        auto box_width = Label_Length_Getter::Get_Message_Length(label) + SOME_BUFFER_SPACE;
+        return box_width;
+    }
+    
+    //derive the width based on a fixed settings
+    return style.width.fixed_width;
+❱
+
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label, Label_Style const& style)❰
 
     
@@ -134,13 +153,6 @@ class
     label.styles.regular_active.box.dimensions.height     = dim.y;
     label.styles.hovered_nonactive.box.dimensions.width  = dim.x;
     label.styles.hovered_nonactive.box.dimensions.height = dim.y;
-❱
-
-◀private: static▶  Two_D_Dimensions☀Get_Dimensions(Label_Settings const& label, Label_Style const& style)❰
-    Two_D_Dimensions dim;
-    dim.x = Decide_Textbox_Width(label,style);
-    dim.y = 15;
-    return dim;
 ❱
 
 ◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
