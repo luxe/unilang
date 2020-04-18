@@ -75,6 +75,19 @@ class
 ❱
 
 
+◀public: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
+
+    //derive the width based on the characters of the label
+    if (style.width.grow_width){
+        const auto SOME_BUFFER_SPACE = 3;
+        auto box_width = Label_Length_Getter::Get_Message_Length(label) + SOME_BUFFER_SPACE;
+        return box_width;
+    }
+    
+    //derive the width based on a fixed settings
+    return style.width.fixed_width;
+❱
+
 
 
 
@@ -107,35 +120,27 @@ class
 
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label, Label_Style const& style)❰
 
-    //some pixel fudging
-    const auto EXPECTED_MONOSPACE_FITTING_HEIGHT = 15;
     
-    auto box_width = Decide_Textbox_Width(label,style);
-    auto box_height = EXPECTED_MONOSPACE_FITTING_HEIGHT;
+    auto dim = Get_Dimensions(label,style);
+    
     
     
     //set these box dimensions for all state styles of the label
-    label.styles.regular_nonactive.box.dimensions.width      = box_width;
-    label.styles.regular_nonactive.box.dimensions.height     = box_height;
-    label.styles.hovered_active.box.dimensions.width  = box_width;
-    label.styles.hovered_active.box.dimensions.height = box_height;
-    label.styles.regular_active.box.dimensions.width      = box_width;
-    label.styles.regular_active.box.dimensions.height     = box_height;
-    label.styles.hovered_nonactive.box.dimensions.width  = box_width;
-    label.styles.hovered_nonactive.box.dimensions.height = box_height;
+    label.styles.regular_nonactive.box.dimensions.width      = dim.x;
+    label.styles.regular_nonactive.box.dimensions.height     = dim.y;
+    label.styles.hovered_active.box.dimensions.width  = dim.x;
+    label.styles.hovered_active.box.dimensions.height = dim.y;
+    label.styles.regular_active.box.dimensions.width      = dim.x;
+    label.styles.regular_active.box.dimensions.height     = dim.y;
+    label.styles.hovered_nonactive.box.dimensions.width  = dim.x;
+    label.styles.hovered_nonactive.box.dimensions.height = dim.y;
 ❱
 
-◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
-
-    //derive the width based on the characters of the label
-    if (style.width.grow_width){
-        const auto SOME_BUFFER_SPACE = 3;
-        auto box_width = Label_Length_Getter::Get_Message_Length(label) + SOME_BUFFER_SPACE;
-        return box_width;
-    }
-    
-    //derive the width based on a fixed settings
-    return style.width.fixed_width;
+◀private: static▶  Two_D_Dimensions☀Get_Dimensions(Label_Settings const& label, Label_Style const& style)❰
+    Two_D_Dimensions dim;
+    dim.x = Decide_Textbox_Width(label,style);
+    dim.y = 15;
+    return dim;
 ❱
 
 ◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
