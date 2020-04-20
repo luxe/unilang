@@ -19,7 +19,7 @@ class
     Frame_Elements elements;
     
     
-    //Update_Events(font_chars,grid,mouse_state);
+    Update_Events(font_chars,grid,mouse_state);
     
     auto start_pos = grid.pos;
     auto current_pos = grid.pos;
@@ -28,23 +28,14 @@ class
     //redraw
     for (size_t i = 0; i < grid.cell.size(); ++i){
         elements.types += Faced_Label_Drawer::Draw(font_chars,grid.cell[i],current_pos,mouse_state).types;
-        
-        
-        auto dim = Faced_Label_Drawer::Get_Dimensions(grid.cell[i]);
-        current_pos.x += dim.x-1;
-        
-        //line break cells if needed
-        if (grid.breaks[i] == Should_Line_Break::YES){
-            current_pos.y += dim.y-1;
-            current_pos.x = start_pos.x;
-        }
+        Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
     }
     
     return elements;
 ❱
 
 
-◀public: static▶ void  ☀Update_Events(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Face_Grid & grid, Mouse_State const& mouse_state)❰
+◀private: static▶ void  ☀Update_Events(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Face_Grid & grid, Mouse_State const& mouse_state)❰
 
     auto start_pos = grid.pos;
     auto current_pos = grid.pos;
@@ -53,14 +44,19 @@ class
     //process events
     for (size_t i = 0; i < grid.cell.size(); ++i){
         Faced_Label_Drawer::Event_It(font_chars,grid.cell[i],current_pos,mouse_state);
-        
-        auto dim = Faced_Label_Drawer::Get_Dimensions(grid.cell[i]);
+        Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
+    }
+❱
+
+
+◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell(Positioned_Face_Grid & grid, size_t index, Position const& start_pos, Position & current_pos)❰
+    
+        auto dim = Faced_Label_Drawer::Get_Dimensions(grid.cell[index]);
         current_pos.x += dim.x-1;
         
         //line break cells if needed
-        if (grid.breaks[i] == Should_Line_Break::YES){
+        if (grid.breaks[index] == Should_Line_Break::YES){
             current_pos.y += dim.y-1;
             current_pos.x = start_pos.x;
         }
-    }
 ❱

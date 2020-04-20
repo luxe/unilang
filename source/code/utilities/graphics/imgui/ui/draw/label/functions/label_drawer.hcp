@@ -32,8 +32,16 @@ class
 ◀public: static▶ void ☀Event_It(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
 
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
+    Adjust_Position(pos);
     auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
-    Set_Label_Properties_Based_On_Events(label,events,mouse_state);
+    
+    //set clicked event
+    label.clicked_event = false;
+    if (mouse_state.left.clicked){
+        if (events.clicked){
+            label.clicked_event = true;
+        }
+    }
     
 ❱
 
@@ -64,7 +72,6 @@ class
     Reverse_Adjust_Position(pos);
     elements.types.emplace_back(text);
     
-    //auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
     Adjust_Cursor_Selection(font_chars,pos,label,events,mouse_state);
     
     
@@ -146,15 +153,28 @@ class
     //set hover properties on the label
     label.user_state.is_hovered = events.hovered;
     
+    // //set active properties on the label
+    // if (mouse_state.left.clicked){
+    //     if (events.clicked){
+    //         label.user_state.is_active = true;
+    //     }
+    //     else{
+    //         label.user_state.is_active = false;
+    //     }
+    // }
+    
+    
     //set active properties on the label
     if (mouse_state.left.clicked){
-        if (events.clicked){
+        if (label.clicked_event){
+            //label.clicked_event = false;
             label.user_state.is_active = true;
         }
         else{
             label.user_state.is_active = false;
         }
     }
+    
 ❱
 
 ◀private: static▶ void ☀Draw_Rectangle_Portion(Frame_Elements & elements, Positioned_Full_Color_Bitmap & bitmap, Position pos, Label_Style const& style)❰
