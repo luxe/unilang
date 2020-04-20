@@ -28,6 +28,15 @@ class
 ⚞⚟
 
 
+//event it
+◀public: static▶ void ☀Event_It(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
+
+    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
+    auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
+    Set_Label_Properties_Based_On_Events(label,events,mouse_state);
+    
+❱
+
 //draw it
 ◀public: static▶ Frame_Elements ☀Draw(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
     return Draw(font_chars,label.pos,label.label,mouse_state);
@@ -47,29 +56,20 @@ class
     Decide_Label_Box_Dimensions(font_chars,label,style);
 
     //draw and handle backdrop
-    auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,label.styles.regular_active.box,mouse_state);
+    auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
     Set_Label_Properties_Based_On_Events(label,events,mouse_state);
     Draw_Rectangle_Portion(elements,text,pos,style);
     
     //adjust for message bitmap and print it
-    pos.y -= y_adjusted_label_draw;
-    pos.x -= x_adjusted_label_draw;
+    Reverse_Adjust_Position(pos);
     elements.types.emplace_back(text);
     
-    //set active properties on the label
-    if (mouse_state.left.clicked){
-        if (events.clicked){
-            label.cursors.clear();
-            auto s = get_cursor_selection_based_on_click(font_chars,events.pos,pos,label);
-            label.cursors.emplace_back(s);
-        }
-        else{
-            label.cursors.clear();
-        }
-    }
+    //auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
+    Adjust_Cursor_Selection(font_chars,pos,label,events,mouse_state);
+    
+    
     return elements;
 ❱
-
 
 
 //size it
@@ -92,6 +92,25 @@ class
 
 
 //utility
+
+◀private: static▶ void ☀Adjust_Cursor_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+
+    //set active properties on the label
+    if (mouse_state.left.clicked){
+        if (events.clicked){
+            label.cursors.clear();
+            auto s = get_cursor_selection_based_on_click(font_chars,events.pos,pos,label);
+            label.cursors.emplace_back(s);
+        }
+        else{
+            label.cursors.clear();
+        }
+    }
+
+❱
+
+
+
 ◀private: static▶ void ☀Adjust_Position(Position & pos)❰
 
     int x_adjusted_label_draw = -2;
@@ -100,6 +119,16 @@ class
     //adjust for label backdrop
     pos.y += y_adjusted_label_draw;
     pos.x += x_adjusted_label_draw;
+❱
+
+◀private: static▶ void ☀Reverse_Adjust_Position(Position & pos)❰
+
+    int x_adjusted_label_draw = -2;
+    int y_adjusted_label_draw = -10;
+
+    //adjust for label backdrop
+    pos.y -= y_adjusted_label_draw;
+    pos.x -= x_adjusted_label_draw;
 ❱
 
 
