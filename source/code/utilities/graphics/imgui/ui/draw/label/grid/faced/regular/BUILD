@@ -13,6 +13,7 @@ hcp(name="label_settings", deps = [
 "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_selection",
 "//code/utilities/graphics/imgui/ui/draw/label/style:label_styles",
 "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_user_state",
+"//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events",
 ])
 
 hcp(name="positioned_label", deps = [
