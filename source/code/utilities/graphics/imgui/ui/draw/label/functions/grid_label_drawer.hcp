@@ -16,21 +16,9 @@ class
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Draw(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Face_Grid & grid, Mouse_State const& mouse_state)❰
-    Frame_Elements elements;
-    
     
     Update_Events(font_chars,grid,mouse_state);
-    
-    auto start_pos = grid.pos;
-    auto current_pos = grid.pos;
-    
-    
-    //redraw
-    for (size_t i = 0; i < grid.cell.size(); ++i){
-        elements.types += Faced_Label_Drawer::Draw(font_chars,grid.cell[i],current_pos,mouse_state).types;
-        Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
-    }
-    
+    auto elements = Get_Draw_Elements(font_chars,grid,mouse_state);
     return elements;
 ❱
 
@@ -46,6 +34,21 @@ class
         Faced_Label_Drawer::Event_It(font_chars,grid.cell[i],current_pos,mouse_state);
         Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
     }
+❱
+
+◀private: static▶ Frame_Elements  ☀Get_Draw_Elements(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Face_Grid & grid, Mouse_State const& mouse_state)❰
+
+    auto start_pos = grid.pos;
+    auto current_pos = grid.pos;
+    
+    
+    //redraw
+    Frame_Elements elements;
+    for (size_t i = 0; i < grid.cell.size(); ++i){
+        elements.types += Faced_Label_Drawer::Draw(font_chars,grid.cell[i],current_pos,mouse_state).types;
+        Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
+    }
+    return elements;
 ❱
 
 
