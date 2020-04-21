@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "special_printf_specifier_settings", deps = [

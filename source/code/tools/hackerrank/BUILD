@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
-load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 gtest(

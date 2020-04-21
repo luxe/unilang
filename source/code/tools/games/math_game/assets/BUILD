@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 
 
 hcp(name = "title_screen_assets", deps = [

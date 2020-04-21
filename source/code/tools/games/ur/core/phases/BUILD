@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 
 hcp(name = "regular_game_phase", deps = [
     "@sfml//:sfml",

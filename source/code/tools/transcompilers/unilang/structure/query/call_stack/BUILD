@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("//bazel/cookbook/hcp:main.bzl", "hcp")
+load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "direct_methods_called_by_methods_getter", deps = [
