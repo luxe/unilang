@@ -1,17 +1,14 @@
 package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
-load("//bazel/cookbook/hcp:hcp_pos.bzl", "hcp_pos")
+load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 
 hcp(name="label_face", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
 ])
 
 
-hcp(name="faced_label", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:label_face",
-])
-hcp_pos(name="faced_label", deps = [
+hcp_and_hcp_pos(name="faced_label", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:label_face",
 ])
 
