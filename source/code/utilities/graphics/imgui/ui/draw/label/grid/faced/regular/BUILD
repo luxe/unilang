@@ -17,7 +17,7 @@ hcp(name="label_settings", deps = [
 "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events",
 ])
 
-hcp_pos(name="positioned_label", deps = [
+hcp_pos(name="label", deps = [
     "//code/utilities/data_structures/position:position",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
 ])

@@ -11,3 +11,8 @@ bool File_Name_Starts_With(std::string const& str, std::string const& prefix);
 
 std::string Prepend_Path_To_Program_Execution_Unless_Global_Call(std::string const& program_execution, std::string const& path);
 std::string Prepend_Cd_Path(std::string const& program_execution, std::string const& path);
+
+
+//base name
+std::string Prepend_Onto_Basename(std::string const& path, std::string const& add);
+std::string Append_onto_Basename(std::string const& path, std::string const& add);

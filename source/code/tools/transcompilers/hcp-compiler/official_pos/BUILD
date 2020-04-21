@@ -22,6 +22,7 @@ bootstrap_hcp(
     name = "position_enricher",
     deps = [
         "//code/tools/transcompilers/hcp-compiler/official:class_structure",
+        "//code/utilities/types/strings/observers/path:lib",
     ]
 )
 

@@ -74,3 +74,20 @@ std::string Prepend_Cd_Path(std::string const& program_execution, std::string co
     cmd += program_execution;
     return cmd;
 }
+
+
+//base name
+std::string Prepend_Onto_Basename(std::string const& path, std::string const& add)
+{
+    auto file_name = Get_File_Name(path);
+    file_name = add + file_name;
+    auto dirs = As_All_Chars_Removed_From_Back_Until_Char_Is_Seen(path,'/');
+    dirs += file_name;
+    return dirs;
+    
+}
+std::string Append_onto_Basename(std::string const& path, std::string const& add)
+{
+    //TODO implement
+    return "";
+}

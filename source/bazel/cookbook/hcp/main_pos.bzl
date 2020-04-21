@@ -4,10 +4,10 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 def hcp_pos(name,deps=[],data=[]):
 
     #the file names to use
-    hcp_target_name = name + "_hcp"
+    hcp_target_name = name + "_pos_hcp"
     explicit_hcp_file = name + ".hcp"
-    explicit_cpp_file = name + ".cpp"
-    explicit_hpp_file = name + ".hpp"
+    explicit_cpp_file = "positioned_" + name + ".cpp"
+    explicit_hpp_file = "positioned_" + name + ".hpp"
     
     #converting hcp to hpp/cpp
     native.genrule(
@@ -22,4 +22,4 @@ def hcp_pos(name,deps=[],data=[]):
     real_deps = list(deps)
     real_deps += ["@boost//:serialization"]
     real_deps += ["@nlohmann_json//:nlohmann_json"]
-    cpp_object(name,real_deps,data)
+    cpp_object("positioned_" + name,real_deps,data)
