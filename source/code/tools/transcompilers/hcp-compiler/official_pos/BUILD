@@ -13,7 +13,16 @@ bootstrap_hcp(
     "//code/tools/transcompilers/hcp-compiler/official:file_name_checker",
     "//code/tools/transcompilers/hcp-compiler/official:bazel_deps_printer",
     "//code/tools/transcompilers/hcp-compiler/official:hcp_parser",
-    "//code/tools/transcompilers/hcp-compiler/official:hcp_compiler",]
+    "//code/tools/transcompilers/hcp-compiler/official:hcp_compiler",
+    "//code/tools/transcompilers/hcp-compiler/official_pos:position_enricher",
+    ]
+)
+
+bootstrap_hcp(
+    name = "position_enricher",
+    deps = [
+        "//code/tools/transcompilers/hcp-compiler/official:class_structure",
+    ]
 )
 
 cc_binary(
