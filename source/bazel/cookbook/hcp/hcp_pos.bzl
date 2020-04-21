@@ -22,4 +22,5 @@ def hcp_pos(name,deps=[],data=[]):
     real_deps = list(deps)
     real_deps += ["@boost//:serialization"]
     real_deps += ["@nlohmann_json//:nlohmann_json"]
+    real_deps += ["//code/utilities/data_structures/position:position"]
     cpp_object("positioned_" + name,real_deps,data)
