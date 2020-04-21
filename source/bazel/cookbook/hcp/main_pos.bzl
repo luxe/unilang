@@ -1,7 +1,7 @@
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 #using the boot-strapped hcp compiler built from hcp files
-def hcp(name,deps=[],data=[]):
+def hcp_pos(name,deps=[],data=[]):
 
     #the file names to use
     hcp_target_name = name + "_hcp"
@@ -14,8 +14,8 @@ def hcp(name,deps=[],data=[]):
         name = hcp_target_name,
         srcs = [explicit_hcp_file],
         outs = [explicit_cpp_file,explicit_hpp_file],
-        tools = ["//code/tools/transcompilers/hcp-compiler/official:hcp-compiler"],
-        cmd = "$(location //code/tools/transcompilers/hcp-compiler/official:hcp-compiler) $(SRCS) -o $(@D)"
+        tools = ["//code/tools/transcompilers/hcp-compiler/official_pos:hcp-compiler"],
+        cmd = "$(location //code/tools/transcompilers/hcp-compiler/official_pos:hcp-compiler) $(SRCS) -o $(@D)"
     )
       
     #compiling hpp/cpp

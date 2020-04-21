@@ -112,8 +112,8 @@ bootstrap_hcp(
     "//code/utilities/types/strings/transformers/removing:lib",
     "//code/tools/transcompilers/hcp-compiler/official:file_name_checker",
     "//code/tools/transcompilers/hcp-compiler/official:bazel_deps_printer",
-    "hcp_parser",
-    "hcp_compiler",]
+    "//code/tools/transcompilers/hcp-compiler/official:hcp_parser",
+    "//code/tools/transcompilers/hcp-compiler/official:hcp_compiler",]
 )
 
 bootstrap_hcp(
@@ -142,6 +142,19 @@ bootstrap_hcp(
     "hcp_compiler",]
 )
 
+bootstrap_hcp(
+name = "include_file_printer",
+deps = [
+    ":class_structure",
+    "//code/utilities/types/strings/observers/other:lib",
+    "//code/utilities/types/strings/observers/path:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/utilities/types/strings/transformers/casing:lib",
+    "//code/utilities/types/wstrings/transformers/trimming:lib",
+    "//code/utilities/types/wstrings/transformers/other:lib",
+    "//code/utilities/types/converters:lib"
+])
+
 cc_binary(
     name = "hcp-compiler",
     srcs = ["main.cpp"],
@@ -149,16 +162,3 @@ cc_binary(
             "//code/utilities/program/common_actions/locale:lib",
             "task_executer"],
 )
-
-bootstrap_hcp(
-name = "include_file_printer",
-deps = [
-":class_structure",
-"//code/utilities/types/strings/observers/other:lib",
-"//code/utilities/types/strings/observers/path:lib",
-"//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/types/strings/transformers/casing:lib",
-"//code/utilities/types/wstrings/transformers/trimming:lib",
-"//code/utilities/types/wstrings/transformers/other:lib",
-"//code/utilities/types/converters:lib"
-])

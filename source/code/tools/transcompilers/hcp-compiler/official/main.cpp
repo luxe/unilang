@@ -3,8 +3,6 @@
 #include "code/tools/transcompilers/hcp-compiler/official/task_executer.hpp"
 #include "code/utilities/program/common_actions/locale/lib.hpp"
 
-void Immediate_Checks_On_Filename_Sent_To_Compiler(std::string const& file_name);
-
 int main(int const argc, char** const argv) {
 
 	//Unicode please
