@@ -110,6 +110,34 @@ bootstrap_hcp(
 	"//code/utilities/types/wstrings/transformers/other:lib",
 	"//code/utilities/types/converters:lib",
     "//code/utilities/types/strings/transformers/removing:lib",
+    "//code/tools/transcompilers/hcp-compiler/official:file_name_checker",
+    "//code/tools/transcompilers/hcp-compiler/official:bazel_deps_printer",
+    "hcp_parser",
+    "hcp_compiler",]
+)
+
+bootstrap_hcp(
+    name = "file_name_checker",
+    deps = ["//code/tools/transcompilers/hcp-compiler/official/program_options:lib",
+    "//code/utilities/program/common_actions/exits:lib",
+    "//code/utilities/types/strings/observers/path:lib",
+    "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+    "//code/utilities/types/wstrings/transformers/other:lib",
+    "//code/utilities/types/converters:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
+    "hcp_parser",
+    "hcp_compiler",]
+)
+
+bootstrap_hcp(
+    name = "bazel_deps_printer",
+    deps = ["//code/tools/transcompilers/hcp-compiler/official/program_options:lib",
+    "//code/utilities/program/common_actions/exits:lib",
+    "//code/utilities/types/strings/observers/path:lib",
+    "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+    "//code/utilities/types/wstrings/transformers/other:lib",
+    "//code/utilities/types/converters:lib",
+    "//code/utilities/types/strings/transformers/removing:lib",
     "hcp_parser",
     "hcp_compiler",]
 )

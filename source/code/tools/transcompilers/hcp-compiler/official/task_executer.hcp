@@ -17,6 +17,8 @@ class
 ❪"hcp_compiler"❫
 ❪"code/utilities/types/converters/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/tools/transcompilers/hcp-compiler/official/file_name_checker"❫
+❪"code/tools/transcompilers/hcp-compiler/official/bazel_deps_printer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options)❰
@@ -25,73 +27,14 @@ class
      for (auto const& hcp_file: program_options.Input_Files()){
       
         //exit if anything is initially wrong with the file name sent to the compiler
-        Immediate_Checks_On_Filename_Sent_To_Compiler(hcp_file);
+        File_Name_Checker::Immediate_Checks_On_Filename(hcp_file);
 
         //parse the hcp file and get back a class that represents it
         auto structure = Hcp_Parser::Parse(hcp_file);
 
-       Possibly_Give_Bazel_Deps(structure,program_options);
+        Bazel_Deps_Printer::Possibly_Give_Bazel_Deps(structure,program_options);
     
         //compile that structure into the appropriate files (hcp -> hpp and cpp)
         Hcp_Compiler::Compile(structure,program_options.Output_Directory(),program_options.Utility_Functions());
   }
-❱
-
-◀private: static▶ void ☀Immediate_Checks_On_Filename_Sent_To_Compiler(std::string const& file_name)❰
-    
-    //file must be a .hcp file
-    if (Get_File_Extension(file_name) != "hcp"){
-        Exit_With_Error(file_name + " must have a .hcp file extension");
-    }
-
-    //file must exist
-    if (!File_Exists(file_name)){
-        Exit_With_Error(file_name + " not found");
-    }
-❱
-
-◀private: static▶ void ☀Possibly_Give_Bazel_Deps(Class_Structure const& c, Program_Options const& program_options)❰
-	if (program_options.Print_Bazel_Deps()){
-		auto headers = Get_All_Local_Headers(c);
-		for (auto it: headers){
-			std::cout << path_to_bazel(Remove_First_And_Last_Char(it)) << '\n';
-		}
-		exit(0);
-	}
-❱
-
-◀public: static▶ std::string ☀path_to_bazel(std::string dep_lib)❰
-    
-    //settings
-    std::string bazel_path_prefix = "//";
-    char bazel_last_path_part_delim = ':';
-    std::string path_delim = "/";
-    
-    //convert to path
-    std::string p = bazel_path_prefix;
-    auto it = dep_lib.find_last_of(path_delim);
-    dep_lib[it] = bazel_last_path_part_delim;
-    p+= dep_lib;
-    
-    return p;
-❱
-
-◀private: static▶ std::set<std::string> ☀Get_All_Local_Headers(Class_Structure const& c)❰
-	 std::set<std::string> result;
-	for (auto j: c.Header_Includes()){
-		if (j.second){
-			if (Begins_And_Ends_With(j.first,L'"')){
-				result.insert(as_string(j.first));
-			}
-		}
-	}
-	for (auto j: c.Source_Includes()){
-		if (j.second){
-			if (Begins_And_Ends_With(j.first,L'"')){
-				result.insert(as_string(j.first));
-			}
-		}
-	}
-
-	return result;
 ❱
