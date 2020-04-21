@@ -30,5 +30,6 @@ hcp(
         "//code/tools/ide/frame:view_anchor_adjuster",
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/utilities/peripheral/keyboard:key_detector",
+        "//code/utilities/peripheral/keyboard/state:imgui_keyboard_state_getter",
     ],
 )
