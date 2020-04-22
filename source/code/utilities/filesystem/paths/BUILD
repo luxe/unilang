@@ -2,6 +2,8 @@ package(
     default_visibility = ["//visibility:public"],
 )
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
+load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 cc_library(
     name = "lib",
@@ -14,6 +16,10 @@ cc_library(
 "@boost//:range",
 ],
 )
+
+hcp(name = "ppath_getter", deps = [
+  "//code/utilities/filesystem/paths:lib"
+])
 
 
 cpp_main(

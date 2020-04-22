@@ -203,6 +203,10 @@ std::string Full_Path_To_Home_Config_File(std::string const& config_for)
 {
 	return Full_Path_To_Home() + "/." + config_for;
 }
+std::string Full_Path_For_Tmp_File(std::string const& file)
+{
+	return "/tmp/" + file;
+}
 
 //+--------------------+
 //| Checking Existence |

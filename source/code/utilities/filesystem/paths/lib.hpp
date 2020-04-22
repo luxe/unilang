@@ -50,6 +50,7 @@ std::vector<std::string> Recursively_Get_All_Directories_From_Path(std::string c
 	std::string Full_Path_To_Desktop();
 	std::string Full_Path_For_Desktop_File(std::string const& file);
 	std::string Full_Path_To_Home_Config_File(std::string const& config_for);
+	std::string Full_Path_For_Tmp_File(std::string const& file);
 
 	//+--------------------+
 	//| Checking Existence |
