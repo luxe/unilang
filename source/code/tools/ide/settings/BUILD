@@ -16,7 +16,7 @@ hcp(name="ide_settings", deps = [
     "//code/tools/ide/settings:background_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
     "//code/tools/ide/settings:mouse",
-    "//code/tools/ide/settings:label_cursor",
+    "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor",
     "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
@@ -64,8 +64,4 @@ hcp(name="standard_bitmap_cursor", deps = [
 hcp(name="mouse", deps = [
     "//code/utilities/graphics/imgui/ui/draw:mouse_selection",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
-])
-
-hcp(name="label_cursor", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/label/cursor:cursor"
 ])
