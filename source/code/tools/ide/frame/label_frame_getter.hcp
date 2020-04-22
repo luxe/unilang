@@ -37,16 +37,18 @@ class
     
     //face label
     
-        //event it
+        //label events
         Label_Drawer::Event_It(settings.unilang_font_lookup,settings.test_label.pos, settings.test_label.state,pc_input.mouse);
         
         //draw label
         elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label,pc_input.mouse).types;
         
-        //draw cursors
-        for (auto & it: settings.test_label.state.cursors){
-            Handle_Cursor_Selections(elements,settings,settings.test_label,it);
-        }
+        //cursor events
+        Event_It(settings,settings.test_label);
+        
+        //draw cursor
+        Draw_Cursor(elements,settings,settings.test_label);
+        
     
     
     
@@ -72,11 +74,21 @@ class
     elements.types += Grid_Label_Drawer::Draw(settings.unilang_font_lookup,settings.grid,pc_input.mouse).types;
 ❱
 
-◀private: static▶ void ☀Handle_Cursor_Selections(Frame_Elements & elements, Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Event_It(Ide_Settings & settings, Positioned_Label & label)❰
+
+    for (auto & it: settings.test_label.state.cursors){
+        if (label.state.user_state.is_active){
+            Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,label,it);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Draw_Cursor(Frame_Elements & elements, Ide_Settings & settings, Positioned_Label & label)❰
     
-    if (label.state.user_state.is_active){
-        Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,label,selection);
-        Draw_Label_Cursor(elements, label, selection);
+    for (auto & it: settings.test_label.state.cursors){
+        if (label.state.user_state.is_active){
+            Draw_Label_Cursor(elements, label, it);
+        }
     }
 ❱
 
