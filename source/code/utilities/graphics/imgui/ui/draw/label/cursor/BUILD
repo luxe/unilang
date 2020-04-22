@@ -13,3 +13,7 @@ hcp(name="label_cursor_mover", deps = [
 "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_selection",
 "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
 ])
+
+hcp(name="cursor",deps = [
+"//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
+])

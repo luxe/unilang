@@ -8,10 +8,6 @@ hcp(name="imgui_type_utility", deps = [
 "//code/utilities/graphics/imgui:mechanics",
 ])
 
-hcp(name="cursor",deps = [
-"//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-])
-
 hcp(name="mouse_selection",deps = [
 "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
 ])
