@@ -7,4 +7,5 @@ hcp(name = "key_detector", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/peripheral/keyboard/state:key_state",
 ])

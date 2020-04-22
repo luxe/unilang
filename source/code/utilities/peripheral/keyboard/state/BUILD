@@ -16,5 +16,6 @@ hcp(name = "keyboard_state", deps = [
 hcp(name = "imgui_keyboard_state_getter", deps = [
     "//code/utilities/graphics/imgui:mechanics",
     "//code/utilities/peripheral/keyboard/state:keyboard_state",
+    "//code/utilities/peripheral/keyboard:key_detector",
 ])
 
