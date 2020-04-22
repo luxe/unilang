@@ -75,6 +75,7 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
         "//code/tools/ide/frame:mouse_frame_getter",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:grid_label_drawer",
+        "//code/utilities/peripheral/pc:pc_input_state",
     ],
 )
 

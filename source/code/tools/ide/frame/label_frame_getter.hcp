@@ -2,6 +2,7 @@ class
 ❪"code/tools/ide/settings/ide_settings"❫
 ❪"code/tools/ide/frame/logic/frame_elements"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
 ⚯
 ❪"code/tools/ide/frame/mouse_selection_drawer"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_position_getter"❫
@@ -14,13 +15,13 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/grid_label_drawer"❫
 ⚞⚟
 
-◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Mouse_State const& mouse_state)❰
+◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
     Frame_Elements elements;
-    Draw_Label(elements,settings,mouse_state);
+    Draw_Label(elements,settings,pc_input);
     return elements;
 ❱
 
-◀private: static▶ void ☀Draw_Label(Frame_Elements & elements, Ide_Settings & settings, Mouse_State const& mouse_state)❰
+◀private: static▶ void ☀Draw_Label(Frame_Elements & elements, Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 
     //the closest to the corner we can get
     //this is basically used as our pseudo (0,0) for drawing anything in our application
@@ -37,10 +38,10 @@ class
     //face label
     
         //event it
-        Label_Drawer::Event_It(settings.unilang_font_lookup,settings.test_label.pos, settings.test_label.state,mouse_state);
+        Label_Drawer::Event_It(settings.unilang_font_lookup,settings.test_label.pos, settings.test_label.state,pc_input.mouse);
         
         //draw label
-        elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label,mouse_state).types;
+        elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label,pc_input.mouse).types;
         
         //draw cursors
         
@@ -65,7 +66,7 @@ class
     Positioned_Label x;
     x.pos = settings.test_label2.pos;
     x.state = settings.test_label2.faces[settings.test_label2.index].label;
-    elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,x,mouse_state).types;
+    elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,x,pc_input.mouse).types;
     settings.test_label2.faces[settings.test_label2.index].label = x.state;
     
     
@@ -73,7 +74,7 @@ class
     //TEST (faced grid):
     settings.grid.pos.x = pos.x + 120;
     settings.grid.pos.y = pos.y + 120;
-    elements.types += Grid_Label_Drawer::Draw(settings.unilang_font_lookup,settings.grid,mouse_state).types;
+    elements.types += Grid_Label_Drawer::Draw(settings.unilang_font_lookup,settings.grid,pc_input.mouse).types;
 ❱
 
 ◀private: static▶ void ☀Handle_Cursor_Selections(Frame_Elements & elements, Ide_Settings & settings, Positioned_Label & label, Label_Cursor_Selection & selection)❰
