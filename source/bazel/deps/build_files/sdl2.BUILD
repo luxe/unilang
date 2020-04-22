@@ -1,5 +1,5 @@
 package(default_visibility = ["//visibility:public"])
-load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
+#load("@rules_foreign_cc//tools/build_defs:cmake.bzl", "cmake_external")
 
 # Common include paths
 sdl_includes = [
