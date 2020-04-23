@@ -50,15 +50,11 @@ hcp(name="ide_settings_getter", deps = [
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/tools/ide/settings:ide_settings",
     "//code/tools/transcompilers/unilang/language-and-theme-creator/font:unilang_font",
-    "//code/tools/ide/settings:standard_bitmap_cursor",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/premade:crosshair_mouse",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
     "//code/utilities/graphics/imgui/ui/draw/label/style:default_label_styles",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:faced_label_converter",
-])
-
-hcp(name="standard_bitmap_cursor", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
 ])
 
 hcp(name="mouse", deps = [
