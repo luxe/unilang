@@ -8,72 +8,38 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap/full_color_bitmap_drawer"❫
 ❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
+❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
 ⚞⚟
 
 ◀public: static▶ Full_Color_Bitmap ☀Convert(Character_Maps const& font_chars, std::string const& str)❰
-    auto message = Str_To_Bdf_Segments::Convert(font_chars.segments.lookup,str);
+    auto message = Str_To_Bdf_Segments::Convert_2(font_chars.bitmaps.lookup,str);
     auto bitmap = bdf_segments_to_bitmap(message);
     return bitmap;
 ❱
 
-◀private: static▶ std::vector<Position> ☀relative_positions_of_segment(Character_Segment const& segment)❰
-    std::vector<Position> pos;
-    
-    Position p;
-    p.x = 0;
-    p.y = 0;
-    char PIXEL_ENABLED_CHAR = '1';
-    for (auto const& it: segment.hex_encoded_bitmap){
-            auto binary = Hex_To_4_Bit_Binary_Segments(it);
-            for (auto const& b: binary){
-                if (b == PIXEL_ENABLED_CHAR){
-                    pos.emplace_back(p);
-                }
-                p.x+= 1;
-            }
-            p.x=0;
-            p.y+= 1;
-    }
-    return pos;
-❱
-
-◀private: static▶ std::vector<std::vector<Position>> ☀relative_positions_of_segments(std::vector<Character_Segment> const& segments)❰
-    std::vector<std::vector<Position>> relative_pos;
-    for (auto const& it: segments){
-        relative_pos.emplace_back(relative_positions_of_segment(it));
-    }
-    return relative_pos;
-❱
-◀private: static▶ Full_Color_Bitmap ☀bdf_segments_to_bitmap(std::vector<Character_Segment> const& segments)❰
+◀private: static▶ Full_Color_Bitmap ☀bdf_segments_to_bitmap(std::vector<Full_Color_Bitmap> const& segments)❰
     
     Full_Color_Bitmap bitmap;
-    bitmap.color_fill.r = 0;
-    bitmap.color_fill.g = 0;
-    bitmap.color_fill.b = 0;
+    bitmap.color_fill = Imgui_Type_Utility::Black();
         
-    auto  relative_pos = relative_positions_of_segments(segments);
     
     int total_x_offset = 0;
     int total_y_offset = 0;
     for (size_t i = 0; i < segments.size(); ++i){
         
-        for (auto const& x: relative_pos[i]){
+        for (auto const& x: segments[i].pixels){
             Position pos;
             
             //start with the character's offset relative the other characters already typed
             pos.x = x.x + total_x_offset;
             pos.y = x.y + total_y_offset;
-            
-            //shift character based on bdf segment information
-            pos.x += segments[i].bbo_x;
-            pos.y -= segments[i].bb_h;
-            pos.y -= segments[i].bbo_y;
+
             bitmap.pixels.emplace_back(pos);
         }
         
         //increment a square offset for the next consecutive character box
-        total_x_offset += segments[i].d_width_x;
-        total_y_offset += segments[i].d_width_y;
+        total_x_offset += 6; //TODO(thickey): no longer derived, but probably should be
+        total_y_offset += 0; //TODO(thickey): no longer derived, but probably should be
     }
     
     return bitmap;

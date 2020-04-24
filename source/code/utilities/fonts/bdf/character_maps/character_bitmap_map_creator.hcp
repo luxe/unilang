@@ -6,10 +6,55 @@ class
 ❪iomanip❫
 ❪"code/utilities/fonts/bdf/character_maps/character_segment_map"❫
 ❪"code/utilities/fonts/bdf/character_maps/character_bitmap_map"❫
+❪"code/utilities/graphics/imgui/ui/draw/imgui_type_utility"❫
 ⚯
+❪"code/utilities/types/char/lib"❫
 ⚞⚟
 
 ◀public: static▶ Character_Bitmap_Map ☀Create(Character_Segment_Map const& c_map)❰
     Character_Bitmap_Map m;
+    
+    for (auto const& it: c_map.lookup){
+        Full_Color_Bitmap bitmap;
+        bitmap.color_fill = Imgui_Type_Utility::Black();
+        bitmap.pixels = relative_positions_of_segment(it.second);
+        m.lookup[it.first] = bitmap;
+    }
+    
     return m;
+❱
+
+
+◀private: static▶ std::vector<Position> ☀relative_positions_of_segment(Character_Segment const& segment)❰
+    std::vector<Position> pos;
+    
+    Position p;
+    p.x = 0;
+    p.y = 0;
+    char PIXEL_ENABLED_CHAR = '1';
+    for (auto const& it: segment.hex_encoded_bitmap){
+            auto binary = Hex_To_4_Bit_Binary_Segments(it);
+            for (auto const& b: binary){
+                if (b == PIXEL_ENABLED_CHAR){
+                    pos.emplace_back(p);
+                }
+                p.x+= 1;
+            }
+            p.x=0;
+            p.y+= 1;
+    }
+    
+    
+    
+    for (auto & p: pos){
+        Shift_Position_Based_On_Bdf_Segment_Information(p,segment);
+    }
+    return pos;
+❱
+
+
+◀private: static▶ void ☀Shift_Position_Based_On_Bdf_Segment_Information(Position & pos, Character_Segment const& segment)❰
+    pos.x += segment.bbo_x;
+    pos.y -= segment.bb_h;
+    pos.y -= segment.bbo_y;
 ❱

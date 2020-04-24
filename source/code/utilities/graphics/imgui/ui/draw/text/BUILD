@@ -10,6 +10,7 @@ hcp(name="text_to_bitmap", deps = [
 "//code/utilities/fonts/bdf/settings:character_segment",
 "//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
 "//code/utilities/fonts/bdf/character_maps:character_maps",
+"//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
 ])
 
 hcp(name="str_to_bdf_segments", deps = [
