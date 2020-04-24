@@ -13,7 +13,7 @@ hcp(name="ide_settings", deps = [
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/window:window_settings",
-    "//code/tools/ide/settings:background_settings",
+    "//code/utilities/graphics/imgui/ui/draw/background:background_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
     "//code/utilities/graphics/imgui/ui/draw/mouse:mouse",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor",
@@ -21,21 +21,6 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
-])
-
-hcp(name="background_settings", deps = [
-    "//code/utilities/data_structures/color:transparent_rgb_color",
-    "//code/utilities/data_structures/position:position",
-    "//code/utilities/graphics/imgui/ui/draw/label/cursor:cursor",
-    "//code/utilities/graphics/imgui/ui/draw/mouse:mouse_selection",
-    "//code/utilities/graphics/imgui/ui/draw/mouse:cursor_mouse_connector",
-    "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
-    "//code/tools/transcompilers/unilang/tokens:get_tokens",
-    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
-    "//code/utilities/graphics/imgui/ui/window:window_settings",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
-    "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid:positioned_face_grid",
 ])
 
@@ -59,4 +44,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
+    "//code/utilities/graphics/imgui/ui/draw/background:background_settings_getter",
 ])
