@@ -15,3 +15,11 @@ hcp(
         "//code/utilities/fonts/bdf:character_segment_map",
     ]
 )
+
+
+hcp(
+    name = "character_bitmap_map",
+    deps = [
+        "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
+    ]
+)
