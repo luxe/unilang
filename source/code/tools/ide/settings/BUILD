@@ -20,6 +20,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
 ])
 
 hcp(name="background_settings", deps = [
@@ -56,6 +57,6 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:faced_label_converter",
     "//code/utilities/graphics/imgui/ui/draw/mouse/premade:standard_mouse",
     "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",
-    "//code/utilities/fonts/bdf:character_segment_map",
-    "//code/utilities/fonts/bdf:character_segment_map_creator",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
 ])

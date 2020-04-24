@@ -18,6 +18,7 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_state"❫
 ❪"code/utilities/data_structures/dimensions/two_d_dimensions"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
@@ -29,7 +30,7 @@ class
 
 
 //event it
-◀public: static▶ void ☀Event_It(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
 
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
     Adjust_Position(pos);
@@ -38,10 +39,10 @@ class
 ❱
 
 //draw it
-◀public: static▶ Frame_Elements ☀Draw(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
     return Draw(font_chars,label.pos,label.state,mouse_state);
 ❱
-◀public: static▶ Frame_Elements ☀Draw(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
     
     Frame_Elements elements;
     
@@ -92,7 +93,7 @@ class
 
 //utility
 
-◀private: static▶ void ☀Adjust_Cursor_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
 
     //set active properties on the label
     if (mouse_state.left.clicked){
@@ -132,7 +133,7 @@ class
 
 
 
-◀private: static▶ Positioned_Full_Color_Bitmap ☀Get_Text_Bitmap(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label)❰
+◀private: static▶ Positioned_Full_Color_Bitmap ☀Get_Text_Bitmap(Character_Maps const& font_chars, Position pos, Label_Settings & label)❰
     Positioned_Full_Color_Bitmap text;
     text.bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,label);
     text.pos = pos;
@@ -191,7 +192,7 @@ class
     return style.width.fixed_width;
 ❱
 
-◀private: static▶ void ☀Decide_Label_Box_Dimensions(std::unordered_map<int,Character_Segment> const& font_chars, Label_Settings & label, Label_Style const& style)❰
+◀private: static▶ void ☀Decide_Label_Box_Dimensions(Character_Maps const& font_chars, Label_Settings & label, Label_Style const& style)❰
 
     
     auto dim = Get_Dimensions(label,style);
@@ -209,13 +210,13 @@ class
     label.styles.hovered_nonactive.box.dimensions.height = dim.y;
 ❱
 
-◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(std::unordered_map<int,Character_Segment> const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
+◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(Character_Maps const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
     
     
     Label_Cursor_Selection s;
     int width_covered = 0;
     bool found = false;
-    auto segments = Str_To_Bdf_Segments::Convert(font_chars,label.message);
+    auto segments = Str_To_Bdf_Segments::Convert(font_chars.segments.lookup,label.message);
     for (size_t i = 0; i < segments.size(); ++i){
         pos.x += segments[i].d_width_x;
         width_covered = segments[i].d_width_x;

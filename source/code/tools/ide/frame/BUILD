@@ -117,6 +117,7 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/tools/ide/frame:text_box_action_decider",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_mover",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
 ])
 
 hcp(name = "text_box_action_decider", deps = [

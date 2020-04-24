@@ -11,13 +11,14 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/label_drawer"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/cursor/label_cursor_mover"❫
 ❪"code/tools/ide/frame/text_box_action_decider"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
 ⚞⚟
 
-◀public: static▶ void ☀Handle_Actions(std::unordered_map<int,Character_Segment> const& font_chars, Positioned_Label & label, Label_Cursor_Selection & selection)❰
+◀public: static▶ void ☀Handle_Actions(Character_Maps const& font_chars, Positioned_Label & label, Label_Cursor_Selection & selection)❰
     Handle_Actions(font_chars,label.pos,label.state,selection);
 ❱
 
-◀public: static▶ void ☀Handle_Actions(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀public: static▶ void ☀Handle_Actions(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     //we assume the textbox is already active
     auto action = Text_Box_Action_Decider::Decide();
@@ -44,12 +45,12 @@ class
 ❱
 
 
-◀private: static▶ void ☀Copy(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Copy(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     auto message = Message_Portion_Currently_Selected(label,selection);
     ImGui::SetClipboardText(message.c_str());
 ❱
-◀private: static▶ void ☀Paste(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Paste(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     std::string str = ImGui::GetClipboardText();
     //TODO
 ❱
@@ -70,13 +71,13 @@ class
     return message;
 ❱
 
-◀private: static▶ void ☀Selection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Selection_Backwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
         Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
         Adjust_For_Backwards_Selection(label,selection);
     }
 ❱
-◀private: static▶ void ☀NonSelection_Backwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀NonSelection_Backwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_Beginning(selection)){
         if (!Highlighted_Chars_Exist(selection)){
             Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
@@ -87,13 +88,13 @@ class
     }
     selection.additional_chars_selected = 0;
 ❱
-◀private: static▶ void ☀Selection_Forwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Selection_Forwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (!Cursor_At_End(label,selection)){
         Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
         Adjust_For_Forwards_Selection(label,selection);
     }
 ❱
-◀private: static▶ void ☀NonSelection_Forwards(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀NonSelection_Forwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     if (!Cursor_At_End(label,selection)){
        if (!Highlighted_Chars_Exist(selection)){
@@ -115,7 +116,7 @@ class
 
 
 
-◀private: static▶ void ☀Handle_Fowards_Insertion(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Fowards_Insertion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
     for (auto const& c: Currently_Buffered_User_Input_Chars()){
         if (Char_Is_Valid(c)){
@@ -125,7 +126,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Handle_Backwards_Deletion(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Backwards_Deletion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (Highlighted_Chars_Exist(selection)){
         Backspace_On_Selection(font_chars,pos,label,selection);
     }
@@ -156,11 +157,11 @@ class
 
 
 
-◀private: static▶ void ☀Backspace_On_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Backspace_On_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     Clear_Selection(font_chars,pos,label,selection);
     selection.additional_chars_selected = 0;
 ❱
-◀private: static▶ void ☀Backspace_On_NonSelection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Backspace_On_NonSelection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     if (selection.label_index > -1){
         auto for_deletion = selection.label_index;
         Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
@@ -169,7 +170,7 @@ class
 ❱
 
 
-◀private: static▶ void ☀Clear_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Clear_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
    
    auto for_deletion = selection.label_index;
    if (selection.additional_chars_selected < 0){
@@ -188,7 +189,7 @@ class
 
 
 
-◀private: static▶ void ☀Handle_All_Selection(std::unordered_map<int,Character_Segment> const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_All_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
         selection.additional_chars_selected = label.message.size() * -1;
         Label_Cursor_Mover::Move_Cursor_To_The_End(font_chars,pos,label,selection);
 ❱
