@@ -14,10 +14,12 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/pixel/pixel_slider"❫
 ❪"code/utilities/colors/rectangle_shades"❫
 ⚯
-❪"code/tools/transcompilers/unilang/language-and-theme-creator/font/unilang_font"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/style/default_label_styles"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/grid/faced/faced_label_converter"❫
 ❪"code/utilities/graphics/imgui/ui/draw/mouse/premade/standard_mouse"❫
+❪"code/utilities/fonts/bdf/complete/unilang/unilang_segments"❫
+❪"code/utilities/fonts/bdf/character_segment_map"❫
+❪"code/utilities/fonts/bdf/character_segment_map_creator"❫
 ⚞⚟
 
 ◀public: static▶ Ide_Settings ☀Get()❰
@@ -31,7 +33,8 @@ class
     settings.background.main_window_backdrop = Main_Background();
     
     //font related settings
-    settings.unilang_font_lookup = Get_Character_Lookup_Table();
+    auto segments = Unilang_Segments::Get();
+    settings.unilang_font_lookup = Character_Segment_Map_Creator::Create(segments).lookup;
     
     //mouse
     settings.mouse = Standard_Mouse::Get();
@@ -175,15 +178,6 @@ class
     x.faces.emplace_back(face);
     
     return x;
-❱
-
-◀private: static▶ std::unordered_map<int,Character_Segment> ☀Get_Character_Lookup_Table()❰
-    auto unilang_font = Unilang_Font::Get();
-    std::unordered_map<int,Character_Segment> unilang_font_lookup;
-    for (auto const& it: unilang_font){
-        unilang_font_lookup[static_cast<int>(it.glyph_index)] = it;
-    }
-    return unilang_font_lookup;
 ❱
 
 
