@@ -10,3 +10,9 @@ hcp(name = "unilang_segments", deps = [
 "//code/tools/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker",
 "//code/utilities/fonts/bdf/exporter:bdf_settings_to_format",
 ])
+
+hcp(name = "unilang_font_creation_settings", deps = [
+    "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",
+    "//code/utilities/fonts/bdf/complete:font_creation_settings",
+    "//code/utilities/filesystem/paths:lib",
+])

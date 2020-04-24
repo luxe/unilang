@@ -5,23 +5,20 @@ class
 ❪"code/tools/transcompilers/unilang/tokens/get_tokens"❫
 ❪"code/utilities/fonts/bdf/settings/bdf_settings"❫
 ❪"code/utilities/fonts/bdf/glyph/glyphs"❫
+❪"code/utilities/fonts/bdf/complete/unilang/unilang_segments"❫
+❪"code/utilities/fonts/bdf/complete/font_creation_settings"❫
 ⚯
-❪"code/tools/transcompilers/unilang/language-and-theme-creator/sublime/global"❫
-❪"code/tools/transcompilers/unilang/language-and-theme-creator/sublime/unilang_file_creator"❫
 ❪"code/utilities/fonts/bdf/complete/unilang/unilang_segments"❫
 ❪"code/tools/transcompilers/unilang/tokens/uniqueness/unique_tokens_checker"❫
 ❪"code/utilities/fonts/bdf/exporter/bdf_settings_to_format"❫
 ❪"code/tools/transcompilers/unilang/tokens/get_tokens"❫
-❪"code/tools/transcompilers/unilang/language-and-theme-creator/font/unilang_font_creation_settings_getter"❫
+❪"code/utilities/filesystem/paths/lib"❫
 ⚞⚟
 
-◀public: static▶ void ☀Create_Fonts()❰
-    
-    //get settings
-    auto settings = Unilang_Font_Creation_Settings_Getter::Get();
+◀public: static▶ void ☀Create_Fonts(Font_Creation_Settings const& settings)❰
     
     //get font
-    std::string font_str = Font_As_String();
+    std::string font_str = Font_As_String(settings);
     
     //create all the font files
     for (auto const& path: settings.font_paths){
@@ -36,11 +33,11 @@ class
     //sudo fc-cache -f -v
 ❱
 
-◀private: static▶ std::string ☀Font_As_String()❰
+◀private: static▶ std::string ☀Font_As_String(Font_Creation_Settings const& settings)❰
     std::string str;
     
     Bdf_Settings bdf_settings;
-    bdf_settings.segments = Unilang_Segments::Get();
+    bdf_settings.segments = settings.segments;
     str += Bdf_Settings_To_Format::Convert(bdf_settings);
     
     return str;

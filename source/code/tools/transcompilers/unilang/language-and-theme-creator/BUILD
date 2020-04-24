@@ -13,7 +13,8 @@ hcp(name = "task_executer", deps = [
 "//code/utilities/types/vectors/operators:lib",
 "//code/tools/transcompilers/unilang/tokens:get_tokens",
 "//code/tools/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker",
-"//code/tools/transcompilers/unilang/language-and-theme-creator/font:unilang_font_creator"
+"//code/utilities/fonts/bdf/complete/unilang:unilang_font_creation_settings",
+"//code/utilities/fonts/bdf/complete:font_creator",
 ])
 
 cc_binary(
