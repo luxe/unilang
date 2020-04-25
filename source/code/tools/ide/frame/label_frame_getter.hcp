@@ -24,31 +24,19 @@ class
 
 ◀private: static▶ void ☀Draw_Label(Frame_Elements & elements, Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 
-    //the closest to the corner we can get
-    //this is basically used as our pseudo (0,0) for drawing anything in our application
-    Position pos = settings.view_anchor;
-    //pos = Window_Position_Finder::attempted_perfect_top_left_corner();
+    Update_All_Positions_Via_View_Anchor(settings);
     
+    //label events
+    Label_Drawer::Event_It(settings.unilang_font_lookup,settings.test_label.pos, settings.test_label.state,pc_input.mouse);
     
-    settings.test_label.pos.x = pos.x + 30;
-    settings.test_label.pos.y = pos.y + 30;
+    //draw label
+    elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label,pc_input.mouse).types;
     
-    //std::cout << settings.mouse.right_selection.shape.shape.dimensions.width << "x" << settings.mouse.right_selection.shape.shape.dimensions.height << std::endl;
+    //cursor events
+    Cursor_Drawer::Event_It(settings,settings.test_label,pc_input);
     
-    
-    //face label
-    
-        //label events
-        Label_Drawer::Event_It(settings.unilang_font_lookup,settings.test_label.pos, settings.test_label.state,pc_input.mouse);
-        
-        //draw label
-        elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label,pc_input.mouse).types;
-        
-        //cursor events
-        Cursor_Drawer::Event_It(settings,settings.test_label,pc_input);
-        
-        //draw cursor
-        elements.types += Cursor_Drawer::Draw_Cursor(settings,settings.test_label).types;
+    //draw cursor
+    elements.types += Cursor_Drawer::Draw_Cursor(settings,settings.test_label).types;
         
     
     
@@ -59,8 +47,6 @@ class
     
     
     //TEST (faced label):
-    settings.test_label2.pos.x = pos.x + 60;
-    settings.test_label2.pos.y = pos.y + 60;
     Positioned_Label x;
     x.pos = settings.test_label2.pos;
     x.state = settings.test_label2.faces[settings.test_label2.index].label;
@@ -70,7 +56,20 @@ class
     
     
     //TEST (faced grid):
+    elements.types += Grid_Label_Drawer::Draw(settings.unilang_font_lookup,settings.grid,pc_input.mouse).types;
+❱
+
+
+◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
+
+    Position pos = settings.view_anchor;
+    
+    settings.test_label.pos.x = pos.x + 30;
+    settings.test_label.pos.y = pos.y + 30;
+    
+    settings.test_label2.pos.x = pos.x + 60;
+    settings.test_label2.pos.y = pos.y + 60;
+    
     settings.grid.pos.x = pos.x + 120;
     settings.grid.pos.y = pos.y + 120;
-    elements.types += Grid_Label_Drawer::Draw(settings.unilang_font_lookup,settings.grid,pc_input.mouse).types;
 ❱
