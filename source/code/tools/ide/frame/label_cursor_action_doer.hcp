@@ -3,6 +3,7 @@ class
 ❪"code/utilities/graphics/imgui/mechanics"❫
 ❪"SDL.h"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular/positioned_label"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/ui_renders"❫
 ❪"code/utilities/graphics/imgui/ui/window/window_renderer"❫
@@ -14,14 +15,14 @@ class
 ❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
 ⚞⚟
 
-◀public: static▶ void ☀Handle_Actions(Character_Maps const& font_chars, Positioned_Label & label, Label_Cursor_Selection & selection)❰
-    Handle_Actions(font_chars,label.pos,label.state,selection);
+◀public: static▶ void ☀Handle_Actions(Character_Maps const& font_chars, Positioned_Label & label, Label_Cursor_Selection & selection, Pc_Input_State const& pc_input)❰
+    Handle_Actions(font_chars,label.pos,label.state,selection,pc_input);
 ❱
 
-◀public: static▶ void ☀Handle_Actions(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀public: static▶ void ☀Handle_Actions(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection, Pc_Input_State const& pc_input)❰
 
     //we assume the textbox is already active
-    auto action = Text_Box_Action_Decider::Decide();
+    auto action = Text_Box_Action_Decider::Decide(pc_input);
     switch (action){
         case Text_Box_Action::SELECT_FORWARD:    Selection_Forwards(font_chars,pos,label,selection);        break;
         case Text_Box_Action::NAVIGATE_FORWARD:  NonSelection_Forwards(font_chars,pos,label,selection);     break;
@@ -118,8 +119,15 @@ class
 
 ◀private: static▶ void ☀Handle_Fowards_Insertion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
 
-    for (auto const& c: Currently_Buffered_User_Input_Chars()){
-        if (Char_Is_Valid(c)){
+    auto chars_to_type = Currently_Buffered_Valid_User_Input_Chars();
+    if (!chars_to_type.empty()){
+        
+        if (Highlighted_Chars_Exist(selection)){
+            Backspace_On_Selection(font_chars,pos,label,selection);
+        }
+        
+        
+        for (auto const& c: chars_to_type){
             label.message.insert(selection.label_index+1,1,c);
             Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
         }
@@ -140,7 +148,20 @@ class
     ImGuiIO& io = ImGui::GetIO();
     IM_ARRAYSIZE(io.InputCharacters);
     for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++){
-        x.emplace_back((unsigned char)io.InputCharacters[i]);
+        unsigned char c = (unsigned char)io.InputCharacters[i];
+        x.emplace_back(c);
+    }
+    return x;
+❱
+◀private: static▶ std::vector<char> ☀Currently_Buffered_Valid_User_Input_Chars()❰
+    std::vector<char> x;
+    ImGuiIO& io = ImGui::GetIO();
+    IM_ARRAYSIZE(io.InputCharacters);
+    for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++){
+        unsigned char c = (unsigned char)io.InputCharacters[i];
+        if (Char_Is_Valid(c)){
+            x.emplace_back(c);
+        }
     }
     return x;
 ❱

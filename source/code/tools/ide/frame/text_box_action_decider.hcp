@@ -3,42 +3,53 @@ class
 ❪"code/utilities/graphics/imgui/mechanics"❫
 ❪"code/tools/ide/frame/text_box_action"❫
 ❪"code/utilities/peripheral/keyboard/key_detector"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
 ❪"SDL.h"❫
 ⚯
 ⚞⚟
 
 
-◀public: static▶ Text_Box_Action ☀Decide()❰
+◀public: static▶ Text_Box_Action ☀Decide(Pc_Input_State const& pc_input)❰
     
-    if (Key_Detector::Shift_Plus_Right_Key_Pressed()){
+    if (Is_Active(pc_input.keyboard.shift) && Is_Pressed(pc_input.keyboard.right)){
         return Text_Box_Action::SELECT_FORWARD;
     }
-    if (Key_Detector::Right_Key_Pressed()){
+    if (Is_Pressed(pc_input.keyboard.right)){
         return Text_Box_Action::NAVIGATE_FORWARD;
     }
-    if (Key_Detector::Shift_Plus_Left_Key_Pressed()){
+    if (Is_Active(pc_input.keyboard.shift) && Is_Pressed(pc_input.keyboard.left)){
         return Text_Box_Action::SELECT_BACKWARD;
     }
-    if (Key_Detector::Left_Key_Pressed()){
+    if (Is_Pressed(pc_input.keyboard.left)){
         return Text_Box_Action::NAVIGATE_BACKWARD;
     }
-    if (Key_Detector::Backspace_Pressed()){
+    if (Is_Pressed(pc_input.keyboard.backspace)){
         return Text_Box_Action::BACKSPACE;
     }
-    if (Key_Detector::CtrlA_Pressed()){
+    if (Is_Active(pc_input.keyboard.ctrl) && Is_Pressed(pc_input.keyboard.a)){
         return Text_Box_Action::SELECT_ALL;
     }
-    if (Key_Detector::CtrlC_Pressed()){
+    if (Is_Active(pc_input.keyboard.ctrl) && Is_Pressed(pc_input.keyboard.c)){
         return Text_Box_Action::COPY;
     }
-    if (Key_Detector::CtrlV_Pressed()){
+    if (Is_Active(pc_input.keyboard.ctrl) && Is_Pressed(pc_input.keyboard.v)){
         return Text_Box_Action::PASTE;
     }
-    if (Key_Detector::Delete_Pressed()){
+    if (Is_Pressed(pc_input.keyboard.delete_)){
         return Text_Box_Action::DELETE;
     }
     
     // Text_Box_Action::ADD_CHARS is not set, but handled directly elsewhere
     
     return Text_Box_Action::NONE;
+❱
+
+◀private: static▶ bool ☀Is_Active(Key_State const& k)❰
+    return k == Key_State::DOWN || k == Key_State::PRESSED;
+❱
+◀private: static▶ bool ☀Is_Down(Key_State const& k)❰
+    return k == Key_State::DOWN;
+❱
+◀private: static▶ bool ☀Is_Pressed(Key_State const& k)❰
+    return k == Key_State::PRESSED;
 ❱
