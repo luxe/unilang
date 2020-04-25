@@ -13,6 +13,7 @@ class
 ❪"code/utilities/types/vectors/operators/lib"❫
 ❪"code/tools/ide/frame/mouse_frame_getter"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/grid_label_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/functions/cursor_drawer"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
@@ -44,10 +45,10 @@ class
         elements.types += Label_Drawer::Draw(settings.unilang_font_lookup,settings.test_label,pc_input.mouse).types;
         
         //cursor events
-        Event_It(settings,settings.test_label,pc_input);
+        Cursor_Drawer::Event_It(settings,settings.test_label,pc_input);
         
         //draw cursor
-        Draw_Cursor(elements,settings,settings.test_label);
+        elements.types += Cursor_Drawer::Draw_Cursor(settings,settings.test_label).types;
         
     
     
@@ -72,43 +73,4 @@ class
     settings.grid.pos.x = pos.x + 120;
     settings.grid.pos.y = pos.y + 120;
     elements.types += Grid_Label_Drawer::Draw(settings.unilang_font_lookup,settings.grid,pc_input.mouse).types;
-❱
-
-◀private: static▶ void ☀Event_It(Ide_Settings & settings, Positioned_Label & label, Pc_Input_State const& pc_input)❰
-
-    for (auto & it: settings.test_label.state.cursors){
-        if (label.state.user_state.is_active){
-            Label_Cursor_Action_Doer::Handle_Actions(settings.unilang_font_lookup,label,it,pc_input);
-        }
-    }
-❱
-
-◀private: static▶ void ☀Draw_Cursor(Frame_Elements & elements, Ide_Settings & settings, Positioned_Label & label)❰
-    
-    for (auto & it: settings.test_label.state.cursors){
-        if (label.state.user_state.is_active){
-            Draw_Label_Cursor(elements, label, it);
-        }
-    }
-❱
-
-◀private: static▶ void ☀Draw_Label_Cursor(Frame_Elements & elements, Positioned_Label & label, Label_Cursor_Selection & selection)❰
-    
-    //draw label cursor
-    selection.label_cursor.tick.shape.pos = Calculate_Position(label,selection);
-    selection.label_cursor.highlight.shape.pos = Calculate_Position(label,selection);
-    elements.types.emplace_back(selection.label_cursor.tick.shape);
-    
-    //draw selected box over selected text
-    selection.label_cursor.highlight.shape.shape.dimensions.width = selection.additional_chars_selected * 6;
-    selection.label_cursor.highlight.shape.shape.dimensions.height = 13;
-    elements.types.emplace_back(selection.label_cursor.highlight.shape);
-❱
-
-◀private: static▶ Position ☀Calculate_Position(Positioned_Label & label, Label_Cursor_Selection & selection)❰
-    Position p;
-    p = label.pos;
-    p.y -= 9;
-    p.x += (selection.label_index+1) * 6;
-    return p;
 ❱
