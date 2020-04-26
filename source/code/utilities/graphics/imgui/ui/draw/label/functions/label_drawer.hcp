@@ -32,27 +32,33 @@ class
 
 
 
-//full functionality
+//FULL_DRAW
 ◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    return Full_Draw(font_chars,label.pos,label.state,pc_input);
+❱
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Position pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
 
     Frame_Elements elements;
     
     //label events
-    Event_It(font_chars,label.pos, label.state,pc_input.mouse);
+    Event_It(font_chars,pos,label,pc_input.mouse);
     
     //draw label
-    elements.types += Draw(font_chars,label,pc_input.mouse).types;
+    elements.types += Draw(font_chars,pos,label,pc_input.mouse).types;
     
     //cursor events
-    Cursor_Drawer::Event_It(font_chars,label,pc_input);
+    Cursor_Drawer::Event_It(font_chars,pos,label,pc_input);
     
     //draw cursor
-    elements.types += Cursor_Drawer::Draw_Cursor(label).types;
+    elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
     
     return elements;
 ❱
 
-//event it
+//EVENT IT
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
+    Event_It(font_chars,label.pos,label.state,mouse_state);
+❱
 ◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
 
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
@@ -61,7 +67,7 @@ class
     
 ❱
 
-//draw it
+//DRAW IT
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
     return Draw(font_chars,label.pos,label.state,mouse_state);
 ❱
