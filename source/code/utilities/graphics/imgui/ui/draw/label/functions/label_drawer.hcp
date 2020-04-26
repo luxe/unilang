@@ -41,30 +41,31 @@ class
     Frame_Elements elements;
     
     //label events
-    Event_It(font_chars,pos,label,pc_input.mouse);
+    Event_It(font_chars,pos,label,pc_input);
     
     //draw label
     elements.types += Draw(font_chars,pos,label,pc_input.mouse).types;
     
     //cursor events
-    Cursor_Drawer::Event_It(font_chars,pos,label,pc_input);
+    //Cursor_Drawer::Event_It(font_chars,pos,label,pc_input);
     
     //draw cursor
-    elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
+    //elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
     
     return elements;
 ❱
 
 //EVENT IT
-◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
-    Event_It(font_chars,label.pos,label.state,mouse_state);
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    Event_It(font_chars,label.pos,label.state,pc_input);
 ❱
-◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
 
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
     Adjust_Position(pos);
-    label.events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
+    label.events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,pc_input.mouse);
     
+    Cursor_Drawer::Event_It(font_chars,pos,label,pc_input);
 ❱
 
 //DRAW IT
@@ -95,6 +96,9 @@ class
     elements.types.emplace_back(text);
     
     Adjust_Cursor_Selection(font_chars,pos,label,label.events,mouse_state);
+    
+    //draw cursor
+    elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
     
     
     return elements;
