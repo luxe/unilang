@@ -31,22 +31,9 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
     // Setup Dear ImGui binding
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
     
-    //set a default font
-    //I wasn't happy with this because it wasn't perfect.
-    //I couldn't get the aliasing perfect, it wasn't pixel perfect.
-    //I've decided to render text directly as my own pixelated bitmaps.  
-    //This is better anyways, because I want so much more out of text.  
-    //I want to color parts of letters/words differently over quick time iterations.
-    //so maybe my own pixel perfect bitmaps is a better direction with less blockers anyway.
-    //io.Fonts->AddFontDefault();
-    //std::string font_path = Full_Path_To_Home();
-    //font_path += "/.fonts/ProFontPowerline.ttf";
-    //std::cout << font_path << std::endl;
-    //ImFont* font1 = io.Fonts->AddFontFromFileTTF(font_path.c_str(),12);
+    set_imgui_io_state();
     
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
@@ -86,6 +73,7 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
     [&](){
         //render
         render_frame(window,render);
+        ImGuiIO &io = ImGui::GetIO();
         render_frame(window, gl_context, io, clear_color);
     });
 
@@ -102,10 +90,30 @@ static void render_frame(SDL_Window * window, T render){
         ImGui_ImplSDL2_NewFrame(window);
         ImGui::NewFrame();
 
-        // our custom frame logic
+        // our custom frame render logic
         render(window);
 }
 ▶
+
+◀private: static▶ void ☀set_imgui_io_state()❰
+
+    ImGuiIO &io = ImGui::GetIO();
+    
+    //set a default font
+    //I wasn't happy with this because it wasn't perfect.
+    //I couldn't get the aliasing perfect, it wasn't pixel perfect.
+    //I've decided to render text directly as my own pixelated bitmaps.  
+    //This is better anyways, because I want so much more out of text.  
+    //I want to color parts of letters/words differently over quick time iterations.
+    //so maybe my own pixel perfect bitmaps is a better direction with less blockers anyway.
+    //io.Fonts->AddFontDefault();
+    //std::string font_path = Full_Path_To_Home();
+    //font_path += "/.fonts/ProFontPowerline.ttf";
+    //std::cout << font_path << std::endl;
+    //ImFont* font1 = io.Fonts->AddFontFromFileTTF(font_path.c_str(),12);
+    
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+❱
 
 ◀private: static▶ void ☀customize_imgui_overall_look(Sdl_Init_Settings const& s)❰
     // customize imgui overall look
