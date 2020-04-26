@@ -11,3 +11,12 @@ cpp_main(
     name = "boost_thread_pool",
     deps = ["@boost//:asio",]
 )
+
+cpp_main(
+    name = "boost_thread_pool2",
+    deps = [
+    "@boost//:asio",
+    "//code/utilities/execution:thread_pool_getter",
+    "//code/utilities/execution:thread_pool_loop",
+    ]
+)
