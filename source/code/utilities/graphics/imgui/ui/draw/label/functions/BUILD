@@ -25,6 +25,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/data_structures/dimensions:two_d_dimensions",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/graphics/imgui/ui/draw/label/functions:cursor_drawer",
 ])
 
 hcp(name="faced_label_drawer", deps = [
@@ -62,6 +63,7 @@ hcp(name="grid_label_drawer", deps = [
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/graphics/imgui/ui/draw/label/functions:faced_label_drawer",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/peripheral/pc:pc_input_state",
 ])
 
 hcp(name="label_length_getter", deps = [
@@ -77,9 +79,7 @@ hcp(name="cursor_drawer", deps = [
     "//code/utilities/peripheral/mouse/state:mouse_position_getter",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/window:window_position_finder",
-    "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame:label_cursor_action_doer",
     "//code/utilities/types/vectors/operators:lib",
     "//code/tools/ide/frame:mouse_frame_getter",
-    "//code/utilities/graphics/imgui/ui/draw/label/functions:grid_label_drawer",
 ])

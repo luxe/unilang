@@ -19,6 +19,7 @@ class
 ❪"code/utilities/peripheral/mouse/state/mouse_state"❫
 ❪"code/utilities/data_structures/dimensions/two_d_dimensions"❫
 ❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
 ⚯
 ❪"code/utilities/graphics/imgui/ui/draw/text/str_to_bdf_segments"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
@@ -26,8 +27,30 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/label_text_bitmap_getter"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/style/label_style_chooser"❫
 ❪"code/utilities/graphics/imgui/ui/draw/label/functions/label_length_getter"❫
+❪"code/utilities/graphics/imgui/ui/draw/label/functions/cursor_drawer"❫
 ⚞⚟
 
+
+
+//full functionality
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+
+    Frame_Elements elements;
+    
+    //label events
+    Event_It(font_chars,label.pos, label.state,pc_input.mouse);
+    
+    //draw label
+    elements.types += Draw(font_chars,label,pc_input.mouse).types;
+    
+    //cursor events
+    Cursor_Drawer::Event_It(font_chars,label,pc_input);
+    
+    //draw cursor
+    elements.types += Cursor_Drawer::Draw_Cursor(label).types;
+    
+    return elements;
+❱
 
 //event it
 ◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
@@ -92,7 +115,6 @@ class
 
 
 //utility
-
 ◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
 
     //set active properties on the label

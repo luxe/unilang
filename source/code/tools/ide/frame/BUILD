@@ -54,8 +54,6 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
-        "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
-        "//code/tools/ide/frame:label_cursor_action_doer",
         "//code/utilities/types/vectors/operators:lib",
     ],
 )
@@ -115,7 +113,6 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/utilities/graphics/imgui/ui/window:window_renderer",
     "//code/utilities/graphics/imgui/ui/window:window_position_finder",
     "//code/utilities/peripheral/keyboard:key_detector",
-    "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
     "//code/tools/ide/frame:text_box_action_decider",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_mover",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
