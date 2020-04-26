@@ -22,6 +22,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/graphics/imgui/ui/draw/label/grid:positioned_face_grid",
+    "@boost//:asio",
 ])
 
 hcp(name="ide_settings_getter", deps = [
@@ -45,4 +46,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
     "//code/utilities/graphics/imgui/ui/draw/background:background_settings_getter",
+    "//code/utilities/execution:thread_pool_getter",
 ])
