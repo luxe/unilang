@@ -13,7 +13,13 @@ class
 ❪"code/tools/ide/frame/mouse_frame_getter"❫
 ⚞⚟
 
+//FULL DRAW
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    Event_It(font_chars,label,pc_input);
+    return Draw_Cursor(label);
+❱
 
+//EVENT IT
 ◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
 
     for (auto & it: label.state.cursors){
@@ -23,22 +29,34 @@ class
     }
 ❱
 
+//DRAW IT
 ◀public: static▶ Frame_Elements ☀Draw_Cursor(Positioned_Label & label)❰
     
+    return Draw_Cursor(label.pos,label.state);
+❱
+◀public: static▶ Frame_Elements ☀Draw_Cursor(Position const& pos, Label_Settings & label)❰
+    
     Frame_Elements elements;
-    for (auto & it: label.state.cursors){
-        if (label.state.user_state.is_active){
-            Draw_Label_Cursor(elements, label, it);
+    for (auto & it: label.cursors){
+        if (label.user_state.is_active){
+            Draw_Label_Cursor(elements, pos, label, it);
         }
     }
     return elements;
 ❱
 
-◀private: static▶ void ☀Draw_Label_Cursor(Frame_Elements & elements, Positioned_Label & label, Label_Cursor_Selection & selection)❰
+
+
+
+
+
+
+
+◀private: static▶ void ☀Draw_Label_Cursor(Frame_Elements & elements, Position const& pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
     
     //draw label cursor
-    selection.label_cursor.tick.shape.pos = Calculate_Position(label,selection);
-    selection.label_cursor.highlight.shape.pos = Calculate_Position(label,selection);
+    selection.label_cursor.tick.shape.pos = Calculate_Position(pos,selection);
+    selection.label_cursor.highlight.shape.pos = Calculate_Position(pos,selection);
     elements.types.emplace_back(selection.label_cursor.tick.shape);
     
     //draw selected box over selected text
@@ -47,9 +65,9 @@ class
     elements.types.emplace_back(selection.label_cursor.highlight.shape);
 ❱
 
-◀private: static▶ Position ☀Calculate_Position(Positioned_Label & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ Position ☀Calculate_Position(Position const& pos, Label_Cursor_Selection & selection)❰
     Position p;
-    p = label.pos;
+    p = pos;
     p.y -= 9;
     p.x += (selection.label_index+1) * 6;
     return p;

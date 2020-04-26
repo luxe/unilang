@@ -11,6 +11,16 @@
 // fructure (racket): https://github.com/disconcision/fructure
 // lambdu: https://www.lamdu.org/
 
+
+
+//faced label - works with cursor
+//grid - works with cursor
+//optional thread pool on drawing grid
+//slider
+//use it to mess with grid widths
+//label button
+//use it set growth bool
+//maybe reorganize all draw things (functions with the objects / mouse under label)
 int main()
 {
     
