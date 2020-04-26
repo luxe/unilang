@@ -17,7 +17,7 @@ cc_library(
 ],
 )
 
-hcp(name = "ppath_getter", deps = [
+hcp(name = "path_getter", deps = [
   "//code/utilities/filesystem/paths:lib"
 ])
 
