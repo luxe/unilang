@@ -30,18 +30,7 @@ class
     settings.input = Pc_Input_State_Getter::Get();
     
     
-    if (settings.input.keyboard.esc == Key_State::PRESSED){
-        exit(0);
-    }
-    
-    
-    //cycle over frames
-    if (settings.input.keyboard.one == Key_State::PRESSED){
-        Set_Previous_Index_In_Round_Robin(settings.test_label2.faces,settings.test_label2.index);
-    }
-    if (settings.input.keyboard.two == Key_State::PRESSED){
-        Set_Next_Index_In_Round_Robin(settings.test_label2.faces,settings.test_label2.index);
-    }
+    Handle_Global_Actions(settings);
     
     //before deciding all the frame elements to draw, adjust the global viewing anchor
     //the surface spread of frame elements may be infinite .  larger than anyone's screen.
@@ -54,6 +43,51 @@ class
     //to your screen, to an image, or dumped as json.
     return Decide_Every_Element_Of_The_Frame(settings,settings.input);
 ❱
+
+
+◀public: static▶ void ☀Handle_Global_Actions(Ide_Settings & settings)❰
+
+    if (settings.input.keyboard.esc == Key_State::PRESSED){
+        exit(0);
+    }
+    
+    //cycle over frames
+    if (settings.input.keyboard.one == Key_State::PRESSED){
+        Set_Previous_Index_In_Round_Robin(settings.test_label2.faces,settings.test_label2.index);
+    }
+    if (settings.input.keyboard.two == Key_State::PRESSED){
+        Set_Next_Index_In_Round_Robin(settings.test_label2.faces,settings.test_label2.index);
+    }
+    
+    
+    if (settings.input.keyboard.three == Key_State::PRESSED){
+        for (auto & it: settings.grid.cell){
+            for (auto & l: it.faces){
+                
+                l.label.styles.regular_active.width.grow_width = false;
+                l.label.styles.regular_nonactive.width.grow_width = false;
+                    
+                l.label.styles.hovered_active.width.grow_width = false;
+                l.label.styles.hovered_nonactive.width.grow_width = false;
+            }
+        }
+    }
+    
+    if (settings.input.keyboard.four == Key_State::PRESSED){
+        for (auto & it: settings.grid.cell){
+            for (auto & l: it.faces){
+                
+                l.label.styles.regular_active.width.grow_width = true;
+                l.label.styles.regular_nonactive.width.grow_width = true;
+                    
+                l.label.styles.hovered_active.width.grow_width = true;
+                l.label.styles.hovered_nonactive.width.grow_width = true;
+            }
+        }
+    }
+    
+❱
+
 
 ◀private: static▶ Frame_Elements ☀Decide_Every_Element_Of_The_Frame(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 

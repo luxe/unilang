@@ -13,8 +13,6 @@
 
 
 
-//faced label - works with cursor
-//grid - works with cursor
 //optional thread pool on drawing grid
 //slider
 //use it to mess with grid widths
