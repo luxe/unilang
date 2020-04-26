@@ -41,7 +41,7 @@ class
     
     
     //currently outside detection (Text_Box_Action::ADD_CHARS)
-    Handle_Fowards_Insertion(font_chars,pos,label,selection);
+    Handle_Fowards_Insertion(font_chars,pos,label,selection,pc_input);
 ❱
 
 
@@ -116,9 +116,9 @@ class
 
 
 
-◀private: static▶ void ☀Handle_Fowards_Insertion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+◀private: static▶ void ☀Handle_Fowards_Insertion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection, Pc_Input_State const& pc_input)❰
 
-    auto chars_to_type = Currently_Buffered_Valid_User_Input_Chars();
+    auto chars_to_type = pc_input.keyboard.buffered_chars;
     if (!chars_to_type.empty()){
         
         if (Highlighted_Chars_Exist(selection)){
@@ -140,39 +140,6 @@ class
     else{
         Backspace_On_NonSelection(font_chars,pos,label,selection);
     }
-❱
-
-◀private: static▶ std::vector<char> ☀Currently_Buffered_User_Input_Chars()❰
-    std::vector<char> x;
-    ImGuiIO& io = ImGui::GetIO();
-    IM_ARRAYSIZE(io.InputCharacters);
-    for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++){
-        unsigned char c = (unsigned char)io.InputCharacters[i];
-        x.emplace_back(c);
-    }
-    return x;
-❱
-◀private: static▶ std::vector<char> ☀Currently_Buffered_Valid_User_Input_Chars()❰
-    std::vector<char> x;
-    ImGuiIO& io = ImGui::GetIO();
-    IM_ARRAYSIZE(io.InputCharacters);
-    for (int i = 0; i < IM_ARRAYSIZE(io.InputCharacters); i++){
-        unsigned char c = (unsigned char)io.InputCharacters[i];
-        if (Char_Is_Valid(c)){
-            x.emplace_back(c);
-        }
-    }
-    return x;
-❱
-
-◀private: static▶ bool ☀Char_Is_Valid(char c)❰
-    if (c != 0){
-        if (isprint(c) || isspace(c))
-        {
-            return true;
-        }
-    }
-    return false;
 ❱
 
 
