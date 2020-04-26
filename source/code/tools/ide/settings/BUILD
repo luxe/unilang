@@ -22,6 +22,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/graphics/imgui/ui/draw/label/grid:positioned_face_grid",
+    "//code/utilities/peripheral/pc:pc_input_state",
     "@boost//:asio",
 ])
 
