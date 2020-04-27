@@ -105,6 +105,7 @@ hcp(name = "view_anchor_adjuster", deps = [
     "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state_getter",
     "//code/utilities/peripheral/mouse/state:mouse_state",
+    "//code/utilities/graphics/imgui/ui/draw/mouse:anchor_mouse",
 ])
 
 hcp(name = "label_cursor_action_doer", deps = [
@@ -129,4 +130,5 @@ hcp(name = "text_box_action_decider", deps = [
     "//code/tools/ide/frame:text_box_action",
     "//code/utilities/peripheral/keyboard:key_detector",
     "//code/utilities/peripheral/pc:pc_input_state",
+    "//code/utilities/graphics/imgui/ui/draw/mouse:anchor_mouse",
 ])

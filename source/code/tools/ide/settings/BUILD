@@ -15,7 +15,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/ui/window:window_settings",
     "//code/utilities/graphics/imgui/ui/draw/background:background_settings",
     "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:multi_color_bitmap",
-    "//code/utilities/graphics/imgui/ui/draw/mouse:mouse",
+    "//code/utilities/graphics/imgui/ui/draw/mouse:anchor_mouse",
     "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor",
     "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:positioned_label",
