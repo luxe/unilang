@@ -49,4 +49,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
     "//code/utilities/graphics/imgui/ui/draw/background:background_settings_getter",
     "//code/utilities/execution:thread_pool_getter",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/slider:default_sliders",
 ])

@@ -77,6 +77,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/graphics/imgui/ui/draw/label/functions:cursor_drawer",
         "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/slider:slider_drawer",
     ],
 )
 

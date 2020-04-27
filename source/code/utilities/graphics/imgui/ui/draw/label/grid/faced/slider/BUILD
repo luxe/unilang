@@ -23,3 +23,8 @@ hcp(name="slider_drawer", deps = [
     "//code/utilities/fonts/bdf/character_maps:character_maps",
 ])
 
+hcp(name="default_sliders", deps = [
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/slider:slider_state",
+    "//code/utilities/graphics/imgui/ui/draw/label/style:default_label_styles",
+])
+
