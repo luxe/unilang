@@ -18,7 +18,22 @@ class
     
     Frame_Elements elements;
     
-   elements.types +=  Label_Drawer::Full_Draw(font_chars,slider.pos,slider.state.label,pc_input).types;
+   Positioned_Rectangle_Settings bar;
+   bar.pos = slider.pos;
+   bar.pos.y += 4;
+   bar.shape.dimensions.width = slider.state.total_length;
+   bar.shape.dimensions.height = 1;
+   elements.types.emplace_back(bar);
+    
+   auto draw_label_pos = slider.pos;
+   draw_label_pos.x += slider.state.current_length;
+   elements.types +=  Label_Drawer::Full_Draw(font_chars,draw_label_pos,slider.state.label,pc_input).types;
+   
+   if (slider.state.label.user_state.is_active){
+       if (pc_input.mouse.left.down){
+        slider.state.current_length = (pc_input.mouse.pos.x - slider.pos.x);
+       }
+   }
     
     return elements;
 ❱
