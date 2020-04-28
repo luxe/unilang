@@ -1,0 +1,34 @@
+class
+❪"code/tools/ide/settings/ide_settings"❫
+❪"code/utilities/graphics/imgui/mechanics"❫
+❪"code/tools/ide/frame/logic/frame_elements"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state_getter"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+⚯
+⚞⚟
+
+
+◀public: static▶ void ☀Draw(Frame_Elements & elements, Ide_Settings & settings, Mouse_State const& mouse)❰
+    
+    //drawing box highlights when clicking and dragging the mouse
+    Handle_Mouse_Button(elements,mouse.pos,mouse.left,settings.mouse.mouse.left_selection);
+    Handle_Mouse_Button(elements,mouse.pos,mouse.right,settings.mouse.mouse.right_selection);
+❱
+
+◀private: static▶ void ☀Handle_Mouse_Button(Frame_Elements & elements, Position const& mouse_pos, Mouse_Button_State const& state, Mouse_Selection & selection)❰
+
+    if (state.clicked){
+        selection.shape.pos = mouse_pos;
+    }
+    
+    if (state.down){
+        selection.shape.shape.dimensions.width = mouse_pos.x - selection.shape.pos.x;
+        selection.shape.shape.dimensions.height = mouse_pos.y - selection.shape.pos.y;
+        elements.types.emplace_back(selection.shape);
+    }
+    
+    if (state.released){
+        selection.shape.shape.dimensions.width = 0;
+        selection.shape.shape.dimensions.height = 0;
+    }
+❱

@@ -75,11 +75,11 @@ hcp(name="cursor_drawer", deps = [
     "//code/tools/ide/frame/logic:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/peripheral/pc:pc_input_state",
-    "//code/tools/ide/frame:mouse_selection_drawer",
+    "//code/utilities/graphics/imgui/ui/draw/mouse/draw:mouse_selection_drawer",
     "//code/utilities/peripheral/mouse/state:mouse_position_getter",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/window:window_position_finder",
     "//code/tools/ide/frame:label_cursor_action_doer",
     "//code/utilities/types/vectors/operators:lib",
-    "//code/tools/ide/frame:mouse_frame_getter",
+    "//code/utilities/graphics/imgui/ui/draw/mouse/draw:mouse_frame_getter",
 ])
