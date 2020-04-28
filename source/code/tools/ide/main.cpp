@@ -2,9 +2,11 @@
 #include "code/utilities/graphics/imgui/ui/ui_renders.hpp"
 #include "code/tools/ide/settings/ide_settings.hpp"
 #include "code/tools/ide/settings/ide_settings_getter.hpp"
-#include "code/tools/ide/frame/frame_renderer.hpp"
+#include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
 #include "code/tools/ide/frame/logic/frame_logic_updater.hpp"
-#include "code/tools/ide/frame/logic/frame_elements.hpp"
+#include "code/utilities/graphics/imgui/render/frame_elements.hpp"
+#include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
+#include "code/tools/ide/frame/fullscreener.hpp"
 
 
 //other programming editors for inspiration:
@@ -14,8 +16,6 @@
 
 
 //optional thread pool on drawing grid
-//slider
-//use it to mess with grid widths
 //label button
 //use it set growth bool
 //maybe reorganize all draw things (functions with the objects / mouse under label)
@@ -27,7 +27,10 @@ int main()
     Frame_Elements elements;
     auto before = [&]()                  {};
     auto logic =  [&]()                  {elements = Frame_Logic_Updater::each_frame(s);};
-    auto render = [&](SDL_Window* window){Frame_Renderer::each_frame(s,elements,window);};
+    auto render = [&](SDL_Window* window){
+		Fullscreener::Possibly_Fullscreen(s,window);
+        Frame_Renderer::Render(s.background,elements);
+	};
     
     return Mechanics::render_each_frame(s.init,before,logic,render);
 }

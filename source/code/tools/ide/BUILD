@@ -11,8 +11,9 @@ cpp_main(
         "//code/utilities/graphics/imgui/ui:ui_renders",
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/settings:ide_settings_getter",
-        "//code/tools/ide/frame:frame_renderer",
+        "//code/utilities/graphics/imgui/render:frame_renderer",
         "//code/tools/ide/frame/logic:frame_logic_updater",
-        "//code/tools/ide/frame/logic:frame_elements",
+        "//code/utilities/graphics/imgui/render:frame_elements",
+        "//code/tools/ide/frame:fullscreener",
     ],
 )

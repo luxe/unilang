@@ -4,19 +4,10 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
-    name = "frame_elements",
-    deps = [
-        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-        "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
-        "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
-    ],
-)
-
-hcp(
     name = "frame_logic_updater",
     deps = [
         "//code/tools/ide/settings:ide_settings",
-        "//code/tools/ide/frame/logic:frame_elements",
+        "//code/utilities/graphics/imgui/render:frame_elements",
         "//code/utilities/graphics/imgui/ui/draw/mouse/draw:mouse_selection_drawer",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
