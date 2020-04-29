@@ -11,6 +11,7 @@ hcp(
         "//code/utilities/program/wrappers/sendmail:sendmail_settings",
         "//code/utilities/program/wrappers/sendmail:sendmail_sender",
         "//code/utilities/program/wrappers/sendmail:sendmail_settings_getter",
+        "//code/utilities/program/wrappers/sendmail:ssmtp_conf_maker",
     ],
 )
 
