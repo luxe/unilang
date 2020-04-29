@@ -9,6 +9,7 @@ hcp(
         "//code/utilities/program/call/process_spawn:process_spawner",
         "//code/utilities/time/sleeping:lib",
         "//code/utilities/program/wrappers/sendmail:sendmail_settings",
+        "//code/utilities/program/wrappers/sendmail:sendmail_sender",
         "//code/utilities/program/wrappers/sendmail:sendmail_settings_getter",
     ],
 )
