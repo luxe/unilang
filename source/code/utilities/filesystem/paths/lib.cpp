@@ -39,6 +39,10 @@ std::string Bazel_Derived_Path_To_Essays(){
 	return x + "/code/literature/essays/";
 }
 
+void Move_To_Repo_Root(){
+	auto p = Bazel_Derived_Root_Of_Repo();
+	Set_Path(p);
+}
 void Move_To_Bazel_Derived_Path_To_Self_Unilang(){
 	auto p = Bazel_Derived_Path_To_Self_Unilang();
 	Set_Path(p);

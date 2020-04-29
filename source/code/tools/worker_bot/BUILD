@@ -4,7 +4,9 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(
     name = "worker_bot",
-    deps = [],
+    deps = [
+        "//code/utilities/filesystem/paths:lib"
+    ],
 )
 
 cc_binary(
