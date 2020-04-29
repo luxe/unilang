@@ -38,6 +38,13 @@
 // set sendmail="/usr/bin/msmtp"
 // set message-sendmail-extra-arguments="-a gmail"
 
+
+
+
+
+using ssmtp instead:
+sudo vi /etc/ssmtp/ssmtp.conf
+echo -n 'Subject: test\n\nTesting.  do you see this?' | sendmail -v TrevorJamesHickey@gmail.com
 */
 
 class Mail_Sender {
