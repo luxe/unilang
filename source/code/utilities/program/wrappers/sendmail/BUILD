@@ -22,7 +22,7 @@ hcp(name = "sendmail_sender",deps=[
     "//code/utilities/program/wrappers/sendmail:sendmail_settings",
 ])
 
-hcp(name = "ssmtp_config_maker",deps=[
+hcp(name = "ssmtp_conf_maker",deps=[
     "//code/utilities/personal/secret:secret_getter",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/filesystem/files/creating:lib",
