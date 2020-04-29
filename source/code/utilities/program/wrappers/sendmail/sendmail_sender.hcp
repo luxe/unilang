@@ -1,0 +1,50 @@
+class
+❪string❫
+❪iostream❫
+❪cstdlib❫
+❪iostream❫
+❪vector❫
+❪"code/utilities/program/wrappers/sendmail/sendmail_settings"❫
+⚯
+❪"code/utilities/types/general/lib"❫
+❪"code/utilities/program/common_actions/exits/lib"❫
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/filesystem/files/temp/temp_file"❫
+❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
+❪"code/utilities/program/call/process_spawn/process_spawner"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Send(Sendmail_Settings const& settings)❰
+
+
+    //build command
+    auto command = Build_Sendmail_Command(pdf_settings);
+    
+    //execute
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    //report failures
+    if (results.return_code != 0){
+        std::cerr << "Failed to send mail" << std::endl;
+        std::cerr << "This was the sendmail error:" << std::endl;
+        std::cerr << results.stderr << std::endl;
+        std::cerr << "This was the command we used:" << std::endl;
+        std::cerr << command << std::endl;
+        //Exit_With_Error("exiting");
+    }
+❱
+
+◀private: static▶ std::string ☀Build_Sendmail_Command(Sendmail_Settings const& settings)❰
+    std::string x;
+    x += "echo -n \'"
+    x += "Subject: ";
+    x += settings.title;
+    x += "\n\n";
+    x += settings.message;
+    x += "\'"
+    x += " | sendmail -v ";
+    x += Get_As_Comma_Seperated_String(settings.emails);
+    return x;
+❱
