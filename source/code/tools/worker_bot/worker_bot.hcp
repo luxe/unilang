@@ -32,10 +32,7 @@ class
         x = Run_Command_And_Show("./user_build //code/tools/worker_bot:main");
         if (x.return_code == 0){
             
-            Ssmtp_Conf_Maker::Setup_File();
-            auto sendmail_settings = Sendmail_Settings_Getter::Test_Settings();
-            Sendmail_Sender::Send(sendmail_settings);
-            std::cout << "sleeping then exiting" << std::endl;
+            Send_Email_Status();
             Sleep_For_N_Hours(8);
             exit(0);
         }
@@ -50,6 +47,15 @@ class
 ❱
 
 
+◀private: static▶ void ☀Send_Email_Status() ❰
+
+    Ssmtp_Conf_Maker::Setup_File();
+    auto sendmail_settings = Sendmail_Settings_Getter::Test_Settings();
+    sendmail_settings.title = "Worker Bot Results";
+    sendmail_settings.message = "These are the results of our recent runs:";
+    Sendmail_Sender::Send(sendmail_settings);
+    std::cout << "sleeping then exiting" << std::endl;
+❱
 ◀private: static▶ Process_Results ☀Run_Command_And_Show(std::string command) ❰
         std::cout << command << std::endl;
         auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
