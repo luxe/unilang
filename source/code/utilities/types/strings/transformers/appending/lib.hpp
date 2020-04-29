@@ -8,6 +8,8 @@ std::string& Append_With_Newline_Unless_Empty(std::string & str, std::string con
 std::string& Append_With_Newline(std::string & str, char const& part);
 std::string& Append_With_Space(std::string & str, std::string const& part);
 std::string& Append_With_Space(std::string & str, char const& part);
+std::string& Append_With_Tab(std::string & str, std::string const& part);
+std::string& Append_With_Tab(std::string & str, char const& part);
 std::string& Append(std::string & str, std::string const& part);
 std::string& Append(std::string & str, char const& part);
 std::string& Append_In_DQuotes(std::string & str, std::string const& part);
@@ -21,6 +23,7 @@ std::string& Append_N_Newlines(std::string & str, int number_of_times);
 std::string& Append_N_Spaces(std::string & str, int number_of_times);
 
 //language specific
+std::string& Append_Tabbed_Bash_Comment_With_Newline(std::string & str, std::string const& part);
 std::string& Append_Bash_Comment_With_Newline(std::string & str, std::string const& part);
 
 //appending to wstring

@@ -27,6 +27,16 @@ std::string& Append_With_Space(std::string & str_to_append_to, char const& appen
         str_to_append_to += " ";
         return str_to_append_to;
 }
+std::string& Append_With_Tab(std::string & str_to_append_to, std::string const& append){
+        str_to_append_to += "\t";
+        str_to_append_to += append;
+        return str_to_append_to;
+}
+std::string& Append_With_Tab(std::string & str_to_append_to, char const& append){
+        str_to_append_to += "\t";
+        str_to_append_to += append;
+        return str_to_append_to;
+}
 std::string& Append(std::string & str, std::string const& part){
         str += part;
         return str;
@@ -85,6 +95,13 @@ std::string& Append_N_Spaces(std::string & str, int number_of_times)
 
 std::string& Append_Bash_Comment_With_Newline(std::string & str, std::string const& part)
 {
+        str += "# ";
+        str += part + "\n";
+        return str;
+}
+std::string& Append_Tabbed_Bash_Comment_With_Newline(std::string & str, std::string const& part)
+{
+        str += "\t";
         str += "# ";
         str += part + "\n";
         return str;

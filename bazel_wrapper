@@ -48,33 +48,32 @@ function ensure_command_exists() {
     command -v $1 >/dev/null 2>&1 || { echo >&2 "I require $1 but it's not installed.  Aborting."; exit 1; }
 }
 
-
 function ensure_barebone_binaries() {
+	# Check for some bootstraping necessities
+	# If these bare-bone requirements don't exist, I considered installing them for the user automatically.
+	# For example, one of the online CIs, does not have wget when it spins up.
+	# That seems hard to figure out due to the different systems and package managers.
+	# For now, we can handle these kinds of dependencies prior to running this script.
+	# For example, most CI services have some kind of pre-install phase.  where you can install system packages.
+	# We should try to build all of these tools from source as well
 
-    # Check for some bootstraping necessities
-    # If these bare-bone requirements don't exist, I considered installing them for the user automatically.
-    # For example, one of the online CIs, does not have wget when it spins up.
-    # That seems hard to figure out due to the different systems and package managers.  
-    # For now, we can handle these kinds of dependencies prior to running this script.
-    # For example, most CI services have some kind of pre-install phase.  where you can install system packages.
-    
-    ensure_command_exists command
-    ensure_command_exists echo
-    ensure_command_exists exit
-    ensure_command_exists mkdir
-    ensure_command_exists rm
-    ensure_command_exists chmod
-    ensure_command_exists trap
-    ensure_command_exists tty
-    ensure_command_exists wget
-    ensure_command_exists sha256sum
-    
-    # Bazel runtime dependencies
-    # Do you need some kind of Java tooling installed for bazel first?  If so, add it here!
-    # I think sfortson mentioned that he had to install bazel first.  The CIs seem to be fine, but sam was on arch linux
-    # I'm not sure if bazel's thing is truely stand-alone or what.  you might need the jvm first.
-    # No, bazel comes bundled with a minimal jvm.  We should be fine.
-    # We assume no runtime dependencies for running bazel
+	ensure_command_exists command
+	ensure_command_exists echo
+	ensure_command_exists exit
+	ensure_command_exists mkdir
+	ensure_command_exists rm
+	ensure_command_exists chmod
+	ensure_command_exists trap
+	ensure_command_exists tty
+	ensure_command_exists wget
+	ensure_command_exists sha256sum
+
+	# Bazel runtime dependencies
+	# Do you need some kind of Java tooling installed for bazel first?  If so, add it here!
+	# I think sfortson mentioned that he had to install bazel first.  The CIs seem to be fine, but sam was on arch linux
+	# I'm not sure if bazel's thing is truely stand-alone or what.  you might need the jvm first.
+	# No, bazel comes bundled with a minimal jvm.  We should be fine.
+	# We assume no runtime dependencies for running bazel
 }
 
 
