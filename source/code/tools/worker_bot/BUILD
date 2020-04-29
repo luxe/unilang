@@ -7,6 +7,7 @@ hcp(
     deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
+        "//code/utilities/time/sleeping:lib",
     ],
 )
 
