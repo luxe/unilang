@@ -3,6 +3,31 @@ load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "badge_maker", deps = [
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
+    "//code/utilities/fonts/bdf/settings:character_segment",
+    "//code/tools/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
+    "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
+    "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap_drawer",
+    "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
+    "//code/utilities/graphics/imgui/ui:ui_renders",
+    "//code/tools/transcompilers/unilang/tokens:get_tokens",
+    "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
+    "//code/utilities/colors:rectangle_shades",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
+    "//code/utilities/graphics/imgui/ui/draw/label/style:default_label_styles",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:faced_label_converter",
+    "//code/utilities/graphics/imgui/ui/draw/mouse/premade:standard_mouse",
+    "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
+    "//code/utilities/graphics/imgui/ui/draw/background:background_settings_getter",
+    "//code/utilities/execution:thread_pool_getter",
+    "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/slider:default_sliders",
+    "//code/utilities/graphics/cairo/render:frame_renderer",
+    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/graphics/imgui/ui/draw/label/functions:faced_label_drawer",
 ])
 
 cc_binary(

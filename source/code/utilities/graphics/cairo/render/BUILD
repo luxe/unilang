@@ -12,5 +12,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:positioned_full_color_bitmap",
         "//code/utilities/types/variant:lib",
+        "//code/utilities/graphics/imgui/render:frame_elements",
+        "@cairo//:cairo",
     ],
 )
