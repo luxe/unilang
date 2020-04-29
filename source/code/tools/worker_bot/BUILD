@@ -12,5 +12,6 @@ hcp(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["//code/tools/worker_bot:worker_bot"],
+    deps = ["//code/tools/worker_bot:worker_bot",
+            "//code/utilities/program/call:lib"],
 )
