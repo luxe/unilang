@@ -5,7 +5,8 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(
     name = "worker_bot",
     deps = [
-        "//code/utilities/filesystem/paths:lib"
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/program/call/process_spawn:process_spawner",
     ],
 )
 
