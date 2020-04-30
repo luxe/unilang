@@ -11,6 +11,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/multi_color_bitmap"❫
 ❪"code/utilities/colors/color_transitioner"❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/multi_color_bitmap_drawer"❫
+❪"code/utilities/graphics/imgui/ui/draw/rectangle/rectangle_fill_bitmap"❫
 ⚯
 ⚞⚟
 
@@ -27,7 +28,7 @@ class
 ❱
 ◀public: static▶ void ☀draw_rectangle(ImDrawList *draw_list, Position pos, Shade_Rectangle_Settings const &settings)
 ❰
-  auto fill_as_bitmap = Fill_As_Bitmap(draw_list,pos,settings);
+  auto fill_as_bitmap = Rectangle_Fill_Bitmap::Convert(pos,settings);
   Multi_Color_Bitmap_Drawer::Draw(draw_list,pos,fill_as_bitmap);
 ❱
 
@@ -46,7 +47,7 @@ class
       //pos.y -= 5;
       //pos.x -= 15;
       //pos.y -= (settings.dimensions.height/2) - 2;
-      auto bitmap = Fill_As_Bitmap(pos,settings.shades,settings.dimensions);
+      auto bitmap = Rectangle_Fill_Bitmap::Convert(pos,settings.shades,settings.dimensions);
       Multi_Color_Bitmap_Drawer::Draw(draw_list,pos,bitmap);
     }
     
@@ -62,51 +63,6 @@ class
                          settings.edge.thickness);
     }
 ❱
-
-
-
-
-
-//create a shaded rectangle
-◀private: static▶ Multi_Color_Bitmap ☀Fill_As_Bitmap(ImDrawList *draw_list, Position pos, Shade_Rectangle_Settings const &settings)❰
-    return Fill_As_Bitmap(pos,settings.colors,settings.dimensions);
-❱
-
-◀private: static▶ Multi_Color_Bitmap ☀Fill_As_Bitmap(Position pos, Rectangle_Shade_Colors const& colors2, Rectangle_Dimensions const& dimensions)❰
-    Multi_Color_Bitmap bitmap;
-    auto colors = Color_Transitioner::Transition_Colors(colors2.fill,dimensions.width);
-    
-    Pixel_Settings p_settings;
-    //p_settings.pos = po;
-    p_settings.pos.x = 0;
-    p_settings.pos.y = 0;
-    for (auto const& c: colors){
-      p_settings.color_fill = c;
-      for (size_t i = 0; i < dimensions.height; ++i){
-        bitmap.pixels.emplace_back(p_settings);
-        p_settings.pos.y++;
-      }
-      p_settings.pos.y = 0;
-      p_settings.pos.x++;
-    }
-  return bitmap;
-❱
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //interactive draw
