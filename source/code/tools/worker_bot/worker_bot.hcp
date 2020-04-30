@@ -11,6 +11,8 @@ class
 ❪"code/utilities/program/wrappers/sendmail/sendmail_settings"❫
 ❪"code/utilities/program/wrappers/sendmail/sendmail_settings_getter"❫
 ❪"code/utilities/program/wrappers/sendmail/ssmtp_conf_maker"❫
+❪"code/utilities/build/self_builder"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run() ❰
@@ -19,40 +21,71 @@ class
     while (true) {
         
         Move_To_Repo_Root();
-        
-        Process_Results x;
-        x = Run_Command_And_Show("pwd");
-        x = Run_Command_And_Show("git rev-parse HEAD");
-        
-        x = Run_Command_And_Show("echo hello");
-        
-        x = Run_Command_And_Show("git reset --hard HEAD && git clean -d -f;");
-        x = Run_Command_And_Show("git pull");
-        
-        x = Run_Command_And_Show("./user_build //code/tools/worker_bot:main");
-        if (x.return_code == 0){
-            
-            Send_Email_Status();
-            Sleep_For_N_Hours(8);
-            exit(0);
-        }
-        else {
-            std::cout << "failed to build. not exiting" << std::endl;
-        }
-        
-        Sleep_For_N_Hours(8);
-        
+        std::string results;
+        Fresh_Pull(results);
+        Record_Working_Hash(results);
+        Run_Repo_Tasks(results);
+        Possibly_Restart_Self(results);
         
     }
 ❱
 
+◀private: static▶ void ☀Fresh_Pull(std::string & results) ❰
 
-◀private: static▶ void ☀Send_Email_Status() ❰
+    auto x = Run_Command_And_Show("git reset --hard HEAD && git clean -d -f;");
+    x = Run_Command_And_Show("git pull");
+    
+    if (x.return_code != 0){
+        Append_With_Newline(results,"pull: FAIL");
+        Append_With_Newline(results,x.stderr);
+    }
+❱
+◀private: static▶ void ☀Record_Working_Hash(std::string & results) ❰
+
+        auto x = Run_Command_And_Show("git rev-parse HEAD");
+        Append_With_Newline(results,"commit: " + x.stdout);
+❱
+◀private: static▶ void ☀Run_Repo_Tasks(std::string & results) ❰
+    auto x = Self_Builder::Get_Results_Of_Building_Through_Docker_Container();
+    if (x.return_code == 0){
+        Append_With_Newline(results,"docker build: PASS");
+    }
+    else {
+        Append_With_Newline(results,"docker build: FAIL");
+        Append_With_Newline(results,x.stderr);
+    }
+❱
+◀private: static▶ void ☀Possibly_Restart_Self(std::string & results) ❰
+    auto x = Run_Command_And_Show("./user_build //code/tools/worker_bot:main");
+    if (x.return_code == 0){
+        Append_With_Newline(results,"rebuild worker: PASS");
+    }
+    else {
+        Append_With_Newline(results,"rebuild worker: FAIL");
+        Append_With_Newline(results,x.stderr);
+    }
+    
+    int duration = 4;
+    
+    //send email
+    Send_Email_Status(results);
+    Sleep_For_N_Hours(duration);
+    
+    //decide whether to restart
+    //a wrapper script will restart the worker
+    if (x.return_code == 0){
+        exit(0);
+    }
+❱
+
+
+◀private: static▶ void ☀Send_Email_Status(std::string & results) ❰
 
     Ssmtp_Conf_Maker::Setup_File();
     auto sendmail_settings = Sendmail_Settings_Getter::Test_Settings();
     sendmail_settings.title = "Worker Bot Results";
     sendmail_settings.message = "These are the results of our recent runs:";
+    sendmail_settings.message += results;
     Sendmail_Sender::Send(sendmail_settings);
     std::cout << "sleeping then exiting" << std::endl;
 ❱
