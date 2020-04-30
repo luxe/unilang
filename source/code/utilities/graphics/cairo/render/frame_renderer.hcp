@@ -1,5 +1,6 @@
 class
 ❪"code/utilities/graphics/imgui/render/frame_elements"❫
+❪"code/utilities/data_structures/color/transparent_rgb_color"❫
 ❪cairo-svg.h❫
 ❪"SDL.h"❫
 ⚯
@@ -9,6 +10,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap/positioned_multi_color_bitmap"❫
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap/positioned_full_color_bitmap"❫
 ❪"code/utilities/types/variant/lib"❫
+❪"code/utilities/math/math"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Render(Frame_Elements const& elements)❰
@@ -51,21 +53,42 @@ class
 ❱
 
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+    std::cout << "rectangle" << std::endl;
+    
+      
+      Set_Rgb(cr,shape.shape.colors.fill);
+      cairo_rectangle(cr, shape.pos.x, shape.pos.y, shape.shape.dimensions.width, shape.shape.dimensions.height);
+      cairo_stroke_preserve(cr);
+      cairo_fill(cr);
+      
+      Set_Rgb(cr,shape.shape.colors.border);
+      cairo_rectangle(cr, shape.pos.x, shape.pos.y, shape.shape.dimensions.width, shape.shape.dimensions.height);
+      cairo_stroke_preserve(cr);
+      cairo_stroke(cr);
+      
 ❱
 
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Multi_Color_Bitmap const& shape)❰
-
+    std::cout << "multi" << std::endl;
     for (auto const& it: shape.bitmap.pixels){
         cairo_rectangle (cr, shape.pos.x+it.pos.x, shape.pos.y+it.pos.y, 1, 1);
-        cairo_set_source_rgb (cr, it.color_fill.r, it.color_fill.g, it.color_fill.b);
+        Set_Rgb(cr,it.color_fill);
         cairo_fill (cr);
     }
 ❱
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Full_Color_Bitmap const& shape)❰
 
+    std::cout << "full" << std::endl;
     for (auto const& it: shape.bitmap.pixels){
         cairo_rectangle (cr, shape.pos.x+it.x, shape.pos.y+it.y, 1, 1);
-        cairo_set_source_rgb (cr, shape.bitmap.color_fill.r, shape.bitmap.color_fill.g, shape.bitmap.color_fill.b);
+        Set_Rgb(cr,shape.bitmap.color_fill);
         cairo_fill (cr);
     }
+❱
+◀private: static▶ void ☀Set_Rgb(cairo_t *cr, Transparent_Rgb_Color const& color)❰
+    
+    auto new_r = Math::map_value_across_range(color.r,0,255,0,1);
+    auto new_g = Math::map_value_across_range(color.g,0,255,0,1);
+    auto new_b = Math::map_value_across_range(color.b,0,255,0,1);
+    cairo_set_source_rgb (cr, new_r, new_g, new_b);
 ❱
