@@ -56,6 +56,82 @@ class
     std::cout << "rectangle" << std::endl;
     
     
+    Draw_Rectangle_Pixel_By_Pixel(cr,shape);
+      
+❱
+
+◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Multi_Color_Bitmap const& shape)❰
+    std::cout << "multi" << std::endl;
+    for (auto const& it: shape.bitmap.pixels){
+
+        Position p = shape.pos;
+        p.x += it.pos.x;
+        p.y += it.pos.y;
+        Draw_Pixel(cr,p,it.color_fill);
+    }
+❱
+◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Full_Color_Bitmap const& shape)❰
+
+    std::cout << "full" << std::endl;
+    for (auto const& it: shape.bitmap.pixels){
+        
+        Position p = shape.pos;
+        p.x += it.x;
+        p.y += it.y;
+        Draw_Pixel(cr,p,shape.bitmap.color_fill);
+    }
+❱
+
+
+//ciaro calls
+◀private: static▶ void ☀Draw_Rectangle_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+
+    //draw fill
+    for (size_t i = 0; i < shape.shape.dimensions.width-1; ++i){
+        for (size_t j = 0; j < shape.shape.dimensions.height-1; ++j){
+            
+            Position p = shape.pos;
+            p.x += i;
+            p.y += j;
+            Draw_Pixel(cr,p,shape.shape.colors.fill);
+        }
+    }
+    
+    //draw top border
+    for (size_t i = 0; i < shape.shape.dimensions.width; ++i){
+        
+        Position p = shape.pos;
+        p.x += i;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+    
+    //draw bottom border
+    for (size_t i = 0; i < shape.shape.dimensions.width; ++i){
+        
+        Position p = shape.pos;
+        p.x += i;
+        p.y += shape.shape.dimensions.height-1;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+    
+    //draw left border
+    for (size_t i = 0; i < shape.shape.dimensions.height-1; ++i){
+        Position p = shape.pos;
+        p.y += i;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+    
+    //draw right border
+    for (size_t i = 0; i < shape.shape.dimensions.height-1; ++i){
+        Position p = shape.pos;
+        p.x += shape.shape.dimensions.width-1;
+        p.y += i;
+        Draw_Pixel(cr,p,shape.shape.colors.border);
+    }
+❱
+
+◀private: static▶ void ☀Draw_Rectangle(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+
     //https://www.cairographics.org/FAQ/#sharp_lines
       
       Set_Rgb(cr,shape.shape.colors.fill);
@@ -70,25 +146,11 @@ class
       cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
       //cairo_stroke_preserve(cr);
       cairo_stroke(cr);
-      
 ❱
-
-◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Multi_Color_Bitmap const& shape)❰
-    std::cout << "multi" << std::endl;
-    for (auto const& it: shape.bitmap.pixels){
-        cairo_rectangle (cr, shape.pos.x+it.pos.x, shape.pos.y+it.pos.y, 1, 1);
-        Set_Rgb(cr,it.color_fill);
-        cairo_fill (cr);
-    }
-❱
-◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Full_Color_Bitmap const& shape)❰
-
-    std::cout << "full" << std::endl;
-    for (auto const& it: shape.bitmap.pixels){
-        cairo_rectangle (cr, shape.pos.x+it.x, shape.pos.y+it.y, 1, 1);
-        Set_Rgb(cr,shape.bitmap.color_fill);
-        cairo_fill (cr);
-    }
+◀private: static▶ void ☀Draw_Pixel(cairo_t *cr, Position const& pos, Transparent_Rgb_Color const& color)❰
+    Set_Rgb(cr,color);
+    cairo_rectangle (cr, pos.x, pos.y, 1, 1);
+    cairo_fill (cr);
 ❱
 ◀private: static▶ void ☀Set_Rgb(cairo_t *cr, Transparent_Rgb_Color const& color)❰
     
