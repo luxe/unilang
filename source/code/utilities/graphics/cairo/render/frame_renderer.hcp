@@ -21,7 +21,7 @@ class
 ◀private: static▶ void ☀Render_Frame_Elements(Frame_Elements const& elements)❰
     
     //build drawing context
-    cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,500,500);
+    auto surface = Build_Surface(elements);
     cairo_t *cr = cairo_create(surface);
     
     //draw background
@@ -52,11 +52,25 @@ class
     cairo_surface_destroy(surface), surface = NULL;
 ❱
 
+◀private: static▶ cairo_surface_t* ☀Build_Surface(Frame_Elements const& elements)❰
+
+    cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,500,500);
+    return surface;
+❱
+
+//ciaro draw functions
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
     std::cout << "rectangle" << std::endl;
     
     
     Draw_Rectangle_Pixel_By_Pixel(cr,shape);
+    
+    if (shape.shape.hooks.draw_shade){
+        Positioned_Multi_Color_Bitmap x;
+        x.pos = shape.pos;
+        x.bitmap = Rectangle_Fill_Bitmap::Convert(shape.pos,shape.shape.shades,shape.shape.dimensions);
+        Draw(cr,x);
+    }
       
 ❱
 
@@ -82,8 +96,6 @@ class
     }
 ❱
 
-
-//ciaro calls
 ◀private: static▶ void ☀Draw_Rectangle_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
 
     //draw fill
@@ -152,6 +164,9 @@ class
     //cairo_stroke_preserve(cr);
     cairo_stroke(cr);
 ❱
+
+
+
 ◀private: static▶ void ☀Draw_Pixel(cairo_t *cr, Position const& pos, Transparent_Rgb_Color const& color)❰
     Set_Rgb(cr,color);
     cairo_rectangle (cr, pos.x, pos.y, 1, 1);

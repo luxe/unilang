@@ -55,7 +55,7 @@ class
 ◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
 
     auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
-    Adjust_Position(pos);
+    //Adjust_Position(pos);
     label.events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,pc_input.mouse);
     
     Cursor_Drawer::Event_It(font_chars,pos,label,pc_input);
@@ -70,11 +70,13 @@ class
     Frame_Elements elements;
     
     //convert strings to bitmap representations
+    Adjust_Position(pos);
     auto text = Get_Text_Bitmap(font_chars,pos,label);
+    Reverse_Adjust_Position(pos);
     
     
     //adjust position for box portion
-    Adjust_Position(pos);
+    //Adjust_Position(pos);
     
     
     //decide box dimensions
@@ -89,13 +91,15 @@ class
     
     
     //adjust for message bitmap and print it
-    Reverse_Adjust_Position(pos);
+    //Reverse_Adjust_Position(pos);
     elements.types.emplace_back(text);
     
+    Adjust_Position(pos);
     Adjust_Cursor_Selection(font_chars,pos,label,label.events,mouse_state);
     
     //draw cursor
     elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
+    Reverse_Adjust_Position(pos);
     
     
     return elements;
@@ -142,8 +146,8 @@ class
 
 ◀private: static▶ void ☀Adjust_Position(Position & pos)❰
 
-    int x_adjusted_label_draw = -2;
-    int y_adjusted_label_draw = -10;
+    int x_adjusted_label_draw = 2;
+    int y_adjusted_label_draw = 10;
 
     //adjust for label backdrop
     pos.y += y_adjusted_label_draw;
@@ -152,8 +156,8 @@ class
 
 ◀private: static▶ void ☀Reverse_Adjust_Position(Position & pos)❰
 
-    int x_adjusted_label_draw = -2;
-    int y_adjusted_label_draw = -10;
+    int x_adjusted_label_draw = 2;
+    int y_adjusted_label_draw = 10;
 
     //adjust for label backdrop
     pos.y -= y_adjusted_label_draw;
