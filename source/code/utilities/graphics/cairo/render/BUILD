@@ -15,6 +15,7 @@ hcp(
         "//code/utilities/graphics/imgui/render:frame_elements",
         "//code/utilities/math:math",
         "//code/utilities/data_structures/color:transparent_rgb_color",
+        "//code/utilities/types/general:lib",
         "@cairo//:cairo",
     ],
 )

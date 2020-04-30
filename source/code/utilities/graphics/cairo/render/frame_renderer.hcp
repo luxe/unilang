@@ -11,6 +11,7 @@ class
 ❪"code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap/positioned_full_color_bitmap"❫
 ❪"code/utilities/types/variant/lib"❫
 ❪"code/utilities/math/math"❫
+❪"code/utilities/types/general/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Render(Frame_Elements const& elements)❰
@@ -54,16 +55,45 @@ class
 
 ◀private: static▶ cairo_surface_t* ☀Build_Surface(Frame_Elements const& elements)❰
 
-    cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,500,500);
+    auto pos = Most_Distant_Pixel_Pos(elements);
+    cairo_surface_t *surface = cairo_image_surface_create(CAIRO_FORMAT_RGB24,pos.x,pos.y);
     return surface;
 ❱
+◀private: static▶ Position ☀Most_Distant_Pixel_Pos(Frame_Elements const& elements)❰
+    Position pos;
+    
+    for (auto const& it: elements.types){
+        std::visit(overloaded {
+            [&](Positioned_Rectangle_Settings const& x) {
+                set_equal_if_less(pos.x,x.shape.dimensions.width);
+                set_equal_if_less(pos.y,x.shape.dimensions.height);
+            },
+            [&](Positioned_Multi_Color_Bitmap const& x) {
+                for (auto const& it: x.bitmap.pixels){
+                    set_equal_if_less(pos.x,it.pos.x);
+                    set_equal_if_less(pos.y,it.pos.y);
+                }
+            },
+            [&](Positioned_Full_Color_Bitmap const& x) {
+                for (auto const& it: x.bitmap.pixels){
+                    set_equal_if_less(pos.x,it.x);
+                    set_equal_if_less(pos.y,it.y);
+                }
+            },
+        }, it);
+    }
+    
+    return pos;
+❱
+
+
 
 //ciaro draw functions
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
     std::cout << "rectangle" << std::endl;
     
     
-    Draw_Rectangle_Pixel_By_Pixel(cr,shape);
+    Draw_Fill_Pixel_By_Pixel(cr,shape);
     
     if (shape.shape.hooks.draw_shade){
         Positioned_Multi_Color_Bitmap x;
@@ -71,6 +101,8 @@ class
         x.bitmap = Rectangle_Fill_Bitmap::Convert(shape.pos,shape.shape.shades,shape.shape.dimensions);
         Draw(cr,x);
     }
+    
+    Draw_Border_Pixel_By_Pixel(cr,shape);
       
 ❱
 
@@ -96,7 +128,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Draw_Rectangle_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
+◀private: static▶ void ☀Draw_Fill_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
 
     //draw fill
     for (size_t i = 0; i < shape.shape.dimensions.width-1; ++i){
@@ -108,6 +140,9 @@ class
             Draw_Pixel(cr,p,shape.shape.colors.fill);
         }
     }
+❱
+
+◀private: static▶ void ☀Draw_Border_Pixel_By_Pixel(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
     
     //draw top border
     for (size_t i = 0; i < shape.shape.dimensions.width; ++i){

@@ -15,6 +15,15 @@
 //}
 
 
+//compare and set
+template<typename A, typename B>
+void set_equal_if_less(A & a, B const& b)
+{
+  if (a < b){
+    a = b;
+  }
+}
+
 
 //types/pair
 template<typename A, typename B>
