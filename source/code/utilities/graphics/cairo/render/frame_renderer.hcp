@@ -132,20 +132,25 @@ class
 
 ◀private: static▶ void ☀Draw_Rectangle(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
 
+    //I was having some trouble trying to make pixel perfect rectangles with cairo
+    //they even have a statement about it, but its still confusing, and I get fuzzy results when I try
+    //to follow their advice.  Alternatively, I decided to just convert rectangle objects into individual pixels
+    //myself and only tell cairo to draw the pixels instead of a full rectangle command.
+    //probably slower to generate an image, but I don't really care about speed for image generation.
     //https://www.cairographics.org/FAQ/#sharp_lines
-      
-      Set_Rgb(cr,shape.shape.colors.fill);
-      cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
-      cairo_stroke_preserve(cr);
-      cairo_fill(cr);
-      cairo_stroke(cr);
-      
-      Set_Rgb(cr,shape.shape.colors.border);
-      cairo_set_line_width(cr,1);
-      //cairo_translate (cr, 1, 0);
-      cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
-      //cairo_stroke_preserve(cr);
-      cairo_stroke(cr);
+
+    Set_Rgb(cr,shape.shape.colors.fill);
+    cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
+    cairo_stroke_preserve(cr);
+    cairo_fill(cr);
+    cairo_stroke(cr);
+
+    Set_Rgb(cr,shape.shape.colors.border);
+    cairo_set_line_width(cr,1);
+    //cairo_translate (cr, 1, 0);
+    cairo_rectangle(cr, shape.pos.x+.5, shape.pos.y+.5, shape.shape.dimensions.width, shape.shape.dimensions.height);
+    //cairo_stroke_preserve(cr);
+    cairo_stroke(cr);
 ❱
 ◀private: static▶ void ☀Draw_Pixel(cairo_t *cr, Position const& pos, Transparent_Rgb_Color const& color)❰
     Set_Rgb(cr,color);
@@ -157,5 +162,6 @@ class
     auto new_r = Math::map_value_across_range(color.r,0,255,0,1);
     auto new_g = Math::map_value_across_range(color.g,0,255,0,1);
     auto new_b = Math::map_value_across_range(color.b,0,255,0,1);
-    cairo_set_source_rgb (cr, new_r, new_g, new_b);
+    auto new_a = Math::map_value_across_range(color.alpha,0,255,0,1);
+    cairo_set_source_rgba (cr, new_r, new_g, new_b, new_a);
 ❱
