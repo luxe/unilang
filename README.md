@@ -11,11 +11,11 @@
 
 
 ## Summary
-Unilang is a project for everything related to programming.  It has a graphical / textual fronted for software development and unifies languages through transcompilation.  It was written to automate and improve the productivity of a sole developer.  You might find something useful in it as well.  
+Unilang is a project for everything related to programming.  It has a graphical / textual fronted for software development.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person, but you might find something useful in it as well.  
 
 
 ## Philosophy
-The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang is focused on providing concept values for a language meta-model and less about syntactical expressions being parsed into ASTs which may lose pragmatic meaning in their correlation.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
+The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang is focused on providing concept values for a language meta-model as apposed to syntactical expressions being parsed into ASTs which often lose pragmatic meaning in their correlation.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
 
 
 ## GPL Shortcomings
@@ -43,20 +43,20 @@ git clone git@github.com:luxe/unilang.git
 cd unilang
 ./build_everything
 ```
-Various CIs are used to test the correctness of the build.  Referencing these builds may help you acquire any additional dependencies.  The reason we use multiple CIs is to ensure a general consensus and catch any outlier issues.  
+Various CIs are used to test the correctness of the build.  Referencing these builds may help you acquire any additional dependencies.  The reason we use multiple CIs is to ensure a general consensus and catch any outlying issues.  These services have limitations at their free tier, and so full builds/tests are not performed.  
 
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
-| App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/wscwfed3pk5pxk6y?svg=true)](https://ci.appveyor.com/project/luxe/unilang) | Full Build | 
-Build Kite | [![Build status](https://badge.buildkite.com/fea27cb8ff96ec21a9d7bf6b7b8c485d64a7d9fa92f2ccd208.svg)](https://buildkite.com/unilang-inc/unilang-build) | Full Build | 
+| App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/wscwfed3pk5pxk6y?svg=true)](https://ci.appveyor.com/project/luxe/unilang) | Bootstraps Build | 
+Build Kite | [![Build status](https://badge.buildkite.com/fea27cb8ff96ec21a9d7bf6b7b8c485d64a7d9fa92f2ccd208.svg)](https://buildkite.com/unilang-inc/unilang-build) | Bootstraps Build | 
 Circle | [![CircleCI](https://circleci.com/gh/luxe/unilang.svg?style=svg)](https://circleci.com/gh/luxe/unilang) | Bootstraps Build | 
 Cirrus | [![Build Status](https://api.cirrus-ci.com/github/luxe/unilang.svg)](https://cirrus-ci.com/github/luxe/unilang) | Bootstraps Build | 
-Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/status?branch=master)](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/) | Full Build | 
-Drone | [![Build Status](https://cloud.drone.io/api/badges/luxe/unilang/status.svg)](https://cloud.drone.io/luxe/unilang) | Full Build | 
-Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/luxe/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/luxe/unilang/build-status/master) | Full Build | 
-Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | Full Build | 
-Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Full Build | 
-Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)](https://travis-ci.com/luxe/unilang) | Full Build | 
+Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/status?branch=master)](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/) | Bootstraps Build | 
+Drone | [![Build Status](https://cloud.drone.io/api/badges/luxe/unilang/status.svg)](https://cloud.drone.io/luxe/unilang) | Bootstraps Build | 
+Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/luxe/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/luxe/unilang/build-status/master) | Bootstraps Build | 
+Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | Bootstraps Build | 
+Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Bootstraps Build | 
+Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)](https://travis-ci.com/luxe/unilang) | Bootstraps Build | 
 
 
 
