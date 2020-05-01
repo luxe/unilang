@@ -44,8 +44,7 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏶜􏶝􏷆l􏷅􏷄slot number􏷃􏷀the slot number to find a hashable string for􏶿
 􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
 􏶴
-    Preconditions.checkState(slotNumber >= 0);
-    Preconditions.checkState(slotNumber < HASHSLOTS);
+    Preconditions.checkState(slotNumber >= 0 && slotNumber < HASHSLOTS);
     return staticLookup(slotNumber);
 􏶳
 􏴱correct for every slot􏴲􏴯regular􏴰
@@ -74,13 +73,12 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏷐dynamically convert a range of slot number  into string that hashes to a slot within the range􏷏
 􏶠dynamically generates hashtags and tests them for valid slot number
 slower than static lookup, but less code􏶡
-􏷘+s􏷗􏴅Observer􏴆􏷒dynamic correlate􏷑
+􏷘+s􏷗􏴅Observer􏴆􏷒correlate range􏷑
 􏶜􏶝􏷆l􏷅􏷄start􏷃􏷀the starting slot range number to find a hashable string for􏶿
 􏶜􏶝􏷆l􏷅􏷄end􏷃􏷀the ending slot range number to find a hashable string for􏶿
 􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
 􏶴
-    Preconditions.checkState(start >= 0);
-    Preconditions.checkState(end < HASHSLOTS);
+    Preconditions.checkState(start >= 0 && end < HASHSLOTS);
     
     long hashNumber = 0;
     int slotNumber = JedisClusterCRC16.getSlot(Long.toString(hashNumber));
@@ -95,7 +93,7 @@ slower than static lookup, but less code􏶡
 􏲛the hashtag does not correlate back to the slot number􏲜
 􏴭
     //convert to hashtag
-    String hashtag = RedisSlotToHash.dynamicCorrelate(100,200);
+    String hashtag = RedisSlotToHash.correlateRange(100,200);
     
     //convert hashtag back to slot
     int slotNumber = JedisClusterCRC16.getSlot(hashtag);
