@@ -24,6 +24,7 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏷤􏷣􏷦java.util.Arrays􏷥
 􏷤i􏷣􏷦redis.clients.jedis.JedisCluster.HASHSLOTS􏷥
 􏷤􏷣􏷦com.google.common.base.Preconditions􏷥
+􏷤􏷣􏷦redis.clients.jedis.util.JedisClusterCRC16􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -43,9 +44,9 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏶜􏶝􏷆l􏷅􏷄slot number􏷃􏷀the slot number to find a hashable string for􏶿
 􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
 􏶴
+    Preconditions.checkState(slotNumber >= 0);
     Preconditions.checkState(slotNumber < HASHSLOTS);
-    List<String> lookupTable = getLookupTable();
-    return lookupTable.get((int) slotNumber);
+    return staticLookup(slotNumber);
 􏶳
 􏴱correct for every slot􏴲􏴯regular􏴰
 􏲝correlating every slot number to a string hashes back to the correct slot􏲞
@@ -69,6 +70,49 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏴭
     RedisSlotToHash slotToHash = new RedisSlotToHash();
 􏴮
+
+􏷐dynamically convert a range of slot number  into string that hashes to a slot within the range􏷏
+􏶠dynamically generates hashtags and tests them for valid slot number
+slower than static lookup, but less code􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒dynamic correlate􏷑
+􏶜􏶝􏷆l􏷅􏷄start􏷃􏷀the starting slot range number to find a hashable string for􏶿
+􏶜􏶝􏷆l􏷅􏷄end􏷃􏷀the ending slot range number to find a hashable string for􏶿
+􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
+􏶴
+    Preconditions.checkState(start >= 0);
+    Preconditions.checkState(end < HASHSLOTS);
+    
+    long hashNumber = 0;
+    int slotNumber = JedisClusterCRC16.getSlot(Long.toString(hashNumber));
+    while (slotNumber < start || slotNumber > end){
+        hashNumber++;
+        slotNumber = JedisClusterCRC16.getSlot(Long.toString(hashNumber));
+    }
+    return Long.toString(hashNumber);
+􏶳
+􏴱correct hashtag found for slot range􏴲􏴯regular􏴰
+􏲝given a slot range a correct hashtag is dynamically derived􏲞
+􏲛the hashtag does not correlate back to the slot number􏲜
+􏴭
+    //convert to hashtag
+    String hashtag = RedisSlotToHash.dynamicCorrelate(100,200);
+    
+    //convert hashtag back to slot
+    int slotNumber = JedisClusterCRC16.getSlot(hashtag);
+    
+    //check correct correlation
+    assertThat(slotNumber >= 100 && slotNumber <= 200).isTrue();
+􏴮
+
+􏷐convert the slot to a hashtag using a static lookup table􏷏
+􏶠fastest, but requires all keys in memory􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒static lookup􏷑
+􏶜􏶝􏷆l􏷅􏷄slot number􏷃􏷀the slot number to find a hashable string for􏶿
+􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
+􏶴
+    List<String> lookupTable = getLookupTable();
+    return lookupTable.get((int) slotNumber);
+􏶳
 
 􏷐A table of the shortest possible alphanumeric string that is mapped by redis' crc16 to any given redis cluster slot􏷏
 􏶠The array indexes are slot numbers, so that given a desired slot, this string is guaranteed to make redis cluster route a request to the shard holding this slot􏶡
