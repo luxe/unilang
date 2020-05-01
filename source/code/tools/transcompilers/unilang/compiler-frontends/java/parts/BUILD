@@ -57,3 +57,19 @@ hcp(name = "methods_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
     "//code/utilities/linguistics/computer/keywords/visibility:visibility_keyword_getter",
 ])
+
+hcp(name = "import_getter", deps = [
+    "//code/tools/transcompilers/unilang/structure/model:structure",
+    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+    "//code/utilities/types/strings/transformers/appending:lib",
+    "//code/utilities/types/converters:lib",
+    "//code/utilities/types/strings/transformers/casing:case_modifier",
+    "//code/utilities/program/call:lib",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/types/vectors/converters:lib",
+    "//code/utilities/types/strings/observers/converting:lib",
+])
+

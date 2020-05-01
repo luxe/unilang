@@ -50,6 +50,7 @@ hcp(name = "java_test_str_getter", deps = [
     "//code/tools/transcompilers/unilang/options/language-specific/c:c_export_settings",
     "//code/tools/transcompilers/unilang/test_export:test_comment_getter",
     "//code/tools/transcompilers/unilang/test_export:test_body_getter",
+    "//code/tools/transcompilers/unilang/compiler-frontends/java/parts:import_getter",
 ])
 
 hcp(name = "java_test_settings_getter", deps = [

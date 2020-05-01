@@ -1,0 +1,53 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/tools/transcompilers/unilang/structure/model/structure"❫
+❪"code/tools/transcompilers/unilang/contributor/contributor"❫
+❪"code/tools/transcompilers/unilang/structure/model/inlined_structures"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+⚞⚟
+
+
+◀public: static▶ std::string ☀Get_Imports(Structure const& structure, std::vector<Contributor> const& contributors)❰
+    
+    std::string imports;
+    for (auto const& it: structure.imports.interface_dependencies){
+        imports += Get_Import_Line(it);
+    }
+    for (auto const& it: structure.imports.implementation_dependencies){
+        imports += Get_Import_Line(it);
+    }
+    return imports;
+❱
+
+◀public: static▶ std::string ☀Get_Imports_For_Tests(Structure const& structure, std::vector<Contributor> const& contributors)❰
+    
+    std::string imports;
+    for (auto const& it: structure.imports.test_dependencies){
+        imports += Get_Import_Line(it);
+    }
+    return imports;
+❱
+
+◀private: static▶ std::string ☀Get_Import_Line(Import_Item const& it)❰
+    std::string x;
+    x += "import ";
+    
+    //we'll abuse "inline" to mean static here in java
+    if (it.inlined){
+        x += "static ";
+    }
+    x += as_string(it.name.value);
+    x += ";\n";
+    return x;
+❱

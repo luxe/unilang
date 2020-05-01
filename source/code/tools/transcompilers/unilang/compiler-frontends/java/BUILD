@@ -47,6 +47,7 @@ hcp(name = "java_str_getter", deps = [
     "//code/tools/transcompilers/unilang/compiler-frontends/java/parts:data_members_getter",
     "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
     "//code/tools/transcompilers/unilang/structure/query:virtual_method_checker",
+    "//code/tools/transcompilers/unilang/compiler-frontends/java/parts:import_getter",
 ])
 
 hcp(name = "java_settings_getter", deps = [

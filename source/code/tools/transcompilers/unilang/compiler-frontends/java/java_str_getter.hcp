@@ -25,13 +25,14 @@ class
 ❪"code/tools/transcompilers/unilang/compiler-frontends/java/parts/data_members_getter"❫
 ❪"code/tools/transcompilers/unilang/structure/print/doxygen_block_printer"❫
 ❪"code/tools/transcompilers/unilang/structure/query/virtual_method_checker"❫
+❪"code/tools/transcompilers/unilang/compiler-frontends/java/parts/import_getter"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
     std::string text;
     Append_With_Newline(text,Get_Boilerplate(structure,contributors,settings));
     Append_With_Newline(text,Get_Package_Name(structure,contributors,settings));
-    Append_With_Newline(text,Get_Imports(structure,contributors,settings));
+    Append_With_Newline(text,Import_Getter::Get_Imports(structure,contributors));
     Append_With_Newline(text,Get_Class(structure,contributors,settings));
     return text;
 ❱
@@ -66,22 +67,6 @@ class
     text += Get_As_String_With_Dot_In_Between_Each_Element(packages);
     text += ";\n";
     return text;
-❱
-
-◀private: static▶ std::string ☀Get_Imports(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰
-    
-    std::string imports;
-    for (auto const& it: structure.imports.interface_dependencies){
-        imports += "import ";
-        imports += as_string(it.name.value);
-        imports += ";\n";
-    }
-    for (auto const& it: structure.imports.implementation_dependencies){
-        imports += "import ";
-        imports += as_string(it.name.value);
-        imports += ";\n";
-    }
-    return imports;
 ❱
 
 ◀private: static▶ std::string ☀Get_Class(Structure const& structure, std::vector<Contributor> const& contributors, Java_Settings const& settings)❰

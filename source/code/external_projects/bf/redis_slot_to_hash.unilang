@@ -6,7 +6,7 @@ you might decide to do this in order to distribute data evenly across nodes and 
 since redis nodes are decided based on the slot number that a value hashes to, you can force
 a key to land on a particular node by choosing a redis hashtag which you know corresponds to the appropriate slot number
 the class is used to convert a slot number to a corresponding string (which when hashed by redis's crc16 algorithm will return that slot number􏷯
-􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
 
 https://stackoverflow.com/questions/46294925/is-there-a-way-to-make-a-specific-key-locate-on-a-specific-redis-instance-in-clu
 https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
@@ -22,6 +22,8 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦java.util.Arrays􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster.HASHSLOTS􏷥
+􏷤􏷣􏷦com.google.common.base.Preconditions􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -36,11 +38,12 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
 􏷐convert slot number into string that hashes to slot􏷏
 􏶠a short alphanumeric string will be given which when hashed by redis's crc16 algorithm will return the slot number that was given􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒correlate􏷑
-􏶜􏶝􏷆i􏷅􏷄slot number􏷃􏷀the slot number to find a hashable string for􏶿
+􏶜􏶝􏷆l􏷅􏷄slot number􏷃􏷀the slot number to find a hashable string for􏶿
 􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
 􏶴
+    Preconditions.checkState(slotNumber < HASHSLOTS);
     List<String> lookupTable = getLookupTable();
-    return lookupTable.get(slotNumber);
+    return lookupTable.get((int) slotNumber);
 􏶳
 􏴱correct for every slot􏴲􏴯regular􏴰
 􏲝correlating every slot number to a string hashes back to the correct slot􏲞
