@@ -33,16 +33,11 @@ class
 ◀private: static▶ void ☀Fresh_Pull(std::string & results) ❰
 
     auto x = Run_Command_And_Show("git reset --hard HEAD && git clean -d -f;");
-    x = Run_Command_And_Show("git pull");
-    
-    if (x.return_code != 0){
-        Append_With_Newline(results,"pull: FAIL");
-        Append_With_Newline(results,x.stderr);
-    }
+    Run_Command_Show_And_Store_Results_In_Summary("git pull", "sync repo",results);
 ❱
 ◀private: static▶ void ☀Record_Working_Hash(std::string & results) ❰
 
-    auto x = Run_Command_And_Show("git rev-parse HEAD");
+    auto x = Run_Command_Show_And_Store_Results_In_Summary("git rev-parse HEAD", "get SHA",results);
     Append_With_Newline(results,"commit: " + x.stdout);
 ❱
 ◀private: static▶ void ☀Run_Repo_Tasks(std::string & results) ❰
@@ -56,14 +51,7 @@ class
     }
 ❱
 ◀private: static▶ void ☀Restart_Self_If_Possible(std::string & results) ❰
-    auto x = Run_Command_And_Show("./user_build //code/tools/worker_bot:main");
-    if (x.return_code == 0){
-        Append_With_Newline(results,"rebuild worker: PASS");
-    }
-    else {
-        Append_With_Newline(results,"rebuild worker: FAIL");
-        Append_With_Newline(results,x.stderr);
-    }
+    auto x = Run_Command_Show_And_Store_Results_In_Summary("./user_build //code/tools/worker_bot:main","Rebuild Bot",results);
     
     int duration = 4;
     
@@ -86,10 +74,30 @@ class
     Ssmtp_Conf_Maker::Setup_File();
     auto sendmail_settings = Sendmail_Settings_Getter::Test_Settings();
     sendmail_settings.title = "Worker Bot Results";
-    sendmail_settings.message = "These are the results of our recent runs:";
+    sendmail_settings.message = "These are the results of our recent runs:\n";
     sendmail_settings.message += results;
     Sendmail_Sender::Send(sendmail_settings);
 ❱
+
+
+//process reporting utils
+◀private: static▶ Process_Results ☀Run_Command_Show_And_Store_Results_In_Summary(std::string const& command, std::string const& name, std::string & results) ❰
+
+    auto x = Run_Command_And_Show(command);
+    
+    if (x.return_code != 0){
+        std::string title = name + ": FAIL";
+        Append_With_Newline(results,title);
+        Append_With_Newline(results,x.stderr);
+    }
+    else{
+        std::string title = name + ": PASS";
+        Append_With_Newline(results,title);
+    }
+    
+    return x;
+❱
+
 ◀private: static▶ Process_Results ☀Run_Command_And_Show(std::string command) ❰
         std::cout << command << std::endl;
         auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
@@ -101,3 +109,7 @@ class
         }
         return results;
 ❱
+
+
+
+
