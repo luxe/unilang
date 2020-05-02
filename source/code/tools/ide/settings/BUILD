@@ -13,7 +13,7 @@ hcp(name="ide_settings", deps = [
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/window:window_settings",
-    "//code/utilities/graphics/imgui/draw/background:background_settings",
+    "//code/utilities/graphics/imgui/background:background_settings",
     "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
     "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",
     "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
@@ -47,7 +47,7 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
-    "//code/utilities/graphics/imgui/draw/background:background_settings_getter",
+    "//code/utilities/graphics/imgui/background:background_settings_getter",
     "//code/utilities/execution:thread_pool_getter",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:default_sliders",
 ])

@@ -9,6 +9,6 @@ hcp(name="background_settings", deps = [
 ])
 
 hcp(name="background_settings_getter", deps = [
-    "//code/utilities/graphics/imgui/draw/background:background_settings",
-    "//code/utilities/graphics/imgui/draw:imgui_type_utility",
+    "//code/utilities/graphics/imgui/background:background_settings",
+    "//code/utilities/graphics/imgui:imgui_type_utility",
 ])

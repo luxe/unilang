@@ -20,7 +20,7 @@ hcp(
         "//code/utilities/graphics/imgui/window:window_renderer",
         "//code/utilities/graphics/imgui/window:window_position_finder",
         "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
-        "//code/utilities/graphics/imgui/draw:imgui_type_utility",
+        "//code/utilities/graphics/imgui:imgui_type_utility",
         "//code/tools/ide/frame:fullscreener",
         "//code/utilities/graphics/imgui:mechanics",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",

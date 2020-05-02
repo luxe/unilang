@@ -29,7 +29,7 @@ hcp(
         "//code/utilities/fonts/bdf/character_maps:character_segment_map",
         "//code/utilities/fonts/bdf/character_maps:character_bitmap_map",
         "//code/utilities/types/char:lib",
-        "//code/utilities/graphics/imgui/draw:imgui_type_utility",
+        "//code/utilities/graphics/imgui:imgui_type_utility",
     ]
 )
 

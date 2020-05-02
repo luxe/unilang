@@ -26,7 +26,7 @@ hcp(name="color_palettes",deps = [
 
 hcp(name="rectangle_shades",deps = [
     "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
-    "//code/utilities/graphics/imgui/draw:imgui_type_utility",
+    "//code/utilities/graphics/imgui:imgui_type_utility",
 ])
 
 hcp(name="converters",deps = [
