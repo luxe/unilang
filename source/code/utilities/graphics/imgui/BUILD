@@ -9,3 +9,9 @@ hcp(name="mechanics",deps = [
     "//code/utilities/graphics/sfml:game_loop",
     "@imgui//:imgui_sdl_opengl3"
 ])
+
+hcp(name="ui_renders",deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/data_structures/shapes/rectangle:rectangle_settings"
+])

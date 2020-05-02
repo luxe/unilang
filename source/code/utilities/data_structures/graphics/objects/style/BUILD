@@ -32,7 +32,7 @@ hcp(name="default_label_styles", deps = [
     "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
     "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
     "//code/utilities/data_structures/graphics/text:text_to_bitmap",
-    "//code/utilities/graphics/imgui/ui:ui_renders",
+    "//code/utilities/graphics/imgui:ui_renders",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",

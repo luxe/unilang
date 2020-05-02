@@ -7,7 +7,7 @@ hcp(name="rectangle_fill_bitmap", deps = [
     "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
     "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
     "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
-    "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
+    "//code/utilities/graphics/imgui/draw:imgui_type_utility",
     "//code/utilities/data_structures/position:position",
     "//code/utilities/graphics/imgui:mechanics",
     "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
