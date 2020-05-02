@@ -14,7 +14,7 @@ hcp(name="label_styles", deps = [
 ])
 
 hcp(name="label_width_style", deps = [
-"//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
+"//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
 ])
 
 
@@ -24,16 +24,16 @@ hcp(name="label_style_chooser", deps = [
 
 
 hcp(name="default_label_styles", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
+    "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap_drawer",
+    "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
     "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
     "//code/utilities/graphics/imgui/ui:ui_renders",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
+    "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
 ])

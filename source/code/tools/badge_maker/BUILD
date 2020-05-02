@@ -3,17 +3,17 @@ load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "badge_maker", deps = [
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap",
+    "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/full_color_bitmap:full_color_bitmap_drawer",
+    "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
     "//code/utilities/graphics/imgui/ui/draw/text:text_to_bitmap",
     "//code/utilities/graphics/imgui/ui:ui_renders",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/pixel:pixel_slider",
+    "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
     "//code/utilities/graphics/imgui/ui/draw/label/grid/faced:positioned_faced_label",
     "//code/utilities/graphics/imgui/ui/draw/label/style:default_label_styles",

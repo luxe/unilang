@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="mouse", deps = [
     "//code/utilities/graphics/imgui/ui/draw/mouse:mouse_selection",
-    "//code/utilities/graphics/imgui/ui/draw/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
 ])
 
 hcp(name="mouse_selection",deps = [
