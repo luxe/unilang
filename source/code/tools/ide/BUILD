@@ -7,7 +7,7 @@ cpp_main(
     name = "main",
     deps = ["@imgui//:imgui_sdl_opengl3",
         "//code/utilities/graphics/imgui:mechanics",
-        "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
+        "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/settings:ide_settings_getter",

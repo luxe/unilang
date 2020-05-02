@@ -13,6 +13,6 @@ values =
 ])
 
 hcp(name="sdl_init_settings",deps = [
-    "//code/utilities/graphics/imgui/sdl:sdl_window_settings",
-    "//code/utilities/graphics/imgui/sdl:sdl_swap_interval",
+    "//code/utilities/graphics/sdl:sdl_window_settings",
+    "//code/utilities/graphics/sdl:sdl_swap_interval",
 ])

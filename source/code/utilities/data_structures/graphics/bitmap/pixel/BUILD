@@ -8,5 +8,5 @@ hcp(name="pixel_settings", deps = [
 ])
 
 hcp(name="pixel_slider", deps = [
-"//code/utilities/graphics/imgui/time:cycle_clock",
+"//code/utilities/time/cycle_clock:cycle_clock",
 ])

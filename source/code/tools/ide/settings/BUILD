@@ -9,7 +9,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/data_structures/graphics/objects/mouse:mouse_selection",
     "//code/utilities/data_structures/graphics/objects/mouse:cursor_mouse_connector",
     "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/graphics/imgui/sdl:sdl_init_settings",
+    "//code/utilities/graphics/sdl:sdl_init_settings",
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
     "//code/utilities/graphics/imgui/window:window_settings",
