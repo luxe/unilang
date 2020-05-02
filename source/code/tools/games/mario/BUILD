@@ -11,14 +11,14 @@ load("@rules_pkg//:pkg.bzl", "pkg_tar", "pkg_deb")
 
 hcp(name = "mario_runner", deps = [
     "//code/utilities/peripheral/sound:music_player",
-    "//code/utilities/x11/main_state:x11_main_state_creator",
-    "//code/utilities/x11/sprite:sprite_loader",
-    "//code/utilities/x11/sprite:sprite_window_creator",
-    "//code/utilities/x11/sprite:sprite_window_drawer",
-    "//code/utilities/x11/loop:x11_looper",
-    "//code/utilities/x11:lib",
+    "//code/utilities/graphics/x11/main_state:x11_main_state_creator",
+    "//code/utilities/graphics/x11/sprite:sprite_loader",
+    "//code/utilities/graphics/x11/sprite:sprite_window_creator",
+    "//code/utilities/graphics/x11/sprite:sprite_window_drawer",
+    "//code/utilities/graphics/x11/loop:x11_looper",
+    "//code/utilities/graphics/x11:lib",
     "//code/tools/games/mario/sprites:sprites_loader",
-    "//code/utilities/x11/events:global_event_listener",
+    "//code/utilities/graphics/x11/events:global_event_listener",
     "//code/utilities/types/booleans:lib",
     "//code/tools/games/mario/engine/user_input:user_action_getter",
     "//code/tools/games/mario/engine/user_input:user_action",
@@ -26,7 +26,7 @@ hcp(name = "mario_runner", deps = [
     "//code/tools/games/mario/sound:sounds_loader",
     "//code/tools/games/mario/engine:physics_state",
     "//code/utilities/peripheral/sound/sdl:sdl_audio",
-    "//code/utilities/x11/geometry:window_geometry_getter",
+    "//code/utilities/graphics/x11/geometry:window_geometry_getter",
     "//code/tools/games/mario:game_settings",
 ])
 
@@ -39,7 +39,7 @@ hcp(name = "mario_documentation_getter", deps = [
 ])
 
 hcp(name = "game_settings", deps = [
-    "//code/utilities/x11/main_state:setup_display_settings",
+    "//code/utilities/graphics/x11/main_state:setup_display_settings",
 ])
 
 
