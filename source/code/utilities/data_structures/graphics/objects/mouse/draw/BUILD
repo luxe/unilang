@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/tools/ide/settings:ide_settings",
-        "//code/utilities/graphics/imgui/render:frame_elements",
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
@@ -21,7 +21,7 @@ hcp(name = "mouse_selection_drawer", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state_getter",
     "//code/utilities/peripheral/mouse/state:mouse_state",
 ])
@@ -30,7 +30,7 @@ hcp(name = "view_anchor_adjuster", deps = [
     "@imgui//:imgui_sdl_opengl3",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/graphics/imgui:mechanics",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state_getter",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",

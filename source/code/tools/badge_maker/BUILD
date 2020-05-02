@@ -26,7 +26,7 @@ hcp(name = "badge_maker", deps = [
     "//code/utilities/execution:thread_pool_getter",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:default_sliders",
     "//code/utilities/graphics/cairo/render:frame_renderer",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/data_structures/graphics/objects/functions:faced_label_drawer",
 ])
 

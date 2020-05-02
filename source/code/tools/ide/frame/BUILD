@@ -25,7 +25,7 @@ hcp(
     deps = [
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/tools/ide/settings:ide_settings",
-        "//code/utilities/graphics/imgui/render:frame_elements",
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",

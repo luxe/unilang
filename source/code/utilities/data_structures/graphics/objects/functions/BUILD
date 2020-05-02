@@ -19,7 +19,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/data_structures/graphics/objects/style:label_style_chooser",
     "//code/utilities/data_structures/graphics/objects/functions:label_length_getter",
     "//code/utilities/data_structures/graphics/objects/grid/faced/regular:positioned_label",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
     "//code/utilities/peripheral/mouse/state:mouse_state",
@@ -34,7 +34,7 @@ hcp(name="faced_label_drawer", deps = [
     "//code/utilities/data_structures/graphics/objects/grid/faced:positioned_faced_label",
     "//code/utilities/data_structures/graphics/objects/grid/faced:faced_label",
     "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
 ])
@@ -58,7 +58,7 @@ hcp(name="grid_label_drawer", deps = [
     "//code/utilities/data_structures/graphics/objects/grid/faced:positioned_faced_label",
     "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
     "//code/utilities/data_structures/graphics/objects/grid:positioned_face_grid",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/data_structures/graphics/objects/functions:faced_label_drawer",
@@ -72,7 +72,7 @@ hcp(name="label_length_getter", deps = [
 
 hcp(name="cursor_drawer", deps = [
     "//code/tools/ide/settings:ide_settings",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/peripheral/pc:pc_input_state",
     "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",

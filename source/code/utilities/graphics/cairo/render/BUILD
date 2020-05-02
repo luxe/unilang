@@ -12,7 +12,7 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
         "//code/utilities/types/variant:lib",
-        "//code/utilities/graphics/imgui/render:frame_elements",
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/math:math",
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/types/general:lib",

@@ -17,7 +17,7 @@ hcp(name="slider_drawer", deps = [
     "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:positioned_slider",
     "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
-    "//code/utilities/graphics/imgui/render:frame_elements",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/fonts/bdf/character_maps:character_maps",

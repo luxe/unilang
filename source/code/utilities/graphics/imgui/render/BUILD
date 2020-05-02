@@ -4,15 +4,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
-    name = "frame_elements",
-    deps = [
-        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-        "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
-        "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
-    ],
-)
-
-hcp(
     name = "frame_renderer",
     deps = ["@imgui//:imgui_sdl_opengl3",
         "//code/tools/ide/settings:ide_settings",
@@ -29,7 +20,7 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:line_drawer",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
-        "//code/utilities/graphics/imgui/render:frame_elements",
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/types/variant:lib",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
