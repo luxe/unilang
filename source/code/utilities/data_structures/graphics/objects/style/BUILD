@@ -28,7 +28,7 @@ hcp(name="default_label_styles", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/tools/ide/settings:ide_settings",
     "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
-    "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
+    "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
     "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
     "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
     "//code/utilities/data_structures/graphics/text:text_to_bitmap",

@@ -5,5 +5,5 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(name="standard_mouse", deps = [
     "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
     "//code/utilities/data_structures/graphics/bitmap/premade:crosshair_mouse",
-    "//code/utilities/graphics/imgui/ui/draw/mouse:mouse",
+    "//code/utilities/data_structures/graphics/objects/mouse:mouse",
 ])

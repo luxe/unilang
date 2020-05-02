@@ -23,7 +23,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/tools/ide/frame:fullscreener",
         "//code/utilities/graphics/imgui:mechanics",
-        "//code/utilities/graphics/imgui/ui/draw/mouse/draw:mouse_selection_drawer",
+        "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/tools/ide/frame:label_cursor_action_doer",
         "//code/utilities/graphics/imgui/render/elements:line_drawer",

@@ -9,9 +9,9 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/graphics/imgui/render:frame_elements",
-        "//code/utilities/graphics/imgui/ui/draw/mouse/draw:mouse_selection_drawer",
+        "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
-        "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
+        "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
         "//code/utilities/types/vectors/operators:lib",
     ],
@@ -33,5 +33,5 @@ hcp(name = "view_anchor_adjuster", deps = [
     "//code/utilities/graphics/imgui/render:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state_getter",
     "//code/utilities/peripheral/mouse/state:mouse_state",
-    "//code/utilities/graphics/imgui/ui/draw/mouse:anchor_mouse",
+    "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",
 ])

@@ -10,8 +10,8 @@ hcp(name="line_settings",deps = [
 
 hcp(name="line_drawer",deps = [
     "//code/utilities/data_structures/graphics/line:line_settings",
-    "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events",
-    "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
+    "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
+    "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
     "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
     "//code/utilities/data_structures/position:position",
     "//code/utilities/graphics/imgui:mechanics",
