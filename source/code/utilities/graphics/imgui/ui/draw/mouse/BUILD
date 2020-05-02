@@ -12,7 +12,7 @@ hcp(name="mouse_selection",deps = [
 ])
 
 hcp(name="cursor_mouse_connector",deps = [
-    "//code/utilities/graphics/imgui/ui/draw/line:line_settings",
+    "//code/utilities/data_structures/graphics/line:line_settings",
 ])
 
 hcp(name="anchor_mouse",deps = [

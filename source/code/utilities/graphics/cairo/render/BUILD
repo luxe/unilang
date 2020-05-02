@@ -7,7 +7,7 @@ hcp(
     name = "frame_renderer",
     deps = ["@imgui//:imgui_sdl_opengl3",
         "//code/utilities/graphics/imgui/ui/draw/rectangle:rectangle_drawer",
-        "//code/utilities/graphics/imgui/ui/draw/line:line_drawer",
+        "//code/utilities/graphics/imgui/render/elements:line_drawer",
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
