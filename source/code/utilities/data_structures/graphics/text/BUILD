@@ -8,7 +8,7 @@ hcp(name="text_to_bitmap", deps = [
 "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
 "//code/utilities/types/char:lib",
 "//code/utilities/fonts/bdf/settings:character_segment",
-"//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
+"//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
 "//code/utilities/fonts/bdf/character_maps:character_maps",
 "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
 ])

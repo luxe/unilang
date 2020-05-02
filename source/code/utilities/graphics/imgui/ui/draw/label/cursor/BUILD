@@ -11,7 +11,7 @@ hcp(name="label_cursor_mover", deps = [
 "//code/utilities/fonts/bdf/settings:character_segment",
 "//code/utilities/graphics/imgui/ui/draw/label/grid/faced/regular:label_settings",
 "//code/utilities/graphics/imgui/ui/draw/label/cursor:label_cursor_selection",
-"//code/utilities/graphics/imgui/ui/draw/text:str_to_bdf_segments",
+"//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
 "//code/utilities/fonts/bdf/character_maps:character_maps",
 ])
 
