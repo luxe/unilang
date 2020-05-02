@@ -12,7 +12,7 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/ui/draw/mouse_events:mouse_events_checker",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
-        "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
+        "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
         "//code/tools/ide/frame:label_cursor_action_doer",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/vectors/observers:lib",

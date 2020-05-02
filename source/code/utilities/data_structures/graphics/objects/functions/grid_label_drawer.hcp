@@ -1,0 +1,66 @@
+class
+❪string❫
+❪unordered_map❫
+❪utility❫
+❪cstdlib❫
+❪"code/utilities/fonts/bdf/settings/character_segment"❫
+❪"code/utilities/data_structures/graphics/objects/grid/faced/regular/label_settings"❫
+❪"code/utilities/data_structures/graphics/objects/grid/faced/positioned_faced_label"❫
+❪"code/utilities/data_structures/graphics/objects/grid/positioned_face_grid"❫
+❪"code/utilities/data_structures/graphics/objects/functions/label_drawer"❫
+❪"code/utilities/graphics/imgui/render/frame_elements"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/data_structures/graphics/objects/functions/faced_label_drawer"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+⚯
+⚞⚟
+
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Face_Grid & grid, Pc_Input_State const& pc_input)❰
+    
+    Update_Events(font_chars,grid,pc_input);
+    auto elements = Get_Draw_Elements(font_chars,grid,pc_input.mouse);
+    return elements;
+❱
+
+
+◀private: static▶ void  ☀Update_Events(Character_Maps const& font_chars, Positioned_Face_Grid & grid, Pc_Input_State const& pc_input)❰
+
+    auto start_pos = grid.pos;
+    auto current_pos = grid.pos;
+    
+    
+    //process events
+    for (size_t i = 0; i < grid.cell.size(); ++i){
+        Faced_Label_Drawer::Event_It(font_chars,grid.cell[i],current_pos,pc_input);
+        Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
+    }
+❱
+
+◀private: static▶ Frame_Elements  ☀Get_Draw_Elements(Character_Maps const& font_chars, Positioned_Face_Grid & grid, Mouse_State const& mouse_state)❰
+
+    auto start_pos = grid.pos;
+    auto current_pos = grid.pos;
+    
+    
+    //redraw
+    Frame_Elements elements;
+    for (size_t i = 0; i < grid.cell.size(); ++i){
+        Append(elements.types,Faced_Label_Drawer::Draw(font_chars,grid.cell[i],current_pos,mouse_state).types);
+        Adjust_Positions_For_Next_Cell(grid,i,start_pos,current_pos);
+    }
+    return elements;
+❱
+
+
+◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell(Positioned_Face_Grid & grid, size_t index, Position const& start_pos, Position & current_pos)❰
+    
+        auto dim = Faced_Label_Drawer::Get_Dimensions(grid.cell[index]);
+        current_pos.x += dim.x-1;
+        
+        //line break cells if needed
+        if (grid.breaks[index] == Should_Line_Break::YES){
+            current_pos.y += dim.y-1;
+            current_pos.x = start_pos.x;
+        }
+❱

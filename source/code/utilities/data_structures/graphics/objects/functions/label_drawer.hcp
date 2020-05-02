@@ -1,0 +1,313 @@
+class
+❪string❫
+❪unordered_map❫
+❪utility❫
+❪cstdlib❫
+❪"code/utilities/data_structures/graphics/bitmap/full_color_bitmap/full_color_bitmap"❫
+❪"code/utilities/data_structures/graphics/bitmap/full_color_bitmap/positioned_full_color_bitmap"❫
+❪"code/utilities/fonts/bdf/settings/character_segment"❫
+❪"code/utilities/data_structures/graphics/objects/grid/faced/regular/label_settings"❫
+❪"code/utilities/data_structures/graphics/objects/grid/faced/regular/positioned_label"❫
+❪"code/utilities/data_structures/graphics/objects/cursor/label_cursor_selection"❫
+❪"code/utilities/graphics/imgui/ui/draw/mouse_events/mouse_events_checker"❫
+❪"code/utilities/graphics/imgui/render/elements/rectangle_drawer"❫
+❪"code/utilities/graphics/imgui/render/elements/full_color_bitmap_drawer"❫
+❪"code/utilities/data_structures/graphics/text/text_to_bitmap"❫
+❪"code/utilities/graphics/imgui/ui/ui_renders"❫
+❪"code/utilities/graphics/imgui/render/frame_elements"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/data_structures/dimensions/two_d_dimensions"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
+⚯
+❪"code/utilities/data_structures/graphics/text/str_to_bdf_segments"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/graphics/imgui/time/cycle_clock_checker"❫
+❪"code/utilities/data_structures/graphics/objects/functions/label_text_bitmap_getter"❫
+❪"code/utilities/data_structures/graphics/objects/style/label_style_chooser"❫
+❪"code/utilities/data_structures/graphics/objects/functions/label_length_getter"❫
+❪"code/utilities/data_structures/graphics/objects/functions/cursor_drawer"❫
+⚞⚟
+
+
+
+//FULL_DRAW
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    return Full_Draw(font_chars,label.pos,label.state,pc_input);
+❱
+◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Position pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
+    Frame_Elements elements;
+    
+    //label events
+    Event_It(font_chars,pos,label,pc_input);
+    
+    //draw label
+    elements.types += Draw(font_chars,pos,label,pc_input.mouse).types;
+    
+    return elements;
+❱
+
+//EVENT IT
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Positioned_Label & label, Pc_Input_State const& pc_input)❰
+    Event_It(font_chars,label.pos,label.state,pc_input);
+❱
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Position pos, Label_Settings & label, Pc_Input_State const& pc_input)❰
+
+    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
+    //Adjust_Position(pos);
+    label.events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,pc_input.mouse);
+    
+    Cursor_Drawer::Event_It(font_chars,pos,label,pc_input);
+❱
+
+//DRAW IT
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Label & label, Mouse_State const& mouse_state)❰
+    return Draw(font_chars,label.pos,label.state,mouse_state);
+❱
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_State const& mouse_state)❰
+    
+    Frame_Elements elements;
+    
+    //convert strings to bitmap representations
+    Adjust_Position(pos);
+    auto text = Get_Text_Bitmap(font_chars,pos,label);
+    Reverse_Adjust_Position(pos);
+    
+    
+    //adjust position for box portion
+    //Adjust_Position(pos);
+    
+    
+    //decide box dimensions
+    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
+    Decide_Label_Box_Dimensions(font_chars,label,style);
+    
+
+    //draw and handle backdrop
+    //auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(pos,style.box,mouse_state);
+    Set_Label_Properties_Based_On_Events(label,label.events,mouse_state);
+    Draw_Rectangle_Portion(elements,text,pos,style);
+    
+    
+    //adjust for message bitmap and print it
+    //Reverse_Adjust_Position(pos);
+    elements.types.emplace_back(text);
+    
+    Adjust_Position(pos);
+    Adjust_Cursor_Selection(font_chars,pos,label,label.events,mouse_state);
+    
+    //draw cursor
+    elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
+    Reverse_Adjust_Position(pos);
+    
+    
+    return elements;
+❱
+
+
+//size it
+◀public: static▶ Two_D_Dimensions ☀Get_Dimensions(Label_Settings label)❰
+    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
+    return Get_Dimensions(label,style);
+    
+❱
+
+
+◀private: static▶  Two_D_Dimensions ☀Get_Dimensions(Label_Settings const& label, Label_Style const& style)❰
+    Two_D_Dimensions dim;
+    dim.x = Decide_Textbox_Width(label,style);
+    dim.y = 15;
+    return dim;
+❱
+
+
+
+
+
+//utility
+◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+
+    //set active properties on the label
+    if (mouse_state.left.clicked){
+        if (events.clicked){
+            label.cursors.clear();
+            auto s = get_cursor_selection_based_on_click(font_chars,events.pos,pos,label);
+            label.cursors.emplace_back(s);
+        }
+        else{
+            label.cursors.clear();
+        }
+    }
+
+❱
+
+
+
+◀private: static▶ void ☀Adjust_Position(Position & pos)❰
+
+    int x_adjusted_label_draw = 2;
+    int y_adjusted_label_draw = 10;
+
+    //adjust for label backdrop
+    pos.y += y_adjusted_label_draw;
+    pos.x += x_adjusted_label_draw;
+❱
+
+◀private: static▶ void ☀Reverse_Adjust_Position(Position & pos)❰
+
+    int x_adjusted_label_draw = 2;
+    int y_adjusted_label_draw = 10;
+
+    //adjust for label backdrop
+    pos.y -= y_adjusted_label_draw;
+    pos.x -= x_adjusted_label_draw;
+❱
+
+
+
+◀private: static▶ Positioned_Full_Color_Bitmap ☀Get_Text_Bitmap(Character_Maps const& font_chars, Position pos, Label_Settings & label)❰
+    Positioned_Full_Color_Bitmap text;
+    text.bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,label);
+    text.pos = pos;
+    return text;
+❱
+
+
+◀private: static▶ void ☀Set_Label_Properties_Based_On_Events(Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+
+    //set hover properties on the label
+    label.user_state.is_hovered = events.hovered;
+    
+    //set active properties on the label
+    if (mouse_state.left.clicked){
+        if (events.clicked){
+            label.user_state.is_active = true;
+        }
+        else{
+            label.user_state.is_active = false;
+        }
+    }
+    
+    
+    // //set active properties on the label
+    // if (mouse_state.left.clicked){
+    //     if (label.clicked_event){
+    //         //label.clicked_event = false;
+    //         label.user_state.is_active = true;
+    //     }
+    //     else{
+    //         label.user_state.is_active = false;
+    //     }
+    // }
+    
+❱
+
+◀private: static▶ void ☀Draw_Rectangle_Portion(Frame_Elements & elements, Positioned_Full_Color_Bitmap & bitmap, Position pos, Label_Style const& style)❰
+    
+    bitmap.bitmap.color_fill = style.text;
+    Positioned_Rectangle_Settings settings;
+    settings.shape = style.box;
+    settings.pos = pos;
+    elements.types.emplace_back(settings);
+❱
+
+◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
+
+    //derive the width based on the characters of the label
+    if (style.width.grow_width){
+        const auto SOME_BUFFER_SPACE = 3;
+        auto box_width = Label_Length_Getter::Get_Message_Length(label) + SOME_BUFFER_SPACE;
+        return box_width;
+    }
+    
+    //derive the width based on a fixed settings
+    return style.width.fixed_width;
+❱
+
+◀private: static▶ void ☀Decide_Label_Box_Dimensions(Character_Maps const& font_chars, Label_Settings & label, Label_Style const& style)❰
+
+    
+    auto dim = Get_Dimensions(label,style);
+    
+    
+    
+    //set these box dimensions for all state styles of the label
+    label.styles.regular_nonactive.box.dimensions.width      = dim.x;
+    label.styles.regular_nonactive.box.dimensions.height     = dim.y;
+    label.styles.hovered_active.box.dimensions.width  = dim.x;
+    label.styles.hovered_active.box.dimensions.height = dim.y;
+    label.styles.regular_active.box.dimensions.width      = dim.x;
+    label.styles.regular_active.box.dimensions.height     = dim.y;
+    label.styles.hovered_nonactive.box.dimensions.width  = dim.x;
+    label.styles.hovered_nonactive.box.dimensions.height = dim.y;
+❱
+
+◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(Character_Maps const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
+    
+    
+    Label_Cursor_Selection s;
+    int width_covered = 0;
+    bool found = false;
+    auto segments = Str_To_Bdf_Segments::Convert(font_chars.segments.lookup,label.message);
+    for (size_t i = 0; i < segments.size(); ++i){
+        pos.x += segments[i].d_width_x;
+        width_covered = segments[i].d_width_x;
+        if (pos.x > click_pos.x){
+            s.label_index = i;
+            found = true;
+            break;
+        }
+    }
+    
+    if (!found){
+        s.label_index = 0;
+    }
+    
+    int diff = std::abs(pos.x - click_pos.x);
+    if (diff >= width_covered/2){
+        s.label_index -= 1;
+    }
+    
+    
+    s.label_cursor = Create_Label_Cursor_Settings();
+    return s;
+❱
+
+
+◀private: static▶ Label_Cursor ☀Create_Label_Cursor_Settings()❰
+
+    Label_Cursor x;
+    
+    //main cursor
+    //(the short line inside a textbox)
+    x.tick.shape.shape.dimensions.width = 1;
+    x.tick.shape.shape.dimensions.height = 13;
+    x.tick.shape.shape.edge.thickness = 0;
+    x.tick.shape.shape.edge.rounding  = 0.0;
+    x.tick.shape.shape.hooks.draw_border = false;
+    x.tick.shape.shape.hooks.draw_fill = true;
+    x.tick.shape.shape.colors.border = Imgui_Type_Utility::Red();
+    x.tick.shape.shape.colors.fill = Imgui_Type_Utility::Red();
+    x.tick.shape.pos.x = 30;
+    x.tick.shape.pos.y = 30;
+    
+    //label selection
+    x.highlight.shape.shape.dimensions.width = 50;
+    x.highlight.shape.shape.dimensions.height = 50;
+    x.highlight.shape.shape.edge.thickness = 1;
+    x.highlight.shape.shape.edge.rounding  = 0.0;
+    x.highlight.shape.shape.hooks.draw_border = false;
+    x.highlight.shape.shape.hooks.draw_fill = true;
+    x.highlight.shape.shape.colors.border = Imgui_Type_Utility::Red();
+    x.highlight.shape.shape.colors.border.alpha = 100;
+    x.highlight.shape.shape.colors.fill = Imgui_Type_Utility::Red();
+    x.highlight.shape.shape.colors.fill.alpha = 100;
+    
+    return x;
+    
+❱
+
+
+
+

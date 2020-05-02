@@ -19,7 +19,7 @@ hcp(
         "//code/utilities/graphics/imgui/ui:ui_renders",
         "//code/utilities/graphics/imgui/ui/window:window_renderer",
         "//code/utilities/graphics/imgui/ui/window:window_position_finder",
-        "//code/utilities/graphics/imgui/ui/draw/label/functions:label_drawer",
+        "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
         "//code/utilities/graphics/imgui/ui/draw:imgui_type_utility",
         "//code/tools/ide/frame:fullscreener",
         "//code/utilities/graphics/imgui:mechanics",
