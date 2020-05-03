@@ -35,6 +35,7 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_frame_getter",
         "//code/utilities/data_structures/graphics/objects/functions:grid_label_drawer",
+        "//code/utilities/data_structures/graphics/objects/functions:tree_label_drawer",
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/data_structures/graphics/objects/functions:cursor_drawer",
         "//code/utilities/graphics/imgui:mechanics",
