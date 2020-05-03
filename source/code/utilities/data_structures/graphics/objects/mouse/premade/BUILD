@@ -6,4 +6,5 @@ hcp(name="standard_mouse", deps = [
     "//code/utilities/graphics/imgui:imgui_type_utility",
     "//code/utilities/data_structures/graphics/bitmap/premade:crosshair_mouse",
     "//code/utilities/data_structures/graphics/objects/mouse:mouse",
+    "//code/utilities/colors:color_defaults",
 ])

@@ -36,4 +36,5 @@ hcp(name="default_label_styles", deps = [
     "//code/tools/transcompilers/unilang/tokens:get_tokens",
     "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
+    "//code/utilities/colors:color_defaults",
 ])

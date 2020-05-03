@@ -27,6 +27,7 @@ hcp(name="color_palettes",deps = [
 hcp(name="rectangle_shades",deps = [
     "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
     "//code/utilities/graphics/imgui:imgui_type_utility",
+    "//code/utilities/colors:color_defaults",
 ])
 
 hcp(name="converters",deps = [
@@ -49,3 +50,8 @@ hcp(name="sfml_color_pick_hue_changer",deps = [
     "@sfml//:sfml",
 ])
 
+
+hcp(name="color_defaults", deps = [
+    "//code/utilities/data_structures/color:transparent_rgb_color",
+    "//code/utilities/data_structures/position:position",
+])

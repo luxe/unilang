@@ -17,7 +17,7 @@ hcp(name="ui_renders",deps = [
 ])
 
 hcp(name="imgui_type_utility", deps = [
-"//code/utilities/data_structures/color:transparent_rgb_color",
-"//code/utilities/data_structures/position:position",
-"//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/data_structures/color:transparent_rgb_color",
+    "//code/utilities/data_structures/position:position",
+    "//code/utilities/graphics/imgui:mechanics",
 ])

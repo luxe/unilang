@@ -26,6 +26,7 @@ hcp(name="label_drawer", deps = [
     "//code/utilities/data_structures/dimensions:two_d_dimensions",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/data_structures/graphics/objects/functions:cursor_drawer",
+    "//code/utilities/colors:color_defaults",
 ])
 
 hcp(name="faced_label_drawer", deps = [
