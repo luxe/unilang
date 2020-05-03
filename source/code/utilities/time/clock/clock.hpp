@@ -28,4 +28,7 @@ public:
     long long getMilliseconds() const {
         return std::chrono::duration_cast<std::chrono::milliseconds>(Clock_t::now() - m_start).count();
     }
+    long getMinutes() const {
+        return std::chrono::duration_cast<std::chrono::minutes>(Clock_t::now() - m_start).count();
+    }
 };
