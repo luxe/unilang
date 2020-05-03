@@ -44,34 +44,12 @@ class
 ❱
 ◀private: static▶ void ☀Run_Repo_Tasks(std::string & results) ❰
     auto x = Self_Builder::Get_Results_Of_Building_Through_Docker_Container();
-    if (x.results.return_code == 0){
-        Append(results,"docker build: PASS");
-        Append(results," (");
-        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
-        Append_With_Newline(results,"m)");
-    }
-    else {
-        Append(results,"docker build: FAIL");
-        Append(results," (");
-        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
-        Append_With_Newline(results,"m)");
-        Append_With_Newline(results,x.results.stderr);
-    }
+    Record_Pass_Fail_Info(results,"docker build",x);
+    
     
     x = Self_Builder::Get_Results_Of_Testing_Through_Docker_Container();
-    if (x.results.return_code == 0){
-        Append(results,"docker test: PASS");
-        Append(results," (");
-        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
-        Append_With_Newline(results,"m)");
-    }
-    else {
-        Append(results,"docker test: FAIL");
-        Append(results," (");
-        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
-        Append_With_Newline(results,"m)");
-        Append_With_Newline(results,x.results.stderr);
-    }
+    Record_Pass_Fail_Info(results,"docker test",x);
+    
 ❱
 ◀private: static▶ void ☀Restart_Self_If_Possible(std::string & results) ❰
     auto x = Run_Command_Show_And_Store_Results_In_Summary("./user_build //code/tools/worker_bot:main","Rebuild Bot",results);
@@ -107,18 +85,29 @@ class
 ◀private: static▶ Timed_Process_Results ☀Run_Command_Show_And_Store_Results_In_Summary(std::string const& command, std::string const& name, std::string & results) ❰
 
     auto x = Run_Command_And_Show(command);
-    
-    if (x.results.return_code != 0){
-        std::string title = name + ": FAIL";
-        Append_With_Newline(results,title);
-        Append_With_Newline(results,x.results.stderr);
-    }
-    else{
-        std::string title = name + ": PASS";
-        Append_With_Newline(results,title);
-    }
+    Record_Pass_Fail_Info(results,name,x);
     
     return x;
+❱
+
+◀private: static▶ void ☀Record_Pass_Fail_Info(std::string & results, std::string const& name, Timed_Process_Results const& x)❰
+
+    if (x.results.return_code == 0){
+        std::string title = name + ": PASS";
+        Append(results,title);
+        Append(results," (");
+        Append(results,std::to_string(std::chrono::duration_cast<std::chrono::minutes>(x.time).count()));
+        Append_With_Newline(results,"m)");
+    }
+    else {
+        std::string title = name + ": FAIL";
+        Append(results,title);
+        Append(results," (");
+        Append(results,std::to_string(std::chrono::duration_cast<std::chrono::minutes>(x.time).count()));
+        Append_With_Newline(results,"m)");
+        Append_With_Newline(results,x.results.stderr);
+    }
+    
 ❱
 
 ◀private: static▶ Timed_Process_Results ☀Run_Command_And_Show(std::string command) ❰
