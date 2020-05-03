@@ -7,3 +7,9 @@ hcp_and_hcp_pos(name="face_grid", deps = [
     "//code/utilities/data_structures/graphics/objects/grid/faced:faced_label",
     "//code/utilities/data_structures/line_break:should_line_break",
 ])
+
+hcp_and_hcp_pos(name="face_tree", deps = [
+    "//code/utilities/data_structures/graphics/objects/grid/faced:faced_label",
+    "//code/utilities/data_structures/line_break:should_line_break",
+    "@tree//:tree"
+])
