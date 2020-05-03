@@ -6,13 +6,3 @@ hcp(name="line_settings",deps = [
     "//code/utilities/data_structures/color:transparent_rgb_color",
     "//code/utilities/data_structures/position:position"
 ])
-
-
-hcp(name="line_drawer",deps = [
-    "//code/utilities/data_structures/graphics/line:line_settings",
-    "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
-    "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
-    "//code/utilities/graphics/imgui:imgui_type_utility",
-    "//code/utilities/data_structures/position:position",
-    "//code/utilities/graphics/imgui:mechanics",
-])
