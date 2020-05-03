@@ -7,6 +7,7 @@ hcp(
     deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
+        "//code/utilities/program/call/process_spawn/timed:timed_process_spawner",
         "//code/utilities/time/sleeping:lib",
         "//code/utilities/program/wrappers/sendmail:sendmail_settings",
         "//code/utilities/program/wrappers/sendmail:sendmail_sender",

@@ -6,6 +6,8 @@ load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 hcp(name="self_builder", deps = [
     "//code/utilities/program/call/process_spawn:process_spawner",
     "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/program/call/process_spawn/timed:timed_process_spawner",
+    "//code/utilities/program/call/process_spawn/timed:timed_process_results",
 ])
 
 cpp_main(

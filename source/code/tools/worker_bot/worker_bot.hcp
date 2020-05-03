@@ -2,9 +2,11 @@ class
 ❪iostream❫
 ❪cstdlib❫
 ❪thread❫
+❪chrono❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/program/call/lib.hpp"❫
 ❪"code/utilities/program/call/process_spawn/process_spawner"❫
+❪"code/utilities/program/call/process_spawn/timed/timed_process_spawner"❫
 ❪"code/utilities/time/sleeping/lib"❫
 ⚯
 ❪"code/utilities/program/wrappers/sendmail/sendmail_sender"❫
@@ -38,25 +40,37 @@ class
 ◀private: static▶ void ☀Record_Working_Hash(std::string & results) ❰
 
     auto x = Run_Command_Show_And_Store_Results_In_Summary("git rev-parse HEAD", "get SHA",results);
-    Append_With_Newline(results,"commit: " + x.stdout);
+    Append_With_Newline(results,"commit: " + x.results.stdout);
 ❱
 ◀private: static▶ void ☀Run_Repo_Tasks(std::string & results) ❰
     auto x = Self_Builder::Get_Results_Of_Building_Through_Docker_Container();
-    if (x.return_code == 0){
-        Append_With_Newline(results,"docker build: PASS");
+    if (x.results.return_code == 0){
+        Append(results,"docker build: PASS");
+        Append(results," (");
+        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
+        Append_With_Newline(results,"m)");
     }
     else {
-        Append_With_Newline(results,"docker build: FAIL");
-        Append_With_Newline(results,x.stderr);
+        Append(results,"docker build: FAIL");
+        Append(results," (");
+        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
+        Append_With_Newline(results,"m)");
+        Append_With_Newline(results,x.results.stderr);
     }
     
     x = Self_Builder::Get_Results_Of_Testing_Through_Docker_Container();
-    if (x.return_code == 0){
-        Append_With_Newline(results,"docker test: PASS");
+    if (x.results.return_code == 0){
+        Append(results,"docker test: PASS");
+        Append(results," (");
+        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
+        Append_With_Newline(results,"m)");
     }
     else {
-        Append_With_Newline(results,"docker test: FAIL");
-        Append_With_Newline(results,x.stderr);
+        Append(results,"docker test: FAIL");
+        Append(results," (");
+        Append(results,std::chrono::duration_cast<std::chrono::minutes>(x.time).count());
+        Append_With_Newline(results,"m)");
+        Append_With_Newline(results,x.results.stderr);
     }
 ❱
 ◀private: static▶ void ☀Restart_Self_If_Possible(std::string & results) ❰
@@ -72,7 +86,7 @@ class
     
     //decide whether to restart
     //a wrapper script will restart the worker
-    if (x.return_code == 0){
+    if (x.results.return_code == 0){
         exit(0);
     }
 ❱
@@ -90,14 +104,14 @@ class
 
 
 //process reporting utils
-◀private: static▶ Process_Results ☀Run_Command_Show_And_Store_Results_In_Summary(std::string const& command, std::string const& name, std::string & results) ❰
+◀private: static▶ Timed_Process_Results ☀Run_Command_Show_And_Store_Results_In_Summary(std::string const& command, std::string const& name, std::string & results) ❰
 
     auto x = Run_Command_And_Show(command);
     
-    if (x.return_code != 0){
+    if (x.results.return_code != 0){
         std::string title = name + ": FAIL";
         Append_With_Newline(results,title);
-        Append_With_Newline(results,x.stderr);
+        Append_With_Newline(results,x.results.stderr);
     }
     else{
         std::string title = name + ": PASS";
@@ -107,16 +121,16 @@ class
     return x;
 ❱
 
-◀private: static▶ Process_Results ☀Run_Command_And_Show(std::string command) ❰
-        std::cout << command << std::endl;
-        auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
-        if (!results.stdout.empty()){
-            std::cout << results.stdout << std::endl;
-        }
-        if (!results.stderr.empty()){
-            std::cout << results.stderr << std::endl;
-        }
-        return results;
+◀private: static▶ Timed_Process_Results ☀Run_Command_And_Show(std::string command) ❰
+    std::cout << command << std::endl;
+    auto x = Timed_Process_Spawner::Execute_And_Get_Back_Results(command);
+    if (!x.results.stdout.empty()){
+        std::cout << x.results.stdout << std::endl;
+    }
+    if (!x.results.stderr.empty()){
+        std::cout << x.results.stderr << std::endl;
+    }
+    return x;
 ❱
 
 
