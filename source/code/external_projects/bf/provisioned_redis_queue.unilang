@@ -1,27 +1,27 @@
 􏶞o􏶟
-􏷲a redis queue designed to hold particularly provisioned elements􏷱
-􏷰a redis queue is an implementation of a queue data structure which internally uses a redis cluster to distribute the data across shards.
+􏷲a queue that is designed to hold particularly provisioned elements􏷱
+􏷰a provisioned redis queue is an implementation of a queue data structure which internally uses a redis cluster to distribute the data across shards.
 Its important to know that the lifetime of the queue persists before and after the queue data structure is created (since it exists in redis)
 Therefore, two redis queues with the same name, would in fact be the same underlying redis queue
 
 This redis queue comes with a list of required provisions
-if the queue element does not meet the required provisions, it should not be used with the queue
+if the queue element does not meet the required provisions, it should not be stored in the queue
 
 Provision queues are intended to represent particular operations that should only be processed by particular workers.
 An example use case for this would be to have two dedicated provision queues for CPU and GPU operations.
 CPU/GPU requirements would be determined through the remote api's command platform properties.
 We designate provision queues to have a set of "required provisions" (which match the platform properties).
-This allows specific workers to be chosen and specific operations to be queued􏷯
-􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
+This allows the scheduler to distribute operations by their properties and allows workers to dequeue from particular queues􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
 
 􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
 􏷤􏷣􏷦com.google.common.collect.Lists􏷥
 􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
 􏷤􏷣􏷦java.util.List􏷥
-􏷤􏷣􏷦build.buildfarm.instance.shard.queues.RedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
-􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
 􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
 􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
 􏲏􏲐􏲍org.junit.Test􏲎
@@ -52,13 +52,19 @@ These often match the remote api's command platform properties􏶥
 􏶘+􏶙􏶰􏶯􏶮SetMultimap<String, String>􏶭􏶬required provisions􏶫􏶪􏶩
 
 􏶨the queue itself􏶧
-􏶦a redis queue designed to hold particularly provisioned elements􏶥
-􏶘+􏶙􏶰􏶯􏶮RedisQueue􏶭􏶬queue􏶫􏶪􏶩
+􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
+􏶘+􏶙􏶰􏶯􏶮BalancedRedisQueue􏶭􏶬queue􏶫􏶪􏶩
 
 􏷐constructor􏷏
 􏶠construct the provision queue􏶡
 􏷘+􏷗􏴅Constructor􏴆􏷒redis_provision_queue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
+􏶜􏶝􏷆string􏷅􏷄required provisions􏷃􏷀the required provisions of the queue􏶿
 􏶴
+    this.queue = new BalancedRedisQueue(redis,name,hashtags);
+    this.requiredProvisions = requiredProvisions;
 􏶳
 􏴱can construct􏴲􏴯regular􏴰
 􏲝the object can be constructed􏲞
