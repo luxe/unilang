@@ -19,6 +19,7 @@ This allows the scheduler to distribute operations by their properties and allow
 􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -49,21 +50,20 @@ This allows the scheduler to distribute operations by their properties and allow
 􏶨the required provisions of the queue􏶧
 􏶦The required provisions to allow workers and operations to be added to the queue.  
 These often match the remote api's command platform properties􏶥
-􏶘+􏶙􏶰􏶯􏶮SetMultimap<String, String>􏶭􏶬required provisions􏶫􏶪􏶩
+􏶘-􏶙􏶰􏶯􏶮SetMultimap<String, String>􏶭􏶬required provisions􏶫􏶪􏶩
 
 􏶨the queue itself􏶧
 􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
-􏶘+􏶙􏶰􏶯􏶮BalancedRedisQueue􏶭􏶬queue􏶫􏶪􏶩
+􏶘-􏶙􏶰􏶯􏶮BalancedRedisQueue􏶭􏶬queue􏶫􏶪􏶩
 
 􏷐constructor􏷏
 􏶠construct the provision queue􏶡
 􏷘+􏷗􏴅Constructor􏴆􏷒redis_provision_queue􏷑
-􏶜􏶝􏷆JedisCluster􏷅􏷄redis􏷃􏷀an established redis cluster􏶿
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
-􏶜􏶝􏷆string􏷅􏷄required provisions􏷃􏷀the required provisions of the queue􏶿
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄required provisions􏷃􏷀the required provisions of the queue􏶿
 􏶴
-    this.queue = new BalancedRedisQueue(redis,name,hashtags);
+    this.queue = new BalancedRedisQueue(name,hashtags);
     this.requiredProvisions = requiredProvisions;
 􏶳
 􏴱can construct􏴲􏴯regular􏴰
@@ -72,3 +72,18 @@ These often match the remote api's command platform properties􏶥
 􏴭
     RedisProvisionQueue queue = new RedisProvisionQueue();
 􏴮
+
+􏷐checks required provisions􏷏
+􏶠checks whether the provisions given fulfill all of the required provisions of the queue􏶡
+􏷘+􏷗􏴅Observers􏴆􏷒is eligible􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄provisions􏷃􏷀provisions to check that requirements are met􏶿
+􏶾bool􏶽􏶼is eligible􏶻􏶺whether the queue is eligible based on the provisions given􏶹
+􏶴
+    for (String checkedProvision : requiredProvisions.asMap().keySet()) {
+      if (!provisions.asMap().containsKey(checkedProvision)) {
+        return false;
+      }
+    }
+    return true;
+􏶳
+
