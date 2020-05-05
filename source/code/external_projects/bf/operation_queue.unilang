@@ -15,6 +15,8 @@
 􏷤􏷣􏷦java.util.regex.Matcher􏷥
 􏷤􏷣􏷦java.util.regex.Pattern􏷥
 􏷤􏷣􏷦build.buildfarm.v1test.QueueStatus􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform􏷥
+􏷤􏷣􏷦java.lang.RuntimeException􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -106,16 +108,48 @@
 􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
 􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
 􏶴
-    return queues.get(0).queue().getDequeueName();
+    return "operation_dequeue";
+􏶳
+
+􏷐get dequeue name􏷏
+􏶠get the name of the internal dequeue used by the queue. since each internal queue has their own dequeue, this name is generic without the hashtag􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
+􏶜􏶝􏷆List<Platform.Property>􏷅􏷄provisions􏷃􏷀provisions used to select an eligible queue􏶿
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    BalancedRedisQueue queue = chooseEligibleQueue(provisions);
+    return queue.getDequeueName();
+􏶳
+
+􏷐push a value onto the queue􏷏
+􏶠adds the value into one of the internal backend redis queues􏶡
+􏷘+u􏷗􏴅Transformer􏴆􏷒push􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
+􏶴
+    queues.get(0).queue().push(jedis,val);
 􏶳
 
 􏷐push a value onto the queue􏷏
 􏶠adds the value into one of the internal backend redis queues􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆List<Platform.Property>􏷅􏷄provisions􏷃􏷀provisions used to select an eligible queue􏶿
 􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
 􏶴
-    queues.get(0).queue().push(jedis,val);
+    BalancedRedisQueue queue = chooseEligibleQueue(provisions);
+    queue.push(jedis,val);
+􏶳
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will perform an exponential backoff
+null is returned if the overall backoff times out􏶡
+􏷘+u􏷗􏴅Transformer􏴆􏷒dequeue􏷑􏶸InterruptedException􏶷
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    return queues.get(0).queue().dequeue(jedis);
 􏶳
 
 􏷐pop element into internal dequeue and return value􏷏
@@ -124,9 +158,11 @@ it will perform an exponential backoff
 null is returned if the overall backoff times out􏶡
 􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑􏶸InterruptedException􏶷
 􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆List<Platform.Property>􏷅􏷄provisions􏷃􏷀provisions used to select an eligible queue􏶿
 􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
 􏶴
-    return queues.get(0).queue().dequeue(jedis);
+    BalancedRedisQueue queue = chooseEligibleQueue(provisions);
+    return queue.dequeue(jedis);
 􏶳
 
 􏷐get status information about the queue􏷏
@@ -136,4 +172,43 @@ null is returned if the overall backoff times out􏶡
 􏶾QueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
 􏶴
     return queues.get(0).queue().status(jedis);
+􏶳
+
+􏷐get status information about the queue􏷏
+􏶠helpful for understanding the current load on the queue and how elements are balanced􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒status􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆List<Platform.Property>􏷅􏷄provisions􏷃􏷀provisions used to select an eligible queue􏶿
+􏶾QueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
+􏶴
+    BalancedRedisQueue queue = chooseEligibleQueue(provisions);
+    return queue.status(jedis);
+􏶳
+
+􏷐choose an eligible queue based on given properties􏷏
+􏶠we use the platform execution properties of a queue entry to determine the appropriate queue
+if there no eligible queues, an exception is thrown􏶡
+􏷘-􏷗􏴅Observer􏴆􏷒choose eligible queue􏷑
+􏶜􏶝􏷆List<Platform.Property>􏷅􏷄provisions􏷃􏷀provisions to check that requirements are met􏶿
+􏶾BalancedRedisQueue􏶽􏶼queue􏶻􏶺the chosen queue􏶹
+􏶴
+    for (ProvisionedRedisQueue pQueue: queues){
+        if (pQueue.isEligible(toMultimap(provisions))){
+            return pQueue.queue();
+        }
+    }
+    throw new RuntimeException("there are no eligible queues for the provided execution requirements");
+􏶳
+
+􏷐convert proto provisions into java multimap􏷏
+􏶠this conversion is done to more easily check if a key/value exists in the provisions􏶡
+􏷘-􏷗􏴅Observer􏴆􏷒to multimap􏷑
+􏶜􏶝􏷆List<Platform.Property>􏷅􏷄provisions􏷃􏷀provisions list to convert􏶿
+􏶾SetMultimap<String, String>􏶽􏶼provision set􏶻􏶺the provisions as a set􏶹
+􏶴
+    SetMultimap<String, String> set = LinkedHashMultimap.create();
+    for (Platform.Property property : provisions) {
+        set.put(property.getName(), property.getValue());
+    }
+    return set;
 􏶳
