@@ -1,0 +1,132 @@
+􏶞o􏶟
+􏷲the operation queue of the shard backplane􏷱
+􏷰the operation queue can be split into multiple queues according to platform execution information􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝
+
+􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
+􏷤􏷣􏷦com.google.common.collect.Lists􏷥
+􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+􏶨different queues based on platform execution requirements􏶧
+􏶦the appropriate queues are chosen based on given properties􏶥
+􏶘-􏶙􏶰􏶯􏶮List<ProvisionedRedisQueue>􏶭􏶬queues􏶫􏶪􏶩
+
+􏷐constructor􏷏
+􏶠construct the operation queue with various provisioned redis queues􏶡
+􏷘+􏷗􏴅Constructor􏴆􏷒operation queue􏷑
+􏶜􏶝􏷆List<ProvisionedRedisQueue>􏷅􏷄queues􏷃􏷀provisioned queues􏶿
+􏶴
+    this.queues = queues;
+􏶳
+
+􏷐visit each element in the dequeue􏷏
+􏶠enacts a visitor over each element in the dequeue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit dequeue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    for (ProvisionedRedisQueue pQueue: queues){
+        pQueue.queue().visitDequeue(jedis,visitor);
+    }
+􏶳
+
+􏷐remove element from dequeue􏷏
+􏶠removes an element from the dequeue and specifies whether it was removed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove from dequeue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to remove􏶿
+􏶾bool􏶽􏶼was removed􏶻􏶺whether or not the value was removed􏶹
+􏶴
+    for (ProvisionedRedisQueue pQueue: queues){
+        if (pQueue.queue().removeFromDequeue(val)){
+            return true;
+        }
+    }
+    return false;
+􏶳
+
+􏷐visit each element in the queue􏷏
+􏶠enacts a visitor over each element in the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒visit􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆StringVisitor􏷅􏷄visitor􏷃􏷀a visitor for each visited element in the queue􏶿
+􏶴
+    for (ProvisionedRedisQueue pQueue: queues){
+        pQueue.queue().visit(visitor);
+    }
+􏶳
+
+􏷐get size􏷏
+􏶠checks the current length of the queue􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒size􏷑
+􏶾l􏶽􏶼length􏶻􏶺the current length of the queue􏶹
+􏶴
+    //the accumulated size of all of the queues
+    return queues.stream().mapToInt(i -> (int)i.queue().size()).sum();
+􏶳
+
+􏷐get dequeue name􏷏
+􏶠get the name of the internal dequeue used by the queue. since each internal queue has their own dequeue, this name is generic without the hashtag􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get dequeue name􏷑
+􏶾string􏶽􏶼name􏶻􏶺the name of the queue􏶹
+􏶴
+    return queues.get(0).queue().getDequeueName();
+􏶳
+
+􏷐push a value onto the queue􏷏
+􏶠adds the value into one of the internal backend redis queues􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒push􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆string􏷅􏷄val􏷃􏷀the value to push onto the queue􏶿
+􏶴
+    return queues.get(0).queue().push(jedis);
+􏶳
+
+􏷐pop element into internal dequeue and return value􏷏
+􏶠this pops the element from one queue atomically into an internal list called the dequeue
+it will perform an exponential backoff
+null is returned if the overall backoff times out􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒dequeue􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶾string􏶽􏶼val􏶻􏶺the value of the transfered element.  null if the thread was interrupted􏶹
+􏶴
+    return queues.get(0).queue().dequeue(jedis);
+􏶳
+
+􏷐get status information about the queue􏷏
+􏶠helpful for understanding the current load on the queue and how elements are balanced􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒status􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶾QueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
+􏶴
+    return queues.get(0).queue().status(jedis);
+􏶳
