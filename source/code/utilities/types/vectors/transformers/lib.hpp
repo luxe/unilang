@@ -449,6 +449,8 @@ std::vector<T>& Turn_Whitespace_Lines_Into_Empty_Lines(std::vector<T>& vec){
     return vec;
 }
 
+std::vector<std::string>& Remove_Whitespace_Lines(std::vector<std::string>& v);
+
 std::vector<std::string>& Remove_First_Elements_That_Are_Whitespace_Elements(std::vector<std::string>& vec);
 std::vector<std::string>& Remove_Last_Elements_That_Are_Whitespace_Elements(std::vector<std::string>& vec);
 std::vector<std::string>& Remove_Last_Whitespace_Elements_And_Ensure_Only_One_Last_Empty_Element(std::vector<std::string>& vec);

@@ -6,6 +6,7 @@
 #include "code/utilities/types/strings/transformers/squeeze/lib.hpp"
 #include "code/utilities/types/strings/transformers/other/lib.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
+#include "code/utilities/types/strings/observers/other/lib.hpp"
 
 
 
@@ -99,6 +100,13 @@ std::vector<std::string>& Squeeze_Away_Spaces_For_Each_Element(std::vector<std::
         Squeeze_Away_Spaces(it);
     }
     return vec;
+}
+
+std::vector<std::string>& Remove_Whitespace_Lines(std::vector<std::string>& v){
+    v.erase( std::remove_if(std::begin(v), std::end(v), [&](std::string const& line){
+        return Contains_Only_Whitespace_Characters(line);
+    }), std::end(v) );
+    return v;
 }
 
 std::vector<std::string>& Squeeze_Whitespace_Elements(std::vector<std::string>& vec){

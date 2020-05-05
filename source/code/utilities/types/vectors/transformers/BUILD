@@ -17,6 +17,7 @@ cc_library(
 "//code/utilities/types/map:lib",
 "//code/utilities/language_basic/std_hackery:std_aliases",
 "//code/utilities/types/strings/observers/converting:lib",
+"//code/utilities/types/strings/observers/other:lib",
 "@boost//:range",
 #include "code/utilities/math/gmp/lib.hpp"
 ]
