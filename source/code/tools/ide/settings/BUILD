@@ -15,6 +15,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/graphics/imgui/window:window_settings",
     "//code/utilities/graphics/imgui/background:background_settings",
     "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
     "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",
     "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
     "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
@@ -51,4 +52,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/graphics/imgui/background:background_settings_getter",
     "//code/utilities/execution:thread_pool_getter",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:default_sliders",
+    "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
 ])
