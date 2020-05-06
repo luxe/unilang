@@ -15,8 +15,10 @@
 􏷤􏷣􏷦java.util.regex.Matcher􏷥
 􏷤􏷣􏷦java.util.regex.Pattern􏷥
 􏷤􏷣􏷦build.buildfarm.v1test.QueueStatus􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.OperationQueueStatus􏷥
 􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform􏷥
 􏷤􏷣􏷦java.lang.RuntimeException􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -169,9 +171,19 @@ null is returned if the overall backoff times out􏶡
 􏶠helpful for understanding the current load on the queue and how elements are balanced􏶡
 􏷘+􏷗􏴅Observer􏴆􏷒status􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
-􏶾QueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
+􏶾OperationQueueStatus􏶽􏶼status􏶻􏶺the current status of the queue􏶹
 􏶴
-    return queues.get(0).queue().status(jedis);
+    //get properties
+    List<QueueStatus> provisions = new ArrayList<>();
+    for (ProvisionedRedisQueue pQueue: queues){
+        provisions.add(pQueue.queue().status(jedis));
+    }
+    
+    //build proto
+    OperationQueueStatus status = OperationQueueStatus.newBuilder()
+    .addAllProvisions(provisions)
+    .build();
+    return status;
 􏶳
 
 􏷐get status information about the queue􏷏
