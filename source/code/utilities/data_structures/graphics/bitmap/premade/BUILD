@@ -9,3 +9,7 @@ hcp(name="crosshair_mouse", deps = [
 hcp(name="tree_expand_symbol", deps = [
     "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
 ])
+
+hcp(name="tree_collapse_symbol", deps = [
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
+])
