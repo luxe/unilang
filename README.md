@@ -11,11 +11,11 @@
 
 
 ## Summary
-Unilang is a project for everything related to programming.  It has a graphical / textual fronted for software development.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person, but you might find something useful in it as well.  
+Unilang is a project for everything related to programming.  It has a graphical and textual fronted for software development.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person, but you might find something useful in it as well.  
 
 
 ## Philosophy
-The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang is focused on providing concept values for a language meta-model as apposed to syntactical expressions being parsed into ASTs which often lose pragmatic meaning in their correlation.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
+The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang is focused on providing concept values for a language meta-model.  This avoids the strategy where syntactical expressions are parsed into ASTs in which pragmatic meaning is often lost during correlation.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
 
 
 ## GPL Shortcomings
