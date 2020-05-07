@@ -24,6 +24,9 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦java.util.Set􏷥
 􏷤i􏷣􏷦redis.clients.jedis.JedisCluster.HASHSLOTS􏷥
+􏷤􏷣􏷦redis.clients.jedis.util.JedisClusterCRC16􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -53,15 +56,15 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 
 􏶨the prefix for finding CAS keys􏶧
 􏶦can be used in scan operations on CAS􏶥
-􏶘-􏶙􏶰sc􏶯􏶮String􏶭􏶬cas wildcard􏶫􏶪"ContentAddressableStorage:*"􏶩
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬cas wildcard􏶫􏶪"ContentAddressableStorage:*"􏶩
 
 􏶨a default scan count􏶧
 􏶦can be used in scan operations on CAS􏶥
-􏶘-􏶙􏶰sc􏶯􏶮i􏶭􏶬default scan count􏶫􏶪10000􏶩
+􏶘-s􏶙􏶰c􏶯􏶮i􏶭􏶬default scan count􏶫􏶪10000􏶩
 
 􏶨the worker key name in redis􏶧
 􏶦used to get all worker key names􏶥
-􏶘-􏶙􏶰sc􏶯􏶮String􏶭􏶬workers key name􏶫􏶪"Workers"􏶩
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬workers key name􏶫􏶪"Workers"􏶩
 
 
 􏷐re-index the workers associated with CAS data􏷏
@@ -94,7 +97,7 @@ the indexer is designed to compare existing workers with all CAS entries and rem
     String nextCursor = "0";
     do {
         
-        ScanResult scanResult = node.scan(nextCursor, params);
+        ScanResult scanResult = cluster.scan(nextCursor, params);
         List<String> keys = scanResult.getResult();
         deleteWorkersThroughIntersection(cluster,keys);
         
@@ -106,8 +109,13 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏶠uses all the CAS keys to update their references to workers􏶡
 􏷘-s􏷗􏴅Observer􏴆􏷒delete workers through intersection􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
-􏶜􏶝􏷆List<String>􏷅􏷄keys􏷃􏷀CAS keys to reindex􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄cas keys􏷃􏷀CAS keys to reindex􏶿
 􏶴
+    for (String casKey: casKeys){
+        int casSlotNumber = JedisClusterCRC16.getSlot(casKey);
+        String workerKey = slotSpecificActiveWorkerSet(casSlotNumber);
+        cluster.sinterstore(casKey,workerKey,casKey);
+    }
 􏶳
 
 􏷐store the active workers in a set designated at each slot􏷏
