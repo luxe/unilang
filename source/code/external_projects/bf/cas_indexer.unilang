@@ -11,6 +11,7 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
 􏷤􏷣􏷦build.buildfarm.common.redis.ProvisionedRedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.RedisSlotToHash􏷥
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
 􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
 􏷤􏷣􏷦java.util.Collections􏷥
@@ -21,6 +22,8 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform􏷥
 􏷤􏷣􏷦java.lang.RuntimeException􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤i􏷣􏷦redis.clients.jedis.JedisCluster.HASHSLOTS􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -54,14 +57,28 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏷘+s􏷗􏴅Observer􏴆􏷒reindex workers􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
 􏶴
-    
+    storeActiveWorkersInAllSlots(cluster);
 􏶳
 
+􏷐store the active workers in a set designated at each slot􏷏
+􏶠this is done to ensure workers are available for intersection operations at any slot􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒store active workers in all slots􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    Set<byte[]> workers = cluster.hkeys("Workers");
+    for (int i = 0; i < HASHSLOTS; ++i){
+        String key = slotSpecificActiveWorkerSet(i);
+        cluster.del(key);
+        cluster.sadd(key,workers);
+    }
+􏶳
 
 􏷐get a set name specific to the slot number given􏷏
 􏶠we need sets to exist at specific slots in order to perform redis intersections (same slot operations)􏶡
 􏷘-s􏷗􏴅Observer􏴆􏷒slot specific active worker set􏷑
 􏶜􏶝􏷆l􏷅􏷄slot number􏷃􏷀the slot number to derive the key name for􏶿
+􏶾String􏶽􏶼key􏶻􏶺the derived key with hashtag􏶹
 􏶴
     String hashtag = RedisSlotToHash.correlate(slotNumber);
+    return "{" + hashtag + "}:intersecting-workers";
 􏶳
