@@ -66,6 +66,14 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏶦used to get all worker key names􏶥
 􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬workers key name􏶫􏶪"Workers"􏶩
 
+􏶨the key name for a worker set􏶧
+􏶦this set is temporary for performing same slot intersections􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬temp worker set􏶫􏶪"intersecting-workers"􏶩
+
+􏶨cursor sentimental used by jedis􏶧
+􏶦used to begin and end scan paging􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬cursor sentinal􏶫􏶪"0"􏶩
+
 
 􏷐re-index the workers associated with CAS data􏷏
 􏶠removes references to worker nodes that are no longer running􏶡
@@ -94,15 +102,16 @@ the indexer is designed to compare existing workers with all CAS entries and rem
     params.count(DEFAULT_SCAN_COUNT);
 
     //run query and perform intersections
-    String nextCursor = "0";
+    String nextCursor = CURSOR_SENTINAL;
     do {
         
+        //update workers on scanned keys
         ScanResult scanResult = cluster.scan(nextCursor, params);
         List<String> keys = scanResult.getResult();
         deleteWorkersThroughIntersection(cluster,keys);
         
         nextCursor = scanResult.getCursor();
-    } while(!nextCursor.equals("0"));
+    } while(!nextCursor.equals(CURSOR_SENTINAL));
 􏶳
 
 􏷐reindex the workers through intersection􏷏
@@ -149,5 +158,5 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏶾String􏶽􏶼key􏶻􏶺the derived key with hashtag􏶹
 􏶴
     String hashtag = RedisSlotToHash.correlate(slotNumber);
-    return "{" + hashtag + "}:intersecting-workers";
+    return "{" + hashtag + "}:" + TEMP_WORKER_SET;
 􏶳
