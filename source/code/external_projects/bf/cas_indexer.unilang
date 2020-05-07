@@ -51,13 +51,63 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
 
+􏶨the prefix for finding CAS keys􏶧
+􏶦can be used in scan operations on CAS􏶥
+􏶘-􏶙􏶰sc􏶯􏶮String􏶭􏶬cas wildcard􏶫􏶪"ContentAddressableStorage:*"􏶩
+
+􏶨a default scan count􏶧
+􏶦can be used in scan operations on CAS􏶥
+􏶘-􏶙􏶰sc􏶯􏶮i􏶭􏶬default scan count􏶫􏶪10000􏶩
+
+􏶨the worker key name in redis􏶧
+􏶦used to get all worker key names􏶥
+􏶘-􏶙􏶰sc􏶯􏶮String􏶭􏶬workers key name􏶫􏶪"Workers"􏶩
+
 
 􏷐re-index the workers associated with CAS data􏷏
 􏶠removes references to worker nodes that are no longer running􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒reindex workers􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
 􏶴
+    //setup
     storeActiveWorkersInAllSlots(cluster);
+    
+    //worker index deletion
+    performIndexing(cluster);
+    
+    //cleanup
+    deleteActiveWorkersFromAllSlots(cluster);
+􏶳
+
+􏷐perform the indexing operation to remove workers􏷏
+􏶠assumes the needed worker information is available in each slot􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒perform indexing􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+
+    //construct CAS query
+    ScanParams params = new ScanParams();
+    params.match(CAS_WILDCARD);
+    params.count(DEFAULT_SCAN_COUNT);
+
+    //run query and perform intersections
+    String nextCursor = "0";
+    do {
+        
+        ScanResult scanResult = node.scan(nextCursor, params);
+        List<String> keys = scanResult.getResult();
+        deleteWorkersThroughIntersection(cluster,keys);
+        
+        nextCursor = scanResult.getCursor();
+    } while(!nextCursor.equals("0"));
+􏶳
+
+􏷐reindex the workers through intersection􏷏
+􏶠uses all the CAS keys to update their references to workers􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete workers through intersection􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄keys􏷃􏷀CAS keys to reindex􏶿
+􏶴
 􏶳
 
 􏷐store the active workers in a set designated at each slot􏷏
@@ -65,11 +115,22 @@ the indexer is designed to compare existing workers with all CAS entries and rem
 􏷘-s􏷗􏴅Observer􏴆􏷒store active workers in all slots􏷑
 􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
 􏶴
-    Set<byte[]> workers = cluster.hkeys("Workers");
+    Set<String> workers = cluster.hkeys(WORKERS_KEY_NAME);
     for (int i = 0; i < HASHSLOTS; ++i){
         String key = slotSpecificActiveWorkerSet(i);
         cluster.del(key);
-        cluster.sadd(key,workers);
+        cluster.sadd(key,workers.stream().toArray(String[]::new));
+    }
+􏶳
+
+􏷐delete the active workers set from each slot􏷏
+􏶠this is done assuming they are no longer needed􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒delete active workers from all slots􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶴
+    for (int i = 0; i < HASHSLOTS; ++i){
+        String key = slotSpecificActiveWorkerSet(i);
+        cluster.del(key);
     }
 􏶳
 
