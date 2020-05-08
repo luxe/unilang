@@ -6,6 +6,11 @@ hcp(name="multi_color_bitmap", deps = [
 "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_settings",
 ])
 
+hcp(name="multi_color_bitmap_button", deps = [
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
+    "//code/utilities/data_structures/position:position",
+])
+
 hcp(name="positioned_multi_color_bitmap", deps = [
     "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
     "//code/utilities/data_structures/position:position",
