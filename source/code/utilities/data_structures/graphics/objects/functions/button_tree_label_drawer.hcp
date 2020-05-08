@@ -34,15 +34,53 @@ class
     auto start_pos = pos;
     auto current_pos = pos;
     
+    bool subtree_collapsed = false;
+    int collapsed_depth = 0;
+    
     while(it!=end) {
         
         //calculate the depth of the node
         int depth = tr.depth(it)-rootdepth;
         
-        Adjust_Positions_For_Next_Cell(it->label,start_pos,current_pos,depth);
-        Append(elements.types,Faced_Label_Drawer::Draw(font_chars,it->label,current_pos,pc_input.mouse).types);
+        //uncollapse
+        if (subtree_collapsed && collapsed_depth >= depth){
+            subtree_collapsed = false;
+        }
+        
+        //draw
+        if (!subtree_collapsed){
+            
+            //add label
+            Adjust_Positions_For_Next_Cell(it->label,start_pos,current_pos,depth);
+            Append(elements.types,Faced_Label_Drawer::Draw(font_chars,it->label,current_pos,pc_input.mouse).types);
+            
+            //add button
+            Possibly_Add_Button(elements,pc_input.mouse,tr,it,current_pos);
+        }
+        
+        //collapse
+        if (!subtree_collapsed && tr.number_of_children(it) > 0 && it->button.current_face == 0){
+            subtree_collapsed = true;
+            collapsed_depth = depth;
+        }
+        
         
         ++it;
+    }
+❱
+
+◀private: static▶ void  ☀Possibly_Add_Button(Frame_Elements & elements, Mouse_State const& mouse, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Position const& current_pos)❰
+    if (tr.number_of_children(it) > 0){
+        
+        //draw
+        Positioned_Multi_Color_Bitmap button;
+        button.pos = current_pos;
+        button.pos.x -= 10;
+        button.pos.y += 3;
+        button.bitmap = it->button.faces[it->button.current_face];
+        elements.types.emplace_back(button);
+        
+        
     }
 ❱
 
