@@ -13,3 +13,9 @@ hcp(name="tree_expand_symbol", deps = [
 hcp(name="tree_collapse_symbol", deps = [
     "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
 ])
+
+hcp(name="tree_button", deps = [
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap_button",
+    "//code/utilities/data_structures/graphics/bitmap/premade:tree_collapse_symbol",
+    "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
+])

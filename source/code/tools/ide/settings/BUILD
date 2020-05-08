@@ -24,6 +24,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/data_structures/graphics/objects/grid:positioned_face_grid",
     "//code/utilities/data_structures/graphics/objects/grid:positioned_face_tree",
+    "//code/utilities/data_structures/graphics/objects/grid:positioned_button_face_tree",
     "//code/utilities/peripheral/pc:pc_input_state",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:positioned_slider",
     "@boost//:asio",
@@ -53,4 +54,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/execution:thread_pool_getter",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:default_sliders",
     "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
+    "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
 ])

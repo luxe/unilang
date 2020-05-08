@@ -98,3 +98,17 @@ hcp(name="tree_label_drawer", deps = [
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/peripheral/pc:pc_input_state",
 ])
+
+hcp(name="button_tree_label_drawer", deps = [
+    "//code/utilities/fonts/bdf/settings:character_segment",
+    "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
+    "//code/utilities/data_structures/graphics/objects/grid/faced:positioned_buttoned_faced_label",
+    "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
+    "//code/utilities/data_structures/graphics/objects/grid:positioned_button_face_tree",
+    "//code/utilities/data_structures/graphics/objects:frame_elements",
+    "//code/utilities/peripheral/mouse/state:mouse_state",
+    "//code/utilities/types/vectors/operators:lib",
+    "//code/utilities/data_structures/graphics/objects/functions:faced_label_drawer",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/peripheral/pc:pc_input_state",
+])
