@@ -9,17 +9,34 @@ class
 ⚞⚟
 
 
-
+//HIGH LEVEL EVENTS GETTER
 ◀public: static▶ Mouse_Events ☀search_for_mouse_events_in_rectangle(Position pos, Rectangle_Settings const &settings, Mouse_State const& mouse_state)
 ❰
     //find if any mouse events have happened on the rectangle
     Mouse_Events events;
-    if (mouse_clicked_area(pos, settings,mouse_state))
+    if (mouse_clicked_area(mouse_state,pos,settings))
     {
         events.clicked = true;
         events.pos = mouse_state.pos;
     }
-    if (mouse_is_hovering_area(pos, settings,mouse_state))
+    if (mouse_is_hovering_area(mouse_state,pos,settings))
+    {
+        events.hovered = true;
+        events.pos = mouse_state.pos;
+    }
+    
+    return events;
+❱
+◀public: static▶ Mouse_Events ☀search_for_mouse_events_in_rectangle(Position const& top_left, Position const& bottom_right, Mouse_State const& mouse_state)
+❰
+    //find if any mouse events have happened on the rectangle
+    Mouse_Events events;
+    if (mouse_clicked_area(mouse_state,top_left,bottom_right))
+    {
+        events.clicked = true;
+        events.pos = mouse_state.pos;
+    }
+    if (mouse_is_hovering_area(mouse_state,top_left,bottom_right))
     {
         events.hovered = true;
         events.pos = mouse_state.pos;
@@ -29,41 +46,51 @@ class
 ❱
 
 
-
-◀private: static▶ bool ☀mouse_clicked_area(Position pos, Rectangle_Settings const &settings, Mouse_State const& mouse_state)
+//INDIVIDUAL MOUSE CHECKS
+◀private: static▶ bool ☀mouse_clicked_area(Mouse_State const& mouse_state, Position pos, Rectangle_Settings const &settings)
 ❰
     if (mouse_state.left.clicked)
     {
-        auto mouse_pos = mouse_state.pos;
-        return position_inside_rectangle(mouse_pos,pos,settings);
+        return position_inside_rectangle(mouse_state.pos,pos,settings);
     }
     return false;
 ❱
-
-◀private: static▶ bool ☀mouse_is_hovering_area(Position pos, Rectangle_Settings const &settings, Mouse_State const& mouse_state)
+◀private: static▶ bool ☀mouse_clicked_area(Mouse_State const& mouse_state, Position const& top_left, Position const& bottom_right)
 ❰
-    //old implementation
-    // if (ImGui::IsMouseHoveringRect(
-    //         ImVec2(pos.x, pos.y), ImVec2(pos.x + settings.dimensions.width - 1, pos.y + settings.dimensions.height), false))
-    // {
-    //     return true;
-    // }
-    // return false;
-
-    auto mouse_pos = mouse_state.pos;
-    return position_inside_rectangle(mouse_pos,pos,settings);
+    if (mouse_state.left.clicked)
+    {
+        return position_inside_rectangle(mouse_state.pos,top_left,bottom_right);
+    }
+    return false;
+❱
+◀private: static▶ bool ☀mouse_is_hovering_area(Mouse_State const& mouse_state, Position pos, Rectangle_Settings const &settings)
+❰
+    return position_inside_rectangle(mouse_state.pos,pos,settings);
+❱
+◀private: static▶ bool ☀mouse_is_hovering_area(Mouse_State const& mouse_state, Position const& top_left, Position const& bottom_right)
+❰
+    return position_inside_rectangle(mouse_state.pos,top_left,bottom_right);
 ❱
 
 
-
-
-
-
+//MOUSE AGNOSTIC (shapes / positions only)
 ◀private: static▶ bool ☀position_inside_rectangle(Position const& pos, Position const& rect_pos, Rectangle_Settings const& settings)
 ❰
     if (pos.x > rect_pos.x && pos.x < rect_pos.x + settings.dimensions.width)
     {
         if (pos.y >= rect_pos.y && pos.y <= rect_pos.y + settings.dimensions.height)
+        {
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ bool ☀position_inside_rectangle(Position const& in_pos, Position const& top_left, Position const& bottom_right)
+❰
+    if (in_pos.x > top_left.x && in_pos.x < top_left.x + bottom_right.x)
+    {
+        if (in_pos.y >= top_left.y && in_pos.y <= top_left.y + bottom_right.y)
         {
             return true;
         }
