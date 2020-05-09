@@ -113,4 +113,6 @@ hcp(name="button_tree_label_drawer", deps = [
     "//code/utilities/peripheral/pc:pc_input_state",
     "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
     "//code/utilities/types/vectors/observers:lib",
+    "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
+    "//code/utilities/data_structures/graphics/bitmap/premade:horizontal_line",
 ])

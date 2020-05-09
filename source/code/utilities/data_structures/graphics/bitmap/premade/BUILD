@@ -19,3 +19,11 @@ hcp(name="tree_button", deps = [
     "//code/utilities/data_structures/graphics/bitmap/premade:tree_collapse_symbol",
     "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
 ])
+
+hcp(name="vertical_line", deps = [
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
+])
+
+hcp(name="horizontal_line", deps = [
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
+])
