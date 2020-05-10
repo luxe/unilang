@@ -6,7 +6,7 @@
 #include "code/tools/hackerrank/bst_swap_solution_geeks_three_ptrs.hpp"
 #include "code/tools/hackerrank/bst_swap_algorithm.hpp"
 #include "code/tools/hackerrank/bst_swap_solution.hpp"
-#include "code/utilities/data_structures/tree/binary_nodes.hpp"
+#include "code/utilities/data_structures/tree/bst/binary_nodes.hpp"
 #include "code/utilities/types/tree/bst/prebuilt_bst_trees.hpp"
 #include "gtest/gtest.h"
 #include <algorithm>

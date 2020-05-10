@@ -1,5 +1,5 @@
 #pragma once
-#include "code/utilities/data_structures/tree/binary_node.hpp"
+#include "code/utilities/data_structures/tree/bst/binary_node.hpp"
 
 template <typename T>
 struct BinaryNodeWithHeight {

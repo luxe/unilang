@@ -14,7 +14,7 @@ gtest(
         "//code/utilities/types/tree:tree_traversal",
         "//code/tools/hackerrank:bst_swap_algorithm",
         "//code/tools/hackerrank:bst_swap_solution",
-        "//code/utilities/data_structures/tree:binary_nodes",
+        "//code/utilities/data_structures/tree/bst:binary_nodes",
         "//code/utilities/types/tree/bst:prebuilt_bst_trees",
     ]
 )
@@ -33,39 +33,39 @@ enum_cpp(
 )
 hcp(name = "bst_swap_solution_geeks_five_ptrs", deps = [
     "//code/utilities/output/printers:lib",
-    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree/bst:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_four_ptrs", deps = [
     "//code/utilities/output/printers:lib",
-    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree/bst:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_three_ptrs", deps = [
     "//code/utilities/output/printers:lib",
-    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree/bst:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 
 hcp(name = "bst_swap_solution_sliding_window_two_ptrs", deps = [
     "//code/utilities/output/printers:lib",
-    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree/bst:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 
 hcp(name = "bst_swap_solution_in_out", deps = [
     "//code/utilities/output/printers:lib",
-    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree/bst:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_morris_hickey", deps = [
     "//code/utilities/output/printers:lib",
-    "//code/utilities/data_structures/tree:binary_node",
+    "//code/utilities/data_structures/tree/bst:binary_node",
     "//code/utilities/types/tree:tree_traversal",
     "//code/utilities/types/tree:tree_node_properties",
     "//code/utilities/types/tree/bst:annotated_bst_fix",

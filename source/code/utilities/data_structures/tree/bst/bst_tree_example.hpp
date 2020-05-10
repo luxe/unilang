@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "code/utilities/data_structures/tree/binary_nodes.hpp"
+#include "code/utilities/data_structures/tree/bst/binary_nodes.hpp"
 
 
 struct Bst_Tree_Example {
