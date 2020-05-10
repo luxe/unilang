@@ -10,7 +10,7 @@
 
 //TODO: turn into global functions
 template <typename T>
-class Unique_Counter{
+class Unique_Max_Counter{
   
   public:
   //thing to count, current amount, max
@@ -20,6 +20,7 @@ class Unique_Counter{
     auto search = hash_table.find(t);
     if(search != hash_table.end()) {
       search->second.first++;
+      //assume max was already set
     }
     else{
       hash_table.emplace(t,std::pair<int,int>{1,max});
@@ -29,7 +30,7 @@ class Unique_Counter{
   bool At_Max(T const& t){
     auto search = hash_table.find(t);
     if(search != hash_table.end()) {
-      if (search->second.first == search->second.second){
+      if (search->second.first >= search->second.second){
         return true;
       }
     }

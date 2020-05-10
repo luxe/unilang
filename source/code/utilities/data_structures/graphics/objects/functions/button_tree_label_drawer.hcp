@@ -13,6 +13,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/functions/faced_label_drawer"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_state"❫
 ❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+❪"code/utilities/data_structures/unique_max_counter/unique_max_counter"❫
 ⚯
 ❪"code/utilities/data_structures/graphics/objects/mouse/events/mouse_events_checker"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
@@ -43,6 +44,12 @@ class
     bool subtree_collapsed = false;
     int collapsed_depth = 0;
     
+    
+    Frame_Elements branches;
+    Frame_Elements buttons;
+    
+    Unique_Max_Counter<int> depth_tracker;
+    
     while(it!=end) {
         
         //calculate the depth of the node
@@ -57,7 +64,7 @@ class
         if (!subtree_collapsed){
             
             //branches
-            Possibly_Add_Branches(elements,it->label,start_pos,current_pos,depth);
+            branches.types += Possibly_Add_Branches(tr,it,it->label,start_pos,current_pos,depth,depth_tracker).types;
             
             //add label
             Adjust_Positions_For_Next_Cell(it->label,start_pos,current_pos,depth);
@@ -65,7 +72,7 @@ class
             Append(elements.types,Faced_Label_Drawer::Draw(font_chars,it->label,current_pos,pc_input.mouse).types);
             
             //add button
-            Possibly_Add_Button(elements,pc_input.mouse,tr,it,current_pos);
+            buttons.types += Possibly_Add_Button(pc_input.mouse,tr,it,current_pos).types;
         }
         
         //collapse
@@ -74,15 +81,20 @@ class
             collapsed_depth = depth;
         }
         
-        
         ++it;
     }
+    
+    elements.types += branches.types;
+    elements.types += buttons.types;
+    
+    
 ❱
 
-◀private: static▶ void  ☀Possibly_Add_Branches(Frame_Elements & elements, Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
+◀private: static▶ Frame_Elements  ☀Possibly_Add_Branches(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth, Unique_Max_Counter<int> & depth_tracker)❰
 
+    Frame_Elements elements;
     
-
+    depth_tracker.Add(depth,tr.number_of_siblings(it)+1);
     auto dim = Faced_Label_Drawer::Get_Dimensions(label);
 
     Positioned_Multi_Color_Bitmap branch_data;
@@ -90,21 +102,28 @@ class
     branch_data.pos.x = start_pos.x;
     branch_data.pos.y = current_pos.y + dim.y-7;
     for (size_t i = 0; i < depth; ++i){
-        branch_data.pos.x = start_pos.x + (10 * i) - 6;
-        elements.types.emplace_back(branch_data);
+        
+        if (!depth_tracker.At_Max(i)){
+            branch_data.pos.x = start_pos.x + (10 * i) - 16;
+            elements.types.emplace_back(branch_data);
+        }
     }
     
     if (depth != 0){
-        
-        branch_data.bitmap = L_Line::Create(8,8);
+        branch_data.bitmap = L_Line::Create(14,11);
         branch_data.pos.x = start_pos.x + (10 * depth) - 16;
-        branch_data.pos.y = current_pos.y + dim.y-1;
+        branch_data.pos.y = current_pos.y + dim.y-7;
         elements.types.emplace_back(branch_data);
     }
     
+    return elements;
+    
 ❱
 
-◀private: static▶ void  ☀Possibly_Add_Button(Frame_Elements & elements, Mouse_State const& mouse, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Position const& current_pos)❰
+◀private: static▶ Frame_Elements  ☀Possibly_Add_Button(Mouse_State const& mouse, tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Position const& current_pos)❰
+    
+    Frame_Elements elements;
+    
     if (tr.number_of_children(it) > 0){
         
         //draw
@@ -120,9 +139,9 @@ class
         if (events.clicked){
             Set_Next_Index_In_Round_Robin(it->button.faces,it->button.current_face);
         }
-        
-        
     }
+    
+    return elements;
 ❱
 
 ◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
