@@ -115,4 +115,5 @@ hcp(name="button_tree_label_drawer", deps = [
     "//code/utilities/types/vectors/observers:lib",
     "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
     "//code/utilities/data_structures/graphics/bitmap/premade:horizontal_line",
+    "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
 ])

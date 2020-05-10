@@ -27,3 +27,7 @@ hcp(name="vertical_line", deps = [
 hcp(name="horizontal_line", deps = [
     "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
 ])
+
+hcp(name="l_line", deps = [
+    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap",
+])
