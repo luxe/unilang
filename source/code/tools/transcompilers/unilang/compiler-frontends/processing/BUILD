@@ -13,7 +13,7 @@ hcp(name = "processing_exporter", deps = [
 "//code/utilities/types/strings/transformers/casing:case_modifier",
 "//code/utilities/program/call:lib",
 "//code/utilities/filesystem/paths:lib",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/options/manipulation:case_adjustment_settings",
 "//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
 "//code/utilities/types/vectors/observers:lib",

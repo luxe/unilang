@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "markdown_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
@@ -26,7 +26,7 @@ hcp(name = "markdown_exporter", deps = [
 
 hcp(name = "markdown_str_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
@@ -59,7 +59,7 @@ hcp(name = "markdown_settings_getter", deps = [
 
 hcp(name = "markdown_header_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
@@ -73,7 +73,7 @@ hcp(name = "markdown_header_getter", deps = [
 
 hcp(name = "markdown_image_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/utilities/types/strings/transformers/appending:lib",
@@ -90,7 +90,7 @@ hcp(name = "markdown_image_getter", deps = [
 
 hcp(name = "markdown_title_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_header_getter",
@@ -115,7 +115,7 @@ hcp(name = "markdown_title_getter", deps = [
 
 hcp(name = "markdown_sentence_extra_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",
@@ -126,7 +126,7 @@ hcp(name = "markdown_sentence_extra_getter", deps = [
 
 hcp(name = "markdown_table_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",
@@ -135,7 +135,7 @@ hcp(name = "markdown_table_getter", deps = [
 
 hcp(name = "markdown_code_getter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
 "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_image_getter",

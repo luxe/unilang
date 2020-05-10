@@ -6,7 +6,7 @@ hcp(name = "exported_dependency_options")
 
 hcp(name = "text_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "exported_dependency_options",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 ])

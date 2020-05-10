@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "java_exporter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/utilities/contributor:contributor",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
     "//code/utilities/types/strings/transformers/appending:lib",
@@ -28,7 +28,7 @@ hcp(name = "java_exporter", deps = [
 
 hcp(name = "java_str_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/utilities/contributor:contributor",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
     "//code/utilities/types/strings/transformers/appending:lib",

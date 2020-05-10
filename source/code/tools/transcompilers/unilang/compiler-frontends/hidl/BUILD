@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "hidl_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/options/language-specific/hidl:hidl_export_settings",
 "//code/tools/transcompilers/unilang/structure/print/export_file_settings:export_file_settings",
 "//code/tools/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",

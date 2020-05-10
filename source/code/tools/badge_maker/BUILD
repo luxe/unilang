@@ -28,6 +28,7 @@ hcp(name = "badge_maker", deps = [
     "//code/utilities/graphics/cairo/render:frame_renderer",
     "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/data_structures/graphics/objects/functions:faced_label_drawer",
+    "//code/utilities/graphics/cairo/render:cairo_render_settings",
 ])
 
 cc_binary(

@@ -8,7 +8,7 @@ hcp(name = "slidy_settings_getter", deps = [
 
 hcp(name = "slidy_exporter", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
 "//code/tools/transcompilers/unilang/options/language-specific/slidy:slidy_settings",
 "//code/utilities/types/strings/transformers/appending:lib",

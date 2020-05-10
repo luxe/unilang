@@ -11,7 +11,7 @@ hcp(name = "bazel_rule_exporter", deps = [
 "//code/tools/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:top_comment_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:load_getter",
 "//code/utilities/types/strings/transformers/appending:lib",
-"//code/tools/transcompilers/unilang/contributor:contributor",
+"//code/utilities/contributor:contributor",
 "//code/tools/transcompilers/unilang/compiler-frontends/bazel/bazel_printer/rule_getter:rule_getter",
 "//code/tools/transcompilers/unilang/compiler-frontends/bazel/bazel_printer:build_info_extractor",
 "//code/tools/transcompilers/unilang/f2si_frontend_compiler/pulse:pulse_settings",

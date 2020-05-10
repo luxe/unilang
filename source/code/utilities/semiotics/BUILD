@@ -24,11 +24,3 @@ hcp(name = "dyadic_sign", deps = [
 hcp(name = "triadic_sign", deps = [
     "//code/utilities/semiotics:sign_type",
 ])
-
-hcp(name = "dyadic_knowledge", deps = [
-    "//code/utilities/semiotics:dyadic_sign",
-]) 
-
-hcp(name = "triadic_knowledge", deps = [
-    "//code/utilities/semiotics:triadic_sign",
-]) 

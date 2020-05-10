@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "data_members_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/utilities/contributor:contributor",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
     "//code/utilities/types/strings/transformers/appending:lib",
@@ -30,7 +30,7 @@ hcp(name = "data_members_getter", deps = [
 
 hcp(name = "methods_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/utilities/contributor:contributor",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/tools/transcompilers/unilang/options/language-specific/java:java_settings",
     "//code/utilities/types/strings/transformers/appending:lib",
@@ -60,7 +60,7 @@ hcp(name = "methods_getter", deps = [
 
 hcp(name = "import_getter", deps = [
     "//code/tools/transcompilers/unilang/structure/model:structure",
-    "//code/tools/transcompilers/unilang/contributor:contributor",
+    "//code/utilities/contributor:contributor",
     "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/types/converters:lib",

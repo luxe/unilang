@@ -11,6 +11,7 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
+        "//code/utilities/graphics/cairo/render:cairo_render_settings",
         "//code/utilities/types/variant:lib",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/math:math",
@@ -18,4 +19,9 @@ hcp(
         "//code/utilities/types/general:lib",
         "@cairo//:cairo",
     ],
+)
+
+hcp(
+    name = "cairo_render_settings",
+    deps = [],
 )

@@ -4,9 +4,9 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(name = "traffic_sign_dyadic", deps = [
-    "//code/utilities/semiotics:dyadic_knowledge",
+    "//code/utilities/semiotics/knowledge:dyadic_knowledge",
 ])
 
 hcp(name = "traffic_sign_triadic", deps = [
-    "//code/utilities/semiotics:triadic_knowledge",
+    "//code/utilities/semiotics/knowledge:triadic_knowledge",
 ])
