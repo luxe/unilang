@@ -16,3 +16,13 @@ hcp(name = "unilang_font_creation_settings", deps = [
     "//code/utilities/fonts/bdf/complete:font_creation_settings",
     "//code/utilities/filesystem/paths:lib",
 ])
+
+hcp(name = "unilang_character_maps", deps = [
+    "//code/utilities/fonts/bdf/settings:character_segment",
+    "//code/utilities/graphics/sdl:sdl_init_settings",
+    "//code/tools/transcompilers/unilang/tokens:get_tokens",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",
+    "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
+])
+

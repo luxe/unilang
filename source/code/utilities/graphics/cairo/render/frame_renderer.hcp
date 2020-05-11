@@ -47,7 +47,7 @@ class
     }
     
     //export image
-    cairo_surface_write_to_png(surface,settings.file_name);
+    cairo_surface_write_to_png(surface,settings.file_name.c_str());
     
     //cleanup
     cairo_destroy(cr), cr = NULL;
@@ -66,19 +66,19 @@ class
     for (auto const& it: elements.types){
         std::visit(overloaded {
             [&](Positioned_Rectangle_Settings const& x) {
-                set_equal_if_less(pos.x,x.shape.dimensions.width);
-                set_equal_if_less(pos.y,x.shape.dimensions.height);
+                set_equal_if_less(pos.x,x.pos.x + x.shape.dimensions.width);
+                set_equal_if_less(pos.y,x.pos.y + x.shape.dimensions.height);
             },
             [&](Positioned_Multi_Color_Bitmap const& x) {
                 for (auto const& it: x.bitmap.pixels){
-                    set_equal_if_less(pos.x,it.pos.x);
-                    set_equal_if_less(pos.y,it.pos.y);
+                    set_equal_if_less(pos.x,x.pos.x + it.pos.x);
+                    set_equal_if_less(pos.y,x.pos.y + it.pos.y);
                 }
             },
             [&](Positioned_Full_Color_Bitmap const& x) {
                 for (auto const& it: x.bitmap.pixels){
-                    set_equal_if_less(pos.x,it.x);
-                    set_equal_if_less(pos.y,it.y);
+                    set_equal_if_less(pos.x,x.pos.x + it.x);
+                    set_equal_if_less(pos.y,x.pos.y + it.y);
                 }
             },
         }, it);

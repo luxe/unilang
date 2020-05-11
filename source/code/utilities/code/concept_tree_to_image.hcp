@@ -6,18 +6,50 @@ class
 ❪"code/utilities/data_structures/tree/generic/string_tree"❫
 ❪"code/utilities/code/concept_tree_getter"❫
 ❪"code/utilities/data_structures/graphics/objects/grid/positioned_button_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
 ❪"src/tree.hh"❫
 ⚯
+❪"code/utilities/data_structures/graphics/bitmap/premade/tree_button"❫
+❪"code/utilities/fonts/bdf/complete/unilang/unilang_character_maps"❫
+❪"code/utilities/data_structures/graphics/objects/functions/button_tree_label_drawer"❫
+❪"code/utilities/graphics/cairo/render/cairo_render_settings"❫
+❪"code/utilities/graphics/cairo/render/frame_renderer"❫
+❪"code/utilities/data_structures/graphics/objects/style/default_label_styles"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Create()❰
 
 
-    //original tree
+    //take the original string tree (code concept representation)
     auto str_tree = Concept_Tree_Getter::Get();
     
+    //and convert it into a label tree
+    auto label_tree = Convert_To_Label_Tree(str_tree);
+    
+    
+    //convert the label tree to drawable frame elements
+    Frame_Elements elements;
+    Pc_Input_State pc_input;
+    auto unilang_font_lookup = Unilang_Character_Maps::Get();
+    elements.types += Button_Tree_Label_Drawer::Draw(unilang_font_lookup,label_tree,pc_input).types;
+    
+    //draw the elements to an image
+    Cairo_Render_Settings settings;
+    settings.file_name = "/home/laptop/Desktop/concept_tree.png";
+    Frame_Renderer::Render(elements,settings);
+    
+    
+    
+❱
+
+◀private: static▶ Positioned_Button_Face_Tree ☀Convert_To_Label_Tree(String_Tree const& str_tree)❰
+
     //new tree
     Positioned_Button_Face_Tree label_tree;
+    label_tree.pos.x = 0;
+    label_tree.pos.y = 0;
     
     
     std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> lookup;
@@ -33,9 +65,53 @@ class
         }
     }
     
+    return label_tree;
 ❱
 
-◀private: static▶ void ☀Add_A_Root_Element(Positioned_Button_Face_Tree & label_tree, std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> & lookup, tree<std::string>::pre_order_iterator, int depth)❰
+◀private: static▶ void ☀Add_A_Root_Element(Positioned_Button_Face_Tree & label_tree, std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> & lookup, tree<std::string>::pre_order_iterator it, int depth)❰
+
+    //convert string to label
+    auto label = Convert_String_To_Label(*it);
+    
+    //add it to the label tree
+    auto top = label_tree.nodes.begin();
+    auto added_element = label_tree.nodes.insert(top,label);
+    
+    //store the iterator at the depth
+    lookup[depth] = added_element;
 ❱
-◀private: static▶ void ☀Add_A_Child_Element(Positioned_Button_Face_Tree & label_tree, std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> & lookup, tree<std::string>::pre_order_iterator, int depth)❰
+◀private: static▶ void ☀Add_A_Child_Element(Positioned_Button_Face_Tree & label_tree, std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> & lookup, tree<std::string>::pre_order_iterator it, int depth)❰
+
+    //convert string to label
+    auto label = Convert_String_To_Label(*it);
+    
+    //find
+    auto search = lookup.find(depth-1);
+    if (search != lookup.end()) {
+        
+        //add it to the label tree
+        auto added_element = label_tree.nodes.append_child(search->second,label);
+        
+        //store the iterator at the depth
+        lookup[depth] = added_element;
+    }
+    else{
+        std::cerr << "there should always be an iterator with depth-1 available" << std::endl;
+    }
+❱
+
+◀private: static▶ Buttoned_Faced_Label ☀Convert_String_To_Label(std::string const& str)❰
+
+    //convert string to label
+    Buttoned_Faced_Label label;
+    label.button = Tree_Button::Create();
+    label.button.current_face = 1; //open
+    Label_Face face;
+    face.name = "test";
+    face.label.styles = Default_Label_Styles::Plain_Text();
+    face.label.message = str;
+    std::cout << face.label.message << std::endl;
+    label.label.faces.emplace_back(face);
+    
+    return label;
 ❱
