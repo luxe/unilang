@@ -10,4 +10,5 @@ hcp(name="concept_tree_getter",deps = [
 hcp(name="concept_tree_to_image",deps = [
     "//code/utilities/data_structures/tree/generic:string_tree",
     "//code/utilities/code:concept_tree_getter",
+    "//code/utilities/data_structures/graphics/objects/grid:positioned_button_face_tree",
 ])
