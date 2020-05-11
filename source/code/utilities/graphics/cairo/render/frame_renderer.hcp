@@ -91,10 +91,11 @@ class
 
 //ciaro draw functions
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Rectangle_Settings const& shape)❰
-    std::cout << "rectangle" << std::endl;
     
     
-    Draw_Fill_Pixel_By_Pixel(cr,shape);
+    if (shape.shape.hooks.draw_fill){
+        Draw_Fill_Pixel_By_Pixel(cr,shape);
+    }
     
     if (shape.shape.hooks.draw_shade){
         Positioned_Multi_Color_Bitmap x;
@@ -103,12 +104,13 @@ class
         Draw(cr,x);
     }
     
-    Draw_Border_Pixel_By_Pixel(cr,shape);
+    if (shape.shape.hooks.draw_border){
+        Draw_Border_Pixel_By_Pixel(cr,shape);
+    }
       
 ❱
 
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Multi_Color_Bitmap const& shape)❰
-    std::cout << "multi" << std::endl;
     for (auto const& it: shape.bitmap.pixels){
 
         Position p = shape.pos;
@@ -119,7 +121,6 @@ class
 ❱
 ◀private: static▶ void ☀Draw(cairo_t *cr, Positioned_Full_Color_Bitmap const& shape)❰
 
-    std::cout << "full" << std::endl;
     for (auto const& it: shape.bitmap.pixels){
         
         Position p = shape.pos;
