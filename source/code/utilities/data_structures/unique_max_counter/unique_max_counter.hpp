@@ -19,12 +19,17 @@ class Unique_Max_Counter{
   void Add(T const& t, int max){
     auto search = hash_table.find(t);
     if(search != hash_table.end()) {
-      search->second.first++;
-      //assume max was already set
+      
+        search->second.first++;
+      
     }
     else{
       hash_table.emplace(t,std::pair<int,int>{1,max});
     }
+  }
+  
+  void Remove(T const& t){
+    hash_table.erase(t);
   }
   
   bool At_Max(T const& t){

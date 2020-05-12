@@ -94,16 +94,19 @@ class
 
     Frame_Elements elements;
     
-    depth_tracker.Add(depth,tr.number_of_siblings(it)+1);
+    //depth_tracker.Add(depth,tr.number_of_siblings(it));
     auto dim = Faced_Label_Drawer::Get_Dimensions(label);
 
     Positioned_Multi_Color_Bitmap branch_data;
     branch_data.bitmap = Vertical_Line::Create(14);
     branch_data.pos.x = start_pos.x;
     branch_data.pos.y = current_pos.y + dim.y-7;
+    std::cout << it->label.faces[0].label.message << std::endl;
     for (size_t i = 0; i < depth; ++i){
         
-        if (!depth_tracker.At_Max(i)){
+        
+        if (Should_Put_Vertical_Bar(tr,it,i)){
+        //if (!depth_tracker.At_Max(i)){
             branch_data.pos.x = start_pos.x + (10 * i) - 16;
             elements.types.emplace_back(branch_data);
         }
@@ -118,6 +121,33 @@ class
     
     return elements;
     
+❱
+
+◀private: static▶ bool  ☀Should_Put_Vertical_Bar(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, int depth)❰
+
+    auto current_depth = tr.depth(it);
+    auto ptr = it;
+    for (int i = depth; i < current_depth; ++i){
+        ptr = tr.parent(ptr);
+    }
+    
+    bool another_parent_child = (tr.next_sibling(ptr) != nullptr);
+    std::cout << another_parent_child;
+    
+    auto next_sib = tr.next_sibling(ptr);
+    
+    if (next_sib != nullptr){
+        std::cout << "good" << std::endl;
+    }
+    else{
+        std::cout << "bad" << std::endl;
+    }
+    // if (next_sib != tr.end()){
+    //     std::cout << "[" << next_sib->label.faces[0].label.message << "]" << std::endl;
+    // }
+    
+    
+    return another_parent_child;
 ❱
 
 ◀private: static▶ Frame_Elements  ☀Possibly_Add_Button(Mouse_State const& mouse, tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Position const& current_pos)❰
