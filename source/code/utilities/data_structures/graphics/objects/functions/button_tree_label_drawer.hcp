@@ -48,8 +48,6 @@ class
     Frame_Elements branches;
     Frame_Elements buttons;
     
-    Unique_Max_Counter<int> depth_tracker;
-    
     while(it!=end) {
         
         //calculate the depth of the node
@@ -64,7 +62,7 @@ class
         if (!subtree_collapsed){
             
             //branches
-            branches.types += Possibly_Add_Branches(tr,it,it->label,start_pos,current_pos,depth,depth_tracker).types;
+            branches.types += Possibly_Add_Branches(tr,it,it->label,start_pos,current_pos,depth).types;
             
             //add label
             Adjust_Positions_For_Next_Cell(it->label,start_pos,current_pos,depth);
@@ -90,23 +88,20 @@ class
     
 ❱
 
-◀private: static▶ Frame_Elements  ☀Possibly_Add_Branches(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth, Unique_Max_Counter<int> & depth_tracker)❰
+◀private: static▶ Frame_Elements  ☀Possibly_Add_Branches(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
 
     Frame_Elements elements;
     
-    //depth_tracker.Add(depth,tr.number_of_siblings(it));
     auto dim = Faced_Label_Drawer::Get_Dimensions(label);
 
     Positioned_Multi_Color_Bitmap branch_data;
     branch_data.bitmap = Vertical_Line::Create(14);
     branch_data.pos.x = start_pos.x;
     branch_data.pos.y = current_pos.y + dim.y-7;
-    std::cout << it->label.faces[0].label.message << std::endl;
     for (size_t i = 0; i < depth; ++i){
         
         
         if (Should_Put_Vertical_Bar(tr,it,i)){
-        //if (!depth_tracker.At_Max(i)){
             branch_data.pos.x = start_pos.x + (10 * i) - 16;
             elements.types.emplace_back(branch_data);
         }
