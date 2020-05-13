@@ -21,5 +21,6 @@ hcp(name="concept_tree_to_image",deps = [
     "//code/utilities/graphics/cairo/render:frame_renderer",
     "//code/utilities/data_structures/graphics/objects/style:default_label_styles",
     "//code/utilities/personal/hosting:hosting_repo",
+    "//code/utilities/filesystem/paths:lib",
     "@tree//:tree",
 ])

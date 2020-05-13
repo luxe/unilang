@@ -59,7 +59,7 @@ Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700
 Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)](https://travis-ci.com/luxe/unilang) | Bootstraps Build | 
 
 Current model.  
-<img width="" height="" src="https://github.com/luxe/luxe.github.com/unilang_concept_tree.png">
+<img width="" height="" src=".readme/unilang_concept_tree.png">
 
 
 ## Contribute
