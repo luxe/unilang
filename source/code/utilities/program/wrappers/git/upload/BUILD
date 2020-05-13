@@ -10,7 +10,8 @@ hcp(name="github_uploader", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/program/wrappers/git/update:git_updater",
     "//code/utilities/program/wrappers/git/upload:github_upload_settings",
-        "@curl",
+    "//code/utilities/personal/hosting:hosting_repo",
+    "@curl",
 ])
 
 hcp(name="github_upload_settings", deps = [
