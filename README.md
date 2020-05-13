@@ -48,7 +48,6 @@ Various CIs are used to test the correctness of the build.  Referencing these bu
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/wscwfed3pk5pxk6y?svg=true)](https://ci.appveyor.com/project/luxe/unilang) | Bootstraps Build | 
-Build Kite | [![Build status](https://badge.buildkite.com/fea27cb8ff96ec21a9d7bf6b7b8c485d64a7d9fa92f2ccd208.svg)](https://buildkite.com/unilang-inc/unilang-build) | Bootstraps Build | 
 Circle | [![CircleCI](https://circleci.com/gh/luxe/unilang.svg?style=svg)](https://circleci.com/gh/luxe/unilang) | Bootstraps Build | 
 Cirrus | [![Build Status](https://api.cirrus-ci.com/github/luxe/unilang.svg)](https://cirrus-ci.com/github/luxe/unilang) | Bootstraps Build | 
 Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/status?branch=master)](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/) | Bootstraps Build | 
@@ -59,7 +58,7 @@ Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700
 Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)](https://travis-ci.com/luxe/unilang) | Bootstraps Build | 
 
 Current model.  
-<img width="177px" src=".readme/unilang_concept_tree.png">
+<img width="" height="" src=".readme/unilang_concept_tree.png">
 
 
 ## Contribute
