@@ -56,4 +56,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
     "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
     "//code/utilities/fonts/bdf/complete/unilang:unilang_character_maps",
+    "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
 ])

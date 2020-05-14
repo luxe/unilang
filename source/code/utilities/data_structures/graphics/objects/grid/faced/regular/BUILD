@@ -15,6 +15,7 @@ hcp(name="label_settings", deps = [
 "//code/utilities/data_structures/graphics/objects/style:label_styles",
 "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_user_state",
 "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
+"//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
 ])
 
 hcp_pos(name="label", deps = [
