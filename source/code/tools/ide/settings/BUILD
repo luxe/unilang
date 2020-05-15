@@ -27,6 +27,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/data_structures/graphics/objects/grid:positioned_button_face_tree",
     "//code/utilities/peripheral/pc:pc_input_state",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:positioned_slider",
+    "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
     "@boost//:asio",
 ])
 
