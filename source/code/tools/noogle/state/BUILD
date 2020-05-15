@@ -18,7 +18,7 @@ hcp(name = "noogle_state", deps = [
 ])
 
 hcp(name = "noogle_running_stats", deps = [
-    "//code/utilities/data_structures/unique_counter:unique_counter",
+    "//code/utilities/data_structures/counters/unique_counter:unique_counter",
     "//code/tools/noogle:queue_state",
     "//code/tools/noogle/state:display_style",
 ])

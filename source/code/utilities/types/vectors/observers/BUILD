@@ -13,5 +13,5 @@ cc_library(
 
 
 hcp(name = "size_frequency_counter", deps = [
-    "//code/utilities/data_structures/unique_counter:unique_counter"
+    "//code/utilities/data_structures/counters/unique_counter:unique_counter"
 ])

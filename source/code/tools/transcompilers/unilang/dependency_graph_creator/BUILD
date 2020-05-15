@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name = "code_graph", deps = [
 "//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/utilities/data_structures/unique_vertex_graph:lib",
+"//code/utilities/data_structures/graph/unique_vertex_graph:lib",
 ])
 
 hcp(name = "seen_structure_dependencies", deps = [

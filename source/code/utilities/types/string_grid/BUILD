@@ -10,6 +10,6 @@ hcp(name = "random_letter_filler", deps = [
 
 hcp(name = "words_finder", deps = [
     "//code/utilities/language_basic/std_hackery:std_aliases",
-    "//code/utilities/data_structures/unique_counter:unique_counter",
+    "//code/utilities/data_structures/counters/unique_counter:unique_counter",
     "//code/utilities/types/strings/observers/comparing:lib",
 ])

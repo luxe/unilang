@@ -74,6 +74,9 @@ void from_json(const nlohmann::json& j, tree<T> & tr) {
     tr = from_depth_list(depth_list);
 }
 
+//SERIALIZATION TEST
+
+
 
 tree<foo> Build_Tree() {
     tree<foo> tr;
@@ -100,6 +103,7 @@ TEST(Serialization, TreeNonIntrusive) {
     
     auto tr = Build_Tree();
     nlohmann::json j = tr;
+    std::cout << j.dump() << std::endl;
     auto f2 = j.get<tree<foo>>();
     //EXPECT_EQ(f.i,f2.i);
 }

@@ -46,7 +46,7 @@ hcp(name = "external_deps_visualizer", deps = [
     "//code/tools/repo_tools/external_deps_analysis/settings:settings",
     "//code/tools/repo_tools/external_deps_analysis:analysis_state",
     "//code/utilities/types/strings/observers/path:lib",
-    "//code/utilities/data_structures/unique_counter:unique_counter",
+    "//code/utilities/data_structures/counters/unique_counter:unique_counter",
 ])
 
 distributable_cpp_main(

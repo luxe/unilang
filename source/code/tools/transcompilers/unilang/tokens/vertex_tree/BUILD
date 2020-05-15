@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(
     name = "as_vertex_graph",
-    deps = ["//code/utilities/data_structures/unique_str_vertex_graph:lib"]
+    deps = ["//code/utilities/data_structures/graph/unique_str_vertex_graph:lib"]
 )
 
 cc_binary(

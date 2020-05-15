@@ -19,7 +19,7 @@ hcp(name = "gcalviz_runner", deps = [
     "//code/utilities/formats/json/functions:lib",
     "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
     "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
-    "//code/utilities/data_structures/unique_counter:unique_counter",
+    "//code/utilities/data_structures/counters/unique_counter:unique_counter",
     "//code/utilities/types/strings/transformers/appending:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/time/date:rfc333_datetime_within_range_checker",

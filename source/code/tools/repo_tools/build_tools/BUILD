@@ -10,7 +10,7 @@ hcp(name = "task_executer", deps = [
     "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
     "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_deriver",
     "//code/utilities/program/wrappers/bazel:bazel_runner",
-    "//code/utilities/data_structures/unique_counter:unique_counter",
+    "//code/utilities/data_structures/counters/unique_counter:unique_counter",
     "//code/utilities/types/strings/observers/path:lib",
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/strings/observers/splitting:lib",

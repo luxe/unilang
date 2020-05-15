@@ -1,6 +1,6 @@
 #include <iostream>
 #include <iomanip>
-#include "code/utilities/data_structures/unique_str_vertex_graph/lib.hpp"
+#include "code/utilities/data_structures/graph/unique_str_vertex_graph/lib.hpp"
 #include "code/utilities/program/wrappers/graphviz/graphviz_image_maker.hpp"
 #include "code/utilities/filesystem/paths/lib.hpp"
 
