@@ -4,5 +4,9 @@ package(
 )
 
 gtest(name = "nonintrusive",
-      deps = ["@tree//:tree","@nlohmann_json//:nlohmann_json"]
+      deps = [
+      "@tree//:tree",
+      "@nlohmann_json//:nlohmann_json",
+      "//code/utilities/types/tree/converters:depth_list"
+      ]
 )
