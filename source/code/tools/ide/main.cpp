@@ -3,7 +3,7 @@
 #include "code/tools/ide/settings/ide_settings.hpp"
 #include "code/tools/ide/settings/ide_settings_getter.hpp"
 #include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
-#include "code/tools/ide/frame/logic/frame_logic_updater.hpp"
+#include "code/tools/ide/frame/frame_logic_updater.hpp"
 #include "code/utilities/data_structures/graphics/objects/frame_elements.hpp"
 #include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
 #include "code/tools/ide/frame/fullscreener.hpp"

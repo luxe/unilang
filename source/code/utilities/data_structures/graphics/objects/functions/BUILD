@@ -91,6 +91,7 @@ hcp(name="tree_label_drawer", deps = [
     "//code/utilities/data_structures/graphics/objects/grid/faced:positioned_faced_label",
     "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
     "//code/utilities/data_structures/graphics/objects/grid:positioned_face_tree",
+    "//code/utilities/data_structures/graphics/objects/grid:face_tree",
     "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/peripheral/mouse/state:mouse_state",
     "//code/utilities/types/vectors/operators:lib",

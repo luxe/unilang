@@ -12,7 +12,7 @@ cpp_main(
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/settings:ide_settings_getter",
         "//code/utilities/graphics/imgui/render:frame_renderer",
-        "//code/tools/ide/frame/logic:frame_logic_updater",
+        "//code/tools/ide/frame:frame_logic_updater",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/tools/ide/frame:fullscreener",
     ],
