@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 #include "src/tree.hh"
 #include "code/utilities/formats/json/overloads/tree_json_converters.hpp"
+#include "code/utilities/formats/json/functions/lib.hpp"
 
 
 //SERIALIZE TEST OBJECT
@@ -44,31 +45,9 @@ tree<foo> Build_Tree() {
     return tr;
 }
 
-template <typename T>
-std::pair<std::string,std::string> json_serialize_deserialize_serialize(T obj){
-    
-    std::pair<std::string,std::string> results;
-    
-    //serialize
-    nlohmann::json j = obj;
-    results.first = j.dump();
-    
-    //deserialize
-    T obj2 = j.get<T>();
-    
-    //serialize
-    nlohmann::json j2 = obj2;
-    results.second = j2.dump();
-    
-    return results;
-}
-
 TEST(Serialization, TreeNonIntrusive) {
     
     auto tr = Build_Tree();
-    
     auto results = json_serialize_deserialize_serialize(tr);
-    //std::cout << results.first << std::endl;
-    //std::cout << results.second << std::endl;
     EXPECT_EQ(results.first,results.second);
 }

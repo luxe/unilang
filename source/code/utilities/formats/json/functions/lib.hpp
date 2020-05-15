@@ -68,3 +68,27 @@ void Print_Json(T const& t){
 //validating json
 bool Is_Valid_JSON_File(std::string const& file_name);
 bool Is_Valid_JSON_String(std::string const& json_string);
+
+
+//json serialization test function
+//test the idempotency of going back and forth between serializations
+//this makes it easy to compare the two strings for equivalence regardless of what the object is
+//(the object might not have available ways to check equality)
+template <typename T>
+std::pair<std::string,std::string> json_serialize_deserialize_serialize(T obj){
+    
+    std::pair<std::string,std::string> results;
+    
+    //serialize
+    nlohmann::json j = obj;
+    results.first = j.dump();
+    
+    //deserialize
+    T obj2 = j.get<T>();
+    
+    //serialize
+    nlohmann::json j2 = obj2;
+    results.second = j2.dump();
+    
+    return results;
+}
