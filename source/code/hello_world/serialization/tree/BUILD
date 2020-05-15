@@ -7,6 +7,6 @@ gtest(name = "nonintrusive",
       deps = [
       "@tree//:tree",
       "@nlohmann_json//:nlohmann_json",
-      "//code/utilities/types/tree/converters:depth_list"
+      "//code/utilities/formats/json/overloads:tree_json_converters"
       ]
 )

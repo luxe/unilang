@@ -3,7 +3,7 @@
 #include <sstream>
 #include "gtest/gtest.h"
 #include "src/tree.hh"
-#include "code/utilities/types/tree/converters/depth_list.hpp"
+#include "code/utilities/formats/json/overloads/tree_json_converters.hpp"
 
 
 //SERIALIZE TEST OBJECT
@@ -18,21 +18,6 @@ void to_json(nlohmann::json& j, const foo& f) {
 void from_json(const nlohmann::json& j, foo& f) {
     j.at("i").get_to(f.i);
 }
-
-//SERIALIZE TEST TREE
-template <typename T>
-void to_json(nlohmann::json& j, tree<T> const& tr) {
-    auto depth_list = to_depth_list(tr);
-    j = depth_list;
-}
-
-template <typename T>
-void from_json(const nlohmann::json& j, tree<T> & tr) {
-    auto depth_list = j.get<std::vector<std::pair<int,T>>>();
-    tr = from_depth_list(depth_list);
-}
-
-//SERIALIZATION TEST
 
 
 
