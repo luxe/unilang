@@ -32,7 +32,32 @@ hcp(name="cursor_drawer", deps = [
     "//code/utilities/peripheral/mouse/state:mouse_position_getter",
     "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
     "//code/utilities/graphics/imgui/window:window_position_finder",
-    "//code/tools/ide/frame:label_cursor_action_doer",
+    "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_action_doer",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_frame_getter",
+])
+
+hcp(name = "label_cursor_action_doer", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/tools/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/utilities/graphics/imgui:ui_renders",
+    "//code/utilities/graphics/imgui/window:window_renderer",
+    "//code/utilities/graphics/imgui/window:window_position_finder",
+    "//code/utilities/peripheral/keyboard:key_detector",
+    "//code/utilities/data_structures/graphics/objects/cursor:text_box_action_decider",
+    "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_mover",
+    "//code/utilities/data_structures/graphics/objects/label:positioned_label",
+    "//code/utilities/fonts/bdf/character_maps:character_maps",
+    "//code/utilities/peripheral/pc:pc_input_state",
+])
+
+hcp(name = "text_box_action_decider", deps = [
+    "@imgui//:imgui_sdl_opengl3",
+    "//code/tools/ide/settings:ide_settings",
+    "//code/utilities/graphics/imgui:mechanics",
+    "//code/tools/ide/frame:text_box_action",
+    "//code/utilities/peripheral/keyboard:key_detector",
+    "//code/utilities/peripheral/pc:pc_input_state",
+    "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",
 ])

@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/graphics/imgui:mechanics",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/peripheral/keyboard:key_detector",
-        "//code/tools/ide/frame:label_cursor_action_doer",
+        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_action_doer",
         "//code/utilities/graphics/imgui/render/elements:line_drawer",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
