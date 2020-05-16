@@ -12,11 +12,6 @@ hcp_and_hcp_pos(name="faced_label", deps = [
     "//code/utilities/data_structures/graphics/objects/faced_label:label_face",
 ])
 
-hcp_and_hcp_pos(name="buttoned_faced_label", deps = [
-    "//code/utilities/data_structures/graphics/objects/faced_label:faced_label",
-    "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap_button",
-])
-
 hcp(name="faced_label_converter", deps = [
     "//code/utilities/data_structures/graphics/objects/faced_label:faced_label",
     "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
