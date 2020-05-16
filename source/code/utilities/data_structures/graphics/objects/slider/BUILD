@@ -9,14 +9,14 @@ hcp(name="slider_state", deps = [
 ])
 
 hcp_and_hcp_pos(name="slider", deps = [
-    "//code/utilities/data_structures/graphics/objects/grid/faced/slider:slider_state",
+    "//code/utilities/data_structures/graphics/objects/slider:slider_state",
 ])
 
 hcp(name="slider_drawer", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/data_structures/graphics/objects/label:label_settings",
-    "//code/utilities/data_structures/graphics/objects/grid/faced/slider:positioned_slider",
-    "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
+    "//code/utilities/data_structures/graphics/objects/slider:positioned_slider",
+    "//code/utilities/data_structures/graphics/objects/label:label_drawer",
     "//code/utilities/data_structures/graphics/objects:frame_elements",
     "//code/utilities/types/vectors/operators:lib",
     "//code/utilities/peripheral/mouse/state:mouse_state",
@@ -24,7 +24,7 @@ hcp(name="slider_drawer", deps = [
 ])
 
 hcp(name="default_sliders", deps = [
-    "//code/utilities/data_structures/graphics/objects/grid/faced/slider:slider_state",
+    "//code/utilities/data_structures/graphics/objects/slider:slider_state",
     "//code/utilities/data_structures/graphics/objects/style:default_label_styles",
 ])
 

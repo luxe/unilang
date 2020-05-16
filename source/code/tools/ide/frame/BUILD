@@ -29,7 +29,7 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/graphics/imgui/window:window_position_finder",
-        "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
+        "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/tools/ide/frame:label_cursor_action_doer",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/vectors/observers:lib",
@@ -54,7 +54,7 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/graphics/imgui/window:window_position_finder",
-        "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
+        "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/tools/ide/frame:label_cursor_action_doer",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_frame_getter",
@@ -64,7 +64,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/graphics/imgui:mechanics",
-        "//code/utilities/data_structures/graphics/objects/grid/faced/slider:slider_drawer",
+        "//code/utilities/data_structures/graphics/objects/slider:slider_drawer",
     ],
 )
 
