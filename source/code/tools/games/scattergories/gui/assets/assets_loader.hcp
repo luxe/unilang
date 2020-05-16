@@ -12,12 +12,32 @@ class
 ❪"code/utilities/peripheral/sound/sfml/sound_loader"❫
 ❪"code/utilities/fonts/font_files/droid_sans_mono"❫
 ❪"code/utilities/fonts/sfml/font_loader"❫
+❪"code/utilities/linguistics/scattergories_categories"❫
+❪"code/utilities/random/lib"❫
 ⚞⚟
 
 ◀public: static▶ Assets ☀Load(Game_State const& state) ❰
     Assets x;
     
     Font_Loader::Load_Font(x.main_font,Droid_Sans_Mono::Get());
+    
+    
+    //get random categories
+    auto all_categories = Scattergories_Categories::Get();
+    auto chosen = Get_N_Random_Elements_With_No_Duplicates(all_categories,4);
+    std::string categories_str = "Categories\n";
+    for (size_t i = 0; i < chosen.size(); ++i){
+        categories_str += std::to_string(i+1) + ". " + chosen[i] + '\n';
+    }
+    
+    
+    x.categories.setFont(x.main_font);
+    x.categories.setCharacterSize(90);
+    x.categories.setFillColor(state.letter_color);
+    x.categories.setOutlineColor(sf::Color(255,255,255));
+    x.categories.setOutlineThickness(3);
+    x.categories.setString(categories_str);
+    Top_Left_Text(x.categories);
    
    
    
@@ -33,4 +53,19 @@ class
 
     //Sound_Loader::Load_Sound(x.new_round,Puyo::Start_Game2());
     
+❱
+
+
+
+◀private: static▶ void ☀Center_Text(sf::Text & text)❰
+    text.setPosition(sf::VideoMode::getDesktopMode().width/2.0f,sf::VideoMode::getDesktopMode().height/2.0f);
+    text.setOrigin(text.getLocalBounds().left + text.getLocalBounds().width / 2.0f,
+                           text.getLocalBounds().top + text.getLocalBounds().height / 2.0f);
+❱
+
+◀private: static▶ void ☀Top_Right_Text(sf::Text & text)❰
+    text.setPosition(sf::VideoMode::getDesktopMode().width - 200,0);
+❱
+◀private: static▶ void ☀Top_Left_Text(sf::Text & text)❰
+    text.setPosition(10,10);
 ❱

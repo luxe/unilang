@@ -63,7 +63,7 @@ auto Get_N_Random_Indexes_With_No_Duplicates(T const& container, int count) -> s
   for (size_t i = 0; i < count; ++i){
     auto rando = Get_Random_Index(container);
     auto found = seen.find(rando);
-    while (found != container.end()){
+    while (found != seen.end()){
           rando = Get_Random_Index(container);
           found = seen.find(rando);
     }
@@ -78,7 +78,7 @@ auto Get_N_Random_Elements_With_No_Duplicates(T const& container, int count) -> 
   T elements;
   auto indexes = Get_N_Random_Indexes_With_No_Duplicates(container,count);
   for (auto const& it: indexes){
-    elements.emplace_back(container[indexes]);
+    elements.emplace_back(container[it]);
   }
   return elements;
 }
