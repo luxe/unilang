@@ -92,7 +92,7 @@ class
     elements.types.emplace_back(text);
     
     Adjust_Position(pos);
-    Adjust_Cursor_Selection(font_chars,pos,label,label.events,mouse_state);
+    Adjust_Cursor_Selection(font_chars,pos,label,style,label.events,mouse_state);
     
     //draw cursor
     elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
@@ -123,13 +123,13 @@ class
 
 
 //utility
-◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Style const& style, Mouse_Events const& events, Mouse_State const& mouse_state)❰
 
     //set active properties on the label
     if (mouse_state.left.clicked){
         if (events.clicked){
             label.cursors.clear();
-            auto s = get_cursor_selection_based_on_click(font_chars,events.pos,pos,label);
+            auto s = get_cursor_selection_based_on_click(font_chars,events.pos,pos,label,style);
             label.cursors.emplace_back(s);
         }
         else{
@@ -228,10 +228,12 @@ class
     label.styles.hovered_nonactive.box.dimensions.height = dim.y;
 ❱
 
-◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(Character_Maps const& font_chars, Position click_pos, Position pos, Label_Settings & label)❰
+◀private: static▶ Label_Cursor_Selection ☀get_cursor_selection_based_on_click(Character_Maps const& font_chars, Position click_pos, Position pos, Label_Settings & label, Label_Style const& style)❰
     
     
     Label_Cursor_Selection s;
+    s.label_cursor = style.cursor_style;
+    
     int width_covered = 0;
     bool found = false;
     auto segments = Str_To_Bdf_Segments::Convert(font_chars.segments.lookup,label.message);
@@ -255,7 +257,6 @@ class
     }
     
     
-    s.label_cursor = label.cursor_style;
     return s;
 ❱
 

@@ -7,6 +7,7 @@ hcp(name="label_style", deps = [
     "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
     "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
     "//code/utilities/data_structures/graphics/objects/label/style:label_width_style",
+    "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
 ])
 
 hcp(name="label_styles", deps = [
@@ -37,4 +38,6 @@ hcp(name="default_label_styles", deps = [
     "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
     "//code/utilities/colors:color_defaults",
+    "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
+    "//code/utilities/data_structures/graphics/objects/cursor/premade:red_cursor",
 ])
