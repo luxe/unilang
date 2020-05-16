@@ -6,11 +6,11 @@ hcp(name="label_style", deps = [
     "//code/utilities/data_structures/color:transparent_rgb_color",
     "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
     "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
-    "//code/utilities/data_structures/graphics/objects/style:label_width_style",
+    "//code/utilities/data_structures/graphics/objects/label/style:label_width_style",
 ])
 
 hcp(name="label_styles", deps = [
-    "//code/utilities/data_structures/graphics/objects/style:label_style",
+    "//code/utilities/data_structures/graphics/objects/label/style:label_style",
 ])
 
 hcp(name="label_width_style", deps = [

@@ -45,7 +45,7 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/data_structures/graphics/bitmap/premade:crosshair_mouse",
     "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
     "//code/utilities/colors:rectangle_shades",
-    "//code/utilities/data_structures/graphics/objects/style:default_label_styles",
+    "//code/utilities/data_structures/graphics/objects/label/style:default_label_styles",
     "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_converter",
     "//code/utilities/data_structures/graphics/objects/mouse/premade:standard_mouse",
     "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",

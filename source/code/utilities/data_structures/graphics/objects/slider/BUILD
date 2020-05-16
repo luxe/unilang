@@ -25,6 +25,6 @@ hcp(name="slider_drawer", deps = [
 
 hcp(name="default_sliders", deps = [
     "//code/utilities/data_structures/graphics/objects/slider:slider_state",
-    "//code/utilities/data_structures/graphics/objects/style:default_label_styles",
+    "//code/utilities/data_structures/graphics/objects/label/style:default_label_styles",
 ])
 
