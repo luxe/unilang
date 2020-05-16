@@ -3,7 +3,8 @@ load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(name="mouse_events",deps = [
-"//code/utilities/data_structures/position:position"
+"//code/utilities/data_structures/position:position",
+"//code/utilities/peripheral/mouse/state:mouse_state",
 ])
 
 hcp(name="mouse_events_checker", deps = [
