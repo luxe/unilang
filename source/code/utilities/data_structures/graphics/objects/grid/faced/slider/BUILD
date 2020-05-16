@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 
 hcp(name="slider_state", deps = [
-    "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
+    "//code/utilities/data_structures/graphics/objects/label:label_settings",
 ])
 
 hcp_and_hcp_pos(name="slider", deps = [
@@ -14,7 +14,7 @@ hcp_and_hcp_pos(name="slider", deps = [
 
 hcp(name="slider_drawer", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
-    "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
+    "//code/utilities/data_structures/graphics/objects/label:label_settings",
     "//code/utilities/data_structures/graphics/objects/grid/faced/slider:positioned_slider",
     "//code/utilities/data_structures/graphics/objects/functions:label_drawer",
     "//code/utilities/data_structures/graphics/objects:frame_elements",

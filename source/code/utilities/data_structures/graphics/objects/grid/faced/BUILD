@@ -4,7 +4,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 
 hcp(name="label_face", deps = [
-    "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
+    "//code/utilities/data_structures/graphics/objects/label:label_settings",
 ])
 
 

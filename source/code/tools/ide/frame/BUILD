@@ -62,7 +62,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/functions:tree_label_drawer",
         "//code/utilities/data_structures/graphics/objects/functions:button_tree_label_drawer",
         "//code/utilities/peripheral/pc:pc_input_state",
-        "//code/utilities/data_structures/graphics/objects/functions:cursor_drawer",
+        "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/graphics/imgui:mechanics",
         "//code/utilities/data_structures/graphics/objects/grid/faced/slider:slider_drawer",
     ],
@@ -86,7 +86,7 @@ hcp(name = "label_cursor_action_doer", deps = [
     "//code/utilities/peripheral/keyboard:key_detector",
     "//code/tools/ide/frame:text_box_action_decider",
     "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_mover",
-    "//code/utilities/data_structures/graphics/objects/grid/faced/regular:positioned_label",
+    "//code/utilities/data_structures/graphics/objects/label:positioned_label",
     "//code/utilities/fonts/bdf/character_maps:character_maps",
     "//code/utilities/peripheral/pc:pc_input_state",
 ])

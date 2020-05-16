@@ -19,7 +19,7 @@ hcp(name="label_width_style", deps = [
 
 
 hcp(name="label_style_chooser", deps = [
-"//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
+"//code/utilities/data_structures/graphics/objects/label:label_settings",
 ])
 
 
@@ -27,7 +27,7 @@ hcp(name="default_label_styles", deps = [
     "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:full_color_bitmap",
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/tools/ide/settings:ide_settings",
-    "//code/utilities/data_structures/graphics/objects/grid/faced/regular:label_settings",
+    "//code/utilities/data_structures/graphics/objects/label:label_settings",
     "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
     "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
     "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
