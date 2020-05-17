@@ -1,0 +1,274 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_options"❫
+⚯
+❪"recursive_file_processor"❫
+❪"global"❫
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options) ❰
+  Recursive_File_Processor::Process(program_options, static_cast<std::vector<std::string>&(*)(std::vector<std::string>&)>(Impl));
+❱
+
+◀public: static▶ std::vector<std::string>& ☀Impl(std::vector<std::string> & v) ❰
+  std::vector<std::string> current_top;
+  std::vector<std::string> new_file;
+  
+  bool inside = false;
+  bool header_eaten = false;
+  bool throw_away = false;
+  for (i: v){
+    
+    //decide if we are inside the doxygen top
+    if (!header_eaten){
+      if (!inside){
+        if (Begins_With(trim(i),"/**")){
+          inside = true;
+          throw_away = true;
+        }
+      }
+    }
+    
+    //decide if we are now out of the doxygen top
+    if (inside){
+      if (Begins_With(trim(i),"*/") || Begins_With(trim(i),"**/")){
+        inside = false;
+        header_eaten = true;
+        throw_away = true;
+      }
+    }
+    
+    
+    //create the new file and current top based on whether we are inside
+    if (!throw_away){
+      if (inside){
+        current_top.push_back(i);
+      }
+      else{
+        new_file.push_back(i);
+      }
+    }else{
+      throw_away = false;
+    }
+  }
+  
+  v = Derive_New_File(current_top,new_file);
+  return v;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Derive_New_File(std::vector<std::string> const& current_top, std::vector<std::string> const& new_file_part) ❰
+
+  std::vector<std::string> current_authors;
+  std::vector<std::string> current_brief;   bool in_brief = false;
+  std::vector<std::string> current_details; bool in_details = false;
+  std::string current_groups;
+  
+  for (i: current_top){
+    Possibly_Get_Authors(current_authors,i,in_brief,in_details);
+    Possibly_Get_Brief(current_brief,i,in_brief,in_details);
+    Possibly_Get_Details(current_details,i,in_brief,in_details);
+    Possibly_Get_Groups(current_groups,i);
+  }
+  
+  
+  Remove_Element(current_brief,std::string("This work was generated under U.S. Government contract and the"));
+  Remove_Element(current_brief,std::string("government has unlimited data rights therein."));
+  
+  auto new_template_header = Fill_Doxygen_Template_Header(current_authors,current_brief,current_details,current_groups);
+  
+  std::cout << current_file_name 
+                              << "," << !current_authors.empty() 
+                              << "," << !current_brief.empty() 
+                              << "," << !current_details.empty()
+                              << "," << !current_groups.empty() 
+                              
+                              << std::endl;
+  //Print_Each_Element_On_A_Line_With_No_Newline_After_Last_Line(new_template_header);
+  //std::cout << "------------------------\n";
+  
+  
+  return (new_template_header + new_file_part);
+❱
+
+◀public: static▶ std::vector<std::string> ☀Fill_Doxygen_Template_Header(std::vector<std::string> const& authors, std::vector<std::string> const& briefs, std::vector<std::string> const& details, std::string const& groups)❰
+  std::vector<std::string> new_template_header;
+  
+  new_template_header.push_back("/**");
+  new_template_header.push_back("*    @file");
+  
+  bool none = true;
+  
+  if (!authors.empty()){
+    for (a: authors){
+      new_template_header.push_back("*    @authors " + a);
+    }
+    new_template_header.push_back("*");
+    none = false;
+  }
+  
+  if (!briefs.empty()){
+    bool brief_first = true;
+    for (b: briefs){
+      if (brief_first){
+        new_template_header.push_back("*    @brief " + b);
+        brief_first = false;
+      }else{
+        new_template_header.push_back("*           " + b);
+      }
+    }
+  new_template_header.push_back("*");
+  none = false;
+  }
+  
+  if (!details.empty()){
+    bool details_first = true;
+    for (d: details){
+      if (details_first){
+        new_template_header.push_back("*    @details " + d);
+        details_first = false;
+      }else{
+        new_template_header.push_back("*             " + d);
+      }
+    }
+    new_template_header.push_back("*");
+    none = false;
+  }
+  
+  if (none){
+    new_template_header.push_back("*");
+  }
+
+new_template_header.push_back("*    @copyright Copyright 2015.");
+new_template_header.push_back("*    @n         Fidelity Flight Simulation, Inc. (F2Si)");
+new_template_header.push_back("*    @n         All rights reserved.");
+new_template_header.push_back("*");
+new_template_header.push_back("*    @b Classification:      Unclassified");
+new_template_header.push_back("*");
+new_template_header.push_back("*    @b Project @b Name:     UH-72A Synthetic Flight Training System (SFTS)");
+new_template_header.push_back("*");
+new_template_header.push_back("*    @b Contract @b Number:  #W900KK-09-D-0577");
+new_template_header.push_back("*");
+new_template_header.push_back("*    @b Task @b Order:       0002");
+new_template_header.push_back("*");
+new_template_header.push_back("*    This work was generated under U.S. Government contract and the");
+new_template_header.push_back("*    government has unlimited data rights therein.");
+new_template_header.push_back("*");
+new_template_header.push_back("*    @b DISTRIBUTION @b STATEMENT @b D:");
+new_template_header.push_back("*    @n    Distribution authorized to the Department of Defense and U.S. DoD contractors only.");
+new_template_header.push_back("*    @n    Other requests shall be referred to the controlling DoD office.");
+new_template_header.push_back("*");
+new_template_header.push_back("*    @b Organizations:");
+new_template_header.push_back("*    @n    Fidelity Flight Simulation, Inc. (F2Si)");
+new_template_header.push_back("*    @n    1815 Parkway View Drive");
+new_template_header.push_back("*    @n    Pittsburgh, PA 15205");
+new_template_header.push_back("*    @n    (412) 321-3280");
+
+if (!groups.empty()){
+  new_template_header.push_back("*");
+  new_template_header.push_back("*    @addtogroup " + groups);
+  new_template_header.push_back("*    @{");
+  //assume that it is closed later
+}
+new_template_header.push_back("*/");
+  
+  
+  
+  return new_template_header;
+❱
+
+◀public: static▶ void ☀Possibly_Get_Authors(std::vector<std::string> & current_authors,std::string line, bool & in_brief, bool & in_details)❰
+    
+    std::string temp = ltrim(Remove_First_Char(trim(line)));
+    std::string looking_for = "@author";
+    std::string looking_for2 = "@authors";
+    if (Begins_With(temp,looking_for)){
+      auto found = trim(Remove_First_N_Chars(temp,looking_for.size()));
+      if (!found.empty()){
+        current_authors.push_back(found);
+      }
+      in_brief = false;
+      in_details = false;
+    }
+    else if (Begins_With(temp,looking_for2)){
+      auto found = trim(Remove_First_N_Chars(temp,looking_for2.size()));
+      if (!found.empty()){
+        current_authors.push_back(found);
+      }
+      in_brief = false;
+      in_details = false;
+    }
+❱
+
+◀public: static▶ void ☀Possibly_Get_Brief(std::vector<std::string>  & current_brief,std::string line, bool & in_brief, bool & in_details)❰
+  std::string temp = ltrim(Remove_First_Char(trim(line)));
+  std::string looking_for = "@brief";
+    if (Begins_With(temp,looking_for)){
+      
+      auto found = trim(Remove_First_N_Chars(temp,looking_for.size()));
+      if (!found.empty()){
+        current_brief.push_back(found);
+      }
+
+      in_brief = true;
+      in_details = false;
+    }
+    //consider additional line or end of section
+    else if (!Begins_With(temp,"@")){
+      if (Contains_Only_Whitespace_Characters(temp)){
+        in_brief = false;
+      }
+      else{
+          current_brief.push_back(trim(temp));
+      }
+    }
+❱
+
+◀public: static▶ void ☀Possibly_Get_Details(std::vector<std::string> & current_details,std::string line, bool & in_brief, bool & in_details)❰
+
+  std::string temp = ltrim(Remove_First_Char(trim(line)));
+  std::string looking_for = "@details";
+  std::string looking_for2 = "@detail";
+    if (Begins_With(temp,looking_for)){
+      auto found = trim(Remove_First_N_Chars(temp,looking_for.size()));
+      if (!found.empty()){
+        current_details.push_back(found);
+      }
+      in_brief = false;
+      in_details = true;
+    }
+    else if (Begins_With(temp,looking_for2)){
+      auto found = trim(Remove_First_N_Chars(temp,looking_for2.size()));
+      if (!found.empty()){
+        current_details.push_back(found);
+      }
+      in_brief = false;
+      in_details = true;
+    }
+    //consider additional line or end of section
+    else if (!Begins_With(temp,"@")){
+      if (Contains_Only_Whitespace_Characters(temp)){
+        in_details = false;
+      }
+      else{
+        if (in_details){
+          current_details.push_back(trim(temp));
+        }
+      }
+    }
+❱
+
+◀public: static▶ void ☀Possibly_Get_Groups(std::string & current_groups,std::string line)❰
+  std::string temp = ltrim(Remove_First_Char(trim(line)));
+  std::string looking_for = "@addtogroup";
+    if (Begins_With(temp,looking_for)){
+      current_groups = trim(Remove_First_N_Chars(temp,looking_for.size()));
+    }
+❱
+
+◀public: static▶ void ☀Falsify_Bool_If_Line_Is_Empty(std::string const& line, bool & b)❰
+
+  if (Contains_Only_Whitespace_Characters(line)){
+    b = false;
+  }
+❱
+    

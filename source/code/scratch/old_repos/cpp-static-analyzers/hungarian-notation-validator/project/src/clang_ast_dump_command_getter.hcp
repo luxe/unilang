@@ -1,0 +1,41 @@
+class
+❪"systems"❫
+❪"utilities"❫
+⚯
+
+⚞⚟
+
+◀public: static▶ std::string ☀Get_Command(std::string const& file_to_check, std::vector<std::string> const& search_paths)❰
+
+    const std::string PROGRAM_NAME="clang-check-3.6";
+    const std::string DUMP_AST_FLAGS="-ast-dump --extra-arg=\"-fno-color-diagnostics\" -ast-dump-filter=";
+    
+    //get all the directories of our other project headers
+    //as well as all the directories of all our fake VxWorks headers
+    //hopefully the right paths get sent into the program
+    std::string look_paths_flags;
+    for (it: search_paths){
+        look_paths_flags += Recursively_Get_Flags_For_Header_Search_Directories(it) + " ";
+    }
+    
+    //what you probably want to use(or something close to it):
+    //auto project_dirs = Recursively_Get_Flags_For_Header_Search_Directories("/home/malko/Desktop/work-related/fresh/SimHost/UH72A VME/Src");
+    //auto system_headers = Recursively_Get_Flags_For_Header_Search_Directories("/home/malko/Desktop/work-related/fresh/SimHost/Tests/Test_Dependencies/For_Linux/VxWorks_Wrappers");
+    
+    
+
+    std::string command = PROGRAM_NAME + " " + look_paths_flags + DUMP_AST_FLAGS + " " + file_to_check + " --";
+    
+    return command;
+❱
+
+◀private: static▶ std::string ☀Recursively_Get_Flags_For_Header_Search_Directories(std::string const& path_to_recurse)❰
+    std::string flag_line;
+    
+    auto paths_vec = Recursively_Get_All_Directories_From_Path(path_to_recurse);
+    for (auto const& it: paths_vec){
+        flag_line +="-extra-arg=\"" "-I" + it + "\" ";
+    }
+    
+    return flag_line;
+❱

@@ -1,0 +1,120 @@
+class
+❪"utilities"❫
+❪"systems"❫
+❪"program_options"❫
+❪"decl"❫
+⚯
+❪"type_to_hungarian_notation_converter"❫
+❪"clang_ast_dump_command_getter"❫
+❪"ast_parser"❫
+❪"error_printer"❫
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options) ❰
+
+    //this will need to be parameterized for the file
+    auto command = Clang_Ast_Dump_Command_Getter::Get_Command(program_options.File_To_Check(), program_options.Search_Paths());
+
+    //get back a tree AST from running clang-check on the source files
+    //assume the headers can be found from the command sent in
+    auto ast = Get_Each_Line_Of_Shell_Command(command);
+
+    //custom logic for parsing out the relevant data we care about for determining notation concerns
+    //there is a lot of logic here that just throws things out, and gobbles up entire sections of strings
+    //I think it's pretty good, but it might have some minor problems we'll discover later.
+    auto decls = Ast_Parser::Parse_AST_For_Relevant_Decl_Structs(ast);
+
+    //Once we have a filtered list of Decl objects,
+    //we'll run an analysis over each of them, and determine if there are any problems with our notation.
+    Run_Analysis(decls);
+❱
+
+◀private: static▶ void ☀Run_Analysis(std::vector<Decl> & decls)❰
+    for (auto const& it: decls){
+        Check_Type(it);
+    }
+❱
+
+
+◀private: static▶ void ☀Check_Type(Decl const& d)❰
+    
+    if (d.is_enum){Perform_Enum_Notation_Check(d);}
+    else if(d.is_struct){Perform_Struct_Notation_Check(d);}
+    else{Perform_Basic_Hungarian_Check(d);}
+    
+    
+❱
+
+◀private: static▶ void ☀Perform_Enum_Notation_Check(Decl const& d)❰
+    if (!Valid_Enum_Base_Type_And_Matching_Identifier(d.base_type,d.identifier)){
+        Error_Printer::Print_Notation_Error(d,"Invalid enum notation");
+    }
+❱
+◀private: static▶ void ☀Perform_Struct_Notation_Check(Decl const& d)❰
+    if (!Valid_Struct_Base_Type_And_Matching_Identifier(d.base_type,d.identifier)){
+        Error_Printer::Print_Notation_Error(d,"Invalid struct notation");
+    }
+❱
+◀private: static▶ void ☀Print_Hungarian_Error(Decl const& d, std::string const& current_prefix, std::string const& expected_prefix)❰
+    Error_Printer::Print_Notation_Error(d,current_prefix,expected_prefix);
+❱
+
+
+◀private: static▶ void ☀Perform_Basic_Hungarian_Check(Decl const& d)❰
+    std::string current_prefix = Get_All_Beginning_Characters_Until_Capital_Letter(d.identifier);
+    std::string expected_prefix = Type_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix
+    (d.base_type, d.is_pointer, d.is_member, d.is_global, d.is_static, d.is_array);
+    
+    if (current_prefix != expected_prefix){
+        Print_Hungarian_Error(d,current_prefix,expected_prefix);
+    }
+❱
+
+◀private: static▶ bool ☀Valid_Enum_Base_Type_And_Matching_Identifier(std::string base_type, std::string identifier)❰
+
+    auto problems = Find_Problems_With_F2si_Typedef_Naming(base_type,identifier,"_e","E");
+    
+    //fail if problems exist
+    if (!problems.empty()){return false;}
+    
+    return true;
+❱
+◀private: static▶ bool ☀Valid_Struct_Base_Type_And_Matching_Identifier(std::string base_type, std::string identifier)❰
+    
+    auto problems = Find_Problems_With_F2si_Typedef_Naming(base_type,identifier,"_t","T");
+    
+    //fail if problems exist
+    if (!problems.empty()){return false;}
+    
+    return true;
+❱
+
+
+
+
+◀private: static▶ std::vector<std::string> ☀Find_Problems_With_F2si_Typedef_Naming(std::string base_type, std::string identifier, std::string base_suffix, std::string identifier_suffix)❰
+    
+    std::vector<std::string> problems;
+    
+    //make sure we have the right suffixes
+    if (!Ends_With(base_type,base_suffix)){problems.push_back("base type does not end with " + base_suffix);}
+    if (!Ends_With(identifier,identifier_suffix)){problems.push_back("identifier type does not end with " + identifier_suffix);}
+    
+    //trim off the suffix
+    auto base_type_trimmed = As_Last_N_Chars_Removed(base_type,base_suffix.size());
+    auto identifier_type_trimmed = As_Last_N_Chars_Removed(identifier,identifier_suffix.size());
+    
+    if (base_type_trimmed != As_Capital_And_Pushed_Together(base_type_trimmed)){
+        problems.push_back("base type casing is incorrect");
+    }
+    
+    if (identifier_type_trimmed != As_Capital_And_Pushed_Together(identifier_type_trimmed)){
+        problems.push_back("identifier type casing is incorrect");
+    }
+    
+    //make sure the types match (minus their suffix)
+    if (base_type_trimmed != identifier_type_trimmed){
+        problems.push_back("type names don't match");
+    }
+    
+    return problems;
+❱
