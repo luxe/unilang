@@ -1,12 +1,15 @@
 #include <iostream>
 #include "code/utilities/github/user_forked_repos_getter.hpp"
+#include "code/utilities/github/repo_deleter.hpp"
+
 
 int main(){
     
-    auto repos = User_Forked_Repos_Getter::Get("luxe");
+    std::string user = "luxe";
+    
+    auto repos = User_Forked_Repos_Getter::Get(user);
     
     for (auto it: repos){
-        std::cout << it["full_name"] << std::endl;
+        std::cout << Repo_Deleter::Delete(user,it["name"]).dump(1) << std::endl;;
     }
-    //std::cout << repos.dump(1) << std::endl;
 }

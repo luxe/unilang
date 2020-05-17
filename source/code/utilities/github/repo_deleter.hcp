@@ -1,0 +1,27 @@
+class
+❪iostream❫
+❪string❫
+❪"code/utilities/web/html_fetch_settings"❫
+❪"code/utilities/web/web_json_extraction_settings"❫
+❪"code/utilities/web/lib"❫
+❪"code/utilities/personal/secret/secret_getter"❫
+⚯
+⚞⚟
+
+◀public: static▶ nlohmann::json ☀Delete(std::string const& user, std::string const& repo_name) ❰
+    
+    Web_Json_Extraction_Settings settings;
+    settings.fetch.url = "https://api.github.com/repos/" + user + "/" + repo_name;
+    settings.fetch.del = true;
+    
+    //user agent required
+    //https://developer.github.com/v3/#user-agent-required
+    settings.fetch.headers.emplace_back("User-Agent: " + user);
+    
+    //credentials required to perform a delete
+    auto token = Secret_Getter::Github_Access_Token();
+    settings.fetch.headers.emplace_back("Authorization: token " + token);
+    
+    auto json = Extract_Web_Json(settings.fetch);
+    return json;
+❱

@@ -7,5 +7,6 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = [
         "//code/utilities/github:user_forked_repos_getter",
+        "//code/utilities/github:repo_deleter",
     ],
 )

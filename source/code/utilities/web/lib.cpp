@@ -112,6 +112,11 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
         curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)strlen(postthis));
       }
+      
+      //special things to do if we are doing a DELETE command
+      else if (settings.del){
+        curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+      }
  
       result = curl_easy_perform(curl);//http get performed
       curl_slist_free_all(list); /* free the list again */
