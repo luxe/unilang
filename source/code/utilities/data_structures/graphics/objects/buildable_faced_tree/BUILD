@@ -3,13 +3,13 @@ load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 
-hcp_and_hcp_pos(name="button_face_tree", deps = [
-    "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label",
-    "//code/utilities/data_structures/line_break:should_line_break",
+hcp_and_hcp_pos(name="buildable_face_tree", deps = [
+    "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
+    "//code/utilities/data_structures/graphics/objects/select_menu:select_menu",
     "@tree//:tree"
 ])
 
-hcp(name="button_tree_label_drawer", deps = [
+hcp(name="buildable_face_tree_drawer", deps = [
     "//code/utilities/fonts/bdf/settings:character_segment",
     "//code/utilities/data_structures/graphics/objects/label:label_settings",
     "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
@@ -27,5 +27,5 @@ hcp(name="button_tree_label_drawer", deps = [
     "//code/utilities/data_structures/graphics/bitmap/premade:horizontal_line",
     "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
     "//code/utilities/data_structures/counters/unique_max_counter:unique_max_counter",
-    "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
+    "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree",
 ])
