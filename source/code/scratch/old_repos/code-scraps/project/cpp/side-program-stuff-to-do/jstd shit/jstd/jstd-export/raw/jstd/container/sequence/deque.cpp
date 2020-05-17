@@ -1,0 +1,9 @@
+#include "deque.hpp"
+namespace jstd{
+namespace container{
+namespace sequence{
+namespace deque{
+}
+}
+}
+}
