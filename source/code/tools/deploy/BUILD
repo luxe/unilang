@@ -3,7 +3,7 @@ load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 cc_binary(
-    name = "deploy",
+    name = "main",
     srcs = ["main.cpp"],
     deps = [
     "//code/utilities/program/common_actions/locale:lib",
