@@ -71,4 +71,12 @@ int main(int argc, char** argv){
         Essay_Publisher::Generate_And_Publish();
     }
     
+    //Other responsibilities for maintaining a mono-repo:
+    //Outside resources can be fetched reliably (additional mirrors; solutions without Internet)
+    //Ensure 3rd party libraries are up-to-date. Update them as necessary.
+    //Ensure CI is always passing (debug, optimized, sanitizers)
+    //Ensure CI is as fast as possible
+    //Ensure Build is as fast as possible
+    //Flaky Tests
+    
 }
