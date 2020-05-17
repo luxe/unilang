@@ -28,4 +28,6 @@ hcp(name="buildable_face_tree_drawer", deps = [
     "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
     "//code/utilities/data_structures/counters/unique_max_counter:unique_max_counter",
     "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree",
+    "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
+    "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",
 ])

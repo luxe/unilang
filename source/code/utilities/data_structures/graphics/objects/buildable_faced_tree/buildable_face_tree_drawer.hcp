@@ -7,7 +7,9 @@ class
 ❪"code/utilities/data_structures/graphics/objects/label/label_settings"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/positioned_buttoned_faced_label"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/positioned_button_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_tree_label_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/positioned_buildable_face_tree"❫
 ❪"code/utilities/data_structures/graphics/objects/label/label_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
@@ -27,6 +29,24 @@ class
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input)❰
     
     Frame_Elements elements;
+    
+    //draw the tree
+    elements.types += Button_Tree_Label_Drawer::Draw(font_chars,tree.structure,tree.pos,pc_input).types;
+    
+    //find the element that has been right-clicked
+    tree.selected_node = tree.structure.nodes.end();
+    for (auto it = tree.structure.nodes.begin(); it != tree.structure.nodes.end(); ++it){
+        if (it->label.faces[it->label.index].label.events.state.right.clicked){
+            tree.selected_node = it;
+            break;
+        }
+    }
+    
+    //was an element clicked?
+    if (tree.selected_node != tree.structure.nodes.end()){
+        std::cout << "clicked" << std::endl;
+    }
+    
     
     return elements;
 ❱

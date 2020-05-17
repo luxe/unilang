@@ -28,6 +28,7 @@ hcp(name="ide_settings", deps = [
     "//code/utilities/peripheral/pc:pc_input_state",
     "//code/utilities/data_structures/graphics/objects/slider:positioned_slider",
     "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
+    "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
     "@boost//:asio",
 ])
 

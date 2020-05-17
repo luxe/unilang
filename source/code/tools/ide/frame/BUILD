@@ -65,6 +65,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/graphics/imgui:mechanics",
         "//code/utilities/data_structures/graphics/objects/slider:slider_drawer",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_drawer",
     ],
 )
 
