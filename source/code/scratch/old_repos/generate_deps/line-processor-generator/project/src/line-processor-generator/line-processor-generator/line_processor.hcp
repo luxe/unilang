@@ -1,0 +1,79 @@
+class
+❪"systems"❫
+❪"composed_program_options"❫
+❪"utilities"❫
+⚯
+⚞⚟
+◀public: static▶ void ☀Process(Composed_Program_Options const& program_options, std::function<std::string& (std::string &)> const& line_processing_function) ❰
+
+    //process from input
+    if (program_options.input_files.empty()){
+        Perform_From_Std_In(line_processing_function);
+    }else{
+        
+        if (program_options.in_place){
+            Perform_From_Files_In_Place(program_options.input_files,line_processing_function);
+        }else{
+            Perform_From_Files_Through_Std_Out(program_options.input_files,line_processing_function);
+        }
+    }
+❱
+
+◀private: static▶ void ☀Perform_From_Std_In(std::function<std::string& (std::string &)> const& line_processing_function) ❰
+
+    //process each line immediately
+    std::string line;
+    std::getline(std::cin,line);
+    while (std::cin){
+        std::cout << line_processing_function(line) << '\n';
+        std::getline(std::cin,line);
+    }
+❱
+◀private: static▶ void ☀Perform_From_Files_In_Place(std::vector<std::string> const& files, std::function<std::string& (std::string &)> const& line_processing_function) ❰
+
+    // we can hold onto all of the lines because we are doing an 'in place'
+    // and don't want to write to the file until we are finished
+    for (auto const& file: files){
+        if (File_Exists(file)){
+            Perform_From_File_In_Place(file,line_processing_function);
+        }
+        else{
+            std::cerr << file << " does not exist.\n";
+        }
+    }
+    
+❱
+◀private: static▶ void ☀Perform_From_Files_Through_Std_Out(std::vector<std::string> const& files, std::function<std::string& (std::string &)> const& line_processing_function) ❰
+
+    //process each file line immediately
+    for (auto const& file: files){
+        if (File_Exists(file)){
+            Perform_From_File_Through_Std_Out(file,line_processing_function);
+        }else{
+            std::cerr << file << " does not exist.\n";
+        }
+    }
+❱
+
+
+
+
+
+//core functions
+◀private: static▶ void ☀Perform_From_File_In_Place(std::string const& file, std::function<std::string& (std::string &)> const& line_processing_function) ❰
+        auto lines = Read_Each_Line_Of_File_Into_Vector(file);
+        for (auto & line: lines){
+            line_processing_function(line);
+        }
+        Print_Each_Element_To_A_File_On_A_Seperate_Line(lines,file);
+❱
+◀private: static▶ void ☀Perform_From_File_Through_Std_Out(std::string const& file, std::function<std::string& (std::string &)> const& line_processing_function) ❰
+    std::ifstream infile(file);
+    std::string line;
+    std::getline(infile,line);
+    while (infile){
+        std::cout << line_processing_function(line) << '\n';
+        std::getline(infile,line);
+    }
+    infile.close();
+❱

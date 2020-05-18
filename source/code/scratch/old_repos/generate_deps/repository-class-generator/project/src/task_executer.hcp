@@ -1,0 +1,115 @@
+class
+❪"systems"❫
+❪"program_options"❫
+❪"utilities"❫
+⚯
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& program_options) ❰
+	std::ofstream outfile("repository.hcp");
+
+	outfile << R"DELIM(class
+ļ❪iostreamļ❫
+ļ❪stringļ❫
+ļ❪cstdlibļ❫
+ļ❪vectorļ❫
+ļ❪"utilities"ļ❫
+ļ⚯
+ļ⚞ļ⚟
+
+ļ◀
+private:
+    bool valid_url=false;  //the url is well-formatted
+    bool valid_repo=false; //the url actually points to an existing repo that is downloadable
+    bool cached = false;
+    std::string user_name;
+    std::string repo_name;
+ļ▶
+
+ļ◀public:ļ▶
+//construct a repo object based on either an ssh url or an http url
+ļ☀ļ◈(std::string const& url)ļ❰
+
+    if (Begins_With(url,"https://github.com/")){
+        
+        //handle the url if it's https
+        if (Ends_With(url,".git")){
+            Prase_HTTPS_Url(url);
+        }
+        
+        //handle the url if it's web url
+        else{
+            Prase_Web_Url(url);
+        }
+    }
+    
+    //handle the url if it's ssh
+    else if(Begins_With(url,"git@github.com:") and Ends_With(url,".git")){
+        Prase_SSH_Url(url);
+    }
+    
+    //if none of the parse functions are hit, the repo remains in an invalid state
+    //noted by the boolean member values
+ļ❱
+ļ☀ļ◈(std::string const& user_name_in, std::string const& repo_name_in)ļ◖
+            : valid_url(true)
+            , user_name(user_name_in)
+            , repo_name(repo_name_in)
+            ļ◗
+ļ❰ļ❱
+
+//getters
+std::string ļ☀User_Name() constļ❰
+    return user_name;
+ļ❱
+std::string ļ☀Repo_Name()const ļ❰
+    return repo_name;
+ļ❱
+std::string ļ☀Title()constļ❰
+    return user_name + '/' + repo_name;
+ļ❱
+std::string ļ☀Web_URL()const ļ❰
+    return "https://github.com/" + user_name + "/" + repo_name;
+ļ❱
+std::string ļ☀HTTPS_URL()const ļ❰
+    return "https://github.com/" + user_name + "/" + repo_name + ".git";
+ļ❱
+std::string ļ☀SSH_URL()const ļ❰
+    return "git@github.com:" + user_name + "/" + repo_name + ".git";
+ļ❱
+bool ļ☀Valid_URL()const ļ❰
+    return valid_url;
+ļ❱
+bool ļ☀Valid() ļ❰
+    
+    if (valid_url){
+        //test url location for repo
+        if (!cached){
+            valid_repo = Repo_Exists_On_Github(user_name,repo_name);
+            cached = true;
+        }
+    }
+        
+    return valid_repo;
+ļ❱
+
+ļ◀private:ļ▶
+void ļ☀Prase_HTTPS_Url(std::string const& url)ļ❰
+    valid_url = true;
+    auto it = Split_By_Char(url.substr(19),'/');
+    user_name = it.first;
+    repo_name = As_Removed_Suffix(it.second);
+ļ❱
+void ļ☀Prase_SSH_Url(std::string const& url)ļ❰
+    valid_url = true;
+    auto it = Split_By_Char(url.substr(15),'/');
+    user_name = it.first;
+    repo_name = As_Removed_Suffix(it.second);
+ļ❱
+void ļ☀Prase_Web_Url(std::string const& url)ļ❰
+    valid_url = true;
+    auto it = Split_By_Char(url.substr(19),'/');
+    user_name = it.first;
+    repo_name = it.second;
+ļ❱
+	)DELIM";
+❱

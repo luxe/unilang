@@ -1,0 +1,10 @@
+include .mk/settings/colors.mk
+include .mk/settings/diagnostic-output.mk
+include .mk/settings/warnings.mk
+include .mk/settings/optimizations.mk
+include .mk/settings/sanitizers.mk
+include .mk/settings/debugs.mk
+include .mk/settings/language-standards.mk
+include .mk/settings/compilers.mk
+include .mk/settings/libraries.mk
+include .mk/settings/macros/all.mk

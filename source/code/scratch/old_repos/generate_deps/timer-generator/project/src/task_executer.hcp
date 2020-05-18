@@ -1,0 +1,70 @@
+class
+❪iostream❫
+❪string❫
+❪vector❫
+❪"program_options"❫
+⚯
+❪"utilities"❫
+❪"timer"❫
+⚞⚟
+
+◀public: static▶ void ☀Do_Needed_Tasks(Program_Options const& program_options) ❰
+
+	std::ofstream outfile("timer.hcp");
+
+outfile << R"DELIM(
+❪chrono❫
+❪iostream❫
+⚯
+⚞⚟
+
+◀public:▶ 
+
+void ☀Start()❰
+	paused = false;
+	nano_wait = 0;
+	start = std::chrono::steady_clock::now();
+	return;
+❱
+
+void ☀Pause()❰
+	pause_time = std::chrono::steady_clock::now();
+	paused = true;
+	return;
+❱
+
+void ☀Unpause()❰
+	nano_wait += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - pause_time).count();
+	paused = false;
+	return;
+❱
+
+bool ☀Is_Paused()❰ return paused;❱
+
+double ☀Currently_Elapsed_Time(double factor) const❰
+
+	if (paused){
+		return (std::chrono::duration_cast<std::chrono::nanoseconds>(pause_time - start).count() / factor) - (nano_wait / factor);
+	}
+
+	return (std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count() / factor) - (nano_wait / factor);
+❱
+double ☀Currently_Elapsed_Time_In_Nanoseconds() const❰return Currently_Elapsed_Time(1);❱
+double ☀Currently_Elapsed_Time_In_Microseconds() const❰return Currently_Elapsed_Time(1000);❱
+double ☀Currently_Elapsed_Time_In_Milliseconds() const❰return Currently_Elapsed_Time(1000000);❱
+double ☀Currently_Elapsed_Time_In_Seconds() const❰return Currently_Elapsed_Time(1000000000);❱
+double ☀Currently_Elapsed_Time_In_Minutes() const❰return Currently_Elapsed_Time(60000000000);❱
+double ☀Currently_Elapsed_Time_In_Hours() const❰return Currently_Elapsed_Time(3600000000000);❱
+
+
+◀
+private:
+	bool paused;
+	decltype(std::chrono::steady_clock::now()) start;
+	decltype(std::chrono::steady_clock::now()) pause_time;
+	std::time_t nano_wait;
+▶)DELIM";
+
+
+	return;
+❱

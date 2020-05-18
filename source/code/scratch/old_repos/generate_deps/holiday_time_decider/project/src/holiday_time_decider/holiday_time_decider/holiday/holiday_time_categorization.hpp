@@ -1,0 +1,33 @@
+#pragma once
+enum class Holiday_Time_Categorization{
+None
+New_Years
+Martin_Luther_King
+Presidents
+Emancipation
+Mothers
+Fathers
+Memorial
+Independence
+Labor
+Columbus
+Veteran
+Thanksgiving
+Christmas
+Groundhog
+Rosa_Parks
+Valentines
+StPatrick
+Easter
+Tax
+Arbor
+Cinco_De_Mayo
+Ramadan
+Flag
+Halloween
+Election
+Presidents
+Black_Friday
+Kwanzaa
+Programmer
+};

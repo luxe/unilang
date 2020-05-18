@@ -1,0 +1,10 @@
+#pragma once
+
+enum class Export_Style
+{GLOBAL
+,OBJECT_GOOD
+,OBJECT_BAD_WITH_BOOLS
+,OBJECT_BAD_WITH_ENUMS
+,CONSTRAINTS
+,SERIALIZE
+};

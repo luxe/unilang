@@ -23,3 +23,11 @@ hcp(name = "repo_deleter", deps = [
     "//code/utilities/github:user_repos_getter",
     "//code/utilities/personal/secret:secret_getter",
 ])
+
+hcp(name = "orgs_repo_getter", deps = [
+    "//code/utilities/web:html_fetch_settings",
+    "//code/utilities/web:web_json_extraction_settings",
+    "//code/utilities/web:lib",
+    "//code/utilities/github:user_repos_getter",
+    "//code/utilities/personal/secret:secret_getter",
+])

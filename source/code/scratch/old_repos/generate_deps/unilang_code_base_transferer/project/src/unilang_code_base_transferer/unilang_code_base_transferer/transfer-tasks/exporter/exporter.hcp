@@ -1,0 +1,67 @@
+class
+❪"systems"❫
+❪"utilities"❫
+❪"component"❫
+❪"settings"❫
+⚯
+❪"process_spawner"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Export(Component const& component, Settings const& settings)❰
+
+    switch (component.style){
+        case Export_Style::GLOBAL:                Export_F2si_Global(component,settings);      break;
+        case Export_Style::OBJECT_GOOD:           Export_F2si_Good(component,settings);        break;
+        case Export_Style::OBJECT_BAD_WITH_BOOLS: Export_F2si_Bad_Bools(component,settings);   break;
+        case Export_Style::OBJECT_BAD_WITH_ENUMS: Export_F2si_Bad_Enums(component,settings);   break;
+        case Export_Style::CONSTRAINTS:           Export_F2si_Constraints(component,settings); break;
+        case Export_Style::SERIALIZE:             Export_F2si_Serialize(component,settings);   break;
+    }
+❱
+
+◀private: static▶ void ☀Export_F2si_Global(Component const& component, Settings const& settings)❰
+    auto command = Get_Styled_Export_Command(component,settings,"good");
+    Execute_And_Handle_Results(command);
+❱
+◀private: static▶ void ☀Export_F2si_Good(Component const& component, Settings const& settings)❰
+    auto command = Get_Styled_Export_Command(component,settings,"good");
+    Execute_And_Handle_Results(command);
+❱
+◀private: static▶ void ☀Export_F2si_Bad_Bools(Component const& component, Settings const& settings)❰
+    auto command = Get_Styled_Export_Command(component,settings,"bad-bools");
+    Execute_And_Handle_Results(command);
+❱
+◀private: static▶ void ☀Export_F2si_Bad_Enums(Component const& component, Settings const& settings)❰
+    auto command = Get_Styled_Export_Command(component,settings,"bad-enums");
+    Execute_And_Handle_Results(command);
+❱
+◀private: static▶ void ☀Export_F2si_Constraints(Component const& component, Settings const& settings)❰
+    auto command = Get_Styled_Export_Command(component,settings,"constraints");
+    Execute_And_Handle_Results(command);
+❱
+◀private: static▶ void ☀Export_F2si_Serialize(Component const& component, Settings const& settings)❰
+    auto command = Get_Styled_Export_Command(component,settings,"serialize");
+    Execute_And_Handle_Results(command);
+❱
+
+◀private: static▶ std::string ☀Get_Styled_Export_Command(Component const& component, Settings const& settings, std::string const& style)❰
+    std::string command;
+    command = settings.unilang_transcompiler + " --recursive_dependency_paths=\"" + settings.simhost.full_path_to_unicode_repo
+    + "\" --exporter=\"f2si\" --language=\"c\" --style=\"" + style + "\" " + component.file_name + "." + settings.unilang_file_extension;
+    return command;
+❱
+
+
+◀private: static▶ void ☀Execute_And_Handle_Results(std::string const& command)❰
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    //any output from the program, we'll consider an error:
+    
+    if (!results.stderr.empty()){ std::cerr << results.stderr << '\n'; }
+    if (!results.stdout.empty()){ std::cerr << results.stdout << '\n'; }
+    
+    if (results.return_code != 0){
+        std::cerr << "failed with error code: " << results.return_code << "\n";
+    }
+❱
