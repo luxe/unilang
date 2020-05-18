@@ -6,11 +6,11 @@
 
 int main(){
     
-    std::string org = "line-processors";
+    std::string org = "edinboro";
     
     auto repos = Orgs_Repo_Getter::Get(org);
     
-    Set_Path("/home/laptop/Desktop/line_processors");
+    Set_Path("/home/laptop/Desktop/edinboro");
     for (auto it: repos){
         std::string command = "git clone " + it["ssh_url"].get<std::string>();
         execute(command);

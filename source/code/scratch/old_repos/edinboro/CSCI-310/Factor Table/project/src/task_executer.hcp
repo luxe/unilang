@@ -1,0 +1,73 @@
+class
+❪"systems"❫
+❪"program_options"❫
+⚯
+❪"utilities"❫
+⚞⚟
+◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& po) ❰
+
+    //enforce one operation flag only
+    if (More_Than_One_Is_True(po.Plus(),po.Minus(),po.Times(),po.Divide(),po.Mod())){
+        Exit_With_Error("Only pass one operation please.");
+    }
+
+    //set the values of low and high for the table
+    //these values are derived from wither the range or the high and low flags
+    //I disagree with the instructions, and we'll allow any order (low/high or high/low)
+    //simple parsing, so exactly two numbers must be passed (no more and no less)
+    long low{0};
+    long high{0};
+    if (!po.Range().empty()){
+        auto range_pair = Split_By_Char(As_Spaces_Squeezed_Away(po.Range()), ' ');
+        low = as_long(range_pair.first.c_str());
+        high = as_long(range_pair.first.c_str());
+        if (low > high){std::swap(low,high);}
+        
+    }else{
+        low = po.Low();
+        high = po.High();
+    }
+    
+    //get the env name
+    auto env_name_char = getenv ("PROGRAM_ONE_USER");
+    std::string env_name;
+    if(env_name_char){env_name = env_name_char;}
+    
+    //print the correct name
+    if (po.User().size() > 1){
+        Exit_With_Error("Only give one user.");
+    }
+    std::cout << "\nHello ";
+    if (po.User().size() == 1){
+        std::cout << po.User()[0];
+    }else if (!env_name.empty()){
+        std::cout << env_name;
+    }else{
+        std::cout << "Generic User";
+    }
+    std::cout << "\n\n";
+    
+    
+    //build the table
+    std::vector<std::vector<long>> rows;
+    std::vector<long> row;
+    for (long i = low; i < high+1; ++i){
+        for (long j = low; j < high+1; ++j){
+            row.push_back(Perform_Calculation(i,j,po));
+        }
+        rows.push_back(row);
+        row.clear();
+    }
+    std::cout << rows;
+
+❱
+
+◀private: static▶ long ☀Perform_Calculation(long a, long b, Program_Options const& po) ❰
+    if (po.Plus()){ return a + b; }
+    if (po.Minus()){ return a - b; }
+    if (po.Times()){ return a * b; }
+    if (po.Divide()){ return a / b; }
+    if (po.Mod()){ return a % b; }
+    return a * b; //default
+❱
+
