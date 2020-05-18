@@ -6,11 +6,11 @@
 
 int main(){
     
-    std::string org = "generative-dependencies";
+    std::string org = "line-processors";
     
     auto repos = Orgs_Repo_Getter::Get(org);
     
-    Set_Path("/home/laptop/Desktop/generate_deps");
+    Set_Path("/home/laptop/Desktop/line_processors");
     for (auto it: repos){
         std::string command = "git clone " + it["ssh_url"].get<std::string>();
         execute(command);
