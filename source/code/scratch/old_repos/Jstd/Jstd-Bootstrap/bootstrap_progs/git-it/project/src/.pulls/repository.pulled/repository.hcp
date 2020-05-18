@@ -1,0 +1,105 @@
+class
+❪iostream❫
+❪string❫
+❪cstdlib❫
+❪vector❫
+⚯
+❪"utilities"❫
+⚞⚟
+
+◀
+private:
+    bool valid_url=false;  //the url is well-formatted
+    bool valid_repo=false; //the url actually points to an existing repo that is downloadable
+    bool cached = false;
+    std::string user_name;
+    std::string repo_name;
+▶
+
+◀public:▶
+//construct a repo object based on either an ssh url or an http url
+☀◈(std::string const& url)❰
+
+    if (Begins_With(url,"https://github.com/")){
+        
+        //handle the url if it's https
+        if (Ends_With(url,".git")){
+            Prase_HTTPS_Url(url);
+        }
+        
+        //handle the url if it's web url
+        else{
+            Prase_Web_Url(url);
+        }
+    }
+    
+    //handle the url if it's ssh
+    else if(Begins_With(url,"git@github.com:") and Ends_With(url,".git")){
+        Prase_SSH_Url(url);
+    }
+    
+    //if none of the parse functions are hit, the repo remains in an invalid state
+    //noted by the boolean member values
+❱
+☀◈(std::string const& user_name_in, std::string const& repo_name_in)◖
+            : valid_url(true)
+            , user_name(user_name_in)
+            , repo_name(repo_name_in)
+            ◗
+❰❱
+
+//getters
+std::string ☀User_Name() const❰
+    return user_name;
+❱
+std::string ☀Repo_Name()const ❰
+    return repo_name;
+❱
+std::string ☀Title()const❰
+    return user_name + '/' + repo_name;
+❱
+std::string ☀Web_URL()const ❰
+    return "https://github.com/" + user_name + "/" + repo_name;
+❱
+std::string ☀HTTPS_URL()const ❰
+    return "https://github.com/" + user_name + "/" + repo_name + ".git";
+❱
+std::string ☀SSH_URL()const ❰
+    return "git@github.com:" + user_name + "/" + repo_name + ".git";
+❱
+bool ☀Valid_URL()const ❰
+    return valid_url;
+❱
+bool ☀Valid() ❰
+    
+    if (valid_url){
+        //test url location for repo
+        if (!cached){
+            valid_repo = Repo_Exists_On_Github(user_name,repo_name);
+            cached = true;
+        }
+    }
+        
+    return valid_repo;
+❱
+
+◀private:▶
+void ☀Prase_HTTPS_Url(std::string const& url)❰
+    valid_url = true;
+    auto it = Split_By_Char(url.substr(19),'/');
+    user_name = it.first;
+    repo_name = As_Removed_Suffix(it.second);
+❱
+void ☀Prase_SSH_Url(std::string const& url)❰
+    valid_url = true;
+    auto it = Split_By_Char(url.substr(15),'/');
+    user_name = it.first;
+    repo_name = As_Removed_Suffix(it.second);
+❱
+void ☀Prase_Web_Url(std::string const& url)❰
+    valid_url = true;
+    auto it = Split_By_Char(url.substr(19),'/');
+    user_name = it.first;
+    repo_name = it.second;
+❱
+	

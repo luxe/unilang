@@ -6,11 +6,11 @@
 
 int main(){
     
-    std::string org = "edinboro";
+    std::string org = "Jstd";
     
     auto repos = Orgs_Repo_Getter::Get(org);
     
-    Set_Path("/home/laptop/Desktop/edinboro");
+    Set_Path("/home/laptop/Desktop/Jstd");
     for (auto it: repos){
         std::string command = "git clone " + it["ssh_url"].get<std::string>();
         execute(command);
