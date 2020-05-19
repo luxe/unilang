@@ -10,5 +10,6 @@ cpp_main(
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/peripheral/sound/wav:wav_file_join_settings",
         "//code/utilities/peripheral/sound/wav:wav_file_joiner",
+        "//code/utilities/assets:english_sounds",
     ],
 )
