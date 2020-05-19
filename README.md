@@ -41,7 +41,7 @@ Full build can be done the following way.
 ```
 git clone git@github.com:luxe/unilang.git
 cd unilang
-./build_everything
+./user_run //code/tools/ide:main
 ```
 Various CIs are used to test the correctness of the build.  Referencing these builds may help you acquire any additional dependencies.  The reason we use multiple CIs is to ensure a general consensus and catch any outlying issues.  These services have limitations at their free tier, and so full builds/tests are not performed.  
 
