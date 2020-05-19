@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def rapid_json():
+def rapidJson():
     http_archive(
         name = "com_github_tencent_rapidjson",
         build_file = "//bazel/deps/build_files:rapidjson.BUILD",

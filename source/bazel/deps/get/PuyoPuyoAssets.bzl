@@ -4,7 +4,7 @@
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-def PuyoPuyoAssets():
+def puyoPuyoAssets():
     http_archive(
         name="PuyoPuyoAssets" ,
         build_file="//bazel/deps/build_files:PuyoPuyoAssets.BUILD" ,

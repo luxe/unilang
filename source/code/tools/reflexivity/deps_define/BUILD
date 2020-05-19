@@ -16,4 +16,6 @@ hcp(name = "deps_definition_refresher", deps = [
     "//code/utilities/linguistics/computer/file_extension:file_extension_getter",
     "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
     "//code/tools/reflexivity/comment:generated_comment_getter",
+    "//code/utilities/types/strings/transformers/casing:case_modifier",
+    "//code/utilities/types/strings/transformers/search_replace:lib",
 ])

@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def chrome_drivers():
+def chromeDrivers():
     http_archive(
         name = "chrome_drivers",
         build_file = "//bazel/deps/build_files:chrome_drivers.BUILD",

@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def big_integer_cpp():
+def bigIntegerCpp():
     http_archive(
         name = "big_integer_cpp",
         build_file = "//bazel/deps/build_files:big_integer_cpp.BUILD",

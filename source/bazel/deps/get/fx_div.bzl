@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def fx_div():
+def fxDiv():
     http_archive(
         name = "fx_div",
         build_file = "//bazel/deps/build_files:fx_div.BUILD",

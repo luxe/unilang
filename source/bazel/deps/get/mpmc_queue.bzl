@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def mpmc_queue():
+def mpmcQueue():
     http_archive(
         name = "mpmc_queue",
         build_file = "//bazel/deps/build_files:mpmc_queue.BUILD",

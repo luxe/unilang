@@ -1,7 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
-def scrabble_words():
+def scrabbleWords():
     http_archive(
         name = "scrabble_words",
         build_file = "//bazel/deps/build_files:scrabble_words.BUILD",

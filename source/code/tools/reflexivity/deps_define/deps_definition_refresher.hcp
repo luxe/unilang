@@ -7,6 +7,8 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/tools/reflexivity/comment/generated_comment_getter"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Refresh()❰
@@ -34,7 +36,7 @@ class
     for (auto const& it: all_specs.specs){
         if (Should_Print_Get_File(it)){
             auto source_data  = Create_Get_File_Content(it);
-            Write_To_File(it.lib_name + ".bzl",source_data);
+            Write_To_File(Remove_Dashes(it.lib_name) + ".bzl",source_data);
         }
     }
 ❱
@@ -58,19 +60,19 @@ class
     Append_With_Newline(result,"load(\"@bazel_tools//tools/build_defs/repo:http.bzl\", \"http_archive\")");
     Append_With_Newline(result,"");
     Append(result,"def ");
-    Append(result,spec.lib_name);
+    Append(result,Fix_Casing_For_Bazel(spec.lib_name));
     Append_With_Newline(result,"():");
     Append(result,"    ");
     Append_With_Newline(result,"http_archive(");
     
     //add name
     Append(result,"        ");
-    Append_Key_Value(result,"name",spec.lib_name);
+    Append_Key_Value(result,"name",Remove_Dashes(spec.lib_name));
     Append_With_Newline(result,",");
     
     //add build file
     Append(result,"        ");
-    Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + spec.lib_name + ".BUILD");
+    Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + Remove_Dashes(spec.lib_name) + ".BUILD");
     Append_With_Newline(result,",");
     
     //add sha256
@@ -124,18 +126,18 @@ class
     //add load statements
     for (auto const& it: all_specs.specs){
         Append(result,"load(\"//bazel/deps/get:");
-        Append(result,it.lib_name);
+        Append(result,Remove_Dashes(it.lib_name));
         Append(result,".bzl");
         Append(result,"\"");
         Append(result,", \"");
-        Append(result,it.lib_name);
+        Append(result,Fix_Casing_For_Bazel(it.lib_name));
         Append(result,"\")\n");
     }
     
     Append_With_Newline(result,"def third_party_libraries():");
     for (auto const& it: all_specs.specs){
         Append(result,"    ");
-        Append(result,it.lib_name);
+        Append(result,Fix_Casing_For_Bazel(it.lib_name));
         Append_With_Newline(result,"()");
     }
     
@@ -143,6 +145,15 @@ class
 ❱
 
 
+◀private: static▶ std::string ☀Fix_Casing_For_Bazel(std::string const& str)❰
+    //return str;
+    auto without_dashes = string_replace_all(str,"-","_");
+    return Case_Modifier::As_Modified_Casing(Case_Format_Style::LOWER_CAMEL_CASE,without_dashes);
+❱
+◀private: static▶ std::string ☀Remove_Dashes(std::string const& str)❰
+    auto without_dashes = string_replace_all(str,"-","_");
+    return without_dashes;
+❱
 
 
 
