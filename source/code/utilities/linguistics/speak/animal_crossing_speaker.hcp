@@ -1,0 +1,57 @@
+class
+❪string❫
+❪iostream❫
+❪cstdlib❫
+❪iostream❫
+❪vector❫
+⚯
+❪"code/utilities/random/lib"❫
+❪"code/utilities/filesystem/files/temp/existing_temp_file"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/peripheral/sound/wav/wav_file_join_settings"❫
+❪"code/utilities/peripheral/sound/wav/wav_file_joiner"❫
+❪"code/utilities/assets/english_sounds"❫
+❪"code/utilities/peripheral/sound/wav/pitch_adjuster"❫
+❪"code/utilities/peripheral/sound/wav/tempo_adjuster"❫
+
+⚞⚟
+
+//Speak like an animal crossing character
+◀public: static▶ void ☀Speak(std::string const& message, std::string const& directory, std::string const& file_name) ❰
+
+    
+    //temporary files created in the process
+    std::string conversion_1 = "/tmp/" + file_name + "_stage1.wav";
+    std::string conversion_2 = "/tmp/" + file_name + "_stage2.wav";
+    std::string conversion_3 = directory + file_name + ".wav";
+    Existing_Temp_File x1(conversion_1);
+    Existing_Temp_File x2(conversion_2);
+    
+    
+    
+    //create the first audio clip by combining letter sounds
+    Wav_File_Join_Settings settings;
+    settings.output_path = conversion_1;
+    for (auto c: message){
+        
+        if (c == ' '){
+            settings.input_paths.emplace_back(English_Sounds::Space());
+        }
+        else if (c == '.'){
+            settings.input_paths.emplace_back(English_Sounds::Period());
+        }
+        else{
+            settings.input_paths.emplace_back(English_Sounds::From_Letter(c));
+        }
+    }
+    Wav_File_Joiner::Join(settings);
+    
+    
+    //adjust the pitch
+    Pitch_Adjuster::Adjust(settings.output_path,conversion_2,1500);
+    
+    //adjust the tempo
+    Tempo_Adjuster::Adjust(conversion_2,conversion_3,4);
+    
+❱

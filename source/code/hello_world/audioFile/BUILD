@@ -12,5 +12,8 @@ cpp_main(
         "//code/utilities/peripheral/sound/wav:wav_file_joiner",
         "//code/utilities/assets:english_sounds",
         "//code/utilities/peripheral/sound/wav:pitch_adjuster",
+        "//code/utilities/peripheral/sound/wav:tempo_adjuster",
+        "//code/utilities/filesystem/files/temp:existing_temp_file",
+        "//code/utilities/linguistics/speak:animal_crossing_speaker",
     ],
 )

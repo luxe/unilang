@@ -4,30 +4,15 @@
 #include "code/utilities/peripheral/sound/wav/wav_file_joiner.hpp"
 #include "code/utilities/assets/english_sounds.hpp"
 #include "code/utilities/peripheral/sound/wav/pitch_adjuster.hpp"
+#include "code/utilities/peripheral/sound/wav/tempo_adjuster.hpp"
+#include "code/utilities/filesystem/files/temp/existing_temp_file.hpp"
+#include "code/utilities/linguistics/speak/animal_crossing_speaker.hpp"
 
-int main(){
+int main(int argc, char** argv){
     
     
     
-    std::string message = "welcome to nook cranny how can i help you today";
+    std::string message = argv[1];
     
-    Wav_File_Join_Settings settings;
-    settings.output_path = "/home/laptop/Desktop/out.wav";
-    for (auto c: message){
-        
-        if (c == ' '){
-            settings.input_paths.emplace_back(English_Sounds::Space());
-        }
-        else if (c == '.'){
-            settings.input_paths.emplace_back(English_Sounds::Period());
-        }
-        else{
-            settings.input_paths.emplace_back(English_Sounds::From_Letter(c));
-        }
-    }
-    
-    
-    Wav_File_Joiner::Join(settings);
-    Pitch_Adjuster::Adjust(settings.output_path,"/home/laptop/Desktop/out2.wav",1500);
-    
+    Animal_Crossing_Speaker::Speak(message,"/home/laptop/Desktop/","out");
 }
