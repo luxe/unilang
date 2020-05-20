@@ -16,3 +16,8 @@ hcp(name="sdl_init_settings",deps = [
     "//code/utilities/graphics/sdl:sdl_window_settings",
     "//code/utilities/graphics/sdl:sdl_swap_interval",
 ])
+
+hcp(name="standard_sdl_init_settings",deps = [
+    "//code/utilities/graphics/sdl:sdl_init_settings",
+])
+
