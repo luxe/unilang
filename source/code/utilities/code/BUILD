@@ -22,5 +22,6 @@ hcp(name="concept_tree_to_image",deps = [
     "//code/utilities/data_structures/graphics/objects/label/style:default_label_styles",
     "//code/utilities/personal/hosting:hosting_repo",
     "//code/utilities/filesystem/paths:lib",
+    "//code/utilities/types/tree/converters:tree_full_paths_getter",
     "@tree//:tree",
 ])
