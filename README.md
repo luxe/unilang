@@ -23,7 +23,7 @@ Despite their name, **general-purpose programming languages (GPLs)** become asso
 
 
 ## The Next Layer
-Unilang is a **universal programming language (UPL)**.  A UPL has not been formally defined prior to the creation of this document.  As an informal definition, envision a UPL as a language abstraction over GPLs.  UPLs are a universal encoding for developing software.  
+Unilang is a **universal programming language (UPL)**.  A UPL has not been formally defined prior to this document, but as an informal definition, envision a UPL as a language abstraction over GPLs and IDLs.  UPLs are a universal encoding for developing software.  
 
 
 ## Addressing Scope
@@ -37,13 +37,13 @@ Creating a language that could properly be the right choice for every programmin
 
 
 ## Build
-Full build can be done the following way.  
+The IDE can be used the following way.  
 ```
 git clone git@github.com:luxe/unilang.git
 cd unilang
-./user_run //code/tools/ide:main
+./user_run_optimized //code/tools/ide:main
 ```
-Various CIs are used to test the correctness of the build.  Referencing these builds may help you acquire any additional dependencies.  The reason we use multiple CIs is to ensure a general consensus and catch any outlying issues.  These services have limitations at their free tier, and so full builds/tests are not performed.  
+Various CIs are used to test the correctness of the build.  Referencing these builds may help you acquire any additional dependencies.  The reason we use multiple CIs is to ensure a general consensus and catch any outlying issues.  However, these services have limitations at their free tier, and so full builds/tests are not performed.  
 
 | Continuous Integration | Status | Notes | 
 | --- | --- | --- | 
@@ -57,7 +57,7 @@ Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/bran
 Shippable | [![Run Status](https://api.shippable.com/projects/5c3163fd4e246e0700cea316/badge?branch=master)](https://app.shippable.com/accounts/5c3163cad1578b0700302159/dashboard) | Bootstraps Build | 
 Travis | [![Build status](https://travis-ci.com/luxe/unilang.svg?branch=master)](https://travis-ci.com/luxe/unilang) | Bootstraps Build | 
 
-Current model.  
+The unilang schema is used to encode the concept tree and can be enforceable during projectional editing.  
 <img width="" height="" src=".readme/unilang_concept_tree.png">
 
 
