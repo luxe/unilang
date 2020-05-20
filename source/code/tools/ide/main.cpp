@@ -21,7 +21,7 @@
 //label button
 //use it set growth bool
 //maybe reorganize all draw things (functions with the objects / mouse under label)
-int main()
+int main(int argc, char** argv)
 {
     
     //lambdas into main application loop
