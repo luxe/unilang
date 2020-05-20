@@ -18,4 +18,5 @@ hcp(name = "tree_full_paths_getter", deps = [
     "//code/utilities/filesystem/paths:lib",
     "//code/utilities/types/tree/bst:annotated_bst_visualizer",
     "//code/utilities/data_structures/tree/generic:string_tree",
+    "//code/utilities/types/tree:full_path_name",
 ])
