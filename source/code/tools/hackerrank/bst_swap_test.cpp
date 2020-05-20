@@ -1,4 +1,4 @@
-#include "code/utilities/types/tree/tree_traversal.hpp"
+#include "code/utilities/types/tree/bst/tree_traversal.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_sliding_window_two_ptrs.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_in_out.hpp"
 #include "code/tools/hackerrank/bst_swap_solution_geeks_five_ptrs.hpp"

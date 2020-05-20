@@ -1,4 +1,4 @@
-#include "code/utilities/types/tree/tree_traversal.hpp"
+#include "code/utilities/types/tree/bst/tree_traversal.hpp"
 #include "code/utilities/data_structures/tree/bst/binary_node.hpp"
 #include "code/utilities/types/tree/bst/annotated_bst_fix.hpp"
 #include "code/utilities/types/tree/bst/annotated_bst_state.hpp"

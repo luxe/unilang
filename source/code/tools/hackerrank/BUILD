@@ -11,7 +11,7 @@ gtest(
         "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
         "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
-        "//code/utilities/types/tree:tree_traversal",
+        "//code/utilities/types/tree/bst:tree_traversal",
         "//code/tools/hackerrank:bst_swap_algorithm",
         "//code/tools/hackerrank:bst_swap_solution",
         "//code/utilities/data_structures/tree/bst:binary_nodes",
@@ -34,40 +34,40 @@ enum_cpp(
 hcp(name = "bst_swap_solution_geeks_five_ptrs", deps = [
     "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree/bst:binary_node",
-    "//code/utilities/types/tree:tree_traversal",
-    "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_four_ptrs", deps = [
     "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree/bst:binary_node",
-    "//code/utilities/types/tree:tree_traversal",
-    "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_geeks_three_ptrs", deps = [
     "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree/bst:binary_node",
-    "//code/utilities/types/tree:tree_traversal",
-    "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_node_properties",
 ])
 
 hcp(name = "bst_swap_solution_sliding_window_two_ptrs", deps = [
     "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree/bst:binary_node",
-    "//code/utilities/types/tree:tree_traversal",
-    "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_node_properties",
 ])
 
 hcp(name = "bst_swap_solution_in_out", deps = [
     "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree/bst:binary_node",
-    "//code/utilities/types/tree:tree_traversal",
-    "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_node_properties",
 ])
 hcp(name = "bst_swap_solution_morris_hickey", deps = [
     "//code/utilities/output/printers:lib",
     "//code/utilities/data_structures/tree/bst:binary_node",
-    "//code/utilities/types/tree:tree_traversal",
-    "//code/utilities/types/tree:tree_node_properties",
+    "//code/utilities/types/tree/bst:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_node_properties",
     "//code/utilities/types/tree/bst:annotated_bst_fix",
     "//code/utilities/types/tree/bst:annotated_bst_state",
     "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
@@ -81,5 +81,5 @@ hcp(name = "bst_swap_solution", deps = [
     "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
     "//code/tools/hackerrank:bst_swap_solution_morris_hickey",
     "//code/tools/hackerrank:bst_swap_algorithm",
-    "//code/utilities/types/tree:tree_traversal",
+    "//code/utilities/types/tree/bst:tree_traversal",
 ])
