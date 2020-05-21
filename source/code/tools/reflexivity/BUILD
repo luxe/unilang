@@ -17,5 +17,6 @@ cpp_main(
         "//code/utilities/program/name:program_name_getter",
         "//code/tools/transcompilers/unilang/self_readme:unilang_documentation_generator",
         "//code/literature/publish:essay_publisher",
+        "//code/utilities/code:concept_tree_to_image",
     ],
 )

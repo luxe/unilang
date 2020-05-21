@@ -11,6 +11,7 @@
 #include "code/utilities/program/name/program_name_getter.hpp"
 #include "code/tools/transcompilers/unilang/self_readme/unilang_documentation_generator.hpp"
 #include "code/literature/publish/essay_publisher.hpp"
+#include "code/utilities/code/concept_tree_to_image.hpp"
 #include <errno.h>
 
 
@@ -63,6 +64,12 @@ int main(int argc, char** argv){
     if (settings.refresh_unilang_documentation){
         std::cout << "Refreshing Unilang Documentation..." << std::endl;
         Unilang_Documentation_Generator::Generate();
+    }
+    
+    //generate unilang documentation
+    if (settings.refresh_unilang_concept_tree_image){
+        std::cout << "Refreshing Unilang Concept Tree Image..." << std::endl;
+        Concept_Tree_To_Image::Create();
     }
     
     //generate essays
