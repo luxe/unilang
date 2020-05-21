@@ -11,6 +11,6 @@ def cli11():
         sha256="58e542aa42b31119569463ee3990a9b0931e0a4a8bd0da9aa6d3206ebc5fd159" ,
         strip_prefix="cli11-1a1cde98f5e8868ca2f17707ab84dcae5718110e" ,
         urls = [
-            "https://github.com/Unilang/pybind11/archive/1a1cde98f5e8868ca2f17707ab84dcae5718110e.tar.gz",
+            "https://github.com/Unilang/cli11/archive/1a1cde98f5e8868ca2f17707ab84dcae5718110e.tar.gz",
         ]
     )

@@ -11,6 +11,6 @@ def minizCpp():
         sha256="6f0994a0ef9fb95ed8cf12aa36ae6fd6e99e087b384a155b6a0344a763424fc5" ,
         strip_prefix="miniz_cpp-052335e4f7773368df07b26d2baedb0e6d4dbd38" ,
         urls = [
-            "https://github.com/Unilang/miniz-cpp/archive/052335e4f7773368df07b26d2baedb0e6d4dbd38.tar.gz",
+            "https://github.com/Unilang/miniz_cpp/archive/052335e4f7773368df07b26d2baedb0e6d4dbd38.tar.gz",
         ]
     )

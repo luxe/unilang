@@ -5,5 +5,5 @@ package(
 
 cpp_main(
     name = "hello_world",
-    deps = ["@mustache//:mustache"],
+    deps = ["@Mustache//:mustache"],
 )
