@@ -288,7 +288,7 @@ cc_library(
         "@expat//:expat",
         "@fontconfig//:fontconfig",
         "@freetype2//:freetype2",
-        "@gd//:gd",
+        "@libgd//:gd",
         "@libjpeg//:libjpeg",
         "@libpng//:libpng",
         "@zlib//:zlib",

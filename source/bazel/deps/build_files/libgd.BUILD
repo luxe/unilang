@@ -93,7 +93,7 @@ cc_library(
         "src/gdhelpers.h",
     ],
     copts = [
-        "-I$(GENDIR)/external/gd/gd_internal",
+        "-I$(GENDIR)/external/libgd/gd_internal",
         "-DFC_CACHEDIR='\"/var/cache/fontconfig\"'",
         "-DFONTCONFIG_PATH='\"/etc/fonts\"'",
         "-DHAVE_CONFIG_H",
