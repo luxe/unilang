@@ -30,4 +30,6 @@ hcp(name="buildable_face_tree_drawer", deps = [
     "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree",
     "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
     "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",
+    "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
+    "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_drawer",
 ])

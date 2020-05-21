@@ -24,6 +24,8 @@ class
 ❪"code/utilities/data_structures/graphics/bitmap/premade/vertical_line"❫
 ❪"code/utilities/data_structures/graphics/bitmap/premade/horizontal_line"❫
 ❪"code/utilities/data_structures/graphics/bitmap/premade/l_line"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/premade/faced_label_premades"❫
+❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_drawer"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input)❰
@@ -44,11 +46,46 @@ class
     }
     
     //was an element clicked?
-    //render the actions menu
+    //decide to show the action menu 
+    bool added=false;
     if (tree.selected_node != tree.structure.nodes.end()){
         std::cout << "clicked" << std::endl;
+        
+        tree.menu = Decide_Menu(tree.structure,tree.selected_node);
+        tree.menu.visible = true;
+        added=true;
+    }
+    
+
+    
+    if (tree.menu.visible){
+        elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.pos,pc_input).types;
+        
+        if (!added){
+            if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
+                tree.menu.visible = false;
+            }
+        }
     }
     
     
     return elements;
+❱
+
+◀private: static▶ Select_Menu ☀Decide_Menu(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+    Select_Menu x;
+    
+    auto face_label = Faced_Label_Premades::Single_Plain_White_Box();
+    auto top = x.menu.nodes.begin();
+    
+    face_label.faces[0].label.message = "Hello";
+    x.menu.nodes.insert(top,face_label);
+    
+    face_label.faces[0].label.message = "World";
+    x.menu.nodes.insert(top,face_label);
+    
+    face_label.faces[0].label.message = "Test";
+    x.menu.nodes.insert(top,face_label);
+    
+    return x;
 ❱
