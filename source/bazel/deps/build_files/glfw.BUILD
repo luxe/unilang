@@ -101,12 +101,12 @@ cc_library(
     deps = [":includes"],
 )
 
-cc_library(
-    name = "posix_tls",
-    srcs = ["src/posix_tls.c"],
-    defines = DEFINES,
-    deps = [":includes"],
-)
+# cc_library(
+#     name = "posix_tls",
+#     srcs = ["src/posix_tls.c"],
+#     defines = DEFINES,
+#     deps = [":includes"],
+# )
 
 cc_library(
     name = "glx_context",
@@ -115,7 +115,7 @@ cc_library(
     deps = [
         ":context",
         ":includes",
-        ":posix_tls",
+        #":posix_tls",
     ],
 )
 
@@ -141,7 +141,7 @@ cc_library(
         ":linux_joystick",
         ":monitor",
         ":posix_time",
-        ":posix_tls",
+        #":posix_tls",
         ":vulkan",
         ":window",
         ":x11_init",
