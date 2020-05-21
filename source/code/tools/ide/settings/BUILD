@@ -60,4 +60,5 @@ hcp(name="ide_settings_getter", deps = [
     "//code/utilities/fonts/bdf/complete/unilang:unilang_character_maps",
     "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
     "//code/utilities/graphics/sdl:standard_sdl_init_settings",
+    "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
 ])
