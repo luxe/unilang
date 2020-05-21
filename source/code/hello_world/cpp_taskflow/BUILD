@@ -5,5 +5,5 @@ package(
 
 cpp_main(
     name = "simple",
-    deps = ["@cpptaskflow//:cpptaskflow"],
+    deps = ["@cpp_taskflow//:cpptaskflow"],
 )
