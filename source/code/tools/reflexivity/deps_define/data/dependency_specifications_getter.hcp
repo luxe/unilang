@@ -10,12 +10,50 @@ class
 ◀public: static▶ Dependency_Specifications ☀Get_All_Bazel_Tests()❰
     Dependency_Specifications x;
     
-    //https://github.com/facebook/folly
-    //https://github.com/preshing/junction
-    //https://github.com/twitter/vireo
-    //https://github.com/rbock/sqlpp11
-    //https://github.com/godotengine/godot
-    //https://github.com/p-ranav/tabulate
+// # TODO(thickey): we can't trust that these git repos will always exist.  
+// # make copies and store them somewhere else.  Give multiple mirrors
+// # for the urls.  the first url can be where we host it.
+// # Also, github is a single source of failure here.  
+// # Its probably okay to clone on github and use that as a mirror,
+// # but we may also want additional hosting elsewhere (ex: buildfactory)
+// # we may want to set up our own servers in case of another world war and we lose github
+
+// # TODO(thickey): as a rule of thumb, we do not want patch files.  
+// # when a patch file is created, we need to work with the original author to merge it back.
+// # In the worst case scenarios where an agreement cannot be made with the author, or
+// # the original author is unresponsive, we can fork the project.
+    
+//libraries to add:
+//https://github.com/facebook/folly
+//https://github.com/preshing/junction
+//https://github.com/twitter/vireo
+//https://github.com/rbock/sqlpp11
+//https://github.com/godotengine/godot
+//https://github.com/p-ranav/tabulate
+// #gmp (this was hard)
+// #pretty_printers
+// #pstreams
+// #add-range-v3 library
+// #add klmr-cpp11-range
+//https://github.com/jupp0r/prometheus-cpp
+    
+// #need to make hermetic for imgui
+// #sudo apt-get install libsdl2-dev
+// #sudo apt-get install libsdl1.2-dev
+// #sudo apt install libjpeg9-dev libwebp-dev libtiff5-dev libsdl2-image-dev libsdl2-image-2.0-0
+
+//need to make hermetic for xdo
+// #sudo apt-get install xdotool
+// #sudo apt-get install libxdo-dev
+// #sudo apt-get install libxtst-dev
+// # http_archive(
+// #     name = "xdo",
+// #     build_file = "//bazel/deps/build_files/xdo:xdo.BUILD",
+// #     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
+// #     remote = "https://github.com/jordansissel/xdotool.git",
+// # )
+
+
     
     //Build Systems
     x.specs.emplace_back(Bazel());
@@ -233,7 +271,6 @@ class
     Dependency_Specification spec;
     spec.lib_name = "bazel";
     Add_Unilang_Github_Mirror(spec,"bazel","2895cd5ce6797a22279dc7482926371ae9ea78b5","e3138b869f19c480c1bb28e553cfd7d67ecaf8d86df66ba70dc7e156b40c0aab");
-    Add_Original_Github_Mirror(spec,"bazelbuild","bazel","2895cd5ce6797a22279dc7482926371ae9ea78b5","e3138b869f19c480c1bb28e553cfd7d67ecaf8d86df66ba70dc7e156b40c0aab");
     spec.patch_cmds.emplace_back("find . -name 'BUILD' -type f -delete");
     return spec;
 ❱
@@ -532,21 +569,31 @@ class
 ◀private: static▶ Dependency_Specification ☀Imgui()❰
     Dependency_Specification spec;
     spec.lib_name = "imgui";
+    Add_Unilang_Github_Mirror(spec,"imgui","9da48c16c5eeb8ea98e89951c83fab0f9d2b037b","1db98db987e6ed67b1932bbf825e722d8d7f024471e4be54b815d16a2c6484ba");
+    
+    //Apparently its pretty easy to come up with too many vertexes in the buffer.
+    //Changing this is the author's suggestion, and the code even has a comment to do this.
+    //these use some imconfig.h file to overwrite, but this is fine too.
+    spec.patch_cmds.emplace_back("find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \\;");
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Cairo()❰
     Dependency_Specification spec;
     spec.lib_name = "cairo";
+    Add_Unilang_Github_Mirror(spec,"cairo","cbc241d338ca7bf927a7cfe23cb15c58491373e0","b1d1344b33f72fc239227e58d98acbe500946a520671e239ae3de89c7a72027d");
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Lib_Png()❰
     Dependency_Specification spec;
     spec.lib_name = "libpng";
+    Add_Unilang_Github_Mirror(spec,"libpng","301f7a14295a3bdfaf406dbb5004d0784dc137ea","16ca00dca64c72f293a27af290a349a0d9ae2ef7336f6bd9caae612f67ffba8b");
+    spec.patch_files.emplace_back("//bazel/deps/build_files:libpng.patch");
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Lib_Jpeg()❰
     Dependency_Specification spec;
     spec.lib_name = "libjpeg";
+    Add_Unilang_Github_Mirror(spec,"libjpeg","6c0fcb8ddee365e7abc4d332662b06900612e923","daf72156ce51b85b42e3387c46b7f79e7391f84452ad6e62b5524026c25119e4");
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀GD()❰
@@ -973,41 +1020,3 @@ class
     location.sha256 = sha256;
     spec.locations.emplace_back(location);
 ❱
-
-
-
-
-// # TODO(thickey): we can't trust that these git repos will always exist.  
-// # make copies and store them somewhere else.  Give multiple mirrors
-// # for the urls.  the first url can be where we host it.
-// # Also, github is a single source of failure here.  
-// # Its probably okay to clone on github and use that as a mirror,
-// # but we may also want additional hosting elsewhere (ex: buildfactory)
-// # we may want to set up our own servers in case of another world war and we lose github
-
-// # TODO(thickey): as a rule of thumb, we do not want patch files.  
-// # when a patch file is created, we need to work with the original author to merge it back.
-// # In the worst case scenarios where an agreement cannot be made with the author, or
-// # the original author is unresponsive, we can fork the project.
-
-// #other dependencies needed:
-// #gmp (this was hard)
-// #pretty_printers
-// #pstreams
-// #add-range-v3 library
-// #add klmr-cpp11-range
-
-// #need to make hermetic
-// #sudo apt-get install xdotool
-// #sudo apt-get install libxdo-dev
-// #sudo apt-get install libxtst-dev
-// # http_archive(
-// #     name = "xdo",
-// #     build_file = "//bazel/deps/build_files/xdo:xdo.BUILD",
-// #     commit = "08c8e2d6cad60a69ce415499e34865157a1b66fd",
-// #     remote = "https://github.com/jordansissel/xdotool.git",
-// # )
-
-// def third_party_libraries():
-    
-//     # https://github.com/jupp0r/prometheus-cpp

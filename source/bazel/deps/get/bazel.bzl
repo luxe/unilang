@@ -12,7 +12,6 @@ def bazel():
         strip_prefix="bazel-2895cd5ce6797a22279dc7482926371ae9ea78b5" ,
         urls = [
             "https://github.com/Unilang/bazel/archive/2895cd5ce6797a22279dc7482926371ae9ea78b5.tar.gz",
-            "https://github.com/bazelbuild/bazel/archive/2895cd5ce6797a22279dc7482926371ae9ea78b5.tar.gz",
         ],
         patch_cmds = [
             "find . -name 'BUILD' -type f -delete",
