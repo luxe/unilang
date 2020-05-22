@@ -10,6 +10,6 @@ def comGoogleAbsl():
         sha256="57b7817ad91856399a77300349eda39d2edae2c3c037d453fee0a16b85e92a4d" ,
         strip_prefix="com_google_absl-48cd2c3f351ff188bc85684b84a91b6e6d17d896" ,
         urls = [
-            "https://github.com/Unilang/com_google_absl/archive/48cd2c3f351ff188bc85684b84a91b6e6d17d896.tar.gz",
+            "https://github.com/Unilang/com_google_absl/archive/48cd2c3f351ff188bc85684b84a91b6e6d17d896.zip",
         ]
     )

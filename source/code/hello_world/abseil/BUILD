@@ -5,5 +5,5 @@ package(
 
 cpp_main(
     name = "str_join", 
-    deps = ["@com_google_absl//absl/strings",]
+    deps = ["@abseil//absl/strings",]
 )
