@@ -1,5 +1,0 @@
-#COLORS
-START_YELLOW := [0;33m
-START_BLUE := [0;34m
-START_CYAN := [0;36m
-END_COLOR := [0m

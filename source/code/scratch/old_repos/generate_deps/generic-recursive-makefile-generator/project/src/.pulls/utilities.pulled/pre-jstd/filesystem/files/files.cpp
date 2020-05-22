@@ -1,6 +1,0 @@
-#include "getting/getting.cpp"
-#include "observers/observers.cpp"
-#include "transformers/transformers.cpp"
-#include "moving/moving.cpp"
-#include "deleting/deleting.cpp"
-#include "creating/creating.cpp"

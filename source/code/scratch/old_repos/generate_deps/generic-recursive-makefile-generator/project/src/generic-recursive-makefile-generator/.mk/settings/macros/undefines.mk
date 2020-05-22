@@ -1,3 +1,0 @@
-#undefines
-UNDEFINE_MACRO_NAMES :=
-UNDEFINES := $(addprefix -U,$(UNDEFINE_MACRO_NAMES))

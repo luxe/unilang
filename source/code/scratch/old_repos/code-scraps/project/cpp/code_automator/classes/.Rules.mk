@@ -1,1 +1,0 @@
-SUBDIRS := enum_updater project_maker enum_maker program_options project_maintainer command_line_validator main_maker class_maker run_location_info path_validator
