@@ -3,11 +3,11 @@ package(
 )
 
 cc_library(
-     name = "lib",
-     srcs = glob(["*.cpp"]),
-     hdrs = glob(["*.hpp"]),
-     deps = [
-         #"@xdo//:main",
-     ],
-     linkopts = ["-lxdo"],
- )
+    name = "lib",
+    srcs = glob(["*.cpp"]),
+    hdrs = glob(["*.hpp"]),
+    linkopts = ["-lxdo"],
+    deps = [
+        #"@xdo//:main",
+    ],
+)

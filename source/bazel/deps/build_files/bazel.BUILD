@@ -1,10 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
-
 proto_library(
-   name = "spawn_proto",
-   srcs = ["src/main/protobuf/spawn.proto"],
+    name = "spawn_proto",
+    srcs = ["src/main/protobuf/spawn.proto"],
 )
+
 cc_proto_library(
     name = "spawn_proto_cpp",
     deps = [":spawn_proto"],

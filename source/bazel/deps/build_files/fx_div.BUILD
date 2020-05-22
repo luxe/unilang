@@ -1,4 +1,3 @@
-
 cc_library(
     name = "fx_div",
     hdrs = glob([

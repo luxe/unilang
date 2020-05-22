@@ -4,8 +4,8 @@ package(
 
 cc_library(
     name = "lib",
-    hdrs = ["ascii_art.h"],
     srcs = ["ascii_art.c"],
+    hdrs = ["ascii_art.h"],
 )
 
 cc_binary(

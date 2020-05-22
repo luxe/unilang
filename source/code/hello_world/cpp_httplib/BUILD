@@ -1,4 +1,5 @@
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -6,6 +7,6 @@ package(
 cpp_main(
     name = "main",
     deps = [
-        "@cpp_httplib//:cpp_httplib",
+        "@cpp_httplib",
     ],
 )

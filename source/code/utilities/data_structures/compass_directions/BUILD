@@ -1,7 +1,11 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "compass_direction_diagnonal_movement", deps = [
-    "//code/utilities/data_structures:compass_direction_diagnonal",
-])
+hcp(
+    name = "compass_direction_diagnonal_movement",
+    deps = [
+        "//code/utilities/data_structures:compass_direction_diagnonal",
+    ],
+)

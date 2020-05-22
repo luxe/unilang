@@ -1,43 +1,49 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "plant_uml_exporter", deps = [
-"//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/utilities/contributor:contributor",
-"//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
-"//code/utilities/types/strings/transformers/appending:lib",
-"//code/utilities/types/converters:lib",
-"//code/utilities/types/strings/observers/other:lib",
-"//code/tools/transcompilers/unilang/structure/print:struct_derivers",
-"//code/utilities/types/strings/transformers/casing:case_modifier",
-"//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:composition_relationship",
-"//code/utilities/program/call:lib",
-"//code/utilities/filesystem/paths:lib",
-"//code/tools/transcompilers/unilang/options/manipulation:case_adjustment_settings",
-"//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
-"//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
-"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
-"//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_customizations",
-"//code/utilities/types/strings/observers/comparing:lib",
-])
-
+hcp(
+    name = "plant_uml_exporter",
+    deps = [
+        "//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:composition_relationship",
+        "//code/tools/transcompilers/unilang/compiler-frontends/plant_uml_exporter:plant_uml_customizations",
+        "//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings",
+        "//code/tools/transcompilers/unilang/options/manipulation:case_adjustment_settings",
+        "//code/tools/transcompilers/unilang/structure/adjust:casing_adjuster",
+        "//code/tools/transcompilers/unilang/structure/adjust:structure_adjuster",
+        "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+        "//code/tools/transcompilers/unilang/structure/model:structure",
+        "//code/tools/transcompilers/unilang/structure/print:struct_derivers",
+        "//code/utilities/contributor",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/program/call:lib",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/strings/observers/comparing:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/casing:case_modifier",
+    ],
+)
 
 hcp(name = "composition_relationship")
 
-hcp(name = "plant_uml_options_getter", deps = [
-"//code/utilities/filesystem/paths:lib",
-"//code/utilities/system:lib",
-"//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
-])
+hcp(
+    name = "plant_uml_options_getter",
+    deps = [
+        "//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/system:lib",
+    ],
+)
 
-hcp(name = "plant_uml_customizations", deps = [
-"//code/tools/transcompilers/unilang/structure/model:structure",
-"//code/tools/transcompilers/unilang/structure/model:inlined_structures",
-"//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings:plant_uml_settings",
-"//code/utilities/types/strings/transformers/appending:lib",
-])
-
-
-
+hcp(
+    name = "plant_uml_customizations",
+    deps = [
+        "//code/tools/transcompilers/unilang/options/language-specific/plant_uml_settings",
+        "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+        "//code/tools/transcompilers/unilang/structure/model:structure",
+        "//code/utilities/types/strings/transformers/appending:lib",
+    ],
+)

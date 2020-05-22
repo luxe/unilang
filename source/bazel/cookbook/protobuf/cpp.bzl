@@ -1,7 +1,6 @@
 load("@build_stack_rules_proto//cpp:cpp_proto_library.bzl", "cpp_proto_library")
 
-def cpp_proto_object(name,deps=[]):
-
+def cpp_proto_object(name, deps = []):
     #implicit file names
     pfile = name + ".proto"
     ptarget = name + "_proto"

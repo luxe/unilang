@@ -1,4 +1,5 @@
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -11,7 +12,7 @@ cpp_main(
     name = "better",
     deps = [
         "//code/utilities/ncurses:scoped_getch",
-        "@getch//:getch"
+        "@getch",
     ],
 )
 
@@ -20,4 +21,3 @@ cpp_main(
 #     srcs = ["getkey.cpp"],
 #     deps = ["@getch//:getch"],
 # )
-

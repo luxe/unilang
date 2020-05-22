@@ -1,8 +1,7 @@
-package(default_visibility = ['//visibility:public'])
-
+package(default_visibility = ["//visibility:public"])
 
 # All
 filegroup(
-  name = "all",
-  srcs = glob(["**/*"]),
+    name = "all",
+    srcs = glob(["**/*"]),
 )

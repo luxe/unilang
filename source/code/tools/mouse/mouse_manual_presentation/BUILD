@@ -1,4 +1,3 @@
-
 # cc_binary(
 #     name = "mouse_manual_presentation",
 #     srcs = ["main.cc"],

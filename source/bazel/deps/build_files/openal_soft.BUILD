@@ -1,4 +1,3 @@
-
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
@@ -14,5 +13,8 @@ cc_library(
         "include/AL/**/*.cpp",
         "include/AL/al.h",
     ]),
-    includes = ["include","include/AL"],
+    includes = [
+        "include",
+        "include/AL",
+    ],
 )

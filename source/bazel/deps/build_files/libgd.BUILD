@@ -102,9 +102,9 @@ cc_library(
     linkopts = ["-lm"],
     visibility = ["//visibility:public"],
     deps = [
-        "@freetype2//:freetype2",
-        "@libjpeg//:libjpeg",
-        "@libpng//:libpng",
-        "@zlib//:zlib",
+        "@freetype2",
+        "@libjpeg",
+        "@libpng",
+        "@zlib",
     ],
 )

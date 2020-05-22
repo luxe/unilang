@@ -2,19 +2,18 @@ load("//bazel/cookbook/capnproto:capnp_to_intermediate.bzl", "capnp_to_intermedi
 load("//bazel/cookbook/capnproto:intermediate_to_cpp.bzl", "intermediate_to_cpp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-def capnp_to_cpp_object(name,deps=[]):
-    
-    capnp_to_intermediate(name=name)
-    intermediate_to_cpp(name=name)
-    
+def capnp_to_cpp_object(name, deps = []):
+    capnp_to_intermediate(name = name)
+    intermediate_to_cpp(name = name)
+
     explicit_result_h_file = name + ".capnp.h"
     explicit_result_cpp_file = name + ".capnp.c++"
-    
+
     native.cc_library(
         name = name,
         srcs = [explicit_result_cpp_file],
         hdrs = [explicit_result_h_file],
         deps = [
-            "@captnproto//:capnp"
-        ]
+            "@captnproto//:capnp",
+        ],
     )

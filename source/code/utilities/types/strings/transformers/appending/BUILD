@@ -6,6 +6,7 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/types/converters:lib",
-]
+    deps = [
+        "//code/utilities/types/converters:lib",
+    ],
 )

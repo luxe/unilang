@@ -1,11 +1,20 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 cpp_object(name = "define_check_method")
-hcp(name = "define_check_settings",
-deps = ["define_check_method"
-])
-hcp(name = "define_check_end_comment_settings",
-deps = ["//code/tools/transcompilers/unilang/options/comment/language_default:comment_style"
-])
+
+hcp(
+    name = "define_check_settings",
+    deps = [
+        "define_check_method",
+    ],
+)
+
+hcp(
+    name = "define_check_end_comment_settings",
+    deps = [
+        "//code/tools/transcompilers/unilang/options/comment/language_default:comment_style",
+    ],
+)

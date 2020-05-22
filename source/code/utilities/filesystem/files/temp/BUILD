@@ -7,9 +7,9 @@ cc_library(
     srcs = ["temp_file.cpp"],
     hdrs = ["temp_file.hpp"],
     deps = [
-    "//code/utilities/filesystem/files/creating:lib",
-    "//code/utilities/filesystem/files/deleting:lib"
-],
+        "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/filesystem/files/deleting:lib",
+    ],
 )
 
 cc_library(
@@ -17,8 +17,7 @@ cc_library(
     srcs = ["existing_temp_file.cpp"],
     hdrs = ["existing_temp_file.hpp"],
     deps = [
-    "//code/utilities/filesystem/files/creating:lib",
-    "//code/utilities/filesystem/files/deleting:lib"
-],
+        "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/filesystem/files/deleting:lib",
+    ],
 )
-

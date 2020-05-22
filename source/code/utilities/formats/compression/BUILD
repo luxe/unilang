@@ -9,5 +9,5 @@ cc_library(
     deps = [
         "//code/utilities/program/call:lib",
         "//code/utilities/types/strings/observers/columns:lib",
-    ]
+    ],
 )

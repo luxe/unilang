@@ -6,7 +6,8 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/types/char:lib",
-"@boost//:algorithm",
-]
+    deps = [
+        "//code/utilities/types/char:lib",
+        "@boost//:algorithm",
+    ],
 )

@@ -9,6 +9,6 @@ cc_library(
     deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/math/gmp:lib",
-        "//code/utilities/time/clock:clock",
-    ]
+        "//code/utilities/time/clock",
+    ],
 )

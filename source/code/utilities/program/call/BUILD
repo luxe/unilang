@@ -7,8 +7,8 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     deps = [
-        "//code/utilities/types/strings/observers/converting:lib",
-        "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
-    ]
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
+    ],
 )

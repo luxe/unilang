@@ -1,7 +1,11 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "inflection_converter",deps=[
-"//code/utilities/types/strings/transformers/inflection/settings:inflection_settings"
-])
+hcp(
+    name = "inflection_converter",
+    deps = [
+        "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
+    ],
+)

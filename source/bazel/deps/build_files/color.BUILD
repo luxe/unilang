@@ -1,4 +1,3 @@
-
 package(default_visibility = ["//visibility:public"])
 
 # no CI setup for project.  doesn't seem to build.
@@ -8,5 +7,5 @@ package(default_visibility = ["//visibility:public"])
 #        "src/**/*.h",
 #        "src/**/*.hpp",
 #    ]),
-#    includes = 
+#    includes =
 #)

@@ -9,5 +9,6 @@ cc_library(
     deps = [
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
-        "@nlohmann_json//:nlohmann_json"
-    ])
+        "@nlohmann_json",
+    ],
+)

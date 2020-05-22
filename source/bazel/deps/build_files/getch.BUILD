@@ -16,8 +16,6 @@ package(default_visibility = ["//visibility:public"])
 #     deps = [":getch"],
 # )
 
-
-
 cc_library(
     name = "getch_headers",
     hdrs = glob(["getch/include/*.hpp"]),
@@ -26,10 +24,10 @@ cc_library(
 cc_library(
     name = "getch",
     srcs = [
-      "getch/src/ch/ch.cpp",
-      "getch/src/ch/get.cpp",
-      "getch/src/ch/key.cpp",
-      "getch/src/ch/stradd.cpp",
+        "getch/src/ch/ch.cpp",
+        "getch/src/ch/get.cpp",
+        "getch/src/ch/key.cpp",
+        "getch/src/ch/stradd.cpp",
     ],
     includes = ["getch/include"],
     deps = [":getch_headers"],
@@ -56,7 +54,7 @@ cc_library(
 #     ],
 #     includes = ["getch/include"],
 #     deps = [":getch_headers"],
-# 
+#
 # )
 
 # cc_library(
@@ -68,7 +66,7 @@ cc_library(
 #     ],
 #     includes = ["getch/include"],
 #     deps = [":getch_headers"],
-# 
+#
 # )
 
 # cc_library(
@@ -80,13 +78,11 @@ cc_library(
 #        "getch/include/getch.hpp",
 #      ],
 #      includes = ["getch/include"],
-#      #deps = [":getch_headers"], 
+#      #deps = [":getch_headers"],
 # )
-
-
 
 # #cc_library(
 # #           name = "getch",
 # #           deps = [":ch",":rd",":history",":getch_headers"],
-# #       
+# #
 # #)

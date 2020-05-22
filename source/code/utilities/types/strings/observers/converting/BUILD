@@ -7,5 +7,5 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-]
+    ],
 )

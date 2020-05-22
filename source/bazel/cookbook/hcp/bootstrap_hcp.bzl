@@ -1,8 +1,7 @@
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 #using the original hcp compiler built from raw c++
-def bootstrap_hcp(name,deps=[]):
-
+def bootstrap_hcp(name, deps = []):
     #the file names to use
     hcp_target_name = name + "_hcp"
     explicit_hcp_file = name + ".hcp"
@@ -13,12 +12,12 @@ def bootstrap_hcp(name,deps=[]):
     native.genrule(
         name = hcp_target_name,
         srcs = [explicit_hcp_file],
-        outs = [explicit_cpp_file,explicit_hpp_file],
+        outs = [explicit_cpp_file, explicit_hpp_file],
         tools = ["//code/tools/transcompilers/hcp-compiler/bootstrap:hcp-compiler"],
         cmd = """
     $(location //code/tools/transcompilers/hcp-compiler/bootstrap:hcp-compiler) $(SRCS) -o $(@D) --no-utility-functions
-                 """
+                 """,
     )
-    
+
     #compiling hpp/cpp
-    cpp_object(name,deps)
+    cpp_object(name, deps)

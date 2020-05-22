@@ -10,7 +10,10 @@ cc_library(
     ],
     hdrs = glob(["include/GL/**"]),
     includes = ["include"],
-    linkopts = ["-lglut", "-lGL"]
+    linkopts = [
+        "-lglut",
+        "-lGL",
+    ],
 )
 
 cc_library(
@@ -19,4 +22,3 @@ cc_library(
     hdrs = glob(["include/EGL/**"]),
     includes = ["include"],
 )
-

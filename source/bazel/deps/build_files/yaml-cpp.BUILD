@@ -1,4 +1,3 @@
-
 cc_library(
     name = "yaml-cpp",
     srcs = glob([

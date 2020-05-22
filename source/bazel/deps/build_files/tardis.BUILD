@@ -1,10 +1,10 @@
 cc_binary(
     name = "tardis",
     srcs = ["tardis.c"],
-    includes = ["."],
     data = [":novdso"],
-    deps = [":novdso"],
+    includes = ["."],
     visibility = ["//visibility:public"],
+    deps = [":novdso"],
 )
 
 cc_library(

@@ -1,4 +1,3 @@
-
 # cc_binary(
 #     name = "pixels_moved",
 #     srcs = ["main.cc"],

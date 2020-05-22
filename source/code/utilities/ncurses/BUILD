@@ -13,8 +13,5 @@ cc_library(
     name = "scoped_getch",
     srcs = ["scoped_getch.cpp"],
     hdrs = ["scoped_getch.hpp"],
-    deps = ["@getch//:getch"],
+    deps = ["@getch"],
 )
-
-
-

@@ -1,4 +1,3 @@
-
 # cc_binary(
 #     name = "print_mouse_pos",
 #     srcs = ["main.cc"],

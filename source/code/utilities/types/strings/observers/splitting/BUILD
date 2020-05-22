@@ -6,5 +6,5 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["@boost//:tokenizer",],
+    deps = ["@boost//:tokenizer"],
 )

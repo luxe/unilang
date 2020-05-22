@@ -1,7 +1,4 @@
-
-
 def mv_file(name, file_from, file_to):
-    
     native.genrule(
         name = name,
         srcs = [file_from],

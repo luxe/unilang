@@ -2,7 +2,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file"
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 def toolchains():
-
     http_archive(
         name = "co_vsco_bazel_toolchains",
         strip_prefix = "bazel-toolchains-519efd0b3275e4cf1ffa03f3c3fb80c7d8f7c60d",

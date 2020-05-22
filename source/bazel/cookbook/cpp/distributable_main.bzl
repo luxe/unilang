@@ -1,20 +1,21 @@
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
-load("@rules_pkg//:pkg.bzl", "pkg_tar", "pkg_deb")
+load("@rules_pkg//:pkg.bzl", "pkg_deb", "pkg_tar")
 load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
 
-def distributable_cpp_main(name,description,depends=[],deps=[]):
-
+def distributable_cpp_main(name, description, depends = [], deps = []):
     AMD_64_EXTENSION = "-debian-amd64"
     EVERYTHING_EXTENSION = "-debian-all"
     MAINTAINER = "Trevor Hickey <TrevorJamesHickey@gmail.com>"
     DEFAULT_VERSION = "1.0"
     DEFAULT_HOMEPAGE = "none"
     DATA_TARGET = ":" + name + "-data"
-    
-    cpp_main(name,deps)
-    
-    package_binaries(name = name,
-                 binary_targets = [":" + name])
+
+    cpp_main(name, deps)
+
+    package_binaries(
+        name = name,
+        binary_targets = [":" + name],
+    )
 
     amd_name = name + AMD_64_EXTENSION
     pkg_deb(

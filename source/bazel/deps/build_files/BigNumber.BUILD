@@ -4,7 +4,7 @@ package(
 
 cc_library(
     name = "lib",
-    hdrs = ["src/bignumber.h"],
     srcs = ["src/bignumber.cpp"],
+    hdrs = ["src/bignumber.h"],
     includes = ["src"],
 )

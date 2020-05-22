@@ -128,8 +128,8 @@ cc_library(
     includes = ["."],
     visibility = ["//visibility:public"],
     deps = [
-        "@expat//:expat",
-        "@freetype2//:freetype2",
-        "@zlib//:zlib",
+        "@expat",
+        "@freetype2",
+        "@zlib",
     ],
 )

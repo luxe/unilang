@@ -6,5 +6,5 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/colors:lib"]
+    deps = ["//code/utilities/colors:lib"],
 )

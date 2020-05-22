@@ -6,21 +6,20 @@ load("//bazel/cookbook/image:xpm_to_xbm.bzl", "xpm_to_xbm")
 load("//bazel/cookbook/image:png_mirror.bzl", "png_mirror")
 
 def png_to_x11_artifacts(name):
-    
     png_to_xpm(name)
     xpm_to_ppm(name)
     ppm_to_mask(name)
     ppm_to_xpm(name + "_mask")
     xpm_to_xbm(name + "_mask")
-    
+
     png_mirror(name)
-    
+
     png_to_xpm(name + "_mirror")
     xpm_to_ppm(name + "_mirror")
     ppm_to_mask(name + "_mirror")
     ppm_to_xpm(name + "_mirror_mask")
     xpm_to_xbm(name + "_mirror_mask")
-    
+
     native.filegroup(
         name = name + "_image_data",
         srcs = [

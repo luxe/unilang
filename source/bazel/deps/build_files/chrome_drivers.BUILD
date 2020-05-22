@@ -4,4 +4,3 @@ filegroup(
     name = "chrome_drivers",
     srcs = ["versions"],
 )
-

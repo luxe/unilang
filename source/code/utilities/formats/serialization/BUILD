@@ -7,8 +7,8 @@ cc_library(
     srcs = ["boost.cpp"],
     hdrs = ["boost.hpp"],
     deps = [
-    "@boost//:serialization",
-    ]
+        "@boost//:serialization",
+    ],
 )
 
 cc_library(
@@ -17,6 +17,5 @@ cc_library(
     hdrs = ["protobuf.hpp"],
     deps = [
         "//code/utilities/formats/json/functions:lib",
-    ]
+    ],
 )
-

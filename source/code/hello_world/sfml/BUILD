@@ -2,41 +2,78 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-
 # Controller Implementations
 cc_binary(
-   name = "joycons",
-   srcs = ["joycons.cpp"],
-   deps = [
-    "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
-    "//code/utilities/formats/json/functions:lib",
-    "//code/utilities/peripheral/keyboard/joycons:joycons",
-    "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-    "@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
-   linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
+    name = "joycons",
+    srcs = ["joycons.cpp"],
+    linkopts = [
+        "-lX11",
+        "-lGL",
+        "-lXrandr",
+        "-ludev",
+    ],
+    deps = [
+        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/peripheral/keyboard/joycons",
+        "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
+        "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
+        "@SDL2",
+        "@glfw",
+        "@opengl",
+        "@sfml",
+    ],
 )
 
 cc_binary(
-   name = "f310_gamepads",
-   srcs = ["f310_gamepads.cpp"],
-   deps = [
-    "//code/utilities/formats/json/functions:lib",
-    "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
-    "@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
-   linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
+    name = "f310_gamepads",
+    srcs = ["f310_gamepads.cpp"],
+    linkopts = [
+        "-lX11",
+        "-lGL",
+        "-lXrandr",
+        "-ludev",
+    ],
+    deps = [
+        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
+        "@SDL2",
+        "@glfw",
+        "@opengl",
+        "@sfml",
+    ],
 )
 
 # SFML generic
 cc_binary(
-   name = "joystick",
-   srcs = ["joystick.cpp"],
-   deps = ["@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
-   linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
+    name = "joystick",
+    srcs = ["joystick.cpp"],
+    linkopts = [
+        "-lX11",
+        "-lGL",
+        "-lXrandr",
+        "-ludev",
+    ],
+    deps = [
+        "@SDL2",
+        "@glfw",
+        "@opengl",
+        "@sfml",
+    ],
 )
 
 cc_binary(
-   name = "main",
-   srcs = ["main.cpp"],
-   deps = ["@sfml//:sfml","@opengl//:opengl","@glfw//:glfw","@SDL2//:SDL2",],
-   linkopts = ["-lX11", "-lGL", "-lXrandr","-ludev"],
+    name = "main",
+    srcs = ["main.cpp"],
+    linkopts = [
+        "-lX11",
+        "-lGL",
+        "-lXrandr",
+        "-ludev",
+    ],
+    deps = [
+        "@SDL2",
+        "@glfw",
+        "@opengl",
+        "@sfml",
+    ],
 )

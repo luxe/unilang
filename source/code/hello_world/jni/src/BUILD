@@ -1,4 +1,5 @@
 load("@rules_java//java:defs.bzl", "java_binary")
+
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
@@ -11,7 +12,6 @@ cc_library(
         "@bazel_tools//tools/jdk:jni_header",
         "@bazel_tools//tools/jdk:jni_md_header-linux",
     ],
-    deps = [":jni"],
     # deps = [
     #     "@bazel_tools//tools/jdk:jni_header",
     #     "@bazel_tools//tools/jdk:jni_md_header-linux",
@@ -20,6 +20,7 @@ cc_library(
         "external/bazel_tools/tools/jdk/include",
         "external/bazel_tools/tools/jdk/include/linux",
     ],
+    deps = [":jni"],
     #copts = [
     #"-isystem","external/bazel_tools/tools/jdk/include",
     #"-isystem","external/bazel_tools/tools/jdk/include/linux",
@@ -29,8 +30,6 @@ cc_library(
     alwayslink = True,
     #strip_include_prefix = "code/hello_world/jni/src/",
 )
-
-
 
 cc_library(
     name = "jni",
@@ -63,28 +62,27 @@ genrule(
     cmd = "cp -f $< $@",
 )
 
-
 cc_binary(
     name = "libmain-jni.so",
-    deps = [ ":main-jni-lib" ],
     linkshared = True,
+    deps = [":main-jni-lib"],
 )
 
 java_binary(
     name = "Main",
-    srcs = [ "Main.java" ],
-    main_class = "Main",
+    srcs = ["Main.java"],
     #resources = [ ":libmain-jni.so" ],
     #runtime_deps = [ ":libmain-jni.so" ],
     #use_testrunner = False,
     #deploy_env = [ ":libmain-jni.so" ],
     #create_executable = True,
     #deps = [ ":libmain-jni.so" ],
-    data = [ ":libmain-jni.so" ],
+    data = [":libmain-jni.so"],
     #javacopts = [ "-Djava.library.path=example" ],
-    
+
     #works only if I do a full path.  relative fron runfiles doesn't work either.
     #https://github.com/bazelbuild/bazel/issues/10754
     #https://github.com/bazelbuild/bazel/issues/6958
-    jvm_flags = [ "-Djava.library.path=." ],
+    jvm_flags = ["-Djava.library.path=."],
+    main_class = "Main",
 )

@@ -9,9 +9,9 @@ cc_library(
     defines = [],
     includes = [
         ".",
-        "include/date",
         "include",
+        "include/date",
     ],
-    deps = ["@curl"],
     visibility = ["//visibility:public"],
+    deps = ["@curl"],
 )

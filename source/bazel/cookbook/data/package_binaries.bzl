@@ -1,12 +1,11 @@
 load("@bazel_tools//tools/build_defs/pkg:pkg.bzl", "pkg_tar")
 
-def package_binaries(name,binary_targets):
-
+def package_binaries(name, binary_targets):
     MAIN_TAR_SUFFIX = "_tar"
     DATA_TAR_SUFFIX = "-data"
     FULL_MAIN_TAR = name + MAIN_TAR_SUFFIX
     DATA_MAIN_TAR = name + DATA_TAR_SUFFIX
-    
+
     pkg_tar(
         name = FULL_MAIN_TAR,
         package_dir = "/usr/bin",

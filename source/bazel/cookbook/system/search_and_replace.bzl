@@ -1,7 +1,4 @@
-
-
 def search_and_replace(name, file_from, file_to, find, replace):
-    
     native.genrule(
         name = name,
         srcs = [file_from],

@@ -1,19 +1,29 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(name = "compile_unit", deps = [
-"//code/utilities/contributor:contributor",
-"//code/tools/transcompilers/unilang/options:export_settings",
-])
+hcp(
+    name = "compile_unit",
+    deps = [
+        "//code/tools/transcompilers/unilang/options:export_settings",
+        "//code/utilities/contributor",
+    ],
+)
 
-hcp(name = "compile_units", deps = ["compile_unit"])
+hcp(
+    name = "compile_units",
+    deps = ["compile_unit"],
+)
 
-enum_cpp(name = "chosen_exporter",
-values = 
-["none"
-,"uber"
-,"f2si"
-,"trevor"
-])
+enum_cpp(
+    name = "chosen_exporter",
+    values =
+        [
+            "none",
+            "uber",
+            "f2si",
+            "trevor",
+        ],
+)

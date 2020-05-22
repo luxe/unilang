@@ -6,9 +6,10 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/types/strings/transformers/removing:lib",
-    "//code/utilities/types/strings/transformers/casing:lib",
-    "@boost//:algorithm",
-    "@levenshtein//:levenshtein",
-    ]
+    deps = [
+        "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "@boost//:algorithm",
+        "@levenshtein",
+    ],
 )

@@ -1,4 +1,5 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
@@ -12,5 +13,5 @@ cc_binary(
     srcs = ["sha256sum_url.cpp"],
     deps = [
         "//code/utilities/formats/compression:lib",
-    ]
+    ],
 )

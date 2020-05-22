@@ -5,5 +5,5 @@ cc_library(
     copts = ["-Wno-everything"],
     includes = ["include"],
     visibility = ["//visibility:public"],
-    deps = ["@curl//:curl"],
+    deps = ["@curl"],
 )

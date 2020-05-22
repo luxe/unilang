@@ -1,4 +1,3 @@
-
 # Ref: https://github.com/googlecartographer/cartographer/blob/master/bazel/third_party/cairo/cairo.BUILD
 # Description:
 #   Cairo is a 2D graphics library with support for multiple output devices.
@@ -285,13 +284,13 @@ cc_library(
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "@expat//:expat",
-        "@fontconfig//:fontconfig",
-        "@freetype2//:freetype2",
+        "@expat",
+        "@fontconfig",
+        "@freetype2",
         "@libgd//:gd",
-        "@libjpeg//:libjpeg",
-        "@libpng//:libpng",
-        "@zlib//:zlib",
-        "@pixman//:pixman",
+        "@libjpeg",
+        "@libpng",
+        "@pixman",
+        "@zlib",
     ],
 )

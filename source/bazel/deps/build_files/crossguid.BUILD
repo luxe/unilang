@@ -1,17 +1,15 @@
-
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "crossguid",
+    srcs = glob([
+        "src/**/*.cpp",
+    ]),
     hdrs = glob([
         "include/**/*.h",
         "include/**/*.hpp",
     ]),
-    includes = ["include"],
-    srcs = glob([
-        "src/**/*.cpp",
-        
-    ]),
     copts = ["-DGUID_LIBUUID"],
-    linkopts = ["-luuid"]
+    includes = ["include"],
+    linkopts = ["-luuid"],
 )

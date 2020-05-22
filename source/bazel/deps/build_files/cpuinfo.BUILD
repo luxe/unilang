@@ -44,11 +44,11 @@ cc_library(
         "-D_GNU_SOURCE=1",
     ],
     includes = [
-        "src",
         "include",
+        "src",
     ],
+    linkstatic = True,
     deps = [
         ":local_clog_dep",
     ],
-    linkstatic = True,
 )

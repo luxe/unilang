@@ -6,6 +6,7 @@ sdl_includes = [
     "include",
     "src/video/x11",
 ]
+
 sdl_srcs = glob(
     include = [
         "src/**/*.c",
@@ -29,10 +30,10 @@ cc_library(
 
 cc_library(
     name = "SDL2",
-    hdrs = glob(["include/**/*.h"]),
-    textual_hdrs = glob(["src/thread/generic/*.c"]),
     srcs = sdl_srcs,
+    hdrs = glob(["include/**/*.h"]),
     linkopts = ["-lSDL2"],
+    textual_hdrs = glob(["src/thread/generic/*.c"]),
     visibility = ["//visibility:public"],
-    deps = [":SDL2_includes"]
+    deps = [":SDL2_includes"],
 )

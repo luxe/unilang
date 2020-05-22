@@ -17,8 +17,8 @@ cc_library(
     includes = [
         "include/",
     ],
-    deps = [
-        "@fx_div//:fx_div",
-    ],
     linkstatic = True,
+    deps = [
+        "@fx_div",
+    ],
 )

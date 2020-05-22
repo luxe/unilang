@@ -22,13 +22,13 @@ def boost():
             "https://sourceforge.net/projects/boost/files/boost/1.68.0/boost_1_68_0.tar.gz",
         ],
     )
-    
+
     # Boost 2 (the rules to build boost code)
     http_archive(
         name = "com_github_nelhage_rules_boost",
         sha256 = "3dade7836dd5dc21935a5e4a9fbf40605957be31088bf47397dff6f9a0d700bb",
         patches = [
-           "//bazel/deps/build_files:rules_boost.patch",
+            "//bazel/deps/build_files:rules_boost.patch",
         ],
         strip_prefix = "rules_boost-67c383977a82196164498431f98864135beed7f0",
         urls = [
@@ -36,7 +36,7 @@ def boost():
             "https://github.com/nelhage/rules_boost/archive/67c383977a82196164498431f98864135beed7f0.zip",
         ],
     )
-    
+
     # Boost 3 (boost dependency)
     http_archive(
         name = "org_bzip_bzip2",
@@ -48,7 +48,7 @@ def boost():
             "http://www.bzip.org/1.0.6/bzip2-1.0.6.tar.gz",
         ],
     )
-    
+
     # Boost 4 (boost dependency)
     http_archive(
         name = "org_lzma_lzma",
@@ -59,7 +59,7 @@ def boost():
             "https://sourceforge.net/projects/lzmautils/files/xz-5.2.3.tar.gz",
         ],
     )
-    
+
     # Boost 5 (boost dependency)
     http_archive(
         name = "net_zlib_zlib",

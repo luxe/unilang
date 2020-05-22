@@ -7,9 +7,9 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-"//code/utilities/filesystem/files/getting:lib",
-"//code/utilities/types/vectors/transformers:lib",
-"//code/utilities/types/strings/transformers/removing:lib",
-"//code/utilities/program/call:lib",
-]
+        "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/program/call:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+    ],
 )

@@ -4,8 +4,8 @@ package(
 
 cc_library(
     name = "backward_cpp",
-    hdrs = ["backward.hpp"],
     srcs = ["backward.cpp"],
+    hdrs = ["backward.hpp"],
     includes = [
     ],
 )

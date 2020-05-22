@@ -4,16 +4,18 @@ package(
 
 cc_library(
     name = "x11",
+    srcs = glob(
+        [
+            "src/**/*.h",
+            "src/**/*.c",
+        ],
+        exclude = [
+            "src/os2Stubs.c",
+        ],
+    ),
     hdrs = glob([
         "src/config.h",
         "include/X11/*.h",
-    ]),
-    srcs = glob([
-        "src/**/*.h",
-        "src/**/*.c",
-    ],
-    exclude = [
-        "src/os2Stubs.c",
     ]),
     copts = [
         "-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\"",
@@ -26,5 +28,5 @@ cc_library(
         "src/xlibi18n",
     ],
     linkstatic = True,
-    deps = ["@xkbcommon//:xkbcommon"],
+    deps = ["@xkbcommon"],
 )

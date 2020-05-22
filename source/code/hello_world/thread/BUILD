@@ -1,4 +1,5 @@
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -9,14 +10,14 @@ cpp_main(
 
 cpp_main(
     name = "boost_thread_pool",
-    deps = ["@boost//:asio",]
+    deps = ["@boost//:asio"],
 )
 
 cpp_main(
     name = "boost_thread_pool2",
     deps = [
-    "@boost//:asio",
-    "//code/utilities/execution:thread_pool_getter",
-    "//code/utilities/execution:thread_pool_loop",
-    ]
+        "//code/utilities/execution:thread_pool_getter",
+        "//code/utilities/execution:thread_pool_loop",
+        "@boost//:asio",
+    ],
 )

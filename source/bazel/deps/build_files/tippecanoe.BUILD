@@ -1,13 +1,12 @@
 package(default_visibility = ["//visibility:public"])
 
-
 #Notes: had to get rid of a japanese file (non-ascii error)
 
 # Nested Folders
 cc_library(
     name = "json_pull",
-    hdrs = ["jsonpull/jsonpull.h"],
     srcs = ["jsonpull/jsonpull.c"],
+    hdrs = ["jsonpull/jsonpull.h"],
 )
 
 cc_library(
@@ -33,13 +32,12 @@ cc_library(
 cc_library(
     name = "nested_deps",
     deps = [
+        ":catch",
         ":json_pull",
+        ":mapbox",
         ":milo",
         ":protozero",
-        ":mapbox",
-        ":catch",
-        
-    ]
+    ],
 )
 
 cc_library(
@@ -70,9 +68,9 @@ cc_library(
     ],
     includes = ["."],
     deps = [
-        "@sqlite3//:sqlite3",
-        ":nested_deps"
-    ]
+        ":nested_deps",
+        "@sqlite3",
+    ],
 )
 
 cc_library(
@@ -106,12 +104,11 @@ cc_library(
     ],
     includes = ["."],
     deps = [
-        "@sqlite3//:sqlite3",
+        ":main_headers",
         ":nested_deps",
-        ":main_headers"
-    ]
+        "@sqlite3",
+    ],
 )
-
 
 # programs from makefile
 # tippecanoe
@@ -123,17 +120,17 @@ cc_library(
 cc_binary(
     name = "tippecanoe",
     srcs = [
-        "main.cpp"
+        "main.cpp",
     ],
     includes = ["."],
-    deps = [
-        "@sqlite3//:sqlite3",
-        ":nested_deps",
-        ":main_headers",
-        ":main_src"
-    ],
     linkopts = [
         "-lm",
         "-lz",
+    ],
+    deps = [
+        ":main_headers",
+        ":main_src",
+        ":nested_deps",
+        "@sqlite3",
     ],
 )

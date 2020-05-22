@@ -7,7 +7,7 @@ cc_library(
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
     deps = [
-"//code/utilities/filesystem/paths:lib",
-"//code/utilities/types/strings/transformers/stripping:lib",
-]
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/types/strings/transformers/stripping:lib",
+    ],
 )

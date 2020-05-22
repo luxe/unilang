@@ -12,4 +12,3 @@ cc_library(
     name = "std_aliases",
     hdrs = ["std_aliases.hpp"],
 )
-

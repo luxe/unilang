@@ -1,4 +1,3 @@
-
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
@@ -9,6 +8,6 @@ cc_library(
     ]),
     includes = ["include"],
     deps = [
-        "@sqlite3//:sqlite3"
-    ]
+        "@sqlite3",
+    ],
 )

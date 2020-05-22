@@ -1,9 +1,11 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "n_sided_dice",
+hcp(
+    name = "n_sided_dice",
     deps = [
-        "//code/utilities/random:lib"
-    ]
+        "//code/utilities/random:lib",
+    ],
 )

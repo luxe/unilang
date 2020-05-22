@@ -1,11 +1,9 @@
-
-def unilang_to_protobuf(name,deps=[]):
-
+def unilang_to_protobuf(name, deps = []):
     #the file names to use
     protobuf_target_name = name + "_protobuf"
     explicit_unilang_file = name + ".unilang"
     explicit_proto_file = name + ".proto"
-    
+
     #converting hcp to hpp/cpp
     native.genrule(
         name = protobuf_target_name,
@@ -14,5 +12,5 @@ def unilang_to_protobuf(name,deps=[]):
         tools = ["//code/tools/transcompilers/unilang/main:unilang-transcompiler"],
         cmd = """
     $(location //code/tools/transcompilers/unilang/main:unilang-transcompiler) --input_files $(SRCS) --dir $(@D) --exporter trevor --languages PROTOBUF --style normal --build-only
-        """
+        """,
     )

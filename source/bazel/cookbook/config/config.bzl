@@ -7,18 +7,18 @@ def _fix_config_impl(ctx):
 
     script = ""
     for k, v in ctx.attr.values.items():
-        v = v.replace("\\", "\\\\").replace("/", "\/")
+        v = v.replace("\\", "\\\\").replace("/", "\\/")
         if ctx.attr.cmake:
-            script += "s/\#cmakedefine\\s+%s\\b.*/\#define %s %s/g;" % (k, k, v)
-            script += "s/\#cmakedefine01\\s+%s\\b.*/\#define %s 1/g;" % (k, k)
-            script += "s/\$\{%s\}/%s/g;" % (k, v)
-        script += "s/\@%s\@/%s/g;" % (k, v)
+            script += "s/\\#cmakedefine\\s+%s\\b.*/\\#define %s %s/g;" % (k, k, v)
+            script += "s/\\#cmakedefine01\\s+%s\\b.*/\\#define %s 1/g;" % (k, k)
+            script += "s/\\$\\{%s\\}/%s/g;" % (k, v)
+        script += "s/\\@%s\\@/%s/g;" % (k, v)
 
     if ctx.attr.cmake:
-        script += "s/\#cmakedefine[\\s]+(\\w+).*/\/* #undef \\1 *\//g;"
-        script += "s/\#cmakedefine01[\\s]+(\\w+).*/\#define \\1 0/g;"
-        script += "s/\$\{\\w+\}//g;"
-    script += "s/\@[^\@]*\@/0/g"
+        script += "s/\\#cmakedefine[\\s]+(\\w+).*/\\/* #undef \\1 *\\//g;"
+        script += "s/\\#cmakedefine01[\\s]+(\\w+).*/\\#define \\1 0/g;"
+        script += "s/\\$\\{\\w+\\}//g;"
+    script += "s/\\@[^\\@]*\\@/0/g"
 
     ctx.actions.run_shell(
         inputs = [input],

@@ -35,5 +35,5 @@ cc_library(
     includes = ["."],
     linkopts = ["-lm"],
     visibility = ["//visibility:public"],
-    deps = ["@zlib//:zlib"],
+    deps = ["@zlib"],
 )

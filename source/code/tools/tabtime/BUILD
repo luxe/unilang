@@ -1,4 +1,5 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
@@ -11,10 +12,13 @@ cc_binary(
     name = "tabtime",
     srcs = ["tabtime.cpp"],
     deps = [
-        "//code/tools/tabtime:tabtime_runner"
-    ]
+        "//code/tools/tabtime:tabtime_runner",
+    ],
 )
 
-hcp(name = "tabtime_runner", deps = [
-    "//code/utilities/program/call:lib",
-])
+hcp(
+    name = "tabtime_runner",
+    deps = [
+        "//code/utilities/program/call:lib",
+    ],
+)

@@ -7,6 +7,6 @@ cc_library(
     srcs = ["sdl_audio.c"],
     hdrs = ["sdl_audio.h"],
     deps = [
-        "@SDL2//:SDL2",
-    ]
+        "@SDL2",
+    ],
 )

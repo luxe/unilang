@@ -6,10 +6,11 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    deps = ["//code/utilities/types/char:lib",
-    "//code/utilities/types/general:lib",
-    "//code/utilities/types/strings/observers/other:lib",
-    "//code/utilities/types/strings/transformers/removing:lib",
-    "@boost//:range",
-    ]
+    deps = [
+        "//code/utilities/types/char:lib",
+        "//code/utilities/types/general:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "@boost//:range",
+    ],
 )

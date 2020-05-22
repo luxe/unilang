@@ -1,5 +1,4 @@
-def gtest(name,deps=[]):
-
+def gtest(name, deps = []):
     #implicit file names
     explicit_cpp_file = name + ".cpp"
     deps2 = []

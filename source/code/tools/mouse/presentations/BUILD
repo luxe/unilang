@@ -1,4 +1,3 @@
-
 # cc_binary(
 #     name = "annotation_tool_summary",
 #     srcs = ["annotation_tool_summary.cc"],

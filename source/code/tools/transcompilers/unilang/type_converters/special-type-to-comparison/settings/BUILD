@@ -1,22 +1,35 @@
 package(default_visibility = ["//visibility:public"])
+
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
-hcp(name = "special_comparison_functions", deps = [
-])
+hcp(
+    name = "special_comparison_functions",
+    deps = [
+    ],
+)
 
-hcp(name = "special_comparison_settings", deps = [
-"special_comparison_type",
-"special_type_comparison_builder",
-])
+hcp(
+    name = "special_comparison_settings",
+    deps = [
+        "special_comparison_type",
+        "special_type_comparison_builder",
+    ],
+)
 
-hcp(name = "special_comparison_type", deps = [
-"//code/tools/transcompilers/unilang/parser/body_parser:body_token_value"
-])
+hcp(
+    name = "special_comparison_type",
+    deps = [
+        "//code/tools/transcompilers/unilang/parser/body_parser:body_token_value",
+    ],
+)
 
-hcp(name = "special_type_comparison_builder", deps = [
-"special_comparison_type",
-"special_comparison_functions",
-"//code/utilities/types/vectors/operators:lib",
-"//code/utilities/types/converters:lib",
-])
+hcp(
+    name = "special_type_comparison_builder",
+    deps = [
+        "special_comparison_functions",
+        "special_comparison_type",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)
