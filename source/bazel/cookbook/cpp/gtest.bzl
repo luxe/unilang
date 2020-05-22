@@ -5,7 +5,7 @@ def gtest(name,deps=[]):
     deps2 = []
     for x in deps:
         deps2.append(x)
-    deps2.append("@gtest//:gtest_main")
+    deps2.append("@gtest//:main")
 
     #compile object file
     native.cc_test(
