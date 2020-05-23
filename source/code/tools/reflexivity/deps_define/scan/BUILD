@@ -10,8 +10,9 @@ hcp(
         "//code/literature/publish:essay_publisher",
         "//code/tools/reflexivity/bazel_wrapper:bazel_wrapper_refresher",
         "//code/tools/reflexivity/bazelrc:bazelrc_refresher",
-        "//code/tools/reflexivity/deps_define/refresh:deps_definition_refresher",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
+        "//code/tools/reflexivity/deps_define/refresh:deps_definition_refresher",
+        "//code/tools/reflexivity/deps_define/scan:repo_scanned_info",
         "//code/tools/reflexivity/docker:dockerfile_refresher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
@@ -19,24 +20,22 @@ hcp(
         "//code/tools/transcompilers/unilang/self_readme:unilang_documentation_generator",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/github:repo_getter",
         "//code/utilities/program/common_actions/locale:lib",
         "//code/utilities/program/name:program_name_getter",
-        "//code/utilities/types/strings/transformers/appending:lib",
-        "//code/utilities/github:repo_getter",
-        "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
         "//code/utilities/program/wrappers/git:lib",
-        "//code/tools/reflexivity/deps_define/scan:repo_scanned_info",
-        "//code/utilities/filesystem/files/temp:existing_temp_file",
+        "//code/utilities/program/wrappers/git/repo_establisher",
+        "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
 
 hcp(
     name = "repo_scanned_info",
     deps = [
-        "//code/utilities/web:web_json_extraction_settings",
-        "//code/utilities/web:lib",
         "//code/tools/reflexivity/deps_define/data:dependency_specification",
+        "//code/utilities/web:lib",
+        "//code/utilities/web:web_json_extraction_settings",
     ],
 )
-
