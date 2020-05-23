@@ -3,6 +3,7 @@
 #include "code/utilities/filesystem/paths/lib.hpp"
 #include "code/utilities/program/call/lib.hpp"
 #include "code/utilities/random/lib.hpp"
+#include "code/utilities/types/strings/observers/converting/lib.hpp"
 
 
 std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
@@ -80,4 +81,9 @@ std::string Git_Hosted_User(){
 		}
 	}
 	return author;
+}
+
+int Number_Of_Commits()
+{
+	return as_signed(execute("git rev-list --count HEAD"));
 }

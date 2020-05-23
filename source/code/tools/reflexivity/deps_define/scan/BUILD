@@ -23,5 +23,19 @@ hcp(
         "//code/utilities/program/common_actions/locale:lib",
         "//code/utilities/program/name:program_name_getter",
         "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/github:repo_getter",
+        "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
+        "//code/utilities/program/wrappers/git:lib",
+        "//code/tools/reflexivity/deps_define/scan:repo_scanned_info",
     ],
 )
+
+hcp(
+    name = "repo_scanned_info",
+    deps = [
+        "//code/utilities/web:web_json_extraction_settings",
+        "//code/utilities/web:lib",
+        "//code/tools/reflexivity/deps_define/data:dependency_specification",
+    ],
+)
+

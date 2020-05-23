@@ -20,3 +20,10 @@ std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url, std
 //transformers
 void Create_Repo_On_Github(std::string const& user_name, std::string const& autorization, std::string const& project_name, std::string const& description);
 void Go_To_Git_Repo_Root(); //Move_Back_Directories_Until_Directory_Exists(std::string directory_name);
+
+int Number_Of_Commits();
+
+
+
+//find something in source code across history:
+//git rev-list --all | xargs git grep <regexp>

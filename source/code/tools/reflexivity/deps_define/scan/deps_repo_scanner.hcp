@@ -4,6 +4,7 @@ class
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/tools/reflexivity/settings/reflexive_refresh_settings"❫
+❪"code/tools/reflexivity/deps_define/scan/repo_scanned_info"❫
 ⚯
 ❪"code/tools/reflexivity/docker/dockerfile_refresher"❫
 ❪"code/tools/reflexivity/bazelrc/bazelrc_refresher"❫
@@ -17,12 +18,75 @@ class
 ❪"code/literature/publish/essay_publisher"❫
 ❪"code/utilities/code/concept_tree_to_image"❫
 ❪"code/tools/reflexivity/deps_define/data/dependency_specifications_getter"❫
+❪"code/utilities/github/repo_getter"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/repo_establisher"❫
+❪"code/utilities/program/wrappers/git/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Scan()❰
     auto all_specs = Dependency_Specifications_Getter::Get_All_Dependency_Specifications();
     
+    //scan all the repos and get results
+    std::vector<Repo_Scanned_Info> scan_results;
     for (auto const& spec: all_specs.specs){
-        
+        if (!spec.locations.empty()){
+            scan_results.emplace_back(Scan_Repo(spec));
+        }
     }
+    
+    //use the scan results to make a table
+    
+    //to sync them with upstream master
+    
+    //to try and auto-upgrade
+❱
+
+◀private: static▶ Repo_Scanned_Info ☀Scan_Repo(Dependency_Specification const& spec)❰
+    Repo_Scanned_Info results;
+    results.main_spec = spec;
+    
+    //get the meta information
+    auto owner_name = spec.locations[0].owner_name;
+    auto repo_name = spec.locations[0].repo_name;
+    results.main_meta = Repo_Getter::Get(owner_name,repo_name);
+    
+    //clone the repository
+    Repo_Location main_repo_location;
+    main_repo_location.use_clone=true;
+    main_repo_location.clone_url=SSH_Clone_Url(owner_name,repo_name);
+    main_repo_location.verbose=true;
+    std::cout << "cloning" << std::endl;
+    auto main_repo = Repo_Establisher::Establish_And_Get_Path(main_repo_location);
+    
+    Temporarily_Move_To_Path_To_Call_Function(main_repo.path,[&](){
+        results.main_commit_count = Number_Of_Commits();
+    });
+    
+    if (results.main_meta["fork"] == true){
+        std::string forked_repo_name = results.main_meta["source"]["full_name"];
+        
+        main_repo_location.clone_url=SSH_Clone_Url(forked_repo_name);
+        Temporarily_Move_To_Path_To_Call_Function(main_repo.path,[&](){
+            results.forked_commit_count = Number_Of_Commits();
+        });
+    }
+    
+    
+    
+    std::cout << results.main_commit_count << std::endl;
+    std::cout << results.forked_commit_count << std::endl;
+    exit(0);
+    
+    //std::cout << repo_json.dump(0) << std::endl;
+    
+    return results;
+❱
+
+◀private: static▶ std::string ☀SSH_Clone_Url(std::string const& owner, std::string const& repo)❰
+    std::string url = "git@github.com:" + owner + "/" + repo + ".git";
+    return url;
+❱
+◀private: static▶ std::string ☀SSH_Clone_Url(std::string const& owner_slash_repo)❰
+    std::string url = "git@github.com:" + owner_slash_repo + ".git";
+    return url;
 ❱

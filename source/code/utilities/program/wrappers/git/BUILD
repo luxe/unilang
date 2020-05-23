@@ -11,6 +11,7 @@ cc_library(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call:lib",
         "//code/utilities/random:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
     ],
 )
 
