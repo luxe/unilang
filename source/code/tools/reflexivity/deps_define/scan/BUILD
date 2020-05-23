@@ -10,7 +10,7 @@ hcp(
         "//code/literature/publish:essay_publisher",
         "//code/tools/reflexivity/bazel_wrapper:bazel_wrapper_refresher",
         "//code/tools/reflexivity/bazelrc:bazelrc_refresher",
-        "//code/tools/reflexivity/deps_define:deps_definition_refresher",
+        "//code/tools/reflexivity/deps_define/refresh:deps_definition_refresher",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
         "//code/tools/reflexivity/docker:dockerfile_refresher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
@@ -27,6 +27,7 @@ hcp(
         "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
         "//code/utilities/program/wrappers/git:lib",
         "//code/tools/reflexivity/deps_define/scan:repo_scanned_info",
+        "//code/utilities/filesystem/files/temp:existing_temp_file",
     ],
 )
 
