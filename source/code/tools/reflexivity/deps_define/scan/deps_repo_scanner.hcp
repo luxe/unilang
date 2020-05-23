@@ -45,28 +45,29 @@ class
     Repo_Scanned_Info results;
     results.main_spec = spec;
     
-    //get the meta information
+    //get meta information about repo
     auto owner_name = spec.locations[0].owner_name;
     auto repo_name = spec.locations[0].repo_name;
     results.main_meta = Repo_Getter::Get(owner_name,repo_name);
     
-    //clone the repository
-    Repo_Location main_repo_location;
-    main_repo_location.use_clone=true;
-    main_repo_location.clone_url=SSH_Clone_Url(owner_name,repo_name);
-    main_repo_location.verbose=true;
-    std::cout << "cloning" << std::endl;
-    auto main_repo = Repo_Establisher::Establish_And_Get_Path(main_repo_location);
+    //clone the repository to get some more information
+    Repo_Location repo_location;
+    repo_location.use_clone=true;
+    repo_location.clone_url=SSH_Clone_Url(owner_name,repo_name);
+    repo_location.verbose=true;
+    auto main_repo = Repo_Establisher::Establish_And_Get_Path(repo_location);
     
     Temporarily_Move_To_Path_To_Call_Function(main_repo.path,[&](){
         results.main_commit_count = Number_Of_Commits();
     });
     
+    //clone the fork (if there is one) to get more information about the fork
     if (results.main_meta["fork"] == true){
         std::string forked_repo_name = results.main_meta["source"]["full_name"];
         
-        main_repo_location.clone_url=SSH_Clone_Url(forked_repo_name);
-        Temporarily_Move_To_Path_To_Call_Function(main_repo.path,[&](){
+        repo_location.clone_url=SSH_Clone_Url(forked_repo_name);
+        auto fork_repo = Repo_Establisher::Establish_And_Get_Path(repo_location);
+        Temporarily_Move_To_Path_To_Call_Function(fork_repo.path,[&](){
             results.forked_commit_count = Number_Of_Commits();
         });
     }
