@@ -36,12 +36,12 @@ hcp(
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
         "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/tools/transcompilers/unilang/self_readme:unilang_documentation_generator",
+        "//code/utilities/build:self_builder",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/common_actions/locale:lib",
         "//code/utilities/program/name:program_name_getter",
         "//code/utilities/types/strings/transformers/appending:lib",
-        "//code/utilities/build:self_buildfer",
     ],
 )
