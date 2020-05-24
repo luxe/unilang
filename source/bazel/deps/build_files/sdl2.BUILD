@@ -51,7 +51,6 @@ cc_library(
         "src",
         "src/events",
     ],
-    visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -66,6 +65,5 @@ cc_library(
         "src",
         "src/events",
     ],
-    #textual_hdrs = glob(["src/thread/generic/*.c"]),
     deps = [":SDL2_hdrs"],
 )
