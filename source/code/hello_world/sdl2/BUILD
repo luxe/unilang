@@ -4,14 +4,21 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-cpp_main(
+cc_binary(
     name = "main",
-    deps = ["@SDL2"],
-    #deps = ["@sdl2//:SDL2"],
+    #deps = ["@SDL2"],
+    deps = ["@sdl2//:SDL2"],
+    linkopts = [
+        "-lX11",
+        "-lGL",
+        "-lXaw",
+        "-lXaw7",
+        "-lXt",
+    ],
 )
 
 cpp_main(
     name = "arrows",
-    deps = ["@SDL2"],
-    #deps = ["@sdl2//:SDL2"],
+    #deps = ["@SDL2"],
+    deps = ["@sdl2//:SDL2"],
 )
