@@ -14,6 +14,7 @@ sdl_gen_hdrs = glob(
     exclude = [
     ],
 )
+
 sdl_gen_srcs = glob(
     include = [
         "gen/**/*.c",
@@ -22,16 +23,15 @@ sdl_gen_srcs = glob(
     ],
 )
 
-
 cc_library(
     name = "SDL2_gen_files",
-    hdrs = sdl_gen_hdrs,
     srcs = sdl_gen_srcs,
+    hdrs = sdl_gen_hdrs,
     includes = [
+        "gen",
         "include",
         "src",
         "src/events",
-        "gen",
     ],
 )
 
@@ -114,5 +114,9 @@ cc_library(
         #"/usr/include",
         #"/usr/include/glib-2.0",
     ],
-    deps = [":SDL2_hdrs", ":SDL2_gen_files", "@dbus//:dbus"],
+    deps = [
+        ":SDL2_gen_files",
+        ":SDL2_hdrs",
+        "@dbus",
+    ],
 )

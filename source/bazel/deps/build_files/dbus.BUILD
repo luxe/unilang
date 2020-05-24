@@ -25,17 +25,17 @@ dbus_srcs = glob(
         "dbus/dbus-sysdeps-wince-glue.c",
         "dbus/dbus-sysdeps-win.c",
         "dbus/dbus-sysdeps-util-win.c",
-        
+
         #can't find system headers
         "bus/dir-watch-kqueue.c",
         "dbus/dbus-sysdeps-unix.c",
-        
+
         #multiple defs
         "bus/config-parser-trivial.c",
         "bus/dir-watch-kqueue.c",
         "bus/dir-watch-inotify.c",
         "dbus/dbus-server-win.c",
-        
+
         #main funcs
         "bus/main.c",
     ],
@@ -45,11 +45,11 @@ cc_library(
     name = "dbus_hdrs",
     hdrs = dbus_hdrs,
     includes = [
-        "dbus",
-        "dbus/dbus",
-        "dbus/bus",
-        "bus",
         ".",
+        "bus",
+        "dbus",
+        "dbus/bus",
+        "dbus/dbus",
     ],
 )
 
@@ -57,11 +57,11 @@ cc_library(
     name = "dbus",
     srcs = dbus_srcs,
     includes = [
-        "dbus",
-        "dbus/dbus",
-        "dbus/bus",
-        "bus",
         ".",
+        "bus",
+        "dbus",
+        "dbus/bus",
+        "dbus/dbus",
     ],
     deps = [":dbus_hdrs"],
 )
