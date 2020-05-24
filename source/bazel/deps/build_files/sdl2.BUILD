@@ -57,12 +57,15 @@ cc_library(
 cc_library(
     name = "SDL2",
     srcs = sdl_srcs,
+    copts = [
+        "-I/usr/include/dbus-1.0/",
+        "-I/usr/lib/x86_64-linux-gnu/dbus-1.0/include/",
+    ],
     includes = [
         "include",
         "src",
         "src/events",
     ],
-    copts = ["-I/usr/include/dbus-1.0/", "-I/usr/lib/x86_64-linux-gnu/dbus-1.0/include/"],
     #textual_hdrs = glob(["src/thread/generic/*.c"]),
     deps = [":SDL2_hdrs"],
 )

@@ -12,8 +12,12 @@ def sdl2():
         urls = [
             "https://github.com/Unilang/SDL-mirror/archive/36ea2544f08508f42d5193e175d3a269c3b95bdf.tar.gz",
         ],
-        patches = ["//bazel/deps/build_files:sdl2_config.patch"],
-        patch_args = ["-p1"],
+        patches = [
+            "//bazel/deps/build_files:sdl2_config.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
         patch_cmds = [
             "sed -i '1s/^/#include <stdlib.h>\\n/' src/dynapi/SDL_dynapi.c",
             "sed -i '1s/^/#include <stdio.h>\\n/' src/dynapi/SDL_dynapi.c",
