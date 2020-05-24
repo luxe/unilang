@@ -1,5 +1,43 @@
 package(default_visibility = ["//visibility:public"])
 
+################################
+# these are headers and source files
+# that are generated when doing the traditional autotools build
+# we bring them all in with a giant patch
+# and compile them to a single library
+
+#glob the files we care about
+sdl_gen_hdrs = glob(
+    include = [
+        "gen/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+sdl_gen_srcs = glob(
+    include = [
+        "gen/**/*.c",
+    ],
+    exclude = [
+    ],
+)
+
+
+cc_library(
+    name = "SDL2_gen_files",
+    hdrs = sdl_gen_hdrs,
+    srcs = sdl_gen_srcs,
+    includes = [
+        "include",
+        "src",
+        "src/events",
+        "gen",
+    ],
+)
+
+################################
+#all of the SDL2 headers as a single library
+
 #glob the files we care about
 sdl_hdrs = glob(
     include = [
@@ -9,6 +47,20 @@ sdl_hdrs = glob(
     ],
 )
 
+cc_library(
+    name = "SDL2_hdrs",
+    hdrs = sdl_hdrs,
+    includes = [
+        "include",
+        "src",
+        "src/events",
+    ],
+)
+################################
+# finish the SDL library by building all the sources and linking
+# with all the headers and required dependencies
+
+#glob the files we care about
 sdl_srcs = glob(
     include = [
         "src/**/*.c",
@@ -24,6 +76,7 @@ sdl_srcs = glob(
         "src/locale/android/**",
         "src/locale/macosx/**",
         "src/locale/haiku/**",
+        "src/locale/unix/**",
         "src/core/linux/SDL_dbus.c",
         "src/core/linux/SDL_fcitx.c",
         #"src/locale/**",
@@ -40,16 +93,10 @@ sdl_srcs = glob(
         "src/thread/psp/**",
         # haptic/windows/
         #"src/dynapi/SDL_dynapi_overrides.h",
-    ],
-)
-
-cc_library(
-    name = "SDL2_hdrs",
-    hdrs = sdl_hdrs,
-    includes = [
-        "include",
-        "src",
-        "src/events",
+        
+        #needs ibus and glib system headers
+        "src/core/linux/SDL_ibus.c",
+        "src/core/linux/SDL_ime.c",
     ],
 )
 
@@ -57,13 +104,14 @@ cc_library(
     name = "SDL2",
     srcs = sdl_srcs,
     copts = [
-        "-I/usr/include/dbus-1.0/",
-        "-I/usr/lib/x86_64-linux-gnu/dbus-1.0/include/",
     ],
     includes = [
         "include",
         "src",
         "src/events",
+        "gen",
+        #"/usr/include",
+        #"/usr/include/glib-2.0",
     ],
-    deps = [":SDL2_hdrs"],
+    deps = [":SDL2_hdrs", ":SDL2_gen_files", "@dbus//:dbus"],
 )

@@ -14,6 +14,7 @@ def sdl2():
         ],
         patches = [
             "//bazel/deps/build_files:sdl2_config.patch",
+            "//bazel/deps/build_files:sdl_gen_files.patch",
         ],
         patch_args = [
             "-p1",
