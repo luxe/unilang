@@ -14,6 +14,6 @@ hcp(
     name = "process_spawner",
     deps = [
         "//code/utilities/program/call/process_spawn:process_results",
-        "//code/utilities/streams/pstreams:lib",
+        "@pstreams//:lib",
     ],
 )
