@@ -15,6 +15,11 @@
 //https://en.wikipedia.org/wiki/DRAKON
 //https://www.jetbrains.com/mps/
 
+//similarity to other projects:
+// Haxe
+// OneLang
+// Felleisen's A Programmable Programming Language
+
 
 
 //optional thread pool on drawing grid
