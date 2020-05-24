@@ -77,7 +77,7 @@ sdl_srcs = glob(
         "src/locale/macosx/**",
         "src/locale/haiku/**",
         "src/locale/unix/**",
-        "src/core/linux/SDL_dbus.c",
+        #"src/core/linux/SDL_dbus.c",
         "src/core/linux/SDL_fcitx.c",
         #"src/locale/**",
         "src/joystick/windows/**",
@@ -88,15 +88,16 @@ sdl_srcs = glob(
         "src/thread/generic/SDL_syssem.c",
         "src/thread/generic/SDL_systhread.c",
         "src/thread/generic/SDL_systls.c",
+        "src/main/**",
         #"src/thread/generic/**",
         "src/thread/windows/**",
         "src/thread/psp/**",
         # haptic/windows/
         #"src/dynapi/SDL_dynapi_overrides.h",
-        
+
         #needs ibus and glib system headers
-        "src/core/linux/SDL_ibus.c",
-        "src/core/linux/SDL_ime.c",
+        #"src/core/linux/SDL_ibus.c",
+        #"src/core/linux/SDL_ime.c",
     ],
 )
 
