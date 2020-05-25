@@ -19,6 +19,6 @@ def libevent():
             "-p1",
         ],
         patch_cmds = [
-            "find . -type f -name '*.c' -exec sed -i 's/#include <stdlib.h>/#include <stdlib.h>\n#include <stdint.h>/g' {} \;",
+            "find . -type f -name '*.c' -exec sed -i 's/#include <stdlib.h>/#include <stdlib.h>\n#include <stdint.h>\n/g' {} \;",
         ],
     )

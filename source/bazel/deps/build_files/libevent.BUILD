@@ -18,7 +18,7 @@ srcs = glob(
         "*.c",
     ],
     exclude = [
-    
+
         #Windows related:
         "libevent/buffer_iocp.c",
         "buffer_iocp.c",
