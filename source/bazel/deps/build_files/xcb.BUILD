@@ -22,6 +22,8 @@ cc_library(
     srcs = srcs,
     hdrs = hdrs,
     copts = [
+        "-DXCB_QUEUE_BUFFER_SIZE=16384",
+        "-DIOV_MAX=16",
     ],
     includes = [
         ".",
