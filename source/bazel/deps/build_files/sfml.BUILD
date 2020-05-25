@@ -31,6 +31,7 @@ cc_library(
         [
             "include/**/*.h",
             "include/**/*.hpp",
+            "src/SFML/**/*.inl",
         ],
         exclude = [
         ],
