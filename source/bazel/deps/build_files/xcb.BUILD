@@ -3,7 +3,7 @@ package(default_visibility = ["//visibility:public"])
 #glob the files we care about
 hdrs = glob(
     include = [
-        "src/**/*.h",
+        "xcb/src/**/*.h",
     ],
     exclude = [
     ],
@@ -11,7 +11,7 @@ hdrs = glob(
 
 srcs = glob(
     include = [
-        "src/**/*.c",
+        "xcb/src/**/*.c",
     ],
     exclude = [
     ],
@@ -28,7 +28,10 @@ cc_library(
     includes = [
         ".",
         "src",
+        "xcb",
+        "xcb/src",
     ],
+    include_prefix = "xcb",
     deps = [
     ],
 )

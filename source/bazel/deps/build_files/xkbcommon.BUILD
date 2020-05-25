@@ -30,5 +30,9 @@ cc_library(
     includes = [
         "src",
         "xkbcommon",
+        "xcb",
     ],
+    deps = [
+        "@xcb",
+    ]
 )
