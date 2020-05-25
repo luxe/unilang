@@ -120,5 +120,6 @@ cc_library(
         "@dbus",
         "@glib",
         "@ibus",
+        "@libevent",
     ],
 )

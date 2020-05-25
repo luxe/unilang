@@ -165,4 +165,7 @@ cc_library(
         "gmodule",
         "gobject",
     ],
+    deps = [
+        "@libevent",
+    ],
 )
