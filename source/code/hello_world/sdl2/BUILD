@@ -6,24 +6,10 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@SDL2"],
+    deps = ["@sdl2//:SDL2"],
 )
 
 cpp_main(
     name = "arrows",
-    deps = ["@SDL2"],
+    deps = ["@sdl2//:SDL2"],
 )
-
-#hermetic attempt
-# cc_binary(
-#     name = "main_her",
-#     srcs = ["main.cpp"],
-#     deps = ["@sdl2//:SDL2"],
-#     linkopts = [
-#         "-lX11",
-#         "-lGL",
-#         "-lXaw",
-#         "-lXaw7",
-#         "-lXt",
-#     ],
-# )

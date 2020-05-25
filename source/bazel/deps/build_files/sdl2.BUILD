@@ -78,7 +78,7 @@ sdl_srcs = glob(
         "src/locale/haiku/**",
         "src/locale/unix/**",
         #"src/core/linux/SDL_dbus.c",
-        "src/core/linux/SDL_fcitx.c",
+        #"src/core/linux/SDL_fcitx.c",
         #"src/locale/**",
         "src/joystick/windows/**",
         "src/src/filesystem/windows/**",
