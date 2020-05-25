@@ -22,6 +22,7 @@ cc_library(
             "src/SFML/Window/Unix/**/*.cpp",
             "src/SFML/Window/*.hpp",
             "src/SFML/Window/*.cpp",
+            "src/SFML/**/*.inl",
         ],
         exclude = [
         ],
