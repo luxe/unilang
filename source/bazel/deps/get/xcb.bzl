@@ -14,6 +14,7 @@ def xcb():
         ],
         patches = [
             "//bazel/deps/build_files:xcb_config.patch",
+            "//bazel/deps/build_files:xcb_gen.patch",
         ],
         patch_args = [
             "-p1",
