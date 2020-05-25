@@ -5,10 +5,17 @@ hdrs = glob(
     include = [
         "glib/**/*.h",
         "pcre/**/*.h",
+        "gio/**/*.h",
+        "gobject/**/*.h",
+        "gmodule/**/*.h",
+        "gio/strinfo.c",
     ],
     exclude = [
         "glib/dirent/dirent.h",
         "glib/dirent/dirent.c",
+        
+        #windows related:
+        "gio/win32/gwinhttpvfs.h",
     ],
 )
 
@@ -16,14 +23,22 @@ srcs = glob(
     include = [
         "glib/**/*.c",
         "pcre/**/*.c",
+        "gio/**/*.c",
+        "gobject/**/*.c",
+        "gmodule/**/*.c",
     ],
     exclude = [
         
-        #windows related
+        #windows related:
         "glib/win_iconv.c",
         "glib/gwin32.c",
         "glib/gthread-win32.c",
+        "gio/gregistrysettingsbackend.c",
+        "gio/win32/**",
+        "gio/gwin32volumemonitor.c",
+        "gio/gwin32mount.c",
         
+        #other:
         "glib/dirent/dirent.c",
         "glib/gnulib/signbitl.c",
         "glib/libcharset/localcharset.c",
@@ -34,6 +49,10 @@ srcs = glob(
         "glib/gthread-win32.c",
         "glib/gnulib/printf-frexp.c",
         "glib/gnulib/**",
+        "gio/fam/gfamfilemonitor.c",
+        "gio/tests/**",
+        "gobject/tests/**",
+        "gio/kqueue/gkqueuefilemonitor.c",
         #"glib/deprecated/gallocator.c"
     ],
 )
@@ -46,9 +65,14 @@ cc_library(
         "glib",
         ".",
         "glib/dirent",
+        "gobject",
+        "gmodule",
+        "glib/gio",
+        "gio",
+        "gio/fam"
     ],
     copts = [
-    '-DG_LOG_DOMAIN="GLib-GRegex"',
+    #'-DG_LOG_DOMAIN="GLib-GRegex"',
     '-DHAVE_MEMMOVE',
     '-DSUPPORT_UCP',
     '-DSUPPORT_UTF',

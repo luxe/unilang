@@ -12,6 +12,11 @@ def glib():
         patches = [
             "//bazel/deps/build_files:glib_config.patch",
             "//bazel/deps/build_files:glib_config2.patch",
+            "//bazel/deps/build_files:glib_enums.patch",
+            "//bazel/deps/build_files:gio_enums.patch",
+            "//bazel/deps/build_files:gnetworking.patch",
+            "//bazel/deps/build_files:xdp_dbus.patch",
+            "//bazel/deps/build_files:gdbus_daemon.patch",
         ],
         patch_args = [
             "-p1",
