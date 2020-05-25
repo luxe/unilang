@@ -39,6 +39,11 @@ cc_library(
     includes = [
         "include",
         "include/SFML",
+        "include/SFML/System",
+        "include/SFML/Network",
+        "include/SFML/Window",
+        "include/SFML/Window/Unix",
+        "include/SFML/Main",
         "src",
         "src/SFML",
     ],
