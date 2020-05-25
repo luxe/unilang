@@ -17,6 +17,7 @@ def glib():
             "//bazel/deps/build_files:gnetworking.patch",
             "//bazel/deps/build_files:xdp_dbus.patch",
             "//bazel/deps/build_files:gdbus_daemon.patch",
+            "//bazel/deps/build_files:gmoduleconf.patch",
         ],
         patch_args = [
             "-p1",

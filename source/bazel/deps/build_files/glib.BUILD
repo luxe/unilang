@@ -9,6 +9,7 @@ hdrs = glob(
         "gobject/**/*.h",
         "gmodule/**/*.h",
         "gio/strinfo.c",
+        "gmodule/gmodule-dl.c",
     ],
     exclude = [
         "glib/dirent/dirent.h",
@@ -37,6 +38,9 @@ srcs = glob(
         "gio/win32/**",
         "gio/gwin32volumemonitor.c",
         "gio/gwin32mount.c",
+        "gio/gcontenttype-win32.c",
+        "gmodule/gmodule-win32.c",
+        "gio/gwin32outputstream.c",
         
         #other:
         "glib/dirent/dirent.c",
@@ -53,6 +57,7 @@ srcs = glob(
         "gio/tests/**",
         "gobject/tests/**",
         "gio/kqueue/gkqueuefilemonitor.c",
+        "gmodule/gmodule-ar.c",
         #"glib/deprecated/gallocator.c"
     ],
 )
@@ -69,7 +74,7 @@ cc_library(
         "gmodule",
         "glib/gio",
         "gio",
-        "gio/fam"
+        "gio/fam",
     ],
     copts = [
     #'-DG_LOG_DOMAIN="GLib-GRegex"',
