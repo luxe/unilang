@@ -12,4 +12,10 @@ def xcb():
         urls = [
             "https://github.com/Unilang/xcb-libxcb/archive/ee9dfc9a7658e7fe75d27483bb5ed1ba4d1e2c86.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:xcb_config.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
