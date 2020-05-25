@@ -28,16 +28,16 @@ cc_library(
         '-DDEFAULT_XKB_LAYOUT=\\\"us\\"',
     ],
     includes = [
+        ".",
         "src",
-        "xkbcommon",
-        "xkbcommon/src",
-        "xkbcommon/src/x11",
         "src/x11",
         "xcb",
         "xcb/src",
-        ".",
+        "xkbcommon",
+        "xkbcommon/src",
+        "xkbcommon/src/x11",
     ],
     deps = [
         "@xcb",
-    ]
+    ],
 )
