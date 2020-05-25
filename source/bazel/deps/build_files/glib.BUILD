@@ -14,7 +14,7 @@ hdrs = glob(
     exclude = [
         "glib/dirent/dirent.h",
         "glib/dirent/dirent.c",
-        
+
         #windows related:
         "gio/win32/gwinhttpvfs.h",
     ],
@@ -29,7 +29,7 @@ srcs = glob(
         "gmodule/**/*.c",
     ],
     exclude = [
-        
+
         #windows related:
         "glib/win_iconv.c",
         "glib/gwin32.c",
@@ -51,7 +51,7 @@ srcs = glob(
         "glib/gspawn-win32-helper.c",
         "glib/tests/gpoll.c",
         "glib/gspawn-win32.c",
-        
+
         #other:
         "glib/dirent/dirent.c",
         "glib/gnulib/signbitl.c",
@@ -73,7 +73,7 @@ srcs = glob(
         "gio/giowin32-private.c",
         "glib/gwin32-private.c",
         #"glib/deprecated/gallocator.c"
-        
+
         #main programs:
         "gio/gapplication-tool.c",
         "glib/gdbus-tool.c",
@@ -83,7 +83,6 @@ srcs = glob(
         "gio/glib-compile-resources.c",
         "gio/gio-tool.c",
         "gio/glib-compile-schemas.c",
-        
         "gio/gio-tool-set.c",
         "gio/gio-tool.c",
         "gio/gio-tool-move.c",
@@ -102,7 +101,6 @@ srcs = glob(
         "gio/gio-tool-monitor.c",
         "gio/gio-tool-mime.c",
         "gio/gresource-tool.c",
-        
         "gio/gio-tool-set.c",
         "gio/gio-tool.c",
         "gio/gio-tool-move.c",
@@ -135,37 +133,36 @@ cc_library(
     name = "glib",
     srcs = srcs,
     hdrs = hdrs,
+    copts = [
+        #'-DG_LOG_DOMAIN="GLib-GRegex"',
+        "-DHAVE_MEMMOVE",
+        "-DSUPPORT_UCP",
+        "-DSUPPORT_UTF",
+        "-DSUPPORT_UTF8",
+        "-DNEWLINE=-1",
+        "-DMATCH_LIMIT=10000000",
+        "-DMATCH_LIMIT_RECURSION=8192",
+        "-DMAX_NAME_SIZE=32",
+        "-DMAX_NAME_COUNT=10000",
+        "-DMAX_DUPLENGTH=30000",
+        "-DLINK_SIZE=2",
+        "-DPOSIX_MALLOC_THRESHOLD=10",
+        "-DPCRE_STATIC",
+        "-UBSR_ANYCRLF",
+        "-UEBCDIC",
+        "-DGLIB_COMPILATION",
+        "-DGIO_COMPILATION",
+        "-D_GNU_SOURCE",
+        '-DGIO_MODULE_DIR=\\"FOOBAR\\"',
+    ],
     includes = [
-        "glib",
         ".",
-        "glib/dirent",
-        "gobject",
-        "gmodule",
-        "glib/gio",
         "gio",
         "gio/fam",
+        "glib",
+        "glib/dirent",
+        "glib/gio",
+        "gmodule",
+        "gobject",
     ],
-    copts = [
-    #'-DG_LOG_DOMAIN="GLib-GRegex"',
-    '-DHAVE_MEMMOVE',
-    '-DSUPPORT_UCP',
-    '-DSUPPORT_UTF',
-    '-DSUPPORT_UTF8',
-    '-DNEWLINE=-1',
-    '-DMATCH_LIMIT=10000000',
-    '-DMATCH_LIMIT_RECURSION=8192',
-    '-DMAX_NAME_SIZE=32',
-    '-DMAX_NAME_COUNT=10000',
-    '-DMAX_DUPLENGTH=30000',
-    '-DLINK_SIZE=2',
-    '-DPOSIX_MALLOC_THRESHOLD=10',
-    '-DPCRE_STATIC',
-    '-UBSR_ANYCRLF',
-    '-UEBCDIC',
-    '-DGLIB_COMPILATION',
-    
-    '-DGIO_COMPILATION',
-    '-D_GNU_SOURCE',
-    '-DGIO_MODULE_DIR=\\"FOOBAR\\"'
-],
 )

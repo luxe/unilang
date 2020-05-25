@@ -12,4 +12,10 @@ def ibus():
         urls = [
             "https://github.com/Unilang/ibus/archive/f591381e3c892947ecaffe9131b9039ab9014498.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:ibus_config.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
