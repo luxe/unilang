@@ -118,7 +118,7 @@ cc_library(
         ":SDL2_gen_files",
         ":SDL2_hdrs",
         "@dbus",
-        "@ibus",
         "@glib",
+        "@ibus",
     ],
 )

@@ -23,9 +23,9 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "@sdl2//:SDL2",
         "@glfw",
         "@opengl",
+        "@sdl2//:SDL2",
         "@sfml",
     ],
 )

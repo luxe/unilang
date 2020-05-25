@@ -12,4 +12,13 @@ def libevent():
         urls = [
             "https://github.com/Unilang/libevent/archive/eee26deed38fc7a6b6780b54628b007a2810efcd.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:libevent_gen.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
+        patch_cmds = [
+            "find . -type f -name '*.c' -exec sed -i 's/#include <stdlib.h>/#include <stdlib.h>\n#include <stdint.h>/g' {} \;",
+        ],
     )
