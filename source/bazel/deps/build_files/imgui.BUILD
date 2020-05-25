@@ -6,7 +6,7 @@ cc_library(
     hdrs = glob(["*.h"]),
     linkopts = [],
     deps = [
-        "@SDL2",
+        "@sdl2//:SDL2",
         "@opengl",
     ],
 )
