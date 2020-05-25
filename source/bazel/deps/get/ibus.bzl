@@ -16,6 +16,7 @@ def ibus():
             "//bazel/deps/build_files:ibus_config.patch",
             "//bazel/deps/build_files:ibus_src_gen.patch",
             "//bazel/deps/build_files:ibus_marshalers.patch",
+            "//bazel/deps/build_files:ibus_srcs.patch",
         ],
         patch_args = [
             "-p1",

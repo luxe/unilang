@@ -19,7 +19,13 @@ srcs = glob(
         "src/**/*.c",
     ],
     exclude = [
-        "src/tests/**"
+        "src/tests/**",
+
+        #main programs
+        "bus/test-matchrule.c",
+        "src/unicode-parser.c",
+        "src/emoji-parser.c",
+        "bus/test-stress.c",
     ],
 )
 
@@ -31,8 +37,11 @@ cc_library(
         "-DIBUS_COMPILATION",
         '-DLIBEXECDIR=\\"FOO\\"',
         '-DBINDIR=\\"FOO\\"',
-        '-DBUS_DATA_DIR=\\"FOO\\"',
+        '-DIBUS_DATA_DIR=\\"FOO\\"',
         '-DX11_DATADIR=\\"FOO\\"',
+        '-DIBUS_CACHE_DIR=\\"FOO\\"',
+        '-DISOCODES_PREFIX=\\"/usr\\"',
+        '-DX11_DATA_PREFIX=\\"/share/X11/locale\\"',
     ],
     includes = [
         ".",
@@ -40,5 +49,8 @@ cc_library(
         "ibus",
         "src",
     ],
-    deps = ["@glib","@dbus//:dbus"],
+    deps = [
+        "@dbus",
+        "@glib",
+    ],
 )
