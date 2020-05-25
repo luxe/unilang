@@ -41,6 +41,14 @@ srcs = glob(
         "gio/gcontenttype-win32.c",
         "gmodule/gmodule-win32.c",
         "gio/gwin32outputstream.c",
+        "gio/gwin32registrykey.c",
+        "glib/giowin32.c",
+        "io/gwin32networkmonitor.c",
+        "glib/tests/win32.c",
+        "gio/gwin32appinfo.c",
+        "gio/gwin32networkmonitor.c",
+        "gio/gwin32inputstream.c",
+        "glib/gspawn-win32-helper.c",
         
         #other:
         "glib/dirent/dirent.c",
@@ -58,6 +66,8 @@ srcs = glob(
         "gobject/tests/**",
         "gio/kqueue/gkqueuefilemonitor.c",
         "gmodule/gmodule-ar.c",
+        "gmodule/gmodule-dl.c",
+        "glib/gstdio-private.c",
         #"glib/deprecated/gallocator.c"
     ],
 )
