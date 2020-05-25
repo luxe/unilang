@@ -12,5 +12,5 @@ cc_library(
     copts = ["-DGUID_LIBUUID"],
     includes = ["include"],
     #linkopts = ["-luuid"],
-    deps = ["@utilsLinux//:uuid"]
+    deps = ["@utilsLinux//:uuid"],
 )

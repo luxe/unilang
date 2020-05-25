@@ -41,11 +41,11 @@ cc_library(
     includes = [
         "include",
         "include/SFML",
-        "include/SFML/System",
+        "include/SFML/Main",
         "include/SFML/Network",
+        "include/SFML/System",
         "include/SFML/Window",
         "include/SFML/Window/Unix",
-        "include/SFML/Main",
         "src",
         "src/SFML",
     ],
@@ -61,5 +61,6 @@ cc_library(
         "@freetype2",
         "@openal_soft",
         "@stb",
+        #"@x11",
     ],
 )
