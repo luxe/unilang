@@ -13,10 +13,9 @@ def toolchains():
 
     http_archive(
         name = "com_grail_bazel_toolchain",
-        strip_prefix = "bazel-toolchain-a8b42eea639e19735c1c25ca27daa98b1074243d",
+        strip_prefix = "bazel-toolchain-f4c17a3ae40f927ff62cc0fb8fe22b1530871807",
         urls = [
-            "https://github.com/unilang/bazel-toolchain/archive/a8b42eea639e19735c1c25ca27daa98b1074243d.tar.gz",
-            "https://github.com/grailbio/bazel-toolchain/archive/a8b42eea639e19735c1c25ca27daa98b1074243d.tar.gz",
+            "https://github.com/unilang/bazel-toolchain/archive/f4c17a3ae40f927ff62cc0fb8fe22b1530871807.tar.gz",
         ],
     )
 

@@ -1,5 +1,3 @@
-load("@rules_cc//cc:defs.bzl", "cc_binary")
-
 licenses(["notice"])  # BSD-2 Clause
 
 cc_binary(
