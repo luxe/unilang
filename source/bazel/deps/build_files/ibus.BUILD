@@ -52,5 +52,6 @@ cc_library(
     deps = [
         "@dbus",
         "@glib",
+        "@libevent",
     ],
 )
