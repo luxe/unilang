@@ -8,8 +8,8 @@ def debianStretchAmd64Sysroot():
         name = "debian_stretch_amd64_sysroot",
         build_file = "//bazel/deps/build_files:debian_stretch_amd64_sysroot.BUILD",
         sha256 = "0f3729d5b77147f3276512afffb89ee74bb3c55fa175f8bbf2903d2ff867a11c",
-        strip_prefix = "debian_stretch_amd64_sysroot-c98e381e8651e97d6da52122b288ec2ba6c392ec",
+        strip_prefix = "debian_stretch_amd64_sysroot-733762a3256bdbb173e6617d451f473f810fd8bf",
         urls = [
-            "https://github.com/Unilang/debian_stretch_amd64_sysroot/archive/c98e381e8651e97d6da52122b288ec2ba6c392ec.tar.gz",
+            "https://github.com/Unilang/debian_stretch_amd64_sysroot/archive/733762a3256bdbb173e6617d451f473f810fd8bf.tar.gz",
         ],
     )
