@@ -105,7 +105,7 @@ cc_library(
     name = "SDL2",
     srcs = sdl_srcs,
     copts = [
-        '-DHAVE_CONFIG_H',
+        "-DHAVE_CONFIG_H",
     ],
     includes = [
         "include",

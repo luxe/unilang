@@ -14,9 +14,9 @@ cc_binary(
     deps = [
         "//code/utilities/colors:sfml_color_pick_grid",
         "//code/utilities/colors:sfml_color_pick_hue_changer",
+        "@SDL2",
         "@glfw",
         "@opengl",
-        "@SDL2",
         "@sfml",
     ],
 )
