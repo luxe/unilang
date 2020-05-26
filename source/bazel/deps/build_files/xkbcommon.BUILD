@@ -8,7 +8,7 @@ cc_library(
             "src/**/*.c",
         ],
         exclude = [
-            "src/config.h",
+            #"src/keysym.c",
         ],
     ),
     hdrs = glob(
@@ -17,7 +17,7 @@ cc_library(
             "src/**/*.h",
         ],
         exclude = [
-            "src/config.h",
+            #"src/ks_tables.h",
         ],
     ),
     copts = [
@@ -26,6 +26,7 @@ cc_library(
         '-DDFLT_XKB_CONFIG_ROOT=\\\"/usr/share/X11/xkb\\"',
         '-DDEFAULT_XKB_MODEL=\\\"pc105\\"',
         '-DDEFAULT_XKB_LAYOUT=\\\"us\\"',
+        "-DKTABLESIZE=32",
     ],
     includes = [
         ".",

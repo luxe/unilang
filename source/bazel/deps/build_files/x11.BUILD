@@ -20,6 +20,7 @@ cc_library(
     copts = [
         "-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\"",
         "-DHAVE_SYS_IOCTL_H",
+        "-DXCMSDIR=\\\"FOO\\\"",
     ],
     includes = [
         "include/X11",
@@ -28,5 +29,8 @@ cc_library(
         "src/xlibi18n",
     ],
     linkstatic = True,
-    deps = ["@xkbcommon"],
+    deps = [
+        "@xcb",
+        "@xkbcommon",
+    ],
 )

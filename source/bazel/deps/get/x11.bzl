@@ -12,4 +12,10 @@ def x11():
         urls = [
             "https://github.com/Unilang/libX11/archive/edc7680ed5a03cedb5facf14693823455e12c29c.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:x11_ks_tables.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
