@@ -3,6 +3,7 @@
 
 load("//bazel/deps/get:bazel.bzl", "bazel")
 load("//bazel/deps/get:buildtools.bzl", "buildtools")
+load("//bazel/deps/get:debian_stretch_amd64_sysroot.bzl", "debianStretchAmd64Sysroot")
 load("//bazel/deps/get:boost.bzl", "boost")
 load("//bazel/deps/get:abseil.bzl", "abseil")
 load("//bazel/deps/get:nameof.bzl", "nameof")
@@ -156,6 +157,7 @@ load("//bazel/deps/get:english_sounds.bzl", "englishSounds")
 def third_party_libraries():
     bazel()
     buildtools()
+    debianStretchAmd64Sysroot()
     boost()
     abseil()
     nameof()
