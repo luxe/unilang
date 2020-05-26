@@ -16,7 +16,7 @@ cc_binary(
         "//code/utilities/colors:sfml_color_pick_hue_changer",
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )

@@ -61,7 +61,7 @@ cc_library(
         "@freetype2",
         "@openal_soft",
         "@stb",
-        "@x11",
-        "@flac",
+        #"@x11",
+        #"@flac",
     ],
 )

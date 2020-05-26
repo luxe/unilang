@@ -19,7 +19,7 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )
@@ -38,7 +38,7 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )
@@ -56,7 +56,7 @@ cc_binary(
     deps = [
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )
@@ -73,7 +73,7 @@ cc_binary(
     deps = [
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )

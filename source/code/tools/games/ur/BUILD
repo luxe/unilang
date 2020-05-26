@@ -20,7 +20,7 @@ cc_binary(
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )

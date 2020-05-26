@@ -154,6 +154,7 @@ cc_library(
         "-DGIO_COMPILATION",
         "-D_GNU_SOURCE",
         '-DGIO_MODULE_DIR=\\"FOOBAR\\"',
+        '-DHAVE_CONFIG_H',
     ],
     includes = [
         ".",

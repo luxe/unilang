@@ -42,6 +42,7 @@ cc_library(
         '-DIBUS_CACHE_DIR=\\"FOO\\"',
         '-DISOCODES_PREFIX=\\"/usr\\"',
         '-DX11_DATA_PREFIX=\\"/share/X11/locale\\"',
+        '-DHAVE_CONFIG_H',
     ],
     includes = [
         ".",

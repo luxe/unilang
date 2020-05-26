@@ -13,6 +13,6 @@ hcp(
 hcp(
     name = "music_player",
     deps = [
-        "@sdl2//:SDL2",
+        "@SDL2",
     ],
 )

@@ -6,10 +6,10 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@sdl2//:SDL2"],
+    deps = ["@SDL2"],
 )
 
 cpp_main(
     name = "arrows",
-    deps = ["@sdl2//:SDL2"],
+    deps = ["@SDL2"],
 )

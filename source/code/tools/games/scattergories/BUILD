@@ -25,7 +25,7 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
         "@glfw",
         "@opengl",
-        "@sdl2//:SDL2",
+        "@SDL2",
         "@sfml",
     ],
 )

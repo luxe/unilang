@@ -16,6 +16,8 @@ srcs = glob(
         "src/**/*.c",
     ],
     exclude = [
+        #"src/xcb_auth.c",
+        #"xcb/xcb_auth.c",
     ],
 )
 
