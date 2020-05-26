@@ -3,6 +3,7 @@
 #include<X11/xpm.h>
 #include <unistd.h>
 #include <iostream>
+#include <cassert>
 
 int main ()
 {
