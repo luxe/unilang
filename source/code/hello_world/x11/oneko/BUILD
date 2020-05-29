@@ -10,10 +10,6 @@ cc_binary(
     copts = [
         "-Wno-everything",
     ],
-    linkopts = [
-        "-lX11",
-        "-lXext",
-    ],
     deps = [
         "//code/hello_world/x11/oneko/bitmaps/bsd:lib",
         "//code/hello_world/x11/oneko/bitmaps/dog:lib",
@@ -27,5 +23,6 @@ cc_binary(
         "//code/hello_world/x11/oneko/bitmasks/sakura:lib",
         "//code/hello_world/x11/oneko/bitmasks/tomoyo:lib",
         "//code/hello_world/x11/oneko/cursors:lib",
+        "@x11",
     ],
 )

@@ -11,10 +11,8 @@ cc_binary(
         "-DHAVE_CONFIG_H",
         "-DCAIRO_HAS_XLIB_SURFACE=1",  # Only effect is to create xlib display mutex
     ],
-    linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXext",
+    deps = [
+        "@cairo",
+        "@x11",
     ],
-    deps = ["@cairo"],
 )

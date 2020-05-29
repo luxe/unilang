@@ -7,12 +7,5 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXaw",
-        "-lXaw7",
-        "-lXt",
-    ],
-    deps = [],
+    deps = ["@x11"],
 )

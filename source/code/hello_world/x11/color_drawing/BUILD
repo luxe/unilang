@@ -10,8 +10,7 @@ cc_binary(
     copts = [
         "-Wno-everything",
     ],
-    linkopts = [
-        "-lX11",
-        "-lXext",
+    deps = [
+        "@x11",
     ],
 )

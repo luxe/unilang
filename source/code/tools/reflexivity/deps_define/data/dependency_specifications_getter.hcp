@@ -31,7 +31,7 @@ class
 //https://github.com/godotengine/godot
 //https://github.com/p-ranav/tabulate
 // #gmp (this was hard)
-// #add-range-v3 library
+// #add-range-v3 library (eh, this is going in std right?)
 // #add klmr-cpp11-range
 //https://github.com/jupp0r/prometheus-cpp
     
@@ -155,6 +155,7 @@ class
     x.specs.emplace_back(XkbCommon());
     x.specs.emplace_back(xcb());
     x.specs.emplace_back(X11());
+    x.specs.emplace_back(Xtrans());
     x.specs.emplace_back(Sdl2());
     x.specs.emplace_back(sdl2_bazel_registry());
     x.specs.emplace_back(Sfml());
@@ -699,6 +700,27 @@ class
     Add_Unilang_Github_Mirror(spec,"libX11","edc7680ed5a03cedb5facf14693823455e12c29c","f57a916500625261239fdbb0d712aaa2aff0c45c562634b2977164f41895cc57");
     spec.patch_files.emplace_back("//bazel/deps/build_files:x11_ks_tables.patch");
     spec.patch_args.emplace_back("-p1");
+    return spec;
+❱
+◀private: static▶ Dependency_Specification ☀Xtrans()❰
+    Dependency_Specification spec;
+    spec.lib_name = "Xtrans";
+    Add_Unilang_Github_Mirror(spec,"xorg-libxtrans","3b5df889f58a99980a35a7b4a18eb4e7d2abeac4","e4a2eea83173ae8f932eda4d440bdde958baddffc74c93eae420fb9f71e17916");
+    //spec.patch_files.emplace_back("//bazel/deps/build_files:x11_ks_tables.patch");
+    //spec.patch_args.emplace_back("-p1");
+    
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtrans.h>\\\\n/' Xtrans.c");
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtransint.h>\\\\n/' Xtrans.c");
+    
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtrans.h>\\\\n/' transport.c");
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtransint.h>\\\\n/' transport.c");
+    
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtrans.h>\\\\n/' Xtranslcl.c");
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtransint.h>\\\\n/' Xtranslcl.c");
+    
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtrans.h>\\\\n/' Xtranssock.c");
+    spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtransint.h>\\\\n/' Xtranssock.c");
+    
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Sdl2()❰
