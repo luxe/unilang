@@ -6,21 +6,28 @@ cc_library(
     name = "x11",
     srcs = glob(
         [
-            "src/**/*.h",
+            #"src/**/*.h",
             "src/**/*.c",
         ],
         exclude = [
             "src/os2Stubs.c",
+            #"src/xlibi18n/lcInit.c",
+            #"src/xlibi18n/lcWrap.c",
+            #"src/Xrm.c",
         ],
     ),
     hdrs = glob([
         "src/config.h",
         "include/X11/*.h",
+        "src/**/*.h",
+        "**/*.h",
     ]),
     copts = [
         "-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\"",
         "-DHAVE_SYS_IOCTL_H",
         "-DXCMSDIR=\\\"FOO\\\"",
+        "-DHAVE_CONFIG_H",
+        "-DUSE_DYNAMIC_LC",
     ],
     includes = [
         ".",
@@ -34,6 +41,7 @@ cc_library(
     linkstatic = True,
     deps = [
         "@Xtrans",
+        "@Xau",
         "@xcb",
         "@xkbcommon",
     ],
