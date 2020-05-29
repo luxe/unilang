@@ -156,6 +156,8 @@ class
     x.specs.emplace_back(xcb());
     x.specs.emplace_back(X11());
     x.specs.emplace_back(Xtrans());
+    x.specs.emplace_back(Xau());
+    
     x.specs.emplace_back(Sdl2());
     x.specs.emplace_back(sdl2_bazel_registry());
     x.specs.emplace_back(Sfml());
@@ -706,9 +708,10 @@ class
     Dependency_Specification spec;
     spec.lib_name = "Xtrans";
     Add_Unilang_Github_Mirror(spec,"xorg-libxtrans","3b5df889f58a99980a35a7b4a18eb4e7d2abeac4","e4a2eea83173ae8f932eda4d440bdde958baddffc74c93eae420fb9f71e17916");
-    //spec.patch_files.emplace_back("//bazel/deps/build_files:x11_ks_tables.patch");
-    //spec.patch_args.emplace_back("-p1");
     
+    //for some reason, this library doesn't include the headers of symbols it needs?
+    //why? does the build system do something weird where they get pasted in somehow?
+    //lets just add these headers to the sources.
     spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtrans.h>\\\\n/' Xtrans.c");
     spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtransint.h>\\\\n/' Xtrans.c");
     
@@ -721,8 +724,23 @@ class
     spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtrans.h>\\\\n/' Xtranssock.c");
     spec.patch_cmds.emplace_back("sed -i '1s/^/#include <Xtransint.h>\\\\n/' Xtranssock.c");
     
+    //other libraries expect everything to be in the following folder after installation.
+    //it seems easier to just move it there and then build it.
+    spec.patch_cmds.emplace_back("mkdir -p X11/Xtrans");
+    spec.patch_cmds.emplace_back("mv *.h X11/Xtrans/");
+    spec.patch_cmds.emplace_back("mv *.c X11/Xtrans/");
+    
     return spec;
 ❱
+◀private: static▶ Dependency_Specification ☀Xau()❰
+    Dependency_Specification spec;
+    spec.lib_name = "Xau";
+    Add_Unilang_Github_Mirror(spec,"xorg-libXau","42e152c6f2d1bd839e77c5e97f3a509d890c3237","f3f7dabba13edcc0bfa20f0feca37b6fe43a0754d49987bf2bdd3829e2756881");
+    spec.patch_files.emplace_back("//bazel/deps/build_files:Xau.patch");
+    spec.patch_args.emplace_back("-p1");
+    return spec;
+❱
+
 ◀private: static▶ Dependency_Specification ☀Sdl2()❰
     Dependency_Specification spec;
     spec.lib_name = "sdl2";

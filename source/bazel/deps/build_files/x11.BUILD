@@ -23,18 +23,18 @@ cc_library(
         "-DXCMSDIR=\\\"FOO\\\"",
     ],
     includes = [
+        ".",
+        "X11",
+        "X11/Xtrans/",
         "include/X11",
         "src",
         "src/xcms",
         "src/xlibi18n",
-        "X11/Xtrans/",
-        "X11",
-        ".",
     ],
     linkstatic = True,
     deps = [
+        "@Xtrans",
         "@xcb",
         "@xkbcommon",
-        "@Xtrans"
     ],
 )
