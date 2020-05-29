@@ -33,8 +33,9 @@ cc_library(
         "-DHAVE_CONFIG_H",
     ],
     includes = [
-        "src",
+        "include",
         "include/X11/Xmu",
+        "src",
     ],
     deps = [
         ":Xmu_headers",
