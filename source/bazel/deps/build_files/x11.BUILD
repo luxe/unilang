@@ -27,10 +27,14 @@ cc_library(
         "src",
         "src/xcms",
         "src/xlibi18n",
+        "X11/Xtrans/",
+        "X11",
+        ".",
     ],
     linkstatic = True,
     deps = [
         "@xcb",
         "@xkbcommon",
+        "@Xtrans"
     ],
 )

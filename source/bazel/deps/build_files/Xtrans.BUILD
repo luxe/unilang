@@ -2,9 +2,10 @@ package(default_visibility = ["//visibility:public"])
 
 hdrs = glob(
     include = [
-        "include/X11/Xtrans/*.h",
-        "include/X11/Xtrans/Xtrans.c",
-        "include/X11/Xtrans/Xtransutil.c"
+        "X11/Xtrans/*.h",
+        "X11/Xtrans/Xtrans.c",
+        "X11/Xtrans/Xtransutil.c",
+        "X11/Xtrans/transport.c",
     ],
     exclude = [
     ],
@@ -24,10 +25,10 @@ cc_library(
 
 srcs = glob(
     include = [
-        "include/X11/Xtrans/*.c",
+        "X11/Xtrans/*.c",
     ],
     exclude = [
-        "include/X11/Xtrans/Xtrans.c"
+        "X11/Xtrans/Xtrans.c"
     ],
 )
 
@@ -38,8 +39,10 @@ cc_library(
     ],
     includes = [
         ".",
+        "X11",
+        "X11/Xtrans",
     ],
-    include_prefix = "include/X11/Xtrans",
+    #include_prefix = "X11/Xtrans",
     deps = [
         ":Xtrans_headers",
     ],

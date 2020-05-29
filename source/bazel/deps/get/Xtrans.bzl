@@ -21,5 +21,8 @@ def xtrans():
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtranslcl.c",
             "sed -i '1s/^/#include <Xtrans.h>\\n/' Xtranssock.c",
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtranssock.c",
+            "mkdir -p X11/Xtrans",
+            "mv *.h X11/Xtrans/",
+            "mv *.c X11/Xtrans/",
         ],
     )
