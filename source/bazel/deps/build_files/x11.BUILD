@@ -40,8 +40,8 @@ cc_library(
     ],
     linkstatic = True,
     deps = [
-        "@Xtrans",
         "@Xau",
+        "@Xtrans",
         "@xcb",
         "@xkbcommon",
     ],
