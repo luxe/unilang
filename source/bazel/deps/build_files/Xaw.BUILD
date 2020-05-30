@@ -38,9 +38,11 @@ cc_library(
     includes = [
         ".",
         "src",
+        "include",
     ],
     deps = [
         ":Xaw_headers",
         "@Xmu",
+        "@xorg_libSM",
     ],
 )

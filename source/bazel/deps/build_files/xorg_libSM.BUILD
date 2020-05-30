@@ -40,5 +40,6 @@ cc_library(
     ],
     deps = [
         ":Xorg_libSM_headers",
+        "@xorg_libICE",
     ],
 )
