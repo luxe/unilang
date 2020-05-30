@@ -40,5 +40,6 @@ cc_library(
     ],
     deps = [
         ":Xorg_libICE_headers",
+        "@Xtrans",
     ],
 )

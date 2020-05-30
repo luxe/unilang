@@ -4,6 +4,7 @@ hdrs = glob(
     include = [
         "X11/Xtrans/*.h",
         "X11/Xtrans/Xtrans.c",
+        "X11/Xtrans/Xtranssock.c",
         "X11/Xtrans/Xtransutil.c",
         "X11/Xtrans/transport.c",
     ],
