@@ -10,7 +10,7 @@ hdrs = glob(
 )
 
 cc_library(
-    name = "Xorg_libSM_headers",
+    name = "Xorg_libICE_headers",
     hdrs = hdrs,
     copts = [
     ],
@@ -27,7 +27,7 @@ srcs = glob(
 )
 
 cc_library(
-    name = "xorg_libSM",
+    name = "xorg_libICE",
     srcs = srcs,
     copts = [
         "-DHAVE_CONFIG_H",
@@ -35,10 +35,10 @@ cc_library(
     includes = [
         ".",
         "include",
-        "include/X11/SM",
+        "include/X11/ICE",
         "src",
     ],
     deps = [
-        ":Xorg_libSM_headers",
+        ":Xorg_libICE_headers",
     ],
 )
