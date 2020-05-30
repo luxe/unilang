@@ -37,8 +37,8 @@ cc_library(
     ],
     includes = [
         ".",
-        "src",
         "include",
+        "src",
     ],
     deps = [
         ":Xaw_headers",
