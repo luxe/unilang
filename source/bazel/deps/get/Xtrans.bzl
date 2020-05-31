@@ -14,8 +14,8 @@ def xtrans():
         ],
         patch_cmds = [
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtrans.c",
-            "sed -i '1s/^/#include <Xtrans.h>\\n/' transport.c",
-            "sed -i '1s/^/#include <Xtransint.h>\\n/' transport.c",
+            #"sed -i '1s/^/#include <Xtrans.h>\\n/' transport.c",
+            #"sed -i '1s/^/#include <Xtransint.h>\\n/' transport.c",
             "sed -i '1s/^/#include <Xtrans.h>\\n/' Xtranslcl.c",
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtranslcl.c",
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtranssock.c",
