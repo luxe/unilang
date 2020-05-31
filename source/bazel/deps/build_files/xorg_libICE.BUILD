@@ -23,6 +23,8 @@ srcs = glob(
         "src/**/*.c",
     ],
     exclude = [
+        #"src/icetrans.c",
+        #"src/misc.c",
     ],
 )
 
