@@ -12,4 +12,11 @@ def gmp():
         urls = [
             "https://github.com/Unilang/GMP/archive/cc09e59afe9a23de9e7d0ef10598a395d7e8c850.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:gmp_gen.patch",
+            "//bazel/deps/build_files:gmp_mparam.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
