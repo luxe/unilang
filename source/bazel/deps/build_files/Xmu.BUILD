@@ -39,5 +39,6 @@ cc_library(
     ],
     deps = [
         ":Xmu_headers",
+        "@xorg_libXt",
     ],
 )
