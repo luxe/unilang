@@ -36,9 +36,9 @@ cc_library(
     ],
     includes = [
         ".",
+        "X11",
         "include",
         "include/X11",
-        "X11",
         "src",
     ],
     deps = [

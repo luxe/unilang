@@ -7,13 +7,14 @@ def x11():
     http_archive(
         name = "x11",
         build_file = "//bazel/deps/build_files:x11.BUILD",
-        sha256 = "f57a916500625261239fdbb0d712aaa2aff0c45c562634b2977164f41895cc57",
-        strip_prefix = "libX11-edc7680ed5a03cedb5facf14693823455e12c29c",
+        sha256 = "b422eaeaf9c62d8a8fd344d29e21a31dc7f6b50d0005f0d25daf6006230c41ad",
+        strip_prefix = "xorg-libX11-b8766a438461e20b5c6f7a6111b703d4cb71501f",
         urls = [
-            "https://github.com/Unilang/libX11/archive/edc7680ed5a03cedb5facf14693823455e12c29c.tar.gz",
+            "https://github.com/Unilang/xorg-libX11/archive/b8766a438461e20b5c6f7a6111b703d4cb71501f.tar.gz",
         ],
         patches = [
             "//bazel/deps/build_files:x11_ks_tables.patch",
+            "//bazel/deps/build_files:x11_config.patch",
         ],
         patch_args = [
             "-p1",

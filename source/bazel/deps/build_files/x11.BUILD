@@ -8,18 +8,23 @@ cc_library(
         [
             #"src/**/*.h",
             "src/**/*.c",
+            "modules/**/*.c",
         ],
         exclude = [
             "src/os2Stubs.c",
             #"src/xlibi18n/lcInit.c",
             #"src/xlibi18n/lcWrap.c",
             #"src/Xrm.c",
+            "src/KeyBind.c",
+            "src/Font.c",
+            #"src/xkb/XKBBind.c",
         ],
     ),
     hdrs = glob([
         "src/config.h",
         "include/X11/*.h",
         "src/**/*.h",
+        "include/**/*.h",
         "**/*.h",
     ]),
     copts = [
@@ -27,7 +32,7 @@ cc_library(
         "-DHAVE_SYS_IOCTL_H",
         "-DXCMSDIR=\\\"FOO\\\"",
         "-DHAVE_CONFIG_H",
-        "-DUSE_DYNAMIC_LC",
+        #"-DUSE_DYNAMIC_LC",
     ],
     includes = [
         ".",
@@ -41,8 +46,10 @@ cc_library(
     linkstatic = True,
     deps = [
         "@Xau",
+        "@Xaw",
         "@Xtrans",
         "@xcb",
         "@xkbcommon",
+        "@xorg_libXt",
     ],
 )
