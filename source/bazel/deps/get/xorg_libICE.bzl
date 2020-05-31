@@ -18,6 +18,4 @@ def xorgLibICE():
         patch_args = [
             "-p1",
         ],
-        patch_cmds = [
-        ],
     )
