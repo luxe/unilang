@@ -18,4 +18,7 @@ def xorgLibSM():
         patch_args = [
             "-p1",
         ],
+        patch_cmds = [
+            "mv include/X11 X11",
+        ],
     )

@@ -43,6 +43,7 @@ cc_library(
     deps = [
         ":Xaw_headers",
         "@Xmu",
+        "@libXpm",
         "@xorg_libSM",
     ],
 )

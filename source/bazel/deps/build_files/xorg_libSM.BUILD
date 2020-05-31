@@ -2,7 +2,8 @@ package(default_visibility = ["//visibility:public"])
 
 hdrs = glob(
     include = [
-        "include/**/*.h",
+        "X11/**/*.h",
+        "include/X11/**/*.h",
         "src/**/*.h",
     ],
     exclude = [
