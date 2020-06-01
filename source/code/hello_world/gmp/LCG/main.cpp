@@ -1,7 +1,4 @@
 /**
-   @file      gmpLCG.c
-   @author    Mitch Richling <https://www.mitchr.me/>
-   @Copyright Copyright 2005 by Mitch Richling.  All rights reserved.
    @brief     General implementation of an LCG with GMP.@EOL
    @Keywords  none
    @Std       C89
