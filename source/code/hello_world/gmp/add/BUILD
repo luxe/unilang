@@ -6,5 +6,5 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@gmp"],
+    deps = ["@gmp//:gmp"],
 )
