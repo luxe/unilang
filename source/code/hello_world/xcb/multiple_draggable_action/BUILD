@@ -7,15 +7,10 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    #copts = ["-L/usr/lib/x86_64-linux-gnu"],
-    linkopts = ["-lxcb"],
-    deps = [],
+    deps = ["@xcb","@Xau"],
 )
 
 cc_binary(
     name = "main2",
     srcs = ["main2.cpp"],
-    #copts = ["-L/usr/lib/x86_64-linux-gnu"],
-    linkopts = ["-lxcb"],
-    deps = [],
-)
+    deps = ["@xcb","@Xau"],)

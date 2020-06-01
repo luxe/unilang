@@ -7,7 +7,5 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    #copts = ["-L/usr/lib/x86_64-linux-gnu"],
-    #linkopts = ["-lxcb"],
     deps = ["@xcb","@Xau"],
 )

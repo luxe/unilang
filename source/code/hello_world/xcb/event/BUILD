@@ -4,18 +4,14 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-#cc_binary(
+# cc_binary(
 #    name = "bitmap",
 #    srcs = ["bitmap.cpp"],
-#    #copts = ["-L/usr/lib/x86_64-linux-gnu"],
-#    linkopts = ["-lxcb"],
-#    deps = [],
-#)
+#    deps = ["@xcb","@Xau"],
+# )
 
 cc_binary(
     name = "graphics",
     srcs = ["graphics.cpp"],
-    #copts = ["-L/usr/lib/x86_64-linux-gnu"],
-    linkopts = ["-lxcb"],
-    deps = [],
+    deps = ["@xcb","@Xau"],
 )
