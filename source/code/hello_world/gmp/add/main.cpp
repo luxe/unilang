@@ -1,5 +1,7 @@
+//#include <gmp.h>
 #include <gmpxx.h>
 #include <iostream>
+#include <sstream>
 
 int main (void)
 {
@@ -8,7 +10,7 @@ int main (void)
   a = 1234;
   b = "-5678";
   c = a+b;
-  std::cout << "sum is " << c << "\n";
+  std::cout << "sum is " << c.get_str() << "\n";
 
   return 0;
 }
