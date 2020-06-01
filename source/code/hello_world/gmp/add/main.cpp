@@ -1,4 +1,3 @@
-//#include <gmp.h>
 #include <gmpxx.h>
 #include <iostream>
 #include <sstream>
