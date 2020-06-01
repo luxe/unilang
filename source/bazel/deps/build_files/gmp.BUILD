@@ -328,6 +328,7 @@ cc_library(
         "src",
         "mpn",
         "mini-gmp",
+        ".",
     ],
     deps = [
         ":gmp_headers",
