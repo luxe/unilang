@@ -319,6 +319,9 @@ cc_library(
         "-DOPERATION_xnor_n",
         "-DOPERATION_xor_n",
         "-DOPERATION_zero",
+        "-D__GMP_WITHIN_GMP",
+        "-D__GMP_WITHIN_GMPXX ",
+        "--std=c99",
     ],
     includes = [
         "include",
