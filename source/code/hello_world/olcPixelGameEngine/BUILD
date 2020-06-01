@@ -7,13 +7,10 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    linkopts = [
-        "-lX11",
-        "-lXext",
-    ],
     deps = [
         "@libpng",
         "@olcPixelGameEngine//:lib",
         "@opengl",
+        "@x11",
     ],
 )

@@ -6,9 +6,5 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    linkopts = [
-        "-lgmpxx",
-        "-lgmp",
-    ],
-    #deps = ["@bazelify_gmp//:gmp"],
+    deps = ["@gmp"],
 )

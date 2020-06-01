@@ -23,6 +23,7 @@ cc_library(
 srcs = glob(
     include = [
         "src/**/*.c",
+        "util/makestrs.c",
     ],
     exclude = [
     ],
