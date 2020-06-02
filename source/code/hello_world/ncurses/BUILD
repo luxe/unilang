@@ -7,13 +7,11 @@ package(
 cc_binary(
     name = "key_press",
     srcs = ["key_press.cpp"],
-    linkopts = ["-lncurses"],
-    deps = [],
+    deps = ["@ncurses"],
 )
 
 cc_binary(
     name = "arrow_keys",
     srcs = ["arrow_keys.cpp"],
-    linkopts = ["-lncurses"],
-    deps = [],
+    deps = ["@ncurses"],
 )
