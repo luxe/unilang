@@ -2,7 +2,7 @@
 // This should display a white screen for 2 seconds
 // compile with: clang++ main.cpp -o hello_sdl2 -lSDL2
 // run with: ./hello_sdl2
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 
 #define SCREEN_WIDTH 640

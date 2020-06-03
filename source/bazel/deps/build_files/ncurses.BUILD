@@ -48,29 +48,29 @@ srcs = glob(
     exclude = [
         "include/capdefaults.c",
         "ncurses/win32con/**/*.c",
-        "ncurses/base/lib_slkrefr.c",
+        #"ncurses/base/lib_slkrefr.c",
         "ncurses/widechar/**/*.c",
-        
         "ncurses/base/lib_screen.c",
         "ncurses/base/sigaction.c",
-        
+        #"ncurses/tty/tty_update.c",
+        #"ncurses/tinfo/tinfo_driver.c",
+
         #main programs
         "c++/cursesmain.cc",
         "ncurses/tinfo/make_keys.c",
         "ncurses/tinfo/make_hash.c",
-        "ncurses/tinfo/captoinfo.c",
+        #"ncurses/tinfo/captoinfo.c",
         "ncurses/link_test.c",
-        "ncurses/tty/lib_mvcur.c",
-        "ncurses/tty/hardscroll.c",
-        "ncurses/tty/hashmap.c",
+        #"ncurses/tty/lib_mvcur.c",
+        #"ncurses/tty/hardscroll.c",
         "ncurses/report_offsets.c",
     ],
 )
 
 cc_library(
     name = "ncurses",
-    hdrs = hdrs,
     srcs = srcs,
+    hdrs = hdrs,
     copts = ncurses_copts,
     includes = [
         ".",

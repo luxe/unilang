@@ -102,12 +102,13 @@ sdl_srcs = glob(
 )
 
 cc_library(
-    name = "SDL2",
+    name = "sdl2",
     srcs = sdl_srcs,
     copts = [
         "-DHAVE_CONFIG_H",
     ],
     includes = [
+        ".",
         "include",
         "src",
         "src/events",
@@ -122,5 +123,6 @@ cc_library(
         "@glib",
         "@ibus",
         "@libevent",
+        "@x11",
     ],
 )

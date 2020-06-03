@@ -1,4 +1,4 @@
-#include <ncurses.h>
+#include <curses.h>
 #include <unistd.h>  /* only for sleep() */
 
 int kbhit(void)
