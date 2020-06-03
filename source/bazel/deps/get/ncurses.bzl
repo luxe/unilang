@@ -18,4 +18,7 @@ def ncurses():
         patch_args = [
             "-p1",
         ],
+        patch_cmds = [
+            "sed -i '1s/^/#include <wchar.h>\\n/' ncurses/curses.priv.h",
+        ],
     )

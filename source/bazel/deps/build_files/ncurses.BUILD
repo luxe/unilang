@@ -10,6 +10,11 @@ ncurses_copts = [
     "-D_DEFAULT_SOURCE",
     "-D_XOPEN_SOURCE=600",
     "-DNCURSES_WIDECHAR",
+    #"-DUSE_WIDEC_SUPPORT",
+    "-DHAVE_MBTOWC",
+    "-DHAVE_MBLEN",
+    "-DCHTYPE=char",
+    "-DUSE_TERM_DRIVER",
     "-Wno-everything",
 ]
 
@@ -23,6 +28,8 @@ hdrs = glob(
         "c++/**/*.h",
         "ncurses/**/*.h",
         "include/capdefaults.c",
+        "ncurses/names.c",
+        "ncurses/tinfo/doalloc.c",
     ],
     exclude = [
     ],
@@ -41,6 +48,22 @@ srcs = glob(
     exclude = [
         "include/capdefaults.c",
         "ncurses/win32con/**/*.c",
+        "ncurses/base/lib_slkrefr.c",
+        "ncurses/widechar/**/*.c",
+        
+        "ncurses/base/lib_screen.c",
+        "ncurses/base/sigaction.c",
+        
+        #main programs
+        "c++/cursesmain.cc",
+        "ncurses/tinfo/make_keys.c",
+        "ncurses/tinfo/make_hash.c",
+        "ncurses/tinfo/captoinfo.c",
+        "ncurses/link_test.c",
+        "ncurses/tty/lib_mvcur.c",
+        "ncurses/tty/hardscroll.c",
+        "ncurses/tty/hashmap.c",
+        "ncurses/report_offsets.c",
     ],
 )
 
