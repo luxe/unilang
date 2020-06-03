@@ -14,7 +14,6 @@ def gmp():
         ],
         patches = [
             "//bazel/deps/build_files:gmp_gen.patch",
-            #"//bazel/deps/build_files:gmp_mparam.patch",
         ],
         patch_args = [
             "-p1",

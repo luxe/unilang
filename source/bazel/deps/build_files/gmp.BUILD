@@ -38,7 +38,6 @@ cc_library(
     ],
 )
 
-
 srcs = glob(
     include = [
         #"bootstrap.c",
@@ -85,7 +84,7 @@ srcs = glob(
         #"mpn/generic/sec_div.c",
         #"mpn/sec_div_r.c",
         #"mpn/sec_pi1_div_r.c",
-        
+
         # "mpn/binvert.c",
         # "mpn/add.c",
         # "mpn/add_1.c",
@@ -102,7 +101,7 @@ srcs = glob(
         # "mpn/comb_tables.c",
         # "mpn/dcpi1_bdiv_q.c",
         # "mpn/dcpi1_bdiv_qr.c",
-        
+
         #"mpn/sec_div_qr.c",
         #"mpn/sec_pi1_div_qr.c",
         #"mpn/sec_add_1.c",
@@ -118,7 +117,6 @@ cc_library(
     copts = [
         "-DHAVE_CONFIG_H",
         "-I$(GENDIR)",
-        
         "-DOPERATION_add",
         "-DOPERATION_add_1",
         "-DOPERATION_addaddmul_1msb0",
@@ -324,11 +322,11 @@ cc_library(
         "-D__GMP_WITHIN_GMPXX ",
     ],
     includes = [
-        "include",
-        "src",
-        "mpn",
-        "mini-gmp",
         ".",
+        "include",
+        "mini-gmp",
+        "mpn",
+        "src",
     ],
     deps = [
         ":gmp_headers",

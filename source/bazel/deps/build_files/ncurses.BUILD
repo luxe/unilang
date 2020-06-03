@@ -1,12 +1,14 @@
 package(default_visibility = ["//visibility:public"])
+
 licenses(["notice"])
 
 ncurses_copts = [
     "-Iexternal/ncurses",
     "-Iexternal/ncurses/include",
     "-Iexternal/ncurses/ncurses",
+    #"-DUSE_TERMLIB",
     "-D_DEFAULT_SOURCE",
-    "-DUSE_TERMLIB",
+    "-D_XOPEN_SOURCE=600",
     "-Wno-everything",
 ]
 
@@ -34,6 +36,7 @@ srcs = glob(
         "ncurses/**/*.cc",
     ],
     exclude = [
+        "include/capdefaults.c",
     ],
 )
 
@@ -44,6 +47,7 @@ cc_library(
     copts = ncurses_copts,
     includes = [
         ".",
+        "include",
     ],
     deps = [
     ],

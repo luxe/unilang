@@ -7,5 +7,8 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["@xcb","@Xau"],
+    deps = [
+        "@Xau",
+        "@xcb",
+    ],
 )

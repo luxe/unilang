@@ -13,5 +13,8 @@ package(
 cc_binary(
     name = "graphics",
     srcs = ["graphics.cpp"],
-    deps = ["@xcb","@Xau"],
+    deps = [
+        "@Xau",
+        "@xcb",
+    ],
 )

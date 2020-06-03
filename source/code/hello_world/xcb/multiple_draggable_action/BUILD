@@ -7,10 +7,17 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["@xcb","@Xau"],
+    deps = [
+        "@Xau",
+        "@xcb",
+    ],
 )
 
 cc_binary(
     name = "main2",
     srcs = ["main2.cpp"],
-    deps = ["@xcb","@Xau"],)
+    deps = [
+        "@Xau",
+        "@xcb",
+    ],
+)
