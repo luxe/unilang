@@ -9,6 +9,7 @@ ncurses_copts = [
     #"-DUSE_TERMLIB",
     "-D_DEFAULT_SOURCE",
     "-D_XOPEN_SOURCE=600",
+    "-DNCURSES_WIDECHAR",
     "-Wno-everything",
 ]
 
@@ -21,6 +22,7 @@ hdrs = glob(
         "form/**/*.h",
         "c++/**/*.h",
         "ncurses/**/*.h",
+        "include/capdefaults.c",
     ],
     exclude = [
     ],
@@ -34,20 +36,23 @@ srcs = glob(
         "form/**/*.c",
         "c++/**/*.c",
         "ncurses/**/*.cc",
+        "ncurses/**/*.c",
     ],
     exclude = [
         "include/capdefaults.c",
+        "ncurses/win32con/**/*.c",
     ],
 )
 
 cc_library(
     name = "ncurses",
-    srcs = srcs,
     hdrs = hdrs,
+    srcs = srcs,
     copts = ncurses_copts,
     includes = [
         ".",
         "include",
+        "include/ncurses",
     ],
     deps = [
     ],
