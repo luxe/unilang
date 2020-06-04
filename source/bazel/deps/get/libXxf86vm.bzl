@@ -12,4 +12,10 @@ def libXxf86vm():
         urls = [
             "https://github.com/Unilang/libXxf86vm/archive/92d18649e92566ccc3abeba244adabda249cce1b.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:libXxf86vm_config.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
