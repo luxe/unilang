@@ -44,3 +44,17 @@ cc_library(
     deps = [
     ],
 )
+
+# some libraries expect the event.h header to be under sys/
+# we will build a standalone library to support this
+cc_library(
+    name = "sys_event",
+    hdrs = ["include/event.h"],
+    copts = [],
+    include_prefix = "sys",
+    includes = [
+        ".",
+        "include/",
+    ],
+    strip_include_prefix = "include",
+)

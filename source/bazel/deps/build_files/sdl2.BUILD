@@ -122,7 +122,10 @@ cc_library(
         "@dbus",
         "@glib",
         "@ibus",
+        "@libXxf86vm",
         "@libevent",
+        "@libevent//:sys_event",
         "@x11",
+        "@xorg_xorgproto",
     ],
 )

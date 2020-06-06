@@ -26,7 +26,9 @@ cc_library(
     ],
     includes = [
         ".",
+        "X11/extensions",
         "include",
+        "include/X11/extensions",
         "src",
     ],
     deps = [
