@@ -127,5 +127,6 @@ cc_library(
         "@libevent//:sys_event",
         "@x11",
         "@xorg_xorgproto",
+        "@sndio",
     ],
 )
