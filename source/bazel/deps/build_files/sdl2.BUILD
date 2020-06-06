@@ -42,6 +42,7 @@ cc_library(
 sdl_hdrs = glob(
     include = [
         "include/**/*.h",
+        "src/**/*.h",
     ],
     exclude = [
     ],
@@ -98,6 +99,19 @@ sdl_srcs = glob(
         #needs ibus and glib system headers
         #"src/core/linux/SDL_ibus.c",
         #"src/core/linux/SDL_ime.c",
+        
+        #"src/video/wayland/SDL_waylanddatamanager.c",
+        #"src/video/wayland/SDL_waylandmouse.c",
+        #"src/video/wayland/SDL_waylandvulkan.c",
+        #"src/video/wayland/SDL_waylandclipboard.c",
+        #"src/video/wayland/SDL_waylandevents.c",
+        #"src/video/wayland/SDL_waylandvideo.c",
+        #"src/video/wayland/SDL_waylanddyn.c",
+        #"src/video/wayland/SDL_waylandopengles.c",
+        #"src/video/wayland/SDL_waylandtouch.c",
+        #"src/video/wayland/SDL_waylandwindow.c",
+        
+        #"src/video/x11/SDL_x11dyn.c",
     ],
 )
 
@@ -105,7 +119,9 @@ cc_library(
     name = "sdl2",
     srcs = sdl_srcs,
     copts = [
-        "-DHAVE_CONFIG_H",
+
+    "-DHAVE_CONFIG_H",
+        "-DUSING_GENERATED_CONFIG_H",
     ],
     includes = [
         ".",
@@ -115,6 +131,8 @@ cc_library(
         "gen",
         #"/usr/include",
         #"/usr/include/glib-2.0",
+        "src/video/wayland",
+        "src/video/x11",
     ],
     deps = [
         ":SDL2_gen_files",
@@ -128,5 +146,6 @@ cc_library(
         "@x11",
         "@xorg_xorgproto",
         "@sndio",
+        "@mesa",
     ],
 )

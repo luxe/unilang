@@ -1,4 +1,4 @@
-
+package(default_visibility = ["//visibility:public"])
 
 hdrs = glob(
     include = [
@@ -17,19 +17,12 @@ srcs = glob(
         "src/mesa/x86-64/**/*.c",
     ],
     exclude = [
-        "mesa/src/mesa/drivers/dri/nouveau/nouveau_scratch.c",
-        "mesa/src/mesa/drivers/common/meta_blit.c",
-        "mesa/src/mesa/drivers/common/driverfuncs.c",
-        "mesa/src/mesa/drivers/dri/common/megadriver_stub.c",
-        "mesa/src/mesa/drivers/common/meta_generate_mipmap.c",
-        "mesa/src/mesa/drivers/dri/i915/i915_vtbl.c",
-        "mesa/src/mesa/drivers/common/meta_blit.c",
-        "mesa/src/mesa/drivers/dri/common/megadriver_stub.c",
-        "mesa/src/mesa/drivers/common/meta_generate_mipmap.c",
-        "mesa/src/mesa/drivers/dri/nouveau/nouveau_scratch.c",
-        "mesa/src/mesa/main/objectlabel.c",
-        "mesa/src/mesa/drivers/dri/common/megadriver_stub.c",
-        "mesa/src/mesa/main/streaming-load-memcpy.c",
+        "src/mesa/main/objectlabel.c",
+        
+        #that is compiled without support for 'sse4.1'
+        "src/mesa/main/streaming-load-memcpy.c",
+        "src/mesa/main/sse_minmax.c",
+        "src/mesa/main/sse_minmax.c",
     ],
 )
 
@@ -39,7 +32,12 @@ cc_library(
     srcs = srcs,
     copts = ["-DHAVE_PTHREAD",
     "-DHAVE_TIMESPEC_GET",
-    "-DHAVE_ENDIAN_H",],
+    "-DHAVE_ENDIAN_H",
+    "-DPACKAGE_BUGREPORT=\\\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\\\"",
+    "-DPACKAGE_VERSION=\\\"20.2.0-devel\\\"",
+    '-DUSE_SSE41',
+    
+    ],
     includes = [
         "include",
         "src",
@@ -51,6 +49,7 @@ cc_library(
         "src/mesa/main",
         "build/src",
         "build/src/mesa/main",
+        "build/src/compiler/nir",
     ],
 )
 
@@ -121,12 +120,9 @@ cc_library(
 # -DMAJOR_IN_SYSMACROS
 # -DNAME=LLVM
 # -DNDEBUG
-# -DPACKAGE_BUGREPORT="https://gitlab.freedesktop.org/mesa/mesa/-/issues"
-# -DPACKAGE_VERSION="20.2.0-devel"
 # -D__STDC_CONSTANT_MACROS
 # -D__STDC_FORMAT_MACROS
 # -D__STDC_LIMIT_MACROS
 # -DUSE_ELF_TLS
 # -DUSE_GCC_ATOMIC_BUILTINS
-# -DUSE_SSE41
 # -DUSE_X86_64_ASM

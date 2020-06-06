@@ -168,5 +168,6 @@ cc_library(
     ],
     deps = [
         "@libevent",
+        "@libevent//:sys_event",
     ],
 )

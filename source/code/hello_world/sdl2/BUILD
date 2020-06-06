@@ -13,3 +13,9 @@ cpp_main(
     name = "arrows",
     deps = ["@sdl2"],
 )
+
+cpp_main(
+    name = "everything",
+    deps = ["@sdl2"],
+)
+
