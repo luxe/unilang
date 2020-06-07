@@ -40,11 +40,9 @@ cc_library(
         "freeglut/freeglut/include",
         "freeglut/freeglut/include/GL",
         "freeglut/freeglut/src",
-        "include",
-        "freeglut/freeglut/src",
         "freeglut/freeglut/src/util",
+        "include",
         "src",
-        
     ],
     #strip_include_prefix = "freeglut/freeglut",
     deps = [

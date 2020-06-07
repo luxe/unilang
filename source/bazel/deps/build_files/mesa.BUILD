@@ -28,7 +28,6 @@ srcs = glob(
         "src/mesa/main/streaming-load-memcpy.c",
         "src/mesa/main/sse_minmax.c",
         "src/mesa/main/sse_minmax.c",
-        
         "src/glx/driwindows_glx.c",
         "src/glx/g_glxglvnddispatchfuncs.c",
         "src/glx/glxext.c",
@@ -51,26 +50,26 @@ cc_library(
     includes = [
         "build/src",
         "build/src/compiler/nir",
+        "build/src/mapi/glapi/gen",
         "build/src/mesa",
         "build/src/mesa/main",
         "include",
+        "include/GL",
         "mesa/include/drm-uapi",
+        "mesa/src/mapi/glapi",
         "src",
         "src/gallium/include",
-        "src/mapi",
-        "src/mesa",
-        "src/mesa/main",
-        "build/src/mapi/glapi/gen",
         "src/glx",
         "src/loader",
-        "mesa/src/mapi/glapi",
+        "src/mapi",
         "src/mapi/glapi",
-        "include/GL"
+        "src/mesa",
+        "src/mesa/main",
     ],
     deps = [
-    "@xorg_xorgproto",
-    "@xcb",
-    ]
+        "@xcb",
+        "@xorg_xorgproto",
+    ],
 )
 
 # Dumped from meson build
