@@ -69,6 +69,7 @@ cc_library(
     deps = [
         "@xcb",
         "@xorg_xorgproto",
+        "@mesa_glu",
     ],
 )
 
