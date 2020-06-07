@@ -16,6 +16,7 @@ srcs = glob(
         "src/mesa/math/**/*.c",
         "src/mesa/x86-64/**/*.c",
         "src/glx/*.c",
+        "src/mapi/glapi/gen/*.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",
@@ -24,6 +25,11 @@ srcs = glob(
         "src/mesa/main/streaming-load-memcpy.c",
         "src/mesa/main/sse_minmax.c",
         "src/mesa/main/sse_minmax.c",
+        
+        "src/glx/driwindows_glx.c",
+        "src/glx/g_glxglvnddispatchfuncs.c",
+        "src/glx/glxext.c",
+        "src/glx/glxglvnd.c",
     ],
 )
 
@@ -54,6 +60,8 @@ cc_library(
         "build/src/mapi/glapi/gen",
         "src/glx",
         "src/loader",
+        "mesa/src/mapi/glapi",
+        "src/mapi/glapi",
     ],
     deps = [
     "@xorg_xorgproto",
