@@ -28,8 +28,11 @@ int main(int argc, char* args[]) {
     fprintf(stderr, "could not create window: %s\n", SDL_GetError());
     return 1;
   }
-  // screenSurface = SDL_GetWindowSurface(window);
-  // SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+   screenSurface = SDL_GetWindowSurface(window);
+   if (screenSurface == NULL) {
+    fprintf(stderr, "could not create surface: %s\n", SDL_GetError());
+   }
+  SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
   SDL_UpdateWindowSurface(window);
   SDL_Delay(2000);
   SDL_DestroyWindow(window);
