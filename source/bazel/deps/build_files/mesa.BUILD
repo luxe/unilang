@@ -15,10 +15,11 @@ srcs = glob(
         "src/mesa/main/**/*.c",
         "src/mesa/math/**/*.c",
         "src/mesa/x86-64/**/*.c",
+        "src/glx/*.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",
-        
+
         #that is compiled without support for 'sse4.1'
         "src/mesa/main/streaming-load-memcpy.c",
         "src/mesa/main/sse_minmax.c",
@@ -28,36 +29,37 @@ srcs = glob(
 
 cc_library(
     name = "mesa",
-    hdrs = hdrs,
     srcs = srcs,
-    copts = ["-DHAVE_PTHREAD",
-    "-DHAVE_TIMESPEC_GET",
-    "-DHAVE_ENDIAN_H",
-    "-DPACKAGE_BUGREPORT=\\\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\\\"",
-    "-DPACKAGE_VERSION=\\\"20.2.0-devel\\\"",
-    '-DUSE_SSE41',
-    
+    hdrs = hdrs,
+    copts = [
+        "-DHAVE_PTHREAD",
+        "-DHAVE_TIMESPEC_GET",
+        "-DHAVE_ENDIAN_H",
+        "-DPACKAGE_BUGREPORT=\\\"https://gitlab.freedesktop.org/mesa/mesa/-/issues\\\"",
+        "-DPACKAGE_VERSION=\\\"20.2.0-devel\\\"",
+        "-DUSE_SSE41",
     ],
     includes = [
-        "include",
-        "src",
-        "src/mesa",
-        "src/mapi",
-        "mesa/include/drm-uapi",
-        "build/src/mesa",
-        "src/gallium/include",
-        "src/mesa/main",
         "build/src",
-        "build/src/mesa/main",
         "build/src/compiler/nir",
+        "build/src/mesa",
+        "build/src/mesa/main",
+        "include",
+        "mesa/include/drm-uapi",
+        "src",
+        "src/gallium/include",
+        "src/mapi",
+        "src/mesa",
+        "src/mesa/main",
+        "build/src/mapi/glapi/gen",
+        "src/glx",
+        "src/loader",
     ],
+    deps = [
+    "@xorg_xorgproto",
+    "@xcb",
+    ]
 )
-
-
-
-
-
-
 
 # Dumped from meson build
 # -DARCHS=i386-linux-gnu;x86_64-linux-gnu

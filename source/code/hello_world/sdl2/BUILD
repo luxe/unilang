@@ -18,4 +18,3 @@ cpp_main(
     name = "everything",
     deps = ["@sdl2"],
 )
-

@@ -32,6 +32,6 @@ cc_library(
         "src",
     ],
     deps = [
-        "@xorg_xorgproto"
+        "@xorg_xorgproto",
     ],
 )

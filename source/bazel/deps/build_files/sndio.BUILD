@@ -1,7 +1,5 @@
 package(default_visibility = ["//visibility:public"])
 
-
-
 #glob the files we care about
 hdrs = glob(
     include = [
@@ -36,19 +34,19 @@ cc_library(
     srcs = srcs,
     hdrs = hdrs,
     copts = [
-        '-D_GNU_SOURCE',
-        '-DHAVE_SOCK_CLOEXEC',
-        '-DHAVE_CLOCK_GETTIME',
-        '-DUSE_ALSA',
+        "-D_GNU_SOURCE",
+        "-DHAVE_SOCK_CLOEXEC",
+        "-DHAVE_CLOCK_GETTIME",
+        "-DUSE_ALSA",
         '-DSNDIO_USER=\\\"sndiod\\\"',
-        '-DADATA_BITS=16',
+        "-DADATA_BITS=16",
     ],
     includes = [
         ".",
-        "bsd-compat",
         "aucat",
+        "bsd-compat",
+        "libsndio",
         "sndiod",
-        "libsndio"
     ],
     deps = [
     ],
