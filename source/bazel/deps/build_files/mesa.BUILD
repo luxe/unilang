@@ -17,6 +17,8 @@ srcs = glob(
         "src/mesa/x86-64/**/*.c",
         "src/glx/*.c",
         "src/mapi/glapi/gen/*.c",
+        "build/src/mapi/glapi/*.c",
+        "build/src/mapi/glapi/gen/*.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",
