@@ -19,6 +19,7 @@ srcs = glob(
         "src/mapi/glapi/gen/*.c",
         "build/src/mapi/glapi/*.c",
         "build/src/mapi/glapi/gen/*.c",
+        #"src/mesa/drivers/x11/*.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",
@@ -64,6 +65,7 @@ cc_library(
         "src/loader",
         "mesa/src/mapi/glapi",
         "src/mapi/glapi",
+        "include/GL"
     ],
     deps = [
     "@xorg_xorgproto",

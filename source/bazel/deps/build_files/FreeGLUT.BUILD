@@ -5,6 +5,7 @@ hdrs = glob(
     include = [
         "freeglut/freeglut/include/**/*.h",
         "freeglut/freeglut/src/*.h",
+        "freeglut/freeglut/src/util/*.h",
         "freeglut/freeglut/src/x11/*.h",
         "freeglut/freeglut/src/egl/*.h",
     ],
@@ -16,12 +17,13 @@ srcs = glob(
     include = [
         "freeglut/freeglut/src/*.c",
         "freeglut/freeglut/src/x11/*.c",
-        "freeglut/freeglut/src/egl/*.c",
+        #"freeglut/freeglut/src/egl/*.c",
     ],
     exclude = [
         "freeglut/freeglut/src/fg_font.c",
         "freeglut/freeglut/src/fg_menu.c",
         "freeglut/freeglut/src/x11/fg_window_x11_glx.c",
+        "freeglut/freeglut/src/x11/fg_state_x11_glx.c",
     ],
 )
 
@@ -39,6 +41,10 @@ cc_library(
         "freeglut/freeglut/include/GL",
         "freeglut/freeglut/src",
         "include",
+        "freeglut/freeglut/src",
+        "freeglut/freeglut/src/util",
+        "src",
+        
     ],
     #strip_include_prefix = "freeglut/freeglut",
     deps = [
