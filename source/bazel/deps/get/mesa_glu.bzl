@@ -12,4 +12,8 @@ def mesaGlu():
         urls = [
             "https://github.com/Unilang/mesa-glu/archive/dd4e18eb7557a31a3c8318d6612801329877c745.tar.gz",
         ],
+        patch_cmds = [
+            "sed -i 's/register/ /g' src/libnurbs/internals/varray.cc",
+            "sed -i '1s/^/#include <limits.h>\\n/' src/libtess/priorityq-heap.c",
+        ],
     )

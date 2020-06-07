@@ -17,6 +17,7 @@ srcs = glob(
         "src/**/*.cc",
     ],
     exclude = [
+        "src/libtess/priorityq-heap.c",
     ],
 )
 
