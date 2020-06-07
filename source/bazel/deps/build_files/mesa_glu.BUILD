@@ -5,6 +5,7 @@ hdrs = glob(
     include = [
         "include/**/*.h",
         "src/**/*.h",
+        "src/libtess/priorityq-heap.c",
     ],
     exclude = [
     ],
@@ -24,11 +25,17 @@ cc_library(
     srcs = srcs,
     hdrs = hdrs,
     copts = [
+        "-DNDEBUG",
+        "-DLIBRARYBUILD",
     ],
     includes = [
         ".",
         "include",
         "src",
+        "src/include",
+        "src/libnurbs/interface",
+        "src/libnurbs/internals",
+        "src/libnurbs/nurbtess",
     ],
     deps = [
     ],
