@@ -36,6 +36,9 @@ srcs = glob(
         # "freeglut/freeglut/src/fg_main.c",
         # "freeglut/freeglut/src/fg_structure.c",
         # "freeglut/freeglut/src/egl/fg_state_egl.c",
+        
+        #"freeglut/freeglut/src/egl/fg_display_egl.c",
+        #"freeglut/freeglut/src/egl/fg_structure_egl.c",
     ],
 )
 

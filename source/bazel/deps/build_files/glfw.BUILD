@@ -148,5 +148,6 @@ cc_library(
         ":x11_monitor",
         ":x11_window",
         ":xkb_unicode",
+        "@x11",
     ],
 )

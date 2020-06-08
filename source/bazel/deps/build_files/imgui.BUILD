@@ -7,7 +7,7 @@ cc_library(
     linkopts = [],
     deps = [
         "@SDL2",
-        "@opengl",
+        #"@opengl",
     ],
 )
 

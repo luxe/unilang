@@ -62,6 +62,6 @@ cc_library(
         "@openal_soft",
         "@stb",
         #"@x11",
-        #"@flac",
+        "@flac",
     ],
 )
