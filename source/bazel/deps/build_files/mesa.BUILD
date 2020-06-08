@@ -135,7 +135,7 @@ cc_library(
         "-DMAPI_TABLE_NUM_DYNAMIC=256",
         "-DMAPI_TMP_DEFINES",
         "-DMAPI_TMP_PUBLIC_ENTRIES_NO_HIDDEN",
-        
+
         # "-DENABLE_SHADER_CACHE",
         # "-DENABLE_ST_OMX_BELLAGIO=0",
         # "-DENABLE_ST_OMX_TIZONIA=0",

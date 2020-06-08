@@ -41,5 +41,6 @@ cc_library(
         "src/libFLAC/include/private",
     ],
     deps = [
+        "@ogg",
     ],
 )

@@ -5,8 +5,8 @@ package(
 )
 
 cc_binary(
-   name = "main",
-   srcs = ["main.cpp"],
-   linkopts = ["-lGL",],
-   deps = ["@glfw//:glfw"],
+    name = "main",
+    srcs = ["main.cpp"],
+    linkopts = ["-lGL"],
+    deps = ["@glfw"],
 )

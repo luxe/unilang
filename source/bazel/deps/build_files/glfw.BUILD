@@ -128,7 +128,10 @@ cc_library(
 
 cc_library(
     name = "other",
-    srcs = ["src/posix_thread.c", "src/osmesa_context.c"],
+    srcs = [
+        "src/osmesa_context.c",
+        "src/posix_thread.c",
+    ],
     defines = DEFINES,
     deps = [":includes"],
 )
