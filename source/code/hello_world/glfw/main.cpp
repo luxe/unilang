@@ -6,6 +6,7 @@ int main(void)
     GLFWwindow* window;
 
     /* Initialize the library */
+    std::cout << "sdfsdf" << std::endl;
     if (!glfwInit())
         return -1;
     std::cout << "sdfsdf" << std::endl;
