@@ -65,15 +65,13 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     linkopts = [
-        "-lX11",
         "-lGL",
-        "-lXrandr",
-        "-ludev",
     ],
     deps = [
         "@SDL2",
         "@glfw",
         "@opengl",
         "@sfml",
+        "@x11",
     ],
 )
