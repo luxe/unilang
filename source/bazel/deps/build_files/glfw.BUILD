@@ -127,6 +127,13 @@ cc_library(
 )
 
 cc_library(
+    name = "other",
+    srcs = ["src/posix_thread.c", "src/osmesa_context.c"],
+    defines = DEFINES,
+    deps = [":includes"],
+)
+
+cc_library(
     name = "glfw",
     hdrs = glob(["include/GLFW/*.h"]),
     defines = DEFINES,
@@ -148,6 +155,7 @@ cc_library(
         ":x11_monitor",
         ":x11_window",
         ":xkb_unicode",
+        ":other",
         "@x11",
     ],
 )
