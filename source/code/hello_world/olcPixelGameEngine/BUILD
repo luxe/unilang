@@ -10,7 +10,7 @@ cc_binary(
     deps = [
         "@libpng",
         "@olcPixelGameEngine//:lib",
-        "@opengl",
+        #"@opengl",
         "@x11",
     ],
 )
