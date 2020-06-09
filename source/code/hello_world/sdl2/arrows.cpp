@@ -40,19 +40,18 @@ int main()
             {
                 case SDLK_UP:
                     std::cout << "up" << std::endl;
-                    exit(0);
                     break;
                 case SDLK_DOWN:
-                    // do something
+                    std::cout << "down" << std::endl;
                     break;
                 case SDLK_LEFT:
-                    // do something
+                    std::cout << "left" << std::endl;
                     break;
                 case SDLK_RIGHT:
-                    // do something
+                    std::cout << "right" << std::endl;
                     break;
                 case SDLK_ESCAPE:
-                    // do something
+                    std::cout << "esc" << std::endl;
                     return 0;
                 default:
                     break;
