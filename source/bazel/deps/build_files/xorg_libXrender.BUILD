@@ -1,12 +1,20 @@
 package(default_visibility = ["//visibility:public"])
 
-#glob the files we care about
 hdrs = glob(
     include = [
         "include/**/*.h",
         "src/**/*.h",
     ],
     exclude = [
+    ],
+)
+
+cc_library(
+    name = "Xrender_headers",
+    hdrs = hdrs,
+    copts = [
+    ],
+    deps = [
     ],
 )
 
@@ -19,13 +27,17 @@ srcs = glob(
 )
 
 cc_library(
-    name = "xorg_libXrandr",
+    name = "xorg_libXrender",
     srcs = srcs,
-    hdrs = hdrs,
+    copts = [
+        "-DHAVE_CONFIG_H",
+    ],
     includes = [
         "include",
         "include/X11/extensions",
         "src",
     ],
-    deps = ["@xorg_libXrender"],
+    deps = [
+        ":Xrender_headers",
+    ],
 )

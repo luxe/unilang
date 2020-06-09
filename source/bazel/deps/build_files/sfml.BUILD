@@ -56,6 +56,7 @@ cc_library(
         "@freetype2",
         "@openal_soft",
         "@stb",
+        "@systemd//:libudev",
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",

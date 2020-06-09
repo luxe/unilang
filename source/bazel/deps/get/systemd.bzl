@@ -12,4 +12,10 @@ def systemd():
         urls = [
             "https://github.com/Unilang/systemd/archive/2233c2703c91325f8c742daf2d37c1343f35998e.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:systemd_gen.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )
