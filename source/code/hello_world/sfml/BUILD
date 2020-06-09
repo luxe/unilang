@@ -68,9 +68,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@SDL2",
         "@glfw",
-        "@opengl",
         "@sfml",
         "@x11",
     ],

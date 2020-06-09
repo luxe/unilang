@@ -50,19 +50,14 @@ cc_library(
         "src/SFML",
     ],
     linkopts = [
-        "-lopenal",
-        "-lFLAC",
-        "-lvorbis",
-        "-lvorbisenc",
-        "-logg",
-        "-lvorbisfile",
     ],
     deps = [
+        "@flac",
         "@freetype2",
         "@openal_soft",
+        "@xorg_libXrandr",
         "@stb",
-        "@x11",
-        "@flac",
         "@vorbis",
+        "@x11",
     ],
 )

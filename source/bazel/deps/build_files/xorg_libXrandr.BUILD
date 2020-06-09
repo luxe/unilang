@@ -4,7 +4,7 @@ package(default_visibility = ["//visibility:public"])
 hdrs = glob(
     include = [
         "include/**/*.h",
-        "lib/**/*.h",
+        "src/**/*.h",
     ],
     exclude = [
     ],
@@ -12,22 +12,20 @@ hdrs = glob(
 
 srcs = glob(
     include = [
-        "lib/**/*.c",
+        "src/**/*.c",
     ],
     exclude = [
-        "lib/psytune.c",
-        "lib/sharedbook.c",
-        "lib/barkmel.c",
     ],
 )
 
 cc_library(
-    name = "vorbis",
+    name = "xorg_libXrandr",
     srcs = srcs,
     hdrs = hdrs,
     includes = [
         "include",
-        "lib",
+        "src",
+        "include/X11/extensions",
     ],
-    deps = ["@ogg"],
+    deps = [],
 )
