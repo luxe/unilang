@@ -4,7 +4,10 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-cpp_main(
+cc_binary(
     name = "main",
+    srcs = ["main.cpp"],
+    copts = ["-pthread",],
+    linkopts = ["-lpthread",],
     deps = ["@sdl2"],
 )
