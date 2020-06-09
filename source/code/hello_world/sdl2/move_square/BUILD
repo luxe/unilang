@@ -6,15 +6,8 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@sdl2"],
-)
-
-cpp_main(
-    name = "arrows",
-    deps = ["@sdl2"],
-)
-
-cpp_main(
-    name = "everything",
-    deps = ["@sdl2"],
+    deps = [
+        "@SDL_image",
+        "@sdl2",
+    ],
 )

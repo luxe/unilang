@@ -55,9 +55,9 @@ cc_library(
         "@flac",
         "@freetype2",
         "@openal_soft",
-        "@xorg_libXrandr",
         "@stb",
         "@vorbis",
         "@x11",
+        "@xorg_libXrandr",
     ],
 )
