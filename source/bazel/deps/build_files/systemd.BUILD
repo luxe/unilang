@@ -36,7 +36,7 @@ libudev_srcs = glob(
         "src/shared/mount-util.c",
         "src/shared/firewall-util.c",
         "src/shared/module-util.c",
-        
+
         #"src/libsystemd/sd-daemon/sd-daemon.c,
     ],
 )
@@ -50,20 +50,20 @@ cc_library(
     ],
     includes = [
         "build",
-        "src/basic",
         "build/src/basic",
+        "build/src/shared",
+        "src/basic",
+        "src/boot/",
+        "src/journal",
         "src/libsystemd",
+        "src/libsystemd/sd-bus",
         "src/libsystemd/sd-device",
         "src/libsystemd/sd-hwdb",
-        "src/libudev",
-        "src/systemd",
-        "src/shared/",
-        "src/boot/",
-        "src/libsystemd/sd-netlink",
-        "src/libsystemd/sd-bus",
         "src/libsystemd/sd-id128",
-        "src/journal",
-        "build/src/shared",
+        "src/libsystemd/sd-netlink",
+        "src/libudev",
+        "src/shared/",
+        "src/systemd",
     ],
     deps = [
     ],

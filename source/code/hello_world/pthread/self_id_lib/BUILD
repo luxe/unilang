@@ -6,8 +6,8 @@ package(
 
 cc_library(
     name = "lib",
-    hdrs = ["lib.hpp"],
     srcs = ["lib.cpp"],
+    hdrs = ["lib.hpp"],
 )
 
 cc_binary(
@@ -15,6 +15,6 @@ cc_binary(
     srcs = ["main.cpp"],
     copts = [],
     deps = [
-        ":lib"
+        ":lib",
     ],
 )

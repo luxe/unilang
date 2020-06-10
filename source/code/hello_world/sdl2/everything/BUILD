@@ -7,8 +7,11 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    copts = ["-pthread",],
-    linkopts = ["-pthread", "-lpthread", "-lrt"],
+    copts = ["-pthread"],
+    linkopts = [
+        "-pthread",
+        "-lpthread",
+        "-lrt",
+    ],
     deps = ["@sdl2"],
 )
-    
