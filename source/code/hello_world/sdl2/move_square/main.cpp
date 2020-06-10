@@ -1,6 +1,6 @@
-#include <SDL2/SDL.h> 
-#include <SDL2/SDL_image.h> 
-#include <SDL2/SDL_timer.h> 
+#include <SDL.h> 
+#include <SDL_image.h> 
+#include <SDL_timer.h> 
 
 int main() 
 { 
@@ -19,16 +19,31 @@ int main()
     Uint32 render_flags = SDL_RENDERER_ACCELERATED; 
 
     // creates a renderer to render our images 
-    SDL_Renderer* rend = SDL_CreateRenderer(win, -1, render_flags); 
+    SDL_Renderer* rend = SDL_CreateRenderer(win, -1, render_flags);
+    
+    if (rend == NULL) {
+        fprintf(stderr, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
+        exit(1);
+    }
 
     // creates a surface to load an image into the main memory 
     SDL_Surface* surface; 
 
     // please provide a path for your image 
-    surface = IMG_Load("path"); 
+    surface = IMG_Load("/home/laptop/Desktop/icon.png");
+    
+    if (surface == NULL) {
+        fprintf(stderr, "CreateRGBSurface failed: %s\n", SDL_GetError());
+        exit(1);
+    }
 
     // loads image to our graphics hardware memory. 
-    SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, surface); 
+    SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, surface);
+    
+    if (tex == NULL) {
+        fprintf(stderr, "CreateTextureFromSurface failed: %s\n", SDL_GetError());
+        exit(1);
+    }
 
     // clears main-memory 
     SDL_FreeSurface(surface); 

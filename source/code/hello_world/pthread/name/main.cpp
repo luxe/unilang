@@ -1,7 +1,7 @@
 // #define _GNU_SOURCE is needed for the resolution of the following warnings
 //warning: implicit declaration of function ‘pthread_setname_np’ [-Wimplicit-function-declaration]
 //warning: implicit declaration of function ‘pthread_getname_np’ [-Wimplicit-function-declaration]
-#define _GNU_SOURCE
+//#define _GNU_SOURCE
 #include <stdio.h>
 #include <sys/types.h>
 #include <pthread.h>
@@ -11,7 +11,7 @@
 #include <stdlib.h>
  
 //The thread name is a meaningful C language string, whose length is restricted to 16 characters, including the terminating null byte.
-#define MAX_LENGTH_PTHREAD_NAME (16)
+#define MAX_LENGTH_PTHREAD_NAME (16) 
  
 struct thread_info_t
 {

@@ -122,6 +122,7 @@ cc_library(
         "-DHAVE_CONFIG_H",
         "-DUSING_GENERATED_CONFIG_H",
     ],
+    #linkopts = ["-lpthread"],
     includes = [
         ".",
         "include",
