@@ -9,10 +9,14 @@ int main()
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) { 
         printf("error initializing SDL: %s\n", SDL_GetError()); 
     } 
-    SDL_Window* win = SDL_CreateWindow("GAME", // creates a window 
+    SDL_Window* win = SDL_CreateWindow("GAME", // creates a window
                                     SDL_WINDOWPOS_CENTERED, 
                                     SDL_WINDOWPOS_CENTERED, 
-                                    1000, 1000, 0); 
+                                    1000, 1000,  SDL_WINDOW_OPENGL);
+    if (win == NULL) {
+        fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
+        exit(1);
+    }
 
     // triggers the program that controls 
     // your graphics hardware and sets flags 

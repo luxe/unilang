@@ -84,6 +84,8 @@ srcs = glob(
         "src/egl/drivers/dri2/platform_device.c",
         "src/egl/main/egldriver.c",
         "src/egl/drivers/dri2/egl_dri2.c",
+        "src/egl/drivers/dri2/platform_x11.c",
+        #"src/egl/drivers/dri2/platform_drm.c",
         #"src/mapi/glapi/glapi_getproc.c",
         "src/mapi/mapi_glapi.c",
         "src/mapi/glapi/glapi.c",
@@ -103,7 +105,7 @@ srcs = glob(
         "src/mesa/main/sse_minmax.c",
         "src/mesa/main/sse_minmax.c",
         "src/glx/driwindows_glx.c",
-        "src/glx/g_glxglvnddispatchfuncs.c",
+        #"src/glx/g_glxglvnddispatchfuncs.c",
         #"src/glx/glxext.c",
         #"src/glx/glxglvnd.c",
 
@@ -142,14 +144,15 @@ cc_library(
         "-DHAVE_X11_PLATFORM",
         "-DUSE_X86_64_ASM",
         "-DNAME=LLVM",
+        
+        #"-DGLX_DIRECT_RENDERING",
+        #"-DGLX_INDIRECT_RENDERING",
+        #"-DGLX_USE_DRM",
 
         # "-DENABLE_SHADER_CACHE",
         # "-DENABLE_ST_OMX_BELLAGIO=0",
         # "-DENABLE_ST_OMX_TIZONIA=0",
         # "-D_FILE_OFFSET_BITS=64",
-        # "-DGLX_DIRECT_RENDERING",
-        # "-DGLX_INDIRECT_RENDERING",
-        # "-DGLX_USE_DRM",
     ],
     includes = [
         "build/src",
@@ -192,9 +195,6 @@ cc_library(
 # -DENABLE_ST_OMX_BELLAGIO=0
 # -DENABLE_ST_OMX_TIZONIA=0
 # -D_FILE_OFFSET_BITS=64
-# -DGLX_DIRECT_RENDERING
-# -DGLX_INDIRECT_RENDERING
-# -DGLX_USE_DRM
 # -D_GNU_SOURCE
 # -DHAVE___BUILTIN_BSWAP32
 # -DHAVE___BUILTIN_BSWAP64

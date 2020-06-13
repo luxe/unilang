@@ -4,8 +4,10 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-cpp_main(
+cc_binary(
     name = "main",
+    srcs = ["main.cpp"],
+    linkopts = ["-lGL"],
     deps = [
         "@SDL_image",
         "@sdl2",
