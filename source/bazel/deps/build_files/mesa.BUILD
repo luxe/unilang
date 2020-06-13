@@ -93,6 +93,7 @@ srcs = glob(
         "src/mesa/main/viewport.c",
         "src/mesa/drivers/x11/xm_dd.c",
         "src/mesa/drivers/x11/xm_api.c",
+        "src/mesa/drivers/x11/glxapi.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",

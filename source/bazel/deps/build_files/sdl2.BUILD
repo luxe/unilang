@@ -138,6 +138,7 @@ cc_library(
     deps = [
         ":SDL2_gen_files",
         ":SDL2_hdrs",
+        "@xcb",
         "@dbus",
         "@glib",
         "@ibus",
