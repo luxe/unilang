@@ -68,7 +68,7 @@ sdl_srcs = glob(
         "src/**/*.h",
     ],
     exclude = [
-        "src/video/qnx/**",
+        #"src/video/qnx/**",
         "src/haptic/windows/**",
         #"src/test/*.c",
         "src/locale/emscripten/**",
@@ -84,17 +84,16 @@ sdl_srcs = glob(
         "src/joystick/windows/**",
         "src/src/filesystem/windows/**",
         #"src/src/video/windows/**",
-        #"src/thread/generic/SDL_syscond.c",
-        #"src/thread/generic/SDL_sysmutex.c",
-        #"src/thread/generic/SDL_syssem.c",
-        #"src/thread/generic/SDL_systhread.c",
-        #"src/thread/generic/SDL_systls.c",
+        "src/thread/generic/SDL_syscond.c",
+        "src/thread/generic/SDL_sysmutex.c",
+        "src/thread/generic/SDL_syssem.c",
+        "src/thread/generic/SDL_systhread.c",
+        "src/thread/generic/SDL_systls.c",
         "src/main/**",
-        #"src/thread/generic/**",
+        "src/thread/generic/**",
         "src/thread/windows/**",
         "src/thread/psp/**",
         # haptic/windows/
-        #"src/dynapi/SDL_dynapi_overrides.h",
 
         #needs ibus and glib system headers
         #"src/core/linux/SDL_ibus.c",
