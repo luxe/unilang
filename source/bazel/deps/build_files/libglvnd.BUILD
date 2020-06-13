@@ -171,3 +171,107 @@ cc_library(
         "@xorg_glproto",
     ]
 )
+######################################################################################################################################
+
+
+opengl_hdrs = glob(
+    include = [
+        "include/**/*.h",
+        "src/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+opengl_srcs = glob(
+    include = [
+        "src/OpenGL/**/*.c",
+    ],
+    exclude = [
+    ],
+)
+
+cc_library(
+    name = "opengl",
+    hdrs = opengl_hdrs,
+    srcs = opengl_srcs,
+    copts = [
+        "-include config.h",
+        "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
+        "-DUSE_X86_64_ASM",
+    ],
+    includes = [
+        "include",
+        "src/util",
+        "src/GLdispatch",
+        "src/GLX",
+        "src/GLdispatch/vnd-glapi",
+        "include/glvnd",
+        "include/GLdispatch",
+        "src/util/uthash/src",
+    ],
+    deps = [
+        "@xorg_glproto",
+    ]
+)
+######################################################################################################################################
+
+
+util_hdrs = glob(
+    include = [
+        "include/**/*.h",
+        "src/**/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+util_srcs = glob(
+    include = [
+        "src/util/*.c",
+    ],
+    exclude = [
+    ],
+)
+
+cc_library(
+    name = "util",
+    hdrs = util_hdrs,
+    srcs = util_srcs,
+    copts = [
+        "-include config.h",
+        "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
+        "-DUSE_X86_64_ASM",
+    ],
+    includes = [
+        "include",
+        "src/util",
+        "src/GLdispatch",
+        "src/GLX",
+        "src/GLdispatch/vnd-glapi",
+        "include/glvnd",
+        "include/GLdispatch",
+        "src/util/uthash/src",
+    ],
+    deps = [
+        "@xorg_glproto",
+    ]
+)
+######################################################################################################################################
+
+#everything as a single library if that is possible
+cc_library(
+    name = "libglvnd",
+    deps  = [
+        ":egl",
+        ":gl",
+        ":gles",
+        ":glx",
+        ":opengl",
+        ":util",
+    ]
+)
+
+
+
+
