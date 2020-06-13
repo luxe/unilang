@@ -7,4 +7,5 @@ cc_library(
             "**/*.h",
         ],
     ),
+    include_prefix = "GL",
 )
