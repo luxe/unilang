@@ -105,15 +105,17 @@ srcs = glob(
         "src/glx/g_glxglvnddispatchfuncs.c",
         #"src/glx/glxext.c",
         #"src/glx/glxglvnd.c",
-        "mesa/src/glx/glxglvnd.c",
-        "src/egl/main/eglglvnd.c",
-        "src/glx/glxglvnd.c",
-        "src/egl/main/egldispatchstubs.c",
-        "src/glx/glxext.c",
+
+        #"mesa/src/glx/glxglvnd.c",
+        #"src/egl/main/eglglvnd.c",
+        #"src/glx/glxglvnd.c",
+        #"src/egl/main/egldispatchstubs.c",
+        #"src/glx/glxext.c",
 
         #"os/os_thread.h"
         "src/util/u_debug_memory.c",
         "src/loader/loader_dri3_helper.c",
+        "src/glx/glxext.c",
     ],
 )
 
@@ -135,6 +137,10 @@ cc_library(
         "-DMAPI_TABLE_NUM_DYNAMIC=256",
         "-DMAPI_TMP_DEFINES",
         "-DMAPI_TMP_PUBLIC_ENTRIES_NO_HIDDEN",
+        "-DUSE_LIBGLVND",
+        "-DHAVE_X11_PLATFORM",
+        "-DUSE_X86_64_ASM",
+        "-DNAME=LLVM",
 
         # "-DENABLE_SHADER_CACHE",
         # "-DENABLE_ST_OMX_BELLAGIO=0",
@@ -170,6 +176,7 @@ cc_library(
         "src/util",
     ],
     deps = [
+        "@libglvnd",
         "@mesa_glu",
         "@x11",
         "@xcb",
@@ -233,14 +240,11 @@ cc_library(
 # -DHAVE_SYS_SYSCTL_H
 # -DHAVE_TIMESPEC_GET
 # -DHAVE_UINT128
-# -DHAVE_X11_PLATFORM
 # -DLLVM_MESON_MODULES=bitwriter;engine;mcdisassembler;mcjit;core;executionengine;scalaropts;transformutils;instcombine;amdgpu;native;bitreader;ipo;asmparser;coroutines
 # -DMAJOR_IN_SYSMACROS
-# -DNAME=LLVM
 # -DNDEBUG
 # -D__STDC_CONSTANT_MACROS
 # -D__STDC_FORMAT_MACROS
 # -D__STDC_LIMIT_MACROS
 # -DUSE_ELF_TLS
 # -DUSE_GCC_ATOMIC_BUILTINS
-# -DUSE_X86_64_ASM

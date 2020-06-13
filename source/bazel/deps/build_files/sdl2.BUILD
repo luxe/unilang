@@ -111,6 +111,7 @@ sdl_srcs = glob(
         #"src/video/wayland/SDL_waylandwindow.c",
 
         #"src/video/x11/SDL_x11dyn.c",
+        "src/video/qnx/**/*.c",
     ],
 )
 
@@ -120,6 +121,7 @@ cc_library(
     copts = [
         "-DHAVE_CONFIG_H",
         "-DUSING_GENERATED_CONFIG_H",
+        "-DHAVE_PTHREAD_SETNAME_NP",
     ],
     #linkopts = ["-lpthread"],
     includes = [
@@ -146,6 +148,5 @@ cc_library(
         "@sndio",
         "@x11",
         "@xorg_xorgproto",
-        #"@libglvnd",
     ],
 )

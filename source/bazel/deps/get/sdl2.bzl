@@ -22,5 +22,7 @@ def sdl2():
         patch_cmds = [
             "sed -i '1s/^/#include <stdlib.h>\\n/' src/dynapi/SDL_dynapi.c",
             "sed -i '1s/^/#include <stdio.h>\\n/' src/dynapi/SDL_dynapi.c",
+            "sed -i 's#fn = dlsym#fn = NULL;\\/\\/#g' src/thread/pthread/SDL_systhread.c",
+            "sed -i 's#ppthread_setname_np = #ppthread_setname_np = NULL;\\/\\/#g' src/thread/pthread/SDL_systhread.c",
         ],
     )
