@@ -2,15 +2,23 @@
 #include <iostream>
 #include <SFML/System/String.hpp>
 #include <SFML/Graphics.hpp>
+#include <locale.h>
+#include <locale>
 
 int main()
 {
-    //sf::String str;
-    //str = L"hello";
-    auto video_mode = sf::VideoMode(200, 200);
-    sf::RenderWindow window(video_mode,"hello");
-    //sf::CircleShape shape(100.f);
-    //shape.setFillColor(sf::Color::Green);
+    //setlocale(LC_ALL, "C");
+    std::locale::global(std::locale("en_US.UTF-8"));
+    std::locale::global(std::locale("en_US.UTF-8"));
+    std::locale::global(std::locale("en_US.UTF-8"));
+    std::cout.imbue(std::locale("en_US.utf8"));
+    
+    sf::String str;
+    str = L"hello";
+    // auto video_mode = sf::VideoMode(200, 200);
+    // sf::RenderWindow window(video_mode,"");
+    // sf::CircleShape shape(100.f);
+    // shape.setFillColor(sf::Color::Green);
 
     // while (window.isOpen())
     // {
@@ -26,5 +34,5 @@ int main()
     //     window.display();
     // }
 
-    return 0;
+    // return 0;
 }

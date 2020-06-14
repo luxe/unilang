@@ -87,8 +87,7 @@ srcs = glob(
         "src/egl/drivers/dri2/platform_x11.c",
         #"src/egl/drivers/dri2/platform_drm.c",
         #"src/mapi/glapi/glapi_getproc.c",
-        "src/mapi/mapi_glapi.c",
-        "src/mapi/glapi/glapi.c",
+        #"src/mapi/mapi_glapi.c",
         "build/src/mapi/glapi/gen/api_exec.c",
         "build/src/mapi/glapi/gen/indirect_init.c",
         "src/mesa/main/get.c",
@@ -105,6 +104,8 @@ srcs = glob(
         "src/mesa/main/sse_minmax.c",
         "src/mesa/main/sse_minmax.c",
         "src/glx/driwindows_glx.c",
+        "src/mapi/glapi/glapi.c",
+        #"src/mapi/mapi_glapi.c",
         #"src/glx/g_glxglvnddispatchfuncs.c",
         #"src/glx/glxext.c",
         #"src/glx/glxglvnd.c",
@@ -118,7 +119,7 @@ srcs = glob(
         #"os/os_thread.h"
         "src/util/u_debug_memory.c",
         "src/loader/loader_dri3_helper.c",
-        "src/glx/glxext.c",
+        #"src/glx/glxext.c",
     ],
 )
 

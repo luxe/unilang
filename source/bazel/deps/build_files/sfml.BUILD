@@ -52,6 +52,7 @@ cc_library(
     linkopts = [
     ],
     deps = [
+        "@mesa",
         "@flac",
         "@freetype2",
         "@openal_soft",

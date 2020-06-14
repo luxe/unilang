@@ -9,6 +9,8 @@ cc_binary(
     srcs = ["main.cpp"],
     copts = [
     ],
+    linkopts = [
+    ],
     deps = [
     ],
 )

@@ -64,14 +64,20 @@ cc_binary(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    copts = [
+        #"-static",
+    ],
     linkopts = [
-        "-lGL",
+        #"-lGL",
+        #"-ludev",
         #"-lpthread",
         #"-lrt",
+        "-lsfml-graphics", "-lsfml-window", "-lsfml-system",
     ],
     deps = [
         #"@glfw",
-        "@sfml",
+        #"@SFML_unhermetic",
+        #"@SFML_unhermetic_libs",
         #"@x11",
     ],
 )
