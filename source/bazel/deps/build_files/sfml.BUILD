@@ -37,7 +37,7 @@ cc_library(
         exclude = [
         ],
     ),
-    copts = ["-UNone"],
+    #copts = ["-UNone"],
     includes = [
         "include",
         "include/SFML",
