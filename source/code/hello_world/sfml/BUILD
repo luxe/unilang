@@ -66,6 +66,10 @@ cc_binary(
     srcs = ["main.cpp"],
     linkopts = [
         "-lGL",
+        "-lpthread",
+    ],
+    copts = [
+        "-pthread"
     ],
     deps = [
         "@glfw",

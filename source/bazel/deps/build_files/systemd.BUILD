@@ -48,6 +48,9 @@ cc_library(
     copts = [
         "-include build/config.h",
     ],
+    linkopts = [
+        "-lrt",
+    ],
     includes = [
         "build",
         "build/src/basic",
