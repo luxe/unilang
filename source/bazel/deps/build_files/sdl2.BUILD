@@ -68,7 +68,6 @@ sdl_srcs = glob(
         "src/**/*.h",
     ],
     exclude = [
-        #"src/video/qnx/**",
         "src/haptic/windows/**",
         #"src/test/*.c",
         "src/locale/emscripten/**",
@@ -111,6 +110,8 @@ sdl_srcs = glob(
         #"src/video/wayland/SDL_waylandwindow.c",
 
         #"src/video/x11/SDL_x11dyn.c",
+        
+        #QNX Blackberry Operating System
         "src/video/qnx/**/*.c",
     ],
 )
