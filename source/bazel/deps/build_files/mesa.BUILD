@@ -144,7 +144,7 @@ cc_library(
         "-DHAVE_X11_PLATFORM",
         "-DUSE_X86_64_ASM",
         "-DNAME=LLVM",
-        
+
         #"-DGLX_DIRECT_RENDERING",
         #"-DGLX_INDIRECT_RENDERING",
         #"-DGLX_USE_DRM",

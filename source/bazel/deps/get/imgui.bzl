@@ -14,5 +14,9 @@ def imgui():
         ],
         patch_cmds = [
             "find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \;",
+            "sed -i '1s/^/#include <cfloat>\\n/' imgui_internal.h",
+            "sed -i '1s/^/#include <float.h>\\n/' imgui_internal.h",
+            "sed -i '1s/^/#include <cfloat>\\n/' imgui.h",
+            "sed -i '1s/^/#include <float.h>\\n/' imgui.h",
         ],
     )

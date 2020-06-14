@@ -12,21 +12,22 @@ int main()
     SDL_Window* win = SDL_CreateWindow("GAME", // creates a window
                                     SDL_WINDOWPOS_CENTERED, 
                                     SDL_WINDOWPOS_CENTERED, 
-                                    1000, 1000,  SDL_WINDOW_OPENGL);
+                                    1000, 1000,  SDL_WINDOW_SHOWN);
     if (win == NULL) {
-        fprintf(stderr, "SDL_CreateWindow failed: %s\n", SDL_GetError());
+        printf("SDL_CreateWindow failed: %s\n", SDL_GetError());
         exit(1);
     }
 
     // triggers the program that controls 
     // your graphics hardware and sets flags 
-    Uint32 render_flags = SDL_RENDERER_ACCELERATED; 
+    //Uint32 render_flags = SDL_RENDERER_ACCELERATED
+    Uint32 render_flags = 0; 
 
     // creates a renderer to render our images 
     SDL_Renderer* rend = SDL_CreateRenderer(win, -1, render_flags);
     
     if (rend == NULL) {
-        fprintf(stderr, "SDL_CreateRenderer failed: %s\n", SDL_GetError());
+        printf("SDL_CreateRenderer failed: %s\n", SDL_GetError());
         exit(1);
     }
 
@@ -37,7 +38,7 @@ int main()
     surface = IMG_Load("/home/laptop/Desktop/icon.png");
     
     if (surface == NULL) {
-        fprintf(stderr, "CreateRGBSurface failed: %s\n", SDL_GetError());
+        printf("IMG_Load: %s\n", SDL_GetError());
         exit(1);
     }
 
@@ -45,7 +46,7 @@ int main()
     SDL_Texture* tex = SDL_CreateTextureFromSurface(rend, surface);
     
     if (tex == NULL) {
-        fprintf(stderr, "CreateTextureFromSurface failed: %s\n", SDL_GetError());
+        printf("CreateTextureFromSurface failed: %s\n", SDL_GetError());
         exit(1);
     }
 

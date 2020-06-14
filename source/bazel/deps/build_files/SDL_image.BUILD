@@ -26,6 +26,20 @@ cc_library(
     srcs = srcs,
     hdrs = hdrs,
     copts = [
+        "-DLOAD_PNG=1",
+        #"-DLOAD_TIF=1",
+        "-DLOAD_JPG=1",
+        #"-DLOAD_WEBP=1",
+        "-DLOAD_BMP=1",
+        "-DLOAD_GIF=1",
+        "-DLOAD_LBM=1",
+        "-DLOAD_PCX=1",
+        "-DLOAD_PNM=1",
+        "-DLOAD_SVG=1",
+        "-DLOAD_TGA=1",
+        "-DLOAD_XCF=1",
+        "-DLOAD_XPM=1",
+        "-DLOAD_XV=1",
     ],
     includes = [
         ".",
@@ -40,7 +54,6 @@ cc_library(
 
 #libtool: compile:  gcc -DPACKAGE_NAME=\"\" -DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\" -DPACKAGE_BUGREPORT=\"\"
 #-DPACKAGE_URL=\"\" -DSTDC_HEADERS=1 -DHAVE_SYS_TYPES_H=1 -DHAVE_SYS_STAT_H=1 -DHAVE_STDLIB_H=1 -DHAVE_STRING_H=1 -DHAVE_MEMORY_H=1 -DHAVE_STRINGS_H=1
-#-DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\" -DPACKAGE=\"SDL2_image\" -DVERSION=\"2.0.6\" -DLOAD_JPG=1
-#-DLOAD_PNG=1 -DLOAD_TIF=1 -DLOAD_WEBP=1 -DLOAD_BMP=1 -DLOAD_GIF=1 -DLOAD_LBM=1 -DLOAD_PCX=1 -DLOAD_PNM=1 -DLOAD_SVG=1 -DLOAD_TGA=1 -DLOAD_XCF=1 -DLOAD_XPM=1
-#-DLOAD_XV=1 -DLOAD_WEBP_DYNAMIC=\"libwebp.so.6\" -DLOAD_TIF_DYNAMIC=\"libtiff.so.5\" -DLOAD_JPG_DYNAMIC=\"libjpeg.so.8\"
+#-DHAVE_INTTYPES_H=1 -DHAVE_STDINT_H=1 -DHAVE_UNISTD_H=1 -DHAVE_DLFCN_H=1 -DLT_OBJDIR=\".libs/\" -DPACKAGE=\"SDL2_image\" -DVERSION=\"2.0.6\" 
+# -DLOAD_WEBP_DYNAMIC=\"libwebp.so.6\" -DLOAD_TIF_DYNAMIC=\"libtiff.so.5\" -DLOAD_JPG_DYNAMIC=\"libjpeg.so.8\"
 #-DLOAD_PNG_DYNAMIC=\"libpng16.so.16\" -I. -I/usr/include/libpng16 -g -O2 -D_REENTRANT -I/usr/include/SDL2 -MT IMG_svg.lo -MD -MP -MF .deps/IMG_svg.Tpo -c IMG_svg.c -o IMG_svg.o >/dev/null 2>&1
