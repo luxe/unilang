@@ -40,7 +40,7 @@
 
 #define DEG2RAD (3.14159/180.0)
 
-#define TABLE_TEXTURE "brick.rgb"
+#define TABLE_TEXTURE "code/hello_world/glut/reflect/brick.rgb"
 
 #define MAX_OBJECTS 2
 

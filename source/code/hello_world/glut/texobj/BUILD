@@ -2,17 +2,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-cc_library(
-	name = "image",
-	hdrs = ["image.h"],
-	srcs = ["image.c"]
-)
-
-filegroup(
-          name = "brick",
-          srcs = ["brick.rgb"],
-)
-
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
@@ -22,10 +11,13 @@ cc_binary(
         #"-lglut",
         #"-lglut",
     ],
+    copts = [
+        #"-stdlib=libc++",
+    ],
     deps = [
         "@x11",
+        "@xorg_libXext",
+        "@libXxf86vm",
         "@glut",
-	":image",
     ],
-    data = [    ":brick",]
 )

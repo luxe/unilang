@@ -3,14 +3,9 @@ package(
 )
 
 cc_library(
-	name = "image",
-	hdrs = ["image.h"],
-	srcs = ["image.c"]
-)
-
-filegroup(
-          name = "brick",
-          srcs = ["brick.rgb"],
+    name = "tr",
+    hdrs = ["tr.hpp"],
+    srcs = ["tr.cpp"]
 )
 
 cc_binary(
@@ -22,10 +17,14 @@ cc_binary(
         #"-lglut",
         #"-lglut",
     ],
+    copts = [
+        #"-stdlib=libc++",
+    ],
     deps = [
         "@x11",
+        "@xorg_libXext",
+        "@libXxf86vm",
         "@glut",
-	":image",
+        ":tr",
     ],
-    data = [    ":brick",]
 )
