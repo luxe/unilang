@@ -11,8 +11,13 @@ cc_binary(
         #"-lglut",
         #"-lglut",
     ],
+    copts = [
+        #"-stdlib=libc++",
+    ],
     deps = [
         "@x11",
+        "@xorg_libXext",
+        "@libXxf86vm",
         "@glut",
     ],
 )
