@@ -36,6 +36,17 @@ libudev_srcs = glob(
         "src/shared/mount-util.c",
         "src/shared/firewall-util.c",
         "src/shared/module-util.c",
+        "src/basic/blockdev-util.c",
+        "src/basic/mempool.c",
+        "src/shared/vlan-util.c",
+        "src/shared/id128-print.c",
+        "src/basic/unit-name.c",
+        "src/shared/apparmor-util.c",
+        "src/basic/in-addr-util.c",
+        "src/basic/alloc-util.c",
+        "src/libudev/libudev-enumerate.c",
+        "src/shared/xml.c",
+        "src/basic/utf8.c",
 
         #"src/libsystemd/sd-daemon/sd-daemon.c,
     ],
@@ -49,7 +60,7 @@ cc_library(
         "-include build/config.h",
     ],
     linkopts = [
-        "-lrt",
+        #"-lrt",
     ],
     includes = [
         "build",

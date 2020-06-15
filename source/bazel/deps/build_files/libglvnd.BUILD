@@ -61,6 +61,7 @@ gl_srcs = glob(
         "src/GL/**/*.c",
     ],
     exclude = [
+        "src/GL/g_libglglxwrapper.c",
     ],
 )
 
@@ -144,6 +145,7 @@ glx_srcs = glob(
         "src/GLX/**/*.c",
     ],
     exclude = [
+        "src/GLX/libglx.c",
     ],
 )
 

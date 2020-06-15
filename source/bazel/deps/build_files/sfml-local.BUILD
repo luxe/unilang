@@ -4,7 +4,8 @@ cc_library(
     name = "SFML_unhermetic",
     hdrs = glob(["include/SFML/**/*.h","include/SFML/**/*.hpp","include/SFML/**/*.inl", "include/SFML/src/**/*.inl",]),
     #defines = ["_REENTRANT"],
-    includes = ["include"],
+    #includes = ["include"],
+    include_prefix = "SFML",
     #linkopts = [
     #    "-lsfml-graphics", "-lsfml-window", "-lsfml-system"
     #],

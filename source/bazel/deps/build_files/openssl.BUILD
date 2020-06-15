@@ -705,9 +705,9 @@ openssl_copts = openssl_copts + [
 ]
 
 openssl_linkopts = [
-    "-pthread",
-    "-m64",
-    "-ldl",
+    #"-pthread",
+    #"-m64",
+    #"-ldl",
 ]
 
 openssl_includes = [

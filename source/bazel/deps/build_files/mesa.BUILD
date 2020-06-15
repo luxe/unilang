@@ -21,7 +21,7 @@ cc_library(
         "-DPACKAGE_VERSION=\\\"20.2.0-devel\\\"",
         "-DUSE_SSE41",
         "-D_EGL_NATIVE_PLATFORM=_EGL_PLATFORM_X11",
-        "-DDEFAULT_DRIVER_DIR=\\\"/usr/local/lib/x86_64-linux-gnu/dri\\\"",
+        #"-DDEFAULT_DRIVER_DIR=\\\"/usr/local/lib/x86_64-linux-gnu/dri\\\"",
         "-DMAPI_ABI_HEADER=\\\"mapi/shared-glapi/glapi_mapi_tmp.h\\\"",
         "-DMAPI_TABLE_NUM_STATIC=1611",
         "-DMAPI_TABLE_NUM_DYNAMIC=256",
@@ -95,6 +95,7 @@ srcs = glob(
         "src/mesa/drivers/x11/xm_dd.c",
         "src/mesa/drivers/x11/xm_api.c",
         "src/mesa/drivers/x11/glxapi.c",
+        "src/glx/dri_glx.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",
@@ -120,6 +121,12 @@ srcs = glob(
         "src/util/u_debug_memory.c",
         "src/loader/loader_dri3_helper.c",
         #"src/glx/glxext.c",
+        "src/mesa/drivers/x11/glxapi.c",
+        "src/glx/glxcmds.c",
+        "src/glx/glx_pbuffer.c",
+        "src/glx/glxcurrent.c",
+        "src/glx/dri3_glx.c",
+        "src/glx/glx_query.c",
     ],
 )
 
@@ -146,9 +153,9 @@ cc_library(
         "-DUSE_X86_64_ASM",
         "-DNAME=LLVM",
 
-        #"-DGLX_DIRECT_RENDERING",
-        #"-DGLX_INDIRECT_RENDERING",
-        #"-DGLX_USE_DRM",
+        "-DGLX_DIRECT_RENDERING",
+        "-DGLX_INDIRECT_RENDERING",
+        "-DGLX_USE_DRM",
 
         # "-DENABLE_SHADER_CACHE",
         # "-DENABLE_ST_OMX_BELLAGIO=0",
@@ -179,6 +186,7 @@ cc_library(
         "src/mesa",
         "src/mesa/main",
         "src/util",
+        "include/drm-uapi",
     ],
     deps = [
         "@libglvnd",

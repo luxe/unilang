@@ -50,14 +50,15 @@ cc_library(
         "src/SFML",
     ],
     linkopts = [
+        "-ludev",   
     ],
     deps = [
-        "@mesa",
+        #"@mesa",
         "@flac",
         "@freetype2",
         "@openal_soft",
         "@stb",
-        "@systemd//:libudev",
+        #"@systemd//:libudev",
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",

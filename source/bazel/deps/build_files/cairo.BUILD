@@ -278,9 +278,9 @@ cc_library(
         "src",
     ],
     linkopts = [
-        "-lpthread",
-        "-lrt",
-        "-lm",
+        #"-lpthread",
+        #"-lrt",
+        #"-lm",
     ],
     visibility = ["//visibility:public"],
     deps = [

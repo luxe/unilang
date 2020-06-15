@@ -299,7 +299,7 @@ cc_library(
     copts = curl_copts,
     defines = ["CURL_STATICLIB"],
     includes = ["include"],
-    linkopts = ["-lrt"],
+    #linkopts = ["-lrt"],
     visibility = ["//visibility:public"],
     deps = [
         "@net_zlib_zlib//:zlib",
