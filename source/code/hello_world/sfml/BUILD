@@ -61,11 +61,11 @@ cc_binary(
         #"-static",
     ],
     linkopts = [
-         "-lsfml-graphics",
-         "-lsfml-window",
-         "-lsfml-system",
-         "-lc++",
-        #"-lGL",
+         #"-lsfml-graphics",
+         #"-lsfml-window",
+         #"-lsfml-system",
+         #"-lc++",
+        "-lGL",
         
         #"-ludev",
         #"-lpthread",
@@ -78,8 +78,8 @@ deps = [
         #"@glfw",
         #"@SFML_unhermetic",
         #"@SFML_unhermetic_libs",
-        #"@sfml",
+        "@sfml",
         #"@x11",
-        "@SFML_unhermetic",
+        #"@SFML_unhermetic",
     ],
 )

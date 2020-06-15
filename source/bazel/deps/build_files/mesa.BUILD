@@ -95,7 +95,7 @@ srcs = glob(
         "src/mesa/drivers/x11/xm_dd.c",
         "src/mesa/drivers/x11/xm_api.c",
         "src/mesa/drivers/x11/glxapi.c",
-        "src/glx/dri_glx.c",
+        #"src/glx/dri_glx.c",
     ],
     exclude = [
         "src/mesa/main/objectlabel.c",
@@ -120,12 +120,19 @@ srcs = glob(
         #"os/os_thread.h"
         "src/util/u_debug_memory.c",
         "src/loader/loader_dri3_helper.c",
-        #"src/glx/glxext.c",
-        #"src/mesa/drivers/x11/glxapi.c",
-        #"src/glx/glxcmds.c",
-        #"src/glx/glx_pbuffer.c",
+        "src/glx/glxext.c",
+        
+        
+        #need xorg-libxshmfence
+        "src/mesa/drivers/x11/glxapi.c",
+        "src/glx/dri3_glx.c",
+        "src/glx/dri_glx.c",
+        "src/glx/dri2_glx.c",
+        "src/glx/glxcmds.c",
+        "src/glx/glx_pbuffer.c",
+        "src/glx/glx_error.c",
+        "src/glx/glxcurrent.c",
         #"src/glx/glxcurrent.c",
-        #"src/glx/dri3_glx.c",
         #"src/glx/glx_query.c",
     ],
 )
@@ -153,9 +160,9 @@ cc_library(
         "-DUSE_X86_64_ASM",
         "-DNAME=LLVM",
 
-        "-DGLX_DIRECT_RENDERING",
-        "-DGLX_INDIRECT_RENDERING",
-        "-DGLX_USE_DRM",
+        #"-DGLX_DIRECT_RENDERING",
+        #"-DGLX_INDIRECT_RENDERING",
+        #"-DGLX_USE_DRM",
 
         # "-DENABLE_SHADER_CACHE",
         # "-DENABLE_ST_OMX_BELLAGIO=0",

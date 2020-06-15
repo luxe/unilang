@@ -1,12 +1,19 @@
 /* gears.c */
-
 /*
  * 3-D gear wheels.  This program is in the public domain.
  *
  * Brian Paul
  */
-
 /* Conversion to GLUT by Mark J. Kilgard */
+
+// Notes on if this crashes:
+// I had this segfault with something like this before:
+// pthread_setname.c: No such file or directory
+// https://stackoverflow.com/questions/42665686/pthread-setname-np-failed-errno-is-2
+// when I updated by nividia drivers, the problem fixed itself.
+//
+// this fixed it for me:
+// sudo ubuntu-drivers autoinstall
 
 #include <math.h>
 #include <stdlib.h>
