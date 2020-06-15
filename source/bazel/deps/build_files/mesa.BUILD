@@ -121,12 +121,12 @@ srcs = glob(
         "src/util/u_debug_memory.c",
         "src/loader/loader_dri3_helper.c",
         #"src/glx/glxext.c",
-        "src/mesa/drivers/x11/glxapi.c",
-        "src/glx/glxcmds.c",
-        "src/glx/glx_pbuffer.c",
-        "src/glx/glxcurrent.c",
-        "src/glx/dri3_glx.c",
-        "src/glx/glx_query.c",
+        #"src/mesa/drivers/x11/glxapi.c",
+        #"src/glx/glxcmds.c",
+        #"src/glx/glx_pbuffer.c",
+        #"src/glx/glxcurrent.c",
+        #"src/glx/dri3_glx.c",
+        #"src/glx/glx_query.c",
     ],
 )
 
@@ -194,6 +194,7 @@ cc_library(
         "@x11",
         "@xcb",
         "@xorg_xorgproto",
+        "@libXxf86vm",
     ],
 )
 

@@ -53,7 +53,7 @@ cc_library(
         "-ludev",   
     ],
     deps = [
-        #"@mesa",
+        "@mesa",
         "@flac",
         "@freetype2",
         "@openal_soft",

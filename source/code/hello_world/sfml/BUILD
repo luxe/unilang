@@ -48,15 +48,8 @@ cc_binary(
     name = "joystick",
     srcs = ["joystick.cpp"],
     linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXrandr",
-        "-ludev",
     ],
     deps = [
-        "@SDL2",
-        "@glfw",
-        "@opengl",
         "@sfml",
     ],
 )
