@@ -2,18 +2,20 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+cc_library(
+    name = "logo",
+    hdrs = ["logo.hpp"],
+)
+
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     linkopts = [
         "-lGL",
     ],
-    copts = [
-    ],
     deps = [
         "@x11",
-        "@xorg_libXext",
-        "@libXxf86vm",
         "@glut",
+        ":logo",
     ],
 )

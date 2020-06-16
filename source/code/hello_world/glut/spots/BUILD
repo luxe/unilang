@@ -8,12 +8,8 @@ cc_binary(
     linkopts = [
         "-lGL",
     ],
-    copts = [
-    ],
     deps = [
         "@x11",
-        "@xorg_libXext",
-        "@libXxf86vm",
         "@glut",
     ],
 )
