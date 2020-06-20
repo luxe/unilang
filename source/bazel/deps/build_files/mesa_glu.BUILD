@@ -32,6 +32,7 @@ cc_library(
     includes = [
         ".",
         "include",
+        "include/GL",
         "src",
         "src/include",
         "src/libnurbs/interface",

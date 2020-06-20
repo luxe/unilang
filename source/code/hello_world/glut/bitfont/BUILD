@@ -7,9 +7,6 @@ cc_binary(
     srcs = ["main.cpp"],
     linkopts = [
         "-lGL",
-        #"-lX11",
-        #"-lglut",
-        #"-lglut",
     ],
     deps = [
         "@x11",
