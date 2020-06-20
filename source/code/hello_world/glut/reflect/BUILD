@@ -3,19 +3,20 @@ package(
 )
 
 cc_library(
-	name = "image",
-	hdrs = ["image.h"],
-	srcs = ["image.c"]
+    name = "image",
+    srcs = ["image.c"],
+    hdrs = ["image.h"],
 )
 
 filegroup(
-          name = "brick",
-          srcs = ["brick.rgb"],
+    name = "brick",
+    srcs = ["brick.rgb"],
 )
 
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    data = [":brick"],
     linkopts = [
         "-lGL",
         #"-lX11",
@@ -23,9 +24,8 @@ cc_binary(
         #"-lglut",
     ],
     deps = [
-        "@x11",
+        ":image",
         "@glut",
-	":image",
+        "@x11",
     ],
-    data = [    ":brick",]
 )

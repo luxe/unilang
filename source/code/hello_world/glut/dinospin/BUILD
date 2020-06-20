@@ -2,21 +2,22 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-# cc_library(
-#     name = "trackball",
-#     hdrs = ["trackball.h"],
-#     srcs = ["trackball.c"]
-# )
+cc_library(
+    name = "trackball",
+    hdrs = ["trackball.hpp"],
+    srcs = ["trackball.cpp"]
+)
 
-# cc_binary(
-#     name = "main",
-#     srcs = ["main.cpp"],
-#     linkopts = [
-#         "-lGL",
-#     ],
-#     deps = [
-#         "@x11",
-#         "@glut",
-#         ":trackball",
-#     ],
-# )
+cc_binary(
+    name = "main",
+    srcs = ["main.cpp"],
+    linkopts = [
+        "-lGL",
+    ],
+    deps = [
+        "@x11",
+        "@glut",
+        "@mesa_glu",
+        ":trackball",
+    ],
+)

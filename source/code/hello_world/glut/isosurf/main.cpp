@@ -62,7 +62,7 @@ draw_surface(void)
 
 #ifdef GL_EXT_vertex_array
   if (use_vertex_arrays) {
-    glDrawArraysEXT(GL_TRIANGLE_STRIP, 0, numverts);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, numverts);
   } else {
 #endif
     glBegin(GL_TRIANGLE_STRIP);

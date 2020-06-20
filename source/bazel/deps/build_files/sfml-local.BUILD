@@ -2,7 +2,12 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "SFML_unhermetic",
-    hdrs = glob(["include/SFML/**/*.h","include/SFML/**/*.hpp","include/SFML/**/*.inl", "include/SFML/src/**/*.inl",]),
+    hdrs = glob([
+        "include/SFML/**/*.h",
+        "include/SFML/**/*.hpp",
+        "include/SFML/**/*.inl",
+        "include/SFML/src/**/*.inl",
+    ]),
     #defines = ["_REENTRANT"],
     #includes = ["include"],
     include_prefix = "SFML",

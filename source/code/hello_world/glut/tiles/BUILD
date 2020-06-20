@@ -4,27 +4,23 @@ package(
 
 cc_library(
     name = "tr",
+    srcs = ["tr.cpp"],
     hdrs = ["tr.hpp"],
-    srcs = ["tr.cpp"]
 )
 
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    copts = [
+    ],
     linkopts = [
         "-lGL",
-        #"-lX11",
-        #"-lglut",
-        #"-lglut",
-    ],
-    copts = [
-        #"-stdlib=libc++",
     ],
     deps = [
+        ":tr",
+        "@glut",
+        "@libXxf86vm",
         "@x11",
         "@xorg_libXext",
-        "@libXxf86vm",
-        "@glut",
-        ":tr",
     ],
 )

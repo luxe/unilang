@@ -293,7 +293,7 @@ init(void)
   glClearColor(0.25, 0.25, 0.5, 0.0);
 
 #if GL_EXT_polygon_offset
-  glPolygonOffsetEXT(factor, bias);
+  glPolygonOffset(factor, bias);
   glEnable(GL_POLYGON_OFFSET_EXT);
 #endif
 
@@ -322,10 +322,10 @@ drawmesh(void)
     for (i = 0; i < nu; i++) {
       p = torusbezierpts + (j * vp2p * vorder) + (i * up2p * uorder);
 #if GL_EXT_polygon_offset
-      glPolygonOffsetEXT(factor, bias);
+      glPolygonOffset(factor, bias);
 #endif
       glMap2f(GL_MAP2_VERTEX_4, 0.0, 1.0, up2p, 3, 0.0, 1.0, vp2p, 3,
-        (void *) p);
+        p);
       if (showsurf) {
         surfacematerials();
         glEvalMesh2(GL_FILL, 0, usegments, 0, vsegments);

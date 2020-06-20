@@ -5,15 +5,15 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    copts = [
+    ],
     linkopts = [
         "-lGL",
     ],
-    copts = [
-    ],
     deps = [
+        "@glut",
+        "@libXxf86vm",
         "@x11",
         "@xorg_libXext",
-        "@libXxf86vm",
-        "@glut",
     ],
 )

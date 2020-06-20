@@ -110,7 +110,7 @@ sdl_srcs = glob(
         #"src/video/wayland/SDL_waylandwindow.c",
 
         #"src/video/x11/SDL_x11dyn.c",
-        
+
         #QNX Blackberry Operating System
         "src/video/qnx/**/*.c",
     ],

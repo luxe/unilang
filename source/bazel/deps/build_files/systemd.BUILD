@@ -59,9 +59,6 @@ cc_library(
     copts = [
         "-include build/config.h",
     ],
-    linkopts = [
-        #"-lrt",
-    ],
     includes = [
         "build",
         "build/src/basic",
@@ -78,6 +75,9 @@ cc_library(
         "src/libudev",
         "src/shared/",
         "src/systemd",
+    ],
+    linkopts = [
+        #"-lrt",
     ],
     deps = [
     ],

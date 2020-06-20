@@ -121,8 +121,7 @@ srcs = glob(
         "src/util/u_debug_memory.c",
         "src/loader/loader_dri3_helper.c",
         "src/glx/glxext.c",
-        
-        
+
         #need xorg-libxshmfence
         "src/mesa/drivers/x11/glxapi.c",
         "src/glx/dri3_glx.c",
@@ -178,6 +177,7 @@ cc_library(
         "build/src/mesa/main",
         "include",
         "include/GL",
+        "include/drm-uapi",
         "mesa/include/drm-uapi",
         "mesa/src/mapi/glapi",
         "src",
@@ -193,15 +193,14 @@ cc_library(
         "src/mesa",
         "src/mesa/main",
         "src/util",
-        "include/drm-uapi",
     ],
     deps = [
+        "@libXxf86vm",
         "@libglvnd",
         "@mesa_glu",
         "@x11",
         "@xcb",
         "@xorg_xorgproto",
-        "@libXxf86vm",
     ],
 )
 

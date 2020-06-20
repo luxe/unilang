@@ -4,7 +4,7 @@ package(
 
 cc_library(
     name = "mjkimage",
-   hdrs = ["mjkimage.hpp"],
+    hdrs = ["mjkimage.hpp"],
 )
 
 cc_binary(
@@ -14,9 +14,9 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@x11",
-        "@glut",
         ":mjkimage",
+        "@glut",
+        "@x11",
     ],
 )
 
@@ -27,9 +27,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@x11",
-        "@glut",
         ":mjkimage",
+        "@glut",
+        "@x11",
     ],
 )
-

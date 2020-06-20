@@ -13,7 +13,8 @@
 #include <string.h>
 #include <math.h>       /* for cos(), sin(), and sqrt() */
 #include <GL/glut.h>
-#include "trackball.h"
+#include "trackball.hpp"
+#include <glu.h>
 
 typedef enum {
   RESERVED, BODY_SIDE, BODY_EDGE, BODY_WHOLE, ARM_SIDE, ARM_EDGE, ARM_WHOLE,
@@ -62,8 +63,8 @@ extrudeSolidFromPolygon(GLfloat data[][2], unsigned int dataSize,
   if (tobj == NULL) {
     tobj = gluNewTess();  /* create and initialize a GLU
                              polygon tesselation object */
-    gluTessCallback(tobj, GLU_BEGIN, glBegin);
-    gluTessCallback(tobj, GLU_VERTEX, glVertex2fv);  /* semi-tricky 
+    gluTessCallback(tobj, GLU_BEGIN, (void (*)())glBegin);
+    gluTessCallback(tobj, GLU_VERTEX, (void (*)())glVertex2fv);  /* semi-tricky 
 
                                                       */
     gluTessCallback(tobj, GLU_END, glEnd);

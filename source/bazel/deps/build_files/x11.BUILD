@@ -54,5 +54,6 @@ cc_library(
         "@xkbcommon",
         "@xorg_libXext",
         "@xorg_libXt",
+        "@xorg_libXi",
     ],
 )

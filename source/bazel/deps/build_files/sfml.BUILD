@@ -50,7 +50,7 @@ cc_library(
         "src/SFML",
     ],
     linkopts = [
-        "-ludev",   
+        "-ludev",
     ],
     deps = [
         "@mesa",

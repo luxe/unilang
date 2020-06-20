@@ -39,6 +39,7 @@
 #include <string.h>
 #include <math.h>       /* for cos(), sin(), and sqrt() */
 #include <GL/glut.h>    /* OpenGL Utility Toolkit header */
+#include <glu.h>
 
 /* Some <math.h> files do not define M_PI... */
 #ifndef M_PI
@@ -230,8 +231,8 @@ extrudeSolidFromPolygon(GLfloat data[][2], unsigned int dataSize,
   if (tobj == NULL) {
     tobj = gluNewTess();  /* create and initialize a GLU
                              polygon tesselation object */
-    gluTessCallback(tobj, GLU_BEGIN, glBegin);
-    gluTessCallback(tobj, GLU_VERTEX, glVertex2fv);  /* semi-tricky */
+    gluTessCallback(tobj, GLU_BEGIN, (void (*)())glBegin);
+    gluTessCallback(tobj, GLU_VERTEX, (void (*)())glVertex2fv);  /* semi-tricky */
     gluTessCallback(tobj, GLU_END, glEnd);
   }
   glNewList(side, GL_COMPILE);
@@ -850,7 +851,7 @@ main(int argc, char **argv)
   /* check for the polygon offset extension */
   if (glutExtensionSupported("GL_EXT_polygon_offset")) {
     polygonOffsetVersion = EXTENSION;
-    glPolygonOffsetEXT(-0.1, -0.002);
+    glPolygonOffset(-0.1, -0.002);
   } else 
 #endif
     {

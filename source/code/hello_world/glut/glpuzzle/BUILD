@@ -4,8 +4,8 @@ package(
 
 cc_library(
     name = "trackball",
+    srcs = ["trackball.cpp"],
     hdrs = ["trackball.hpp"],
-    srcs = ["trackball.cpp"]
 )
 
 cc_binary(
@@ -15,8 +15,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@x11",
-        "@glut",
         ":trackball",
+        "@glut",
+        "@x11",
     ],
 )

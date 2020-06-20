@@ -3,8 +3,8 @@ package(
 )
 
 filegroup(
-          name = "data",
-          srcs = ["isosurf.dat"],
+    name = "data",
+    srcs = ["isosurf.dat"],
 )
 
 # cc_binary(

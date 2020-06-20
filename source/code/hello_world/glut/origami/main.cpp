@@ -291,7 +291,7 @@ display(void)
   glColor3ub(67, 205, 128);
 #if GL_EXT_polygon_offset
   if (polygon_offset) {
-    glPolygonOffsetEXT(0.5, 0.0);
+    glPolygonOffset(0.5, 0.0);
     glEnable(GL_POLYGON_OFFSET_EXT);
   }
 #endif
@@ -300,7 +300,7 @@ display(void)
   glColor3ub(255, 255, 255);
 #if GL_EXT_polygon_offset
   if (polygon_offset) {
-    glPolygonOffsetEXT(0.0, 0.0);
+    glPolygonOffset(0.0, 0.0);
     /* XXX a bug in the unpatched IRIX 5.3 OpenGL posts
        GL_INVALID_ENUM when GL_POLYGON_OFFSET_EXT is disabled;
        please ignore it. */
