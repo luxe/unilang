@@ -49,7 +49,7 @@
 #endif
 
 #define NUM_PATTERNS 32
-#define FLOOR_FILE "floor.rgb"
+#define FLOOR_FILE "code/hello_world/glut/underwater/floor.rgb"
 
 enum {
   PASS_NORMAL, PASS_CAUSTIC
@@ -510,7 +510,7 @@ main(int argc, char **argv)
   for (i=0; i<NUM_PATTERNS; i += causticIncrement) {
     char filename[80];
 
-    sprintf(filename, "caust%02d.bw", i);
+    sprintf(filename, "code/hello_world/glut/underwater/caust%02d.bw", i);
     printf(" %d", i);
     fflush(stdout);
     imageData = read_alpha_texture(filename, &width, &height);
