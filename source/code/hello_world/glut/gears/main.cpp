@@ -315,9 +315,7 @@ visible(int vis)
 
 int main(int argc, char *argv[])
 {
-  std::cout << "sdf" << std::endl;
   glutInit(&argc, argv);
-  std::cout << "sdf1" << std::endl;
   if (argc > 1) {
     /* do 'n' frames then exit */
     limit = atoi(argv[1]) + 1;
@@ -325,12 +323,9 @@ int main(int argc, char *argv[])
     limit = 0;
   }
   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-  std::cout << "sdf3" << std::endl;
 
   glutCreateWindow("Gears");
-  std::cout << "sdf4" << std::endl;
   init();
-  std::cout << "sdf5" << std::endl;
 
   glutDisplayFunc(draw);
   glutReshapeFunc(reshape);
