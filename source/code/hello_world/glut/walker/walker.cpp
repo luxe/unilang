@@ -215,7 +215,6 @@ void FlatCSet(void)
 
 int ReadCSetFromFile(char *filename)
 {
-  printf("%s\n",filename);
   std::string real_filename = "code/hello_world/glut/walker/";
   real_filename += filename;
   FILE *infile = fopen(real_filename.c_str(), "r");
