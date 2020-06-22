@@ -36,7 +36,7 @@
 #endif
 
 static int doubleBuffer = 1;
-static char *filename = "rockfont.txf";
+static char *filename = "code/hello_world/glut/texfont/rockfont.txf";
 static GLfloat angle = 20;
 static TexFont *txf;
 static int usePolygonOffset = 1;
