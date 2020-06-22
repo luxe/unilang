@@ -13,6 +13,7 @@ hdrs = glob(
 srcs = glob(
     include = [
         "lib/glut/**/*.c",
+        "lib/mui/**/*.c",
     ],
     exclude = [
         "lib/glut/win32_util.c",
@@ -21,6 +22,8 @@ srcs = glob(
         "lib/glut/win32_glx.c",
         "lib/glut/win32_x11.c",
         "lib/glut/glut_wglext.c",
+        
+        "lib/mui/browser.c",
     ],
 )
 
