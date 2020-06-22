@@ -38,3 +38,57 @@ cc_binary(
         "@x11",
     ],
 )
+
+cc_binary(
+    name = "simple",
+    srcs = [
+        "simpletxf.c",
+    ],
+    data = [
+        ":data",
+    ],
+    linkopts = [
+        "-lGL",
+    ],
+    deps = [
+        ":texfont",
+        "@glut",
+        "@x11",
+    ],
+)
+
+cc_binary(
+    name = "show",
+    srcs = [
+        "showtxf.c",
+    ],
+    data = [
+        ":data",
+    ],
+    linkopts = [
+        "-lGL",
+    ],
+    deps = [
+        ":texfont",
+        "@glut",
+        "@x11",
+    ],
+)
+
+cc_binary(
+    name = "gen",
+    srcs = [
+        "gentexfont.c",
+    ],
+    data = [
+        ":data",
+    ],
+    linkopts = [
+        "-lGL",
+    ],
+    deps = [
+        ":texfont",
+        "@glut",
+        "@x11",
+    ],
+)

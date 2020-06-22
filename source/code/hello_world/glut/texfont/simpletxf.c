@@ -15,7 +15,7 @@
 #include "TexFont.h"
 
 int doubleBuffer = 1;
-char *filename = "default.txf";
+char *filename = "code/hello_world/glut/texfont/default.txf";
 TexFont *txf;
 GLfloat angle = 20;
 

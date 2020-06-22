@@ -20,7 +20,7 @@ int max_ascent, max_descent;
 int len;
 int ax = 0, ay = 0;
 int doubleBuffer = 1, verbose = 0;
-char *filename = "default.txf";
+char *filename = "code/hello_world/glut/texfont/default.txf";
 TexFont *txf;
 
 /* If resize is called, enable drawing into the full screen area
