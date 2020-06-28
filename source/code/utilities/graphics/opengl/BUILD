@@ -7,5 +7,10 @@ cc_library(
     hdrs = [
         "real_time_shadowing.hpp",
     ],
-    srcs = ["real_time_shadowing.cpp",],
+    srcs = ["real_time_shadowing.cpp","real_time_shadowing2.cpp"],
+    deps = [
+        "@x11",
+        "@mesa_glu",
+        "@glut",
+    ],
 )

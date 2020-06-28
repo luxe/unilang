@@ -15,6 +15,22 @@
 #include <GL/glu.h>
 
 
+struct ShadowVolumeState {
+  int lightSernum;
+  int objectSernum;
+#ifdef MP
+  int generationDone;
+#endif
+
+  int silhouetteSize;
+  GLfloat *silhouette;
+
+  GLfloat angle;
+  GLfloat axis[3];
+
+  GLfloat topScale;
+};
+
 enum {
   RTS_ERROR_OUT_OF_MEMORY,
   RTS_WARNING_EYE_IN_SHADOW,

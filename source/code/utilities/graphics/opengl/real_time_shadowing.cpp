@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <GL/glut.h>
+#include <glu.h>
 
 #include "code/utilities/graphics/opengl/real_time_shadowing.hpp"
 
@@ -48,7 +49,7 @@ typedef struct _ShadowVolumeMemoryPool {
   struct VertexHolder *excessList;
 } ShadowVolumeMemoryPool;
 
-struct _ShadowVolumeState {
+struct ShadowVolumeStateType {
   ShadowVolumeMemoryPool *pool;
 
   int regenerateNeeded;
@@ -78,7 +79,7 @@ int renderBoundary; /* XXX */
 static void
 begin(GLenum type, void *shadowVolumeState)
 {
-  ShadowVolumeState *svs = (ShadowVolumeState *) shadowVolumeState;
+  ShadowVolumeStateType *svs = (ShadowVolumeStateType *) shadowVolumeState;
 
   assert(type == GL_LINE_LOOP);
   if (renderBoundary) {
@@ -94,8 +95,8 @@ begin(GLenum type, void *shadowVolumeState)
 static void
 vertex(void *data, void *shadowVolumeState)
 {
-  ShadowVolumeState *svs = (ShadowVolumeState *) shadowVolumeState;
-  GLfloat *v = data;
+  ShadowVolumeStateType *svs = (ShadowVolumeStateType *) shadowVolumeState;
+  GLfloat *v = (float*)data;
 
   if (renderBoundary) {
     glVertex2fv(v);
@@ -113,7 +114,7 @@ vertex(void *data, void *shadowVolumeState)
 static void
 end(void *shadowVolumeState)
 {
-  ShadowVolumeState *svs = (ShadowVolumeState *) shadowVolumeState;
+  ShadowVolumeStateType *svs = (ShadowVolumeStateType *) shadowVolumeState;
 
   if (!renderBoundary) {
     glColor3f(0, 0, 1);
@@ -141,23 +142,23 @@ freeExcessList(ShadowVolumeMemoryPool * pool)
 static void
 combine(GLdouble coords[3], void *d[4], GLfloat w[4], void **dataOut, void *shadowVolumeState)
 {
-  ShadowVolumeState *svs = (ShadowVolumeState *) shadowVolumeState;
+  ShadowVolumeStateType *svs = (ShadowVolumeStateType *) shadowVolumeState;
   ShadowVolumeMemoryPool *pool = svs->pool;
   struct VertexHolder *holder;
-  GLfloat *new;
+  GLfloat *new_var;
 
   if (pool->combineNext >= pool->combineListSize) {
     holder = (struct VertexHolder *) malloc(sizeof(struct VertexHolder));
     holder->next = pool->excessList;
     pool->excessList = holder;
-    new = holder->v;
+    new_var = holder->v;
   } else {
-    new = &pool->combineList[pool->combineNext * 2];
+    new_var = &pool->combineList[pool->combineNext * 2];
   }
 
-  new[X] = coords[X];
-  new[Y] = coords[Y];
-  *dataOut = new;
+  new_var[X] = coords[X];
+  new_var[Y] = coords[Y];
+  *dataOut = new_var;
 
   pool->combineNext++;
 }
@@ -169,7 +170,7 @@ error(GLenum errno)
 }
 
 static void
-processFeedback(GLint size, GLfloat * buffer, ShadowVolumeState * svs)
+processFeedback(GLint size, GLfloat * buffer, ShadowVolumeStateType * svs)
 {
   ShadowVolumeMemoryPool *pool = svs->pool;
   GLfloat *loc, *end, *eyeLoc;
@@ -181,7 +182,7 @@ processFeedback(GLint size, GLfloat * buffer, ShadowVolumeState * svs)
   if (pool->combineNext > pool->combineListSize) {
     freeExcessList(pool);
     pool->combineListSize = pool->combineNext;
-    pool->combineList = realloc(pool->combineList, sizeof(GLfloat) * 2 * pool->combineListSize);
+    pool->combineList = (float*)realloc(pool->combineList, sizeof(GLfloat) * 2 * pool->combineListSize);
   }
   pool->combineNext = 0;
 
@@ -274,7 +275,7 @@ vcross(const GLfloat * v1, const GLfloat * v2, GLfloat * cross)
 }
 
 void
-rtsFreeShadowVolumeState(ShadowVolumeState * svs)
+rtsFreeShadowVolumeState(ShadowVolumeStateType * svs)
 {
   if (svs->pool) {
     svs->pool->refcnt--;
@@ -294,14 +295,14 @@ rtsFreeShadowVolumeState(ShadowVolumeState * svs)
   free(svs);
 }
 
-ShadowVolumeState *
-rtsCreateShadowVolumeState(ShadowVolumeState * shareSVS)
+ShadowVolumeStateType *
+rtsCreateShadowVolumeStateType(ShadowVolumeStateType * shareSVS)
 {
-  ShadowVolumeState *svs;
+  ShadowVolumeStateType *svs;
   ShadowVolumeMemoryPool *pool;
   GLUtesselator *tess;
 
-  svs = (ShadowVolumeState *) malloc(sizeof(ShadowVolumeState));
+  svs = (ShadowVolumeStateType *) malloc(sizeof(ShadowVolumeStateType));
   if (svs == NULL) {
     return NULL;
   }
@@ -329,11 +330,11 @@ rtsCreateShadowVolumeState(ShadowVolumeState * shareSVS)
     }
     gluTessProperty(tess, GLU_TESS_BOUNDARY_ONLY, GL_TRUE);
     gluTessProperty(tess, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_NONZERO);
-    gluTessCallback(tess, GLU_TESS_BEGIN_DATA, begin);
-    gluTessCallback(tess, GLU_TESS_VERTEX_DATA, vertex);
-    gluTessCallback(tess, GLU_TESS_COMBINE_DATA, combine);
-    gluTessCallback(tess, GLU_TESS_END_DATA, end);
-    gluTessCallback(tess, GLU_TESS_ERROR, error);
+    gluTessCallback(tess, GLU_TESS_BEGIN_DATA, (_GLUfuncptr)begin);
+    gluTessCallback(tess, GLU_TESS_VERTEX_DATA, (_GLUfuncptr)vertex);
+    gluTessCallback(tess, GLU_TESS_COMBINE_DATA, (_GLUfuncptr)combine);
+    gluTessCallback(tess, GLU_TESS_END_DATA, (_GLUfuncptr)end);
+    gluTessCallback(tess, GLU_TESS_ERROR, (_GLUfuncptr)error);
 #else
     fprintf(stderr, "svsCreateShadowVolumeState: Sorry, this API requires GLU 1.2's updated tessellator.\n");
     abort();
@@ -352,13 +353,13 @@ rtsCreateShadowVolumeState(ShadowVolumeState * shareSVS)
 }
 
 void
-rtsSpecifyFeedbackBufferSizeGuess(ShadowVolumeState * svs, float guess)
+rtsSpecifyFeedbackBufferSizeGuess(ShadowVolumeStateType * svs, float guess)
 {
   svs->feedbackBufferSizeGuess = guess;
 }
 
 void
-rtsSpecifyObjectPos(ShadowVolumeState * svs, GLfloat pos[3])
+rtsSpecifyObjectPos(ShadowVolumeStateType * svs, GLfloat pos[3])
 {
   svs->regenerateNeeded = 1;
   svs->objectPos[X] = pos[X];
@@ -367,14 +368,14 @@ rtsSpecifyObjectPos(ShadowVolumeState * svs, GLfloat pos[3])
 }
 
 void
-rtsSpecifyObjectMaxRadius(ShadowVolumeState * svs, GLfloat maxRadius)
+rtsSpecifyObjectMaxRadius(ShadowVolumeStateType * svs, GLfloat maxRadius)
 {
   svs->regenerateNeeded = 1;
   svs->maxRadius = maxRadius;
 }
 
 void
-rtsSpecifyLightPos(ShadowVolumeState * svs, GLfloat pos[3])
+rtsSpecifyLightPos(ShadowVolumeStateType * svs, GLfloat pos[3])
 {
   svs->regenerateNeeded = 1;
   svs->lightPos[X] = pos[X];
@@ -383,14 +384,14 @@ rtsSpecifyLightPos(ShadowVolumeState * svs, GLfloat pos[3])
 }
 
 void
-rtsSpecifyShadowDistance(ShadowVolumeState * svs, GLfloat shadowDistance)
+rtsSpecifyShadowDistance(ShadowVolumeStateType * svs, GLfloat shadowDistance)
 {
   svs->regenerateNeeded = 1;
   svs->shadowDistance = shadowDistance;
 }
 
 void
-rtsSpecifyEyePos(ShadowVolumeState * svs, GLfloat pos[3])
+rtsSpecifyEyePos(ShadowVolumeStateType * svs, GLfloat pos[3])
 {
   svs->regenerateNeeded = 1;
   svs->eyePos[X] = pos[X];
@@ -399,7 +400,7 @@ rtsSpecifyEyePos(ShadowVolumeState * svs, GLfloat pos[3])
 }
 
 void
-rtsSpecifyObjectCallback(ShadowVolumeState * svs, void (*func)(void *data), void *data)
+rtsSpecifyObjectCallback(ShadowVolumeStateType * svs, void (*func)(void *data), void *data)
 {
   svs->regenerateNeeded = 1;
   svs->renderFunc = func;
@@ -407,7 +408,7 @@ rtsSpecifyObjectCallback(ShadowVolumeState * svs, void (*func)(void *data), void
 }
 
 int
-rtsSpecifyDisplayLists(ShadowVolumeState * svs, GLuint lists[3])
+rtsSpecifyDisplayLists(ShadowVolumeStateType * svs, GLuint lists[3])
 {
   if (lists) {
     svs->base = lists[0];
@@ -422,7 +423,7 @@ rtsSpecifyDisplayLists(ShadowVolumeState * svs, GLuint lists[3])
 }
 
 static void
-generateShadowVolume(ShadowVolumeState * svs)
+generateShadowVolume(ShadowVolumeStateType * svs)
 {
   static GLfloat unit[3] =
   {0.0, 0.0, 1.0};
@@ -511,7 +512,7 @@ doFeedback:
     /* XXX Add 32 words of slop (an extra cache line) to end for buggy
        hardware that uses DMA to return feedback results but that sometimes
        overrun the buffer.  Yuck. */
-    feedbackBuffer = realloc(feedbackBuffer, bufferSize * sizeof(GLfloat) + 32 * 4);
+    feedbackBuffer = (float*)realloc(feedbackBuffer, bufferSize * sizeof(GLfloat) + 32 * 4);
   }
   glFeedbackBuffer(bufferSize, GL_2D, feedbackBuffer);
 
@@ -588,7 +589,7 @@ doFeedback:
 }
 
 void
-rtsRenderShadowVolumes(int n, ShadowVolumeState ** svs)
+rtsRenderShadowVolumes(int n, ShadowVolumeStateType ** svs)
 {
   int i;
 
