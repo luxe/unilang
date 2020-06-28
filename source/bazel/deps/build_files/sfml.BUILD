@@ -37,7 +37,11 @@ cc_library(
         exclude = [
         ],
     ),
-    #copts = ["-UNone"],
+    copts = [
+        #"-UNone",
+        #"-DSFML_OPENGL_ES",
+        "-DSFML_SYSTEM_LINUX",
+    ],
     includes = [
         "include",
         "include/SFML",
@@ -51,6 +55,7 @@ cc_library(
     ],
     linkopts = [
         "-ludev",
+        "-GL",
     ],
     deps = [
         "@mesa",
