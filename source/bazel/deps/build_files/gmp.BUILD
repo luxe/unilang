@@ -167,7 +167,7 @@ cc_library(
         "-DOPERATION_divrem_2",
         "-DOPERATION_dump",
         "-DOPERATION_fib2_ui",
-        "-DOPERATION_fib_table",
+        #"-DOPERATION_fib_table",
         "-DOPERATION_gcd",
         "-DOPERATION_gcd_1",
         "-DOPERATION_gcdext",
