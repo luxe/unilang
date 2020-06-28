@@ -14,3 +14,14 @@ cc_library(
         "@glut",
     ],
 )
+
+cc_library(
+    name = "sphere",
+    hdrs = ["sphere.hpp"],
+    srcs = ["sphere.cpp"],
+    deps = [
+        "@x11",
+        "@mesa_glu",
+        "@glut",
+    ],
+)

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <GL/glut.h>
+#include "code/utilities/graphics/opengl/sphere.hpp"
 
 static GLfloat spin = 0;
 static int level = 4;
