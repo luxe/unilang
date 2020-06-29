@@ -42,8 +42,12 @@ cc_library(
     ],
     deps = [
         ":Xaw_headers",
-        "@Xmu",
-        "@libXpm",
+        "@Xmu//:Xmu_headers",
+        #"@libXpm",
+        "@xorg_libXt",
         "@xorg_libSM",
+        "@xorg_libXext//:Xorg_libXext_headers",
+        "@libXpm//:libXpm_headers",
+        "@x11//:x11_hdrs",
     ],
 )

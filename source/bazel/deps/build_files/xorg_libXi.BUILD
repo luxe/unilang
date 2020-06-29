@@ -28,5 +28,9 @@ cc_library(
         "include/X11/extensions",
         "src",
     ],
-    deps = [],
+    deps = [
+        "@xorg_xorgproto",
+        "@x11//:x11_hdrs",
+        "@xorg_libXext//:Xorg_libXext_headers",
+    ],
 )

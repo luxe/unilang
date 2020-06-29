@@ -46,5 +46,6 @@ cc_library(
     #include_prefix = "X11/Xtrans",
     deps = [
         ":Xtrans_headers",
+        "@xorg_xorgproto",
     ],
 )

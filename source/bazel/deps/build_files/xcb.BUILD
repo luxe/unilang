@@ -39,5 +39,6 @@ cc_library(
     #strip_include_prefix = "src",
     #include_prefix = "xcb",
     deps = [
+        "@Xau",
     ],
 )

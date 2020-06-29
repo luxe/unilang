@@ -42,5 +42,6 @@ cc_library(
     ],
     deps = [
         ":Xau_headers",
+        "@xorg_xorgproto",
     ],
 )

@@ -16,6 +16,11 @@ cc_library(
     ],
     deps = [
     ],
+    includes = [
+        "include",
+        "include/X11/Xmu",
+        "src",
+    ],
 )
 
 srcs = glob(
@@ -40,5 +45,6 @@ cc_library(
     deps = [
         ":Xmu_headers",
         "@xorg_libXt",
+        "@x11",
     ],
 )
