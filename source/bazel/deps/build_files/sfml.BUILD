@@ -56,7 +56,7 @@ cc_library(
     linkopts = [
         "-ludev",
         "-lpthread",
-        "-GL",
+        #"-GL",
     ],
     deps = [
         "@mesa",

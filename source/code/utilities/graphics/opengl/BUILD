@@ -4,24 +4,27 @@ package(
 
 cc_library(
     name = "real_time_shadowing",
+    srcs = [
+        "real_time_shadowing.cpp",
+        "real_time_shadowing2.cpp",
+    ],
     hdrs = [
         "real_time_shadowing.hpp",
     ],
-    srcs = ["real_time_shadowing.cpp","real_time_shadowing2.cpp"],
     deps = [
-        "@x11",
-        "@mesa_glu",
         "@glut",
+        "@mesa_glu",
+        "@x11",
     ],
 )
 
 cc_library(
     name = "sphere",
-    hdrs = ["sphere.hpp"],
     srcs = ["sphere.cpp"],
+    hdrs = ["sphere.hpp"],
     deps = [
-        "@x11",
-        "@mesa_glu",
         "@glut",
+        "@mesa_glu",
+        "@x11",
     ],
 )

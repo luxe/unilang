@@ -13,9 +13,7 @@ int main()
     //std::locale::global(std::locale("en_US.UTF-8"));
     //std::cout.imbue(std::locale("en_US.utf8"));
     
-    sf::String str;
-    str = "hello";
-    auto video_mode = sf::VideoMode(200, 200); 
+    auto video_mode = sf::VideoMode(800, 600); 
     sf::RenderWindow window(video_mode,"hello");
     sf::CircleShape shape(100.f);
     shape.setFillColor(sf::Color::Green);

@@ -11,31 +11,31 @@ filegroup(
 
 cc_library(
     name = "textmap",
-    hdrs = [
-        "textmap.hpp",
-    ],
     srcs = [
         "textmap.cpp",
+    ],
+    hdrs = [
+        "textmap.hpp",
     ],
     deps = [
         "//code/utilities/formats/sgi:load_rgb",
         "@glut",
-        "@x11",
         "@mesa_glu",
-    ]
+        "@x11",
+    ],
 )
 
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
+    data = [":data"],
     linkopts = [
         "-lGL",
     ],
     deps = [
         ":textmap",
         "@glut",
-        "@x11",
         "@mesa_glu",
+        "@x11",
     ],
-    data = [":data"]
 )

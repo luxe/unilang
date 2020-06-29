@@ -4,13 +4,16 @@ package(
 
 cc_binary(
     name = "main",
-    srcs = ["main.cpp", "sphere.cpp"],
+    srcs = [
+        "main.cpp",
+        "sphere.cpp",
+    ],
     linkopts = [
         "-lGL",
     ],
     deps = [
-        "@x11",
+        "//code/utilities/graphics/opengl:sphere",
         "@glut",
-        "//code/utilities/graphics/opengl:sphere"
+        "@x11",
     ],
 )

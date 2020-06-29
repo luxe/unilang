@@ -11,14 +11,20 @@ cc_library(
 
 cc_binary(
     name = "main",
-    srcs = ["atlantis.c","dolphin.c","shark.c","swim.c","whale.c"],
+    srcs = [
+        "atlantis.c",
+        "dolphin.c",
+        "shark.c",
+        "swim.c",
+        "whale.c",
+    ],
     linkopts = [
         "-lGL",
     ],
     deps = [
         ":hdrs",
         "@glut",
-        "@x11",
         "@mesa_glu",
+        "@x11",
     ],
 )

@@ -4,7 +4,10 @@ package(
 
 cc_binary(
     name = "main",
-    srcs = ["def_logo.c","opengl_logo.c"],
+    srcs = [
+        "def_logo.c",
+        "opengl_logo.c",
+    ],
     linkopts = [
         "-lGL",
     ],

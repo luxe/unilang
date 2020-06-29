@@ -1,3 +1,4 @@
+#include <float.h>
 #include "code/utilities/graphics/imgui/mechanics.hpp"
 #include "code/utilities/graphics/sdl/sdl_init_settings.hpp"
 

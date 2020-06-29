@@ -11,8 +11,8 @@ filegroup(
 
 cc_library(
     name = "walkviewer",
-    hdrs = ["walkviewer.hpp",],
-    srcs = ["walkviewer.cpp",],
+    srcs = ["walkviewer.cpp"],
+    hdrs = ["walkviewer.hpp"],
     deps = [
         "@glut",
         "@x11",
@@ -26,9 +26,9 @@ cc_library(
         "win32_dirent.hpp",
     ],
     deps = [
+        ":walkviewer",
         "@glut",
         "@x11",
-        ":walkviewer",
     ],
 )
 

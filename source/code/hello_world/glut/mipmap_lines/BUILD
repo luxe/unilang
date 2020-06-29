@@ -16,8 +16,8 @@ cc_binary(
     ],
     deps = [
         ":izoom",
+        "//code/utilities/formats/sgi:load_rgb",
         "@glut",
         "@x11",
-        "//code/utilities/formats/sgi:load_rgb"
     ],
 )

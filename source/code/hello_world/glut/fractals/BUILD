@@ -4,12 +4,12 @@ package(
 
 cc_library(
     name = "fracviewer",
-    hdrs = ["fracviewer.hpp"],
     srcs = ["fracviewer.cpp"],
+    hdrs = ["fracviewer.hpp"],
     deps = [
-        "@x11",
         "@glut",
         "@mesa_glu",
+        "@x11",
     ],
 )
 
@@ -20,9 +20,9 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@x11",
+        ":fracviewer",
         "@glut",
         "@mesa_glu",
-        ":fracviewer",
+        "@x11",
     ],
 )

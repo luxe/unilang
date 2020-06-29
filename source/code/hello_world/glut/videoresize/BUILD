@@ -9,8 +9,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "//code/utilities/graphics/opengl:sphere",
         "@glut",
         "@x11",
-        "//code/utilities/graphics/opengl:sphere"
     ],
 )

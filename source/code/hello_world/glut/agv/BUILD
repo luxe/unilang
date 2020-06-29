@@ -4,8 +4,8 @@ package(
 
 cc_library(
     name = "agviewer",
-    hdrs = ["agviewer.h",],
-    srcs = ["agviewer.c",],
+    srcs = ["agviewer.c"],
+    hdrs = ["agviewer.h"],
     deps = [
         "@glut",
         "@x11",

@@ -4,11 +4,11 @@ package(
 
 cc_library(
     name = "matrix",
-    hdrs = [
-        "matrix.h",
-    ],
     srcs = [
         "matrix.c",
+    ],
+    hdrs = [
+        "matrix.h",
     ],
 )
 

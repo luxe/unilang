@@ -1,4 +1,3 @@
-
 package(
     default_visibility = ["//visibility:public"],
 )
@@ -10,9 +9,9 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@x11",
-        "@mesa_glu",
+        "//code/utilities/graphics/opengl:real_time_shadowing",
         "@glut",
-        "//code/utilities/graphics/opengl:real_time_shadowing"
+        "@mesa_glu",
+        "@x11",
     ],
 )

@@ -11,10 +11,10 @@ filegroup(
 
 cc_library(
     name = "texfont",
+    srcs = ["texfont.c"],
     hdrs = [
         "TexFont.h",
     ],
-    srcs = ["texfont.c"],
     deps = [
         "@glut",
         "@x11",

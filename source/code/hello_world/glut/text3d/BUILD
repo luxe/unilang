@@ -10,7 +10,7 @@ cc_binary(
     ],
     deps = [
         "@glut",
-        "@x11",
         "@mesa_glu",
+        "@x11",
     ],
 )

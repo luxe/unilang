@@ -9,8 +9,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@x11",
-        "@mesa_glu",
         "@glut",
+        "@mesa_glu",
+        "@x11",
     ],
 )

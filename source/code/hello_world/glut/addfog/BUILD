@@ -4,11 +4,11 @@ package(
 
 cc_library(
     name = "add_fog",
-    hdrs = [
-        "addfog.hpp",
-    ],
     srcs = [
         "addfog.cpp",
+    ],
+    hdrs = [
+        "addfog.hpp",
     ],
 )
 

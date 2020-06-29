@@ -4,10 +4,10 @@ package(
 
 cc_library(
     name = "dino",
+    srcs = ["dino.c"],
     hdrs = [
         "dino.h",
     ],
-    srcs = ["dino.c",],
     deps = [
         "@glut",
         "@x11",
@@ -16,10 +16,10 @@ cc_library(
 
 cc_library(
     name = "texload",
+    srcs = ["texload.c"],
     hdrs = [
         "texload.h",
     ],
-    srcs = ["texload.c",],
     deps = [
         "@glut",
         "@x11",

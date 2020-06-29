@@ -6,7 +6,7 @@ cc_library(
     hdrs = glob(["*.h"]),
     linkopts = [],
     deps = [
-        "@SDL2",
+        #"@SDL2",
         #"@opengl",
     ],
 )
@@ -24,7 +24,6 @@ cc_library(
         "examples/libs/gl3w/GL/gl3w.h",
         "examples/libs/gl3w/GL/glcorearb.h",
     ],
-    copts = [],
     includes = [
         ".",
         "examples/libs",
@@ -32,5 +31,6 @@ cc_library(
     ],
     deps = [
         ":main",
+        "@SDL2",
     ],
 )

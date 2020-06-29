@@ -53,7 +53,7 @@ cc_library(
         "@xcb",
         "@xkbcommon",
         "@xorg_libXext",
-        "@xorg_libXt",
         "@xorg_libXi",
+        "@xorg_libXt",
     ],
 )

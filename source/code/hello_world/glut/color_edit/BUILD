@@ -4,7 +4,10 @@ package(
 
 cc_library(
     name = "hdrs",
-    hdrs = ["mallocbis.h","RGBA.h"],
+    hdrs = [
+        "RGBA.h",
+        "mallocbis.h",
+    ],
 )
 
 cc_binary(
@@ -19,8 +22,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        ":hdrs",
         "@glut",
         "@x11",
-        ":hdrs",
     ],
 )

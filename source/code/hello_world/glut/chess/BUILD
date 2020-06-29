@@ -4,11 +4,11 @@ package(
 
 cc_library(
     name = "chess_class",
-    hdrs = [
-        "chess.h",
-    ],
     srcs = [
         "chess.c",
+    ],
+    hdrs = [
+        "chess.h",
     ],
     deps = [
         "@glut",
