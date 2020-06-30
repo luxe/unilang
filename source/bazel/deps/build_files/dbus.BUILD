@@ -63,5 +63,8 @@ cc_library(
         "dbus/bus",
         "dbus/dbus",
     ],
-    deps = [":dbus_hdrs"],
+    deps = [
+        ":dbus_hdrs",
+        "@expat",
+    ],
 )

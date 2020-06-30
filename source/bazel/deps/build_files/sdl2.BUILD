@@ -150,5 +150,6 @@ cc_library(
         "@x11",
         "@xcb",
         "@xorg_xorgproto",
+        "@systemd//:libudev",
     ],
 )

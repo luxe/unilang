@@ -165,6 +165,7 @@ cc_library(
         "glib/gio",
         "gmodule",
         "gobject",
+        "glib/pcre",
     ],
     deps = [
         "@libevent",

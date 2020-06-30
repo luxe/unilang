@@ -42,6 +42,7 @@ cc_library(
     ],
     #include_prefix = "sys",
     deps = [
+        "@openssl//:ssl",
     ],
 )
 
