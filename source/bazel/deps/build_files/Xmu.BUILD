@@ -14,12 +14,12 @@ cc_library(
     hdrs = hdrs,
     copts = [
     ],
-    deps = [
-    ],
     includes = [
         "include",
         "include/X11/Xmu",
         "src",
+    ],
+    deps = [
     ],
 )
 
@@ -44,7 +44,7 @@ cc_library(
     ],
     deps = [
         ":Xmu_headers",
-        "@xorg_libXt",
         "@x11",
+        "@xorg_libXt",
     ],
 )

@@ -14,14 +14,14 @@ hdrs = glob(
 cc_library(
     name = "Xorg_libXext_headers",
     hdrs = hdrs,
+    copts = [
+    ],
     includes = [
         ".",
         "X11",
         "include",
         "include/X11",
         "src",
-    ],
-    copts = [
     ],
     deps = [
     ],

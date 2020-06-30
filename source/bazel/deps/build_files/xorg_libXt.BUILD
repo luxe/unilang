@@ -44,7 +44,7 @@ cc_library(
     ],
     deps = [
         ":Xorg_libXt_headers",
-        "@xorg_libSM",
         "@x11//:x11_hdrs",
+        "@xorg_libSM",
     ],
 )

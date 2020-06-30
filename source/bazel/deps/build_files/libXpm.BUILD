@@ -12,12 +12,12 @@ hdrs = glob(
 cc_library(
     name = "libXpm_headers",
     hdrs = hdrs,
+    copts = [
+    ],
     includes = [
         "include",
         "include/X11",
         "src",
-    ],
-    copts = [
     ],
     deps = [
     ],
