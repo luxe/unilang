@@ -11,7 +11,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@debian_stretch_amd64_sysroot//:GL",
+        "@GL",
         "@glut",
         "@mesa",
         "@x11",

@@ -23,6 +23,7 @@ cc_binary(
     ],
     deps = [
         ":hdrs",
+        "@GL",
         "@glut",
         "@mesa_glu",
         "@x11",
