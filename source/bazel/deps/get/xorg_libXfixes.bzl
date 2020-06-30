@@ -7,7 +7,7 @@ def xorgLibXfixes():
     http_archive(
         name = "xorg_libXfixes",
         build_file = "//bazel/deps/build_files:xorg_libXfixes.BUILD",
-        sha256 = "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5",
+        sha256 = "ed38275d3b662b7b9be6da5db75b891f596a52bf21dcb1547324d76c37347b99",
         strip_prefix = "xorg-libXfixes-174a94975af710247719310cfc53bd13e1f3b44d",
         urls = [
             "https://github.com/Unilang/xorg-libXfixes/archive/174a94975af710247719310cfc53bd13e1f3b44d.tar.gz",

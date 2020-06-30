@@ -45,6 +45,7 @@ cc_library(
     ],
     deps = [
         ":libXpm_headers",
-        "@x11",
+        "@x11//:x11_hdrs",
+        "@xorg_xorgproto",
     ],
 )

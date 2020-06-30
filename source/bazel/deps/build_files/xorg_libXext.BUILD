@@ -50,6 +50,8 @@ cc_library(
     ],
     deps = [
         ":Xorg_libXext_headers",
-        "@x11//:hdrs",
+        "@x11//:x11_hdrs",
+        "@xorg_xorgproto",
+        "@Xau//:Xau_headers",
     ],
 )

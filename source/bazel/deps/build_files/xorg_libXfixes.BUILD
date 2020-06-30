@@ -1,6 +1,5 @@
 package(default_visibility = ["//visibility:public"])
 
-#glob the files we care about
 hdrs = glob(
     include = [
         "include/**/*.h",
@@ -10,29 +9,48 @@ hdrs = glob(
     ],
 )
 
+cc_library(
+    name = "hdrs",
+    hdrs = hdrs,
+    copts = [
+    ],
+    includes = [
+        ".",
+        "X11",
+        "include",
+        "include/X11",
+        "include/X11/extensions",
+        "src",
+    ],
+    deps = [
+    ],
+)
+
 srcs = glob(
     include = [
         "src/**/*.c",
     ],
     exclude = [
-        "src/XFreeLst.c",
     ],
 )
 
 cc_library(
-    name = "xorg_libXi",
+    name = "xorg_libXfixes",
     srcs = srcs,
-    hdrs = hdrs,
+    copts = [
+        "-DHAVE_CONFIG_H",
+    ],
     includes = [
+        ".",
+        "X11",
         "include",
+        "include/X11",
         "include/X11/extensions",
         "src",
     ],
     deps = [
         "@x11//:x11_hdrs",
-        "@xorg_libXext//:Xorg_libXext_headers",
-        "@xorg_libXfixes",
+        ":hdrs",
         "@xorg_xorgproto",
-        
     ],
 )
