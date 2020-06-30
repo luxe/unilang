@@ -11,5 +11,6 @@ cc_binary(
     deps = [
         "@glut",
         "@x11",
+        "@GL",
     ],
 )

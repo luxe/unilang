@@ -13,7 +13,7 @@ cc_binary(
         "-lglut",
     ],
     deps = [
-        "@GL",
+        "@debian_stretch_amd64_sysroot//:GL",
         "@GLU_so//:lib",
         "@glut_so//:lib",
         "@glut",
