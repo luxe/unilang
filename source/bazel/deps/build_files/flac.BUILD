@@ -38,7 +38,9 @@ cc_library(
         "src",
         "src/libFLAC",
         "src/libFLAC/include",
-        "src/libFLAC/include/private",
+        
+        #careful (brings in a float.h and messes things up for other libraries)
+        #"src/libFLAC/include/private",
     ],
     deps = [
         "@ogg",
