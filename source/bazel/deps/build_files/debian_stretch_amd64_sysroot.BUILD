@@ -77,12 +77,21 @@ cc_library(
     hdrs = glob(["usr/include/sys/**/*.h"]),
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "linux_hdrs",
     hdrs = glob(["usr/include/linux/**/*.h"]),
     includes = ["usr/include"],
 )
 
+cc_library(
+    name = "xf86drm",
+    hdrs = [
+        "usr/include/xf86drm.h",
+        "usr/include/xf86drmMode.h",
+    ],
+    includes = ["usr/include"],
+)
 
 cc_library(
     name = "udev_hdrs",

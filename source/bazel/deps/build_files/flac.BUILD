@@ -38,7 +38,7 @@ cc_library(
         "src",
         "src/libFLAC",
         "src/libFLAC/include",
-        
+
         #careful (brings in a float.h and messes things up for other libraries)
         #"src/libFLAC/include/private",
     ],

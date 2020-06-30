@@ -13,29 +13,32 @@ int main()
                                     SDL_WINDOWPOS_CENTERED, 
                                     SDL_WINDOWPOS_CENTERED, 
                                     1000, 1000,  SDL_WINDOW_SHOWN);
+    printf("creating window\n");
     if (win == NULL) {
         printf("SDL_CreateWindow failed: %s\n", SDL_GetError());
         exit(1);
     }
+    printf("creating window (done)\n");
 
     // triggers the program that controls 
     // your graphics hardware and sets flags 
-    //Uint32 render_flags = SDL_RENDERER_ACCELERATED
+    //Uint32 render_flags = SDL_RENDERER_ACCELERATED;
     Uint32 render_flags = 0; 
 
-    // creates a renderer to render our images 
+    // creates a renderer to render our images
+    printf("creating render\n");
     SDL_Renderer* rend = SDL_CreateRenderer(win, -1, render_flags);
-    
     if (rend == NULL) {
         printf("SDL_CreateRenderer failed: %s\n", SDL_GetError());
         exit(1);
     }
+    printf("creating render (done)\n");
 
     // creates a surface to load an image into the main memory 
     SDL_Surface* surface; 
 
     // please provide a path for your image 
-    surface = IMG_Load("/home/laptop/Desktop/icon.png");
+    surface = IMG_Load("/home/laptop/Desktop/icon3.png");
     
     if (surface == NULL) {
         printf("IMG_Load: %s\n", SDL_GetError());

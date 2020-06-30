@@ -12,4 +12,10 @@ def xorgLibxshmfence():
         urls = [
             "https://github.com/Unilang/xorg-libxshmfence/archive/db7966bee2ec46b835d0bb374f35ae631a0edbd1.tar.gz",
         ],
+        patches = [
+            "//bazel/deps/build_files:xorg_libxshmfence.patch",
+        ],
+        patch_args = [
+            "-p1",
+        ],
     )

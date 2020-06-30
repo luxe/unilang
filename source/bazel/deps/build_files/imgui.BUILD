@@ -40,13 +40,10 @@ cc_binary(
     name = "imgui_sdl_opengl3_main",
     srcs = ["examples/example_sdl_opengl3/main.cpp"],
     deps = [
-        "@GL",
         ":imgui_sdl_opengl3",
-    ]
+        "@GL",
+    ],
 )
-
-
-
 
 cc_library(
     name = "imgui_sdl_opengl2",
@@ -77,7 +74,7 @@ cc_binary(
     name = "imgui_sdl_opengl2_main",
     srcs = ["examples/example_sdl_opengl2/main.cpp"],
     deps = [
-        "@GL",
         ":imgui_sdl_opengl2",
-    ]
+        "@GL",
+    ],
 )

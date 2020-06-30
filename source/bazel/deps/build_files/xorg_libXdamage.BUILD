@@ -19,10 +19,12 @@ srcs = glob(
 )
 
 cc_library(
-    name = "xorg_libxshmfence",
+    name = "xorg_libXdamage",
     srcs = srcs,
     hdrs = hdrs,
     includes = [
+        "include",
+        "include/X11/extensions",
         "src",
     ],
     deps = [
