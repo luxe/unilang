@@ -8,5 +8,6 @@ hcp(
     name = "window_geometry_getter",
     deps = [
         "//code/utilities/graphics/x11/main_state:x11_main_state_creator",
+        "@x11",
     ],
 )

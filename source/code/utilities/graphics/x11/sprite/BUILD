@@ -7,6 +7,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "sprite",
     deps = [
+        "@x11",
     ],
 )
 

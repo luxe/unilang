@@ -138,6 +138,7 @@ cc_library(
         "-DHAVE_PTHREAD_SETNAME_NP",
     ],
     #linkopts = ["-lpthread"],
+    include_prefix = "SDL2",
     includes = [
         ".",
         "include",

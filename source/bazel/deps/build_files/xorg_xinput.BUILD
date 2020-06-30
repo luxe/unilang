@@ -32,7 +32,12 @@ cc_library(
         "-lXrandr",
         "-lXinerama",
     ],
-    deps = [":headers"],
+    deps = [
+        ":headers",
+        "@x11//:x11_hdrs",
+        "@xorg_xorgproto",
+        "@xorg_libXext",
+    ],
 )
 
 cc_binary(
@@ -45,5 +50,7 @@ cc_binary(
         ".",
         "src/",
     ],
-    deps = [":lib"],
+    deps = [
+        ":lib",
+    ],
 )

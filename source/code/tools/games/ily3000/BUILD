@@ -6,9 +6,7 @@ cc_binary(
     name = "ily",
     srcs = ["ily.cpp"],
     linkopts = [
-        "-lX11",
         "-lGL",
-        "-lXrandr",
         "-ludev",
     ],
     deps = [
@@ -23,9 +21,10 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
-        "@SDL2",
-        "@glfw",
-        "@opengl",
+        #"@sdl2",
+        #"@glfw",
+        "@GL",
+        #"@opengl",
         "@sfml",
     ],
 )

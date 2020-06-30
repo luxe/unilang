@@ -28,6 +28,7 @@ hcp(
     name = "joycon_state_getter",
     deps = [
         "//code/utilities/peripheral/keyboard/joycons",
+        "@sfml",
     ],
 )
 
@@ -36,6 +37,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures:compass_direction_diagnonal",
         "//code/utilities/peripheral/keyboard/joycons",
+        "@sfml",
     ],
 )
 
@@ -45,5 +47,6 @@ hcp(
         "//code/utilities/data_structures:compass_direction_diagnonal",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_joystick_direction_getter",
+        "@sfml",
     ],
 )

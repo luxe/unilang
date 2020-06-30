@@ -7,6 +7,7 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "setup_display_settings",
     deps = [
+        "@x11",
     ],
 )
 
@@ -17,5 +18,6 @@ hcp(
         "//code/utilities/graphics/x11/data:main_x11_state",
         "//code/utilities/graphics/x11/data:x11_bg_fg_colors",
         "//code/utilities/graphics/x11/data:x11_window_geometry",
+        "@x11",
     ],
 )

@@ -8,6 +8,7 @@ hcp(
     name = "f310_gamepads_state_getter",
     deps = [
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
+        "@sfml",
     ],
 )
 
@@ -58,5 +59,6 @@ hcp(
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepad_phases",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
         "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_event",
+        "@sfml",
     ],
 )

@@ -9,5 +9,6 @@ hcp(
     deps = [
         "//code/utilities/graphics/x11/data:main_x11_state",
         "@xorg_xinput//:lib",
+        "@x11",
     ],
 )

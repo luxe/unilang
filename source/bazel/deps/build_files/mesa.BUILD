@@ -125,9 +125,10 @@ srcs = glob(
         #need xorg-libxshmfence
         "src/mesa/drivers/x11/glxapi.c",
         "src/glx/dri3_glx.c",
-        #"src/glx/dri_glx.c",
-        #"src/glx/dri2_glx.c",
-        #"src/glx/glxcmds.c",
+        "src/glx/dri_glx.c",
+        "src/glx/dri2_glx.c",
+        "src/glx/glxcmds.c",
+        
         #"src/glx/glx_pbuffer.c",
         #"src/glx/glx_error.c",
         #"src/glx/glxcurrent.c",
@@ -158,9 +159,12 @@ cc_library(
         "-DHAVE_X11_PLATFORM",
         "-DUSE_X86_64_ASM",
         "-DNAME=LLVM",
-        "-DGLX_DIRECT_RENDERING",
-        "-DGLX_INDIRECT_RENDERING",
-        "-DGLX_USE_DRM",
+        
+        #"-DGLX_DIRECT_RENDERING",
+        #"-DGLX_INDIRECT_RENDERING",
+        #"-DGLX_USE_DRM",
+        
+        #"-DUSE_ELF_TLS",
 
         # "-DENABLE_SHADER_CACHE",
         # "-DENABLE_ST_OMX_BELLAGIO=0",
@@ -267,5 +271,4 @@ cc_library(
 # -D__STDC_CONSTANT_MACROS
 # -D__STDC_FORMAT_MACROS
 # -D__STDC_LIMIT_MACROS
-# -DUSE_ELF_TLS
 # -DUSE_GCC_ATOMIC_BUILTINS
