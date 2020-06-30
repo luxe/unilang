@@ -73,6 +73,18 @@ cc_library(
 
 #other
 cc_library(
+    name = "sys_hdrs",
+    hdrs = glob(["usr/include/sys/**/*.h"]),
+    includes = ["usr/include"],
+)
+cc_library(
+    name = "linux_hdrs",
+    hdrs = glob(["usr/include/linux/**/*.h"]),
+    includes = ["usr/include"],
+)
+
+
+cc_library(
     name = "udev_hdrs",
     hdrs = ["usr/include/libudev.h"],
     includes = ["usr/include"],

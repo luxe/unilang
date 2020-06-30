@@ -47,6 +47,7 @@ libudev_srcs = glob(
         "src/libudev/libudev-enumerate.c",
         "src/shared/xml.c",
         "src/basic/utf8.c",
+        "src/shared/ip-protocol-list.c",
 
         #"src/libsystemd/sd-daemon/sd-daemon.c,
     ],
@@ -82,6 +83,8 @@ cc_library(
     deps = [
         "@debian_stretch_amd64_sysroot//:security",
         "@debian_stretch_amd64_sysroot//:vm_sockets",
+        "@debian_stretch_amd64_sysroot//:sys_hdrs",
+        "@debian_stretch_amd64_sysroot//:linux_hdrs",
         "@openssl//:ssl",
     ],
 )
