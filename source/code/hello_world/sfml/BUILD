@@ -68,13 +68,14 @@ cc_binary(
         "-lGL",
 
         #"-ludev",
-        "-pthread",
+        #"-pthread",
         #"-lrt",
         #"-lsfml-graphics",
         #"-lsfml-window",
         #"-lsfml-system",
     ],
     deps = [
+        "@GL",
         #"@glfw",
         #"@SFML_unhermetic",
         #"@SFML_unhermetic_libs",

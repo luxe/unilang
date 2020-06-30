@@ -49,5 +49,7 @@ cc_library(
         "sndiod",
     ],
     deps = [
+        "@debian_stretch_amd64_sysroot//:alsa",
+        "@debian_stretch_amd64_sysroot//:pulse_audio",
     ],
 )

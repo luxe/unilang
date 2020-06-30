@@ -33,6 +33,9 @@ cc_library(
         "src",
         "src/events",
     ],
+    deps = [
+        "@debian_stretch_amd64_sysroot//:wayland_util",
+    ]
 )
 
 ################################
@@ -56,6 +59,16 @@ cc_library(
         "src",
         "src/events",
     ],
+    deps = [
+        "@debian_stretch_amd64_sysroot//:wayland_util",
+        "@debian_stretch_amd64_sysroot//:wayland_cursor",
+        "@debian_stretch_amd64_sysroot//:wayland_client_core",
+        "@debian_stretch_amd64_sysroot//:wayland_client",
+        "@debian_stretch_amd64_sysroot//:wayland_version",
+        "@debian_stretch_amd64_sysroot//:wayland_egl",
+        "@debian_stretch_amd64_sysroot//:alsa",
+        "@debian_stretch_amd64_sysroot//:pulse_audio",
+    ]
 )
 ################################
 # finish the SDL library by building all the sources and linking
@@ -151,5 +164,13 @@ cc_library(
         "@xcb",
         "@xorg_xorgproto",
         "@systemd//:libudev",
+        "@debian_stretch_amd64_sysroot//:wayland_util",
+        "@debian_stretch_amd64_sysroot//:wayland_cursor",
+        "@debian_stretch_amd64_sysroot//:wayland_client_core",
+        "@debian_stretch_amd64_sysroot//:wayland_client",
+        "@debian_stretch_amd64_sysroot//:wayland_version",
+        "@debian_stretch_amd64_sysroot//:wayland_egl",
+        "@debian_stretch_amd64_sysroot//:alsa",
+        "@debian_stretch_amd64_sysroot//:pulse_audio",
     ],
 )

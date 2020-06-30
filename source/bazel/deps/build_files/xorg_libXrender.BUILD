@@ -39,5 +39,8 @@ cc_library(
     ],
     deps = [
         ":Xrender_headers",
+        "@x11//:x11_hdrs",
+        "@xorg_xorgproto",
+        "@xorg_libXext//:Xorg_libXext_headers",
     ],
 )

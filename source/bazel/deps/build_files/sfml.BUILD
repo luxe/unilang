@@ -55,7 +55,7 @@ cc_library(
     ],
     linkopts = [
         "-ludev",
-        "-lpthread",
+        #"-lpthread",
         #"-GL",
     ],
     deps = [
@@ -65,6 +65,8 @@ cc_library(
         "@openal_soft",
         "@stb",
         #"@systemd//:libudev",
+        "@debian_stretch_amd64_sysroot//:udev",
+        "@debian_stretch_amd64_sysroot//:udev_hdrs",
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",

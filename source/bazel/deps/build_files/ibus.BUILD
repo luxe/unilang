@@ -54,5 +54,6 @@ cc_library(
         "@dbus",
         "@glib",
         "@libevent",
+        "@x11",
     ],
 )

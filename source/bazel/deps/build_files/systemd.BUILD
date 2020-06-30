@@ -80,5 +80,8 @@ cc_library(
         #"-lrt",
     ],
     deps = [
+        "@debian_stretch_amd64_sysroot//:vm_sockets",
+        "@debian_stretch_amd64_sysroot//:security",
+        "@openssl//:ssl",
     ],
 )

@@ -170,5 +170,7 @@ cc_library(
     deps = [
         "@libevent",
         "@libevent//:sys_event",
+        "@zlib",
+        "@debian_stretch_amd64_sysroot//:ffi",
     ],
 )
