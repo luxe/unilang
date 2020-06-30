@@ -54,7 +54,7 @@ cc_library(
         "src/util",
     ],
     deps = [
-        "@mesa_glu",
+        #"@mesa_glu",
         "@x11",
         "@xcb",
         "@xorg_xorgproto",
@@ -200,6 +200,7 @@ cc_library(
         "@mesa_glu",
         "@x11",
         "@xcb",
+        "@expat",
         "@xorg_xorgproto",
     ],
 )

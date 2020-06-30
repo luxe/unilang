@@ -10,5 +10,8 @@ cc_binary(
     linkopts = [
         "-lGL",
     ],
-    deps = ["@x11"],
+    deps = [
+        "@x11",
+        "@mesa",
+    ],
 )
