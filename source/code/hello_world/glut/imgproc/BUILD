@@ -10,6 +10,7 @@ cc_binary(
     ],
     deps = [
         "//code/utilities/formats/sgi:load_rgb",
+        "@GL",
         "@glut",
         "@x11",
     ],

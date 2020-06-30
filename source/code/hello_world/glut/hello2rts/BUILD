@@ -10,6 +10,7 @@ cc_binary(
     ],
     deps = [
         "//code/utilities/graphics/opengl:real_time_shadowing",
+        "@GL",
         "@glut",
         "@mesa_glu",
         "@x11",

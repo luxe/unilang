@@ -22,6 +22,7 @@ cc_binary(
     ],
     deps = [
         ":agviewer",
+        "@GL",
         "@glut",
         "@x11",
     ],

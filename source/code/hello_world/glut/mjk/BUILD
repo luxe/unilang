@@ -14,6 +14,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         ":mjkimage",
         "@glut",
         "@x11",
@@ -27,6 +28,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         ":mjkimage",
         "@glut",
         "@x11",

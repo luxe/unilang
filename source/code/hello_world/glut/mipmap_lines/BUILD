@@ -15,6 +15,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         ":izoom",
         "//code/utilities/formats/sgi:load_rgb",
         "@glut",

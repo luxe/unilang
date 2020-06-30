@@ -6,12 +6,12 @@ cc_binary(
     name = "main",
     srcs = [
         "main.cpp",
-        "sphere.cpp",
     ],
     linkopts = [
         "-lGL",
     ],
     deps = [
+        "@GL",
         "//code/utilities/graphics/opengl:sphere",
         "@glut",
         "@x11",

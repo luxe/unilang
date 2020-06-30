@@ -6,6 +6,12 @@ cc_library(
     name = "tr",
     srcs = ["tr.cpp"],
     hdrs = ["tr.hpp"],
+    deps = [
+        "@glut",
+        "@libXxf86vm",
+        "@x11",
+        "@xorg_libXext",
+    ],
 )
 
 cc_binary(
@@ -17,6 +23,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         ":tr",
         "@glut",
         "@libXxf86vm",

@@ -24,6 +24,7 @@ cc_binary(
         #"-lglut",
     ],
     deps = [
+        "@GL",
         ":image",
         "@glut",
         "@x11",

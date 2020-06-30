@@ -14,6 +14,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         ":logo",
         "@glut",
         "@x11",

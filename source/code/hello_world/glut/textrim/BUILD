@@ -9,6 +9,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         "//code/utilities/formats/sgi:load_rgb",
         "@glut",
         "@mesa_glu",

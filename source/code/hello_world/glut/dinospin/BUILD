@@ -15,6 +15,7 @@ cc_binary(
         "-lGL",
     ],
     deps = [
+        "@GL",
         ":trackball",
         "@glut",
         "@mesa_glu",

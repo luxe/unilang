@@ -9,6 +9,7 @@ package(
 #         "-lGL",
 #     ],
 #     deps = [
+#         "@GL",
 #         "@x11",
 #         "@glut",
 #     ],
