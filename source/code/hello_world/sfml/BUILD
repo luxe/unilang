@@ -65,7 +65,7 @@ cc_binary(
         #"-lsfml-window",
         #"-lsfml-system",
         #"-lc++",
-        "-lGL",
+        #"-lGL",
 
         #"-ludev",
         #"-pthread",
