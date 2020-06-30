@@ -10,6 +10,11 @@ cc_library(
     hdrs = [
         "addfog.hpp",
     ],
+    deps = [
+        "@GL",
+        "@glut",
+        "@x11",
+    ],
 )
 
 cc_binary(
@@ -22,6 +27,7 @@ cc_binary(
     ],
     deps = [
         ":add_fog",
+        "@GL",
         "@glut",
         "@x11",
     ],
@@ -37,6 +43,7 @@ cc_binary(
     ],
     deps = [
         ":add_fog",
+        "@GL",
         "@glut",
         "@x11",
     ],
