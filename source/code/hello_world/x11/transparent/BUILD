@@ -9,8 +9,14 @@ cc_binary(
     srcs = ["main.cpp"],
     linkopts = [
         "-lGL",
+        "-lGLU",
+        "-lglut",
     ],
     deps = [
+        "@GL",
+        "@GLU_so//:lib",
+        "@glut_so//:lib",
+        "@glut",
         "@x11",
         "@mesa",
     ],

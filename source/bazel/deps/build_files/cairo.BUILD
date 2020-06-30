@@ -292,5 +292,8 @@ cc_library(
         "@libpng",
         "@pixman",
         "@zlib",
+        "@x11//:x11_hdrs",
+        "@xorg_xorgproto",
+        "@xorg_libXext//:Xorg_libXext_headers",
     ],
 )
