@@ -41,6 +41,7 @@ cc_library(
         #"-UNone",
         #"-DSFML_OPENGL_ES",
         "-DSFML_SYSTEM_LINUX",
+        "-pthread",
     ],
     includes = [
         "include",
