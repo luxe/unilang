@@ -195,12 +195,12 @@ cc_library(
         "src/util",
     ],
     deps = [
+        "@expat",
         "@libXxf86vm",
         "@libglvnd",
         "@mesa_glu",
         "@x11",
         "@xcb",
-        "@expat",
         "@xorg_xorgproto",
     ],
 )

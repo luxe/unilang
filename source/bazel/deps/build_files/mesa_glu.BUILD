@@ -40,6 +40,6 @@ cc_library(
         "src/libnurbs/nurbtess",
     ],
     deps = [
-        "@mesa//:mesa_hdrs"
+        "@mesa//:mesa_hdrs",
     ],
 )

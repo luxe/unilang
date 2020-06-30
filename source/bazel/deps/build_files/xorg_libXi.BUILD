@@ -33,6 +33,5 @@ cc_library(
         "@xorg_libXext//:Xorg_libXext_headers",
         "@xorg_libXfixes",
         "@xorg_xorgproto",
-        
     ],
 )

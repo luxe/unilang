@@ -45,14 +45,24 @@ class
 
     //since not every dependency has been converted or supported for programmatic generation yet,
     //we will only generate these "get files" if they have actual locations on where to get the code.
-    if (spec.locations.empty()){
+    if (spec.locations.empty() && !spec.system){
         return false;
     }
     return true;
 ❱
 
-
 ◀private: static▶ std::string ☀Create_Get_File_Content(Dependency_Specification const& spec)❰
+
+    //dependency is on the system
+    if (spec.system){
+        return Create_Local_Get_File_Content(spec);
+    }
+    
+    //dependency is hosted remotely
+    return Create_Http_Archive_Get_File_Content(spec);
+❱
+
+◀private: static▶ std::string ☀Create_Http_Archive_Get_File_Content(Dependency_Specification const& spec)❰
     std::string result;
     
     Append_With_Newline(result,Generated_Comment_Getter::Get());
@@ -144,6 +154,42 @@ class
     
     return result;
 ❱
+
+◀private: static▶ std::string ☀Create_Local_Get_File_Content(Dependency_Specification const& spec)❰
+
+    std::string result;
+    Append_With_Newline(result,Generated_Comment_Getter::Get());
+    Append_With_Newline(result,"");
+    Append(result,"def ");
+    Append(result,Fix_Casing_For_Bazel(spec.lib_name));
+    Append_With_Newline(result,"():");
+    Append(result,"    ");
+    Append_With_Newline(result,"native.new_local_repository(");
+    
+    //add name
+    Append(result,"        ");
+    Append_Key_Value(result,"name",Remove_Dashes(spec.lib_name));
+    Append_With_Newline(result,",");
+    
+    //add build file
+    if (!spec.build_content_in_dependency){
+        Append(result,"        ");
+        Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + Remove_Dashes(spec.lib_name) + ".BUILD");
+        Append_With_Newline(result,",");
+    }
+    
+    //add path
+    Append(result,"        ");
+    Append_Key_Value(result,"path",spec.system_path);
+    Append_With_Newline(result,",");
+    
+    Append_With_Newline(result,"");
+    Append(result,"    ");
+    Append_With_Newline(result,")");
+    
+    return result;
+❱
+
 
 ◀private: static▶ std::string ☀Create_Main_Third_Party_Sourcing_File(Dependency_Specifications const& all_specs)❰
     std::string result;

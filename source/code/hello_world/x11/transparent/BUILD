@@ -13,7 +13,7 @@ cc_binary(
     deps = [
         "@debian_stretch_amd64_sysroot//:GL",
         "@glut",
-        "@x11",
         "@mesa",
+        "@x11",
     ],
 )

@@ -49,8 +49,8 @@ cc_library(
         "src",
     ],
     deps = [
-        "@x11//:x11_hdrs",
         ":hdrs",
+        "@x11//:x11_hdrs",
         "@xorg_xorgproto",
     ],
 )

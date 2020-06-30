@@ -12,7 +12,7 @@ cc_import(
     name = "GL",
     shared_library = "libGL.so",
     #alwayslink=0,
-)  
+)
 
 # filegroup(
 #     name = "GL",

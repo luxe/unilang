@@ -10,4 +10,4 @@ package(
 cc_import(
     name = "lib",
     shared_library = "libGLU.so",
-)  
+)

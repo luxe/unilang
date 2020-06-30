@@ -5,9 +5,8 @@ filegroup(
     srcs = glob(["*/**"]),
 )
 
-
 cc_import(
     name = "GL",
     shared_library = "usr/lib/x86_64-linux-gnu/libGL.so",
     #alwayslink=0,
-)  
+)
