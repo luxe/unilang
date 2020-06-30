@@ -45,9 +45,9 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":walker",
         ":walkviewer",
+        "@GL",
         "@glut",
         "@x11",
     ],

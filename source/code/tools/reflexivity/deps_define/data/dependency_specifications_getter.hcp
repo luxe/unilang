@@ -1055,6 +1055,20 @@ class
     Dependency_Specification spec;
     spec.lib_name = "sfml";
     Add_Unilang_Github_Mirror(spec,"SFML","257e50beb886f1edebeebbde1903169da4eca39f","6b013624aa9a916da2d37180772031e963098494538f59a14f40e00db23c9077");
+    
+    
+    
+    //pthread local not working...
+    //replace with regular void*
+    //I have no idea if this will cause different issues, but it got past a segfault
+    spec.patch_cmds.emplace_back("sed -i 's/.*m_key(0).*/ptr(nullptr)/' src/SFML/System/Unix/ThreadLocalImpl.cpp");
+    spec.patch_cmds.emplace_back("sed -i 's/.*pthread_key_create.*/ptr = nullptr;/' src/SFML/System/Unix/ThreadLocalImpl.cpp");
+    spec.patch_cmds.emplace_back("sed -i 's/.*pthread_key_delete.*//' src/SFML/System/Unix/ThreadLocalImpl.cpp");
+    spec.patch_cmds.emplace_back("sed -i 's/.*pthread_setspecific.*/ptr = value;/' src/SFML/System/Unix/ThreadLocalImpl.cpp");
+    spec.patch_cmds.emplace_back("sed -i 's/.*pthread_getspecific.*/return ptr;/' src/SFML/System/Unix/ThreadLocalImpl.cpp");
+    spec.patch_cmds.emplace_back("sed -i 's/.*pthread_key_t m_key.*/void* ptr=nullptr;/' src/SFML/System/Unix/ThreadLocalImpl.hpp");
+    
+    
     return spec;
 ❱
 ◀private: static▶ Dependency_Specification ☀Glfw()❰

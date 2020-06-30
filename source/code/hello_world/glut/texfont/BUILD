@@ -33,8 +33,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":texfont",
+        "@GL",
         "@glut",
         "@x11",
     ],
@@ -52,8 +52,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":texfont",
+        "@GL",
         "@glut",
         "@x11",
     ],
@@ -71,8 +71,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":texfont",
+        "@GL",
         "@glut",
         "@x11",
     ],
@@ -90,8 +90,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":texfont",
+        "@GL",
         "@glut",
         "@x11",
     ],

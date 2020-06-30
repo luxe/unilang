@@ -163,14 +163,14 @@ cc_library(
         "glib",
         "glib/dirent",
         "glib/gio",
+        "glib/pcre",
         "gmodule",
         "gobject",
-        "glib/pcre",
     ],
     deps = [
+        "@debian_stretch_amd64_sysroot//:ffi",
         "@libevent",
         "@libevent//:sys_event",
         "@zlib",
-        "@debian_stretch_amd64_sysroot//:ffi",
     ],
 )

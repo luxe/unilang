@@ -32,8 +32,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":matrix",
+        "@GL",
         "@glut",
         "@x11",
     ],

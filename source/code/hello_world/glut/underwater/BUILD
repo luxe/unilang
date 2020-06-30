@@ -47,9 +47,9 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":dino",
         ":texload",
+        "@GL",
         "@glut",
         "@x11",
     ],

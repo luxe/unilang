@@ -35,7 +35,7 @@ cc_library(
     ],
     deps = [
         "@debian_stretch_amd64_sysroot//:wayland_util",
-    ]
+    ],
 )
 
 ################################
@@ -60,15 +60,15 @@ cc_library(
         "src/events",
     ],
     deps = [
-        "@debian_stretch_amd64_sysroot//:wayland_util",
-        "@debian_stretch_amd64_sysroot//:wayland_cursor",
-        "@debian_stretch_amd64_sysroot//:wayland_client_core",
-        "@debian_stretch_amd64_sysroot//:wayland_client",
-        "@debian_stretch_amd64_sysroot//:wayland_version",
-        "@debian_stretch_amd64_sysroot//:wayland_egl",
         "@debian_stretch_amd64_sysroot//:alsa",
         "@debian_stretch_amd64_sysroot//:pulse_audio",
-    ]
+        "@debian_stretch_amd64_sysroot//:wayland_client",
+        "@debian_stretch_amd64_sysroot//:wayland_client_core",
+        "@debian_stretch_amd64_sysroot//:wayland_cursor",
+        "@debian_stretch_amd64_sysroot//:wayland_egl",
+        "@debian_stretch_amd64_sysroot//:wayland_util",
+        "@debian_stretch_amd64_sysroot//:wayland_version",
+    ],
 )
 ################################
 # finish the SDL library by building all the sources and linking
@@ -153,6 +153,14 @@ cc_library(
         ":SDL2_gen_files",
         ":SDL2_hdrs",
         "@dbus",
+        "@debian_stretch_amd64_sysroot//:alsa",
+        "@debian_stretch_amd64_sysroot//:pulse_audio",
+        "@debian_stretch_amd64_sysroot//:wayland_client",
+        "@debian_stretch_amd64_sysroot//:wayland_client_core",
+        "@debian_stretch_amd64_sysroot//:wayland_cursor",
+        "@debian_stretch_amd64_sysroot//:wayland_egl",
+        "@debian_stretch_amd64_sysroot//:wayland_util",
+        "@debian_stretch_amd64_sysroot//:wayland_version",
         "@glib",
         "@ibus",
         "@libXxf86vm",
@@ -160,17 +168,9 @@ cc_library(
         "@libevent//:sys_event",
         "@mesa",
         "@sndio",
+        "@systemd//:libudev",
         "@x11",
         "@xcb",
         "@xorg_xorgproto",
-        "@systemd//:libudev",
-        "@debian_stretch_amd64_sysroot//:wayland_util",
-        "@debian_stretch_amd64_sysroot//:wayland_cursor",
-        "@debian_stretch_amd64_sysroot//:wayland_client_core",
-        "@debian_stretch_amd64_sysroot//:wayland_client",
-        "@debian_stretch_amd64_sysroot//:wayland_version",
-        "@debian_stretch_amd64_sysroot//:wayland_egl",
-        "@debian_stretch_amd64_sysroot//:alsa",
-        "@debian_stretch_amd64_sysroot//:pulse_audio",
     ],
 )

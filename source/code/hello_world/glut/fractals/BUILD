@@ -20,8 +20,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":fracviewer",
+        "@GL",
         "@glut",
         "@mesa_glu",
         "@x11",

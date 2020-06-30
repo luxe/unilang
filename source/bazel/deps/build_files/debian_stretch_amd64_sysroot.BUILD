@@ -5,7 +5,6 @@ filegroup(
     srcs = glob(["*/**"]),
 )
 
-
 # various shard objects
 cc_import(
     name = "GL",
@@ -25,26 +24,31 @@ cc_library(
     hdrs = ["usr/include/wayland-util.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "wayland_cursor",
     hdrs = ["usr/include/wayland-cursor.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "wayland_client_core",
     hdrs = ["usr/include/wayland-client-core.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "wayland_client",
     hdrs = ["usr/include/wayland-client.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "wayland_version",
     hdrs = ["usr/include/wayland-version.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "wayland_egl",
     hdrs = [
@@ -67,25 +71,28 @@ cc_library(
     includes = ["usr/include"],
 )
 
-
 #other
 cc_library(
     name = "udev_hdrs",
     hdrs = ["usr/include/libudev.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "ffi",
     hdrs = [
         "usr/include/x86_64-linux-gnu/ffi.h",
-        "usr/include/x86_64-linux-gnu/ffitarget.h"],
+        "usr/include/x86_64-linux-gnu/ffitarget.h",
+    ],
     includes = ["usr/include/x86_64-linux-gnu"],
 )
+
 cc_library(
     name = "vm_sockets",
     hdrs = ["usr/include/linux/vm_sockets.h"],
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "security",
     hdrs = glob(["usr/include/security/**/*.h"]),

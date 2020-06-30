@@ -38,8 +38,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":chess_class",
+        "@GL",
         "@glut",
         "@x11",
     ],

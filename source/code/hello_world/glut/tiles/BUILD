@@ -23,8 +23,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":tr",
+        "@GL",
         "@glut",
         "@libXxf86vm",
         "@x11",

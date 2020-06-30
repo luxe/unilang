@@ -11,8 +11,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         "//code/utilities/graphics/opengl:sphere",
+        "@GL",
         "@glut",
         "@x11",
     ],

@@ -33,8 +33,8 @@ cc_binary(
         "-lGL",
     ],
     deps = [
-        "@GL",
         ":textmap",
+        "@GL",
         "@glut",
         "@mesa_glu",
         "@x11",
