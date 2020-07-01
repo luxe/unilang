@@ -81,4 +81,9 @@ cc_library(
     hdrs = glob(["usr/include/KHR/**/*.h"]),
     includes = ["usr/include"],
 )
+cc_library(
+    name = "SDL2_hdrs",
+    hdrs = glob(["usr/include/SDL2/**/*.h"]),
+    includes = ["usr/include/SDL2"],
+)
 

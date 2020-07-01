@@ -32,13 +32,17 @@ cc_library(
         "examples/libs",
         "examples/libs/gl3w",
     ],
+    copts = [
+        #"-DGL_VERSION_
+    ],
     deps = [
         ":main",
         
         #"@sdl2",
         
         "@sdl2//:sdl2_hdrs",
-        "@system//:SDL2",
+        "@system//:SDL2_hdrs",
+        #"@system//:SDL2",
         
         "@system//:GL_hdrs",
         "@system//:X11_hdrs",
@@ -46,7 +50,7 @@ cc_library(
         #"@SDL_image//:hdrs",
         #"@system//:SDL2_image",
         
-        # "@mesa//:mesa_hdrs",
+         #"@mesa//:mesa_hdrs",
         #"@system//:GLX",
         
         #"@glib",
