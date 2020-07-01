@@ -24,9 +24,15 @@ sdl_gen_srcs = glob(
 )
 
 cc_library(
-    name = "SDL2_gen_files",
+    name = "sdl2_gen_files",
     srcs = sdl_gen_srcs,
     hdrs = sdl_gen_hdrs,
+    copts = [
+        "-DHAVE_CONFIG_H",
+        "-DUSING_GENERATED_CONFIG_H",
+        #"-DHAVE_PTHREAD_SETNAME_NP",
+        "-D_REENTRANT",
+    ],
     includes = [
         "gen",
         "include",
@@ -52,8 +58,14 @@ sdl_hdrs = glob(
 )
 
 cc_library(
-    name = "SDL2_hdrs",
+    name = "sdl2_hdrs",
     hdrs = sdl_hdrs,
+    copts = [
+        "-DHAVE_CONFIG_H",
+        "-DUSING_GENERATED_CONFIG_H",
+        #"-DHAVE_PTHREAD_SETNAME_NP",
+        "-D_REENTRANT",
+    ],
     includes = [
         "include",
         "src",
@@ -68,6 +80,7 @@ cc_library(
         "@debian_stretch_amd64_sysroot//:wayland_egl",
         "@debian_stretch_amd64_sysroot//:wayland_util",
         "@debian_stretch_amd64_sysroot//:wayland_version",
+        ":sdl2_gen_files",
     ],
 )
 ################################
@@ -135,7 +148,8 @@ cc_library(
     copts = [
         "-DHAVE_CONFIG_H",
         "-DUSING_GENERATED_CONFIG_H",
-        "-DHAVE_PTHREAD_SETNAME_NP",
+        #"-DHAVE_PTHREAD_SETNAME_NP",
+        "-D_REENTRANT",
     ],
     #linkopts = ["-lpthread"],
     include_prefix = "SDL2",
@@ -151,8 +165,8 @@ cc_library(
         "src/video/x11",
     ],
     deps = [
-        ":SDL2_gen_files",
-        ":SDL2_hdrs",
+        ":sdl2_gen_files",
+        ":sdl2_hdrs",
         "@dbus",
         "@debian_stretch_amd64_sysroot//:alsa",
         "@debian_stretch_amd64_sysroot//:pulse_audio",

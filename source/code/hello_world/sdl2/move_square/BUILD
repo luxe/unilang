@@ -13,3 +13,15 @@ cc_binary(
         "@sdl2",
     ],
 )
+
+cc_binary(
+    name = "main2",
+    srcs = ["main.cpp"],
+    deps = [
+        "@GL",
+        "@sdl2//:sdl2_hdrs",
+        "@SDL_image//:hdrs",
+        "@system//:SDL2",
+        "@system//:SDL2_image",
+    ],
+)

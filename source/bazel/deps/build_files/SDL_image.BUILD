@@ -22,9 +22,17 @@ srcs = glob(
 )
 
 cc_library(
+    name = "hdrs",
+    hdrs = hdrs,
+    includes = [
+        ".",
+    ],
+)
+
+cc_library(
     name = "SDL_image",
     srcs = srcs,
-    hdrs = hdrs,
+    #hdrs = hdrs,
     copts = [
         "-DLOAD_PNG=1",
         #"-DLOAD_TIF=1",
@@ -45,6 +53,7 @@ cc_library(
         ".",
     ],
     deps = [
+        ":hdrs",
         "@libjpeg",
         "@libpng",
         "@sdl2",
