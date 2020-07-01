@@ -35,10 +35,12 @@ cc_library(
     deps = [
         ":main",
         
-        "@sdl2",
+        #"@sdl2",
         
-        # "@sdl2//:sdl2_hdrs",
-        # "@system//:SDL2",
+        "@sdl2//:sdl2_hdrs",
+        "@system//:SDL2",
+        "@system//:GL_hdrs",
+        "@system//:X11_hdrs",
         
         #"@SDL_image//:hdrs",
         #"@system//:SDL2_image",
@@ -87,11 +89,10 @@ cc_library(
        #"@sdl2",
        
         "@sdl2//:sdl2_hdrs",
-        "@SDL_image//:hdrs",
         "@system//:SDL2",
-        "@system//:SDL2_image",
-        "@system//:GLX",
-        "@mesa//:mesa_hdrs",
+        "@system//:GL_hdrs",
+        "@system//:X11_hdrs",
+        "@system//:KHR_hdrs",
     ],
 )
 
