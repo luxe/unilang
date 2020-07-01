@@ -14,6 +14,7 @@ hcp(
         #"//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sdl:sdl_initializer",
         "//code/utilities/graphics/sdl:sdl_swap_interval_setter",
+        "//code/utilities/graphics/opengl/loader:opengl_loader",
         "@GL",
     ],
 )
