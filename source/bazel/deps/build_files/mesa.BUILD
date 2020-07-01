@@ -178,7 +178,7 @@ cc_library(
         "build/src/mapi/shared-glapi",
         "build/src/mesa",
         "build/src/mesa/main",
-        "include",
+        #"include",
         "include/GL",
         "include/drm-uapi",
         "mesa/include/drm-uapi",

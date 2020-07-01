@@ -9,5 +9,8 @@ package(
 # easier to change if needed.
 cc_library(
     name = "GL",
-    deps = ["@debian_stretch_amd64_sysroot//:GL"],
+    deps = [
+        "@debian_stretch_amd64_sysroot//:GL",
+        #"@system//:GL",
+        ],
 )

@@ -30,3 +30,22 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_init_settings",
     ],
 )
+
+hcp(
+    name = "sdl_window_creator",
+    deps = [
+        "//code/utilities/graphics/sdl:sdl_init_settings",
+        "@system//:SDL2_hdrs",
+        "@system//:SDL2",
+    ],
+)
+
+hcp(
+    name = "sdl_initializer",
+    deps = [
+        "//code/utilities/graphics/sdl:sdl_init_settings",
+        "@system//:SDL2_hdrs",
+        "@system//:SDL2",
+    ],
+)
+

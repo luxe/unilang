@@ -7,10 +7,12 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "mechanics",
     deps = [
+        "@imgui//:imgui_sdl_opengl3",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/graphics/sdl:sdl_init_settings",
+        "//code/utilities/graphics/sdl:sdl_window_creator",
         "//code/utilities/graphics/sfml:game_loop",
-        "@imgui//:imgui_sdl_opengl3",
+        "//code/utilities/graphics/sdl:sdl_initializer",
         "@GL",
     ],
 )

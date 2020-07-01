@@ -62,6 +62,29 @@ cc_import(
     shared_library = "usr/lib/x86_64-linux-gnu/libglfw.so",
 )
 
+cc_import(
+    name = "SFML_audio",
+    shared_library = "usr/lib/x86_64-linux-gnu/libsfml-audio.so",
+)
+cc_import(
+    name = "SFML_graphics",
+    shared_library = "usr/lib/x86_64-linux-gnu/libsfml-graphics.so",
+)
+cc_import(
+    name = "SFML_network",
+    shared_library = "usr/lib/x86_64-linux-gnu/libsfml-network.so",
+)
+cc_import(
+    name = "SFML_system",
+    shared_library = "usr/lib/x86_64-linux-gnu/libsfml-system.so",
+)
+cc_import(
+    name = "SFML_window",
+    shared_library = "usr/lib/x86_64-linux-gnu/libsfml-window.so",
+)
+
+
+
 
 #headers
 cc_library(
@@ -85,5 +108,15 @@ cc_library(
     name = "SDL2_hdrs",
     hdrs = glob(["usr/include/SDL2/**/*.h"]),
     includes = ["usr/include/SDL2"],
+)
+cc_library(
+    name = "EGL_hdrs",
+    hdrs = glob(["usr/include/EGL/**/*.h"]),
+    includes = ["usr/include"],
+)
+cc_library(
+    name = "SFML_hdrs",
+    hdrs = glob(["usr/include/SFML/**/*.hpp","usr/include/SFML/**/*.inl"]),
+    includes = ["usr/include"],
 )
 

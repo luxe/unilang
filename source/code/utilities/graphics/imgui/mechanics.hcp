@@ -1,4 +1,5 @@
 class
+❪"code/utilities/graphics/sfml/game_loop"❫
 ❪GL/gl3w.h❫
 ❪string❫
 ❪iostream❫
@@ -12,8 +13,9 @@ class
 ❪"SDL.h"❫
 ❪iostream❫
 ❪"code/utilities/graphics/sdl/sdl_init_settings"❫
+❪"code/utilities/graphics/sdl/sdl_window_creator"❫
+❪"code/utilities/graphics/sdl/sdl_initializer"❫
 ❪"code/utilities/filesystem/paths/lib"❫
-❪"code/utilities/graphics/sfml/game_loop"❫
 ⚯
 ⚞⚟
 
@@ -23,12 +25,12 @@ template <typename T, typename U, typename V>
 static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V render)
 {
     // set up GL and SDL
-    setup_sdl();
+    Sdl_Initializer::Initialize();
     auto          glsl_version = decide_sdl_glsl_version();
-    auto          window       = create_main_window(s.main_window);
+    auto          window       = Sdl_Window_Creator::Create(s.main_window);
     SDL_GLContext gl_context   = SDL_GL_CreateContext(window);
     set_swap_interval(s.interval);
-    gl3wInit();
+    initialize_opengl_loader();
 
     // Setup Dear ImGui binding
     IMGUI_CHECKVERSION();
@@ -98,6 +100,31 @@ static void render_frame(SDL_Window * window, T render){
 }
 ▶
 
+◀private: static▶ void ☀initialize_opengl_loader()❰
+
+    // Initialize OpenGL loader
+#if defined(IMGUI_IMPL_OPENGL_LOADER_GL3W)
+    bool err = gl3wInit() != 0;
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLEW)
+    bool err = glewInit() != GLEW_OK;
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLAD)
+    bool err = gladLoadGL() == 0;
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING2)
+    bool err = false;
+    glbinding::Binding::initialize();
+#elif defined(IMGUI_IMPL_OPENGL_LOADER_GLBINDING3)
+    bool err = false;
+    glbinding::initialize([](const char* name) { return (glbinding::ProcAddress)SDL_GL_GetProcAddress(name); });
+#else
+    bool err = false; // If you use IMGUI_IMPL_OPENGL_LOADER_CUSTOM, your loader is likely to requires some form of initialization.
+#endif
+    if (err)
+    {
+        fprintf(stderr, "Failed to initialize OpenGL loader!\n");
+        exit(1);
+    }
+❱
+
 ◀private: static▶ void ☀set_imgui_io_state()❰
 
     ImGuiIO &io = ImGui::GetIO();
@@ -142,25 +169,6 @@ static void render_frame(SDL_Window * window, T render){
     }
 ❱
 
-◀private: static▶ void ☀setup_sdl() ❰
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
-    {
-        std::cerr << sdl_failed_to_init_error();
-        exit(EXIT_FAILURE);
-    }
-❱
-
-◀private: static▶ std::string ☀sdl_failed_to_init_error() ❰
-    
-    std::string error;
-    error += "We weren't able to initialize SDL.\n";
-    error += "Something is incompatible with your display.\n";
-    error += "Here is the SDL error:\n";
-    error += SDL_GetError();
-    error += "\n";
-    return error;
-❱
-
 ◀private: static▶ std::string ☀decide_sdl_glsl_version()❰
     std::string version;
 
@@ -181,87 +189,6 @@ static void render_frame(SDL_Window * window, T render){
 #endif
 
     return version;
-❱
-
-◀private: static▶ SDL_Window *☀create_main_window(Sdl_Window_Settings const& settings)❰
-    
-    // Setup window
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, settings.double_buffer_num);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, settings.depth_size);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, settings.stencil_size);
-    SDL_DisplayMode current;
-    SDL_GetCurrentDisplayMode(settings.display_mode, &current);
-
-
-    //decide x/y window starting position
-    int x_pos = settings.x_pos;
-    int y_pos = settings.y_pos;
-    if (settings.x_pos_centered){
-        x_pos = SDL_WINDOWPOS_CENTERED;
-    }
-    if (settings.x_pos_undefined){
-        x_pos = SDL_WINDOWPOS_UNDEFINED;
-    }
-    if (settings.y_pos_centered){
-        y_pos = SDL_WINDOWPOS_CENTERED;
-    }
-    if (settings.y_pos_undefined){
-        y_pos = SDL_WINDOWPOS_UNDEFINED;
-    }
-    
-    //decide flags
-    int flags = 0;
-    if (settings.fullscreen){
-        flags |= SDL_WINDOW_FULLSCREEN;
-    }
-    if (settings.fullscreen_desktop){
-        flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-    }
-    if (settings.use_opengl){
-        flags |= SDL_WINDOW_OPENGL;
-    }
-    //TODO: causing CIs to fail
-    //if (settings.use_vulkan){
-    //    flags |= SDL_WINDOW_VULKAN;
-    //}
-    if (settings.hidden){
-        flags |= SDL_WINDOW_HIDDEN;
-    }
-    if (settings.borderless){
-        flags |= SDL_WINDOW_BORDERLESS;
-    }
-    if (settings.resizeable){
-        flags |= SDL_WINDOW_RESIZABLE;
-    }
-    if (settings.minimized){
-        flags |= SDL_WINDOW_MINIMIZED;
-    }
-    if (settings.maximized){
-        flags |= SDL_WINDOW_MAXIMIZED;
-    }
-    if (settings.input_grabbed){
-        flags |= SDL_WINDOW_INPUT_GRABBED;
-    }
-    if (settings.allow_high_dpi){
-        flags |= SDL_WINDOW_ALLOW_HIGHDPI;
-    }
-
-    SDL_Window *window = SDL_CreateWindow(settings.title.c_str(),
-                                          x_pos,
-                                          y_pos,
-                                          settings.width,
-                                          settings.height,
-                                          flags);
-    
-    //TODO(thickey): fails in CI
-    //SDL_SetWindowOpacity(window,
-    //                     settings.transparency);
-    
-    if (window == NULL) {
-        std::cerr << "could not create window" << std::endl;
-    }
-    
-    return window;
 ❱
 
 ◀private: static▶ bool ☀poll_for_events(SDL_Window *window)

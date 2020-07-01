@@ -40,12 +40,13 @@ cc_library(
         
         #"@sdl2",
         
-        "@sdl2//:sdl2_hdrs",
-        "@system//:SDL2_hdrs",
-        #"@system//:SDL2",
-        
+        #"@sdl2//:sdl2_hdrs",
         "@system//:GL_hdrs",
         "@system//:X11_hdrs",
+        
+        "@system//:SDL2_hdrs",
+        "@system//:SDL2",
+        
         
         #"@SDL_image//:hdrs",
         #"@system//:SDL2_image",

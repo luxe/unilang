@@ -60,7 +60,11 @@ cc_library(
         #"-GL",
     ],
     deps = [
-        "@mesa",
+        #"@mesa",
+        #"@mesa//:mesa_hdrs",
+        "@system//:GL_hdrs",
+        "@system//:KHR_hdrs",
+        "@system//:EGL_hdrs",
         "@flac",
         "@freetype2",
         "@openal_soft",

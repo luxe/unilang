@@ -33,9 +33,10 @@ cc_library(
         "-include config.h",
         "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
         "-DUSE_X86_64_ASM",
+        #"-Iinclude"
     ],
     includes = [
-        "include",
+        #"include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLdispatch",
@@ -77,9 +78,10 @@ cc_library(
     copts = [
         "-include config.h",
         "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
+        #"-Iinclude"
     ],
     includes = [
-        "include",
+        #"include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -126,9 +128,10 @@ cc_library(
     copts = [
         "-include config.h",
         "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
+        #"-Iinclude"
     ],
     includes = [
-        "include",
+        #"include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -170,9 +173,10 @@ cc_library(
         "-include config.h",
         "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
         "-DUSE_X86_64_ASM",
+        #"-Iinclude"
     ],
     includes = [
-        "include",
+        #"include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -214,9 +218,10 @@ cc_library(
         "-include config.h",
         "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
         "-DUSE_X86_64_ASM",
+        #"-Iinclude"
     ],
     includes = [
-        "include",
+        #"include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -258,6 +263,7 @@ cc_library(
         "-include config.h",
         "-DDEFAULT_EGL_VENDOR_CONFIG_DIRS=\\\"/usr/local/etc/glvnd/egl_vendor.d:/usr/local/share/glvnd/egl_vendor.d\\\"",
         "-DUSE_X86_64_ASM",
+        #"-Iinclude"
     ],
     includes = [
         "include",

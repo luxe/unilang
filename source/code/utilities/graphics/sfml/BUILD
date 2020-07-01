@@ -9,6 +9,9 @@ hcp(
     deps = [
         "@sfml",
         #"@sfml//:hdrs",
+        #"@system//:SFML_hdrs",
+        #"@system//:KHR_hdrs",
+        #"@system//:SFML_system",
     ],
 )
 
