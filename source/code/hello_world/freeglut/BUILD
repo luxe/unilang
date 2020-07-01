@@ -7,6 +7,8 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    linkopts = ["-lGL"],
-    deps = ["@FreeGLUT"],
+    deps = [
+        "@FreeGLUT",
+        "@GL",
+    ],
 )

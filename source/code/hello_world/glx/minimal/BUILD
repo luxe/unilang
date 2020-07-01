@@ -10,5 +10,7 @@ cc_binary(
     ],
     deps = [
         "@x11",
+        "@GL",
+        "@mesa",
     ],
 )

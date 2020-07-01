@@ -39,6 +39,7 @@ cc_library(
         
         "@sdl2//:sdl2_hdrs",
         "@system//:SDL2",
+        
         "@system//:GL_hdrs",
         "@system//:X11_hdrs",
         
@@ -52,6 +53,7 @@ cc_library(
         #"@system//:glib",
         #"@system//:GLX_mesa",
         #"@system//:EGL_mesa",
+        "@GL",
     ],
 )
 
@@ -60,7 +62,6 @@ cc_binary(
     srcs = ["examples/example_sdl_opengl3/main.cpp"],
     deps = [
         ":imgui_sdl_opengl3",
-        "@GL",
     ],
 )
 ##############################################################################################

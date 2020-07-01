@@ -2,6 +2,8 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
+# Ideally we don't want to create these, but sometimes things are too hard to build from source
+
 #shared objects
 cc_import(
     name = "glib",
@@ -60,6 +62,8 @@ cc_import(
     shared_library = "usr/lib/x86_64-linux-gnu/libglfw.so",
 )
 
+
+#headers
 cc_library(
     name = "GL_hdrs",
     hdrs = glob(["usr/include/GL/**/*.h"]),

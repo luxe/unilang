@@ -11,62 +11,63 @@ cc_library(
         "include/GLFW/*.h",
         "src/*.h",
     ]),
+    deps = ["@x11",],
 )
 
 cc_library(
     name = "context",
     srcs = ["src/context.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "init",
     srcs = ["src/init.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "input",
     srcs = ["src/input.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "monitor",
     srcs = ["src/monitor.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "vulkan",
     srcs = ["src/vulkan.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "window",
     srcs = ["src/window.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "x11_init",
     srcs = ["src/x11_init.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "x11_monitor",
     srcs = ["src/x11_monitor.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
@@ -77,6 +78,7 @@ cc_library(
         ":egl_context",
         ":glx_context",
         ":includes",
+        "@x11",
     ],
 )
 
@@ -84,21 +86,21 @@ cc_library(
     name = "xkb_unicode",
     srcs = ["src/xkb_unicode.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "linux_joystick",
     srcs = ["src/linux_joystick.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
     name = "posix_time",
     srcs = ["src/posix_time.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 # cc_library(
@@ -115,6 +117,7 @@ cc_library(
     deps = [
         ":context",
         ":includes",
+        "@x11",
         #":posix_tls",
     ],
 )
@@ -123,7 +126,7 @@ cc_library(
     name = "egl_context",
     srcs = ["src/egl_context.c"],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
@@ -133,7 +136,7 @@ cc_library(
         "src/posix_thread.c",
     ],
     defines = DEFINES,
-    deps = [":includes"],
+    deps = [":includes","@x11",],
 )
 
 cc_library(
@@ -141,6 +144,9 @@ cc_library(
     hdrs = glob(["include/GLFW/*.h"]),
     strip_include_prefix = "include",
     defines = DEFINES,
+    deps = [
+        "@x11",
+    ],
 )
     
 
