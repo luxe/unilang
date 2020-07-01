@@ -11,8 +11,9 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/graphics/sdl:sdl_window_creator",
-        "//code/utilities/graphics/sfml:game_loop",
+        #"//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sdl:sdl_initializer",
+        "//code/utilities/graphics/sdl:sdl_swap_interval_setter",
         "@GL",
     ],
 )

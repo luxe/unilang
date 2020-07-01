@@ -1,5 +1,4 @@
 class
-❪"code/utilities/graphics/sfml/game_loop"❫
 ❪GL/gl3w.h❫
 ❪string❫
 ❪iostream❫
@@ -15,6 +14,7 @@ class
 ❪"code/utilities/graphics/sdl/sdl_init_settings"❫
 ❪"code/utilities/graphics/sdl/sdl_window_creator"❫
 ❪"code/utilities/graphics/sdl/sdl_initializer"❫
+❪"code/utilities/graphics/sdl/sdl_swap_interval_setter"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ⚯
 ⚞⚟
@@ -26,10 +26,9 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
 {
     // set up GL and SDL
     Sdl_Initializer::Initialize();
-    auto          glsl_version = decide_sdl_glsl_version();
     auto          window       = Sdl_Window_Creator::Create(s.main_window);
-    SDL_GLContext gl_context   = SDL_GL_CreateContext(window);
-    set_swap_interval(s.interval);
+    auto gl_context   = SDL_GL_CreateContext(window);
+    Sdl_Swap_Interval_Setter::Set(s.interval);
     initialize_opengl_loader();
 
     // Setup Dear ImGui binding
@@ -39,6 +38,8 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
     set_imgui_io_state();
     
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
+    
+    auto          glsl_version = decide_sdl_glsl_version();
     ImGui_ImplOpenGL3_Init(glsl_version.c_str());
 
     // clear frame color
@@ -68,19 +69,27 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
     //I'm not sure if this paradigm is good for imgui (as it appears to be for SFML).
     //Either way, this will force us to separate our logic from render which would be good to do anyhow.
     //Game_Loop::Run([&](){
-    Game_Loop::Run_Same_Rate([&](){
-        return !poll_for_events(window);
-    },
-    [&](sf::Time const& TimePerFrame){
-        //logic
-        logic();
-    },
-    [&](){
-        //render
+    // Game_Loop::Run_Same_Rate([&](){
+    //     return !poll_for_events(window);
+    // },
+    // [&](sf::Time const& TimePerFrame){
+    //     //logic
+    //     logic();
+    // },
+    // [&](){
+    //     //render
+    //     render_frame(window,render);
+    //     ImGuiIO &io = ImGui::GetIO();
+    //     render_frame(window, gl_context, io, clear_color);
+    // });
+    
+    //linking with SFML causes problems
+    while (!poll_for_events(window)){
+            logic();
         render_frame(window,render);
         ImGuiIO &io = ImGui::GetIO();
         render_frame(window, gl_context, io, clear_color);
-    });
+    }
 
     clean_up_resources(gl_context, window);
     return EXIT_SUCCESS;
@@ -154,19 +163,6 @@ static void render_frame(SDL_Window * window, T render){
     style.PopupBorderSize  = 1;
     style.WindowBorderSize = 0;
     style.WindowRounding = 0;
-❱
-
-
-◀private: static▶ void ☀set_swap_interval(Sdl_Swap_Interval const& interval) ❰
-    if (interval == Sdl_Swap_Interval::IMMEDIATE){
-        SDL_GL_SetSwapInterval(0);
-    }
-    else if (interval == Sdl_Swap_Interval::SYNCHRONIZED_VERTICAL_RETRACE){
-        SDL_GL_SetSwapInterval(1);
-    }
-    else if (interval == Sdl_Swap_Interval::ADAPTIVE_VSYNC){
-        SDL_GL_SetSwapInterval(-1);
-    }
 ❱
 
 ◀private: static▶ std::string ☀decide_sdl_glsl_version()❰

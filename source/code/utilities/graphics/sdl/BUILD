@@ -49,3 +49,13 @@ hcp(
     ],
 )
 
+hcp(
+    name = "sdl_swap_interval_setter",
+    deps = [
+        "//code/utilities/graphics/sdl:sdl_swap_interval",
+        "@system//:SDL2_hdrs",
+        "@system//:SDL2",
+    ],
+)
+
+

@@ -46,6 +46,9 @@ cc_library(
         
         "@system//:SDL2_hdrs",
         "@system//:SDL2",
+        #"@system//:SFML_hdrs",
+        #"@system//:KHR_hdrs",
+        #"@system//:SFML_system",
         
         
         #"@SDL_image//:hdrs",
