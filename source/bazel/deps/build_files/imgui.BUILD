@@ -132,7 +132,11 @@ cc_library(
        "@system//:glfw",
        "@glfw//:hdrs",
        
-       "@mesa//:mesa_hdrs",
+       "@system//:GL_hdrs",
+       #"@x11",
+       "@system//:X11_hdrs",
+       "@system//:KHR_hdrs",
+       #"@mesa//:mesa_hdrs",
        
     ],
 )

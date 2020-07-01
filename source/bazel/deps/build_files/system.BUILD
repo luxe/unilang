@@ -1,11 +1,12 @@
 package(
     default_visibility = ["//visibility:public"],
 )
+
+#shared objects
 cc_import(
     name = "glib",
     shared_library = "usr/lib/x86_64-linux-gnu/libglib-2.0.so",
 )
-
 
 cc_import(
     name = "GL",
@@ -58,3 +59,22 @@ cc_import(
     name = "glfw",
     shared_library = "usr/lib/x86_64-linux-gnu/libglfw.so",
 )
+
+cc_library(
+    name = "GL_hdrs",
+    hdrs = glob(["usr/include/GL/**/*.h"]),
+    includes = ["usr/include"],
+)
+
+cc_library(
+    name = "X11_hdrs",
+    hdrs = glob(["usr/include/X11/**/*.h"]),
+    includes = ["usr/include"],
+)
+
+cc_library(
+    name = "KHR_hdrs",
+    hdrs = glob(["usr/include/KHR/**/*.h"]),
+    includes = ["usr/include"],
+)
+
