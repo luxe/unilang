@@ -53,3 +53,8 @@ cc_import(
     name = "SDL2_net",
     shared_library = "usr/lib/x86_64-linux-gnu/libSDL2_net.so",
 )
+
+cc_import(
+    name = "glfw",
+    shared_library = "usr/lib/x86_64-linux-gnu/libglfw.so",
+)

@@ -137,8 +137,15 @@ cc_library(
 )
 
 cc_library(
-    name = "glfw",
+    name = "hdrs",
     hdrs = glob(["include/GLFW/*.h"]),
+    strip_include_prefix = "include",
+    defines = DEFINES,
+)
+    
+
+cc_library(
+    name = "glfw",
     defines = DEFINES,
     strip_include_prefix = "include",
     visibility = ["//visibility:public"],
@@ -160,5 +167,6 @@ cc_library(
         ":xkb_unicode",
         ":other",
         "@x11",
+        ":hdrs",
     ],
 )

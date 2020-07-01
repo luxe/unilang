@@ -11,6 +11,8 @@ cc_library(
     ],
 )
 
+
+##############################################################################################
 cc_library(
     name = "imgui_sdl_opengl3",
     srcs = [
@@ -59,6 +61,7 @@ cc_binary(
         "@GL",
     ],
 )
+##############################################################################################
 
 cc_library(
     name = "imgui_sdl_opengl2",
@@ -100,3 +103,56 @@ cc_binary(
         "@GL",
     ],
 )
+##############################################################################################
+
+cc_library(
+    name = "imgui_glfw_opengl3",
+    srcs = [
+        "examples/imgui_impl_opengl3.cpp",
+        "examples/imgui_impl_glfw.cpp",
+        "examples/libs/gl3w/GL/gl3w.c",
+    ],
+    hdrs = [
+        "examples/imgui_impl_opengl3.h",
+        "examples/imgui_impl_glfw.h",
+        "examples/libs/gl3w/GL/gl3w.h",
+        "examples/libs/gl3w/GL/glcorearb.h",
+    ],
+    copts = [
+        "-DIMGUI_IMPL_OPENGL_LOADER_GL3W",
+    ],
+    includes = [
+        ".",
+        "examples",
+        "examples/libs",
+        "examples/libs/gl3w",
+    ],
+    deps = [
+        ":main",
+       "@system//:glfw",
+       "@glfw//:hdrs",
+       
+       "@mesa//:mesa_hdrs",
+       
+    ],
+)
+
+cc_binary(
+    name = "imgui_glfw_opengl3_main",
+    srcs = ["examples/example_glfw_opengl3/main.cpp"],
+    copts = [
+        "-DIMGUI_IMPL_OPENGL_LOADER_GL3W",
+    ],
+    deps = [
+        ":imgui_glfw_opengl3",
+        "@GL",
+    ],
+)
+
+
+
+
+
+
+
+
