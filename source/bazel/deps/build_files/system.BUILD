@@ -9,6 +9,14 @@ cc_import(
     name = "glib",
     shared_library = "usr/lib/x86_64-linux-gnu/libglib-2.0.so",
 )
+cc_import(
+    name = "libcpp",
+    shared_library = "usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+)
+cc_import(
+    name = "libc",
+    shared_library = "usr/lib/x86_64-linux-gnu/libc.so",
+)
 
 cc_import(
     name = "GL",
@@ -38,6 +46,16 @@ cc_import(
 cc_import(
     name = "EGL_mesa",
     shared_library = "usr/lib/x86_64-linux-gnu/libEGL_mesa.so.0",
+)
+
+cc_import(
+    name = "SDL_mixer",
+    shared_library = "usr/lib/x86_64-linux-gnu/libSDL_mixer.so",
+)
+
+cc_import(
+    name = "openal",
+    shared_library = "usr/lib/x86_64-linux-gnu/libopenal.so",
 )
 
 cc_import(

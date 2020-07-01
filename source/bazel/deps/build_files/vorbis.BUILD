@@ -16,7 +16,7 @@ srcs = glob(
     ],
     exclude = [
         "lib/psytune.c",
-        "lib/sharedbook.c",
+        #"lib/sharedbook.c",
         "lib/barkmel.c",
     ],
 )

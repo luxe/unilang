@@ -6,6 +6,7 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     linkopts = [
+        "-lc++",
     ],
     deps = [
         "//code/utilities/colors:sfml_color_pick_grid",

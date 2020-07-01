@@ -75,5 +75,20 @@ cc_library(
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",
+        "@system//:SDL_mixer",
+        "@system//:openal",
     ],
+)
+
+cc_library(
+    name = "sfml_unhermetic",
+    deps = [
+        "@system//:SFML_hdrs",
+        "@system//:SFML_audio",
+        "@system//:SFML_graphics",
+        "@system//:SFML_network",
+        "@system//:SFML_system",
+        "@system//:SFML_window",
+        "@system//:SDL2_mixer",
+    ]
 )
