@@ -6,7 +6,6 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     linkopts = [
-        "-lGL",
     ],
     deps = [
         "//code/tools/games/scattergories/gui/assets:assets_loader",
