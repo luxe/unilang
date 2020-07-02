@@ -29,6 +29,7 @@ template <typename T, typename U, typename V>
 static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V render)
 {
     
+    //SEGFAULT: linking with SFML causes problems
     auto state = Imgui_Initializer::Initialize(s);
 
     //our custom before rendering the first frame logic
@@ -36,7 +37,16 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
     //but before the app starts rendering frames.
     before();
     
-    
+    render_loop(state,logic,render);
+
+    clean_up_resources(state.context, state.window);
+    return EXIT_SUCCESS;
+}▶
+
+◀private:
+template <typename U, typename V>
+static void render_loop(Imgui_State & state, U logic, V render){
+
     //Below is our old implementation derived from what I've seen from ImGui applications.
     //I believe mixing application logic / rendering logic may be bad.
     //Instead, maybe it would be better to run ImGui in the same way that SFML game loops run.
@@ -66,7 +76,6 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
     //     render_frame(window, gl_context, io, clear_color);
     // });
     
-    //linking with SFML causes problems
     while (!Event_Poller::Poll(state.window)){
             logic();
         render_frame(state.window,render);
@@ -74,9 +83,9 @@ static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V re
         render_frame(state.window, state.context, io, state.clear_color);
     }
 
-    clean_up_resources(state.context, state.window);
-    return EXIT_SUCCESS;
-}▶
+}
+▶
+
 
 ◀private:
 template <typename T>
