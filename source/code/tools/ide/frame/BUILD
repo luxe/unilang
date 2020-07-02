@@ -61,7 +61,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/graphics/objects/slider:slider_drawer",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/window:window_position_finder",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/peripheral/mouse/state:mouse_state",
@@ -74,7 +74,7 @@ hcp(
     name = "fullscreener",
     deps = [
         "//code/tools/ide/settings:ide_settings",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/keyboard:key_detector",
         "@imgui//:imgui_sdl_opengl3",
     ],

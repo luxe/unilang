@@ -22,7 +22,7 @@ hcp(
 hcp(
     name = "imgui_keyboard_state_getter",
     deps = [
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/keyboard/state:buffered_chars_getter",
         "//code/utilities/peripheral/keyboard/state:keyboard_state",
@@ -32,6 +32,6 @@ hcp(
 hcp(
     name = "buffered_chars_getter",
     deps = [
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
     ],
 )

@@ -5,21 +5,6 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
-    name = "mechanics",
-    deps = [
-        "@imgui//:imgui_sdl_opengl3",
-        "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/graphics/sdl:sdl_init_settings",
-        "//code/utilities/graphics/sdl:sdl_window_creator",
-        #"//code/utilities/graphics/sfml:game_loop",
-        "//code/utilities/graphics/sdl:sdl_initializer",
-        "//code/utilities/graphics/sdl:sdl_swap_interval_setter",
-        "//code/utilities/graphics/opengl/loader:opengl_loader",
-        "@GL",
-    ],
-)
-
-hcp(
     name = "ui_renders",
     deps = [
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
@@ -34,7 +19,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/position",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "@GL",
     ],
 )

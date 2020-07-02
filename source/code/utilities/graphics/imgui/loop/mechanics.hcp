@@ -1,0 +1,119 @@
+class
+❪GL/gl3w.h❫
+❪string❫
+❪iostream❫
+❪limits❫
+❪float.h❫
+❪"imgui.h"❫
+❪cstdlib❫
+❪"imgui_internal.h"❫
+❪"examples/imgui_impl_sdl.h"❫
+❪"examples/imgui_impl_opengl3.h"❫
+❪"SDL.h"❫
+❪iostream❫
+❪"code/utilities/graphics/sdl/sdl_init_settings"❫
+❪"code/utilities/graphics/sdl/sdl_window_creator"❫
+❪"code/utilities/graphics/sdl/sdl_initializer"❫
+❪"code/utilities/graphics/sdl/sdl_swap_interval_setter"❫
+❪"code/utilities/graphics/opengl/loader/opengl_loader"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/graphics/imgui/initialize/opengl_initializer"❫
+❪"code/utilities/graphics/imgui/initialize/imgui_initializer"❫
+❪"code/utilities/graphics/imgui/loop/event_poller"❫
+⚯
+⚞⚟
+
+
+◀public: 
+template <typename T, typename U, typename V>
+static int render_each_frame(Sdl_Init_Settings const& s, T before, U logic, V render)
+{
+    
+    auto state = Imgui_Initializer::Initialize(s);
+
+    //our custom before rendering the first frame logic
+    //sometimes its important to do something after all of the SDL and imgui stuff have been established
+    //but before the app starts rendering frames.
+    before();
+    
+    
+    //Below is our old implementation derived from what I've seen from ImGui applications.
+    //I believe mixing application logic / rendering logic may be bad.
+    //Instead, maybe it would be better to run ImGui in the same way that SFML game loops run.
+    //below is that alternative approach
+    // while (!poll_for_events(window))
+    // {
+    //     render_frame(window,render);
+    //     render_frame(window, gl_context, io, clear_color);
+    // }
+    
+    //we think its better to do a more disciplined logic+render update
+    //where the logic is updated at a faster rate than the application is rendering.
+    //I'm not sure if this paradigm is good for imgui (as it appears to be for SFML).
+    //Either way, this will force us to separate our logic from render which would be good to do anyhow.
+    //Game_Loop::Run([&](){
+    // Game_Loop::Run_Same_Rate([&](){
+    //     return !poll_for_events(window);
+    // },
+    // [&](sf::Time const& TimePerFrame){
+    //     //logic
+    //     logic();
+    // },
+    // [&](){
+    //     //render
+    //     render_frame(window,render);
+    //     ImGuiIO &io = ImGui::GetIO();
+    //     render_frame(window, gl_context, io, clear_color);
+    // });
+    
+    //linking with SFML causes problems
+    while (!Event_Poller::Poll(state.window)){
+            logic();
+        render_frame(state.window,render);
+        ImGuiIO &io = ImGui::GetIO();
+        render_frame(state.window, state.context, io, state.clear_color);
+    }
+
+    clean_up_resources(state.context, state.window);
+    return EXIT_SUCCESS;
+}▶
+
+◀private:
+template <typename T>
+static void render_frame(SDL_Window * window, T render){
+
+        // Start the Dear ImGui frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplSDL2_NewFrame(window);
+        ImGui::NewFrame();
+
+        // our custom frame render logic
+        render(window);
+}
+▶
+
+◀private: static▶ void ☀render_frame(SDL_Window *window, SDL_GLContext &gl_context, ImGuiIO &io, ImVec4 &clear_color)
+❰
+    // Rendering
+    ImGui::Render();
+    SDL_GL_MakeCurrent(window, gl_context);
+    glViewport(0, 0, (int) io.DisplaySize.x, (int) io.DisplaySize.y);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    SDL_GL_SwapWindow(window);
+❱
+
+◀private: static▶ void ☀clean_up_resources(SDL_GLContext &gl_context, SDL_Window *window)
+❰
+    // Cleanup
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
+    SDL_GL_DeleteContext(gl_context);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+❱
+
+

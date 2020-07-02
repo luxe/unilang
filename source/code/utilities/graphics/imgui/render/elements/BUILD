@@ -13,7 +13,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/position",
         "//code/utilities/graphics/imgui:imgui_type_utility",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render/elements:pixel_drawer",
     ],
 )
@@ -28,7 +28,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/position",
         "//code/utilities/graphics/imgui:imgui_type_utility",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render/elements:pixel_drawer",
     ],
 )
@@ -41,7 +41,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/position",
         "//code/utilities/graphics/imgui:imgui_type_utility",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
     ],
 )
 
@@ -53,7 +53,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/position",
         "//code/utilities/graphics/imgui:imgui_type_utility",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
     ],
 )
 
@@ -70,7 +70,7 @@ hcp(
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
         "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
         "//code/utilities/graphics/imgui:imgui_type_utility",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
     ],
 )

@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/mouse/draw:mouse_selection_drawer",
         "//code/utilities/graphics/imgui:imgui_type_utility",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/utilities/graphics/imgui/render/elements:line_drawer",
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",

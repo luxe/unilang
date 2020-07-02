@@ -1,0 +1,85 @@
+class
+❪GL/gl3w.h❫
+❪string❫
+❪iostream❫
+❪limits❫
+❪float.h❫
+❪"imgui.h"❫
+❪cstdlib❫
+❪"imgui_internal.h"❫
+❪"examples/imgui_impl_sdl.h"❫
+❪"examples/imgui_impl_opengl3.h"❫
+❪"SDL.h"❫
+❪iostream❫
+❪"code/utilities/graphics/sdl/sdl_init_settings"❫
+❪"code/utilities/graphics/sdl/sdl_window_creator"❫
+❪"code/utilities/graphics/sdl/sdl_initializer"❫
+❪"code/utilities/graphics/sdl/sdl_swap_interval_setter"❫
+❪"code/utilities/graphics/opengl/loader/opengl_loader"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/graphics/imgui/initialize/opengl_initializer"❫
+❪"code/utilities/graphics/imgui/initialize/imgui_state"❫
+⚯
+⚞⚟
+
+
+◀public: static▶ Imgui_State ☀Initialize(Sdl_Init_Settings const& s)
+❰
+    Imgui_State state;
+    
+    // set up GL and SDL
+    Sdl_Initializer::Initialize();
+    state.window       = Sdl_Window_Creator::Create(s.main_window);
+    state.context   = SDL_GL_CreateContext(state.window);
+    Sdl_Swap_Interval_Setter::Set(s.interval);
+    Opengl_Loader::Initialize();
+
+    // Setup Dear ImGui binding
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    
+    set_imgui_io_state();
+    
+    ImGui_ImplSDL2_InitForOpenGL(state.window, state.context);
+    
+    Opengl_Initializer::Initialize();
+
+    // clear frame color
+    //(not sure if this is important)
+    state.clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    
+    customize_imgui_overall_look(s);
+    
+    return state;
+❱
+
+◀private: static▶ void ☀customize_imgui_overall_look(Sdl_Init_Settings const& s)❰
+    // customize imgui overall look
+    // (maybe move to overall settings)
+    //ImGui::StyleColorsLight();
+    ImGuiStyle &style      = ImGui::GetStyle();
+    style.FrameBorderSize  = 1;
+    style.PopupBorderSize  = 1;
+    style.WindowBorderSize = 0;
+    style.WindowRounding = 0;
+❱
+
+◀private: static▶ void ☀set_imgui_io_state()❰
+
+    ImGuiIO &io = ImGui::GetIO();
+    
+    //set a default font
+    //I wasn't happy with this because it wasn't perfect.
+    //I couldn't get the aliasing perfect, it wasn't pixel perfect.
+    //I've decided to render text directly as my own pixelated bitmaps.  
+    //This is better anyways, because I want so much more out of text.  
+    //I want to color parts of letters/words differently over quick time iterations.
+    //so maybe my own pixel perfect bitmaps is a better direction with less blockers anyway.
+    //io.Fonts->AddFontDefault();
+    //std::string font_path = Full_Path_To_Home();
+    //font_path += "/.fonts/ProFontPowerline.ttf";
+    //std::cout << font_path << std::endl;
+    //ImFont* font1 = io.Fonts->AddFontFromFileTTF(font_path.c_str(),12);
+    
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+❱

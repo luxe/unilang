@@ -23,7 +23,7 @@ hcp(
     deps = [
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/utilities/peripheral/mouse/state:mouse_state_getter",
         "@imgui//:imgui_sdl_opengl3",
@@ -36,7 +36,7 @@ hcp(
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/utilities/peripheral/mouse/state:mouse_state_getter",
         "@imgui//:imgui_sdl_opengl3",

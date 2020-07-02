@@ -17,7 +17,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
         "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
-        "//code/utilities/graphics/imgui:mechanics",
+        "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/mouse/state:mouse_state",
     ],
 )
