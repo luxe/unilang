@@ -8,10 +8,10 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     deps = [
-        "@libpng",
-        "@olcPixelGameEngine//:lib",
         "@GL",
+        "@libpng",
         "@mesa",
+        "@olcPixelGameEngine//:lib",
         "@x11",
     ],
 )

@@ -12,7 +12,7 @@ cc_library(
     ]),
     includes = ["include"],
     deps = [
-        "@sdl2",
         "@opengl",
+        "@sdl2",
     ],
 )

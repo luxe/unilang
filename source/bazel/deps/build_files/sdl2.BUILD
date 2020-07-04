@@ -72,6 +72,7 @@ cc_library(
         "src/events",
     ],
     deps = [
+        ":sdl2_gen_files",
         "@debian_stretch_amd64_sysroot//:alsa",
         "@debian_stretch_amd64_sysroot//:pulse_audio",
         "@debian_stretch_amd64_sysroot//:wayland_client",
@@ -80,7 +81,6 @@ cc_library(
         "@debian_stretch_amd64_sysroot//:wayland_egl",
         "@debian_stretch_amd64_sysroot//:wayland_util",
         "@debian_stretch_amd64_sysroot//:wayland_version",
-        ":sdl2_gen_files",
     ],
 )
 ################################

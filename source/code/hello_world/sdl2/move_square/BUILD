@@ -19,8 +19,8 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = [
         "@GL",
-        "@sdl2//:sdl2_hdrs",
         "@SDL_image//:hdrs",
+        "@sdl2//:sdl2_hdrs",
         "@system//:SDL2",
         "@system//:SDL2_image",
     ],

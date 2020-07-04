@@ -128,7 +128,7 @@ srcs = glob(
         "src/glx/dri_glx.c",
         "src/glx/dri2_glx.c",
         "src/glx/glxcmds.c",
-        
+
         #"src/glx/glx_pbuffer.c",
         #"src/glx/glx_error.c",
         #"src/glx/glxcurrent.c",
@@ -159,11 +159,11 @@ cc_library(
         "-DHAVE_X11_PLATFORM",
         "-DUSE_X86_64_ASM",
         "-DNAME=LLVM",
-        
+
         #"-DGLX_DIRECT_RENDERING",
         #"-DGLX_INDIRECT_RENDERING",
         #"-DGLX_USE_DRM",
-        
+
         #"-DUSE_ELF_TLS",
 
         # "-DENABLE_SHADER_CACHE",

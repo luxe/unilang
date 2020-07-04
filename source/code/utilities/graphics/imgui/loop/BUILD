@@ -25,10 +25,10 @@ hcp(
 hcp(
     name = "event_poller",
     deps = [
-        "@imgui//:imgui_sdl_opengl3",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/graphics/sdl:sdl_window_creator",
         "@GL",
+        "@imgui//:imgui_sdl_opengl3",
     ],
 )

@@ -18,9 +18,9 @@ cc_binary(
         "//code/tools/games/ur/state:game_state_getter",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
-        "@sdl2",
         "@glfw",
         "@opengl",
+        "@sdl2",
         "@sfml",
     ],
 )

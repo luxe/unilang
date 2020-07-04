@@ -11,7 +11,6 @@ cc_library(
     ],
 )
 
-
 ##############################################################################################
 cc_library(
     name = "imgui_sdl_opengl3",
@@ -26,37 +25,35 @@ cc_library(
         "examples/libs/gl3w/GL/gl3w.h",
         "examples/libs/gl3w/GL/glcorearb.h",
     ],
+    copts = [
+        #"-DGL_VERSION_
+    ],
     includes = [
         ".",
         "examples",
         "examples/libs",
         "examples/libs/gl3w",
     ],
-    copts = [
-        #"-DGL_VERSION_
-    ],
     deps = [
         ":main",
-        
+
         #"@sdl2",
-        
+
         #"@sdl2//:sdl2_hdrs",
         "@system//:GL_hdrs",
         "@system//:X11_hdrs",
-        
         "@system//:SDL2_hdrs",
         "@system//:SDL2",
         #"@system//:SFML_hdrs",
         #"@system//:KHR_hdrs",
         #"@system//:SFML_system",
-        
-        
+
         #"@SDL_image//:hdrs",
         #"@system//:SDL2_image",
-        
-         #"@mesa//:mesa_hdrs",
+
+        #"@mesa//:mesa_hdrs",
         #"@system//:GLX",
-        
+
         #"@glib",
         #"@system//:glib",
         #"@system//:GLX_mesa",
@@ -95,8 +92,7 @@ cc_library(
     ],
     deps = [
         ":main",
-       #"@sdl2",
-       
+        #"@sdl2",
         "@sdl2//:sdl2_hdrs",
         "@system//:SDL2",
         "@system//:GL_hdrs",
@@ -118,13 +114,13 @@ cc_binary(
 cc_library(
     name = "imgui_glfw_opengl3",
     srcs = [
-        "examples/imgui_impl_opengl3.cpp",
         "examples/imgui_impl_glfw.cpp",
+        "examples/imgui_impl_opengl3.cpp",
         "examples/libs/gl3w/GL/gl3w.c",
     ],
     hdrs = [
-        "examples/imgui_impl_opengl3.h",
         "examples/imgui_impl_glfw.h",
+        "examples/imgui_impl_opengl3.h",
         "examples/libs/gl3w/GL/gl3w.h",
         "examples/libs/gl3w/GL/glcorearb.h",
     ],
@@ -139,15 +135,13 @@ cc_library(
     ],
     deps = [
         ":main",
-       "@system//:glfw",
-       "@glfw//:hdrs",
-       
-       "@system//:GL_hdrs",
-       #"@x11",
-       "@system//:X11_hdrs",
-       "@system//:KHR_hdrs",
-       #"@mesa//:mesa_hdrs",
-       
+        "@system//:glfw",
+        "@glfw//:hdrs",
+        "@system//:GL_hdrs",
+        #"@x11",
+        "@system//:X11_hdrs",
+        "@system//:KHR_hdrs",
+        #"@mesa//:mesa_hdrs",
     ],
 )
 
@@ -162,11 +156,3 @@ cc_binary(
         "@GL",
     ],
 )
-
-
-
-
-
-
-
-

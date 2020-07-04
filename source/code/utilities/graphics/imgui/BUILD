@@ -9,8 +9,8 @@ hcp(
     deps = [
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
         "//code/utilities/filesystem/paths:lib",
-        "@imgui//:imgui_sdl_opengl3",
         "@GL",
+        "@imgui//:imgui_sdl_opengl3",
     ],
 )
 

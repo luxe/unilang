@@ -12,5 +12,5 @@ cc_library(
     deps = [
         "@debian_stretch_amd64_sysroot//:GL",
         #"@system//:GL",
-        ],
+    ],
 )

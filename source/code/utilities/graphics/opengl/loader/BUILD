@@ -8,9 +8,8 @@ cc_library(
     srcs = ["opengl_loaders.hpp"],
     deps = [
         "@imgui//:imgui_sdl_opengl3",
-    ]
+    ],
 )
-
 
 hcp(
     name = "opengl_loader",

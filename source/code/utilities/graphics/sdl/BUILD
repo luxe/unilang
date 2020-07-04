@@ -35,8 +35,8 @@ hcp(
     name = "sdl_window_creator",
     deps = [
         "//code/utilities/graphics/sdl:sdl_init_settings",
-        "@system//:SDL2_hdrs",
         "@system//:SDL2",
+        "@system//:SDL2_hdrs",
     ],
 )
 
@@ -44,8 +44,8 @@ hcp(
     name = "sdl_initializer",
     deps = [
         "//code/utilities/graphics/sdl:sdl_init_settings",
-        "@system//:SDL2_hdrs",
         "@system//:SDL2",
+        "@system//:SDL2_hdrs",
     ],
 )
 
@@ -53,9 +53,7 @@ hcp(
     name = "sdl_swap_interval_setter",
     deps = [
         "//code/utilities/graphics/sdl:sdl_swap_interval",
-        "@system//:SDL2_hdrs",
         "@system//:SDL2",
+        "@system//:SDL2_hdrs",
     ],
 )
-
-
