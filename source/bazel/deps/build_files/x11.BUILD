@@ -83,5 +83,6 @@ cc_library(
         "@xorg_libXi",
         "@xorg_libXt",
         "@xorg_xorgproto",
+        "@xorg_libXcursor",
     ],
 )

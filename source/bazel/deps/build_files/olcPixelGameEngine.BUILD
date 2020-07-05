@@ -5,9 +5,9 @@ cc_library(
     hdrs = ["olcPixelGameEngine.h"],
     deps = [
         "@GL",
+        "@libpng",
         "@system//:GL_hdrs",
         "@system//:KHR_hdrs",
         "@x11",
-        "@libpng",
     ],
 )
