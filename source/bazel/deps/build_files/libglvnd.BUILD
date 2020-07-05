@@ -36,7 +36,7 @@ cc_library(
         #"-Iinclude"
     ],
     includes = [
-        #"include",
+        "include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLdispatch",
@@ -81,7 +81,7 @@ cc_library(
         #"-Iinclude"
     ],
     includes = [
-        #"include",
+        "include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -131,7 +131,7 @@ cc_library(
         #"-Iinclude"
     ],
     includes = [
-        #"include",
+        "include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -176,7 +176,7 @@ cc_library(
         #"-Iinclude"
     ],
     includes = [
-        #"include",
+        "include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
@@ -221,7 +221,7 @@ cc_library(
         #"-Iinclude"
     ],
     includes = [
-        #"include",
+        "include",
         "include/GLdispatch",
         "include/glvnd",
         "src/GLX",
