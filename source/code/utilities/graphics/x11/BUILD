@@ -7,10 +7,8 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     linkopts = [
-        "-lX11",
-        "-lXext",
-        "-lXpm",
     ],
     deps = [
+        "@x11",
     ],
 )

@@ -31,7 +31,7 @@ extern "C"
 {
 #endif
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 /*
  * Queue structure for all loaded sounds

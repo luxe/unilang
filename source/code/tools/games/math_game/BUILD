@@ -6,10 +6,6 @@ cc_binary(
     name = "math_game",
     srcs = ["math_game.cpp"],
     linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXrandr",
-        "-ludev",
     ],
     deps = [
         "//code/tools/games/math_game/assets:assets_loader",
@@ -24,7 +20,7 @@ cc_binary(
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
         "@glfw",
-        "@opengl",
+        "@GL",
         "@sdl2",
         "@sfml",
     ],

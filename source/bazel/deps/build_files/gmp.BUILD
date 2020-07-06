@@ -44,6 +44,8 @@ srcs = glob(
         "mpf/*.c",
         "mpn/generic/*.c",
         "mpn/mp_bases.c",
+        "mpn/fib_table.c",
+        "mpn/generic/sec_pi1_div.c",
         #"mpn/generic/*.c",
         "mpq/*.c",
         "mpz/*.c",

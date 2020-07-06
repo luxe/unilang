@@ -6,10 +6,6 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXrandr",
-        "-ludev",
     ],
     deps = [
         "//code/tools/games/ur/assets:assets_loader",
@@ -18,8 +14,7 @@ cc_binary(
         "//code/tools/games/ur/state:game_state_getter",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
-        "@glfw",
-        "@opengl",
+        "@GL",
         "@sdl2",
         "@sfml",
     ],

@@ -6,8 +6,7 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
-    linkopts = ["-lxdo"],
     deps = [
-        #"@xdo//:main",
+        "@xdo",
     ],
 )

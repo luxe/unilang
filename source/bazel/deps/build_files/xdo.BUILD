@@ -8,5 +8,7 @@ cc_library(
     hdrs = [
         "xdo.h",
     ],
-    linkopts = ["-lxcb"],
+    deps = [
+        "@xcb"
+    ]
 )
