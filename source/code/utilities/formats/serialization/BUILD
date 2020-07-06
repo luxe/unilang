@@ -17,5 +17,6 @@ cc_library(
     hdrs = ["protobuf.hpp"],
     deps = [
         "//code/utilities/formats/json/functions:lib",
+        "@com_google_protobuf//:protobuf",
     ],
 )
