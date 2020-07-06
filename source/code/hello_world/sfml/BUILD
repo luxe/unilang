@@ -7,10 +7,6 @@ cc_binary(
     name = "joycons",
     srcs = ["joycons.cpp"],
     linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXrandr",
-        "-ludev",
     ],
     deps = [
         "//code/utilities/formats/json/functions:lib",
@@ -27,10 +23,6 @@ cc_binary(
     name = "f310_gamepads",
     srcs = ["f310_gamepads.cpp"],
     linkopts = [
-        "-lX11",
-        "-lGL",
-        "-lXrandr",
-        "-ludev",
     ],
     deps = [
         "//code/utilities/formats/json/functions:lib",

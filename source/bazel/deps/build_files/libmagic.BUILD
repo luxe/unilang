@@ -10,5 +10,7 @@ cc_library(
         "src",
     ],
     linkopts = [],
-    deps = [],
+    deps = [
+        "@zlib",
+    ],
 )
