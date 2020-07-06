@@ -8,6 +8,6 @@ cc_library(
     hdrs = glob(["*.hpp"]),
     #copts = ["-std=c99"],
     deps = [
-        "@xdo",
+        "@xdotool",
     ],
 )

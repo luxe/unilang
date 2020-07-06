@@ -5,7 +5,7 @@ extern "C"
 {
 #endif
     
-//#include "xdo.h"
+#include "xdo.h"
     
 #ifdef __cplusplus
 } // extern "C"

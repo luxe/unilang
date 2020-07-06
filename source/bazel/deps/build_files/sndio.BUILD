@@ -32,7 +32,7 @@ srcs = glob(
 
 cc_library(
     name = "sndio",
-    srcs = srcs,
+    #srcs = srcs,
     hdrs = hdrs,
     copts = [
         "-D_GNU_SOURCE",
@@ -52,5 +52,6 @@ cc_library(
     deps = [
         "@debian_stretch_amd64_sysroot//:alsa",
         "@debian_stretch_amd64_sysroot//:pulse_audio",
+        "@system//:sndio",
     ],
 )
