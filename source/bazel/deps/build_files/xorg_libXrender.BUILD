@@ -14,11 +14,11 @@ cc_library(
     hdrs = hdrs,
     copts = [
     ],
-    deps = [
-    ],
     includes = [
         "include",
         "include/X11/extensions",
+    ],
+    deps = [
     ],
 )
 

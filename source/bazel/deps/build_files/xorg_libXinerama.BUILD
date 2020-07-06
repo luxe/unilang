@@ -19,18 +19,17 @@ srcs = glob(
 )
 
 cc_library(
-    name = "xorg_libXcursor",
+    name = "xorg_libXinerama",
     srcs = srcs,
     hdrs = hdrs,
     includes = [
         "include",
-        "include/X11/Xcursor",
+        "include/X11/extensions",
         "src",
     ],
     deps = [
         "@x11//:x11_hdrs",
-        "@xorg_libXrender//:Xrender_headers",
-        "@xorg_libXt//:Xorg_libXt_headers",
         "@xorg_xorgproto",
+        "@xorg_libXext",
     ],
 )

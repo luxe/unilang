@@ -85,5 +85,6 @@ cc_library(
         "@xorg_xorgproto",
         "@xorg_libXcursor",
         "@xorg_libXrandr",
+        "@xorg_libXinerama",
     ],
 )
