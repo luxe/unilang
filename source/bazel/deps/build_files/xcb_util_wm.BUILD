@@ -1,16 +1,19 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "xcb_util",
+    name = "xcb_util_wm",
     srcs =
         [
-            "xcb/xcb_aux.c",
+            "xcb/ewmh.c",
+            "xcb/icccm.c",
         ],
     hdrs =
         [
-            "xcb/xcb_aux.h",
+            "xcb/xcb_ewmh.h",
+            "xcb/xcb_icccm.h",
         ],
     includes = ["."],
+    #include_prefix = "xcb",
     deps = [
         "@xcb",
     ],
