@@ -25,6 +25,7 @@ srcs = glob(
         "aucat/aucat.c",
         "sndiod/sndiod.c",
         "sndioctl/sndioctl.c",
+        "libsndio/sndioctl.c",
         "midicat/midicat.c",
     ],
 )

@@ -55,7 +55,7 @@ srcs = glob(
         #other:
         "glib/dirent/dirent.c",
         "glib/gnulib/signbitl.c",
-        "glib/libcharset/localcharset.c",
+        #"glib/libcharset/localcharset.c",
         "glib/gnulib/signbitd.c",
         "glib/dirent/wdirent.c",
         "glib/gnulib/signbitf.c",
@@ -131,8 +131,8 @@ srcs = glob(
 
 cc_library(
     name = "glib",
-    srcs = srcs,
     hdrs = hdrs,
+    #srcs = srcs,
     copts = [
         #'-DG_LOG_DOMAIN="GLib-GRegex"',
         "-DHAVE_MEMMOVE",
@@ -155,6 +155,7 @@ cc_library(
         "-D_GNU_SOURCE",
         '-DGIO_MODULE_DIR=\\"FOOBAR\\"',
         "-DHAVE_CONFIG_H",
+        '-DLIBDIR=\\"usr/lib\\"',
     ],
     includes = [
         ".",
@@ -171,6 +172,7 @@ cc_library(
         "@debian_stretch_amd64_sysroot//:ffi",
         "@libevent",
         "@libevent//:sys_event",
+        "@system//:glib",
         "@zlib",
     ],
 )

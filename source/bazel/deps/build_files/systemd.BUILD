@@ -22,6 +22,8 @@ libudev_srcs = glob(
         "src/libsystemd/sd-id128/*.c",
         "src/basic/*.c",
         "src/shared/*.c",
+        "src/basic/alloc-util.c",
+        "src/basic/mempool.c",
     ],
     exclude = [
         "src/libsystemd/sd-device/test-sd-device.c",
@@ -36,17 +38,17 @@ libudev_srcs = glob(
         "src/shared/mount-util.c",
         "src/shared/firewall-util.c",
         "src/shared/module-util.c",
-        "src/basic/blockdev-util.c",
-        "src/basic/mempool.c",
+        #"src/basic/blockdev-util.c",
+        #"src/basic/mempool.c",
         "src/shared/vlan-util.c",
         "src/shared/id128-print.c",
-        "src/basic/unit-name.c",
+        #"src/basic/unit-name.c",
         "src/shared/apparmor-util.c",
         "src/basic/in-addr-util.c",
-        "src/basic/alloc-util.c",
+        #"src/basic/alloc-util.c",
         "src/libudev/libudev-enumerate.c",
         "src/shared/xml.c",
-        "src/basic/utf8.c",
+        #"src/basic/utf8.c",
         "src/shared/ip-protocol-list.c",
 
         #"src/libsystemd/sd-daemon/sd-daemon.c,
@@ -55,7 +57,7 @@ libudev_srcs = glob(
 
 cc_library(
     name = "libudev",
-    srcs = libudev_srcs,
+    #srcs = libudev_srcs,
     hdrs = hdrs,
     copts = [
         "-include build/config.h",
@@ -86,5 +88,6 @@ cc_library(
         "@debian_stretch_amd64_sysroot//:sys_hdrs",
         "@debian_stretch_amd64_sysroot//:vm_sockets",
         "@openssl//:ssl",
+        "@system//:libgudev",
     ],
 )

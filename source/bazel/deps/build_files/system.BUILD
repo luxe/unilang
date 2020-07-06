@@ -115,6 +115,26 @@ cc_import(
     shared_library = "usr/lib/x86_64-linux-gnu/libsfml-window.so",
 )
 
+cc_import(
+    name = "gmp",
+    shared_library = "usr/lib/x86_64-linux-gnu/libgmp.so",
+)
+
+cc_import(
+    name = "gmpxx",
+    shared_library = "usr/lib/x86_64-linux-gnu/libgmpxx.so",
+)
+
+cc_import(
+    name = "libgudev",
+    shared_library = "usr/lib/x86_64-linux-gnu/libgudev-1.0.so.0",
+)
+
+cc_import(
+    name = "sndio",
+    shared_library = "usr/lib/x86_64-linux-gnu/libsndio.so",
+)
+
 #headers
 cc_library(
     name = "GL_hdrs",

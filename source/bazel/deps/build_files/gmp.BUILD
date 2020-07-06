@@ -24,6 +24,7 @@ hdrs = glob(
         "gmp-mparam.h",
         "gmpxx.h",
         "mp_bases.h",
+        "longlong.h",
     ],
     exclude = [
     ],
@@ -46,6 +47,9 @@ srcs = glob(
         "mpn/mp_bases.c",
         "mpn/fib_table.c",
         "mpn/generic/sec_pi1_div.c",
+        "mpn/generic/udiv_w_sdiv.c",
+        #"mpn/sec_pi1_div_r.c",
+        #"mpn/sec_pi1_div_qr.c",
         #"mpn/generic/*.c",
         "mpq/*.c",
         "mpz/*.c",
@@ -115,7 +119,7 @@ srcs = glob(
 
 cc_library(
     name = "gmp",
-    srcs = srcs,
+    #srcs = srcs,
     copts = [
         "-DHAVE_CONFIG_H",
         "-I$(GENDIR)",
@@ -332,5 +336,7 @@ cc_library(
     ],
     deps = [
         ":gmp_headers",
+        "@system//:gmp",
+        "@system//:gmpxx",
     ],
 )

@@ -6,6 +6,7 @@ cc_library(
     name = "lib",
     srcs = glob(["*.cpp"]),
     hdrs = glob(["*.hpp"]),
+    #copts = ["-std=c99"],
     deps = [
         "@xdo",
     ],

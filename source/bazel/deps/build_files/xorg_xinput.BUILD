@@ -26,16 +26,14 @@ cc_library(
         "src/",
     ],
     linkopts = [
-        "-lX11",
-        "-lXext",
-        "-lXi",
-        "-lXrandr",
-        "-lXinerama",
     ],
     deps = [
         ":headers",
         "@x11//:x11_hdrs",
         "@xorg_libXext",
+        "@xorg_libXi",
+        "@xorg_libXinerama",
+        "@xorg_libXrandr",
         "@xorg_xorgproto",
     ],
 )

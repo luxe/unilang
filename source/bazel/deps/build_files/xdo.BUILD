@@ -2,15 +2,18 @@ package(default_visibility = ["//visibility:public"])
 
 cc_library(
     name = "xdo",
-    hdrs = [
-        "xdo.h",
-        "helpers.h",
-    ],
     srcs = [
-        "xdo.c",
         "helpers.c",
+        "xdo.c",
     ],
-    copts = ["-DVERSION=\"1\""],
+    hdrs = [
+        "helpers.h",
+        "xdo.h",
+    ],
+    copts = [
+        "-DVERSION=\\\"1\\\"",
+        "-D_POSIX_C_SOURCE=200809L",
+    ],
     deps = [
         "@xcb",
         "@xcb_util",
