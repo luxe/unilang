@@ -29,7 +29,7 @@ cc_library(
     ],
     deps = [
         "@x11//:x11_hdrs",
-        "@xorg_xorgproto",
         "@xorg_libXext",
+        "@xorg_xorgproto",
     ],
 )

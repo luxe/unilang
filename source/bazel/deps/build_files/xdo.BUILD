@@ -9,6 +9,7 @@ cc_library(
         "xdo.h",
     ],
     deps = [
-        "@xcb"
-    ]
+        "@xcb",
+        "@xcb_util//:xcb_util2",
+    ],
 )
