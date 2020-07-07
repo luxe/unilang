@@ -172,6 +172,12 @@ cc_library(
 )
 
 cc_library(
+    name = "openal_hdrs",
+    hdrs = glob(["usr/include/AL/**/*.h"]),
+    includes = ["usr/include"],
+)
+
+cc_library(
     name = "SFML_hdrs",
     hdrs = glob([
         "usr/include/SFML/**/*.hpp",

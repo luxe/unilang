@@ -40,13 +40,12 @@ srcs = glob(
 
 cc_library(
     name = "sfml",
-    hdrs = hdrs,
     srcs = srcs,
+    hdrs = hdrs,
     copts = [
         #"-UNone",
         #"-DSFML_OPENGL_ES",
         "-DSFML_SYSTEM_LINUX",
-        "-pthread",
     ],
     includes = [
         "include",
@@ -70,17 +69,16 @@ cc_library(
         "@system//:EGL_hdrs",
         "@flac",
         "@freetype2",
-        "@openal_soft",
+        #"@openal_soft",
+        "@openal",
         "@stb",
         "@debian_stretch_amd64_sysroot//:udev",
         "@debian_stretch_amd64_sysroot//:udev_hdrs",
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",
-        "@system//:openal",
-        
-        
-        
+        #"@system//:openal",
+
         #"@system//:SDL_mixer",
         #"@systemd//:libudev",
         #"@mesa",
@@ -99,7 +97,6 @@ cc_library(
         "@system//:SFML_network",
         "@system//:SFML_system",
         "@system//:SFML_window",
-        
         "@debian_stretch_amd64_sysroot//:udev",
         "@debian_stretch_amd64_sysroot//:udev_hdrs",
     ],
