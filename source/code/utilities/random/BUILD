@@ -10,6 +10,5 @@ cc_library(
         "//code/utilities/math/gmp:lib",
         "//code/utilities/types/char:lib",
         "//code/utilities/types/char:optional_letter_case",
-        "@crossguid",
     ],
 )

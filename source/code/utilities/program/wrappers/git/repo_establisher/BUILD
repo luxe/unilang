@@ -18,6 +18,7 @@ hcp(
         "//code/utilities/program/wrappers/git/repo_establisher:established_repo",
         "//code/utilities/program/wrappers/git/repo_establisher:repo_location",
         "//code/utilities/random:lib",
+        "//code/utilities/random/files:random_files",
     ],
 )
 

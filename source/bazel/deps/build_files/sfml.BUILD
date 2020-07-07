@@ -75,7 +75,7 @@ cc_library(
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",
-        "@system//:SDL_mixer",
+        #"@system//:SDL_mixer",
         "@system//:openal",
     ],
 )

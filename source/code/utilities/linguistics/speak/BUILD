@@ -9,6 +9,7 @@ hcp(
         "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/program/call:lib",
         "//code/utilities/random:lib",
+        "//code/utilities/random/files:random_files",
     ],
 )
 

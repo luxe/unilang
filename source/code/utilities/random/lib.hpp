@@ -6,8 +6,6 @@
 #include "code/utilities/types/char/optional_letter_case.hpp"
 
 
-std::string Random_Tmp_Directory();
-std::string Random_Tmp_Filename();
 bool Random_Bool();
 
 

@@ -1,18 +1,6 @@
 #include "code/utilities/random/lib.hpp"
 #include "code/utilities/math/gmp/lib.hpp"
 #include "code/utilities/types/char/lib.hpp"
-#include "crossguid/guid.hpp"
-
-std::string Random_Tmp_Directory(){
-    std::string folder = "/tmp/";
-    folder += xg::newGuid().str();
-    return folder;
-}
-std::string Random_Tmp_Filename(){
-    std::string folder = "/tmp/";
-    folder += xg::newGuid().str();
-    return folder;
-}
 
 bool Random_Bool(){
     auto i = RandomIntFromRange(0,1);

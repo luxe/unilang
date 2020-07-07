@@ -3,12 +3,13 @@
 #include "code/utilities/filesystem/paths/lib.hpp"
 #include "code/utilities/program/call/lib.hpp"
 #include "code/utilities/random/lib.hpp"
+#include "code/utilities/random/files/random_files.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
 
 
 std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
 {
-	auto dir = Random_Tmp_Directory();
+	auto dir = Random_Files::Random_Tmp_Directory();
 	std::string command = "git clone ";
 	command += ssh_url;
 	command += " ";
@@ -18,7 +19,7 @@ std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
 }
 std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url, std::string branch)
 {
-	auto dir = Random_Tmp_Directory();
+	auto dir = Random_Files::Random_Tmp_Directory();
 	std::string command = "git clone ";
 	command += "--branch ";
 	command += branch;
