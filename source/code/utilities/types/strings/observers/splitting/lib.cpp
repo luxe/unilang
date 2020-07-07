@@ -175,6 +175,17 @@ std::vector<std::string> Default_Boost_Tokenize(std::string const& str)
     }
     return results;
 }
+std::vector<int> Default_Boost_Tokenize_To_Ints(std::string const& str)
+{
+    using namespace std;
+    using namespace boost;
+    std::vector<int> results;
+    tokenizer<> tok(str);
+    for(tokenizer<>::iterator beg=tok.begin(); beg!=tok.end();++beg){
+       results.emplace_back(std::stoi(*beg));
+    }
+    return results;
+}
 
 
 
