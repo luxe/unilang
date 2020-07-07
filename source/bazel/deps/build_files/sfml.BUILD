@@ -1,42 +1,47 @@
 package(default_visibility = ["//visibility:public"])
 
+#glob the files we care about
+hdrs = glob(
+    include = [
+        "include/**/*.h",
+        "include/**/*.hpp",
+        "src/**/*.inl",
+        "include/**/*.inl",
+    ],
+    exclude = [
+    ],
+)
+
+srcs = glob(
+    include = [
+        "src/SFML/Audio/**/*.hpp",
+        "src/SFML/Audio/**/*.cpp",
+        "src/SFML/Graphics/**/*.hpp",
+        "src/SFML/Graphics/**/*.cpp",
+
+        #"src/SFML/Main/SFMLActivity.cpp",
+        "src/SFML/Network/Unix/**/*.hpp",
+        "src/SFML/Network/Unix/**/*.cpp",
+        "src/SFML/Network/*.hpp",
+        "src/SFML/Network/*.cpp",
+        "src/SFML/System/Unix/**/*.hpp",
+        "src/SFML/System/Unix/**/*.cpp",
+        "src/SFML/System/*.hpp",
+        "src/SFML/System/*.cpp",
+        "src/SFML/Window/Unix/**/*.hpp",
+        "src/SFML/Window/Unix/**/*.cpp",
+        "src/SFML/Window/*.hpp",
+        "src/SFML/Window/*.cpp",
+        "src/SFML/**/*.inl",
+    ],
+    exclude = [
+    ],
+)
+
 cc_library(
     name = "sfml",
-    srcs = glob(
-        [
-            "src/SFML/Audio/**/*.hpp",
-            "src/SFML/Audio/**/*.cpp",
-            "src/SFML/Graphics/**/*.hpp",
-            "src/SFML/Graphics/**/*.cpp",
-
-            #"src/SFML/Main/SFMLActivity.cpp",
-            "src/SFML/Network/Unix/**/*.hpp",
-            "src/SFML/Network/Unix/**/*.cpp",
-            "src/SFML/Network/*.hpp",
-            "src/SFML/Network/*.cpp",
-            "src/SFML/System/Unix/**/*.hpp",
-            "src/SFML/System/Unix/**/*.cpp",
-            "src/SFML/System/*.hpp",
-            "src/SFML/System/*.cpp",
-            "src/SFML/Window/Unix/**/*.hpp",
-            "src/SFML/Window/Unix/**/*.cpp",
-            "src/SFML/Window/*.hpp",
-            "src/SFML/Window/*.cpp",
-            "src/SFML/**/*.inl",
-        ],
-        exclude = [
-        ],
-    ),
-    hdrs = glob(
-        [
-            "include/**/*.h",
-            "include/**/*.hpp",
-            "src/**/*.inl",
-            "include/**/*.inl",
-        ],
-        exclude = [
-        ],
-    ),
+    hdrs = hdrs,
+    srcs = srcs,
     copts = [
         #"-UNone",
         #"-DSFML_OPENGL_ES",
@@ -55,13 +60,11 @@ cc_library(
         "src/SFML",
     ],
     linkopts = [
-        "-ludev",
+        #"-ludev",
         #"-lpthread",
         #"-GL",
     ],
     deps = [
-        #"@mesa",
-        #"@mesa//:mesa_hdrs",
         "@system//:GL_hdrs",
         "@system//:KHR_hdrs",
         "@system//:EGL_hdrs",
@@ -69,26 +72,35 @@ cc_library(
         "@freetype2",
         "@openal_soft",
         "@stb",
-        #"@systemd//:libudev",
         "@debian_stretch_amd64_sysroot//:udev",
         "@debian_stretch_amd64_sysroot//:udev_hdrs",
         "@vorbis",
         "@x11",
         "@xorg_libXrandr",
-        #"@system//:SDL_mixer",
         "@system//:openal",
+        
+        
+        
+        #"@system//:SDL_mixer",
+        #"@systemd//:libudev",
+        #"@mesa",
+        #"@mesa//:mesa_hdrs",
+        #":sfml_unhermetic",
     ],
 )
 
 cc_library(
     name = "sfml_unhermetic",
     deps = [
-        "@system//:SDL2_mixer",
+        #"@system//:SDL2_mixer",
         "@system//:SFML_audio",
         "@system//:SFML_graphics",
         "@system//:SFML_hdrs",
         "@system//:SFML_network",
         "@system//:SFML_system",
         "@system//:SFML_window",
+        
+        "@debian_stretch_amd64_sysroot//:udev",
+        "@debian_stretch_amd64_sysroot//:udev_hdrs",
     ],
 )
