@@ -135,6 +135,11 @@ cc_import(
     shared_library = "usr/lib/x86_64-linux-gnu/libsndio.so",
 )
 
+cc_import(
+    name = "uuid",
+    shared_library = "usr/lib/x86_64-linux-gnu/libuuid.so",
+)
+
 #headers
 cc_library(
     name = "GL_hdrs",

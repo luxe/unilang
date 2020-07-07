@@ -47,8 +47,8 @@ hcp(
         "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper_deriver",
         "//code/utilities/program/wrappers/git/repo_establisher",
         "//code/utilities/random:lib",
-        "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/random/files:random_files",
+        "//code/utilities/types/strings/observers/path:lib",
     ],
 )
 

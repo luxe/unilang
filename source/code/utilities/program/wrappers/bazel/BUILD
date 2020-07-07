@@ -46,12 +46,12 @@ hcp(
         "//code/utilities/program/wrappers/bazel:run_environment",
         "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_settings",
         "//code/utilities/random:lib",
+        "//code/utilities/random/files:random_files",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/random/files:random_files",
         "@bazel//:spawn_proto_cpp",
     ],
 )

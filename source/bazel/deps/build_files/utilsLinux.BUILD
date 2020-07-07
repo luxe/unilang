@@ -1,6 +1,17 @@
 #utils linux contains many tools/libraries
 #we will build them out individually as needed
 
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "uuid_hdr",
+    hdrs = [
+        "libuuid/src/uuid.h",
+    ],
+    include_prefix = "uuid",
+    strip_include_prefix = "libuuid/src",
+)
+
 cc_library(
     name = "uuid",
     srcs = [
