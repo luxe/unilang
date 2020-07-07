@@ -14,7 +14,8 @@ cc_library(
     #linkopts = ["-luuid"],
     #deps = ["@utilsLinux//:uuid"],
     deps = [
-        "@system//:uuid",
-        "@utilsLinux//:uuid_hdr",
+        "@uuid",
+        #"@system//:uuid",
+        #"@utilsLinux//:uuid_hdr",
     ],
 )

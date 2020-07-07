@@ -12,4 +12,7 @@ def uuid():
         urls = [
             "https://github.com/Unilang/uuid/archive/f895102e2ddaf86387a62c3544abb78c0a5cfbae.tar.gz",
         ],
+        patch_cmds = [
+            "mv src uuid",
+        ],
     )
