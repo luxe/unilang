@@ -12,4 +12,7 @@ def openal():
         urls = [
             "https://github.com/Unilang/OpenAL/archive/631ad459dda5f5598863f7efc21070347aed757d.tar.gz",
         ],
+        patch_cmds = [
+            "sed -i '/HAVE_IEEEFP_H/d'  OpenAL32/Include/config.h",
+        ],
     )

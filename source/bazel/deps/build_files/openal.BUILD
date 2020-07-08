@@ -4,6 +4,7 @@ hdrs = glob(
     include = [
         "include/**/*.h",
         "OpenAL32/Include/**/*.h",
+        "Alc/**/*.inc",
     ],
     exclude = [
     ],
@@ -20,16 +21,19 @@ srcs = glob(
 
 cc_library(
     name = "openal",
-    #srcs = srcs,
-    hdrs = hdrs,
+    # srcs = srcs,
+    # hdrs = hdrs,
     copts = [
     ],
     includes = [
+        "OpenAL32/Include",
         "include",
         "include/AL",
-        "OpenAL32/Include",
     ],
     deps = [
+        # "@system//:asoundLib_hdr",
+        # "@system//:alsa_hdrs",
         "@system//:openal",
+        "@system//:openal_hdrs",
     ],
 )

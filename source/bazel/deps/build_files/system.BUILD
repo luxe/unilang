@@ -140,6 +140,11 @@ cc_import(
     shared_library = "usr/lib/x86_64-linux-gnu/libuuid.so",
 )
 
+cc_import(
+    name = "asound",
+    shared_library = "usr/lib/x86_64-linux-gnu/libasound.so",
+)
+
 #headers
 cc_library(
     name = "GL_hdrs",
@@ -174,6 +179,18 @@ cc_library(
 cc_library(
     name = "openal_hdrs",
     hdrs = glob(["usr/include/AL/**/*.h"]),
+    includes = ["usr/include/AL"],
+)
+
+cc_library(
+    name = "asoundLib_hdr",
+    hdrs = ["usr/include/sys/asoundlib.h"],
+    includes = ["usr/include"],
+)
+
+cc_library(
+    name = "alsa_hdrs",
+    hdrs = glob(["usr/include/alsa/**/*.h"]),
     includes = ["usr/include"],
 )
 
