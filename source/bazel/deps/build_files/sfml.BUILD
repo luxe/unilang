@@ -77,8 +77,12 @@ cc_library(
         "@debian_stretch_amd64_sysroot//:udev",
         "@debian_stretch_amd64_sysroot//:udev_hdrs",
         "@vorbis",
-        "@x11",
-        "@xorg_libXrandr",
+        
+        "@system//:X11",
+        "@system//:X11_hdrs",
+        "@system//:Xrandr",
+        #"@x11",
+        #"@xorg_libXrandr",
         "@system//:openal",
 
         #"@system//:SDL_mixer",

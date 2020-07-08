@@ -31,25 +31,27 @@ cc_library(
     ],
 )
 
+srcs = glob(
+    [
+        #"src/**/*.h",
+        "src/**/*.c",
+        "modules/**/*.c",
+    ],
+    exclude = [
+        "src/os2Stubs.c",
+        #"src/xlibi18n/lcInit.c",
+        #"src/xlibi18n/lcWrap.c",
+        #"src/Xrm.c",
+        #"src/KeyBind.c",
+        #"src/Font.c",
+        #"src/LoadFont.c",
+        #"src/xkb/XKBBind.c",
+    ],
+)
+
 cc_library(
     name = "x11",
-    srcs = glob(
-        [
-            #"src/**/*.h",
-            "src/**/*.c",
-            "modules/**/*.c",
-        ],
-        exclude = [
-            "src/os2Stubs.c",
-            #"src/xlibi18n/lcInit.c",
-            #"src/xlibi18n/lcWrap.c",
-            #"src/Xrm.c",
-            #"src/KeyBind.c",
-            #"src/Font.c",
-            #"src/LoadFont.c",
-            #"src/xkb/XKBBind.c",
-        ],
-    ),
+    srcs = srcs,
     copts = [
         "-DXLOCALELIBDIR=\\\"/usr/local/lib/X11/locale\\\"",
         "-DHAVE_SYS_IOCTL_H",
@@ -86,5 +88,7 @@ cc_library(
         "@xorg_libXcursor",
         "@xorg_libXrandr",
         "@xorg_libXinerama",
+        # "@system//:X11",
+        # "@system//:X11_hdrs",
     ],
 )

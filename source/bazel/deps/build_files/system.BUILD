@@ -145,6 +145,15 @@ cc_import(
     shared_library = "usr/lib/x86_64-linux-gnu/libasound.so",
 )
 
+cc_import(
+    name = "X11",
+    shared_library = "usr/lib/x86_64-linux-gnu/libX11.so",
+)
+cc_import(
+    name = "Xrandr",
+    shared_library = "usr/lib/x86_64-linux-gnu/libXrandr.so",
+)
+
 #headers
 cc_library(
     name = "GL_hdrs",
