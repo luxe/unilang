@@ -24,11 +24,11 @@ cc_library(
     #hdrs = hdrs,
     copts = [
     ],
-    includes = [
-        "include",
-        "src",
-        "src/codecs",
-    ],
+    # includes = [
+    #     "include",
+    #     "src",
+    #     "src/codecs",
+    # ],
     deps = [
         "@sdl2",
         "@system//:SDL_mixer",

@@ -2,8 +2,9 @@
 #include <SDL_mixer.h>
 #include <stdio.h>
 #include <iostream>
-int main ( int argc, char* argv[] ) {
-  
+
+
+Mix_Music* play(){
    //Initialize SDL
     if( SDL_Init( SDL_INIT_AUDIO ) < 0 )
     {
@@ -32,6 +33,12 @@ int main ( int argc, char* argv[] ) {
     }
     
     Mix_PlayMusic(music, 1);
+    return music;
+    
+}
+int main ( int argc, char* argv[] ) {
+  
+    play();
     while(true){}
     
     
