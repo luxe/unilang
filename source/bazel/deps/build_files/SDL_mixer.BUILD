@@ -20,8 +20,8 @@ srcs = glob(
 
 cc_library(
     name = "SDL_mixer",
-    srcs = srcs,
-    hdrs = hdrs,
+    #srcs = srcs,
+    #hdrs = hdrs,
     copts = [
     ],
     includes = [
@@ -31,6 +31,8 @@ cc_library(
     ],
     deps = [
         "@sdl2",
+        "@system//:SDL_mixer",
+        "@system//:SDL2_hdrs",
     ],
 )
 

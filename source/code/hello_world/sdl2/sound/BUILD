@@ -7,8 +7,14 @@ package(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    copts = ["-pthread"],
     linkopts = [
     ],
-    deps = ["@sdl2"],
+    deps = [
+        "@sdl2",
+        #"@system//:SDL2",
+        
+        #"@SDL_mixer",
+        "@system//:SDL2_mixer",
+        "@system//:SDL2_hdrs",
+    ],
 )
