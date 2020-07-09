@@ -16,8 +16,5 @@ cc_binary(
         #"@SDL_mixer",
         "@system//:SDL2_mixer",
         "@system//:SDL2_hdrs",
-        # "@tree",
-        # "@boost//:serialization",
-        # "@nlohmann_json//:nlohmann_json",
     ],
 )
