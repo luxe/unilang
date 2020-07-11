@@ -31,8 +31,8 @@ cc_library(
     # ],
     deps = [
         "@sdl2",
-        "@system//:SDL_mixer",
         "@system//:SDL2_hdrs",
+        "@system//:SDL_mixer",
     ],
 )
 

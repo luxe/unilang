@@ -49,6 +49,7 @@ cc_library(
         "-DSFML_SYSTEM_LINUX",
     ],
     includes = [
+        "extlibs/headers/AL",
         "include",
         "include/SFML",
         "include/SFML/Main",
@@ -56,7 +57,6 @@ cc_library(
         "include/SFML/System",
         "include/SFML/Window",
         "include/SFML/Window/Unix",
-        "extlibs/headers/AL",
         "src",
         "src/SFML",
     ],
@@ -77,7 +77,6 @@ cc_library(
         "@debian_stretch_amd64_sysroot//:udev",
         "@debian_stretch_amd64_sysroot//:udev_hdrs",
         "@vorbis",
-        
         "@system//:X11",
         "@system//:X11_hdrs",
         "@system//:Xrandr",

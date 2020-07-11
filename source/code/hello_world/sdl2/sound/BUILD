@@ -12,7 +12,7 @@ cc_binary(
     deps = [
         "@sdl2",
         #"@system//:SDL2",
-        
+
         #"@SDL_mixer",
         "@system//:SDL2_mixer",
         "@system//:SDL2_hdrs",

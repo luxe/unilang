@@ -11,6 +11,5 @@ cc_binary(
     ],
     deps = [
         "//code/utilities/peripheral/sound:music_player",
-        
     ],
 )

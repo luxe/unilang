@@ -15,7 +15,7 @@ hcp(
     deps = [
         #"@system//:SDL2",
         #"@system//:SDL2
-        
+
         #"@SDL_mixer",
         #"@sdl2",
         "@sdl2",
