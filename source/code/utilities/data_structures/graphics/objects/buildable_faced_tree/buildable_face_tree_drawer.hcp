@@ -26,6 +26,8 @@ class
 ❪"code/utilities/data_structures/graphics/bitmap/premade/l_line"❫
 ❪"code/utilities/data_structures/graphics/objects/faced_label/premade/faced_label_premades"❫
 ❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_drawer"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree_click_finder"❫
+❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_click_finder"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input)❰
@@ -37,7 +39,7 @@ class
     
     //find the element that has been right-clicked
     //TODO: Drawing the tree should return this information.
-    Find_Clicked_Label(tree);
+    tree.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(tree.structure);
     
     //was an element clicked?
     //decide to show the action menu 
@@ -48,18 +50,6 @@ class
     
     
     return elements;
-❱
-
-
-◀private: static▶ void ☀Find_Clicked_Label(Positioned_Buildable_Face_Tree & tree)❰
-
-    tree.selected_node = tree.structure.nodes.end();
-    for (auto it = tree.structure.nodes.begin(); it != tree.structure.nodes.end(); ++it){
-        if (it->label.faces[it->label.index].label.events.state.right.clicked){
-            tree.selected_node = it;
-            break;
-        }
-    }
 ❱
 
 ◀private: static▶ bool ☀Possibly_Open_Menu(Positioned_Buildable_Face_Tree & tree)❰
@@ -83,6 +73,13 @@ class
         if (!opened){
             if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
                 tree.menu.visible = false;
+                
+                auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
+                if (found != tree.menu.menu.nodes.end()){
+                    std::cout << "clicked " << found->faces[0].label.message << std::endl;
+                }
+                
+                
             }
         }
     }

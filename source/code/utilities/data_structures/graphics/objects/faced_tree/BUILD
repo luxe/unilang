@@ -30,3 +30,12 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
     ],
 )
+
+hcp(
+    name = "tree_label_click_finder",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/faced_tree:face_tree",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label",
+        "@tree",
+    ],
+)

@@ -38,5 +38,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_click_finder",
+        "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_click_finder",
     ],
 )
