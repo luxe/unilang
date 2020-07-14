@@ -45,26 +45,54 @@ This allows the scheduler to distribute operations by their properties and allow
 􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
 􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+􏲏􏲐􏲍java.util.HashSet􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.Set􏲎
 
+
+􏶨􏶧
+􏶦􏶥
+􏶘+s􏶙􏶰c􏶯􏶮String􏶭􏶬WILDCARD_VALUE􏶫􏶪"*"􏶩
+
+􏶨􏶧
+􏶦􏶥
+􏶘+􏶙􏶰c􏶯􏶮bool􏶭􏶬is fully wildcard􏶫􏶪􏶩
+
+􏶨􏶧
+􏶦􏶥
+􏶘+􏶙􏶰c􏶯􏶮Set<String>􏶭􏶬wildcard provisions􏶫􏶪􏶩
 
 􏶨the required provisions of the queue􏶧
 􏶦The required provisions to allow workers and operations to be added to the queue.  
 These often match the remote api's command platform properties􏶥
-􏶘-􏶙􏶰􏶯􏶮SetMultimap<String, String>􏶭􏶬required provisions􏶫􏶪􏶩
+􏶘-􏶙􏶰c􏶯􏶮SetMultimap<String, String>􏶭􏶬required provisions􏶫􏶪􏶩
 
 􏶨the queue itself􏶧
 􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
-􏶘-􏶙􏶰􏶯􏶮BalancedRedisQueue􏶭􏶬queue􏶫􏶪􏶩
+􏶘-􏶙􏶰c􏶯􏶮BalancedRedisQueue􏶭􏶬queue􏶫􏶪􏶩
 
 􏷐constructor􏷏
 􏶠construct the provision queue􏶡
 􏷘+􏷗􏴅Constructor􏴆􏷒provisioned redis queue􏷑
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
 􏶜􏶝􏷆List<String>􏷅􏷄hashtags􏷃􏷀hashtags to distribute queue data􏶿
-􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄required provisions􏷃􏷀the required provisions of the queue􏶿
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄filter provisions􏷃􏷀the filtered provisions of the queue􏶿
 􏶴
-    this.queue = new BalancedRedisQueue(name,hashtags);
-    this.requiredProvisions = requiredProvisions;
+    this.queue = new BalancedRedisQueue(name, hashtags);
+    isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
+    wildcardProvisions =
+        isFullyWildcard
+            ? ImmutableSet.of()
+            : filterProvisions.asMap().entrySet().stream()
+                .filter(e -> e.getValue().contains(WILDCARD_VALUE))
+                .map(e -> e.getKey())
+                .collect(ImmutableSet.toImmutableSet());
+    requiredProvisions =
+        isFullyWildcard
+            ? ImmutableSet.of()
+            : filterProvisions.entries().stream()
+                .filter(e -> !wildcardProvisions.contains(e.getKey()))
+                .collect(ImmutableSet.toImmutableSet());
 􏶳
 􏴱can construct􏴲􏴯regular􏴰
 􏲝the object can be constructed􏲞
@@ -73,18 +101,25 @@ These often match the remote api's command platform properties􏶥
     RedisProvisionQueue queue = new RedisProvisionQueue();
 􏴮
 
-􏷐checks required provisions􏷏
-􏶠checks whether the provisions given fulfill all of the required provisions of the queue􏶡
+􏷐checks required properties􏷏
+􏶠checks whether the properties given fulfill all of the required provisions of the queue􏶡
 􏷘+􏷗􏴅Observers􏴆􏷒is eligible􏷑
-􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄provisions􏷃􏷀provisions to check that requirements are met􏶿
-􏶾bool􏶽􏶼is eligible􏶻􏶺whether the queue is eligible based on the provisions given􏶹
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to check that requirements are met􏶿
+􏶾bool􏶽􏶼is eligible􏶻􏶺whether the queue is eligible based on the properties given􏶹
 􏶴
-    for (String checkedProvision : requiredProvisions.asMap().keySet()) {
-      if (!provisions.asMap().containsKey(checkedProvision)) {
+    // set intersection of requirements and properties with wildcarding
+    if (isFullyWildcard) {
+      return true;
+    }
+    // all required non-wildcard provisions must be matched
+    Set<Map.Entry<String, String>> requirements = new HashSet<>(requiredProvisions);
+    for (Map.Entry<String, String> property : properties.entries()) {
+      // for each of the properties specified, we must match requirements
+      if (!wildcardProvisions.contains(property.getKey()) && !requirements.remove(property)) {
         return false;
       }
     }
-    return true;
+    return requirements.isEmpty();
 􏶳
 
 􏷐get queue􏷏
@@ -93,12 +128,4 @@ These often match the remote api's command platform properties􏶥
 􏶾BalancedRedisQueue􏶽􏶼queue􏶻􏶺the internal queue􏶹
 􏶴
     return queue;
-􏶳
-
-􏷐get provisions􏷏
-􏶠obtain the required provisions􏶡
-􏷘+􏷗􏴅Getters􏴆􏷒provisions􏷑
-􏶾SetMultimap<String, String>􏶽􏶼provisions􏶻􏶺the required provisions􏶹
-􏶴
-    return requiredProvisions;
 􏶳
