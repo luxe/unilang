@@ -8,6 +8,6 @@ cpp_main(
     name = "example",
     deps = [
         "@libmagic",
-        "@zlib",
+        "@zlib_internal",
     ],
 )

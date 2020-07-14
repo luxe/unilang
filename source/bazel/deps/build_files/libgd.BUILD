@@ -105,6 +105,6 @@ cc_library(
         "@freetype2",
         "@libjpeg",
         "@libpng",
-        "@zlib",
+        "@zlib_internal",
     ],
 )

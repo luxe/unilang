@@ -10,7 +10,7 @@ cc_library(
 )
 
 cc_library(
-    name = "zlib",
+    name = "zlib_internal",
     srcs = [
         "adler32.c",
         "compress.c",
