@@ -10,6 +10,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_tree_label_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/positioned_buildable_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_label_action"❫
 ❪"code/utilities/data_structures/graphics/objects/label/label_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
@@ -28,6 +29,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree_click_finder"❫
 ❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_click_finder"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade/buttoned_faced_label_premades"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input)❰
@@ -74,15 +76,65 @@ class
             if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
                 tree.menu.visible = false;
                 
-                auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
-                if (found != tree.menu.menu.nodes.end()){
-                    std::cout << "clicked " << found->faces[0].label.message << std::endl;
-                }
+                Handle_Menu_Click(tree);
                 
                 
             }
         }
     }
+❱
+
+◀private: static▶ void ☀Handle_Menu_Click(Positioned_Buildable_Face_Tree & tree)❰
+
+    auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
+    if (found != tree.menu.menu.nodes.end()){
+        auto label_action = Label_Message_To_Action(found->faces[0].label.message);
+        
+        switch (label_action){
+            
+            case Buildable_Label_Action::ADD: Do_Label_Add(tree);
+            break;
+            
+            case Buildable_Label_Action::DELETE: Do_Label_Delete(tree);
+            break;
+            
+            case Buildable_Label_Action::COPY: Do_Label_Copy(tree);
+            break;
+        }
+    }
+❱
+
+◀private: static▶ void ☀Do_Label_Add(Positioned_Buildable_Face_Tree & tree)❰
+    std::cout << "doing add" << std::endl;
+    
+    
+    //add a default label
+    auto x = Buttoned_Faced_Label_Premades::Single_Plain_White_Box_For_Tree();
+    
+    tree.structure.nodes.insert(tree.selected_node,x);
+❱
+◀private: static▶ void ☀Do_Label_Delete(Positioned_Buildable_Face_Tree & tree)❰
+    std::cout << "doing delete" << std::endl;
+❱
+◀private: static▶ void ☀Do_Label_Copy(Positioned_Buildable_Face_Tree & tree)❰
+    std::cout << "doing copy" << std::endl;
+❱
+
+
+◀private: static▶ Buildable_Label_Action ☀Label_Message_To_Action(std::string const& message)❰
+
+    if (message == "Add"){
+        return Buildable_Label_Action::ADD;
+    }
+    if (message == "Delete"){
+        return Buildable_Label_Action::DELETE;
+    }
+    if (message == "Copy"){
+        return Buildable_Label_Action::COPY;
+    }
+    
+    std::cerr << "Menu Item has no matching action" << std::endl;
+    exit(1);
 ❱
 
 ◀private: static▶ Select_Menu ☀Decide_Menu(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰

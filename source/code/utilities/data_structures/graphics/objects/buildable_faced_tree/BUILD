@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp_and_hcp_pos(
     name = "buildable_face_tree",
@@ -40,5 +41,16 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_click_finder",
         "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_click_finder",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
+    ],
+)
+
+enum_cpp(
+    name = "buildable_label_action",
+    values = [
+        "add",
+        "delete",
+        "copy",
     ],
 )
