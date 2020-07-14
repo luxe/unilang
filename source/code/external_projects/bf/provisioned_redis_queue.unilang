@@ -25,6 +25,7 @@ This allows the scheduler to distribute operations by their properties and allow
 􏷤􏷣􏷦java.util.Set􏷥
 􏷤􏷣􏷦com.google.common.collect.ImmutableSet􏷥
 􏷤􏷣􏷦com.google.common.collect.ImmutableSetMultimap􏷥
+􏷤􏷣􏷦java.util.stream.Collectors􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -57,6 +58,9 @@ This allows the scheduler to distribute operations by their properties and allow
 􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
 􏲏􏲐􏲍com.google.common.collect.Maps􏲎
 􏲏􏲐􏲍com.google.common.collect.HashMultimap􏲎
+􏲏􏲐􏲍java.util.stream.Collectors􏲎
+􏲏􏲐􏲍com.google.common.collect.SetMultimap􏲎
+􏲏􏲐􏲍com.google.common.collect.Multimap􏲎
 
 
 􏶨wildcard value􏶧
@@ -91,7 +95,7 @@ These often match the remote api's command platform properties􏶥
     isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
     filterProvisionsByWildcard(filterProvisions);
 􏶳
-􏴱can construct􏴲􏴯mock􏴰
+􏴱can construct􏴲􏴯regular􏴰
 􏲝the object can be constructed􏲞
 􏲛the object cannot be constructed􏲜
 􏴭
@@ -149,9 +153,9 @@ These often match the remote api's command platform properties􏶥
     // is it eligible?
     String explanation = new String();
     if (isEligible(properties)) {
-      explanation += "The properties are eligible for the queue.\n";
+      explanation += "The properties are eligible for the " + queue.getName() + " queue.\n";
     } else {
-      explanation += "The properties are not eligible for the queue.\n";
+      explanation += "The properties are not eligible for the " + queue.getName() + " queue.\n";
     }
 
     // is it fully wildcard?
@@ -175,10 +179,114 @@ These often match the remote api's command platform properties􏶥
     stillRequired.putAll(requirements);
     
     //provide further explanation on individual properties
-    explanation += "matched: " + matched + "\n";
-    explanation += "unmatched: " + unmatched + "\n";
-    explanation += "still required: " + stillRequired + "\n";
+    explanation += "matched: " + toString(matched.build().asMap()) + "\n";
+    explanation += "unmatched: " + toString(unmatched.build().asMap()) + "\n";
+    explanation += "still required: " + toString(stillRequired.build().asMap()) + "\n";
     return explanation;
+􏶳
+􏴱no provisions accepted􏴲􏴯regular􏴰
+􏲝the queue will accept the properties if no provisions are involved􏲞
+􏲛the queue is unable to accept the properties with no provisions or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create());
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+􏴮
+􏴱single provision matched􏴲􏴯regular􏴰
+􏲝the queue will accept the properties and show the provision was matched􏲞
+􏲛the queue is unable to accept the properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    String explanation = queue.explainEligibility(queueProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "matched: {key=[value]}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+􏴮
+􏴱single provision not matched􏴲􏴯regular􏴰
+􏲝the queue will not accept properties and show the provision was not matched􏲞
+􏲛the queue is still accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),HashMultimap.create());
+    
+    //ACT
+    String explanation = queue.explainEligibility(queueProperties);
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {key=[value]}\n";
+    expected_explanation += "still required: {}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+􏴮
+􏴱single provision still required􏴲􏴯regular􏴰
+􏲝the queue will not accept properties and show the provision is still required􏲞
+􏲛the queue is still accepting properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("key", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are not eligible for the foo queue.\n";
+    expected_explanation += "matched: {}\n";
+    expected_explanation += "unmatched: {}\n";
+    expected_explanation += "still required: {key=[value]}\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+􏴮
+􏴱accepted due to wildcard􏴲􏴯regular􏴰
+􏲝the queue will accept the properties because of wildcard􏲞
+􏲛the queue is unable to accept the properties or the explanation is wrong􏲜
+􏴭
+    //ARRANGE
+    SetMultimap<String,String> queueProperties = HashMultimap.create();
+    queueProperties.put("*", "value");
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("foo",ImmutableList.of(),queueProperties);
+    
+    //ACT
+    String explanation = queue.explainEligibility(HashMultimap.create());
+    
+    //ASSERT
+    String expected_explanation = "The properties are eligible for the foo queue.\n";
+    expected_explanation += "The queue is fully wildcard.\n";
+    assertThat(explanation).isEqualTo(expected_explanation);
+􏴮
+
+
+􏷐convert map to printable string􏷏
+􏶠uses streams􏶡
+􏷘-􏷗􏴅Getters􏴆􏷒to string􏷑
+􏶜􏶝􏷆Map<String, ?>􏷅􏷄map􏷃􏷀map to convert to string􏶿
+􏶾String􏶽􏶼str􏶻􏶺string representation of map􏶹
+􏶴
+    String mapAsString = map.keySet().stream()
+      .map(key -> key + "=" + map.get(key))
+      .collect(Collectors.joining(", ", "{", "}"));
+    return mapAsString;
 􏶳
 
 􏷐get queue􏷏
