@@ -47,6 +47,7 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/premade:crosshair_mouse",
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_converter",
         "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
@@ -67,6 +68,5 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
         "//code/utilities/graphics/sdl:standard_sdl_init_settings",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
     ],
 )

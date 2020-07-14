@@ -34,18 +34,29 @@ class
     Append_With_Newline(str,"#!/usr/bin/env bash");
     Append_With_Newline(str,Generated_Comment_Getter::Get());
     
-    //top comment
-    Append_With_Newline(str,Top_Comment());
-    
     //stop immediately on errors
     Append_With_Newline(str,"set -euo pipefail");
     Append_With_Newline(str,"");
     
+    //top comment
+    Append_With_Newline(str,Top_Comment());
+    Append_With_Newline(str,"");
+    
+    //find the bazel version to use
+    auto find_info = std::find_if(settings.infos.begin(),settings.infos.end(),[&](auto x){
+        return x.bazel_version == settings.bazel_version;
+    });
+    if (find_info == settings.infos.end()){
+        std::cerr << "bazel version not found" << std::endl;
+        exit(1);
+    }
+    
+    
     //url and hash
     Append(str,"url=");
-    Append_With_Newline(str,Build_Url(settings));
+    Append_With_Newline(str,Build_Url(*find_info));
     Append(str,"sha256=");
-    Append_With_Newline(str,settings.sha256);
+    Append_With_Newline(str,find_info->sha256);
     Append_With_Newline(str,"");
     
     
@@ -84,7 +95,7 @@ class
     return str;
 ❱
 
-◀private: static▶ std::string ☀Build_Url(Bazel_Wrapper_Refresh_Settings const& settings)❰
+◀private: static▶ std::string ☀Build_Url(Bazel_Version_Info const& settings)❰
     //typical host by bazel team
     std::string url;
     url += "https://github.com/bazelbuild/bazel/releases/download/";
