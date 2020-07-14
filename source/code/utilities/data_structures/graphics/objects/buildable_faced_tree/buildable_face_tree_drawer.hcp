@@ -41,41 +41,45 @@ class
     
     //find the element that has been right-clicked
     //TODO: Drawing the tree should return this information.
-    tree.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(tree.structure);
+    bool label_first_selected = false;
+    if (!tree.menu.visible){
+        tree.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(tree.structure);
+        if (tree.selected_node != tree.structure.nodes.end()){
+            label_first_selected = true;
+        }
+        
+    }
     
     //was an element clicked?
     //decide to show the action menu 
-    bool opened = Possibly_Open_Menu(tree);
+    Possibly_Open_Menu(tree,label_first_selected);
     
     
-    Handle_Menu(elements,font_chars,tree,pc_input,opened);
+    Handle_Menu(elements,font_chars,tree,pc_input,label_first_selected);
     
     
     return elements;
 ❱
 
-◀private: static▶ bool ☀Possibly_Open_Menu(Positioned_Buildable_Face_Tree & tree)❰
+◀private: static▶ void ☀Possibly_Open_Menu(Positioned_Buildable_Face_Tree & tree, bool label_first_selected)❰
 
-    bool opened=false;
-    if (tree.selected_node != tree.structure.nodes.end()){
+    if (label_first_selected){
         std::cout << "clicked" << std::endl;
         
         tree.menu = Decide_Menu(tree.structure,tree.selected_node);
         tree.menu.visible = true;
-        opened=true;
     }
-    return opened;
 ❱
 
-◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input, bool const& opened)❰
+◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input, bool const& label_first_selected)❰
 
     if (tree.menu.visible){
         elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.pos,pc_input).types;
         
-        if (!opened){
+        if (!label_first_selected){
             if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
-                tree.menu.visible = false;
                 
+                tree.menu.visible = false;
                 Handle_Menu_Click(tree);
                 
                 
@@ -110,8 +114,7 @@ class
     
     //add a default label
     auto x = Buttoned_Faced_Label_Premades::Single_Plain_White_Box_For_Tree();
-    
-    tree.structure.nodes.insert(tree.selected_node,x);
+    tree.structure.nodes.insert_after(tree.selected_node,x);
 ❱
 ◀private: static▶ void ☀Do_Label_Delete(Positioned_Buildable_Face_Tree & tree)❰
     std::cout << "doing delete" << std::endl;
