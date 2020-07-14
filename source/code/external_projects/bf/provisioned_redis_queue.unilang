@@ -20,6 +20,11 @@ This allows the scheduler to distribute operations by their properties and allow
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Map􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableSet􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableSetMultimap􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -48,6 +53,10 @@ This allows the scheduler to distribute operations by their properties and allow
 􏲏􏲐􏲍java.util.HashSet􏲎
 􏲏􏲐􏲍java.util.Map􏲎
 􏲏􏲐􏲍java.util.Set􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableList􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
+􏲏􏲐􏲍com.google.common.collect.Maps􏲎
+􏲏􏲐􏲍com.google.common.collect.HashMultimap􏲎
 
 
 􏶨wildcard value􏶧
@@ -60,12 +69,12 @@ This allows the scheduler to distribute operations by their properties and allow
 
 􏶨the wildcard provisions of the queue􏶧
 􏶦a filtered set of all provisions that use wildcards􏶥
-􏶘-􏶙􏶰c􏶯􏶮Set<String>􏶭􏶬wildcard provisions􏶫􏶪􏶩
+􏶘-􏶙􏶰􏶯􏶮Set<String>􏶭􏶬wildcard provisions􏶫􏶪􏶩
 
 􏶨the required provisions of the queue􏶧
 􏶦The required provisions to allow workers and operations to be added to the queue.  
 These often match the remote api's command platform properties􏶥
-􏶘-􏶙􏶰c􏶯􏶮Set<Map.Entry<String, String>>􏶭􏶬required provisions􏶫􏶪􏶩
+􏶘-􏶙􏶰􏶯􏶮Set<Map.Entry<String, String>>􏶭􏶬required provisions􏶫􏶪􏶩
 
 􏶨the queue itself􏶧
 􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
@@ -82,11 +91,11 @@ These often match the remote api's command platform properties􏶥
     isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
     filterProvisionsByWildcard(filterProvisions);
 􏶳
-􏴱can construct􏴲􏴯regular􏴰
+􏴱can construct􏴲􏴯mock􏴰
 􏲝the object can be constructed􏲞
 􏲛the object cannot be constructed􏲜
 􏴭
-    RedisProvisionQueue queue = new RedisProvisionQueue();
+    ProvisionedRedisQueue queue = new ProvisionedRedisQueue("name",ImmutableList.of(),HashMultimap.create());
 􏴮
 
 􏷐filter the provisions into separate sets by checking for the existence of wildcards􏷏
@@ -137,41 +146,39 @@ These often match the remote api's command platform properties􏶥
 􏶾String􏶽􏶼explanation􏶻􏶺an explanation on the eligibility of the provided properties􏶹
 􏶴
 
-     //is it eligible?
-     String explanation = new String();
-     if (isEligible(properties)){
-        explanation += "The properties are eligible for the queue.\n";
-     }
-     else {
-        explanation += "The properties are not eligible for the queue.\n";
-     }
-     
-     //why so?
-     if (isFullyWildcard) {
-        explanation += "The queue is fully wildcard.\n";
-        return explanation;
-     }
-     
-     ImmutableSetMultimap.Builder<String, String> matched = ImmutableSetMultimap.builder();
-     ImmutableSetMultimap.Builder<String, String> unmatched = ImmutableSetMultimap.builder();
-     ImmutableSetMultimap.Builder<String, String> stillRequired = ImmutableSetMultimap.builder();
-     
+    // is it eligible?
+    String explanation = new String();
+    if (isEligible(properties)) {
+      explanation += "The properties are eligible for the queue.\n";
+    } else {
+      explanation += "The properties are not eligible for the queue.\n";
+    }
+
+    // is it fully wildcard?
+    if (isFullyWildcard) {
+      explanation += "The queue is fully wildcard.\n";
+      return explanation;
+    }
+
+    //gather matched, unmatched, and still required properties
+    ImmutableSetMultimap.Builder<String, String> matched = ImmutableSetMultimap.builder();
+    ImmutableSetMultimap.Builder<String, String> unmatched = ImmutableSetMultimap.builder();
+    ImmutableSetMultimap.Builder<String, String> stillRequired = ImmutableSetMultimap.builder();
     Set<Map.Entry<String, String>> requirements = new HashSet<>(requiredProvisions);
     for (Map.Entry<String, String> property : properties.entries()) {
-      // for each of the properties specified, we must match requirements
       if (!wildcardProvisions.contains(property.getKey()) && !requirements.remove(property)) {
         unmatched.put(property);
-      }
-      else{
+      } else {
         matched.put(property);
       }
     }
+    stillRequired.putAll(requirements);
     
-    
- 
- 
- 
- 
+    //provide further explanation on individual properties
+    explanation += "matched: " + matched + "\n";
+    explanation += "unmatched: " + unmatched + "\n";
+    explanation += "still required: " + stillRequired + "\n";
+    return explanation;
 􏶳
 
 􏷐get queue􏷏
