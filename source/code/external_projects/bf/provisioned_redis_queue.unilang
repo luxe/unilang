@@ -50,22 +50,22 @@ This allows the scheduler to distribute operations by their properties and allow
 􏲏􏲐􏲍java.util.Set􏲎
 
 
-􏶨􏶧
-􏶦􏶥
+􏶨wildcard value􏶧
+􏶦symbol for identifying wildcard in both key/value of provisions􏶥
 􏶘+s􏶙􏶰c􏶯􏶮String􏶭􏶬WILDCARD_VALUE􏶫􏶪"*"􏶩
 
-􏶨􏶧
-􏶦􏶥
-􏶘+􏶙􏶰c􏶯􏶮bool􏶭􏶬is fully wildcard􏶫􏶪􏶩
+􏶨if the queue will deem any set of properties eligible􏶧
+􏶦if any of the provision keys has a wildcard, we consider anything for the queue to be eligible􏶥
+􏶘-􏶙􏶰c􏶯􏶮bool􏶭􏶬is fully wildcard􏶫􏶪􏶩
 
-􏶨􏶧
-􏶦􏶥
-􏶘+􏶙􏶰c􏶯􏶮Set<String>􏶭􏶬wildcard provisions􏶫􏶪􏶩
+􏶨the wildcard provisions of the queue􏶧
+􏶦a filtered set of all provisions that use wildcards􏶥
+􏶘-􏶙􏶰c􏶯􏶮Set<String>􏶭􏶬wildcard provisions􏶫􏶪􏶩
 
 􏶨the required provisions of the queue􏶧
 􏶦The required provisions to allow workers and operations to be added to the queue.  
 These often match the remote api's command platform properties􏶥
-􏶘-􏶙􏶰c􏶯􏶮SetMultimap<String, String>􏶭􏶬required provisions􏶫􏶪􏶩
+􏶘-􏶙􏶰c􏶯􏶮Set<Map.Entry<String, String>>􏶭􏶬required provisions􏶫􏶪􏶩
 
 􏶨the queue itself􏶧
 􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
@@ -80,6 +80,20 @@ These often match the remote api's command platform properties􏶥
 􏶴
     this.queue = new BalancedRedisQueue(name, hashtags);
     isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
+    filterProvisionsByWildcard(filterProvisions);
+􏶳
+􏴱can construct􏴲􏴯regular􏴰
+􏲝the object can be constructed􏲞
+􏲛the object cannot be constructed􏲜
+􏴭
+    RedisProvisionQueue queue = new RedisProvisionQueue();
+􏴮
+
+􏷐filter the provisions into separate sets by checking for the existence of wildcards􏷏
+􏶠this will organize the incoming  provisions into separate sets􏶡
+􏷘-􏷗􏴅Observers􏴆􏷒filter provisions by wildcard􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄filter provisions􏷃􏷀the filtered provisions of the queue􏶿
+􏶴
     wildcardProvisions =
         isFullyWildcard
             ? ImmutableSet.of()
@@ -94,12 +108,6 @@ These often match the remote api's command platform properties􏶥
                 .filter(e -> !wildcardProvisions.contains(e.getKey()))
                 .collect(ImmutableSet.toImmutableSet());
 􏶳
-􏴱can construct􏴲􏴯regular􏴰
-􏲝the object can be constructed􏲞
-􏲛the object cannot be constructed􏲜
-􏴭
-    RedisProvisionQueue queue = new RedisProvisionQueue();
-􏴮
 
 􏷐checks required properties􏷏
 􏶠checks whether the properties given fulfill all of the required provisions of the queue􏶡
@@ -120,6 +128,50 @@ These often match the remote api's command platform properties􏶥
       }
     }
     return requirements.isEmpty();
+􏶳
+
+􏷐explain eligibility􏷏
+􏶠returns an explanation as to why the properties provided are eligible / ineligible to be placed on the queue􏶡
+􏷘+􏷗􏴅Observers􏴆􏷒explain eligibility􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to get an eligibility explanation of􏶿
+􏶾String􏶽􏶼explanation􏶻􏶺an explanation on the eligibility of the provided properties􏶹
+􏶴
+
+     //is it eligible?
+     String explanation = new String();
+     if (isEligible(properties)){
+        explanation += "The properties are eligible for the queue.\n";
+     }
+     else {
+        explanation += "The properties are not eligible for the queue.\n";
+     }
+     
+     //why so?
+     if (isFullyWildcard) {
+        explanation += "The queue is fully wildcard.\n";
+        return explanation;
+     }
+     
+     ImmutableSetMultimap.Builder<String, String> matched = ImmutableSetMultimap.builder();
+     ImmutableSetMultimap.Builder<String, String> unmatched = ImmutableSetMultimap.builder();
+     ImmutableSetMultimap.Builder<String, String> stillRequired = ImmutableSetMultimap.builder();
+     
+    Set<Map.Entry<String, String>> requirements = new HashSet<>(requiredProvisions);
+    for (Map.Entry<String, String> property : properties.entries()) {
+      // for each of the properties specified, we must match requirements
+      if (!wildcardProvisions.contains(property.getKey()) && !requirements.remove(property)) {
+        unmatched.put(property);
+      }
+      else{
+        matched.put(property);
+      }
+    }
+    
+    
+ 
+ 
+ 
+ 
 􏶳
 
 􏷐get queue􏷏
