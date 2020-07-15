@@ -19,6 +19,7 @@ This allows the scheduler to distribute operations by their properties and allow
 􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.FilteredProvisions􏷥
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
 􏷤􏷣􏷦java.util.HashSet􏷥
 􏷤􏷣􏷦java.util.Map􏷥
@@ -71,14 +72,9 @@ This allows the scheduler to distribute operations by their properties and allow
 􏶦if any of the provision keys has a wildcard, we consider anything for the queue to be eligible􏶥
 􏶘-􏶙􏶰c􏶯􏶮bool􏶭􏶬is fully wildcard􏶫􏶪􏶩
 
-􏶨the wildcard provisions of the queue􏶧
-􏶦a filtered set of all provisions that use wildcards􏶥
-􏶘-􏶙􏶰􏶯􏶮Set<String>􏶭􏶬wildcard provisions􏶫􏶪􏶩
-
-􏶨the required provisions of the queue􏶧
-􏶦The required provisions to allow workers and operations to be added to the queue.  
-These often match the remote api's command platform properties􏶥
-􏶘-􏶙􏶰􏶯􏶮Set<Map.Entry<String, String>>􏶭􏶬required provisions􏶫􏶪􏶩
+􏶨provisions enforced by the queue􏶧
+􏶦The provisions are filtered by wildcard􏶥
+􏶘-􏶙􏶰c􏶯􏶮FilteredProvisions􏶭􏶬provisions􏶫􏶪􏶩
 
 􏶨the queue itself􏶧
 􏶦a balanced redis queue designed to hold particularly provisioned elements􏶥
@@ -93,7 +89,7 @@ These often match the remote api's command platform properties􏶥
 􏶴
     this.queue = new BalancedRedisQueue(name, hashtags);
     isFullyWildcard = filterProvisions.containsKey(WILDCARD_VALUE);
-    filterProvisionsByWildcard(filterProvisions);
+    provisions = filterProvisionsByWildcard(filterProvisions,isFullyWildcard,WILDCARD_VALUE);
 􏶳
 􏴱can construct􏴲􏴯regular􏴰
 􏲝the object can be constructed􏲞
@@ -104,22 +100,27 @@ These often match the remote api's command platform properties􏶥
 
 􏷐filter the provisions into separate sets by checking for the existence of wildcards􏷏
 􏶠this will organize the incoming  provisions into separate sets􏶡
-􏷘-􏷗􏴅Observers􏴆􏷒filter provisions by wildcard􏷑
+􏷘-s􏷗􏴅Observers􏴆􏷒filter provisions by wildcard􏷑
 􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄filter provisions􏷃􏷀the filtered provisions of the queue􏶿
+􏶜􏶝􏷆bool􏷅􏷄is fully wildcard􏷃􏷀if the queue will deem any set of properties eligible􏶿
+􏶜􏶝􏷆String􏷅􏷄wildcard value􏷃􏷀symbol for identifying wildcard in both key/value of provisions􏶿
+􏶾FilteredProvisions􏶽􏶼filtered provisions􏶻􏶺provisions filtered by wildcard􏶹
 􏶴
-    wildcardProvisions =
+    FilteredProvisions provisions = new FilteredProvisions();
+    provisions.wildcard =
         isFullyWildcard
             ? ImmutableSet.of()
             : filterProvisions.asMap().entrySet().stream()
-                .filter(e -> e.getValue().contains(WILDCARD_VALUE))
+                .filter(e -> e.getValue().contains(wildcardValue))
                 .map(e -> e.getKey())
                 .collect(ImmutableSet.toImmutableSet());
-    requiredProvisions =
+    provisions.required =
         isFullyWildcard
             ? ImmutableSet.of()
             : filterProvisions.entries().stream()
-                .filter(e -> !wildcardProvisions.contains(e.getKey()))
+                .filter(e -> !provisions.wildcard.contains(e.getKey()))
                 .collect(ImmutableSet.toImmutableSet());
+    return provisions;
 􏶳
 
 􏷐checks required properties􏷏
@@ -133,14 +134,47 @@ These often match the remote api's command platform properties􏶥
       return true;
     }
     // all required non-wildcard provisions must be matched
-    Set<Map.Entry<String, String>> requirements = new HashSet<>(requiredProvisions);
+    Set<Map.Entry<String, String>> requirements = new HashSet<>(provisions.required);
     for (Map.Entry<String, String> property : properties.entries()) {
       // for each of the properties specified, we must match requirements
-      if (!wildcardProvisions.contains(property.getKey()) && !requirements.remove(property)) {
+      if (!provisions.wildcard.contains(property.getKey()) && !requirements.remove(property)) {
         return false;
       }
     }
     return requirements.isEmpty();
+􏶳
+
+􏷐get eligibility result􏷏
+􏶠perform eligibility check with detailed information on evaluation􏶡
+􏷘-􏷗􏴅Observers􏴆􏷒get eligibility result􏷑
+􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to get an eligibility explanation of􏶿
+􏶾EligibilityResult􏶽􏶼eligibility result􏶻􏶺detailed results on the evaluation of an eligibility check􏶹
+􏶴
+    EligibilityResult result = new EligibilityResult();
+    result.queueName = queue.getName();
+    result.isEligible = isEligible(properties);
+    result.isFullyWildcard = isFullyWildcard;
+    
+    //gather matched, unmatched, and still required properties
+    ImmutableSetMultimap.Builder<String, String> matched = ImmutableSetMultimap.builder();
+    ImmutableSetMultimap.Builder<String, String> unmatched = ImmutableSetMultimap.builder();
+    ImmutableSetMultimap.Builder<String, String> stillRequired = ImmutableSetMultimap.builder();
+    Set<Map.Entry<String, String>> requirements = new HashSet<>(provisions.required);
+    for (Map.Entry<String, String> property : properties.entries()) {
+      if (!provisions.wildcard.contains(property.getKey()) && !requirements.remove(property)) {
+        unmatched.put(property);
+      } else {
+        matched.put(property);
+      }
+    }
+    stillRequired.putAll(requirements);
+    
+    result.matched = matched.build();
+    result.unmatched = unmatched.build();
+    result.stillRequired = stillRequired.build();
+    
+    return result;
+
 􏶳
 
 􏷐explain eligibility􏷏
@@ -149,40 +183,9 @@ These often match the remote api's command platform properties􏶥
 􏶜􏶝􏷆SetMultimap<String, String>􏷅􏷄properties􏷃􏷀properties to get an eligibility explanation of􏶿
 􏶾String􏶽􏶼explanation􏶻􏶺an explanation on the eligibility of the provided properties􏶹
 􏶴
-
-    // is it eligible?
-    String explanation = new String();
-    if (isEligible(properties)) {
-      explanation += "The properties are eligible for the " + queue.getName() + " queue.\n";
-    } else {
-      explanation += "The properties are not eligible for the " + queue.getName() + " queue.\n";
-    }
-
-    // is it fully wildcard?
-    if (isFullyWildcard) {
-      explanation += "The queue is fully wildcard.\n";
-      return explanation;
-    }
-
-    //gather matched, unmatched, and still required properties
-    ImmutableSetMultimap.Builder<String, String> matched = ImmutableSetMultimap.builder();
-    ImmutableSetMultimap.Builder<String, String> unmatched = ImmutableSetMultimap.builder();
-    ImmutableSetMultimap.Builder<String, String> stillRequired = ImmutableSetMultimap.builder();
-    Set<Map.Entry<String, String>> requirements = new HashSet<>(requiredProvisions);
-    for (Map.Entry<String, String> property : properties.entries()) {
-      if (!wildcardProvisions.contains(property.getKey()) && !requirements.remove(property)) {
-        unmatched.put(property);
-      } else {
-        matched.put(property);
-      }
-    }
-    stillRequired.putAll(requirements);
     
-    //provide further explanation on individual properties
-    explanation += "matched: " + toString(matched.build().asMap()) + "\n";
-    explanation += "unmatched: " + toString(unmatched.build().asMap()) + "\n";
-    explanation += "still required: " + toString(stillRequired.build().asMap()) + "\n";
-    return explanation;
+    EligibilityResult result = getEligibilityResult(properties);
+    return toString(result);
 􏶳
 􏴱no provisions accepted􏴲􏴯regular􏴰
 􏲝the queue will accept the properties if no provisions are involved􏲞
@@ -279,7 +282,7 @@ These often match the remote api's command platform properties􏶥
 
 􏷐convert map to printable string􏷏
 􏶠uses streams􏶡
-􏷘-􏷗􏴅Getters􏴆􏷒to string􏷑
+􏷘-s􏷗􏴅Getters􏴆􏷒to string􏷑
 􏶜􏶝􏷆Map<String, ?>􏷅􏷄map􏷃􏷀map to convert to string􏶿
 􏶾String􏶽􏶼str􏶻􏶺string representation of map􏶹
 􏶴
@@ -287,6 +290,31 @@ These often match the remote api's command platform properties􏶥
       .map(key -> key + "=" + map.get(key))
       .collect(Collectors.joining(", ", "{", "}"));
     return mapAsString;
+􏶳
+
+􏷐convert eligibility result to printable string􏷏
+􏶠used for visibility / debugging􏶡
+􏷘-s􏷗􏴅Getters􏴆􏷒to string􏷑
+􏶜􏶝􏷆EligibilityResult􏷅􏷄result􏷃􏷀detailed results on the evaluation of an eligibility check􏶿
+􏶾String􏶽􏶼explanation􏶻􏶺an explanation on the eligibility of the provided properties􏶹
+􏶴
+
+    String explanation = new String();
+    if (result.isEligible) {
+      explanation += "The properties are eligible for the " + result.queueName + " queue.\n";
+    } else {
+      explanation += "The properties are not eligible for the " + result.queueName + " queue.\n";
+    }
+
+    if (result.isFullyWildcard) {
+      explanation += "The queue is fully wildcard.\n";
+      return explanation;
+    }
+    
+    explanation += "matched: " + toString(result.matched.asMap()) + "\n";
+    explanation += "unmatched: " + toString(result.unmatched.asMap()) + "\n";
+    explanation += "still required: " + toString(result.stillRequired.asMap()) + "\n";
+    return explanation;
 􏶳
 
 􏷐get queue􏷏
