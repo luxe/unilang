@@ -49,8 +49,13 @@ hcp(
 enum_cpp(
     name = "buildable_label_action",
     values = [
-        "add",
+        "add sibling before",
+        "add sibling after",
+        "add child",
         "delete",
+        "delete children",
+        "delete parent",
         "copy",
+        "copy subtree",
     ],
 )
