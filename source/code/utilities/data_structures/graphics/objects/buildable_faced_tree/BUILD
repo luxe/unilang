@@ -5,6 +5,21 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
+enum_cpp(
+    name = "buildable_label_action",
+    values = [
+        "add_sibling_before",
+        "add_sibling_after",
+        "add_child_before",
+        "add_child_after",
+        "delete",
+        "delete_children",
+        "delete_parent",
+        "copy",
+        "copy_subtree",
+    ],
+)
+
 hcp_and_hcp_pos(
     name = "buildable_face_tree",
     deps = [
@@ -43,19 +58,16 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
     ],
 )
 
-enum_cpp(
-    name = "buildable_label_action",
-    values = [
-        "add sibling before",
-        "add sibling after",
-        "add child",
-        "delete",
-        "delete children",
-        "delete parent",
-        "copy",
-        "copy subtree",
+hcp(
+    name = "buildable_face_tree_action_doer",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
     ],
 )
+

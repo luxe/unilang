@@ -16,5 +16,8 @@ enum_cpp(
 cc_binary(
     name = "enum_program",
     srcs = ["test.cc"],
-    deps = ["//code/tools/transcompilers/enum_cpp/example:test_enum"],
+    deps = [
+        "//code/tools/transcompilers/enum_cpp/example:test_enum",
+        "@pretty_print//:lib",
+    ],
 )
