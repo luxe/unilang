@@ -11,4 +11,7 @@ def glog():
         urls = [
             "https://github.com/Unilang/glog/archive/0a2e5931bd5ff22fd3bf8999eb8ce776f159cda6.tar.gz",
         ],
+        repo_mapping = {
+            "@com_github_gflags_gflags": "@gflags",
+        },
     )
