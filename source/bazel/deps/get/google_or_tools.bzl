@@ -13,5 +13,6 @@ def googleOrTools():
         ],
         repo_mapping = {
             "@com_google_absl": "@abseil",
+            "@com_github_glog_glog": "@glog",
         },
     )
