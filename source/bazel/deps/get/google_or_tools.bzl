@@ -12,6 +12,6 @@ def googleOrTools():
             "https://github.com/Unilang/or-tools/archive/45770b833997f827d322e929b1ed4781c4e60d44.tar.gz",
         ],
         repo_mapping = {
-            "@abseil": "@com_google_absl",
+            "@com_google_absl": "@abseil",
         },
     )
