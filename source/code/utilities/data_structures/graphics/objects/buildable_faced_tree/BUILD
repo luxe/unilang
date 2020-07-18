@@ -26,7 +26,7 @@ hcp_and_hcp_pos(
     name = "buildable_face_tree",
     deps = [
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
-        "//code/utilities/data_structures/graphics/objects/select_menu",
+        "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
         "@tree",
     ],
 )
@@ -61,6 +61,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
+        "//code/utilities/data_structures/graphics/objects/select_menu:select_menu",
     ],
 )
 
