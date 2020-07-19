@@ -19,6 +19,9 @@ unsigned int Starts_With_Char_How_Many_Times(std::string const& str, char c){
 unsigned int Starts_With_How_Many_Spaces(std::string const& str){
 	return Starts_With_Char_How_Many_Times(str,' ');
 }
+unsigned int Starts_With_How_Many_Dots(std::string const& str){
+    return Starts_With_Char_How_Many_Times(str,'.');
+}
 unsigned int Count_Instances_Of_Character(std::string const& s, char const& c) {
     unsigned int count = 0;
     for (size_t i = 0; i < s.size(); ++i) {

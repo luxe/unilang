@@ -17,3 +17,11 @@ hcp(
         "@tree",
     ],
 )
+
+hcp(
+    name = "string_to_string_tree",
+    deps = [
+        "@string_tree",
+    ],
+)
+
