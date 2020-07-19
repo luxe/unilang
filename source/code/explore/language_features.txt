@@ -57,6 +57,30 @@ I assume this is going to be similar to the "deprecation" or "warning" or "note"
 we'll be able to tag arguments, return values, identifiers as "optional".
 We will also be able to supply a list of reasons as to why the variable may be optional.
 
+- [reason] token
+pretty much every token should have a corresponding "reason" tokens
+why did you choose this type?
+why did you choose this default value?
+why did you choose these units?
+etc...
+
+- [error message] token values
+[what happened]
+[why]
+[suggest next step]
+[rate the seriousness of the issue]
+^ this can guide static analysis in deciding whether the error message has the right tone.
+
+- [context] token
+types should come with a context type; this auto populate documentation where used
+types should come with a table of "context" / description
+then when you use arguments, you use them with a context.
+The context can automatically populate the argument description.
+void function([string][storing]){}
+void function([string][printing]){}
+the context is defined alongside the type deceleration/definition.
+This also allows people to take a type and understand the contexts in which its used.
+
 - Mustache settings for different parts of the unilang structure
 we'll have to think about how wildly this can be used, and if it should be ignored by just using language features instead
 
@@ -124,13 +148,6 @@ if you call a printer internally, you are also a printer. Not so much if you cal
 You would be a printer even if the function doesn't actually print if its blocked by a conditional or something which we wouldn't be able to figure out.
 
 
-- error message token values
-[what happened]
-[why]
-[suggest next step]
-[rate the seriousness of the issue]
-^ this can guide static analysis in deciding whether the error message has the right tone.
-
 - homoglyph substitution and zero-width fingerprinting
 It would be super sneaky and super sly to watermark generated code with unilang zero-width fingerprinting.
 This way we'll now if someone has copied code, etc.
@@ -155,5 +172,35 @@ static analysis of comment. We find acronyms, concepts, and terms. These must be
 - code should have music associated with it
 music can also inspire feelings about a particular piece of code, and can help someone gain familiarity
 
+- warn about proposition-looking functions that have out prams
+if the function name looks like its asking a question, i.e.
+by analyzing the semantics/pragmatics of the function name and that it returns a bool, it is most likely a proposition of sorts.
+(Note: Unilang might have a way of directly specifying this proposition, in which case it will be literally just checking more of a property of the function).
+Wither way, if we have some kind of proposition, it would make sense for functions to not have out params.
+We can statically warn about this,.
+The reason this ticket exists is because I've been bitted by this while trying to unit test something and not understanding why I was getting different results when reusing the same arguments.
 
+- multiple names for levels of specificity
+names can have different levels of specificity
+short v
+medium vec
+descriptive: items
+more descriptive purchasing_item_collection
+the projectional editor provides a slider on how descriptive you want the code to look
 
+- tag a function as exception smothering
+sometimes we want a function to be constexpr and not crash if an exception is thrown.
+We need a way to tag a function as catching any exception that is thrown internally.
+This might mean that the return type is automatically an optional.. something to think about and make configurable
+
+- auto dissolve / auto include comments
+circle-jerking comment debate
+code should be self-documenting and you don't need them
+gray area on what people think is an appropriate amount of comments
+no comments bad? too many comments bad?
+we automate our stance in the gray area through unilang config.
+I believe redundant comments are actually good despite self documenting code because
+we want the pragmatics of one language (english) to match the perceived pragmatics of a programming language.
+We should be able to derive that the meaning matches between the languages through something like function name and function statement +...
+or possibly use other parts of the function and see if we get a 1 to 1 mapping to the comment, or a partial but complete mapping etc....
+some linguistics discussion between english/programming languages and were they meet and what we should do about it
