@@ -27,6 +27,7 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/counters:lib",
         "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/tree/converters:depth_list",
     ],
 )
 
