@@ -38,6 +38,14 @@ cpp_main(
     ],
 )
 
+cpp_main(
+    name = "concept_tree",
+    deps = [
+        "//code/utilities/code:concept_tree_to_image",
+        "//code/utilities/filesystem/paths:lib",
+    ],
+)
+
 hcp(
     name = "reflexive_refresher",
     deps = [

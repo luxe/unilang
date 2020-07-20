@@ -3,6 +3,9 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
+#see also:
+#https://www.hillelwayne.com/post/frink/
+
 cpp_object(name = "units_to_variable_suffix_lookup_table")
 
 hcp(
