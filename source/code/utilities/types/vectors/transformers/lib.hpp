@@ -299,6 +299,19 @@ void Add_To_Vector_If_Not_Already_There(std::vector<T> & vec, T const& item){
 }
 
 template <typename T>
+void Safely_Add_To_Vector_At_Index(std::vector<T> & vec, size_t at_index, T const& item){
+    
+    //buffer with the item as needed
+    for (int i = vec.size(); i < at_index; ++i){
+        vec.emplace_back(item);
+    }
+    
+    //add at index
+    vec[at_index] = item;
+    
+}
+
+template <typename T>
 std::vector<T>& Remove_Element(std::vector<T>& vec, T const& value){
     vec.erase(std::remove(vec.begin(), vec.end(), value), vec.end());
     return vec;
