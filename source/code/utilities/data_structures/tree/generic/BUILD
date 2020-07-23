@@ -21,13 +21,12 @@ hcp(
 hcp(
     name = "string_to_string_tree",
     deps = [
-        "@string_tree",
         "//code/utilities/data_structures/tree:string_tree",
-        "//code/utilities/types/strings/transformers/trimming:lib",
-        "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/counters:lib",
-        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/types/tree/converters:depth_list",
+        "//code/utilities/types/vectors/transformers:lib",
+        "@string_tree",
     ],
 )
-

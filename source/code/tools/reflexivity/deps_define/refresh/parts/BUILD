@@ -19,8 +19,8 @@ hcp(
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/casing:case_modifier",
         "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/types/vectors/converters:lib",
-        "//code/utilities/types/strings/transformers/removing:lib",
     ],
 )
