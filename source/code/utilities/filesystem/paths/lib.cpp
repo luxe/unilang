@@ -39,6 +39,13 @@ std::string Bazel_Derived_Path_To_Essays(){
 	return x + "/code/literature/essays/";
 }
 
+std::string Bazel_Deps_Directory(){
+    return Bazel_Workspace_Directory() + "/bazel/deps/";
+}
+std::string Bazel_Deps_Get_Directory(){
+    return Bazel_Workspace_Directory() + "/bazel/deps/get/";
+}
+
 void Move_To_Repo_Root(){
 	auto p = Bazel_Derived_Root_Of_Repo();
 	Set_Path(p);

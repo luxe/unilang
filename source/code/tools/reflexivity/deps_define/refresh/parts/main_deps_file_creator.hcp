@@ -1,0 +1,49 @@
+class
+❪string❫
+❪vector❫
+❪"code/tools/reflexivity/deps_define/data/dependency_specifications_getter"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚯
+❪"code/utilities/filesystem/files/creating/lib"❫
+❪"code/tools/reflexivity/comment/generated_comment_getter"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
+
+    auto path = Bazel_Deps_Directory();
+    Set_Path(path);
+    
+    
+    auto source_data = Create_Main_Third_Party_Sourcing_File(all_specs);
+    Write_To_File("third_party_libraries.bzl",source_data);
+❱
+
+◀private: static▶ std::string ☀Create_Main_Third_Party_Sourcing_File(Dependency_Specifications const& all_specs)❰
+    std::string result;
+    
+    Append_With_Newline(result,Generated_Comment_Getter::Get());
+    
+    //add load statements
+    for (auto const& it: all_specs.specs){
+        Append(result,"load(\"//bazel/deps/get:");
+        Append(result,Remove_Dashes(it.lib_name));
+        Append(result,".bzl");
+        Append(result,"\"");
+        Append(result,", \"");
+        Append(result,Fix_Casing_For_Bazel(it.lib_name));
+        Append(result,"\")\n");
+    }
+    
+    Append_With_Newline(result,"def third_party_libraries():");
+    for (auto const& it: all_specs.specs){
+        Append(result,"    ");
+        Append(result,Fix_Casing_For_Bazel(it.lib_name));
+        Append_With_Newline(result,"()");
+    }
+    
+    return result;
+❱

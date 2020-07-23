@@ -5,7 +5,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(
-    name = "deps_definition_refresher",
+    name = "main_deps_file_creator",
     deps = [
         "//code/tools/reflexivity/comment:generated_comment_getter",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
@@ -21,6 +21,5 @@ hcp(
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/types/vectors/converters:lib",
-        "//code/tools/reflexivity/deps_define/refresh/parts:main_deps_file_creator",
     ],
 )
