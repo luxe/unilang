@@ -9,6 +9,7 @@ class
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/tools/reflexivity/deps_define/refresh/parts/main_deps_file_creator"❫
 ⚞⚟
 
@@ -25,10 +26,10 @@ class
     auto path = Bazel_Deps_Get_Directory();
     Set_Path(path);
     
-    for (auto const& it: all_specs.specs){
+    for (auto it: all_specs.specs){
         if (Should_Print_Get_File(it)){
             auto source_data  = Create_Get_File_Content(it);
-            Write_To_File(Remove_Dashes(it.lib_name) + ".bzl",source_data);
+            Write_To_File(As_Removed_Dashes(it.lib_name) + ".bzl",source_data);
         }
     }
 ❱
@@ -55,7 +56,7 @@ class
     return Create_Http_Archive_Get_File_Content(spec);
 ❱
 
-◀private: static▶ std::string ☀Create_Http_Archive_Get_File_Content(Dependency_Specification const& spec)❰
+◀private: static▶ std::string ☀Create_Http_Archive_Get_File_Content(Dependency_Specification spec)❰
     std::string result;
     
     Append_With_Newline(result,Generated_Comment_Getter::Get());
@@ -69,13 +70,13 @@ class
     
     //add name
     Append(result,"        ");
-    Append_Key_Value(result,"name",Remove_Dashes(spec.lib_name));
+    Append_Key_Value(result,"name",As_Removed_Dashes(spec.lib_name));
     Append_With_Newline(result,",");
     
     //add build file
     if (!spec.build_content_in_dependency){
         Append(result,"        ");
-        Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + Remove_Dashes(spec.lib_name) + ".BUILD");
+        Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + As_Removed_Dashes(spec.lib_name) + ".BUILD");
         Append_With_Newline(result,",");
     }
     
@@ -163,7 +164,7 @@ class
     return result;
 ❱
 
-◀private: static▶ std::string ☀Create_Local_Get_File_Content(Dependency_Specification const& spec)❰
+◀private: static▶ std::string ☀Create_Local_Get_File_Content(Dependency_Specification spec)❰
 
     std::string result;
     Append_With_Newline(result,Generated_Comment_Getter::Get());
@@ -176,13 +177,13 @@ class
     
     //add name
     Append(result,"        ");
-    Append_Key_Value(result,"name",Remove_Dashes(spec.lib_name));
+    Append_Key_Value(result,"name",As_Removed_Dashes(spec.lib_name));
     Append_With_Newline(result,",");
     
     //add build file
     if (!spec.build_content_in_dependency){
         Append(result,"        ");
-        Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + Remove_Dashes(spec.lib_name) + ".BUILD");
+        Append_Key_Value(result,"build_file","//bazel/deps/build_files:" + As_Removed_Dashes(spec.lib_name) + ".BUILD");
         Append_With_Newline(result,",");
     }
     
@@ -203,8 +204,4 @@ class
     //return str;
     auto without_dashes = string_replace_all(str,"-","_");
     return Case_Modifier::As_Modified_Casing(Case_Format_Style::LOWER_CAMEL_CASE,without_dashes);
-❱
-◀private: static▶ std::string ☀Remove_Dashes(std::string const& str)❰
-    auto without_dashes = string_replace_all(str,"-","_");
-    return without_dashes;
 ❱

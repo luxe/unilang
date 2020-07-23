@@ -20,6 +20,7 @@ hcp(
         "//code/utilities/types/strings/transformers/casing:case_modifier",
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/converters:lib",
         "//code/tools/reflexivity/deps_define/refresh/parts:main_deps_file_creator",
     ],

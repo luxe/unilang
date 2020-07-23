@@ -9,6 +9,7 @@ class
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
 ⚞⚟
 
 
@@ -28,9 +29,9 @@ class
     Append_With_Newline(result,Generated_Comment_Getter::Get());
     
     //add load statements
-    for (auto const& it: all_specs.specs){
+    for (auto it: all_specs.specs){
         Append(result,"load(\"//bazel/deps/get:");
-        Append(result,Remove_Dashes(it.lib_name));
+        Append(result,As_Removed_Dashes(it.lib_name));
         Append(result,".bzl");
         Append(result,"\"");
         Append(result,", \"");
@@ -46,4 +47,10 @@ class
     }
     
     return result;
+❱
+
+◀private: static▶ std::string ☀Fix_Casing_For_Bazel(std::string const& str)❰
+    //return str;
+    auto without_dashes = string_replace_all(str,"-","_");
+    return Case_Modifier::As_Modified_Casing(Case_Format_Style::LOWER_CAMEL_CASE,without_dashes);
 ❱

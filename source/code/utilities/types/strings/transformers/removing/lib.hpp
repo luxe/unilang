@@ -4,9 +4,16 @@
 //REMOVING
 std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c);
 std::string& Remove_First_Instance_Of_Char(std::string & str, char const& c);
+
+//remove certain chars
 std::string& Remove_Commas(std::string & str);
 std::string& Remove_Spaces(std::string & str);
+std::string& Remove_Dashes(std::string & str);
 std::string& Remove_Double_Quotes(std::string & str);
+
+std::string As_Removed_Dashes(std::string const& str);
+
+
 std::string As_NonAlphas_Removed(std::string const& str);
 std::string& Remove_All_Beginning_Characters_That_Match_Any_Of_The_Following_Characters(std::string & str, std::string const& chars);
 std::string& Remove_Match_Found_At_Beginning_Or_End(std::string & str, std::string const& match);
