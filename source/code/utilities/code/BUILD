@@ -7,6 +7,7 @@ hcp(
     name = "concept_tree_getter",
     deps = [
         "//code/utilities/data_structures/tree/generic:string_tree",
+        "//code/utilities/data_structures/tree/generic:string_to_string_tree",
         "@tree",
     ],
 )
