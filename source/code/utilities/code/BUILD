@@ -31,5 +31,6 @@ hcp(
         "//code/utilities/personal/hosting:hosting_repo",
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "@tree",
+        "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
