@@ -9,6 +9,7 @@ hcp(
     deps = [
         "//code/tools/reflexivity/comment:generated_comment_getter",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
+        "//code/tools/reflexivity/deps_define/refresh/parts:get_files_creator",
         "//code/tools/reflexivity/deps_define/refresh/parts:main_deps_file_creator",
         "//code/tools/reflexivity/tool_chain_conversion:readme_creator",
         "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:bazel_conversion_tests",

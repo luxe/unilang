@@ -15,19 +15,34 @@ class
 
 ◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
 
+    //move to where the file goes
     auto path = Bazel_Deps_Directory();
     Set_Path(path);
     
-    
+    //create its content
     auto source_data = Create_Main_Third_Party_Sourcing_File(all_specs);
+    
+    //write it out to a file
     Write_To_File("third_party_libraries.bzl",source_data);
 ❱
 
 ◀private: static▶ std::string ☀Create_Main_Third_Party_Sourcing_File(Dependency_Specifications const& all_specs)❰
     std::string result;
     
+    //generated file comment
     Append_With_Newline(result,Generated_Comment_Getter::Get());
     
+    //add load statements
+    Add_Load_Statement(result,all_specs);
+    
+    //add func to call all loads
+    Add_Function_To_Call_All_Loaded_Funcs(result,all_specs);
+    
+    return result;
+❱
+
+◀private: static▶ void ☀Add_Load_Statement(std::string & result, Dependency_Specifications const& all_specs)❰
+
     //add load statements
     for (auto it: all_specs.specs){
         Append(result,"load(\"//bazel/deps/get:");
@@ -38,16 +53,18 @@ class
         Append(result,Fix_Casing_For_Bazel(it.lib_name));
         Append(result,"\")\n");
     }
-    
+❱
+
+◀private: static▶ void ☀Add_Function_To_Call_All_Loaded_Funcs(std::string & result, Dependency_Specifications const& all_specs)❰
     Append_With_Newline(result,"def third_party_libraries():");
     for (auto const& it: all_specs.specs){
         Append(result,"    ");
         Append(result,Fix_Casing_For_Bazel(it.lib_name));
         Append_With_Newline(result,"()");
     }
-    
-    return result;
 ❱
+
+
 
 ◀private: static▶ std::string ☀Fix_Casing_For_Bazel(std::string const& str)❰
     //return str;
