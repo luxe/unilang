@@ -99,27 +99,15 @@ class
     //add patch files
     if (!spec.patch_files.empty()){
         Append(result,"        ");
-        Append_With_Newline(result,"patches = [");
-        for (auto const& it: spec.patch_files){
-            Append(result,"            ");
-            Append_In_DQuotes(result,it);
-            Append_With_Newline(result,",");
-        }
-        Append(result,"        ");
-        Append_With_Newline(result,"],");
+        Append(result,As_Named_Python_List_Of_Strings("patches",spec.patch_files));
+        Append_With_Newline(result,",");
     }
     
     //add patch args
     if (!spec.patch_args.empty()){
         Append(result,"        ");
-        Append_With_Newline(result,"patch_args = [");
-        for (auto const& it: spec.patch_args){
-            Append(result,"            ");
-            Append_In_DQuotes(result,it);
-            Append_With_Newline(result,",");
-        }
-        Append(result,"        ");
-        Append_With_Newline(result,"],");
+        Append(result,As_Named_Python_List_Of_Strings("patch_args",spec.patch_args));
+        Append_With_Newline(result,",");
     }
     
     //add patch commands
@@ -156,6 +144,7 @@ class
     
     return result;
 ❱
+
 
 ◀private: static▶ std::string ☀Create_Local_Get_File_Content(Dependency_Specification spec)❰
 
@@ -197,4 +186,22 @@ class
     //return str;
     auto without_dashes = string_replace_all(str,"-","_");
     return Case_Modifier::As_Modified_Casing(Case_Format_Style::LOWER_CAMEL_CASE,without_dashes);
+❱
+
+
+//string util
+◀private: static▶ std::string ☀As_Named_Python_List_Of_Strings(std::string const& name, std::vector<std::string> const& strs)❰
+    std::string result;
+    Append(result,name);
+    Append_With_Newline(result," = [");
+    
+    for (auto const& it: strs){
+        Append(result,"            ");
+        Append_In_DQuotes(result,it);
+        Append_With_Newline(result,",");
+    }
+    Append(result,"        ");
+    Append(result,"]");
+        
+    return result;
 ❱
