@@ -32,5 +32,6 @@ hcp(
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "@tree",
         "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:string_tree_to_buttoned_face_tree",
     ],
 )

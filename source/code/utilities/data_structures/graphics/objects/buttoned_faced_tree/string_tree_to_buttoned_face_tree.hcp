@@ -1,0 +1,94 @@
+class
+❪string❫
+❪iostream❫
+❪cmath❫
+❪map❫
+❪"code/utilities/data_structures/tree/generic/string_tree"❫
+❪"code/utilities/code/concept_tree_getter"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/positioned_button_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
+❪"src/tree.hh"❫
+⚯
+❪"code/utilities/data_structures/graphics/bitmap/premade/tree_button"❫
+❪"code/utilities/fonts/bdf/complete/unilang/unilang_character_maps"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_tree_label_drawer"❫
+❪"code/utilities/graphics/cairo/render/cairo_render_settings"❫
+❪"code/utilities/graphics/cairo/render/frame_renderer"❫
+❪"code/utilities/data_structures/graphics/objects/label/style/default_label_styles"❫
+❪"code/utilities/personal/hosting/hosting_repo"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/tree/converters/tree_full_paths_getter"❫
+⚞⚟
+
+◀public: static▶ Positioned_Button_Face_Tree ☀Convert(String_Tree const& str_tree)❰
+
+    //new tree
+    Positioned_Button_Face_Tree label_tree;
+    label_tree.pos.x = 0;
+    label_tree.pos.y = 0;
+    
+    
+    std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> lookup;
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+        
+        int depth = str_tree.nodes.depth(it);
+        
+        if (depth == 0){
+            Add_A_Root_Element(label_tree,lookup,it,depth);
+        }
+        else {
+            Add_A_Child_Element(label_tree,lookup,it,depth);
+        }
+    }
+    
+    return label_tree;
+❱
+
+◀private: static▶ void ☀Add_A_Root_Element(Positioned_Button_Face_Tree & label_tree, std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> & lookup, tree<std::string>::pre_order_iterator it, int depth)❰
+
+    //convert string to label
+    auto label = Convert_String_To_Label(*it);
+    
+    //add it to the label tree
+    auto top = label_tree.nodes.begin();
+    auto added_element = label_tree.nodes.insert(top,label);
+    
+    //store the iterator at the depth
+    lookup[depth] = added_element;
+❱
+◀private: static▶ void ☀Add_A_Child_Element(Positioned_Button_Face_Tree & label_tree, std::map<int,tree<Buttoned_Faced_Label>::pre_order_iterator> & lookup, tree<std::string>::pre_order_iterator it, int depth)❰
+
+    //convert string to label
+    auto label = Convert_String_To_Label(*it);
+    
+    //find
+    auto search = lookup.find(depth-1);
+    if (search != lookup.end()) {
+        
+        //add it to the label tree
+        auto added_element = label_tree.nodes.append_child(search->second,label);
+        
+        //store the iterator at the depth
+        lookup[depth] = added_element;
+    }
+    else{
+        std::cerr << "there should always be an iterator with depth-1 available" << std::endl;
+    }
+❱
+
+◀private: static▶ Buttoned_Faced_Label ☀Convert_String_To_Label(std::string const& str)❰
+
+    //convert string to label
+    Buttoned_Faced_Label label;
+    label.button = Tree_Button::Create();
+    label.button.current_face = 1; //open
+    Label_Face face;
+    face.name = "test";
+    face.label.styles = Default_Label_Styles::Plain_Text();
+    face.label.message = str;
+    label.label.faces.emplace_back(face);
+    
+    return label;
+❱
