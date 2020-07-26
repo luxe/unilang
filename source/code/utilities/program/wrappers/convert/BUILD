@@ -17,6 +17,21 @@ hcp(
     deps = [
         "//code/utilities/program/call:lib",
         "//code/utilities/program/wrappers/convert/settings:image_settings",
+        "//code/utilities/program/wrappers/convert/settings:draw_text_settings",
         "//code/utilities/types/strings/transformers/wrap:lib",
+    ],
+)
+
+hcp(
+    name = "whitespace_image_trimmer",
+    deps = [
+        "//code/utilities/program/call:lib",
+    ],
+)
+
+hcp(
+    name = "image_transparent",
+    deps = [
+        "//code/utilities/program/call:lib",
     ],
 )
