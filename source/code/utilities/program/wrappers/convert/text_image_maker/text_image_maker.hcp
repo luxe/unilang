@@ -1,0 +1,86 @@
+class
+❪string❫
+❪iostream❫
+❪cstdlib❫
+❪fstream❫
+❪filesystem❫
+❪"code/utilities/program/wrappers/convert/text_image_maker/text_image_maker_settings"❫
+⚯
+❪"code/utilities/program/wrappers/convert/black_and_white_forcer"❫
+❪"code/utilities/program/wrappers/convert/convert_image_maker"❫
+❪"code/utilities/program/wrappers/convert/draw_text_on_image"❫
+❪"code/utilities/program/wrappers/convert/image_transparent"❫
+❪"code/utilities/program/wrappers/convert/whitespace_image_trimmer"❫
+❪"code/utilities/program/wrappers/convert/settings/draw_text_settings"❫
+❪"code/utilities/program/wrappers/convert/settings/image_settings"❫
+⚞⚟
+
+
+◀public: static▶ void ☀Create(Text_Image_Maker_Settings const& settings) ❰
+
+    //stage 1
+    Create_Base_Image(settings);
+    
+    //stage 2
+    Write_Text(settings);
+    
+    
+    //stage 3
+    if (settings.trim_whitespace){
+        Whitespace_Image_Trimmer::Trim_Whitespace_From_Image(file_name);
+    }
+    
+    //stage 4
+    int current_num = 2;
+    if (settings.make_transparent){
+        
+        auto in = settings.file_name + "_" + std::to_string(current_num) + ".png";
+        auto out = settings.file_name + "_" + std::to_string(current_num+1) + ".png";
+        Image_Transparent::Convert(in,out);
+        ++current_num;
+    }
+    
+    //stage 5
+    if (settings.force_black_and_white){
+        auto in = settings.file_name + "_" + std::to_string(current_num) + ".png";
+        auto out = settings.file_name + "_" + std::to_string(current_num+1) + ".png";
+        Black_And_White_Forcer::Force(in,out);
+        ++current_num;
+    }
+    
+    
+    //move final image into place
+    auto in = settings.file_name + "_" + std::to_string(current_num) + ".png";
+    execute("cp " + in + " " + settings.file_name + ".png");
+    
+    
+    //delete the intermediary files
+    Existing_Temp_File x1(settings.file_name + "_1.png");
+    Existing_Temp_File x2(settings.file_name + "_2.png");
+    Existing_Temp_File x3(settings.file_name + "_3.png");
+    Existing_Temp_File x3(settings.file_name + "_4.png");
+
+❱
+
+◀private: static▶ void ☀Create_Base_Image(Text_Image_Maker_Settings const& settings) ❰
+    
+    Image_Settings x;
+    x.file_name = settings.file_name + "_1.png";
+    x.dim = settings.dim;
+    x.base_color = settings.base_color;
+    Convert_Image_Maker::Make(x);
+❱
+
+◀private: static▶ void ☀Write_Text(Text_Image_Maker_Settings const& settings) ❰
+
+    Draw_Text_Settings x;
+    x.input_file = settings.file_name + "_1.png";
+    x.output_file = settings.file_name + "_2.png";
+    
+    x.text = settings.text;
+    x.font_path = settings.font_path;
+    x.pos = settings.pos;
+    x.point_size= settings.point_size;
+    x.fill_color = settings.fill_color;
+    Draw_Text_On_Image::Write_Text(x);
+❱

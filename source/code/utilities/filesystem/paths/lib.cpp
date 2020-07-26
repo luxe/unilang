@@ -45,6 +45,9 @@ std::string Bazel_Deps_Directory(){
 std::string Bazel_Deps_Get_Directory(){
     return Bazel_Workspace_Directory() + "/bazel/deps/get/";
 }
+std::string Root_Readme_Directory(){
+	return Bazel_Derived_Root_Of_Repo() + ".readme/";
+}
 
 void Move_To_Repo_Root(){
 	auto p = Bazel_Derived_Root_Of_Repo();
