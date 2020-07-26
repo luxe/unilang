@@ -46,6 +46,14 @@ cpp_main(
     ],
 )
 
+cpp_main(
+    name = "unilang_logo",
+    deps = [
+        "//code/utilities/logo:unilang_logo_creator",
+        "//code/utilities/filesystem/paths:lib",
+    ],
+)
+
 hcp(
     name = "reflexive_refresher",
     deps = [
