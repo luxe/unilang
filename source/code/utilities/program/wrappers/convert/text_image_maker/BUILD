@@ -14,6 +14,8 @@ hcp(
         "//code/utilities/program/wrappers/convert/settings:draw_text_settings",
         "//code/utilities/program/wrappers/convert/settings:image_settings",
         "//code/utilities/program/wrappers/convert/text_image_maker:text_image_maker_settings",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/filesystem/files/temp:existing_temp_file",
     ],
 )
 
