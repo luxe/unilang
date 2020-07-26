@@ -7,9 +7,9 @@ def fonts():
     http_archive(
         name = "fonts",
         build_file = "//bazel/deps/build_files:fonts.BUILD",
-        sha256 = "b4cc6392e0449b095df2f35fea9af6c72e6ef91937248ac78ae899b64a94be4b",
-        strip_prefix = "fonts-c1bdb6687eb9e25488c01a0127065d36256e8ebb",
+        sha256 = "d13f9b4591a0b5dca600aa8940be9f30407f8e47427fdfcceca1855d2435227f",
+        strip_prefix = "fonts-e747e9b90cce0b50109ea44f439b5dc32aa81641",
         urls = [
-            "https://github.com/Unilang/fonts/archive/c1bdb6687eb9e25488c01a0127065d36256e8ebb.tar.gz",
+            "https://github.com/Unilang/fonts/archive/e747e9b90cce0b50109ea44f439b5dc32aa81641.tar.gz",
         ],
     )

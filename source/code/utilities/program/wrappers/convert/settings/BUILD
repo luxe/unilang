@@ -6,9 +6,10 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(
     name = "draw_text_settings",
     deps = [
-        "//code/utilities/data_structures/position:position",
+        "//code/utilities/data_structures/position",
     ],
 )
+
 hcp(
     name = "image_settings",
     deps = [

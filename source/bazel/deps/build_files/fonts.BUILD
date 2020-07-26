@@ -16,3 +16,15 @@ filegroup(
     name = "DroidSansMono",
     srcs = ["DroidSansMono.ttf"],
 )
+
+filegroup(
+    name = "8_bit_wonder",
+    srcs = ["8-BIT WONDER.TTF"],
+)
+
+filegroup(
+    name = "pixel_bit_advanced",
+    srcs = ["pixel-bit-advanced.ttf"],
+)
+
+

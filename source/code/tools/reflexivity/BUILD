@@ -49,8 +49,8 @@ cpp_main(
 cpp_main(
     name = "unilang_logo",
     deps = [
-        "//code/utilities/logo:unilang_logo_creator",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/logo:unilang_logo_creator",
     ],
 )
 
