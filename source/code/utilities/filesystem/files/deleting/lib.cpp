@@ -105,3 +105,8 @@ void Delete_File(std::string const& file){
     std::string command = std::string("rm -f ") + file;
     execute_quietly(command);
 }
+void Delete_Files(std::vector<std::string> const& files){
+    for (auto const& it: files){
+        Delete_File(it);
+    }
+}

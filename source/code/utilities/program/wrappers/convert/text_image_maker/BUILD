@@ -16,6 +16,7 @@ hcp(
         "//code/utilities/program/wrappers/convert/text_image_maker:text_image_maker_settings",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/filesystem/files/temp:existing_temp_file",
+        "//code/utilities/filesystem/files/deleting:lib",
     ],
 )
 
