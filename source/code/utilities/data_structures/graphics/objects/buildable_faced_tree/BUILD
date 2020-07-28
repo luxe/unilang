@@ -19,6 +19,8 @@ enum_cpp(
         #"delete_parent",
         "copy",
         "copy_subtree",
+        "expand_all",
+        "collapse_all",
     ],
 )
 
