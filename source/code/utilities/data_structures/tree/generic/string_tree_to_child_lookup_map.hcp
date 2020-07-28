@@ -1,0 +1,50 @@
+class
+❪iostream❫
+❪fstream❫
+❪string❫
+❪utility❫
+❪vector❫
+❪unordered_map❫
+❪pair❫
+❪utility❫
+❪"code/utilities/data_structures/tree/generic/string_tree"❫
+❪"code/utilities/data_structures/tree/generic/child_lookup_map"❫
+⚯
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/tree/converters/depth_list"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/tree/full_path_name"❫
+⚞⚟
+
+
+//the key is the full path and the value is the single node name.
+//so basically, a user will take a selected node, and walk up the tree to create the unique full path of it (the key),
+//and then use that unique full path to derive the simple child names (the values) used for adding new childs to the selected node.
+
+//example of return:
+//["A/B/C/D": ["E","F","G"]]
+◀public: static▶ Child_Lookup_Map ☀Convert(String_Tree const& str_tree) ❰
+
+    Child_Lookup_Map results;
+    
+    for (auto it = str_tree.nodes.begin(); it != str_tree.nodes.end(); ++it){
+        auto full_path = Full_Path_Name::Get(str_tree,it);
+        auto children_names = Get_All_Children_Names(str_tree,it);
+        results.map.insert({full_path,children_names});
+    }
+    
+    return result;
+❱
+
+◀public: static▶ std::vector<std::string> ☀Get_All_Children_Names(String_Tree const& str_tree, tree<std::string>::pre_order_iterator it) ❰
+    std::vector<std::string> result;
+    
+    for (size_t i = 0; i < str_tree.number_of_children(it); ++i){
+        result.emplace_back(*str_tree.child(it,i));
+    }
+    
+    return result;
+❱

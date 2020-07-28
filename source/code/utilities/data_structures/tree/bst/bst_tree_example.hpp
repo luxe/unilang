@@ -4,6 +4,7 @@
 #include "code/utilities/data_structures/tree/bst/binary_nodes.hpp"
 
 
+//a bst tree example for a common programming problem where two nodes are swapped and they need to be fixed
 struct Bst_Tree_Example {
     BinaryNodes<int> tree;
     
