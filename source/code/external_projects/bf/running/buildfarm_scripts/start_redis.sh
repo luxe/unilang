@@ -2,7 +2,7 @@
 printf "\e]2;redis\a"
 
 #make sure redis is downloaded
-if [ ! -d ~/Desktop ]; then
+if [ ! -d ~/Desktop/redis ]; then
 	git clone git@github.com:redis/redis.git ~/Desktop/redis
 fi
 
