@@ -3,6 +3,9 @@ class
 ❪unordered_map❫
 ❪utility❫
 ❪cstdlib❫
+❪vector❫
+❪queue❫
+❪"src/tree.hh"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/positioned_buildable_face_tree"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_label_action"❫
 ⚯
@@ -93,9 +96,43 @@ class
 
 ◀private: static▶ void ☀Expand_All(Positioned_Buildable_Face_Tree & tree)❰
 
+    Set_Button_Face_On_Currently_Selected_Subtree(tree,1);
 ❱
 
 ◀private: static▶ void ☀Collapse_All(Positioned_Buildable_Face_Tree & tree)❰
 
+    Set_Button_Face_On_Currently_Selected_Subtree(tree,0);
+❱
+
+◀private: static▶ void ☀Set_Button_Face_On_Currently_Selected_Subtree(Positioned_Buildable_Face_Tree & tree, int face_number)❰
+
+    //eh, maybe the tree api has a better way to iterate over a subtree, but it wasn't obvious to me.
+    //I tried extracting a subtree with sibling pairs but that failed.
+    //I'll just recurse with a queue by asking for children.
+    //If this can be improved, great!
+    std::queue<::tree<Buttoned_Faced_Label>::iterator_base> q;
+    q.push(tree.selected_node);
+    while (!q.empty()){
+        auto e = q.front(); q.pop();
+        e->button.current_face = face_number;
+        Add_Children_To_Queue(tree,e,q);
+    }
+    
+    return;
+❱
+
+◀private: static▶ void ☀Add_Children_To_Queue(Positioned_Buildable_Face_Tree const& tree, ::tree<Buttoned_Faced_Label>::iterator_base it, std::queue<::tree<Buttoned_Faced_Label>::iterator_base> & q)❰
+
+    //get total number of children
+    auto total_children = tree.structure.nodes.number_of_children(it);
+    if (total_children == 0){
+        return;
+    }
+    
+    for (size_t i = 0; i < total_children; ++i){
+        
+        auto child_to_recurse = tree.structure.nodes.child(it,i);
+        q.push(child_to_recurse);
+    }
 ❱
 
