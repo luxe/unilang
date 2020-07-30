@@ -129,7 +129,7 @@ std::string All_Characters_After_Last_Found_String(std::string const& str, std::
         return "";
     }
     
-    return str.substr(found + 1);
+    return str.substr(found + search.size());
 }
 
 
