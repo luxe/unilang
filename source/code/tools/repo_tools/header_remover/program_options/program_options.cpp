@@ -38,6 +38,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//program_options_maker flag interface
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("file",value<std::string>(),"the file to remove headers from")
+        ("target",value<std::string>(),"target to check with")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -111,6 +112,14 @@ std::string Program_Options::File() const{
 	std::string data;
 	if (vm.count("file")){
 		data = vm["file"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Target() const{
+	std::string data;
+	if (vm.count("target")){
+		data = vm["target"].as<std::string>();
 	}
 
 	return data;

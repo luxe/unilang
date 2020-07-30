@@ -18,7 +18,8 @@ class Program_Options {
 	//| USER FLAGS                                               |
 	//+----------------------------------------------------------+
 	  std::string Run_Dir() const;
-          std::string File() const;
+      std::string File() const;
+      std::string Target() const;
 
         
         std::string Get_Help_Message();
