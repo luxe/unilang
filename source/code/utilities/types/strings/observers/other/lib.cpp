@@ -123,6 +123,16 @@ int XorCheckSum(std::string const& s){
   return x;
 }
 
+std::string All_Characters_After_Last_Found_String(std::string const& str, std::string const& search){
+    auto found = str.find(search);
+    if (found == std::string::npos){
+        return "";
+    }
+    
+    return str.substr(found + 1);
+}
+
+
 
 
 
