@@ -9,10 +9,10 @@ hcp(
     deps = [
         "//code/tools/repo_tools/header_remover/program_options:lib",
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/streams/filestreams/read_all:lib",
-        "//code/utilities/streams/filestreams/write_all:lib",
         "//code/utilities/other_language:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
+        "//code/utilities/streams/filestreams/read_all:lib",
+        "//code/utilities/streams/filestreams/write_all:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
     ],

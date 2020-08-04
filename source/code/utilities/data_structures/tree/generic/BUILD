@@ -42,16 +42,15 @@ hcp(
 hcp(
     name = "string_tree_to_child_lookup_map",
     deps = [
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
         "//code/utilities/data_structures/tree/generic:string_tree",
         "//code/utilities/types/strings/observers/counters:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/types/tree:full_path_name",
         "//code/utilities/types/tree/converters:depth_list",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/types/tree:full_path_name",
-        "//code/utilities/data_structures/tree/generic:child_lookup_map",
         "@tree",
     ],
 )
-

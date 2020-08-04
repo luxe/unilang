@@ -26,5 +26,3 @@ filegroup(
     name = "pixel_bit_advanced",
     srcs = ["pixel-bit-advanced.ttf"],
 )
-
-
