@@ -34,19 +34,29 @@ class
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
 ⚞⚟
 
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Buildable_Face_Tree_State & state, Position const& pos, Pc_Input_State const& pc_input)❰
+    
+    return Draw_Impl(font_chars,state,pos,pc_input);
+❱
+
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input)❰
+    
+    return Draw_Impl(font_chars,tree.state,tree.pos,pc_input);
+❱
+
+◀private: static▶ Frame_Elements ☀Draw_Impl(Character_Maps const& font_chars, Buildable_Face_Tree_State & state, Position const& pos, Pc_Input_State const& pc_input)❰
     
     Frame_Elements elements;
     
     //draw the tree
-    elements.types += Button_Tree_Label_Drawer::Draw(font_chars,tree.structure,tree.pos,pc_input).types;
+    elements.types += Button_Tree_Label_Drawer::Draw(font_chars,state.structure,pos,pc_input).types;
     
     //find the element that has been right-clicked
     //TODO: Drawing the tree should return this information.
     bool label_first_selected = false;
-    if (!tree.menu.visible){
-        tree.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(tree.structure);
-        if (tree.selected_node != tree.structure.nodes.end()){
+    if (!state.menu.visible){
+        state.selected_node = Button_Face_Tree_Click_Finder::Find_Clicked_Label(state.structure);
+        if (state.selected_node != state.structure.nodes.end()){
             label_first_selected = true;
         }
         
@@ -54,16 +64,16 @@ class
     
     //was an element clicked?
     //decide to show the action menu 
-    Possibly_Open_Menu(pc_input,tree,label_first_selected);
+    Possibly_Open_Menu(pc_input,state,label_first_selected);
     
     
-    Handle_Menu(elements,font_chars,tree,pc_input,label_first_selected);
+    Handle_Menu(elements,font_chars,state,pc_input,label_first_selected);
     
     
     return elements;
 ❱
 
-◀private: static▶ void ☀Possibly_Open_Menu(Pc_Input_State const& pc_input, Positioned_Buildable_Face_Tree & tree, bool label_first_selected)❰
+◀private: static▶ void ☀Possibly_Open_Menu(Pc_Input_State const& pc_input, Buildable_Face_Tree_State & tree, bool label_first_selected)❰
 
     if (label_first_selected){
         
@@ -80,7 +90,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Positioned_Buildable_Face_Tree & tree, Pc_Input_State const& pc_input, bool const& label_first_selected)❰
+◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, bool const& label_first_selected)❰
 
     if (tree.menu.visible){
         elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.menu.pos,pc_input).types;
@@ -97,7 +107,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Handle_Menu_Click(Positioned_Buildable_Face_Tree & tree)❰
+◀private: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree)❰
 
     auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
     if (found != tree.menu.menu.nodes.end()){

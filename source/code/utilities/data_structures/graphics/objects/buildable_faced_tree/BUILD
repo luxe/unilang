@@ -24,12 +24,19 @@ enum_cpp(
     ],
 )
 
-hcp_and_hcp_pos(
-    name = "buildable_face_tree",
+hcp(
+    name = "buildable_face_tree_state",
     deps = [
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
         "@tree",
+    ],
+)
+
+hcp_and_hcp_pos(
+    name = "buildable_face_tree",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_state",
     ],
 )
 
@@ -73,6 +80,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_state",
         "@tree",
     ],
 )

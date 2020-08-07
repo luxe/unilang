@@ -24,6 +24,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse:mouse_selection",
         "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
         "//code/utilities/data_structures/graphics/objects/slider:positioned_slider",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
         "//code/utilities/fonts/bdf/character_maps",
