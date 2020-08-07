@@ -1,0 +1,124 @@
+class
+❪string❫
+❪unordered_map❫
+❪utility❫
+❪cstdlib❫
+❪"code/utilities/fonts/bdf/settings/character_segment"❫
+❪"code/utilities/data_structures/graphics/objects/label/label_settings"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/positioned_buttoned_faced_label"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/positioned_button_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_tree_label_drawer"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/positioned_buildable_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_label_action"❫
+❪"code/utilities/data_structures/graphics/objects/label/label_drawer"❫
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_drawer"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+❪"code/utilities/data_structures/counters/unique_max_counter/unique_max_counter"❫
+❪"code/utilities/data_structures/graphics/objects/select_menu/select_menu"❫
+⚯
+❪"code/utilities/data_structures/graphics/objects/mouse/events/mouse_events_checker"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/data_structures/graphics/bitmap/premade/vertical_line"❫
+❪"code/utilities/data_structures/graphics/bitmap/premade/horizontal_line"❫
+❪"code/utilities/data_structures/graphics/bitmap/premade/l_line"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/premade/faced_label_premades"❫
+❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_drawer"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree_click_finder"❫
+❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_click_finder"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade/buttoned_faced_label_premades"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
+⚞⚟
+
+◀public: static▶ void ☀Handle_Menu_Logic(Frame_Elements & elements, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, bool const& label_first_selected)❰
+
+
+    //was an element clicked?
+    //decide to show the action menu 
+    Possibly_Open_Menu(pc_input,state,label_first_selected);
+    
+    //how to draw and handle menu clicks
+    Handle_Menu(elements,font_chars,state,pc_input,label_first_selected);
+❱
+
+
+
+◀private: static▶ void ☀Possibly_Open_Menu(Pc_Input_State const& pc_input, Buildable_Face_Tree_State & tree, bool label_first_selected)❰
+
+    if (label_first_selected){
+        
+        auto menu_out = Decide_Menu(tree.structure,tree.selected_node);
+        tree.menu.menu = menu_out.menu;
+        tree.menu.pos = pc_input.mouse.pos;
+        tree.menu.visible = true;
+    }
+❱
+
+◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, bool const& label_first_selected)❰
+
+    if (tree.menu.visible){
+        elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.menu.pos,pc_input).types;
+        
+        if (!label_first_selected){
+            if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
+                
+                tree.menu.visible = false;
+                Handle_Menu_Click(tree);
+            }
+        }
+    }
+❱
+
+◀private: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree)❰
+
+    auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
+    if (found != tree.menu.menu.nodes.end()){
+        Add(found->faces[0].label.message);
+    }
+❱
+
+
+◀private: static▶ void ☀Add(std::string const& message)❰
+
+❱
+
+◀private: static▶ Select_Menu ☀Decide_Menu(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+
+    Select_Menu x;
+    
+    auto face_label = Faced_Label_Premades::Single_Plain_White_Box();
+    auto top = x.menu.nodes.begin();
+
+
+    //get child items based on the schema
+    auto full_name = Full_Path_Name(structure,it);
+    std::cout << full_name << std::endl;
+    auto strs = Buildable_Label_Action_all_strings();
+    for (auto const& it: strs){
+        
+        face_label.faces[0].label.message = it;
+        x.menu.nodes.insert(top,face_label);
+    }
+    
+    
+    return x;
+❱
+
+
+◀public: static▶ std::string ☀Full_Path_Name(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+    std::string full_name;
+    
+    while (structure.nodes.parent(it) != nullptr){
+        
+        full_name = it->label.faces[0].name + "/" + full_name;
+        it = structure.nodes.parent(it);
+    }
+    full_name = it->label.faces[0].name + "/" + full_name;
+    
+    return full_name;
+❱
+
