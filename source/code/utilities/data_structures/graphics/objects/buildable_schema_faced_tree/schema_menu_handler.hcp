@@ -19,6 +19,7 @@ class
 ❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
 ❪"code/utilities/data_structures/counters/unique_max_counter/unique_max_counter"❫
 ❪"code/utilities/data_structures/graphics/objects/select_menu/select_menu"❫
+❪"code/utilities/data_structures/tree/generic/child_lookup_map"❫
 ⚯
 ❪"code/utilities/data_structures/graphics/objects/mouse/events/mouse_events_checker"❫
 ❪"code/utilities/types/vectors/operators/lib"❫
@@ -34,12 +35,12 @@ class
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
 ⚞⚟
 
-◀public: static▶ void ☀Handle_Menu_Logic(Frame_Elements & elements, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, bool const& label_first_selected)❰
+◀public: static▶ void ☀Handle_Menu_Logic(Frame_Elements & elements, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, Child_Lookup_Map const& lookup, bool const& label_first_selected)❰
 
 
     //was an element clicked?
     //decide to show the action menu 
-    Possibly_Open_Menu(pc_input,state,label_first_selected);
+    Possibly_Open_Menu(pc_input,state,lookup,label_first_selected);
     
     //how to draw and handle menu clicks
     Handle_Menu(elements,font_chars,state,pc_input,label_first_selected);
@@ -47,11 +48,11 @@ class
 
 
 
-◀private: static▶ void ☀Possibly_Open_Menu(Pc_Input_State const& pc_input, Buildable_Face_Tree_State & tree, bool label_first_selected)❰
+◀private: static▶ void ☀Possibly_Open_Menu(Pc_Input_State const& pc_input, Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, bool label_first_selected)❰
 
     if (label_first_selected){
         
-        auto menu_out = Decide_Menu(tree.structure,tree.selected_node);
+        auto menu_out = Decide_Menu(tree.structure,lookup,tree.selected_node);
         tree.menu.menu = menu_out.menu;
         tree.menu.pos = pc_input.mouse.pos;
         tree.menu.visible = true;
@@ -86,7 +87,7 @@ class
 
 ❱
 
-◀private: static▶ Select_Menu ☀Decide_Menu(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+◀private: static▶ Select_Menu ☀Decide_Menu(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
 
     Select_Menu x;
     
@@ -97,7 +98,7 @@ class
     //get child items based on the schema
     auto full_name = Full_Path_Name(structure,it);
     std::cout << full_name << std::endl;
-    auto strs = Buildable_Label_Action_all_strings();
+    auto strs = Lookup(lookup,full_name);
     for (auto const& it: strs){
         
         face_label.faces[0].label.message = it;
@@ -109,7 +110,8 @@ class
 ❱
 
 
-◀public: static▶ std::string ☀Lookup(Child_Lookup_Map const& lookup, std::string const& str)❰
+◀public: static▶ std::vector<std::string> ☀Lookup(Child_Lookup_Map const& lookup, std::string const& str)❰
+    return lookup.map.find(str)->second;
 ❱
 
 ◀public: static▶ std::string ☀Full_Path_Name(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰

@@ -90,5 +90,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/tree:full_path_name",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
     ],
 )
