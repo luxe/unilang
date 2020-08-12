@@ -51,6 +51,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:generic_menu_handler",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
@@ -71,7 +72,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:generic_menu_handler",
     ],
 )
 
@@ -112,10 +112,10 @@ hcp(
 hcp(
     name = "buildable_face_tree_action_doer",
     deps = [
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_state",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_state",
         "@tree",
     ],
 )
