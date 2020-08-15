@@ -54,6 +54,31 @@ void Print_Elements_With_Spaces_In_Between(Container const& container){
 }
 
 template <typename Container>
+void Print_Elements_With_Comma_In_Between(Container const& container){
+  for (auto it = container.cbegin(); it != container.cend(); ++it){
+    std::cout << *it;
+    if (it != container.cend()-1){
+      std::cout << ", ";
+    }
+  }
+}
+
+template <typename Container>
+std::string Elements_As_Square_Bracket_Comma_Seperated_List(Container const& container){
+  std::stringstream ss;
+  ss << "[";
+  for (auto it = container.cbegin(); it != container.cend(); ++it){
+    ss << *it;
+    if (it != container.cend()-1){
+      ss << ", ";
+    }
+  }
+  
+  ss << "]";
+  return ss.str();
+}
+
+template <typename Container>
 void Print_Each_Element_On_A_Line_With_No_Newline_After_Last_Line(Container const& container){
   for (auto it = container.cbegin(); it != container.cend(); ++it){
     std::cout << *it;

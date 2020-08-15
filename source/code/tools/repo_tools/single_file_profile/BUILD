@@ -23,5 +23,7 @@ hcp(
         "//code/utilities/build:profile_compilation_timer",
         "//code/utilities/build:branch_profile_compilation_timer",
         "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/math:math",
+        "//code/utilities/output/printers:lib",
     ],
 )

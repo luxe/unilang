@@ -8,6 +8,9 @@ class
 ❪"code/utilities/build/profile_compilation_timer"❫
 ❪"code/utilities/types/vectors/converters/lib"❫
 ❪"code/utilities/build/branch_profile_compilation_timer"❫
+❪"code/utilities/math/math"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/types/converters/lib"❫
 ⚞⚟
 
 
@@ -16,30 +19,58 @@ class
     auto a_profiles = Branch_Profile_Compilation_Timer::Switch_Branch_And_Do_Profiles(options.Branches()[0],options.File());
     auto b_profiles = Branch_Profile_Compilation_Timer::Switch_Branch_And_Do_Profiles(options.Branches()[1],options.File());
     
-    Summarize_Results(a_profiles,b_profiles);
+    auto results = Summarize_Results(a_profiles,b_profiles);
+    std::cout << results << std::endl;
 
 ❱
 
-◀private: static▶ void ☀Summarize_Results(std::vector<int> const& a, std::vector<int> const& b) ❰
+◀private: static▶ std::string ☀Summarize_Results(std::vector<int> const& a, std::vector<int> const& b) ❰
+
+
     std::string results;
     results += Get_Trial_Info(a);
     results += "\n";
     results += Get_Trial_Info(b);
     results += "\n";
-    
     results += Get_Improvement(a,b);
-    
-    std::cout << results << std::endl;
+    return results;
 ❱
 
 ◀private: static▶ std::string ☀Get_Trial_Info(std::vector<int> const& x) ❰
     std::string result;
     
+    auto s_list = As_Seconds_List(x);
+    result += Elements_As_Square_Bracket_Comma_Seperated_List(s_list);
+    result += " AVG: ";
+    result += std::to_string(Math::average(x));
+    result += "s";
+    
+    
     return result;
 ❱
 
 ◀private: static▶ std::string ☀Get_Improvement(std::vector<int> const& a, std::vector<int> const& b) ❰
-    std::string result;
     
+    auto before = Math::average(a);
+    auto after = Math::average(b);
+    
+    auto improvement = before - after;
+    auto percent_improvement = (static_cast<float>(after) / static_cast<float>(before)) * 100;
+    
+    std::string result;
+    result += "reduced by " + std::to_string(improvement) + "s ";
+    result += as_string_with_precision(percent_improvement,0);
+    result += "%";
     return result;
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀As_Seconds_List(std::vector<int> const& x)❰
+    std::vector<std::string> results;
+    
+    for (auto const& it: x){
+        results.emplace_back(std::to_string(it) + "s");
+    }
+    
+    return results;
 ❱
