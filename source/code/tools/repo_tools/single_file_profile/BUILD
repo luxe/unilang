@@ -25,5 +25,8 @@ hcp(
         "//code/utilities/math:math",
         "//code/utilities/output/printers:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/build/profile/data:profile_settings",
+        "//code/utilities/build/profile/data:profile_results",
+        "//code/utilities/types/vectors/observers:lib",
     ],
 )

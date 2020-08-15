@@ -2,6 +2,8 @@ class
 ❪iostream❫
 ❪string❫
 ❪utility❫
+❪"code/utilities/build/profile/data/profile_settings"❫
+❪"code/utilities/build/profile/data/profile_results"❫
 ⚯
 ❪"code/utilities/program/call/process_spawn/process_spawner"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
@@ -12,21 +14,24 @@ class
 ❪"code/utilities/program/wrappers/git/branch_switcher"❫
 ⚞⚟
 
-◀public: static▶ std::vector<int> ☀Switch_Branch_And_Do_Profiles(std::string const& branch_name, std::string const& file_name) ❰
+◀public: static▶ Profile_Results ☀Switch_Branch_And_Do_Profiles(Profile_Settings const& settings) ❰
 
     
     //switch to that branch
-    Branch_Switcher::Switch(branch_name);
+    Branch_Switcher::Switch(settings.branch_name);
     
-    int trials = 5;
     
     std::vector<std::string> results;
-    for (int i = 0; i < trials; ++i){
-        auto profile_time = Profile_Compilation_Timer::Profile(file_name);
+    for (int i = 0; i < settings.trials; ++i){
+        auto profile_time = Profile_Compilation_Timer::Profile(settings.file_name);
         
-        std::cout << i+1 << "/" << trials << " " << branch_name << " " << profile_time << std::endl;
+        std::cout << i+1 << "/" << settings.trials << " " << settings.branch_name << " " << profile_time << std::endl;
         results.emplace_back(profile_time);
     }
     
-    return VecStringToVecInt(results);
+    Profile_Results x;
+    x.branch_name = settings.branch_name;
+    x.file_name = settings.file_name;
+    x.times = VecStringToVecInt(results);
+    return x;
 ❱
