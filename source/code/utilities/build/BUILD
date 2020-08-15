@@ -35,6 +35,7 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/build:profile_compilation_timer",
+        "//code/utilities/program/wrappers/git:branch_switcher",
     ],
 )
 
