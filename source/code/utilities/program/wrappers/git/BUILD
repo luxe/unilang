@@ -31,7 +31,7 @@ hcp(
 hcp(
     name = "branch_switcher",
     deps = [
-        "//code/utilities/program/call:lib.hpp",
+        "//code/utilities/program/call:lib",
     ],
 )
 
