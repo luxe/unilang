@@ -26,6 +26,18 @@ hcp(
     ],
 )
 
+hcp(
+    name = "branch_profile_compilation_timer",
+    deps = [
+        "//code/utilities/program/call/process_spawn:process_spawner",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/build:profile_compilation_timer",
+    ],
+)
+
 cpp_main(
     name = "build_everything",
     deps = ["//code/utilities/build:self_builder"],
