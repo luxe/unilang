@@ -38,6 +38,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//program_options_maker flag interface
         ("run_dir",value<std::string>(),"where to run the analysis")
         ("file",value<std::string>(),"the file to profile")
+        ("branches",value<std::vector<std::string>>(),"which branches to run the analysis")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -111,6 +112,14 @@ std::string Program_Options::File() const{
 	std::string data;
 	if (vm.count("file")){
 		data = vm["file"].as<std::string>();
+	}
+
+	return data;
+}
+std::vector<std::string> Program_Options::Branches() const{
+	std::vector<std::string> data;
+	if (vm.count("branches")){
+		data = vm["branches"].as<std::vector<std::string>>();
 	}
 
 	return data;

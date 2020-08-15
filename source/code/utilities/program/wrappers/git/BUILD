@@ -28,6 +28,13 @@ hcp(
     ],
 )
 
+hcp(
+    name = "branch_switcher",
+    deps = [
+        "//code/utilities/program/call:lib.hpp",
+    ],
+)
+
 cc_binary(
     name = "setup_git",
     srcs = ["setup_git.cpp"],

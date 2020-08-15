@@ -124,6 +124,24 @@ std::string As_Beginning_Matching_Part_Of_String_Removed(std::string const& str,
         return new_string;
 }
 
+//keeping certain characters
+std::string& Keep_Only_Numeric_Chars(std::string & str)
+{
+    std::string new_str;
+    
+    //only keep the numbers
+    for (auto c: str){
+        if (Is_A_Numeric_Character(c)){
+            new_str += c;
+        }
+    }
+    
+    
+    //replace
+    str = new_str;
+    return str;
+}
+
 
 //changing front
 std::string& Remove_First_Char(std::string &s){

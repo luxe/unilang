@@ -1,0 +1,38 @@
+class
+❪iostream❫
+❪string❫
+❪utility❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/other_language/lib"❫
+
+❪"code/utilities/program/call/process_spawn/process_spawner"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+⚯
+⚞⚟
+
+◀public: static▶ std::string ☀Profile(std::string const& file_name) ❰
+
+    std::string command;
+    command += "./bazel run tools:measure-compile ";
+    command += file_name;
+    
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+    
+    if (results.return_code != 0){
+        //failed
+        return "";
+    }
+    
+    //passed.  extract duration
+    auto time = All_Characters_After_Last_Found_String(results.stdout,"DURATION:");
+    trim(time);
+    Keep_Only_Numeric_Chars(time);
+    
+    if (time == ""){
+        std::cerr << "somehow passed but there was no time" << std::endl;
+    }
+    return time;
+    
+❱

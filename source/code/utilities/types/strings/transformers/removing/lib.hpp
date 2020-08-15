@@ -25,6 +25,9 @@ std::string& Remove_Match_If_It_Is_Found_At_Beginning_Or_End(std::string & str, 
 std::string& Remove_Matching_Beginning_Part_Of_String(std::string & str, std::string const& match);
 std::string As_Beginning_Matching_Part_Of_String_Removed(std::string const& str, std::string const& match);
 
+//keeping certain characters
+std::string& Keep_Only_Numeric_Chars(std::string & str);
+
 //changing front
 std::string& Remove_First_Char(std::string &s);
 std::string As_First_Char_Removed(std::string const& s);

@@ -19,5 +19,7 @@ hcp(
     name = "task_executer",
     deps = [
         "//code/tools/repo_tools/single_file_profile/program_options:lib",
+        "//code/utilities/program/wrappers/git:branch_switcher",
+        "//code/utilities/build:profile_compilation_timer",
     ],
 )
