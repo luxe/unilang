@@ -24,5 +24,6 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/math:math",
         "//code/utilities/output/printers:lib",
+        "//code/utilities/filesystem/paths:lib",
     ],
 )
