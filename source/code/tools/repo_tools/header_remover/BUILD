@@ -15,7 +15,8 @@ hcp(
         "//code/utilities/streams/filestreams/write_all:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
-        "//code/utilities/build:profile_compilation_timer",
+        "//code/utilities/build/profile:profile_compilation_timer",
+        "//code/utilities/types/strings/transformers/other:lib",
     ],
 )
 
