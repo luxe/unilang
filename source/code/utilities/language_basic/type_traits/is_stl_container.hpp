@@ -1,3 +1,4 @@
+//determines if a type is an stl container
 #include <deque>
 #include <forward_list>
 #include <list>
@@ -39,6 +40,11 @@ namespace is_stl_container_impl{
 template <typename T> struct is_stl_container {
   static constexpr bool const value = is_stl_container_impl::is_stl_container<std::decay_t<T>>::value;
 };
+
+  //std::cout << std::boolalpha;
+  //std::cout << is_stl_container<std::vector<int>>::value << '\n';
+  //std::cout << is_stl_container<std::vector<int>const&>::value << '\n';
+  //std::cout << is_stl_container<int>::value << '\n';
 
 //shown here:
 //http://stackoverflow.com/questions/9407367/determine-if-a-type-is-an-stl-container-at-compile-time/
