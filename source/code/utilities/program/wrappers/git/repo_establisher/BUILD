@@ -9,6 +9,13 @@ hcp(
 )
 
 hcp(
+    name = "default_repo_location_getter",
+    deps = [
+        "//code/utilities/program/wrappers/git/repo_establisher:repo_location",
+    ],
+)
+
+hcp(
     name = "repo_establisher",
     deps = [
         "//code/utilities/filesystem/files/moving:lib",
