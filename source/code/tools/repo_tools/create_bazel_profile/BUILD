@@ -21,6 +21,9 @@ hcp(
         "//code/utilities/program/wrappers/git/repo_establisher:default_repo_location_getter",
         "//code/utilities/program/wrappers/git/repo_establisher:repo_establisher",
         "//code/utilities/program/wrappers/bazel/setup:bazel_setup_deriver",
+        "//code/utilities/program/wrappers/bazel:bazel_runner",
+        "//code/utilities/program/wrappers/bazel:build_settings",
+        "//code/utilities/types/strings/observers/path:lib",
     ],
 )
 

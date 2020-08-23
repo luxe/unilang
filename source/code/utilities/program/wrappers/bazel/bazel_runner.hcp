@@ -17,12 +17,13 @@ class
 ❪"code/utilities/formats/serialization/protobuf"❫
 ❪"code/utilities/program/wrappers/bazel/build_settings"❫
 ❪"code/utilities/program/wrappers/bazel/setup/config/bazel_config_settings"❫
-⚯
 ❪"code/utilities/program/inputs/flags/data/flags"❫
+⚯
 ❪"code/utilities/program/inputs/flags/flag_util"❫
 ⚞⚟
 
 
+//getting spawn information
 ◀public: static▶ std::unordered_map<std::string,tools::protos::SpawnExec> ☀Get_Spawn_Information_As_Cmd_Map(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
 
     auto spawns = Get_Spawn_Information(bazel_wrapper,settings,config_settings,target);
@@ -57,6 +58,15 @@ class
     return spawns;
 ❱
 
+◀public: static▶ void ☀Get_Profile_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
+    
+    //build
+    std::string file_name = Random_Files::Random_Tmp_Filename() + ".json";
+    auto command = Get_Create_Profile_Command(bazel_wrapper,settings,config_settings,target,file_name);
+    Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
+    std::cout << file_name << std::endl;
+❱
+
 
 ◀public: static▶ void ☀Build_Target(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
     Clean(bazel_wrapper);
@@ -82,7 +92,7 @@ class
 ❱
 
 
-//Doing target builds
+//Getting target-build-like commands
 ◀private: static▶ std::string ☀Get_Create_Build_Target_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target) ❰
 
     //decide flags
@@ -90,6 +100,55 @@ class
     Flag_Util::Add_Value(flags,"build");
     Flag_Util::Add_Value(flags,target);
     
+    Add_Flags_Based_On_Environment(flags,settings,config_settings);
+    Add_Spawn_Strategy_Flags(flags,settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+    
+❱
+
+◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    
+    //Doing target builds while creating an execution log
+    //command += " --execution_log_binary_file=";
+    //I had trouble reading in the binary format
+    Flag_Util::Add_Flag(flags,"execution_log_json_file",file_name);
+    
+    Add_Flags_Based_On_Environment(flags,settings,config_settings);
+    Add_Spawn_Strategy_Flags(flags,settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+◀private: static▶ std::string ☀Get_Create_Profile_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,target);
+    
+    //Doing target builds while creating an execution log
+    //command += " --execution_log_binary_file=";
+    //I had trouble reading in the binary format
+    Flag_Util::Add_Flag(flags,"profile",file_name);
+    
+    Add_Flags_Based_On_Environment(flags,settings,config_settings);
+    Add_Spawn_Strategy_Flags(flags,settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+
+
+
+
+
+
+
+
+//flag utils
+◀private: static▶ void ☀Add_Flags_Based_On_Environment(Flags & flags, Build_Settings const& settings, Bazel_Config_Settings const& config_settings)❰
+
     //remote specific flags
     if (settings.environment == Run_Environment::REMOTE){
         for (auto const& it: config_settings.remote_configs){
@@ -104,16 +163,6 @@ class
             Flag_Util::Add_Flag(flags,"config",it);
         }
     }
-    
-    Add_Spawn_Strategy_Flags(flags,settings);
-    
-    
-    //turn flags into cli command
-    std::string command = bazel_wrapper;
-    command += " ";
-    command += Flag_Util::In_Cli_Form(flags);
-    return command;
-    
 ❱
 
 ◀private: static▶ void ☀Add_Spawn_Strategy_Flags(Flags & flags, Build_Settings const& settings)❰
@@ -135,51 +184,8 @@ class
     }
 ❱
 
+◀private: static▶ std::string ☀Create_Full_Command(Flags const& flags, std::string const& bazel_wrapper)❰
 
-//Doing target builds while creating an execution log
-//command += " --execution_log_binary_file=";
-//I had trouble reading in the binary format
-◀private: static▶ std::string ☀Get_Create_Spawn_File_Command(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& file_name) ❰
-
-    //decide flags
-    Flags flags;
-    Flag_Util::Add_Value(flags,"build");
-    Flag_Util::Add_Value(flags,target);
-    Flag_Util::Add_Flag(flags,"execution_log_json_file",file_name);
-    
-    //remote specific flags
-    if (settings.environment == Run_Environment::REMOTE){
-        for (auto const& it: config_settings.remote_configs){
-            Flag_Util::Add_Flag(flags,"config",it);
-        }
-        Flag_Util::Add_Flag(flags,"noremote_accept_cached");
-    }
-    
-    //local specific flags
-    else{
-        for (auto const& it: config_settings.local_configs){
-            Flag_Util::Add_Flag(flags,"config",it);
-        }
-    }
-    
-    //spawn strategy flags
-    if (settings.strategy == Spawn_Strategy::LOCAL){
-        Flag_Util::Add_Flag(flags,"spawn_strategy","local");
-    }
-    else if (settings.strategy == Spawn_Strategy::SANDBOXED){
-        Flag_Util::Add_Flag(flags,"spawn_strategy","sandboxed");
-    }
-    else if (settings.strategy == Spawn_Strategy::WORKER){
-        Flag_Util::Add_Flag(flags,"spawn_strategy","worker");
-    }
-    else if (settings.strategy == Spawn_Strategy::DOCKER){
-        Flag_Util::Add_Flag(flags,"spawn_strategy","docker");
-    }
-    else if (settings.strategy == Spawn_Strategy::REMOTE){
-        Flag_Util::Add_Flag(flags,"spawn_strategy","remote");
-    }
-    
-    
     //turn flags into cli command
     std::string command = bazel_wrapper;
     command += " ";

@@ -17,6 +17,9 @@ class
 ❪"code/utilities/program/wrappers/git/repo_establisher/default_repo_location_getter"❫
 ❪"code/utilities/program/wrappers/git/repo_establisher/repo_establisher"❫
 ❪"code/utilities/program/wrappers/bazel/setup/bazel_setup_deriver"❫
+❪"code/utilities/program/wrappers/bazel/bazel_runner"❫
+❪"code/utilities/program/wrappers/bazel/build_settings"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
 ⚯
 ⚞⚟
 
@@ -27,9 +30,18 @@ class
     //get settings
     Repo_Location repo = Default_Repo_Location_Getter::Default_Repo_Location_From_Url(options.Url());
     Bazel_Setup setup = Default_Bazel_Setup_Settings::Get();
+    Build_Settings build;
+    build.environment = Run_Environment::REMOTE;
+    build.strategy = Spawn_Strategy::DEFAULT;
+    
     
     //clone and establish bazel information
     auto established = Repo_Establisher::Establish_And_Get_Path(repo);
     Bazel_Setup_Deriver::Possibly_Derive_Parts_Of_Bazel_Setup(setup,established.path);
+    
+    
+    //get profile information
+    auto bazel = Prepend_Cd_Path(setup.bazel_wrapper.program_name,established.path);
+    Bazel_Runner::Get_Profile_Information(bazel,build,setup.config_settings,options.Target());
     
 ❱
