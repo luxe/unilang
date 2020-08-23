@@ -26,6 +26,7 @@ hcp(
         "//code/utilities/program/wrappers/git/repo_establisher:repo_location",
         "//code/utilities/random:lib",
         "//code/utilities/random/files:random_files",
+        "//code/utilities/output/printers:lib",
     ],
 )
 
