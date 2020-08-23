@@ -5,6 +5,7 @@ class
 ❪"code/tools/repo_tools/build_determinism/program_options/program_options"❫
 ❪"code/tools/repo_tools/build_determinism/settings/settings"❫
 ⚯
+❪"code/utilities/program/wrappers/bazel/setup/default_bazel_setup_settings"❫
 ⚞⚟
 
 ◀public: static▶ Settings ☀Get(Program_Options const& options) ❰
@@ -59,41 +60,84 @@ class
 ◀private: static▶ std::vector<Repo_Location> ☀Build_Repo_Locations(Program_Options const& options)❰
     std::vector<Repo_Location> repos;
     
-    //add all the repo locations that are branches
+    //add all the repo locations that are remote and expected branches
     for (auto const& it: options.Branches()){
-        Repo_Location x;
-        Set_Url(x,options);
-        x.use_run_path = false;
-        x.switch_branches = true;
-        x.branch_name = it;
+        Repo_Location x = Default_Repo_Location_From_Url_And_Expected_Branch(options.Url(),it);
         repos.emplace_back(x);
     }
     
     //add all the repo locations that are existing paths
     for (auto const& it: options.Run_Dirs()){
-        Repo_Location x;
-        Set_Url(x,options);
-        x.use_run_path = true;
-        x.switch_branches = false;
-        x.run_path = it;
+        Repo_Location x = Default_Repo_Location_From_Run_Dir(it);
         repos.emplace_back(x);
     }
     
     return repos;
 ❱
 
-◀private: static▶ void ☀Set_Url(Repo_Location & repo, Program_Options const& options)❰
-
-    //set via program_options
-    if (!options.Url().empty()){
-        repo.use_clone = true;
-        repo.clone_url = options.Url();
-    }
-    else{
-        repo.use_clone = false;
-    }
+◀private: static▶ Repo_Location ☀Default_Repo_Location_From_Url(std::string const& url)❰
+    Repo_Location x;
     
+    x.verbose=false;
+    x.conceptual_name = url;
+    
+    //don't do this
+    x.use_run_path=false;
+    x.run_path = "";
+    
+    //do this
+    x.use_clone=true;
+    x.clone_url = url;
+    
+    //don't do this
+    x.switch_branches = false;
+    x.branch_name = "";
+    
+    return x;
 ❱
+
+◀private: static▶ Repo_Location ☀Default_Repo_Location_From_Url_And_Expected_Branch(std::string const& url, std::string const& branch)❰
+    Repo_Location x;
+    
+    x.verbose=false;
+    x.conceptual_name = url;
+    
+    //don't do this
+    x.use_run_path=false;
+    x.run_path = "";
+    
+    //do this
+    x.use_clone=true;
+    x.clone_url = url;
+    
+    //don't do this
+    x.switch_branches = true;
+    x.branch_name = branch;
+    
+    return x;
+❱
+
+◀private: static▶ Repo_Location ☀Default_Repo_Location_From_Run_Dir(std::string const& dir)❰
+    Repo_Location x;
+    
+    x.verbose=false;
+    x.conceptual_name = dir;
+    
+    //do this
+    x.use_run_path=true;
+    x.run_path = dir;
+    
+    //don't do this
+    x.use_clone=false;
+    x.clone_url = "";
+    
+    //don't do this
+    x.switch_branches = false;
+    x.branch_name = "";
+    
+    return x;
+❱
+
 
 ◀private: static▶ Settings ☀Default_Settings()❰
     Settings settings;
@@ -101,11 +145,7 @@ class
     settings.verbose = false;
     
     //calling bazel
-    settings.setup.bazel_wrapper.derive = false;
-    settings.setup.bazel_wrapper.program_name = "./bazel";
-    settings.setup.bazel_wrapper.default_program_name = "./bazel";
-    settings.setup.bazel_wrapper.search_derive_programs.emplace_back("bazel");
-    settings.setup.bazel_wrapper.search_derive_programs.emplace_back("bazel_wrapper");
+    settings.setup = Default_Bazel_Setup_Settings::Get();
     
     //what target to build and how to build it
     settings.target_name = "//atg/hello_world/cuda:hello_world_nvcc";

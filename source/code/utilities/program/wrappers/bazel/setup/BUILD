@@ -14,6 +14,13 @@ hcp(
 )
 
 hcp(
+    name = "default_bazel_setup_settings",
+    deps = [
+        "//code/utilities/program/wrappers/bazel/setup:bazel_setup",
+    ],
+)
+
+hcp(
     name = "bazel_setup_deriver",
     deps = [
         "//code/utilities/filesystem/files/getting:lib",

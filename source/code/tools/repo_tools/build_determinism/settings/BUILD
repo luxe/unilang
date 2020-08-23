@@ -29,6 +29,7 @@ hcp(
         "//code/tools/repo_tools/build_determinism/program_options:lib",
         "//code/tools/repo_tools/build_determinism/settings",
         "//code/utilities/program/wrappers/bazel/setup/wrapper:bazel_wrapper",
+        "//code/utilities/program/wrappers/bazel/setup:default_bazel_setup_settings",
     ],
 )
 
