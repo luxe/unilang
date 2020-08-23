@@ -14,6 +14,12 @@ hcp(
 )
 
 hcp(
+    name = "github_ssh_url_getter",
+    deps = [
+    ],
+)
+
+hcp(
     name = "user_forked_repos_getter",
     deps = [
         "//code/utilities/github:user_repos_getter",
