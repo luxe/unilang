@@ -24,6 +24,7 @@ hcp(
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/program/wrappers/bazel:build_settings",
         "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/program/wrappers/bazel:default_build_settings",
     ],
 )
 

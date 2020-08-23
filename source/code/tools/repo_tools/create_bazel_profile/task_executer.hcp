@@ -19,6 +19,7 @@ class
 ❪"code/utilities/program/wrappers/bazel/setup/bazel_setup_deriver"❫
 ❪"code/utilities/program/wrappers/bazel/bazel_runner"❫
 ❪"code/utilities/program/wrappers/bazel/build_settings"❫
+❪"code/utilities/program/wrappers/bazel/default_build_settings"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ⚯
 ⚞⚟
@@ -26,19 +27,14 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
     
-    
     //get settings
-    Repo_Location repo = Default_Repo_Location_Getter::Default_Repo_Location_From_Url(options.Url());
-    Bazel_Setup setup = Default_Bazel_Setup_Settings::Get();
-    Build_Settings build;
-    build.environment = Run_Environment::REMOTE;
-    build.strategy = Spawn_Strategy::DEFAULT;
-    
+    auto repo = Default_Repo_Location_Getter::Default_Repo_Location_From_Url(options.Url());
+    auto setup = Default_Bazel_Setup_Settings::Get();
+    auto build = Default_Build_Settings::Get();
     
     //clone and establish bazel information
     auto established = Repo_Establisher::Establish_And_Get_Path(repo);
     Bazel_Setup_Deriver::Possibly_Derive_Parts_Of_Bazel_Setup(setup,established.path);
-    
     
     //get profile information
     auto bazel = Prepend_Cd_Path(setup.bazel_wrapper.program_name,established.path);
