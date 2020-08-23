@@ -1,3 +1,4 @@
+#include <iostream>
 #include "code/utilities/program/wrappers/git/lib.hpp"
 #include "code/utilities/program/call/lib.hpp"
 #include "code/utilities/filesystem/paths/lib.hpp"
@@ -14,6 +15,7 @@ std::string Download_Repo_To_Random_Name_In_Temp_Folder(std::string ssh_url)
 	command += ssh_url;
 	command += " ";
 	command += dir;
+	std::cout << command << std::endl;
 	execute_quietly(command);
 	return dir;
 }
