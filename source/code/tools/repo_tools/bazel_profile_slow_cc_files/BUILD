@@ -18,6 +18,7 @@ hcp(
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/build/parse_profile:file_duration_extractor",
     ],
 )
 
