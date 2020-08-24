@@ -24,6 +24,14 @@ bool Is_Valid_JSON_String(std::string const& json_string){
 }
 
 
+
+nlohmann::json Read_Json_From_File(std::string const& path)
+{
+    auto str = Read_Entire_File_Into_String(path);
+    auto j = nlohmann::json::parse(str);
+    return j;
+}
+
 std::vector<std::string> Read_Jsons_From_File(std::string const& path)
 {
   std::vector<std::string> results;

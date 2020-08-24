@@ -55,6 +55,7 @@ void Read_Json_From_File(T & t, std::string const& path){
     t = j.get<T>();
 }
 
+nlohmann::json Read_Json_From_File(std::string const& path);
 std::vector<std::string> Read_Jsons_From_File(std::string const& path);
 
 
