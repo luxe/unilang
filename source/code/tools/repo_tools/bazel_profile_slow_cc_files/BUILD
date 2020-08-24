@@ -17,6 +17,7 @@ hcp(
         "//code/utilities/program/wrappers/git/repo_establisher",
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
     ],
 )
 
