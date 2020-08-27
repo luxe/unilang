@@ -36,3 +36,16 @@ distributable_cpp_main(
         "//code/tools/repo_tools/bazel_profile_slow_cc_files/program_options:lib",
     ],
 )
+
+
+hcp(
+    name = "bazel_profile_slow_cc_files_documentation_getter",
+    deps = [
+        "//code/tools/repo_tools/bazel_profile_slow_cc_files/program_options:lib",
+        "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+        "//code/tools/transcompilers/unilang/structure/model:structure",
+        "//code/utilities/documentation:common_documentation_getter",
+        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/types/converters:lib",
+    ],
+)
