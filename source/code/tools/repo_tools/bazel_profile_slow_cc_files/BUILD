@@ -19,6 +19,10 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/build/parse_profile:file_duration_extractor",
+        "//code/utilities/program/wrappers/bazel/setup:default_bazel_setup_settings",
+        "//code/utilities/program/wrappers/git/repo_establisher:default_repo_location_getter",
+        "//code/utilities/program/wrappers/bazel/setup:bazel_setup_deriver",
+        "//code/utilities/program/wrappers/bazel:default_build_settings",
     ],
 )
 

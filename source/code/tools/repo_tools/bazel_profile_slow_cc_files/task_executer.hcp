@@ -14,12 +14,17 @@ class
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/build/parse_profile/file_duration_extractor"❫
+❪"code/utilities/program/wrappers/bazel/setup/default_bazel_setup_settings"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/default_repo_location_getter"❫
+❪"code/utilities/program/wrappers/bazel/setup/bazel_setup_deriver"❫
+❪"code/utilities/program/wrappers/bazel/default_build_settings"❫
 ⚯
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
+    auto profile_file = Create_Proile_File(options);
 
     //extract compilation file durations from profile-file
     auto durations = File_Duration_Extractor::Extract(options.Profile_File());
@@ -34,4 +39,35 @@ class
         std::cout << it.duration_s << " " << it.file << std::endl;
     }
 
+❱
+
+◀private: static▶ std::string ☀Create_Proile_File(Program_Options const& options) ❰
+
+    //it was passed in
+    if (!options.Profile_File().empty()){
+        return options.Profile_File();
+    }
+    
+    //use the other program options to build it
+    return Create_Proile_File_By_Building(options);
+❱
+
+
+◀private: static▶ std::string ☀Create_Proile_File_By_Building(Program_Options const& options) ❰
+
+    //get settings
+    auto repo = Default_Repo_Location_Getter::Default_Repo_Location_From_Program_Options(options.Run_Dir(),options.Url(),options.Branch());
+    auto setup = Default_Bazel_Setup_Settings::Get();
+    auto build = Default_Build_Settings::Get();
+    
+    
+    //clone and establish bazel information
+    auto established = Repo_Establisher::Establish_And_Get_Path(repo);
+    Bazel_Setup_Deriver::Possibly_Derive_Parts_Of_Bazel_Setup(setup,established.path);
+    
+    //get profile information
+    auto bazel = Prepend_Cd_Path(setup.bazel_wrapper.program_name,established.path);
+    
+    auto profile_file = Bazel_Runner::Get_Profile_Information(bazel,build,setup.config_settings,options.Target());
+    return profile_file;
 ❱

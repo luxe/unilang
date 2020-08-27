@@ -27,14 +27,12 @@ class
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
     
-    std::cout << "start" << std::endl;
     
     //get settings
-    auto repo = Default_Repo_Location_Getter::Default_Repo_Location_From_Url(options.Url());
+    auto repo = Default_Repo_Location_Getter::Default_Repo_Location_From_Program_Options(options.Run_Dir(),options.Url(),options.Branch());
     auto setup = Default_Bazel_Setup_Settings::Get();
     auto build = Default_Build_Settings::Get();
     
-    std::cout << "start2" << std::endl;
     
     //clone and establish bazel information
     auto established = Repo_Establisher::Establish_And_Get_Path(repo);
@@ -42,6 +40,9 @@ class
     
     //get profile information
     auto bazel = Prepend_Cd_Path(setup.bazel_wrapper.program_name,established.path);
-    Bazel_Runner::Get_Profile_Information(bazel,build,setup.config_settings,options.Target());
+    
+    //TODO: pass program_options.Output()
+    auto profile_file = Bazel_Runner::Get_Profile_Information(bazel,build,setup.config_settings,options.Target());
+    std::cout << profile_file << std::endl;
     
 ❱

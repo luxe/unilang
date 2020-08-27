@@ -37,6 +37,11 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
 	("profile-file",value<std::string>(),"bazel's profile file")
+    ("url",value<std::string>(),"url to clone")
+    ("branch",value<std::string>(),"branch to go to after clone")
+    ("run_dir",value<std::string>(),"don't clone; use existing dir instead")
+    ("output",value<std::string>(),"where to store the profile")
+    ("target",value<std::string>(),"target to build with")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -102,6 +107,46 @@ std::string Program_Options::Profile_File() const{
 	std::string data;
 	if (vm.count("profile-file")){
 		data = vm["profile-file"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Url() const{
+	std::string data;
+	if (vm.count("url")){
+		data = vm["url"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Branch() const{
+	std::string data;
+	if (vm.count("branch")){
+		data = vm["branch"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Run_Dir() const{
+	std::string data;
+	if (vm.count("run_dir")){
+		data = vm["run_dir"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Output() const{
+	std::string data;
+	if (vm.count("output")){
+		data = vm["output"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Target() const{
+	std::string data;
+	if (vm.count("target")){
+		data = vm["target"].as<std::string>();
 	}
 
 	return data;

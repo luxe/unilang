@@ -18,7 +18,9 @@ class Program_Options {
 	//| USER FLAGS                                               |
 	//+----------------------------------------------------------+
       std::string Url() const;
-      std::string File() const;
+      std::string Branch() const;
+      std::string Run_Dir() const;
+      std::string Output() const;
       std::string Target() const;
 
         
