@@ -23,6 +23,7 @@ hcp(
         "//code/utilities/program/wrappers/git/repo_establisher:default_repo_location_getter",
         "//code/utilities/program/wrappers/bazel/setup:bazel_setup_deriver",
         "//code/utilities/program/wrappers/bazel:default_build_settings",
+        "//code/utilities/filesystem/files:creating",
     ],
 )
 
