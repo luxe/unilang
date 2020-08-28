@@ -83,37 +83,51 @@ class
     std::string folder_name = "releases/" + program_name;
     Create_Path_And_Temporarily_Move_To_It_To_Call_Function(folder_name,[&](){
     
-        //find program's debs and copy them over
-        auto specific_debs = Filter(debs,[&](std::string const& file){
-            auto deb_files_should_start_with = program_name + "_";
-            return File_Name_Starts_With(file,deb_files_should_start_with);
-        });
-        Copy_Files_To_Current_Directory(specific_debs);
+        Find_Debs_And_Copy_Over(debs,program_name);
         
-        Create_Path_And_Temporarily_Move_To_It_To_Call_Function("docs",[&](){
-          //create pdf documentation
-          Pdf_Settings pdf_settings;
-          pdf_settings.pandoc_settings.latex_template = "temp_latex.tex";
-          pdf_settings.pandoc_settings.md_format = "temp_markdown.md";
-          pdf_settings.pandoc_settings.resulting_pdf = program_name + ".pdf";
-          pdf_settings.pandoc_settings.font_size = 10;
-          pdf_settings.markdown_settings = Get_Pdf_Markdown_Settings();
-          Pdf_Creator::Create_Pdf(doc_structure,pdf_settings);
-          
-          std::string markdown_file_name = program_name + ".md";
-          std::string html_file_name = program_name + ".html";
-          Create_Markdown(doc_structure,markdown_file_name);
-          
-          // create html file
-          execute("pandoc " + program_name + ".md --from markdown --to html5 > " + html_file_name);
-          
-          for (auto it: specific_debs){
-              std::cout << it << std::endl;
-          }
-        });
+        Create_Program_Documentation(doc_structure,program_name);
         
-        Create_List_File(program_name);
-        Create_Packages_File();
+        
+        
+        //transfer deb stuff
+        //Create_List_File(program_name);
+        //Create_Packages_File();
+    });
+❱
+
+
+◀private: static▶ void ☀Find_Debs_And_Copy_Over(std::vector<std::string> const& debs, std::string const& program_name)❰
+
+      //find program's debs and copy them over
+      auto specific_debs = Filter(debs,[&](std::string const& file){
+          auto deb_files_should_start_with = program_name + "_";
+          return File_Name_Starts_With(file,deb_files_should_start_with);
+      });
+      Copy_Files_To_Current_Directory(specific_debs);
+      
+      //copy over raw binary
+      Copy_File_To_Dir(Replace_File_Name(specific_debs[0],program_name),".");
+❱
+
+◀private: static▶ void ☀Create_Program_Documentation(Structure const& doc_structure, std::string const& program_name)❰
+
+    Create_Path_And_Temporarily_Move_To_It_To_Call_Function("docs",[&](){
+      //create pdf documentation
+      Pdf_Settings pdf_settings;
+      pdf_settings.pandoc_settings.latex_template = "temp_latex.tex";
+      pdf_settings.pandoc_settings.md_format = "temp_markdown.md";
+      pdf_settings.pandoc_settings.resulting_pdf = program_name + ".pdf";
+      pdf_settings.pandoc_settings.font_size = 10;
+      pdf_settings.markdown_settings = Get_Pdf_Markdown_Settings();
+      Pdf_Creator::Create_Pdf(doc_structure,pdf_settings);
+      
+      std::string markdown_file_name = program_name + ".md";
+      std::string html_file_name = program_name + ".html";
+      Create_Markdown(doc_structure,markdown_file_name);
+      
+      // create html file
+      execute("pandoc " + program_name + ".md --from markdown --to html5 > " + html_file_name);
+      
     });
 ❱
 

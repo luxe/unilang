@@ -75,6 +75,13 @@ std::string Prepend_Cd_Path(std::string const& program_execution, std::string co
     return cmd;
 }
 
+std::string Replace_File_Name(std::string const& path, std::string const& new_file_name)
+{
+    auto dirs = As_All_Chars_Removed_From_Back_Until_Char_Is_Seen(path,'/');
+    dirs += new_file_name;
+    return dirs;
+}
+
 
 //base name
 std::string Prepend_Onto_Basename(std::string const& path, std::string const& add)
