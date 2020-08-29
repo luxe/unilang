@@ -1,0 +1,37 @@
+class
+❪iostream❫
+❪vector❫
+❪string❫
+❪cmath❫
+❪"code/utilities/build/build_repo_establisher/build_repo_settings"❫
+⚯
+❪"code/utilities/program/wrappers/git/repo_establisher/repo_establisher"❫
+❪"code/utilities/program/wrappers/bazel/setup/wrapper/bazel_wrapper_deriver"❫
+❪"code/utilities/program/wrappers/bazel/setup/config/bazel_config_deriver"❫
+❪"code/utilities/program/wrappers/bazel/setup/default_bazel_setup_settings"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/default_repo_location_getter"❫
+❪"code/utilities/program/wrappers/bazel/default_build_settings"❫
+❪"code/utilities/program/wrappers/bazel/setup/bazel_setup_deriver"❫
+❪"code/utilities/types/strings/observers/path/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+
+◀public: static▶ Build_Repo_Settings ☀Establish_Repo_For_Building(std::string const& run_dir, std::string const& url, std::string const& branch)❰
+
+    Build_Repo_Settings x;
+    
+    //get settings
+    x.repo_location_settings = Default_Repo_Location_Getter::Default_Repo_Location_From_Program_Options(run_dir,url,branch);
+    x.bazel_setup_settings = Default_Bazel_Setup_Settings::Get();
+    x.build_settings = Default_Build_Settings::Get();
+    
+    //clone and establish bazel information
+    x.repo = Repo_Establisher::Establish_And_Get_Path(x.repo_location_settings);
+    Bazel_Setup_Deriver::Possibly_Derive_Parts_Of_Bazel_Setup(x.bazel_setup_settings,x.repo.path);
+    
+    //get the correct path for running a build
+    x.program_to_run_build = Prepend_Cd_Path(x.bazel_setup_settings.bazel_wrapper.program_name,x.repo.path);
+    
+    return x;
+❱
