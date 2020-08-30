@@ -13,7 +13,7 @@ class
 ❪"code/utilities/build/parse_profile/file_duration_extractor"❫
 ❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
 ⚯
-❪"code/utilities/web/honeycomb/honeycomb_poster"❫
+❪"code/tools/repo_tools/bazel_profile_slow_cc_files/results_publisher"❫
 ⚞⚟
 
 
@@ -26,7 +26,14 @@ class
     auto durations = File_Duration_Extractor::Extract(profile_file);
     
     //filter out ones we don't want
+    Filter_Results(durations);
     
+    Results_Publisher::Publish(options,durations);
+
+❱
+
+◀private: static▶ void ☀Filter_Results(std::vector<Duration_File> & durations) ❰
+
     //any of the external file compilations:
     Remove_If(durations,[&](Duration_File const& x){
         return Begins_With(x.file,"external");
@@ -38,16 +45,13 @@ class
     });
     
     Sort_Slowest_To_Fastest(durations);
-    
-    //print them
-    auto results = As_Printable_List(durations);
-    std::cout << results << std::endl;
-    Write_To_File(options.Output(),results);
-    
-    //upload them to honeycomb
-    Upload_To_Honeycomb(options,durations);
-
 ❱
+◀private: static▶ void ☀Sort_Slowest_To_Fastest(std::vector<Duration_File> & durations)❰
+    std::sort(durations.begin(),durations.end(),[&](Duration_File const& a, Duration_File const& b){
+        return b.duration_s < a.duration_s;
+    });
+❱
+
 
 ◀private: static▶ std::string ☀Create_Proile_File(Program_Options const& options) ❰
 
@@ -69,43 +73,9 @@ class
     auto profile_file = Bazel_Runner::Get_Profile_Information(x.program_to_run_build,
                                                               x.build_settings,
                                                               x.bazel_setup_settings.config_settings,
-                                                              options.Target());
+                                                              options.Target(),
+                                                              options.Profile_Out());
     return profile_file;
 ❱
 
 
-
-//utility
-◀private: static▶ void ☀Upload_To_Honeycomb(Program_Options const& options, std::vector<Duration_File> & durations)❰
-
-    std::cout << "posting to honeycomb" << std::endl;
-    for (auto const& it: durations){
-        
-        //data for sending
-        std::string dataset = "https://api.honeycomb.io/1/events/" + options.Honeycomb_Dataset();
-        std::string api_key = options.Honeycomb_API_Key();
-        std::string data = As_Minified_JSON_String(it);
-        
-        //send and report errors
-        auto result = Honeycomb_Poster::Post(dataset,api_key,data);
-        if (!result.empty()){
-            std::cerr << result << std::endl;
-        }
-    }
-❱
-
-◀private: static▶ void ☀Sort_Slowest_To_Fastest(std::vector<Duration_File> & durations)❰
-    std::sort(durations.begin(),durations.end(),[&](Duration_File const& a, Duration_File const& b){
-        return b.duration_s < a.duration_s;
-    });
-❱
-
-◀private: static▶ std::string ☀As_Printable_List(std::vector<Duration_File> const& durations)❰
-    std::stringstream ss;
-    
-    for (auto const& it: durations){
-        ss << it.duration_s << " " << it.file << std::endl;
-    }
-    
-    return ss.str();
-❱

@@ -36,11 +36,12 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//these are flag descriptions of that can be passed into the class.
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
+	("profile-out",value<std::string>(),"name for the created profile")
 	("profile-file",value<std::string>(),"bazel's profile file")
     ("url",value<std::string>(),"url to clone")
     ("branch",value<std::string>(),"branch to go to after clone")
     ("run_dir",value<std::string>(),"don't clone; use existing dir instead")
-    ("output",value<std::string>(),"where to store the profile")
+    ("output",value<std::string>(),"where to store the results of the analysis")
     ("target",value<std::string>(),"target to build with")
     
     ("honeycomb-dataset",value<std::string>(),"where to send honeycomb data to")
@@ -105,6 +106,14 @@ void Program_Options::Check_For_Mandatory_Flags_Not_Passed(){
 		exit(EXIT_FAILURE);
 	}
 	return;
+}
+std::string Program_Options::Profile_Out() const{
+	std::string data;
+	if (vm.count("profile-out")){
+		data = vm["profile-out"].as<std::string>();
+	}
+
+	return data;
 }
 std::string Program_Options::Profile_File() const{
 	std::string data;

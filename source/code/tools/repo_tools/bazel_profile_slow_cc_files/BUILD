@@ -25,7 +25,22 @@ hcp(
         "//code/utilities/program/wrappers/bazel:default_build_settings",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
+        "//code/tools/repo_tools/bazel_profile_slow_cc_files:results_publisher",
+    ],
+)
+
+hcp(
+    name = "results_publisher",
+    deps = [
+        "//code/utilities/output/printers:lib",
+        "//code/tools/repo_tools/bazel_profile_slow_cc_files/program_options:lib",
+        "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/web/honeycomb:honeycomb_poster",
+        "//code/utilities/build/parse_profile:file_duration_extractor",
     ],
 )
 
