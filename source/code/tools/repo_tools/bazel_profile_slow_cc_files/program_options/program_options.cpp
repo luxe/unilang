@@ -42,6 +42,9 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
     ("run_dir",value<std::string>(),"don't clone; use existing dir instead")
     ("output",value<std::string>(),"where to store the profile")
     ("target",value<std::string>(),"target to build with")
+    
+    ("honeycomb-dataset",value<std::string>(),"where to send honeycomb data to")
+    ("honeycomb-api-key",value<std::string>(),"api key for sending data")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -147,6 +150,22 @@ std::string Program_Options::Target() const{
 	std::string data;
 	if (vm.count("target")){
 		data = vm["target"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Honeycomb_Dataset() const{
+	std::string data;
+	if (vm.count("honeycomb-dataset")){
+		data = vm["honeycomb-dataset"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Honeycomb_API_Key() const{
+	std::string data;
+	if (vm.count("honeycomb-api-key")){
+		data = vm["honeycomb-api-key"].as<std::string>();
 	}
 
 	return data;

@@ -13,6 +13,7 @@ class
 ❪"code/utilities/build/parse_profile/file_duration_extractor"❫
 ❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
 ⚯
+❪"code/utilities/web/honeycomb/honeycomb_poster"❫
 ⚞⚟
 
 
@@ -25,7 +26,16 @@ class
     auto durations = File_Duration_Extractor::Extract(profile_file);
     
     //filter out ones we don't want
-    //TODOs
+    
+    //any of the external file compilations:
+    Remove_If(durations,[&](Duration_File const& x){
+        return Begins_With(x.file,"external");
+    });
+    
+    //any of the compilations that are fast:
+    Remove_If(durations,[&](Duration_File const& x){
+        return x.duration_s < 60;
+    });
     
     Sort_Slowest_To_Fastest(durations);
     
@@ -33,6 +43,9 @@ class
     auto results = As_Printable_List(durations);
     std::cout << results << std::endl;
     Write_To_File(options.Output(),results);
+    
+    //upload them to honeycomb
+    Upload_To_Honeycomb(options,durations);
 
 ❱
 
@@ -63,6 +76,24 @@ class
 
 
 //utility
+◀private: static▶ void ☀Upload_To_Honeycomb(Program_Options const& options, std::vector<Duration_File> & durations)❰
+
+    std::cout << "posting to honeycomb" << std::endl;
+    for (auto const& it: durations){
+        
+        //data for sending
+        std::string dataset = "https://api.honeycomb.io/1/events/" + options.Honeycomb_Dataset();
+        std::string api_key = options.Honeycomb_API_Key();
+        std::string data = As_Minified_JSON_String(it);
+        
+        //send and report errors
+        auto result = Honeycomb_Poster::Post(dataset,api_key,data);
+        if (!result.empty()){
+            std::cerr << result << std::endl;
+        }
+    }
+❱
+
 ◀private: static▶ void ☀Sort_Slowest_To_Fastest(std::vector<Duration_File> & durations)❰
     std::sort(durations.begin(),durations.end(),[&](Duration_File const& a, Duration_File const& b){
         return b.duration_s < a.duration_s;

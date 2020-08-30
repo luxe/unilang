@@ -94,23 +94,23 @@ std::string Get_HTML_Of_Site_With_Curl_Lib(Html_Fetch_Settings const& settings){
       //special things to do if we are doing a POST command
       if (settings.post){
         curl_easy_setopt(curl, CURLOPT_POST, 1L);
-        struct curl_slist *chunk = NULL;
-        chunk = curl_slist_append(chunk, "Transfer-Encoding: chunked");
-        CURLcode res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
-        if (!res){
-          //UH OH
-        }
         
-        struct curl_slist *chunk2 = NULL;
-        chunk2 = curl_slist_append(chunk, "Expect:");
-        CURLcode res2 = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk2);
-        if (!res2){
-          //UH OH
-        }
+        // struct curl_slist *chunk = NULL;
+        // chunk = curl_slist_append(chunk, "Transfer-Encoding: chunked");
+        // CURLcode res = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk);
+        // if (!res){
+        //   //UH OH
+        // }
         
-        static const char *postthis = "moo mooo moo moo";
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, postthis);
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, (long)strlen(postthis));
+        // struct curl_slist *chunk2 = NULL;
+        // chunk2 = curl_slist_append(chunk, "Expect:");
+        // CURLcode res2 = curl_easy_setopt(curl, CURLOPT_HTTPHEADER, chunk2);
+        // if (!res2){
+        //   //UH OH
+        // }
+        
+        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, settings.payload.c_str());
+        //curl_easy_setopt(curl, CURLOPT_POSTFIELDSIZE, settings.payload.size());
       }
       
       //special things to do if we are doing a DELETE command

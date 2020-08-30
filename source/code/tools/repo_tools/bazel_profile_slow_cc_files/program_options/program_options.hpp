@@ -23,6 +23,8 @@ class Program_Options {
 		std::string Output() const;
 		std::string Target() const;
 	    std::string Profile_File() const;
+	    std::string Honeycomb_Dataset() const;
+	    std::string Honeycomb_API_Key() const;
 
         
         std::string Get_Help_Message();

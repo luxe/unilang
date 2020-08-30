@@ -25,6 +25,7 @@ hcp(
         "//code/utilities/program/wrappers/bazel:default_build_settings",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
+        "//code/utilities/web/honeycomb:honeycomb_poster",
     ],
 )
 
