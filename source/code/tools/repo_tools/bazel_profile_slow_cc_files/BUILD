@@ -32,6 +32,7 @@ hcp(
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/filesystem/files/observers/other:lib",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ],
 )
 

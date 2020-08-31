@@ -21,6 +21,7 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/files/observers/other/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ⚞⚟
 
 
@@ -28,32 +29,46 @@ class
 
 
     //We establish a repo and a context for building artifacts in it.
-    //This setup tries to be agnostic to expectations about the repo's hosting, layout and build system.
-    //such as:
-    //where/how the repository is cloned from, what branch it should be on,
-    //whether the repo already exists on the system
-    //it also tries to analyze the repository to learn how it should build it.
+    //This setup tries to be agnostic to any expectations about the repo's hosting, layout, and build system.
+    //It tries to derive things like:
+    //where/how the repository is cloned from, what branch it should be on or whether the repo already exists on the system.
+    //Analyze the repository to learn how to build it
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
+    //get the targets to build (we may need to create multiple targets based on what was given to ys)
+    auto target_sets = Smartly_Decide_Targets_Based_On_What_Was_Given(repo_context,options.Target());
+    
+    //run analysis on each target set
+    for (auto const& set: target_sets){
+        Run_Analysis_For_Target(repo_context,options,set);
+    }
+
+
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Smartly_Decide_Targets_Based_On_What_Was_Given(Build_Repo_Settings const& repo_context, std::string target)❰
+
     //Now that the repo is setup, we will decide which targets to build.
     //This may be explicitly set by the user, or it might be derived by analysis.
     //If the user chooses a target that is too encompassing, it may be split into separate equivalent targets.
     //This is done because building 100% of the repo in a single build invocation might cause us run out of disk space.
     //But building 100% in 25% chunks and cleaning in between may ensure that disk space is exhausted.
-    auto targets = Get_And_Print_Sorted_Targets(repo_context,options.Target());
+    auto targets = Get_And_Print_Sorted_Targets(repo_context,target);
 
     //based on the targets we collected, it may take too long to build them all individually with the cleans in between.
     //therefore, we can group some of them together.  
     //this will allow us to do less builds overall, but will also increase the disk space used for each build invocation.
     auto build_sets = Split_Every_N(targets,15);
     
-    //run analysis on each target
+    std::vector<std::string> results;
     for (auto const& set: build_sets){
         auto target_set = Get_As_Space_Seperated_String(set);
-        Run_Analysis_For_Target(repo_context,options,target_set);
+        results.emplace_back(target_set);
     }
-
-
+    return results;
+    
+    
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Get_And_Print_Sorted_Targets(Build_Repo_Settings const& repo_context, std::string target)❰
@@ -119,7 +134,7 @@ class
 
     auto profile_file = Create_Proile_File(repo_context, target, options.Profile_In(), options.Profile_Out());
     
-    if (!profile_file.empty()){
+    if (File_Exists(profile_file)){
 
         //extract compilation file durations from profile-file
         auto durations = File_Duration_Extractor::Extract(profile_file);
@@ -130,6 +145,9 @@ class
         Results_Publisher::Publish(options,durations);
         
         Delete_File(profile_file);
+    }
+    else {
+        std::cout << "profile does not exist.  skipping" << std::endl;
     }
     
     Bazel_Runner::Clean(repo_context.program_to_run_build);
