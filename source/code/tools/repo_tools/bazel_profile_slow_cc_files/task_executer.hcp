@@ -27,8 +27,9 @@ class
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
 
-    //We establish a repo and a context for building in it.
-    //This setup tries to be agnostic to expectations.  
+    //We establish a repo and a context for building artifacts in it.
+    //This setup tries to be agnostic to expectations about the repo's hosting, layout and build system.
+    //such as:
     //where/how the repository is cloned from, what branch it should be on,
     //whether the repo already exists on the system
     //it also tries to analyze the repository to learn how it should build it.
@@ -37,14 +38,9 @@ class
     //Now that the repo is setup, we will decide which targets to build.
     //This may be explicitly set by the user, or it might be derived by analysis.
     //If the user chooses a target that is too encompassing, it may be split into separate equivalent targets.
-    //This is done because building 100% of the repo might run out of disk space.
+    //This is done because building 100% of the repo in a single build invocation might cause us run out of disk space.
     //But building 100% in 25% chunks and cleaning in between may ensure that disk space is exhausted.
-    auto targets = Decide_Targets(repo_context,options.Target());
-    Sort(targets);
-    
-    //show the user those targets
-    std::cout << "the targets to build: " << std::endl;
-    std::cout << Get_As_String_With_Element_On_Each_Line(targets) << std::endl;
+    auto targets = Get_And_Print_Sorted_Targets(repo_context,options.Target());
 
     //based on the targets we collected, it may take too long to build them all individually with the cleans in between.
     //therefore, we can group some of them together.  
@@ -58,6 +54,18 @@ class
     }
 
 
+❱
+
+◀private: static▶ std::vector<std::string> ☀Get_And_Print_Sorted_Targets(Build_Repo_Settings const& repo_context, std::string target)❰
+
+    auto targets = Decide_Targets(repo_context,target);
+    Sort(targets);
+    
+    //show the user those targets
+    std::cout << "the targets to build: " << std::endl;
+    std::cout << Get_As_String_With_Element_On_Each_Line(targets) << std::endl;
+    
+    return targets;
 ❱
 
 
