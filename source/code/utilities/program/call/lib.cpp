@@ -81,6 +81,13 @@ void no_hup_execute_quietly_in_background(std::string const& cmd) {
     exec(full_command);
 }
 
+int Execute_Quietly_But_Report_Stderr_When_Nonzero(std::string const& cmd){
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(cmd);
+    if (results.return_code != 0){
+        std::cout << results.stderr << std::endl;
+    }
+    return results.return_code;
+}
 void Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(std::string const& cmd){
     auto results = Process_Spawner::Execute_And_Get_Back_Results(cmd);
     if (results.return_code != 0){

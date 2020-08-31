@@ -27,6 +27,7 @@ void execute_quietly(std::string const& cmd);
 void execute_quietly(const char* cmd);
 void no_hup_execute_quietly_in_background(std::string const& cmd);
 
+int Execute_Quietly_But_Report_Stderr_When_Nonzero(std::string const& cmd);
 void Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(std::string const& cmd);
 
 //runs in the shell and gives you back the return code (nothing is silenced)
