@@ -2,6 +2,8 @@
 #include <string>
 #include <optional>
 #include <ctime>
+
+bool Regular_File_Exists_Recursively(std::string const& path, std::string const& match_name);
     
 std::string Get_File_That_Symbolic_Link_Points_To(std::string const& path_to_symbolic_link);
 

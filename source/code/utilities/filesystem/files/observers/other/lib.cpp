@@ -8,6 +8,19 @@
 #include <algorithm>
 #include <sys/stat.h>
 #include <dirent.h>
+#include <filesystem>
+
+bool Regular_File_Exists_Recursively(std::string const& path, std::string const& match_name){
+  for(auto iterEntry = std::filesystem::recursive_directory_iterator(path); iterEntry != std::filesystem::recursive_directory_iterator(); ++iterEntry ) {
+      if (iterEntry->is_regular_file()) {
+          const auto filenameStr = iterEntry->path().filename().string();
+          if (filenameStr == match_name){
+            return true;
+          }
+      }
+  }
+  return false;
+}
 
 std::string Get_File_That_Symbolic_Link_Points_To(std::string const& path_to_symbolic_link){
   return execute("readlink " + path_to_symbolic_link);
