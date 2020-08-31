@@ -30,6 +30,7 @@ hcp(
         "//code/utilities/filesystem/files/deleting:lib",
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/types/vectors/observers:lib",
     ],
 )
 

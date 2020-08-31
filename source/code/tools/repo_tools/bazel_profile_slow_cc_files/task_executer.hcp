@@ -16,6 +16,7 @@ class
 ❪"code/tools/repo_tools/bazel_profile_slow_cc_files/results_publisher"❫
 ❪"code/tools/repo_tools/bazel_profile_slow_cc_files/results_filter"❫
 ❪"code/utilities/filesystem/files/deleting/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/vectors/converters/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
@@ -25,21 +26,34 @@ class
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
 
-    //get repo and context
+    //We establish a repo and a context for building in it.
+    //This setup tries to be agnostic to expectations.  
+    //where/how the repository is cloned from, what branch it should be on,
+    //whether the repo already exists on the system
+    //it also tries to analyze the repository to learn how it should build it.
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
-    //decide which targets to profile
+    //Now that the repo is setup, we will decide which targets to build.
+    //This may be explicitly set by the user, or it might be derived by analysis.
+    //If the user chooses a target that is too encompassing, it may be split into separate equivalent targets.
+    //This is done because building 100% of the repo might run out of disk space.
+    //But building 100% in 25% chunks and cleaning in between may ensure that disk space is exhausted.
     auto targets = Decide_Targets(repo_context,options.Target());
     Sort(targets);
     
-    //show user those targets
+    //show the user those targets
     std::cout << "the targets to build: " << std::endl;
     std::cout << Get_As_String_With_Element_On_Each_Line(targets) << std::endl;
 
-
+    //based on the targets we collected, it may take too long to build them all individually with the cleans in between.
+    //therefore, we can group some of them together.  
+    //this will allow us to do less builds overall, but will also increase the disk space used for each build invocation.
+    auto build_sets = Split_Every_N(targets,10);
+    
     //run analysis on each target
-    for (auto const& it: targets){
-        Run_Analysis_For_Target(repo_context,options,it);
+    for (auto const& set: build_sets){
+        auto target_set = Get_As_Space_Seperated_String(set);
+        Run_Analysis_For_Target(repo_context,options,target_set);
     }
 
 
@@ -58,9 +72,7 @@ class
     //the reason we don't want to just build all (...) is because we might run out of disk space.
     //So we want to build parts of the repository, clean, build different parts, clean, and repeat.
     
-    //trim off what was given to us so that we have the folder name
-    Remove_Last_N_Chars(target,3);
-    Remove_First_N_Chars(target,2);
+    target = Trim_Bazel_Glob_Label_As_Path(target);
     
     //get the folders that are under it
     auto nested_dirs = Get_Dirs_Of_Path(x.repo.path + "/" + target);
@@ -78,6 +90,14 @@ class
     return results;
     
 
+❱
+
+◀private: static▶ std::string ☀Trim_Bazel_Glob_Label_As_Path(std::string label)❰
+
+    //trim off what was given to us so that we have the folder name
+    Remove_First_N_Chars(label,2); // //
+    Remove_Last_N_Chars(label,3);  // ...
+    return label;
 ❱
 
 ◀private: static▶ void ☀Run_Analysis_For_Target(Build_Repo_Settings const& repo_context, Program_Options const& options, std::string const& target)❰
