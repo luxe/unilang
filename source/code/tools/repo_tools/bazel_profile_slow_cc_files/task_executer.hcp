@@ -14,67 +14,108 @@ class
 ❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
 ⚯
 ❪"code/tools/repo_tools/bazel_profile_slow_cc_files/results_publisher"❫
+❪"code/tools/repo_tools/bazel_profile_slow_cc_files/results_filter"❫
+❪"code/utilities/filesystem/files/deleting/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/filesystem/files/getting/lib"❫
 ⚞⚟
 
 
 ◀public: static▶ void ☀Execute_Needed_Tasks(Program_Options const& options) ❰
 
-    auto profile_file = Create_Proile_File(options);
-    std::cout << profile_file << std::endl;
+
+    //get repo and context
+    auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
+    
+    //decide which targets to profile
+    auto targets = Decide_Targets(repo_context,options.Target());
+    
+    //show user those targets
+    std::cout << "the targets to build: " << std::endl;
+    std::cout << Get_As_String_With_Element_On_Each_Line(targets) << std::endl;
+
+
+    //run analysis on each target
+    for (auto const& it: targets){
+        Run_Analysis_For_Target(repo_context,options,it);
+    }
+
+
+❱
+
+
+◀private: static▶ std::vector<std::string> ☀Decide_Targets(Build_Repo_Settings const& x, std::string target)❰
+
+    std::vector<std::string> results;
+    if (!Ends_With(target,"...")){
+        results.emplace_back(target);
+        return results;
+    }
+    
+    //since no target was specified, we will try to intelligently decide what bazel targets to build
+    //the reason we don't want to just build all (...) is because we might run out of disk space.
+    //So we want to build parts of the repository, clean, build different parts, clean, and repeat.
+    
+    //trim off what was given to us so that we have the folder name
+    Remove_Last_N_Chars(target,3);
+    Remove_First_N_Chars(target,2);
+    
+    //get the folders that are under it
+    auto nested_dirs = Get_Dirs_Of_Path(x.repo.path + "/" + target);
+    
+    //rebuild all these more specific target names
+    for (auto const& it: nested_dirs){
+        std::string new_target_name;
+        new_target_name += "//";
+        new_target_name += target;
+        new_target_name += "/";
+        new_target_name += it;
+        new_target_name += "/...";
+        results.emplace_back(new_target_name);
+    }
+    
+    return results;
+    
+
+❱
+
+◀private: static▶ void ☀Run_Analysis_For_Target(Build_Repo_Settings const& repo_context, Program_Options const& options, std::string const& target)❰
+
+    auto profile_file = Create_Proile_File(repo_context, target, options.Profile_In(), options.Profile_Out());
 
     //extract compilation file durations from profile-file
     auto durations = File_Duration_Extractor::Extract(profile_file);
     
     //filter out ones we don't want
-    Filter_Results(durations);
+    Results_Filter::Filter_Results(durations);
     
     Results_Publisher::Publish(options,durations);
-
-❱
-
-◀private: static▶ void ☀Filter_Results(std::vector<Duration_File> & durations) ❰
-
-    //any of the external file compilations:
-    Remove_If(durations,[&](Duration_File const& x){
-        return Begins_With(x.file,"external");
-    });
     
-    //any of the compilations that are fast:
-    Remove_If(durations,[&](Duration_File const& x){
-        return x.duration_s < 60;
-    });
-    
-    Sort_Slowest_To_Fastest(durations);
-❱
-◀private: static▶ void ☀Sort_Slowest_To_Fastest(std::vector<Duration_File> & durations)❰
-    std::sort(durations.begin(),durations.end(),[&](Duration_File const& a, Duration_File const& b){
-        return b.duration_s < a.duration_s;
-    });
+    Delete_File(profile_file);
+
 ❱
 
 
-◀private: static▶ std::string ☀Create_Proile_File(Program_Options const& options) ❰
+◀private: static▶ std::string ☀Create_Proile_File(Build_Repo_Settings const& x, std::string const& target, std::string const& profile_in, std::string const& profile_out) ❰
 
     //it was passed in
-    if (!options.Profile_File().empty()){
-        return options.Profile_File();
+    if (!profile_in.empty()){
+        return profile_in;
     }
     
     //use the other program options to build it
-    return Create_Proile_File_By_Building(options);
+    return Create_Proile_File_By_Building(x,target,profile_out);
 ❱
 
 
-◀private: static▶ std::string ☀Create_Proile_File_By_Building(Program_Options const& options) ❰
+◀private: static▶ std::string ☀Create_Proile_File_By_Building(Build_Repo_Settings const& x, std::string const& target, std::string const& profile_out) ❰
 
-    //get repo and context
-    auto x = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
     auto profile_file = Bazel_Runner::Get_Profile_Information(x.program_to_run_build,
                                                               x.build_settings,
                                                               x.bazel_setup_settings.config_settings,
-                                                              options.Target(),
-                                                              options.Profile_Out());
+                                                              target,
+                                                              profile_out);
     return profile_file;
 ❱
 

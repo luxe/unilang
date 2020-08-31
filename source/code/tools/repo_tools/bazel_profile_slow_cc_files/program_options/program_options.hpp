@@ -22,8 +22,8 @@ class Program_Options {
 		std::string Run_Dir() const;
 		std::string Output() const;
 		std::string Target() const;
+		std::string Profile_In() const;
 		std::string Profile_Out() const;
-	    std::string Profile_File() const;
 	    std::string Honeycomb_Dataset() const;
 	    std::string Honeycomb_API_Key() const;
 

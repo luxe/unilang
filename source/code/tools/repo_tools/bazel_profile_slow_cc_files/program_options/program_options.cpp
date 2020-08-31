@@ -37,7 +37,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
 	("profile-out",value<std::string>(),"name for the created profile")
-	("profile-file",value<std::string>(),"bazel's profile file")
+	("profile-in",value<std::string>(),"bazel's already created profile file")
     ("url",value<std::string>(),"url to clone")
     ("branch",value<std::string>(),"branch to go to after clone")
     ("run_dir",value<std::string>(),"don't clone; use existing dir instead")
@@ -81,7 +81,7 @@ void Program_Options::Process_Immediate_Options( boost::program_options::options
 
 	//do not continue the program if the user wanted to see the version or help data
 	if (vm.count("version")){
-		std::cout << "\nThis is version " << "1" << " of noogle.\n\n";
+		std::cout << "\nThis is version " << "1" << " of bazel_profile_cc_files.\n\n";
 		exit(EXIT_SUCCESS);
 	}
 	else if (vm.count("help")){
@@ -107,18 +107,18 @@ void Program_Options::Check_For_Mandatory_Flags_Not_Passed(){
 	}
 	return;
 }
-std::string Program_Options::Profile_Out() const{
+std::string Program_Options::Profile_In() const{
 	std::string data;
-	if (vm.count("profile-out")){
-		data = vm["profile-out"].as<std::string>();
+	if (vm.count("profile-in")){
+		data = vm["profile-in"].as<std::string>();
 	}
 
 	return data;
 }
-std::string Program_Options::Profile_File() const{
+std::string Program_Options::Profile_Out() const{
 	std::string data;
-	if (vm.count("profile-file")){
-		data = vm["profile-file"].as<std::string>();
+	if (vm.count("profile-out")){
+		data = vm["profile-out"].as<std::string>();
 	}
 
 	return data;

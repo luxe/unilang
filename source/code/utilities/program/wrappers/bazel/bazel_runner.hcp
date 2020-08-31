@@ -58,21 +58,18 @@ class
     return spawns;
 ❱
 
-◀public: static▶ std::string ☀Get_Profile_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target)❰
+◀public: static▶ std::string ☀Get_Profile_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& profile_name◀=""▶)❰
     
     //build
     std::cout << "Running profile build on " << target << std::endl;
-    std::string file_name = Random_Files::Random_Tmp_Json_Filename();
-    auto command = Get_Create_Profile_Command(bazel_wrapper,settings,config_settings,target,file_name);
-    std::cout << command << std::endl;
-    Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);
-    return file_name;
-❱
-◀public: static▶ std::string ☀Get_Profile_Information(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& target, std::string const& profile_name)❰
     
-    //build
-    std::cout << "Running profile build on " << target << std::endl;
+    //decide profile name
     std::string file_name = profile_name;
+    if (file_name.empty()){
+        file_name = Random_Files::Random_Tmp_Json_Filename();
+    }
+    std::cout << "profile will be written to: " << file_name << std::endl;
+    
     auto command = Get_Create_Profile_Command(bazel_wrapper,settings,config_settings,target,file_name);
     std::cout << command << std::endl;
     Execute_Quietly_But_Report_Stderr_And_Exit_When_Nonzero(command);

@@ -26,8 +26,27 @@ hcp(
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
         "//code/tools/repo_tools/bazel_profile_slow_cc_files:results_publisher",
+        "//code/tools/repo_tools/bazel_profile_slow_cc_files:results_filter",
+        "//code/utilities/filesystem/files/deleting:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/filesystem/files/getting:lib",
     ],
 )
+
+hcp(
+    name = "results_filter",
+    deps = [
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/build/parse_profile:file_duration_extractor",
+        "//code/utilities/types/vectors/transformers:lib",
+    ],
+)
+
 
 hcp(
     name = "results_publisher",
