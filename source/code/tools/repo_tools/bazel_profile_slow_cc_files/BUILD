@@ -18,7 +18,7 @@ hcp(
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/other:lib",
-        "//code/utilities/build/parse_profile:file_duration_extractor",
+        "//code/utilities/build/profile_parser:file_duration_extractor",
         "//code/utilities/program/wrappers/bazel/setup:default_bazel_setup_settings",
         "//code/utilities/program/wrappers/git/repo_establisher:default_repo_location_getter",
         "//code/utilities/program/wrappers/bazel/setup:bazel_setup_deriver",
@@ -45,7 +45,7 @@ hcp(
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/other:lib",
-        "//code/utilities/build/parse_profile:file_duration_extractor",
+        "//code/utilities/build/profile_parser:file_duration_extractor",
         "//code/utilities/types/vectors/transformers:lib",
     ],
 )
@@ -62,7 +62,7 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/web/honeycomb:honeycomb_poster",
-        "//code/utilities/build/parse_profile:file_duration_extractor",
+        "//code/utilities/build/profile_parser:file_duration_extractor",
     ],
 )
 

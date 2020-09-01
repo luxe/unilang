@@ -24,9 +24,9 @@ hcp(
         "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/vectors/converters:lib",
-        "//code/utilities/build/profile:profile_compilation_timer",
+        "//code/utilities/build/profiler:profile_compilation_timer",
         "//code/utilities/program/wrappers/git:branch_switcher",
-        "//code/utilities/build/profile/data:profile_settings",
-        "//code/utilities/build/profile/data:profile_results",
+        "//code/utilities/build/profiler/data:profile_settings",
+        "//code/utilities/build/profiler/data:profile_results",
     ],
 )

@@ -20,13 +20,13 @@ hcp(
     deps = [
         "//code/tools/repo_tools/single_file_profile/program_options:lib",
         "//code/utilities/program/wrappers/git:branch_switcher",
-        "//code/utilities/build/profile:branch_profile_compilation_timer",
+        "//code/utilities/build/profiler:branch_profile_compilation_timer",
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/math:math",
         "//code/utilities/output/printers:lib",
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/build/profile/data:profile_settings",
-        "//code/utilities/build/profile/data:profile_results",
+        "//code/utilities/build/profiler/data:profile_settings",
+        "//code/utilities/build/profiler/data:profile_results",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )

@@ -15,7 +15,7 @@ hcp(
         "//code/utilities/streams/filestreams/write_all:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
-        "//code/utilities/build/profile:profile_compilation_timer",
+        "//code/utilities/build/profiler:profile_compilation_timer",
         "//code/utilities/types/strings/transformers/other:lib",
         "//code/utilities/program/wrappers/bazel/setup:default_bazel_setup_settings",
         "//code/utilities/program/wrappers/git/repo_establisher:default_repo_location_getter",
