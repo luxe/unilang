@@ -1,5 +1,6 @@
 #include "code/utilities/types/vectors/observers/lib.hpp"
 #include "code/utilities/types/general/lib.hpp"
+#include "code/utilities/types/general/lib.hpp"
 
 size_t Get_Longest_String_Length_In_Vector(std::vector<std::string> const& v){
     return (*max_element ( v.begin(), v.end())).length();
@@ -66,6 +67,17 @@ std::string Table_As_Column_Aligned(std::vector<std::vector<std::string>> table)
             }
         }
         results += "\n";
+    }
+    return results;
+}
+
+std::vector<std::string> Each_Element_As_Space_Seperated_String(std::vector<std::vector<std::string>> const& v)
+{
+  
+    std::vector<std::string> results;
+    for (auto const& set: v){
+        auto target_set = Get_As_Space_Seperated_String(set);
+        results.emplace_back(target_set);
     }
     return results;
 }

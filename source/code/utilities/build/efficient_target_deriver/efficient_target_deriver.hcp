@@ -24,7 +24,7 @@ class
 
 ◀public: static▶ std::vector<std::string> ☀Smartly_Augment_Target_Based_On_What_Was_Given(Build_Repo_Settings const& repo_context, Target_Augment_Settings const& settings, std::string target)❰
     
-    //just return the target given
+    //if the user doesn't want to expand the target given, we can return them what they gave us un-augmented
     if (!settings.split_given_target){
         std::vector<std::string> single_target;
         single_target.emplace_back(target);
@@ -32,23 +32,25 @@ class
     }
 
 
-    //Now that the repo is setup, we will decide which targets to build.
-    //This may be explicitly set by the user, or it might be derived by analysis.
-    //If the user chooses a target that is too encompassing, it may be split into separate equivalent targets.
-    //This is done because building 100% of the repo in a single build invocation might cause us run out of disk space.
-    //But building 100% in 25% chunks and cleaning in between may ensure that disk space is exhausted.
+    //If the user does want to augment their target into separate multiple targets, we will continue on to do that.
+    //The reason we do this, is if a user chooses a target that is too encompassing, and we want to split it into separate equivalent targets.
+    //This is done because building 100% of the repo in a single build invocation might be slow and we'll run out of disk space.
+    //But building 100% of the repo distributed in 25% chunks across either multiple machines or be cleaning in between may ensure that disk space is not exhausted.
+    //[t1,t2,t3,t4,t5,t6]
     auto targets = Get_And_Print_Sorted_Targets(repo_context,target);
 
-    //based on the targets we collected, it may take too long to build them all individually with the cleans in between.
+    //based on the targets we collected now, it may take too long to build them all individually with cleans in between.
     //therefore, we can group some of them together.  
     //this will allow us to do less builds overall, but will also increase the disk space used for each build invocation.
+    //[[t1,t2],[t3,t4],[t5,t6]]
     auto build_sets = Split_Every_N(targets,settings.split_amount);
     
-    std::vector<std::string> results;
-    for (auto const& set: build_sets){
-        auto target_set = Get_As_Space_Seperated_String(set);
-        results.emplace_back(target_set);
-    }
+    //since bazel can accept multiple targets in a single invocation, we flatten our grouping down
+    //so that these multiple grouped targets are a single element, and each element represents a bazel invocation.
+    //["t1 t2","t3 t4","t5 t6"]
+    auto results = Each_Element_As_Space_Seperated_String(build_sets);
+    
+    
     return results;
     
     

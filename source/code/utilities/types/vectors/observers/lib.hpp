@@ -174,6 +174,8 @@ T Flatten(std::vector<T> const& v){
 	return t;
 }
 
+std::vector<std::string> Each_Element_As_Space_Seperated_String(std::vector<std::vector<std::string>> const& v);
+
 template<typename T>
 bool The_Same_Except_For_One_Element(std::vector<T> const& v1, std::vector<T> const& v2){
 	int differences = 0;
