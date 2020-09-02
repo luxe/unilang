@@ -13,5 +13,6 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/build/file_owners_getter:file_owners_getter",
     ],
 )
