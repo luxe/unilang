@@ -7,3 +7,10 @@ hcp(
     name = "duration_file",
     deps = [],
 )
+
+hcp(
+    name = "owned_duration_file",
+    deps = [
+        "//code/utilities/build/profile_parser/data:duration_file",
+    ],
+)

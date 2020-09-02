@@ -4,6 +4,7 @@ class
 ❪string❫
 ❪cmath❫
 ❪"code/utilities/build/profile_parser/data/duration_file"❫
+❪"code/utilities/build/profile_parser/data/owned_duration_file"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
 ❪"code/utilities/filesystem/paths/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
@@ -13,7 +14,14 @@ class
 ⚯
 ⚞⚟
 
+//get file durations and the respect owners
+◀public: static▶ std::vector<Owned_Duration_File> ☀Extract_And_Assign_Owners(std::string const& profile_file)❰
+    
+    auto duration_files = Extract(profile_file);
+    return Assign_Owners(duration_files);
+❱
 
+//get file durations
 ◀public: static▶ std::vector<Duration_File> ☀Extract(std::string const& profile_file)❰
     std::vector<Duration_File> results;
     
@@ -32,6 +40,24 @@ class
     
     return results;
 ❱
+
+
+
+
+
+
+◀private: static▶ std::vector<Owned_Duration_File> ☀Assign_Owners(std::vector<Duration_File> const& duration_files)❰
+
+    std::vector<Owned_Duration_File> results;
+    
+    for (auto const& it: duration_files){
+        Owned_Duration_File tagged = it;
+        tagged.owners = File_Owners_Getter::Get(it.file);
+    }
+    
+    return results;
+❱
+
 
 ◀private: static▶ void ☀Store_Result(std::vector<Duration_File> & results, nlohmann::json const& it)❰
 
