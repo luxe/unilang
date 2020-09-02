@@ -35,6 +35,7 @@ hcp(
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/build/efficient_target_deriver:efficient_target_deriver",
         "//code/utilities/build/efficient_target_deriver:target_augment_settings",
+        "//code/utilities/data_structures/fraction:fraction_parser",
     ],
 )
 

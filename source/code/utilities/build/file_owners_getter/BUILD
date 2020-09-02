@@ -14,5 +14,6 @@ hcp(
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/output/printers:lib",
     ],
 )

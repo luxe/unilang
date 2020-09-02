@@ -43,6 +43,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
     ("run_dir",value<std::string>(),"don't clone; use existing dir instead")
     ("output",value<std::string>(),"where to store the results of the analysis")
     ("target",value<std::string>(),"target to build with")
+    ("job",value<std::string>(),"split the work by having this invocation perform work on the fraction given")
     
     ("honeycomb-dataset",value<std::string>(),"where to send honeycomb data to")
     ("honeycomb-api-key",value<std::string>(),"api key for sending data")
@@ -159,6 +160,14 @@ std::string Program_Options::Target() const{
 	std::string data;
 	if (vm.count("target")){
 		data = vm["target"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Job() const{
+	std::string data;
+	if (vm.count("job")){
+		data = vm["job"].as<std::string>();
 	}
 
 	return data;

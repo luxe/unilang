@@ -24,6 +24,7 @@ class
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ❪"code/utilities/build/efficient_target_deriver/efficient_target_deriver"❫
 ❪"code/utilities/build/efficient_target_deriver/target_augment_settings"❫
+❪"code/utilities/data_structures/fraction/fraction_parser"❫
 ⚞⚟
 
 
@@ -46,11 +47,25 @@ class
     auto target_sets = Efficient_Target_Deriver::Smartly_Augment_Target_Based_On_What_Was_Given(repo_context,augment_settings,options.Target());
     
     //run analysis on each target set
-    for (auto const& set: target_sets){
+    auto run_sets = Decide_Which_Sets_To_Run(target_sets,options);
+    for (auto const& set: run_sets){
         Run_Analysis_For_Target(repo_context,options,set);
     }
 
 
+❱
+
+◀private: static▶ std::vector<std::string> ☀Decide_Which_Sets_To_Run(std::vector<std::string> const& target_sets, Program_Options const& options) ❰
+    if (options.Job().empty()){
+        return target_sets;
+    }
+    
+    //pick just a part of a fraction to run
+    auto fraction = Fraction_Parser::Parse(options.Job());
+    auto new_parts = Split_Every_N(target_sets,fraction.denominator);
+    return new_parts[fraction.numerator-1];
+    
+    
 ❱
 
 ◀private: static▶ void ☀Run_Analysis_For_Target(Build_Repo_Settings const& repo_context, Program_Options const& options, std::string const& target)❰
