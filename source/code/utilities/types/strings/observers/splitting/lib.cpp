@@ -79,6 +79,17 @@ std::vector<std::string> Split_Into_Parts_From_Open_Paren(std::string const& str
 std::vector<std::string> Split_Into_Parts_From_Close_Paren(std::string const& str){
     return Split_Into_Parts_From_Delimiter(str,')');
 }
+
+std::string Get_Last_Line(std::string const& str){
+    auto parts = Split_Into_Parts_From_Newline(str);
+    
+    if (parts.empty()){
+        return "";
+    }
+    
+    return parts[parts.size() - 1];
+}
+
 std::string Get_Path_After_Desktop(std::string const& str)
 {
 	auto parts = Get_Path_In_Parts(str);
