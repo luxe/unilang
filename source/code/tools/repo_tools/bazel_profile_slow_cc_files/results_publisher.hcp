@@ -9,6 +9,7 @@ class
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/build/profile_parser/file_duration_extractor"❫
+❪"code/utilities/build/profile_parser/data/flat_owned_duration_file"❫
 ⚯
 ❪"code/utilities/web/honeycomb/honeycomb_poster"❫
 ❪"code/utilities/output/printers/lib"❫
@@ -34,7 +35,8 @@ class
         //data for sending
         std::string dataset = "https://api.honeycomb.io/1/events/" + options.Honeycomb_Dataset();
         std::string api_key = options.Honeycomb_API_Key();
-        std::string data = As_Minified_JSON_String(it);
+        
+        std::string data = As_Minified_JSON_String(Flatten(it));
         
         //send and report errors
         auto result = Honeycomb_Poster::Post(dataset,api_key,data);
@@ -42,6 +44,14 @@ class
             std::cerr << result << std::endl;
         }
     }
+❱
+
+◀private: static▶ Flat_Owned_Duration_File ☀Flatten(Owned_Duration_File x)❰
+    Flat_Owned_Duration_File result;
+    result.file = x.file.file;
+    result.duration_s = x.file.duration_s;
+    result.owners = x.owners;
+    return result;
 ❱
 
 ◀private: static▶ std::string ☀As_Printable_List(std::vector<Owned_Duration_File> const& durations)❰

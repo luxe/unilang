@@ -14,3 +14,10 @@ hcp(
         "//code/utilities/build/profile_parser/data:duration_file",
     ],
 )
+
+hcp(
+    name = "flat_owned_duration_file",
+    deps = [
+        "//code/utilities/build/profile_parser/data:duration_file",
+    ],
+)

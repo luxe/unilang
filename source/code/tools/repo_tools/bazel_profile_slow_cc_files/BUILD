@@ -66,6 +66,7 @@ hcp(
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/web/honeycomb:honeycomb_poster",
         "//code/utilities/build/profile_parser:file_duration_extractor",
+        "//code/utilities/build/profile_parser/data:flat_owned_duration_file",
     ],
 )
 
