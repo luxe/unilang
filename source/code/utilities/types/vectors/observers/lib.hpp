@@ -324,6 +324,32 @@ std::vector<std::vector<T>> Split_Every_N(std::vector<T> const& v, size_t amount
   return all;
 }
 
+template <typename T>
+std::vector<std::vector<T>> Split_Into_N_Parts(std::vector<T> const& v, size_t amount){
+  std::vector<std::vector<T>> all;
+  
+  std::vector<T> temp;
+  auto max_amount = (v.size() / amount);
+  if (max_amount == 0){
+    max_amount = 0;
+  }
+  
+  for (auto const& it: v){
+    temp.emplace_back(it);
+    if (temp.size() >= max_amount){
+      all.emplace_back(temp);
+      temp.clear();
+    }
+  }
+  
+  if (!temp.empty()){
+    all.emplace_back(temp);
+  }
+  
+  return all;
+  
+}
+
 template<class InputIt, class MemberType>
 auto Split_By_Data_Member_Uniqueness(InputIt first, InputIt last, MemberType std::iterator_traits<InputIt>::value_type::* member_name){
 
