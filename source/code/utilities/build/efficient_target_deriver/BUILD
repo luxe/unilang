@@ -23,5 +23,12 @@ hcp(
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/other:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/build/efficient_target_deriver:target_augment_settings",
+        "//code/utilities/build/build_repo_establisher:build_repo_settings",
     ],
+)
+
+hcp(
+    name = "target_augment_settings",
+    deps = []
 )

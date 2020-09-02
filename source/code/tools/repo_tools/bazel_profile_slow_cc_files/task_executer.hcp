@@ -22,6 +22,8 @@ class
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/filesystem/files/observers/other/lib"❫
 ❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
+❪"code/utilities/build/efficient_target_deriver/efficient_target_deriver"❫
+❪"code/utilities/build/efficient_target_deriver/target_augment_settings"❫
 ⚞⚟
 
 
@@ -36,7 +38,10 @@ class
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
     //get the targets to build (we may need to create multiple targets based on what was given to ys)
-    auto target_sets = Efficient_Target_Deriver::Smartly_Augment_Target_Based_On_What_Was_Given(repo_context,options.Target());
+    Target_Augment_Settings augment_settings;
+    augment_settings.split_given_target = true;
+    augment_settings.split_amount = 15;
+    auto target_sets = Efficient_Target_Deriver::Smartly_Augment_Target_Based_On_What_Was_Given(repo_context,augment_settings,options.Target());
     
     //run analysis on each target set
     for (auto const& set: target_sets){

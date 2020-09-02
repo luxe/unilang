@@ -33,6 +33,8 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/filesystem/files/observers/other:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/build/efficient_target_deriver:efficient_target_deriver",
+        "//code/utilities/build/efficient_target_deriver:target_augment_settings",
     ],
 )
 
