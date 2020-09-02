@@ -36,7 +36,7 @@ class
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
     //get the targets to build (we may need to create multiple targets based on what was given to ys)
-    auto target_sets = Smartly_Decide_Targets_Based_On_What_Was_Given(repo_context,options.Target());
+    auto target_sets = Efficient_Target_Deriver::Smartly_Augment_Target_Based_On_What_Was_Given(repo_context,options.Target());
     
     //run analysis on each target set
     for (auto const& set: target_sets){
@@ -46,98 +46,18 @@ class
 
 ❱
 
-
-◀private: static▶ std::vector<std::string> ☀Smartly_Decide_Targets_Based_On_What_Was_Given(Build_Repo_Settings const& repo_context, std::string target)❰
-
-    //Now that the repo is setup, we will decide which targets to build.
-    //This may be explicitly set by the user, or it might be derived by analysis.
-    //If the user chooses a target that is too encompassing, it may be split into separate equivalent targets.
-    //This is done because building 100% of the repo in a single build invocation might cause us run out of disk space.
-    //But building 100% in 25% chunks and cleaning in between may ensure that disk space is exhausted.
-    auto targets = Get_And_Print_Sorted_Targets(repo_context,target);
-
-    //based on the targets we collected, it may take too long to build them all individually with the cleans in between.
-    //therefore, we can group some of them together.  
-    //this will allow us to do less builds overall, but will also increase the disk space used for each build invocation.
-    auto build_sets = Split_Every_N(targets,15);
-    
-    std::vector<std::string> results;
-    for (auto const& set: build_sets){
-        auto target_set = Get_As_Space_Seperated_String(set);
-        results.emplace_back(target_set);
-    }
-    return results;
-    
-    
-❱
-
-◀private: static▶ std::vector<std::string> ☀Get_And_Print_Sorted_Targets(Build_Repo_Settings const& repo_context, std::string target)❰
-
-    auto targets = Decide_Targets(repo_context,target);
-    Sort(targets);
-    
-    //show the user those targets
-    std::cout << "the targets to build: " << std::endl;
-    std::cout << Get_As_String_With_Element_On_Each_Line(targets) << std::endl;
-    
-    return targets;
-❱
-
-
-◀private: static▶ std::vector<std::string> ☀Decide_Targets(Build_Repo_Settings const& x, std::string target)❰
-
-    std::vector<std::string> results;
-    if (!Ends_With(target,"...")){
-        results.emplace_back(target);
-        return results;
-    }
-    
-    //since no target was specified, we will try to intelligently decide what bazel targets to build
-    //the reason we don't want to just build all (...) is because we might run out of disk space.
-    //So we want to build parts of the repository, clean, build different parts, clean, and repeat.
-    
-    target = Trim_Bazel_Glob_Label_As_Path(target);
-    
-    //get the folders that are under it
-    auto nested_dirs = Get_Dirs_Of_Path(x.repo.path + "/" + target);
-    
-    Remove_If(nested_dirs,[&](std::string const& x){
-        auto full_path = target + x;
-        return !Regular_File_Exists_Recursively(full_path,"BUILD");
-        
-    });
-    
-    //rebuild all these more specific target names
-    for (auto const& it: nested_dirs){
-        std::string new_target_name;
-        new_target_name += "//";
-        new_target_name += target;
-        new_target_name += it;
-        new_target_name += "/...";
-        results.emplace_back(new_target_name);
-    }
-    
-    return results;
-    
-
-❱
-
-◀private: static▶ std::string ☀Trim_Bazel_Glob_Label_As_Path(std::string label)❰
-
-    //trim off what was given to us so that we have the folder name
-    Remove_First_N_Chars(label,2); // //
-    Remove_Last_N_Chars(label,3);  // ...
-    return label;
-❱
-
 ◀private: static▶ void ☀Run_Analysis_For_Target(Build_Repo_Settings const& repo_context, Program_Options const& options, std::string const& target)❰
 
     auto profile_file = Create_Proile_File(repo_context, target, options.Profile_In(), options.Profile_Out());
     
     if (File_Exists(profile_file)){
+        
+        std::cout << "extracting durations" << std::endl;
 
         //extract compilation file durations from profile-file
         auto durations = File_Duration_Extractor::Extract(profile_file);
+        
+        std::cout << "filtering results" << std::endl;
         
         //filter out ones we don't want
         Results_Filter::Filter_Results(durations);
