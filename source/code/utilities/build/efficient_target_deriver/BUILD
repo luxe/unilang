@@ -30,5 +30,7 @@ hcp(
 
 hcp(
     name = "target_augment_settings",
-    deps = []
+    deps = [
+        "//code/utilities/data_structures/fraction:fraction",
+    ]
 )
