@@ -50,12 +50,14 @@ class
     //["t1 t2","t3 t4","t5 t6"]
     auto flat_build_sets = Each_Element_As_Space_Seperated_String(build_sets);
     
-    if (!settings.split_given_target){
+    //if this program does not represent a job in a pool of jobs, then its going to handle each build invocation.
+    //therefore return them all
+    if (!settings.pick_job_portion_of_work){
+        return flat_build_sets;
     }
     
-    return flat_build_sets;
-    
-    
+    //if the build does represent a job
+    return Decide_Which_Sets_To_Run_As_A_Job(flat_build_sets,settings);
 ❱
 
 ◀private: static▶ std::vector<std::string> ☀Get_And_Print_Sorted_Targets(Build_Repo_Settings const& repo_context, std::string target)❰
@@ -105,10 +107,16 @@ class
     }
     
     return results;
-    
-
 ❱
 
+◀private: static▶ std::vector<std::string> ☀Decide_Which_Sets_To_Run_As_A_Job(std::vector<std::string> const& target_sets, Target_Augment_Settings const& settings) ❰
+    
+    //pick just a part of a fraction to run
+    auto new_parts = Split_Into_N_Parts(target_sets,settings.job_portion.denominator);
+    return new_parts[settings.job_portion.numerator-1];
+❱
+
+//utility
 ◀private: static▶ std::string ☀Trim_Bazel_Glob_Label_As_Path(std::string label)❰
 
     //trim off what was given to us so that we have the folder name
