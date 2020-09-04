@@ -15,46 +15,148 @@ class
 ❪"src/main/protobuf/spawn.pb.h"❫
 ❪"code/utilities/formats/serialization/protobuf"❫
 ❪"code/utilities/program/wrappers/bazel/run_environment"❫
+❪"code/utilities/program/inputs/flags/data/flags"❫
+❪"code/utilities/program/inputs/flags/flag_util"❫
 ⚯
 ⚞⚟
 
-◀public: static▶ std::vector<std::string> ☀Get_Direct_Dependencies(std::string const& bazel_wrapper, std::string const& dep_name)❰
 
-    auto command = Get_Bazel_Direct_Implicit_Dep_Query_Command(bazel_wrapper,dep_name);
+//this function can help answer the question: "if I upgrade this library, what other libraries might break and need upgraded as well?"
+◀public: static▶ std::vector<std::string> ☀Get_All_Third_Party_Libs_That_Rely_On_Third_Party_Lib(std::string const& bazel_wrapper, std::string const& dep_name)❰
+
+    auto command = Get_Third_Party_RDep_Query_Command(bazel_wrapper,dep_name);
     auto results = Get_Each_Line_Of_Shell_Command(command);
     Remove_If(results,[&](std::string s){
         return !Begins_With(s,"@");
     });
     
     for (auto & it: results){
+        Remove_First_Char(it); //@
         Remove_Everything_After_Found_Instance(it,"//");
-        Remove_First_Char(it);
     }
     
     Sort_And_Remove_Duplicates(results);
     return results;
 ❱
 
-//Doing reverse dependency queries
-◀private: static▶ std::string ☀Get_Bazel_Direct_Implicit_Dep_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
+
+
+//"what are the specific targets of this third party library?"
+◀public: static▶ std::vector<std::string> ☀Get_All_Self_Third_Party_Deps(std::string const& bazel_wrapper, std::string const& dep_name)❰
+    auto command = Get_Third_Party_Dep_Query_Command(bazel_wrapper,dep_name);
+    auto results = Get_Each_Line_Of_Shell_Command(command);
+    Remove_If(results,[&](std::string s){
+        return !Begins_With(s,"@" + dep_name + "//");
+    });
+    return results;
+❱
+
+//"what are the specific dependencies of this target within this third party library?"
+◀public: static▶ std::vector<std::string> ☀Get_All_Deps_Within_Third_Party(std::string const& bazel_wrapper, std::string const& dep_name, std::string const& target)❰
+    auto command = Get_Deps_Query_Command(bazel_wrapper,target);
+    auto results = Get_Each_Line_Of_Shell_Command(command);
+    Remove_If(results,[&](std::string s){
+        return !Begins_With(s,"@" + dep_name + "//");
+    });
+    return results;
+❱
+
+
+
+
+//command building
+◀private: static▶ std::string ☀Get_Deps_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
+
+    //decide flags
+    Flags flags;
+    Query_Deps_Flags dep_settings;
+    Add_Dep_Query_Flags(flags,dep_settings);
+    Add_Miscellaneous_Flags(flags);
+    
     std::string command = bazel_wrapper;
-    command += " query 'rdeps(...,@" + dep_name + "//...)' ";
-    command += "--implicit_deps ";
-    command += "--nohost_deps ";
-    command += "--keep_going 2> /dev/null ";
+    command += " query " + Lib_Deps_Query(dep_name);
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
     return command;
 ❱
 
-◀private: static▶ std::string ☀Get_Bazel_Direct_Implicit_NoDep_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
+◀private: static▶ std::string ☀Get_RDep_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
+
+    //decide flags
+    Flags flags;
+    Query_Deps_Flags dep_settings;
+    Add_Dep_Query_Flags(flags,dep_settings);
+    Add_Miscellaneous_Flags(flags);
+    
     std::string command = bazel_wrapper;
-    command += " query 'deps(@" + dep_name + "//...)' ";
-    command += "--noimplicit_deps ";
-    command += "--nohost_deps ";
-    command += "--keep_going 2> /dev/null ";
+    command += " query " + Lib_RDeps_Query(dep_name);
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
+    return command;
+❱
+◀private: static▶ std::string ☀Get_Third_Party_Deps_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
+
+    //decide flags
+    Flags flags;
+    Query_Deps_Flags dep_settings;
+    Add_Dep_Query_Flags(flags,dep_settings);
+    Add_Miscellaneous_Flags(flags);
+    
+    std::string command = bazel_wrapper;
+    command += " query " + Third_Party_Lib_Deps_Query(dep_name);
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
+    return command;
+❱
+
+◀private: static▶ std::string ☀Get_Third_Party_RDep_Query_Command(std::string const& bazel_wrapper, std::string const& dep_name) ❰
+
+    //decide flags
+    Flags flags;
+    Query_Deps_Flags dep_settings;
+    Add_Dep_Query_Flags(flags,dep_settings);
+    Add_Miscellaneous_Flags(flags);
+    
+    std::string command = bazel_wrapper;
+    command += " query " + Third_Party_Lib_RDeps_Query(dep_name);
+    command += " ";
+    command += Flag_Util::In_Cli_Form(flags);
     return command;
 ❱
 
 
+//flag building
+◀private: static▶ void ☀Add_Miscellaneous_Flags(Flags & flags)❰
+
+    Flag_Util::Add_Flag(flags,"keep_going");
+❱
+
+◀private: static▶ void ☀Add_Dep_Query_Flags(Flags & flags, Query_Deps_Flags const& settings)❰
+
+    if (settings.implicit_deps){
+        Flag_Util::Add_Flag(flags,"implicit_deps");
+    }
+    else {
+        Flag_Util::Add_Flag(flags,"noimplicit_deps");
+    }
+    if (settings.host_deps){
+        Flag_Util::Add_Flag(flags,"host_deps");
+    }
+    else {
+        Flag_Util::Add_Flag(flags,"nohost_deps");
+    }
+    
+❱
+
+
+◀private: static▶ std::string ☀Lib_Deps_Query(std::string const& dep_name)❰
+    std::string x = "'deps(" + dep_name + ")'";
+    return x;
+❱
+◀private: static▶ std::string ☀Lib_RDeps_Query(std::string const& dep_name)❰
+    std::string x = "'rdeps(...," + dep_name + ")'";
+    return x;
+❱
 ◀private: static▶ std::string ☀Third_Party_Lib_Deps_Query(std::string const& dep_name)❰
     std::string x = "'deps(@" + dep_name + "//...)'";
     return x;
