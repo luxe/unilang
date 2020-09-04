@@ -9,11 +9,11 @@ hcp(
     deps = [
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/other_language:lib",
+        "//code/utilities/output/printers:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
-        "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/output/printers:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
     ],
 )

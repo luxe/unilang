@@ -20,13 +20,13 @@ hcp(
     deps = [
         "//code/utilities/filesystem/files/moving:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/output/printers:lib",
         "//code/utilities/program/call:lib",
         "//code/utilities/program/wrappers/git:lib",
         "//code/utilities/program/wrappers/git/repo_establisher:established_repo",
         "//code/utilities/program/wrappers/git/repo_establisher:repo_location",
         "//code/utilities/random:lib",
         "//code/utilities/random/files:random_files",
-        "//code/utilities/output/printers:lib",
     ],
 )
 

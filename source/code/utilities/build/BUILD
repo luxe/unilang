@@ -18,5 +18,3 @@ cpp_main(
     name = "build_everything",
     deps = ["//code/utilities/build:self_builder"],
 )
-
-

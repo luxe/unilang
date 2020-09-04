@@ -10,7 +10,10 @@ hcp(
         "//code/utilities/formats/json/functions:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
+        "//code/utilities/program/inputs/flags:flag_util",
+        "//code/utilities/program/inputs/flags/data:flags",
         "//code/utilities/program/wrappers/bazel:run_environment",
+        "//code/utilities/program/wrappers/bazel/query:query_deps_flags",
         "//code/utilities/random:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
@@ -18,12 +21,8 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
         "@bazel//:spawn_proto_cpp",
-        "//code/utilities/program/wrappers/bazel/query:query_deps_flags",
-        "//code/utilities/program/inputs/flags/data:flags",
-        "//code/utilities/program/inputs/flags:flag_util",
     ],
 )
-
 
 hcp(
     name = "query_deps_flags",
