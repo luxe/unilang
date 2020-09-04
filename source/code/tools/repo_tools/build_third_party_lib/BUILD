@@ -29,5 +29,7 @@ hcp(
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/converters:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/build/build_repo_establisher:build_repo_establisher",
+        "//code/utilities/program/wrappers/bazel/query:bazel_query_runner",
     ],
 )
