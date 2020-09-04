@@ -29,7 +29,16 @@ class
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
     auto deps = Bazel_Query_Runner::Get_All_Self_Third_Party_Deps(repo_context.program_to_run_build,options.Target());
+    Remove_Targets_That_Look_Like_Direct_Files(deps);
     
+    for (auto const& it: deps){
+        std::cout << it << std::endl;
+    }
+    
+❱
+
+◀private: static▶ void ☀Remove_Targets_That_Look_Like_Direct_Files(std::vector<std::string> & deps) ❰
+
     //filter out targets that look like direct c++ files
     Remove_If(deps ,[&](std::string s){
         return Ends_With(s,".h") || Ends_With(s,".hh") || Ends_With(s,".hpp") || Ends_With(s,".cpp") || Ends_With(s,".cc") || Ends_With(s,".c");
@@ -50,8 +59,7 @@ class
         return Ends_With(s,".yaml") || Ends_With(s,".in");
     });
     
-    for (auto const& it: deps){
-        std::cout << it << std::endl;
-    }
-    
+    Remove_If(deps ,[&](std::string s){
+        return Contains_Substring(s,".");
+    });
 ❱
