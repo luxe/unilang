@@ -15,7 +15,7 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/program/call:lib",
-        "//code/utilities/program/wrappers/bazel:bazel_query_runner",
+        "//code/utilities/program/wrappers/bazel/query:bazel_query_runner",
         "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
         "//code/utilities/types/queue:lib",
         "//code/utilities/types/sets:lib",
