@@ -18,7 +18,7 @@ filegroup(
 )
 
 filegroup(
-    name = "8_bit_wonder",
+    name = "eight_bit_wonder",
     srcs = ["8-BIT WONDER.TTF"],
 )
 

@@ -19,6 +19,8 @@ hcp(
         "//code/utilities/types/vectors/transformers:lib",
         "@bazel//:spawn_proto_cpp",
         "//code/utilities/program/wrappers/bazel/query:query_deps_flags",
+        "//code/utilities/program/inputs/flags/data:flags",
+        "//code/utilities/program/inputs/flags:flag_util",
     ],
 )
 

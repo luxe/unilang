@@ -4,8 +4,8 @@ load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
 
 hcp(
-    name = "8_bit_wonder",
-    data = ["@fonts//:8_bit_wonder"],
+    name = "eight_bit_wonder",
+    data = ["@fonts//:eight_bit_wonder"],
     deps = [],
 )
 
