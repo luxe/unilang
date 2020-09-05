@@ -377,3 +377,213 @@ Ideally we want the (signifiers) to only be one name or one symbol, we may relax
 
 Keep in mind, this is already a compositional association we did for sharing a data member between two structs, and how we build structs today. (more generally, I mean product/sum types) We give the data members their parent relations.
 I think we will also be able to pull some ideas of "Semiotics of Programming" by Kumiko
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-generate idempotent assert in unit test
+we might need to mark functions as idempotent.
+actually, we want idempotent by default and possibly the need to specify situations that are not.
+given this information we can then tell the test generator to create extra CHECK calls in the unit test to check the same result n number of times to check for idempotence
+We need to get the arrange/act/assert portions as separate tokens first
+
+-mark functions/errors as recoverable and non-recoverable
+
+
+-Darwinian Data Structures (DDSs)
+https://blog.acolyer.org/2018/12/14/darwinian-data-structure-selection/
+
+-derived function call graph
+based on inputs and outputs of function's arguments and return values,
+we can use the types/identifiers to build a call graph.
+This will help the user decide what functions to call.
+
+-programs should have a list of keywords in which "people may use when talking about"
+This is helpful for search engines
+keywords sections on wikis
+and alert keywords in slack
+
+-be able to flag unit tests as "unsound", but still notify me.
+sometimes you can predict unit tests failing in the future, and if they do, you want to be notified about it. However, if the unit tests fail, its not a blocking issue, and we don't want it to inconvenience anyone. We should be able to flag unit tests as either BLOCK_ON_FAIL, CONTINUE_ON_FAIL_BUT_NOTIFY ??
+Of course, BLOCK_ON_FAIL should also notify someone.
+We can also use the graph to derive unique function call scenarios
+
+-[mr] mutable reference specifiers should be derivable
+Like many developers, I've come to find the pain points for const qualifying.
+If all of a sudden you realize you do need to make a change, then you need to change const all the way up the call stack. Same when dealing with references and copies. Someone at lunch told me thats why they don't even use const because its too much of a chore, and the protection it provides isn't really that big of a deal.
+Also, const has no effect on the actual compiled code (the compiler strips them away)?
+
+That opinion is a bit extreme, but I know how to get the best of both worlds.
+You can leave out specifiers, and they will be derived based on how the function is used.
+I think this is a better approach for quicker development time.
+There may be some subtitles, but I'm sure I'll come across those during development.
+
+I can see the need to basically have a unilang wrapper function over any kind of library or outside unilang
+we opt for immutable reference by default (or immutable copy based on data type size/characteristics)?
+Adjust based on what we discover through the call stack
+uh oh! and what about moving? hmm?
+
+
+-simple mutation tester 
+We can eventually have this as part of the IDE, and slowly collect uncaught mutations.
+For now, it can be as simple as raw file change with direct build/run test attempts
+
+-ensure principals from "Large Scale C++ Advanced Levelization Techniques" are being done
+
+-add the option to forward declare dependencies to speed up build times
+The levelization techniques mentioned in 2016 CppCon mentioned using forward declares in the headers of files.
+The advice was, never include a header file in another header file, unles you need the: enum, typedef, covariant return type, something else...
+Otherwise, just forward declare. If you are only using the name in the function declaration as parameters and return types, there is no reason to actually include the header.
+this is relevant for my employers monorepo now. So we will need a tool to auto-detect places to forward declare.
+
+
+
+
+
+
+
+
+
+
+-struct usage warnings
+parameter attribute: [must_use_all_members]
+if you mark a struct parameter as [must_use_all_members] , then you should get a compiler warning,
+if not all the members are used in the function that it is passed to. There might be some variations of the tag. For example, you may forward the struct param to another function, where the rest of the members are then used. You may accept that as meeting the requirements, and you may not. Requires some depth function searching across modules.
+
+compiler suggestion: passing higher level struct than required
+If you have a struct that's a.b.c.d, and you pass a into a function, and only use it like:
+a.b.c.d, the compiler should warn you and say "hey, you are only using d,
+why not perform a.b.c.d at the call site instead of everywhere inside the function.
+
+compiler suggestion: suggest struct extrapolation from currently existing struct members.
+for example:
+
+struct settings{
+ A a;
+B b;
+bool c_always_do_foo = true;
+bool c_always_do_bar = false;
+bool c_label = "sdsdf";  
+}
+compiler sees c_ and says: "maybe you should make a C_Settings"
+
+compiler suggestion: suggest removing frivolous prefix/suffix identifier details.
+example:
+
+sruct Foo_Settings{
+bool FooOn;
+}
+compiler can suggest removing "foo" as its deduced from the context of the name.
+Something like that.
+
+parameter attribute: [must_use_all_members_once]
+warns if you use a particular data member 0 or >1 times
+
+
+
+
+
+
+-allow a syntax for piping functions
+many languages have this.
+unix style.
+
+1..100_000
+  |> Enum.map(&(&1 * 3)) 
+  |> Enum.filter(odd?) 
+  |> Enum.sum
+=> 7500000000
+
+
+
+
+
+
+-analyze call chains to decide if the wrong function is being called
+This would be able to detect copy and paste errors.
+For example, let's say you have the following functions:
+
+DoTask1();
+DoTask1A();
+DoTask2();
+DoTask2A();
+
+void DoTask1(){
+   DoTask1A();
+}
+void DoTask2(){
+  DoTask1A();
+}
+The static analyser should be able to determine that a possible mistake was performed in DoTask2.
+It would need to be smart enough to conceptualize function grouping based on function names.
+Also have a database of words that would normally be opposite. Copilot/Pilot for example.
+If a bunch of copilot methods eventually call a pilot method, it could be a mistake.
+
+
+
+-Allow an option to default initialize data members to something safe automatically.
+If the user creates an empty constructor, we can check to see if they missed any, and attempt to provide a default initialization based on the type. If there is at least one data member that is dynamic, we will need a constructor no matter what, and could probably the generate constructor entirely. Then it will be closer to coding like in C++ where you don't have to specify functions.
+Actually, we can probably go all the way. I'm changing this task to: generate constructors,copy constructors, and destructors if they don't exist, but should.
+Copy and Destructor should be the easiest. Those are pretty mechanical.
+Just some messiness with determining if the type is dynamic, and dealing with arrays, pointers, etc.
+
+-output serialization format as an xml schema
+should work with:
+http://www.xml-tools.net/schemaviewer.html
+
+-add why attribute when calling functions
+https://www.youtube.com/watch?v=OrQ9swvm_VA
+functions might automatically get a (char* why) argument.
+But we don't actually have to change the code. It might just occur as comments in the code
+
+
+
+-tag functions as being able to be called n times sparking code generation
+string may have a function append_char(char)
+we may also want append_char_n_times(char,size_t)
+If we tag the function as being something that can be repeatably called, we can invoke code generation to get the n times functions. It's also something we can say in documentation.
+"This function is allowed to be called multiple times in a loop".
+need to do more research on the matter. get some terminology right.
+We basically want a language for describing a method's affect on state over time.
+A "diluting function" for example always puts the object into the same state.
+I made up that term but I'm sure there is a language to describe these kinds of things. maybe need to look into category theory
+
+-state and verify how much memory is allocated in a test
+this will help avoid problems where more memory is being allocated than intended, etc.
+
+-allow restricted pointers
+There are a lot of edge cases I'm not confident about.
+We start with function scope only as in restricted parameters.
+
+Let me post some questions that I need to get answered:
+is it ok to use ristrict when the types aren't even the same?
+Is it ok to use restrict when there is only one parameter?
+Is there a way to catch the UB when a user violation restrict keyword?
+
+From UniLang's perspective we may want different terminology considering Unilang abstracts pointers away in the form of references. Independent? Unique? only access point?
+I'd like to think about this some more.
+
+-every tool or function should answer a question
+we should be able to define regex-like questions for every function and program to help aid in documentation and automatically answering questions from people
+but also, every question needs to be backed by a unit test so we can ensure that the answer is still correct
+
+-add not_null static asserts for c functions that use references
+Lots of customziation on how we want this to look. Probably guarded by a custom macro since our build is broken in debug mode anyways. Can probably just use normal cassert under the custom macro wrapper.
+
+-unit dimensionality
+// e.g., 1 -> " m"
+//       0 -> ""
+//       2 -> " m^2"
+//      -3 -> " m^(-3)"
