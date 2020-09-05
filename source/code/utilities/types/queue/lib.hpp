@@ -1,6 +1,7 @@
 #pragma once
 #include <queue>
 #include <set>
+#include <vector>
 #include <unordered_set>
 #include "code/utilities/types/sets/lib.hpp"
 
@@ -23,4 +24,11 @@ void Observe_Each_Item_In_Queue_Avoiding_Duplicates(std::queue<T> & q, Fun fun){
         }
     }
     
+}
+
+template <typename T>
+void Add(std::queue<T> & q, std::vector<T> const& v){
+    for (auto const & it: v){
+        q.push(it);
+    }
 }

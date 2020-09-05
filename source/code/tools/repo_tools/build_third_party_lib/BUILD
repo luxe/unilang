@@ -31,5 +31,7 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
         "//code/utilities/program/wrappers/bazel/query:bazel_query_runner",
+        "//code/utilities/types/queue:lib",
+        "//code/utilities/build/build_repo_establisher:build_repo_settings",
     ],
 )
