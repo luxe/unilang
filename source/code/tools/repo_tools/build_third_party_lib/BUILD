@@ -33,5 +33,22 @@ hcp(
         "//code/utilities/program/wrappers/bazel/query:bazel_query_runner",
         "//code/utilities/types/queue:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_settings",
+        "//code/tools/repo_tools/build_third_party_lib:visualizer",
+    ],
+)
+
+hcp(
+    name = "visualizer",
+    deps = [
+        "//code/utilities/program/call:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/sets:lib",
+        "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
+        "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/data_structures/counters/unique_counter:unique_counter",
     ],
 )
