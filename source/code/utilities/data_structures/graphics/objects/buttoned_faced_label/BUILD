@@ -15,12 +15,8 @@ hcp_and_hcp_pos(
 hcp(
     name = "buttoned_faced_label_is_active",
     deps = [
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_active",
     ],
 )
-
-
-
-

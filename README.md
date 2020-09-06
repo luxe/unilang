@@ -11,11 +11,11 @@
 
 
 ## Summary
-Unilang is an experimental programming language and IDE.  It has a graphical and textual fronted for creating programs and programming related artifacts.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person, but you might find something useful in it as well.  
+Unilang is a programming language and IDE.  It has a graphical and textual fronted for creating programs.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person, but you might find something useful in it as well.  
 
 
-## Philosophy
-The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang is focused on providing concept values for a language meta-model.  This avoids the strategy where syntactical expressions are parsed into ASTs in which pragmatic meaning is often lost during correlation.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
+## Design
+The creation of this language is different from most other programing languages because it rejects the idea of traditional lexical analysis and language grammars.  Programming in Unilang becomes re-focus on encoding concept values to the language's meta-model.  This avoids the typical transformation process where syntactical expressions are parsed into ASTs; a strategy that seems to lose the pragmatic meaning from the originally intended encoded information.  An example of this issue can be more widely seen if we reflect on the usefulness of compiler errors.  A large amount of effort has gone into trying to make error messages as clear as possible, but often times there still remains a clarity gap that could be filled.  By any means, why should the programmer be capable of making syntactical mistakes in the first place?  Projectional editing can solve this.  A longer description for the rationale around Unilang's design is covered in the remaining subsections.  
 
 
 ## GPL Shortcomings
@@ -27,7 +27,7 @@ Unilang is a **universal programming language (UPL)**.  A UPL has not been forma
 
 
 ## Addressing Scope
-Creating a language that could properly be the right choice for every programming domain sounds impractical.  Domains can have opposite requirements.  Trying to encode everything necessary for all domains would result in something so complicated, contradictory, and convoluted that it would defeat the purpose it set out to accomplish.  It would become too difficult to use in any domain.  These concerns are critically important, and we acknowledge them here as they have been influential in Unilang's design.  If Unilang were built in the traditional way that GPLs are, we would certainly hit many of these problems.  We instead take different approaches toward a language's role in facilitating software.  Unilang is an experiment to challenge these concerns and to try and innovate ways around them.  
+Creating a language that could properly be the right choice for every programming domain sounds impractical.  Domains can have opposite requirements.  Trying to encode everything necessary for all domains would result in something so complicated, contradictory, and convoluted that it would defeat the purpose it set out to accomplish.  It would become too difficult to use in any domain.  These concerns are valid, and maybe even inevitable. We acknowledge them here as they have been influential in Unilang's design.  If Unilang were built in the traditional way that GPLs are, we would certainly hit many of these problems.  We instead take different approaches toward a language's role in facilitating software development.  Unilang is an experiment to challenge these concerns and to try and innovate ways around them.  
 
 </details>
 <details>
