@@ -27,6 +27,14 @@ hcp(
 )
 
 hcp(
+    name = "faced_label_is_active",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+    ],
+)
+
+hcp(
     name = "faced_label_drawer",
     deps = [
         "//code/utilities/data_structures/graphics/objects:frame_elements",
