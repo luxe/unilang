@@ -625,3 +625,132 @@ super minor, but nice to recognize that we can add these tags, or use libraries.
 https://nivo.rocks/sankey/
 http://mbostock.github.io/d3/talk/20111018/partition.html
 https://beta.observablehq.com/@mbostock/d3-sankey-diagram
+
+-difficulty naming particular concepts (definitions, terminology)
+Here is a list of particular concepts I've come across while implementing unilang that I had a hard time naming. As they say, "one of the hardest parts of computer programming is naming."
+I'll leave this as an issue where I collect these weird concepts. And we can close the issue when we have some kind of document or artifact for these things. I half-started something in the task_executer.hcp, which obviously needs to be moved to an actual document somewhere.
+I'm kind of against documentation that isn't also code, so we might just create data types for these things that aren't actually used in software.. yet!.
+
+example
+
+struct {
+std::string name;
+std::string definition;
+//etc...
+}
+what do we call a "fundamental type or an ADT"?
+-> data type type?
+-> data_abstraction_type = abstracted/non-abstracted?
+what do we call a "method that is either part of the interface or part of the implementation"?
+-> module_method_visibility? = interface/definition
+In computer science (and oddly enough, in actual programming as well), things always come in pairs. Every read has its write. Every setup has its cleanup. Every open paren has a close.
+
+In this spirit, every type in functional programming comes equipped with an introduction rule and an eliminator. The introduction rule makes objects of that type. The eliminator allows you to use objects of that type.
+Of course, as usual, "introduction rule" and "elimination rule" are the fancy-ass type theory names. In functional programming languages, we call introduction rules "constructors" and the eliminator rules... also "constructors". I'll explain.
+(from: http://www.tac-tics.net/blog/data-vs-codata)
+
+
+
+-warning about naming methodology for functions 
+fetch - going to take some time
+get - constant time
+calculate - does some arithemtic to produce value
+find - if it traverses and looks based on some predicate
+
+words to avoid (do,handle,perform,return,compute);
+
+avoid using class name in non-manager class methods
+message.save() NOT message.saveMessage()
+
+don't use param names in function name
+findUser($userId, $token) NOT findUserByUserIdAndToken($userId, $token)
+
+method called Print() (are you sure you don't want to overload << instead)
+
+int64_t account
+"what do you mean account? AccountId perhaps?"
+
+Function names should be verb-followed-by-subject
+
+Functions like:
+Handle_X
+On_X (OnEvent / OnClick / etc)
+
+Are Homonyms and synonyms both bad for identifiers/function names?
+Might cause confusion or uncertainty
+The mixture of synonyms and homonyms, which is commonly found in source codes, maximizes confusion and aggravates comprehension efforts enormously.
+
+A naming relation R is consistent if and only if the mapping is bijective, i.e. each identifier name from N is paired with only one concept from C and each concept from C is paired with only one identifier name from N.
+
+http://michalplachta.com/2017/01/22/folklore-and-science-of-naming-practices/
+has other good information too
+
+IMAGE:
+Identifier Names / Concepts
+book               to book / a book
+accountNumber      an account number
+number             an account number / a phone number
+
+TABLE:
+Naming advice from “Clean code”4    Rule from “Concise and Consistent Naming”3
+use intention-revealing names   choose correct names
+avoid disinformation    choose correct names
+make meaningful distinctions    choose consistent names
+use pronounceable names choose correct names
+use searchable names    choose correct names
+avoid encodings choose consistent names
+avoid mental mapping    choose consistent names
+don’t be cute   choose consistent names
+pick one word per concept   choose consistent names
+don’t pun   choose consistent names
+use solution domain names   choose concise names
+use problem domain names    choose concise names
+add meaningful context  choose concise names
+don’t add gratuitous context    choose concise names
+
+
+-integrate static analysis tools (if these are alive)
+http://btorpey.github.io/pages/REAME.md/index.html
+https://github.com/Ericsson/CodeChecker
+code maat
+code scene
+evolution radar
+moose platform
+
+
+
+-how do we implement function overloads for decomposed objects? and should we?
+Take the following example:
+
+struct Object{
+foo a;
+foo b;
+};
+Different implementations:
+
+void overload(foo a, foo b)
+{
+   //actual implementation uses foo
+}
+
+void overload(Object o)
+{
+    //forward
+    return default_plot_titles(o.a,o.b);
+}
+or
+
+void overload(foo a, foo b)
+{
+   //forward
+   overload(Object{a,b});
+}
+
+void overload(Object o)
+{
+   //actual implementation uses object.foo
+}
+Assuming this is a good idea to produce both, which ones do we choose?
+What is valid for an interface to the user? both? Should this be done automatically?
+(that would get out of hand very fast because as state bubbles to the top, all function interfaces would grow according to composition size of the types they take in...)
+Hmm, it would be cool to have just for the sake of looking productive. Maybe we need some kind of cut off point, because a goal of good code would be not to have too many parameters. So we'd only go as far as that limit. Although, now that I've said that I guess it would be best to only take in only the objects and avoid the multi-parmaeter ones. Hmm.. but that makes the implementation a little bit more verbose... and by that logic, every function should only take 1 parameter. Hmm, things to think about.
