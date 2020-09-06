@@ -53,3 +53,10 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
     ],
 )
+
+hcp(
+    name = "right_arrow",
+    deps = [
+        "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
+    ],
+)

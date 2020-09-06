@@ -36,6 +36,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/graphics/bitmap/premade:right_arrow",
     ],
 )
 
