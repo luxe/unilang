@@ -49,6 +49,7 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/data_structures/color:transparent_rgb_color",
         "@sfml",
     ],
 )

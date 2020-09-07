@@ -8,6 +8,7 @@ hcp(
     deps = [
         "//code/utilities/program/call:lib",
         "//code/utilities/data_structures/color:rgb_color",
+        "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/program/wrappers/zenity/color_picker:color_picker_settings",
         "//code/utilities/colors:converters",
     ],

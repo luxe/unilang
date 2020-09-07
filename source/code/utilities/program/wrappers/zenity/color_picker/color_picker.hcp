@@ -5,6 +5,7 @@ class
 ❪fstream❫
 ❪"code/utilities/program/call/lib"❫
 ❪"code/utilities/data_structures/color/rgb_color"❫
+❪"code/utilities/data_structures/color/transparent_rgb_color"❫
 ❪"code/utilities/program/wrappers/zenity/color_picker/color_picker_settings"❫
 ❪"code/utilities/colors/converters"❫
 ❪filesystem❫
@@ -15,6 +16,32 @@ class
 
 ◀public: static▶ Rgb_Color ☀Select_Color(Color_Picker_Settings const& settings) ❰
     
+    std::string command = Build_Command(settings);
+    
+    auto chosen_result = execute_and_get_back_stdout_only(command);
+    return Converters::From_RGB_String_Function(chosen_result);
+❱
+
+◀public: static▶ void ☀Select_Color_From_Thread(Rgb_Color & color, Color_Picker_Settings const& settings) ❰
+    
+    std::string command = Build_Command(settings);
+    
+     Run_In_Seperate_Thread(command,[&](const std::string result){
+        color = Converters::From_RGB_String_Function(result);
+     });
+❱
+◀public: static▶ void ☀Select_Color_From_Thread(Transparent_Rgb_Color & color, Color_Picker_Settings const& settings) ❰
+    
+    std::string command = Build_Command(settings);
+    
+     Run_In_Seperate_Thread(command,[&](const std::string result){
+        std::cout << "sdfsdf22" << std::endl;
+        color = Converters::From_RGB_String_To_Trgb_Function(result);
+     });
+❱
+
+◀private: static▶ std::string ☀Build_Command(Color_Picker_Settings const& settings) ❰
+
     std::string command = "zenity --color-selection ";
     
     if (settings.show_palette){
@@ -22,12 +49,9 @@ class
     }
     
     if (settings.use_default_color){
-        command+= "--color=";
+        command += "--color=";
         command += "'";
         command += Converters::To_RGB_String_Function(settings.default_color);
-        command += "'";
     }
-    
-    auto chosen_result = execute_and_get_back_stdout_only(command);
-    return Converters::From_RGB_String_Function(chosen_result);
+    return command;
 ❱
