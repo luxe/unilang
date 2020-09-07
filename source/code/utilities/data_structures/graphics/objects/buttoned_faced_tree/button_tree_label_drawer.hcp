@@ -25,6 +25,7 @@ class
 ❪"code/utilities/data_structures/graphics/bitmap/premade/right_arrow"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/buttoned_faced_label_is_active"❫
 ❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_is_active"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_set_active"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Button_Face_Tree & tree, Pc_Input_State const& pc_input)❰
@@ -42,8 +43,94 @@ class
     return elements;
 ❱
 
-◀private: static▶ void ☀Handle_User_Events(Character_Maps const& font_chars, Frame_Elements & elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+◀private: static▶ void ☀Handle_User_Events(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    if (pc_input.keyboard.down == Key_State::PRESSED){
+        Handle_Down_Activation(font_chars,elements,pc_input,pos,tr,it,end);
+    }
+    else if (pc_input.keyboard.up == Key_State::PRESSED){
+        Handle_Up_Activation(font_chars,elements,pc_input,pos,tr,it,end);
+    }
+    else if (pc_input.keyboard.shift == Key_State::PRESSED){
+        Handle_Up_Collapse_Expand_Toggle(font_chars,elements,pc_input,pos,tr,it,end);
+    }
 ❱
+
+◀private: static▶ void ☀Handle_Down_Activation(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+    
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    std::vector<size_t> active_indexes;
+    for (size_t i = 0; i < linear_nodes.size(); ++i){
+        if (Faced_Label_Is_Active::Is_Active(linear_nodes[i]->label)){
+            active_indexes.emplace_back(i);
+        }
+    }
+    
+    
+    //perform movement
+    for (auto const& it: active_indexes){
+        Faced_Label_Set_Active::Deactivate(linear_nodes[it]->label);
+        auto moved_to = Safe_Index_Capped(linear_nodes,it+1);
+        Faced_Label_Set_Active::Activate(moved_to->label);
+    }
+    
+❱
+◀private: static▶ void ☀Handle_Up_Activation(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+❱
+◀private: static▶ void ☀Handle_Up_Collapse_Expand_Toggle(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+❱
+
+
+
+
+
+◀private: static▶ std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> ☀Get_Ordered_Visible_Tree_Nodes(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> all;
+    
+    //exit early if tree if empty
+    if(!tr.is_valid(it)) return all;
+    
+    //calculate the current depth of the iterator given
+    int rootdepth=tr.depth(it);
+    
+    bool subtree_collapsed = false;
+    int collapsed_depth = 0;
+    
+    while(it!=end) {
+        
+        //calculate the depth of the node
+        int depth = tr.depth(it)-rootdepth;
+        
+        //uncollapse
+        if (subtree_collapsed && collapsed_depth >= depth){
+            subtree_collapsed = false;
+        }
+        
+        if (!subtree_collapsed){
+            all.emplace_back(it);
+        }
+        
+        //collapse
+        if (!subtree_collapsed && tr.number_of_children(it) > 0 && it->button.current_face == 0){
+            subtree_collapsed = true;
+            collapsed_depth = depth;
+        }
+        
+        ++it;
+    }
+    
+    return all;
+❱
+
+
+
+
 
 ◀private: static▶ void ☀Print_Tree_In_Iteration(Character_Maps const& font_chars, Frame_Elements & elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
 

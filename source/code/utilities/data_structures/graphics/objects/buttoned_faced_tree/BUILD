@@ -27,6 +27,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_active",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_active",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/label:label_settings",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
