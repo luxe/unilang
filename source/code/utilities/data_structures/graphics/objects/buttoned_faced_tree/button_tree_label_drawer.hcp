@@ -62,23 +62,30 @@ class
     auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
     
     //get all the nodes that are currently active
-    std::vector<size_t> active_indexes;
-    for (size_t i = 0; i < linear_nodes.size(); ++i){
-        if (Faced_Label_Is_Active::Is_Active(linear_nodes[i]->label)){
-            active_indexes.emplace_back(i);
-        }
-    }
+    std::vector<size_t> active_indexes = Indexes_Of_Active_Labels(linear_nodes);
     
     //perform movement
     for (auto const& it: active_indexes){
         Faced_Label_Set_Active::Deactivate(linear_nodes[it]->label);
-        auto moved_to = Safe_Index_Capped(linear_nodes,it+1);
+        auto moved_to = Safe_Index_Capped(linear_nodes,static_cast<int>(it+1));
         Faced_Label_Set_Active::Activate(moved_to->label);
     }
     
 ❱
 ◀private: static▶ void ☀Handle_Up_Activation(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
 
+    //get all the visible nodes that we can navigate activation through
+    auto linear_nodes = Get_Ordered_Visible_Tree_Nodes(tr,it,end);
+    
+    //get all the nodes that are currently active
+    std::vector<size_t> active_indexes = Indexes_Of_Active_Labels(linear_nodes);
+    
+    //perform movement
+    for (auto const& it: active_indexes){
+        Faced_Label_Set_Active::Deactivate(linear_nodes[it]->label);
+        auto moved_to = Safe_Index_Capped(linear_nodes,static_cast<int>(it-1));
+        Faced_Label_Set_Active::Activate(moved_to->label);
+    }
 ❱
 ◀private: static▶ void ☀Handle_Up_Collapse_Expand_Toggle(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
 
@@ -126,6 +133,24 @@ class
     
     return all;
 ❱
+
+◀private: static▶ std::vector<size_t> ☀Indexes_Of_Active_Labels(std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> const& v)❰
+
+    std::vector<size_t> active_indexes;
+    for (size_t i = 0; i < v.size(); ++i){
+        if (Faced_Label_Is_Active::Is_Active(v[i]->label)){
+            active_indexes.emplace_back(i);
+        }
+    }
+    return active_indexes;
+❱
+
+
+
+
+
+
+
 
 
 
