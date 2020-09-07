@@ -21,6 +21,8 @@ enum_cpp(
         "copy_subtree",
         "expand_all",
         "collapse_all",
+        "background_color",
+        "text_color",
     ],
 )
 
