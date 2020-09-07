@@ -100,7 +100,7 @@ int Get_Index_Of_Element_If_Exists(std::vector<T> const& v, T const& element){
 }
 
 template<typename T>
-bool Safe_Is_Index_Equal(std::vector<T> const& v, size_t i, T t){
+bool Safe_Is_Index_Equal(std::vector<T> const& v, int i, T t){
   
   //out of range
   if (i < 0 || i >= v.size()){
@@ -112,7 +112,7 @@ bool Safe_Is_Index_Equal(std::vector<T> const& v, size_t i, T t){
 }
 
 template<typename T>
-T Safe_Index_Get(std::vector<T> const& v, size_t i, T if_missing){
+T Safe_Index_Get(std::vector<T> const& v, int i, T if_missing){
   
   //out of range
   if (i < 0 || i >= v.size()){
@@ -124,7 +124,7 @@ T Safe_Index_Get(std::vector<T> const& v, size_t i, T if_missing){
 }
 
 template<typename T>
-T& Safe_Index_Capped(std::vector<T> & v, size_t i){
+T& Safe_Index_Capped(std::vector<T> & v, int i){
   
   //out of range
   if (i < 0){
@@ -139,7 +139,7 @@ T& Safe_Index_Capped(std::vector<T> & v, size_t i){
 }
 
 template<typename T>
-size_t Adjust_Index_Capped(std::vector<T> const& v, size_t i){
+size_t Adjust_Index_Capped(std::vector<T> const& v, int i){
   //out of range
   if (i < 0){
     return 0;
