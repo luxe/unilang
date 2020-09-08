@@ -25,5 +25,20 @@ void Send_Ctrl_C_To_Pid(std::string const& pid)
     execute("sudo kill -SIGINT " + pid);
 }
 
-//xdotool search --onlyvisible --name zenity
-//xdotool windowactivate 58734224
+void Bring_Window_Name_Into_Forground(std::string const& name)
+{
+    auto id = execute("xdotool search --onlyvisible --name '" + name + "'");
+    if (!id.empty()){
+        execute("xdotool windowactivate " + id);
+    }
+}
+
+void Wait_Until_Window_Name_Is_Brought_Into_Forground(std::string const& name)
+{
+    std::string id;
+    while (id.empty()){
+        id = execute("xdotool search --onlyvisible --name '" + name + "'");
+    }
+    
+    execute("xdotool windowactivate " + id);
+}

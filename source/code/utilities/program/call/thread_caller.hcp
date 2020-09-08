@@ -1,0 +1,38 @@
+class
+❪iostream❫
+❪thread❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/program/processes/lib"❫
+⚯
+⚞⚟
+
+◀public: 
+template <typename Fun>
+static void Run_In_Seperate_Thread(std::string cmd, Fun fun){
+    std::thread thread([=](){
+        auto result = execute(cmd);
+        fun(result);
+    });
+    thread.detach();
+}▶
+
+◀public: 
+template <typename Fun>
+static void Run_In_Seperate_Thread_And_Bring_Program_Into_Forground(std::string cmd, std::string name, Fun fun){
+    std::thread thread([=](){
+        
+        //run a thread that keeps trying to foreground until it succeeds
+        std::thread t([=](){ Wait_Until_Window_Name_Is_Brought_Into_Forground(name);});
+        
+        //execute that program and perform actions on the program results
+        auto result = execute(cmd);
+        fun(result);
+        
+        //wait on the forgrounder thread
+        t.join();
+    });
+    
+    //do not wait on the program spawn thread
+    thread.detach();
+}
+▶

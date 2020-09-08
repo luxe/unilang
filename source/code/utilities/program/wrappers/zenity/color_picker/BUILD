@@ -11,6 +11,7 @@ hcp(
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/program/wrappers/zenity/color_picker:color_picker_settings",
         "//code/utilities/colors:converters",
+        "//code/utilities/program/call:thread_caller",
     ],
 )
 

@@ -3,12 +3,14 @@ class
 ❪iostream❫
 ❪cstdlib❫
 ❪fstream❫
+❪functional❫
 ❪"code/utilities/program/call/lib"❫
 ❪"code/utilities/data_structures/color/rgb_color"❫
 ❪"code/utilities/data_structures/color/transparent_rgb_color"❫
 ❪"code/utilities/program/wrappers/zenity/color_picker/color_picker_settings"❫
 ❪"code/utilities/colors/converters"❫
 ❪filesystem❫
+❪"code/utilities/program/call/thread_caller"❫
 ⚯
 
 ⚞⚟
@@ -22,21 +24,44 @@ class
     return Converters::From_RGB_String_Function(chosen_result);
 ❱
 
-◀public: static▶ void ☀Select_Color_From_Thread(Rgb_Color & color, Color_Picker_Settings const& settings) ❰
+◀public: static▶ void ☀Select_Color_From_Thread(Rgb_Color & color, Color_Picker_Settings settings) ❰
     
     std::string command = Build_Command(settings);
-    
-     Run_In_Seperate_Thread(command,[&](const std::string result){
+     Thread_Caller::Run_In_Seperate_Thread_And_Bring_Program_Into_Forground(command,settings.title,[&](const std::string result){
         color = Converters::From_RGB_String_Function(result);
      });
 ❱
-◀public: static▶ void ☀Select_Color_From_Thread(Transparent_Rgb_Color & color, Color_Picker_Settings const& settings) ❰
+◀public: static▶ void ☀Select_Color_From_Thread(Transparent_Rgb_Color & color, Color_Picker_Settings settings) ❰
     
     std::string command = Build_Command(settings);
-    
-     Run_In_Seperate_Thread(command,[&](const std::string result){
-        std::cout << "sdfsdf22" << std::endl;
+     Thread_Caller::Run_In_Seperate_Thread_And_Bring_Program_Into_Forground(command,settings.title,[&](const std::string result){
         color = Converters::From_RGB_String_To_Trgb_Function(result);
+     });
+❱
+◀public: static▶ void ☀Select_Color_From_Thread(Transparent_Rgb_Color & c1,
+                                                Transparent_Rgb_Color & c2,
+                                                Transparent_Rgb_Color & c3,
+                                                Transparent_Rgb_Color & c4,
+                                                Color_Picker_Settings settings) ❰
+    
+    std::string command = Build_Command(settings);
+     Thread_Caller::Run_In_Seperate_Thread_And_Bring_Program_Into_Forground(command,settings.title,[&](const std::string result){
+        c1 = Converters::From_RGB_String_To_Trgb_Function(result);
+        c2 = Converters::From_RGB_String_To_Trgb_Function(result);
+        c3 = Converters::From_RGB_String_To_Trgb_Function(result);
+        c4 = Converters::From_RGB_String_To_Trgb_Function(result);
+     });
+❱
+
+
+//n number of references (not working)
+◀public: static▶ void ☀Select_Color_From_Thread(std::vector<std::reference_wrapper<Transparent_Rgb_Color>> colors, Color_Picker_Settings settings) ❰
+    
+    std::string command = Build_Command(settings);
+     Thread_Caller::Run_In_Seperate_Thread_And_Bring_Program_Into_Forground(command,settings.title,[&](const std::string result){
+        for (auto & color: colors){
+            color.get() = Converters::From_RGB_String_To_Trgb_Function(result);
+        }
      });
 ❱
 
