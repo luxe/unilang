@@ -24,3 +24,6 @@ void Send_Ctrl_C_To_Pid(std::string const& pid)
 {
     execute("sudo kill -SIGINT " + pid);
 }
+
+//xdotool search --onlyvisible --name zenity
+//xdotool windowactivate 58734224

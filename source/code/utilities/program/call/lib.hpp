@@ -55,15 +55,10 @@ bool Unsuccessful_Run_Of_Command(std::string const& cmd); //all silenced
 template <typename Fun>
 void Run_In_Seperate_Thread(std::string cmd, Fun fun){
     std::thread thread([=](){
-        std::cout << "1" << std::endl;
         auto result = execute(cmd);
-        std::cout << "2" << std::endl;
         fun(result);
-        std::cout << "3" << std::endl;
     });
-    std::cout << "asdasd" << std::endl;
     thread.detach();
-    std::cout << "asdasd2" << std::endl;
 }
 
 
