@@ -5,8 +5,6 @@
 #include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
 #include "code/tools/ide/frame/frame_logic_updater.hpp"
 #include "code/utilities/data_structures/graphics/objects/frame_elements.hpp"
-#include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
-#include "code/tools/ide/frame/fullscreener.hpp"
 
 
 //other programming editors for inspiration:
@@ -33,9 +31,9 @@ int main(int argc, char** argv)
     auto s = Ide_Settings_Getter::Get();
     Frame_Elements elements;
     auto before = [&]()                  {};
-    auto logic =  [&]()                  {elements = Frame_Logic_Updater::each_frame(s);};
-    auto render = [&](SDL_Window* window){
-		Fullscreener::Possibly_Fullscreen(s,window);
+    auto logic =  [&](SDL_Window* window) {elements = Frame_Logic_Updater::each_frame(s,window);};
+    auto render = [&](SDL_Window* window) {
+        
         Frame_Renderer::Render(s.background,elements);
 	};
     

@@ -3,6 +3,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_state"❫
 ❪"code/utilities/peripheral/pc/pc_input_state"❫
+❪"SDL.h"❫
 ⚯
 ❪"code/utilities/data_structures/graphics/objects/mouse/draw/mouse_selection_drawer"❫
 ❪"code/utilities/peripheral/mouse/state/mouse_position_getter"❫
@@ -18,11 +19,12 @@ class
 ❪"code/utilities/data_structures/graphics/objects/mouse/draw/view_anchor_adjuster"❫
 ❪"code/utilities/peripheral/keyboard/state/imgui_keyboard_state_getter"❫
 ❪"code/utilities/peripheral/pc/pc_input_state_getter"❫
+❪"code/utilities/graphics/sdl/sdl_fullscreener"❫
 ⚞⚟
 
 
 
-◀public: static▶ Frame_Elements ☀each_frame(Ide_Settings & settings)❰
+◀public: static▶ Frame_Elements ☀each_frame(Ide_Settings & settings, SDL_Window* window)❰
     
     //lets make sure the exact same mouse state is used for the entire frame of logic.
     //this will avoid any issues with a fast moving mouse whose position may change faster than the frame rate.
@@ -30,7 +32,7 @@ class
     settings.input = Pc_Input_State_Getter::Get();
     
     
-    Handle_Global_Actions(settings);
+    Handle_Global_Actions(settings, window);
     
     //before deciding all the frame elements to draw, adjust the global viewing anchor
     //the surface spread of frame elements may be infinite .  larger than anyone's screen.
@@ -45,7 +47,11 @@ class
 ❱
 
 
-◀public: static▶ void ☀Handle_Global_Actions(Ide_Settings & settings)❰
+◀public: static▶ void ☀Handle_Global_Actions(Ide_Settings & settings, SDL_Window* window)❰
+
+    if (Key_Detector::F5_Pressed()){
+       Sdl_Fullscreener::Toggle_Fullscreen(settings.init.main_window,window);
+    }
 
     //hot key to exit
     if (settings.input.keyboard.esc == Key_State::PRESSED){

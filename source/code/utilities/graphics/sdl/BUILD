@@ -57,3 +57,12 @@ hcp(
         "@system//:SDL2_hdrs",
     ],
 )
+
+hcp(
+    name = "sdl_fullscreener",
+    deps = [
+        "//code/utilities/graphics/sdl:sdl_window_settings",
+        "@system//:SDL2",
+        "@system//:SDL2_hdrs",
+    ],
+)
