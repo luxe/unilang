@@ -14,7 +14,6 @@ cc_library(
     ],
 )
 
-
 hcp(
     name = "thread_caller",
     deps = [

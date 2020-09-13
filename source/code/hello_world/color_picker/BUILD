@@ -9,7 +9,7 @@ cc_binary(
     srcs = ["main.cpp"],
     linkopts = [],
     deps = [
-        "//code/utilities/program/wrappers/zenity/color_picker:color_picker",
+        "//code/utilities/program/wrappers/zenity/color_picker",
         "//code/utilities/program/wrappers/zenity/color_picker:color_picker_settings",
     ],
 )

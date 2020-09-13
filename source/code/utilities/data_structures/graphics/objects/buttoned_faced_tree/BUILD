@@ -19,11 +19,13 @@ hcp(
         "//code/utilities/data_structures/counters/unique_max_counter",
         "//code/utilities/data_structures/graphics/bitmap/premade:horizontal_line",
         "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
+        "//code/utilities/data_structures/graphics/bitmap/premade:right_arrow",
         "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_active",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_global_navigation",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_active",
@@ -37,8 +39,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/data_structures/graphics/bitmap/premade:right_arrow",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_global_navigation",
     ],
 )
 
@@ -48,6 +48,7 @@ hcp(
         "//code/utilities/data_structures/counters/unique_max_counter",
         "//code/utilities/data_structures/graphics/bitmap/premade:horizontal_line",
         "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
+        "//code/utilities/data_structures/graphics/bitmap/premade:right_arrow",
         "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_active",
@@ -66,7 +67,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/data_structures/graphics/bitmap/premade:right_arrow",
     ],
 )
 

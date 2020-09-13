@@ -33,15 +33,17 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
     ],
 )
+
 hcp(
     name = "faced_label_set_active",
     deps = [
         "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
         "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
-        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
     ],
 )
+
 hcp(
     name = "faced_label_set_cursor",
     deps = [

@@ -46,10 +46,10 @@ hcp(
     name = "converters",
     deps = [
         "//code/utilities/data_structures/color:rgb_color",
-        "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/types/strings/observers/splitting:lib",
-        "//code/utilities/types/strings/observers/converting:lib",
         "//code/utilities/data_structures/color:transparent_rgb_color",
+        "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
         "@sfml",
     ],
 )
