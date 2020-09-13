@@ -8,7 +8,6 @@ cpp_main(
     name = "main",
     deps = [
         "//code/tools/ide/frame:frame_logic_updater",
-        "//code/tools/ide/frame:fullscreener",
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/settings:ide_settings_getter",
         "//code/utilities/data_structures/graphics/objects:frame_elements",

@@ -55,13 +55,3 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
     ],
 )
-
-hcp(
-    name = "fullscreener",
-    deps = [
-        "//code/tools/ide/settings:ide_settings",
-        "//code/utilities/graphics/imgui/loop:mechanics",
-        "//code/utilities/peripheral/keyboard:key_detector",
-        "@imgui//:imgui_sdl_opengl3",
-    ],
-)
