@@ -34,8 +34,8 @@ int main(int argc, char** argv)
     auto logic =  [&](SDL_Window* window) {elements = Frame_Logic_Updater::each_frame(s,window);};
     auto render = [&](SDL_Window* window) {
         
-        Frame_Renderer::Render(s.background,elements);
+        Frame_Renderer::Render(s.desktop.background,elements);
 	};
     
-    return Mechanics::render_each_frame(s.init,before,logic,render);
+    return Mechanics::render_each_frame(s.desktop.init,before,logic,render);
 }

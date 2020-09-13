@@ -72,6 +72,6 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
         "//code/utilities/graphics/sdl:standard_sdl_init_settings",
-        "//code/utilities/data_structures/graphics/gui_desktop/gui_deskto_getter"❫
+        "//code/utilities/data_structures/graphics/gui_desktop:gui_desktop_getter",
     ],
 )
