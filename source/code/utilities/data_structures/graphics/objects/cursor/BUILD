@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
     name = "label_cursor_selection",
@@ -71,15 +72,30 @@ hcp(
     ],
 )
 
+enum_cpp(
+    name = "text_box_action",
+    values = [
+        "navigate_forward",
+        "navigate_backward",
+        "select_forward",
+        "select_backward",
+        "add_chars",
+        "backspace",
+        "select_all",
+        "copy",
+        "paste",
+        "delete",
+        "none",
+    ],
+)
+
 hcp(
     name = "text_box_action_decider",
     deps = [
-        "//code/tools/ide/frame:text_box_action",
-        "//code/tools/ide/settings:ide_settings",
+        "//code/utilities/data_structures/graphics/objects/cursor:text_box_action",
         "//code/utilities/data_structures/graphics/objects/mouse:anchor_mouse",
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/pc:pc_input_state",
-        "@imgui//:imgui_sdl_opengl3",
     ],
 )
