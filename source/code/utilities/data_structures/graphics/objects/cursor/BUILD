@@ -16,7 +16,7 @@ hcp(
     name = "label_cursor_mover",
     deps = [
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_selection",
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
@@ -60,7 +60,7 @@ hcp(
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_mover",
         "//code/utilities/data_structures/graphics/objects/cursor:text_box_action_decider",
-        "//code/utilities/data_structures/graphics/objects/label:positioned_label",
+        "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/utilities/graphics/imgui/loop:mechanics",

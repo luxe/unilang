@@ -31,7 +31,7 @@ hcp(
 hcp(
     name = "label_style_chooser",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
     ],
 )
 
@@ -46,7 +46,7 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
         "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
         "//code/utilities/data_structures/graphics/objects/cursor/premade:red_cursor",
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/graphics/text:text_to_bitmap",
         "//code/utilities/fonts/bdf/settings:character_segment",

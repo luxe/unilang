@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
         "//code/utilities/data_structures/graphics/objects/cursor/premade:red_cursor",
         "//code/utilities/data_structures/graphics/objects/faced_label",
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label/style:default_label_styles",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/graphics/text:text_to_bitmap",

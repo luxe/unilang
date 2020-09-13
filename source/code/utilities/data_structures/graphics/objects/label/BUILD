@@ -5,33 +5,6 @@ load("//bazel/cookbook/hcp:hcp_pos.bzl", "hcp_pos")
 load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 
 hcp(
-    name = "label_user_state",
-    deps = [
-    ],
-)
-
-hcp(
-    name = "label_settings",
-    deps = [
-        "//code/utilities/data_structures/color:transparent_rgb_color",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_selection",
-        "//code/utilities/data_structures/graphics/objects/label:label_user_state",
-        "//code/utilities/data_structures/graphics/objects/label/style:label_styles",
-        "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
-        "//code/utilities/data_structures/position",
-        "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
-    ],
-)
-
-hcp_pos(
-    name = "label",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
-    ],
-)
-
-hcp(
     name = "label_drawer",
     deps = [
         "//code/utilities/colors:color_defaults",
@@ -42,9 +15,9 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_selection",
         "//code/utilities/data_structures/graphics/objects/label:label_length_getter",
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label:label_text_bitmap_getter",
-        "//code/utilities/data_structures/graphics/objects/label:positioned_label",
+        "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
@@ -64,7 +37,7 @@ hcp(
 hcp(
     name = "label_length_getter",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
     ],
 )
 
@@ -73,7 +46,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
         "//code/utilities/data_structures/graphics/objects/label:label_length_getter",
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
         "//code/utilities/data_structures/graphics/text:text_to_bitmap",

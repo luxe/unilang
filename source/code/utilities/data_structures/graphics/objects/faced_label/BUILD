@@ -7,7 +7,7 @@ load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 hcp(
     name = "label_face",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
     ],
 )
 
@@ -60,7 +60,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
-        "//code/utilities/data_structures/graphics/objects/label:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
         "//code/utilities/peripheral/mouse/state:mouse_state",
