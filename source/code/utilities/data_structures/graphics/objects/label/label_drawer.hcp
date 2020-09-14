@@ -87,12 +87,12 @@ class
     //Reverse_Adjust_Position(pos);
     elements.types.emplace_back(text);
     
-    Adjust_Position(pos);
-    Adjust_Cursor_Selection(font_chars,pos,label,style,label.events,mouse_state);
+    //Adjust_Position(pos);
+    //Adjust_Cursor_Selection(font_chars,pos,label,style,label.events,mouse_state);
     
     //draw cursor
-    elements.types += Cursor_Drawer::Draw_Cursor(pos,label).types;
-    Reverse_Adjust_Position(pos);
+    elements.types += Get_Position_Adjusted_Cursor(font_chars,pos,label,style,label.events,mouse_state).types;
+    //Reverse_Adjust_Position(pos);
     
     
     return elements;
@@ -103,21 +103,6 @@ class
 
 
 //utility
-◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Style const& style, Mouse_Events const& events, Mouse_State const& mouse_state)❰
-
-    //set active properties on the label
-    if (mouse_state.left.clicked){
-        if (events.state.left.clicked){
-            label.cursors.clear();
-            auto s = get_cursor_selection_based_on_click(font_chars,events.state.pos,pos,label,style);
-            label.cursors.emplace_back(s);
-        }
-        else{
-            label.cursors.clear();
-        }
-    }
-
-❱
 
 
 
@@ -142,12 +127,39 @@ class
 ❱
 
 
+◀private: static▶ Frame_Elements ☀Get_Position_Adjusted_Cursor(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Style const& style, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+
+    Adjust_Position(pos);
+    Adjust_Cursor_Selection(font_chars,pos,label,style,label.events,mouse_state);
+    return Cursor_Drawer::Draw_Cursor(pos,label);
+❱
+
+◀private: static▶ void ☀Adjust_Cursor_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Style const& style, Mouse_Events const& events, Mouse_State const& mouse_state)❰
+
+    //set active properties on the label
+    if (mouse_state.left.clicked){
+        if (events.state.left.clicked){
+            label.cursors.clear();
+            auto s = get_cursor_selection_based_on_click(font_chars,events.state.pos,pos,label,style);
+            label.cursors.emplace_back(s);
+        }
+        else{
+            label.cursors.clear();
+        }
+    }
+
+❱
+
+
+
+
+
+
 ◀private: static▶ Positioned_Full_Color_Bitmap ☀Get_Position_Adjusted_Bitmap(Character_Maps const& font_chars, Position pos, Label_Settings & label)❰
     Adjust_Position(pos);
     auto text = Get_Text_Bitmap(font_chars,pos,label);
     return text;
 ❱
-
 ◀private: static▶ Positioned_Full_Color_Bitmap ☀Get_Text_Bitmap(Character_Maps const& font_chars, Position pos, Label_Settings & label)❰
     Positioned_Full_Color_Bitmap text;
     text.bitmap = Label_Text_Bitmap_Getter::Get_Width_Adjusted_Text_Bitmap(font_chars,label);
