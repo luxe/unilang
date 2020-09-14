@@ -27,22 +27,6 @@ enum_cpp(
 )
 
 hcp(
-    name = "buildable_face_tree_state",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
-        "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
-        "@tree",
-    ],
-)
-
-hcp_and_hcp_pos(
-    name = "buildable_face_tree",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_state",
-    ],
-)
-
-hcp(
     name = "buildable_face_tree_drawer",
     deps = [
         "//code/utilities/data_structures/counters/unique_max_counter",
@@ -50,11 +34,11 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
         "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:generic_menu_handler",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_click_finder",
@@ -85,10 +69,10 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
         "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_click_finder",
@@ -114,9 +98,9 @@ hcp(
 hcp(
     name = "buildable_face_tree_action_doer",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_state",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree_state",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/program/wrappers/zenity/color_picker",
         "//code/utilities/program/wrappers/zenity/color_picker:color_picker_settings",

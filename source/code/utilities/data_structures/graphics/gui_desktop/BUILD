@@ -9,7 +9,7 @@ hcp(
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:positioned_buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
         "//code/utilities/data_structures/graphics/objects/cursor",
