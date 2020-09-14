@@ -64,5 +64,6 @@ hcp(
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
         "//code/utilities/peripheral/mouse/state:mouse_state",
+        "//code/utilities/data_structures/graphics/objects/label:label_dimension_getter",
     ],
 )

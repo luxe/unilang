@@ -26,9 +26,9 @@ class
 ❪"code/utilities/time/cycle_clock/cycle_clock_checker"❫
 ❪"code/utilities/data_structures/graphics/objects/label/label_text_bitmap_getter"❫
 ❪"code/utilities/data_structures/graphics/objects/label/style/label_style_chooser"❫
-❪"code/utilities/data_structures/graphics/objects/label/label_length_getter"❫
 ❪"code/utilities/data_structures/graphics/objects/cursor/cursor_drawer"❫
 ❪"code/utilities/colors/color_defaults"❫
+❪"code/utilities/data_structures/graphics/objects/label/label_dimension_getter"❫
 ⚞⚟
 
 
@@ -99,22 +99,6 @@ class
     
     
     return elements;
-❱
-
-
-//size it
-◀public: static▶ Two_D_Dimensions ☀Get_Dimensions(Label_Settings label)❰
-    auto& style = Label_Style_Chooser::Get_Style_To_Use(label);
-    return Get_Dimensions(label,style);
-    
-❱
-
-
-◀private: static▶  Two_D_Dimensions ☀Get_Dimensions(Label_Settings const& label, Label_Style const& style)❰
-    Two_D_Dimensions dim;
-    dim.x = Decide_Textbox_Width(label,style);
-    dim.y = 15;
-    return dim;
 ❱
 
 
@@ -196,23 +180,10 @@ class
     elements.types.emplace_back(settings);
 ❱
 
-◀private: static▶ int ☀Decide_Textbox_Width(Label_Settings const& label, Label_Style const& style)❰
-
-    //derive the width based on the characters of the label
-    if (style.width.grow_width){
-        const auto SOME_BUFFER_SPACE = 3;
-        auto box_width = Label_Length_Getter::Get_Message_Length(label) + SOME_BUFFER_SPACE;
-        return box_width;
-    }
-    
-    //derive the width based on a fixed settings
-    return style.width.fixed_width;
-❱
-
 ◀private: static▶ void ☀Decide_Label_Box_Dimensions(Character_Maps const& font_chars, Label_Settings & label, Label_Style const& style)❰
 
     
-    auto dim = Get_Dimensions(label,style);
+    auto dim = Label_Dimension_Getter::Get(label,style);
     
     
     
