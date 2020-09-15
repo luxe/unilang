@@ -33,6 +33,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_click_finder"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade/buttoned_faced_label_premades"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
+❪"code/utilities/output/printers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Handle_Menu_Logic(Frame_Elements & elements, Character_Maps const& font_chars, Pc_Input_State const& pc_input, Buildable_Face_Tree_State & state, Child_Lookup_Map const& lookup, bool const& label_first_selected)❰
@@ -43,7 +44,7 @@ class
     Possibly_Open_Menu(pc_input,state,lookup,label_first_selected);
     
     //how to draw and handle menu clicks
-    Handle_Menu(elements,font_chars,state,pc_input,label_first_selected);
+    Handle_Menu(elements,font_chars,lookup,state,pc_input,label_first_selected);
 ❱
 
 
@@ -59,7 +60,7 @@ class
     }
 ❱
 
-◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, bool const& label_first_selected)❰
+◀private: static▶ void ☀Handle_Menu(Frame_Elements & elements, Character_Maps const& font_chars, Child_Lookup_Map const& lookup, Buildable_Face_Tree_State & tree, Pc_Input_State const& pc_input, bool const& label_first_selected)❰
 
     if (tree.menu.visible){
         elements.types += Tree_Label_Drawer::Draw(font_chars,tree.menu.menu,tree.menu.pos,pc_input).types;
@@ -68,27 +69,36 @@ class
             if (pc_input.mouse.left.clicked || pc_input.mouse.right.clicked){
                 
                 tree.menu.visible = false;
-                Handle_Menu_Click(tree);
+                Handle_Menu_Click(tree, lookup);
             }
         }
     }
 ❱
 
-◀private: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree)❰
+◀private: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup)❰
 
     auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
     if (found != tree.menu.menu.nodes.end()){
-        Add(tree,found->faces[0].label.message);
+        Add(tree,lookup,found->faces[0].label.message);
     }
 ❱
 
 
-◀private: static▶ void ☀Add(Buildable_Face_Tree_State & tree, std::string const& message)❰
+◀private: static▶ void ☀Add(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
     
-    auto x = Buttoned_Faced_Label_Premades::Opened_Unilang_Node(message);
+    auto x = Create_Styled_Unilang_Node(tree,lookup,message);
     tree.structure.nodes.append_child(tree.selected_node,x);
 
 ❱
+
+◀private: static▶ Buttoned_Faced_Label ☀Create_Styled_Unilang_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+
+    if (Is_Chosen_Child_A_Leaf(tree.structure,lookup,tree.selected_node,message)){
+        return Buttoned_Faced_Label_Premades::Opened_Unilang_Leaf_Node(message);
+    }
+    return Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
+❱
+
 
 ◀private: static▶ Select_Menu ☀Decide_Menu(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
 
@@ -112,8 +122,23 @@ class
 ❱
 
 
+◀private: static▶ bool ☀Is_Chosen_Child_A_Leaf(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
+    auto full_name = Full_Path_Name(structure,it);
+    full_name += child_name + "/";
+    
+    std::cout << full_name << std::endl;
+    auto strs = Lookup(lookup,full_name);
+    std::cout << strs << std::endl;
+    return strs.empty();
+❱
+
+
 ◀public: static▶ std::vector<std::string> ☀Lookup(Child_Lookup_Map const& lookup, std::string const& str)❰
-    return lookup.map.find(str)->second;
+    auto result = lookup.map.find(str);
+    if (result == lookup.map.end()){
+        return {};
+    }
+    return result->second;
 ❱
 
 ◀public: static▶ std::string ☀Full_Path_Name(Button_Face_Tree const& structure, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
