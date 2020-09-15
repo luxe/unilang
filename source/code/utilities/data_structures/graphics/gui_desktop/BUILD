@@ -36,15 +36,14 @@ hcp(
     ],
 )
 
-
 hcp(
     name = "gui_desktop_getter",
     deps = [
-        "//code/utilities/data_structures/graphics/gui_desktop:gui_desktop",
-        "//code/utilities/graphics/sdl:standard_sdl_init_settings",
-        "//code/utilities/execution:thread_pool_getter",
-        "//code/utilities/graphics/imgui/background:background_settings_getter",
-        "//code/utilities/fonts/bdf/complete/unilang:unilang_character_maps",
+        "//code/utilities/data_structures/graphics/gui_desktop",
         "//code/utilities/data_structures/graphics/objects/mouse/premade:standard_mouse",
+        "//code/utilities/execution:thread_pool_getter",
+        "//code/utilities/fonts/bdf/complete/unilang:unilang_character_maps",
+        "//code/utilities/graphics/imgui/background:background_settings_getter",
+        "//code/utilities/graphics/sdl:standard_sdl_init_settings",
     ],
 )

@@ -14,8 +14,9 @@ hcp(
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_selection",
-        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
+        "//code/utilities/data_structures/graphics/objects/label:label_dimension_getter",
         "//code/utilities/data_structures/graphics/objects/label:label_text_bitmap_getter",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
@@ -30,14 +31,12 @@ hcp(
         "//code/utilities/time/cycle_clock:cycle_clock_checker",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/utilities/data_structures/graphics/objects/label:label_dimension_getter",
     ],
 )
 
 hcp(
     name = "label_dimension_getter",
     deps = [
-        
         "//code/utilities/colors:color_defaults",
         "//code/utilities/data_structures/dimensions:two_d_dimensions",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
@@ -46,8 +45,8 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_selection",
         "//code/utilities/data_structures/graphics/objects/label:label_length_getter",
-        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label:label_text_bitmap_getter",
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",

@@ -17,6 +17,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/draw:view_anchor_adjuster",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/graphics/imgui/window:window_position_finder",
+        "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/keyboard/state:imgui_keyboard_state_getter",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
@@ -25,7 +26,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state_getter",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/graphics/sdl:sdl_fullscreener",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
