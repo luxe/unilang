@@ -863,27 +863,124 @@ add these as apart of lint process
 
 
 
+-detect URLs in the values of any tokens and check their availability
+optional static analysis:
+does string have url in it?
+extract url
+test it for 200 response
+report issues
+
+
+
+
+-different types of invariants (hillelwayne.com)
+state="at least 1 server is online"
+action="we do not remove servers if below capacity"
+behavior="eventually we have enough servers"
+
+
+
+-question/answer tokens for language concepts 
+functions and classes solve problems. We want to aid in code re-use. Add tokens to allow question/answer content so searching can be done easier. And slack bots can respond with possibilities.
+Basically,
+Q: how do I traverse a filesystem?
+A: use /sdf/dfgd/sdf/tree_walker.hh
+
+-duplicate coder identifier
+tools that currently work, but need integrated:
+fdupes
+
+-flag optional statements in function to generate dispathcing functions automatically
+
+basically:
+void do_thing(Thing){
+  [optional]validate(thing)
+}
+
+
+turns into:
+enum validate{
+ yes,
+ no
+}
+
+void do_thing(Thing, validate){
+  possibly_validate(thing,validate)
+}
+
+possibly_validate(thing,validate){
+   switch(validate){
+   case: validate::yes: perform_validate_step(thing);
+   case: validate::no: perform_skipped_validation_step(thing);
+}
+
+void perform_validate_step(thing)
+{
+}
+
+void  perform_skipped_validation_step(thing)
+{
+}
 
 
 
 
 
+-preconditions and postconditions as part of arguments
+we can keep the root assertions as well, but we should also add tokens so that individual arguments can be tagged with conditions as well
 
 
 
+-check for getters and setters that could provide uniformity
+struct Foo{
+    struct Bar{
+        int x;
+    }
+}
+and
+
+struct Baz{
+        int x;
+}
+should both provide a get/set x function to support uniformity across templates
 
 
+-label branches to help the branch predictor and the reader of the code
+We might have branches in our code, but there is an expected execution order.
+We can annotate this to allow the program to possibly run faster and give an indication to the reader on what branch will likely be hit on normal program executions.
+
+Could this labeling eventually be done automatically? ye, probably, but we should still have it as a token? I think so.
 
 
+-linear/row types
+"I did my Bachelor's thesis on adding (linear) phantom (row) types to C
+There's so much potential there it's ridiculous. The semantics of Cyclone/Rust-style ownership and borrowing took about 5 lines to describe to get the complete system 'for free', iirc. It's the same with typestate."
+What are linear / row types? How can we account for them in Unilang
+
+-every func taskes 1 parameter. self reducing types
+if every func takes 1 parameter, we will sometimes have higher composedtypes,
+and want to pass in the composed types inside. We should be able to automatically convert types
+to another type automatically. We generate the implicit conversions automatically So then we can parameter pass the same as type, but get a smaller type at the function definition level and in the body.
+This will make diffs really small. And refactoring easier.
+
+-type assumptions should create splits in function implementation, when data is adjusted
+lets say a function takes an integer, and that integer cannot be negative,
+but we allow negative to be passed in...
+do we make the adjustment inside / outside the function implementation
+(there are some other things to consider here... with pre.post conditions)...
+we will ensure that three functions get created
+
+1. a function that has assumptions but does not spend computation time checking
+2. a function that has assumptions but allows anything, and performs the adjustment
+3. a function that performs the value adjustment
+(possibly another generated function and enum, that does the dispatch)
 
 
-
-
-
-
-
-
-
+-Cache the Loop End Value
+for (size_t i = 0, len = strlen(s); i < len; ++i)
+ if (s[i] == ' ')
+ s[i] = '*'; 
+ill be interested to see if this really speeds up impls
 
 
 
