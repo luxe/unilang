@@ -26,6 +26,14 @@ hcp(
 )
 
 hcp(
+    name = "color_shader",
+    deps = [
+        "//code/utilities/data_structures/color:rgb_color_transition",
+        "//code/utilities/data_structures/color:rgba_color_transition",
+    ],
+)
+
+hcp(
     name = "color_palettes",
     deps = [
         "//code/utilities/data_structures/color:rgb_color",
