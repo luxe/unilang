@@ -73,5 +73,6 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
         "//code/utilities/graphics/sdl:standard_sdl_init_settings",
+        "//code/utilities/code/style_theme:style_lookup_map_getter",
     ],
 )
