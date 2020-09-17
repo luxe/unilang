@@ -2,8 +2,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Transformable.hpp>
-#include "code/utilities/colors/sfml_color_pick_grid.hpp"
-#include "code/utilities/colors/sfml_color_pick_hue_changer.hpp"
+#include "code/utilities/colors/sfml/sfml_color_pick_grid.hpp"
+#include "code/utilities/colors/sfml/sfml_color_pick_hue_changer.hpp"
 
 int main(int argc, char **argv) {
     // Setup a render window

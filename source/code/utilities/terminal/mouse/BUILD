@@ -23,7 +23,7 @@ hcp(
     name = "mouse_terminal_changer",
     deps = [
         "//code/utilities/colors/converters:hsv_to_rgb_converter",
-        "//code/utilities/colors:screen_position_to_rgb",
+        "//code/utilities/colors/transformers:screen_position_to_rgb",
         "//code/utilities/data_structures/color:hsv_color",
         "//code/utilities/data_structures/position",
         "//code/utilities/math",

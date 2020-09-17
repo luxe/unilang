@@ -20,7 +20,7 @@ hcp(
     deps = [
         "//code/tools/games/scattergories/gui/assets:assets_loader",
         "//code/tools/games/scattergories/gui/state:game_state",
-        "//code/utilities/colors:color_transitioner",
+        "//code/utilities/colors/transformers:color_transitioner",
         "//code/utilities/colors/converters:converters",
         "//code/utilities/formats/json/functions:lib",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",

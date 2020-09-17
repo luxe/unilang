@@ -9,8 +9,8 @@ cc_binary(
         "-lc++",
     ],
     deps = [
-        "//code/utilities/colors:sfml_color_pick_grid",
-        "//code/utilities/colors:sfml_color_pick_hue_changer",
+        "//code/utilities/colors/sfml:sfml_color_pick_grid",
+        "//code/utilities/colors/sfml:sfml_color_pick_hue_changer",
         "@GL",
         "@sfml",
     ],

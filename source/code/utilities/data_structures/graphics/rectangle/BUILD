@@ -6,7 +6,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(
     name = "rectangle_fill_bitmap",
     deps = [
-        "//code/utilities/colors:color_transitioner",
+        "//code/utilities/colors/transformers:color_transitioner",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
