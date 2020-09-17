@@ -15,7 +15,7 @@ hcp(
 hcp(
     name = "background_settings_getter",
     deps = [
-        "//code/utilities/colors:color_defaults",
+        "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/graphics/imgui:imgui_type_utility",
         "//code/utilities/graphics/imgui/background:background_settings",
     ],

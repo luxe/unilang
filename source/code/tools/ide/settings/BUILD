@@ -44,7 +44,7 @@ hcp(
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/transcompilers/unilang/tokens:get_tokens",
         "//code/utilities/code:concept_tree_getter",
-        "//code/utilities/colors:rectangle_shades",
+        "//code/utilities/colors/defaults:rectangle_shades",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
         "//code/utilities/data_structures/graphics/bitmap/premade:crosshair_mouse",

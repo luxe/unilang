@@ -9,8 +9,8 @@ hcp(
     deps = [
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/transcompilers/unilang/tokens:get_tokens",
-        "//code/utilities/colors:color_defaults",
-        "//code/utilities/colors:rectangle_shades",
+        "//code/utilities/colors/defaults:color_defaults",
+        "//code/utilities/colors/defaults:rectangle_shades",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
         "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",

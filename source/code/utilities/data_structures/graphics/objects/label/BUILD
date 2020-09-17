@@ -7,7 +7,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(
     name = "label_drawer",
     deps = [
-        "//code/utilities/colors:color_defaults",
+        "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/data_structures/dimensions:two_d_dimensions",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
@@ -37,7 +37,7 @@ hcp(
 hcp(
     name = "label_dimension_getter",
     deps = [
-        "//code/utilities/colors:color_defaults",
+        "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/data_structures/dimensions:two_d_dimensions",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",

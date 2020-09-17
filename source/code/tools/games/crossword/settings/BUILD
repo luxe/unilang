@@ -12,7 +12,7 @@ hcp(
     deps = [
         "//code/tools/games/crossword/settings:crossword_output_settings",
         "//code/tools/games/crossword/settings:crossword_random_place_settings",
-        "//code/utilities/colors:color_palettes",
+        "//code/utilities/colors/defaults:color_palettes",
         "//code/utilities/data_structures/dimensions:two_d_dimensions",
         "//code/utilities/types/char:optional_letter_case",
     ],
@@ -23,7 +23,7 @@ hcp(
     deps = [
         "//code/tools/games/crossword:crossword_words",
         "//code/tools/games/crossword/settings:crossword_puzzle_settings",
-        "//code/utilities/colors:color_palettes",
+        "//code/utilities/colors/defaults:color_palettes",
         "//code/utilities/streams/filestreams/read_all:lib",
         "//code/utilities/types/char:lib",
     ],

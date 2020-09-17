@@ -26,7 +26,7 @@ hcp(
 hcp(
     name = "character_bitmap_map_creator",
     deps = [
-        "//code/utilities/colors:color_defaults",
+        "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/fonts/bdf/character_maps:character_bitmap_map",
         "//code/utilities/fonts/bdf/character_maps:character_segment_map",
         "//code/utilities/graphics/imgui:imgui_type_utility",

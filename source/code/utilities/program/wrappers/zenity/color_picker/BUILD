@@ -6,7 +6,7 @@ load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
 hcp(
     name = "color_picker",
     deps = [
-        "//code/utilities/colors:converters",
+        "//code/utilities/colors/converters:converters",
         "//code/utilities/data_structures/color:rgb_color",
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/program/call:lib",
