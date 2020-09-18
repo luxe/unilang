@@ -8,4 +8,3 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
 )
-

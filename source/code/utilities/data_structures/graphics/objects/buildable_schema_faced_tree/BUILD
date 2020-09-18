@@ -8,9 +8,9 @@ load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "buildable_schema_faced_tree_state",
     deps = [
+        "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
         "//code/utilities/data_structures/tree/generic:child_lookup_map",
-        "//code/utilities/code/style_theme:style_lookup_map",
     ],
 )
 

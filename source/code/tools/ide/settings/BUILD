@@ -44,6 +44,7 @@ hcp(
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/transcompilers/unilang/tokens:get_tokens",
         "//code/utilities/code:concept_tree_getter",
+        "//code/utilities/code/style_theme:style_lookup_map_getter",
         "//code/utilities/colors/defaults:rectangle_shades",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/pixel:pixel_slider",
@@ -73,6 +74,5 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
         "//code/utilities/graphics/sdl:standard_sdl_init_settings",
-        "//code/utilities/code/style_theme:style_lookup_map_getter",
     ],
 )
