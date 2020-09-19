@@ -34,3 +34,33 @@ cc_library(
         "@ncurses",
     ],
 )
+
+demo_hdrs = glob(
+    include = [
+        "examples/*.h",
+    ],
+    exclude = [
+    ],
+)
+
+demo_srcs = glob(
+    include = [
+        "examples/*.cpp",
+    ],
+    exclude = [
+    ],
+)
+
+cc_library(
+    name = "demo",
+    srcs = demo_srcs,
+    hdrs = demo_hdrs,
+    includes = ["examples"],
+    deps = ["@imtui"],
+)
+
+cc_binary(
+    name = "example",
+    srcs = ["examples/ncurses0/main.cpp"],
+    deps = ["@imtui//:demo"],
+)

@@ -16,5 +16,6 @@ def imtui():
             "find . -type f -name '*.h' -exec sed -i 's/imgui\\/imgui/imgui/g' {} \;",
             "find . -type f -name '*.h' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \;",
             "find . -type f -name '*.cpp' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \;",
+            "sed -i '/ImGui::InputFloat(\"Font offset\"/d' examples/imtui-demo.cpp",
         ],
     )
