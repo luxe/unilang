@@ -58,7 +58,9 @@ cc_library(
         #"@system//:glib",
         #"@system//:GLX_mesa",
         #"@system//:EGL_mesa",
+        "@system//:GLEW",
         "@GL",
+        #"@system//:glfw",
     ],
 )
 

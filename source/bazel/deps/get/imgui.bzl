@@ -7,10 +7,10 @@ def imgui():
     http_archive(
         name = "imgui",
         build_file = "//bazel/deps/build_files:imgui.BUILD",
-        sha256 = "1db98db987e6ed67b1932bbf825e722d8d7f024471e4be54b815d16a2c6484ba",
-        strip_prefix = "imgui-9da48c16c5eeb8ea98e89951c83fab0f9d2b037b",
+        sha256 = "1514c3b9037137331f57abec14c6ba238f9c6a4d2c0c1f0bab3debe5afdf3854",
+        strip_prefix = "imgui-ec945f44b5eff1d82129233be5643abbff2845da",
         urls = [
-            "https://github.com/Unilang/imgui/archive/9da48c16c5eeb8ea98e89951c83fab0f9d2b037b.tar.gz",
+            "https://github.com/Unilang/imgui/archive/ec945f44b5eff1d82129233be5643abbff2845da.tar.gz",
         ],
         patch_cmds = [
             "find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \;",

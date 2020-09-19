@@ -11,7 +11,7 @@ int main()
     
     //bind and run ImGui with SDL
     auto before = [](){};
-    auto logic = [](){};
+    auto logic = [&](SDL_Window* window){};
     auto during = [](SDL_Window* window){
        bool flag = true;
        ImGui::ShowDemoWindow(&flag);

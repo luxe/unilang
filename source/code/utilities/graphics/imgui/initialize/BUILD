@@ -30,7 +30,6 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_initializer",
         "//code/utilities/graphics/sdl:sdl_swap_interval_setter",
         "//code/utilities/graphics/sdl:sdl_window_creator",
-        "@GL",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
