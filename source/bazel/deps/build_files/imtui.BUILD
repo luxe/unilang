@@ -31,5 +31,6 @@ cc_library(
     #include_prefix = "sys",
     deps = [
         "@imgui//:imgui_glfw_opengl3",
+        "@ncurses",
     ],
 )
