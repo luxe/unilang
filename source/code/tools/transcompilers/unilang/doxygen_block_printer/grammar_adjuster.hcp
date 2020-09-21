@@ -51,6 +51,16 @@ class
     return str;
 ❱
 
+◀private: static▶ bool ☀Looks_Like_Url(std::string const& sentence)❰
+  if (Begins_With(sentence,"http://")){
+    return true;
+  }
+  if (Begins_With(sentence,"https://")){
+    return true;
+  }
+  return false;
+❱
+
 ◀private: static▶ std::vector<std::string> ☀Potentially_Fix_Redundancy(std::string & sentence, Comment_Grammar_Settings const& grammar)❰
   std::vector<std::string> warnings;
   //TODO: https://github.com/tygerpatch/BetaGama/blob/master/pythonpath/redundancy.py
@@ -133,6 +143,13 @@ class
 
 
 ◀private: static▶ void ☀Potentially_Capitalize(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+  
+  if (Looks_Like_Url(comment_text)){
+    return;
+  }
+  
+  
   if (grammar.puncuation.auto_capitalize_comments){
     CapitalizeFirstChar(comment_text);
     
@@ -147,6 +164,11 @@ class
   }
 ❱
 ◀private: static▶ void ☀Potentially_Punctuate(std::string & comment_text, Comment_Grammar_Settings const& grammar)❰
+
+  if (Looks_Like_Url(comment_text)){
+    return;
+  }
+  
   if (grammar.puncuation.auto_puncuate_comments){
     
       //ends with a quote. We need to put in the punctuation inside the quotes

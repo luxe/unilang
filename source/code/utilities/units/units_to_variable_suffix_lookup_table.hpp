@@ -74,10 +74,10 @@ static const std::unordered_map<std::string,std::string> UNITS_TO_VARIABLE_SUFFI
   
   //bytes
   ,{"byte","B"}
-  ,{"kilobyte","kB"}
-  ,{"megabyte","MB"}
-  ,{"gigabyte","GB"}
-  ,{"terabyte","TB"}
+  ,{"kilobyte","kb"}
+  ,{"megabyte","mb"}
+  ,{"gigabyte","gb"}
+  ,{"terabyte","tb"}
   ,{"kibibyte","KiB"}
   ,{"mebibyte","MiB"}
   ,{"gibibyte","GiB"}
