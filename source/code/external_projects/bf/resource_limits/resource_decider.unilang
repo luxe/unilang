@@ -1,0 +1,150 @@
+􏶞o􏶟
+􏷲Decide the resource limitations for a given command􏷱
+􏷰platform properties from specified exec_properties are taken into account as well as global buildfarm configuration􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞worker􏷝
+
+􏷤􏷣􏷦com.google.common.collect.LinkedHashMultimap􏷥
+􏷤􏷣􏷦com.google.common.collect.Lists􏷥
+􏷤􏷣􏷦com.google.common.collect.SetMultimap􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦build.buildfarm.common.redis.BalancedRedisQueue􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Map􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableSet􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableSetMultimap􏷥
+􏷤􏷣􏷦java.util.stream.Collectors􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.Command􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform.Property􏷥
+􏷤􏷣􏷦com.google.common.collect.Iterables􏷥
+
+􏶨the exec_property and platform property name for setting min cores􏶧
+􏶦this is decided between client and server􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property min cores􏶫􏶪"min-cores"􏶩
+
+􏶨the exec_property and platform property name for setting max cores􏶧
+􏶦this is decided between client and server􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property max cores􏶫􏶪"max-cores"􏶩
+
+􏷐decide resource limitations for the given command􏷏
+􏶠platform properties from specified exec_properties are taken into account as well as global buildfarm configuration􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒decide resource limitations􏷑
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to decide resource limitations for􏶿
+􏶜􏶝􏷆bool􏷅􏷄only multicore tests􏷃􏷀only allow ttests to be multicore􏶿
+􏶾ResourceLimits􏶽􏶼resource limits􏶻􏶺default resource limits􏶹
+􏶴
+    ResourceLimits limits = getDefaultLimitations();
+    
+    setCpuLimits(limits,command,onlyMulticoreTests);
+    
+    return limits;
+
+􏶳
+
+􏷐decide CPU limitations􏷏
+􏶠given a default set of limitations, use the command and global configuration to adjust CPU limitations􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒set cpu limits􏷑
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to decide resource limitations􏶿
+􏶜􏶝􏷆bool􏷅􏷄only multicore tests􏷃􏷀only allow ttests to be multicore􏶿
+􏶴
+    
+    // apply cpu limits specified on command
+    limits.cpu.min = getIntegerPlatformValue(command,EXEC_PROPERTY_MIN_CORES,limits.cpu.min);
+    limits.cpu.max = getIntegerPlatformValue(command,EXEC_PROPERTY_MAX_CORES,limits.cpu.max);
+    
+    // force limits on non-test actions
+    if (onlyMulticoreTests && !commandIsTest(command)){
+        limits.cpu.min = 1;
+        limits.cpu.max = 1;
+    }
+􏶳
+
+    if (!has platform property(command,EXEC_PROPERTY_MIN_CORES) && !has platform property(command,EXEC_PROPERTY_MAX_CORES)){
+        limits.cpu.limit = false;
+        return;
+    }
+
+􏷐get default resource limits􏷏
+􏶠get the default resource limits before adjusting based on action's exec_properties global configuration􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get default limitations􏷑
+􏶾ResourceLimits􏶽􏶼resource limits􏶻􏶺default resource limits􏶹
+􏶴
+    // These can be moved to configuration in the future
+    ResourceLimits limits = new ResourceLimits();
+    
+    //supported
+    limits.cpu.limit = true;
+    limits.cpu.min = 1;
+    limits.cpu.max = 1;
+    
+    //not supported
+    limits.gpu.limit = false;
+    limits.gpu.min = 0;
+    limits.gpu.max = 0;
+    
+    //not supported
+    limits.mem.limit = false;
+    limits.mem.min_gb = 4;
+    limits.mem.max_gb = 32;
+    
+    //not supported
+    limits.disk.limit = false;
+    limits.disk.min_mb = 2 * 1024;
+    limits.disk.max_mb = 2 * 1024;
+    
+    //not supported
+    limits.network.restrict = false;
+    
+    //supported elsewhere
+    limits.time.timeout_s = 10 * 60;
+    
+    return limits;
+􏶳
+
+􏷐get an integer value from a platform property􏷏
+􏶠Get the first value of the property name given
+If the property name does not exist the default provided is returned􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get integer platform value􏷑
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to extract the platform value from􏶿
+􏶜􏶝􏷆String􏷅􏷄name􏷃􏷀the platform property name􏶿
+􏶜􏶝􏷆i􏷅􏷄default val􏷃􏷀the default value if the property name does not exist􏶿
+􏶾i􏶽􏶼platform value􏶻􏶺the decided platform value􏶹
+􏶴
+    for (Property property : command.getPlatform().getPropertiesList()) {
+        if (property.getName().equals(name)) {
+            return Integer.parseInt(property.getValue());
+        }
+    }
+    return defaultVal;
+􏶳
+
+􏷐whether the command has the platform property􏷏
+􏶠checks whether the command has the given platform property name􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒has platform property􏷑
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to extract the platform value from􏶿
+􏶜􏶝􏷆String􏷅􏷄name􏷃􏷀the platform property name􏶿
+􏶾bool􏶽􏶼exists􏶻􏶺whether the platform name exists􏶹
+􏶴
+    for (Property property : command.getPlatform().getPropertiesList()) {
+        if (property.getName().equals(name)) {
+            return true;
+        }
+    }
+    return false;
+􏶳
+
+􏷐derive if command is a test run􏷏
+􏶠find a reliable way to identify whether a command is a test or not􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒command is test􏷑
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to identify as a test command􏶿
+􏶾bool􏶽􏶼exists􏶻􏶺whether the command is a test􏶹
+􏶴
+    // only tests are setting this currently - other mechanisms are unreliable
+    return Iterables.any(
+        command.getEnvironmentVariablesList(),
+        (envVar) -> envVar.getName().equals("XML_OUTPUT_FILE"));
+􏶳
+
+
