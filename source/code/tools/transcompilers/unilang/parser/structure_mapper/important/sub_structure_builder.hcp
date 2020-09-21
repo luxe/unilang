@@ -31,9 +31,9 @@ class
     part.warnings             = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_WARNING);
     part.depreciation_reasons = Parser_Utilities::Get_Token_Values_Of_Token_Name(tokens, Token_Name::META_DATA_DEPRECIATION);
     
-    part.subgroups           = Parser_Token_Stripper::Strip_Out_Type<Meta_Subgroup>     (settings,tokens,Token_Group::META_SUBGROUP           ,Build_Meta_Subgroups);
-    part.specifications      = Parser_Token_Stripper::Strip_Out_Type<Specification_File>(settings,tokens,Token_Group::META_SPECIFICATION_FILE ,Build_Meta_Specification_Files);
-    part.foreseeable_changes = Parser_Token_Stripper::Strip_Out_Type<Foreseeable_Change>(settings,tokens,Token_Group::META_FORSEEABLE_CHANGE  ,Build_Meta_Foreseeable_Changes);
+    part.subgroups           = Parser_Token_Stripper::Strip_Out_Type_V2<Meta_Subgroup>     (settings,tokens,Token_Group::META_SUBGROUP           ,Build_Meta_Subgroups);
+    part.specifications      = Parser_Token_Stripper::Strip_Out_Type_V2<Specification_File>(settings,tokens,Token_Group::META_SPECIFICATION_FILE ,Build_Meta_Specification_Files);
+    part.foreseeable_changes = Parser_Token_Stripper::Strip_Out_Type_V2<Foreseeable_Change>(settings,tokens,Token_Group::META_FORSEEABLE_CHANGE  ,Build_Meta_Foreseeable_Changes);
     
     return part;
 ❱
@@ -100,8 +100,8 @@ class
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Specifiers<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Access_Specifiers<decltype(part)>);
-	part.subgroups = Parser_Token_Stripper::Strip_Out_Type<Enum_Subgroup>(settings,tokens,Token_Group::ENUM_SUBGROUP,Build_Enum_Subgroup_Item);
-    part.args      = Parser_Token_Stripper::Strip_Out_Type<Enum_Arg>     (settings,tokens,Token_Group::ENUM_ARG,Build_Enum_Arg_Item);
+	part.subgroups = Parser_Token_Stripper::Strip_Out_Type_V2<Enum_Subgroup>(settings,tokens,Token_Group::ENUM_SUBGROUP,Build_Enum_Subgroup_Item);
+    part.args      = Parser_Token_Stripper::Strip_Out_Type_V2<Enum_Arg>     (settings,tokens,Token_Group::ENUM_ARG,Build_Enum_Arg_Item);
     return part;
 ❱
 
@@ -116,7 +116,7 @@ class
 
     Enum_Arg part;
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Enum_Args<decltype(part)>);
-    part.subscribed_subgroup = Parser_Token_Stripper::Strip_Out_Type<Enum_Arg_Subscribed_Subgroup>(settings,tokens,Token_Group::ENUM_GROUP_AFFILIATION,Build_Enum_Arg_Subscribed_Group);
+    part.subscribed_subgroup = Parser_Token_Stripper::Strip_Out_Type_V2<Enum_Arg_Subscribed_Subgroup>(settings,tokens,Token_Group::ENUM_GROUP_AFFILIATION,Build_Enum_Arg_Subscribed_Group);
     return part;
 ❱
 
@@ -166,11 +166,11 @@ class
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Args<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Function_Arg_Qualifiers<decltype(part)>);
 
-	part.type_specializations = Parser_Token_Stripper::Strip_Out_Type<Type_Specialization>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_SPECIALIZATIONS,Build_Function_Arg_Type_Specialization);
+	part.type_specializations = Parser_Token_Stripper::Strip_Out_Type_V2<Type_Specialization>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_SPECIALIZATIONS,Build_Function_Arg_Type_Specialization);
     
-    part.import_dependencies = Parser_Token_Stripper::Strip_Out_Type<Module_Dependency>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_MODULE_DEPENDENCIES,Build_Func_Arg_Module);
-    part.library_dependencies = Parser_Token_Stripper::Strip_Out_Type<Library_Dependency>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_LIBRARY_DEPENDENCIES,Build_Func_Arg_Lib);
-    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type<Scope_Specifier>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_SCOPE,Build_Func_Arg_Scope);
+    part.import_dependencies = Parser_Token_Stripper::Strip_Out_Type_V2<Module_Dependency>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_MODULE_DEPENDENCIES,Build_Func_Arg_Module);
+    part.library_dependencies = Parser_Token_Stripper::Strip_Out_Type_V2<Library_Dependency>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_TYPE_LIBRARY_DEPENDENCIES,Build_Func_Arg_Lib);
+    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type_V2<Scope_Specifier>(settings,tokens,Token_Group::FUNCTION_ARGUMENT_SCOPE,Build_Func_Arg_Scope);
     
     return part;
 ❱
@@ -242,7 +242,7 @@ class
     Type_Specialization part;
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Data_Member_Type_Specializations<decltype(part)>);
 
-    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type<Scope_Specifier>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE,Build_Data_Member_Type_Specializations_Scope_Specifiers);
+    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type_V2<Scope_Specifier>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS_SCOPE,Build_Data_Member_Type_Specializations_Scope_Specifiers);
     return part;
 ❱
 ◀public: static▶ Module_Dependency ☀Build_Data_Member_Type_Module_Dependencies(std::vector<Parser_Token> const& tokens,Parser_Settings const& settings)❰
@@ -345,12 +345,12 @@ class
     
     //go a level deeper
     part.stamps                             = Parser_Token_Stripper::Strip_Out_Type_V2<Method_Stamp>(settings,tokens,Token_Group::FUNCTION_STAMP,Build_Stamp_Item);
-    part.names.alternative_expression_names = Parser_Token_Stripper::Strip_Out_Type<Alternative_Expression_Name>(settings,tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT,Build_Alt_Expression_Name_Item);
-    part.template_arguments                 = Parser_Token_Stripper::Strip_Out_Type<Template_Argument>(settings,tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT,Build_Template_Arg_Item);
-    part.function_arguments                 = Parser_Token_Stripper::Strip_Out_Type<Function_Argument>(settings,tokens,Token_Group::FUNCTION_ARGUMENT,Build_Function_Arg);
+    part.names.alternative_expression_names = Parser_Token_Stripper::Strip_Out_Type_V2<Alternative_Expression_Name>(settings,tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT,Build_Alt_Expression_Name_Item);
+    part.template_arguments                 = Parser_Token_Stripper::Strip_Out_Type_V2<Template_Argument>(settings,tokens,Token_Group::FUNCTION_TEMPLATE_ARGUMENT,Build_Template_Arg_Item);
+    part.function_arguments                 = Parser_Token_Stripper::Strip_Out_Type_V2<Function_Argument>(settings,tokens,Token_Group::FUNCTION_ARGUMENT,Build_Function_Arg);
     part.return_results                     = Parser_Token_Stripper::Strip_Out_Type_V2<Function_Result>(settings,tokens,Token_Group::FUNCTION_RESULT,Build_Function_Result);
-    part.contracts.preconditions            = Parser_Token_Stripper::Strip_Out_Type<Contract_Precondition>(settings,tokens,Token_Group::FUNCTION_PRECONDITION,Build_Precondition);
-    part.contracts.postconditions           = Parser_Token_Stripper::Strip_Out_Type<Contract_Postcondition>(settings,tokens,Token_Group::FUNCTION_POSTCONDITION,Build_Postcondition);
+    part.contracts.preconditions            = Parser_Token_Stripper::Strip_Out_Type_V2<Contract_Precondition>(settings,tokens,Token_Group::FUNCTION_PRECONDITION,Build_Precondition);
+    part.contracts.postconditions           = Parser_Token_Stripper::Strip_Out_Type_V2<Contract_Postcondition>(settings,tokens,Token_Group::FUNCTION_POSTCONDITION,Build_Postcondition);
     part.contracts.postconditions           = Parser_Token_Stripper::Strip_Out_Type_V2<Contract_Postcondition>(settings,tokens,Token_Group::FUNCTION_POSTCONDITION,Build_Postcondition);
     part.unit_tests.test_cases              = Parser_Token_Stripper::Strip_Out_Type_V2<Test_Case>(settings,tokens,Token_Group::FUNCTION_TEST_CASE,Build_Function_Test_Case);
     part.benchmarks.benchmarks              = Parser_Token_Stripper::Strip_Out_Type_V2<Benchmark>(settings,tokens,Token_Group::FUNCTION_BENCHMARK,Build_Function_Benchmark);
@@ -401,7 +401,7 @@ class
 
 	Method_Stamp part;
 	Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Stamp_Name<decltype(part)>);
-    part.values = Parser_Token_Stripper::Strip_Out_Type<Method_Stamp_Value>(settings,tokens,Token_Group::FUNCTION_STAMP_VALUE,Build_Stamp_Value);
+    part.values = Parser_Token_Stripper::Strip_Out_Type_V2<Method_Stamp_Value>(settings,tokens,Token_Group::FUNCTION_STAMP_VALUE,Build_Stamp_Value);
 	return part;
 ❱
 ◀public: static▶ Method_Stamp_Value ☀Build_Stamp_Value(std::vector<Parser_Token> const& tokens,Parser_Settings const& settings)❰
@@ -420,8 +420,8 @@ class
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Typedef_Specifiers_Class<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Bind_Typedef_Root_Items<decltype(part)>);
     
-    part.arguments = Parser_Token_Stripper::Strip_Out_Type<Typedef_Argument>(settings,tokens,Token_Group::TYPEDEF_ARGUMENT,Build_Typedef_Argument);
-    part.results = Parser_Token_Stripper::Strip_Out_Type<Typedef_Result>(settings,tokens,Token_Group::TYPEDEF_RESULT,Build_Typedef_Result);
+    part.arguments = Parser_Token_Stripper::Strip_Out_Type_V2<Typedef_Argument>(settings,tokens,Token_Group::TYPEDEF_ARGUMENT,Build_Typedef_Argument);
+    part.results = Parser_Token_Stripper::Strip_Out_Type_V2<Typedef_Result>(settings,tokens,Token_Group::TYPEDEF_RESULT,Build_Typedef_Result);
     
     return part;
 ❱
@@ -504,8 +504,8 @@ class
 ◀public: static▶ Sentence_Table ☀Build_Sentence_Table(std::vector<Parser_Token> const& tokens,Parser_Settings const& settings)❰
     Sentence_Table part;
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Literature_Table_Properties<decltype(part)>);
-    part.headers = Parser_Token_Stripper::Strip_Out_Type<Sentence_Table_Header>(settings,tokens,Token_Group::LITERATURE_SENTENCE_TABLE_HEADER,Build_Sentence_Table_Header);
-    part.rows = Parser_Token_Stripper::Strip_Out_Type<Sentence_Table_Row>(settings,tokens,Token_Group::LITERATURE_SENTENCE_TABLE_ROW,Build_Sentence_Table_Row);
+    part.headers = Parser_Token_Stripper::Strip_Out_Type_V2<Sentence_Table_Header>(settings,tokens,Token_Group::LITERATURE_SENTENCE_TABLE_HEADER,Build_Sentence_Table_Header);
+    part.rows = Parser_Token_Stripper::Strip_Out_Type_V2<Sentence_Table_Row>(settings,tokens,Token_Group::LITERATURE_SENTENCE_TABLE_ROW,Build_Sentence_Table_Row);
     return part;
 ❱
 ◀public: static▶ Sentence_Table_Header ☀Build_Sentence_Table_Header(std::vector<Parser_Token> const& tokens,Parser_Settings const& settings)❰
@@ -526,7 +526,7 @@ class
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Interface_Import_Names<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Interface_Specifiers<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Interface_Specifiers2<decltype(part)>);
-    part.relationships = Parser_Token_Stripper::Strip_Out_Type<Import_Relationship>(settings,tokens,Token_Group::IMPORT_INTERFACE_RELATIONSHIP,Build_Interface_Relationships);
+    part.relationships = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Relationship>(settings,tokens,Token_Group::IMPORT_INTERFACE_RELATIONSHIP,Build_Interface_Relationships);
     return part;
 ❱
 
@@ -537,7 +537,7 @@ class
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Implementation_Import_Names<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Implementation_Specifiers<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Implementation_Specifiers2<decltype(part)>);
-    part.relationships = Parser_Token_Stripper::Strip_Out_Type<Import_Relationship>(settings,tokens,Token_Group::IMPORT_IMPLEMENTATION_RELATIONSHIP,Build_Implementation_Relationships);
+    part.relationships = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Relationship>(settings,tokens,Token_Group::IMPORT_IMPLEMENTATION_RELATIONSHIP,Build_Implementation_Relationships);
     return part;
 ❱
 
@@ -548,7 +548,7 @@ class
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Test_Import_Names<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Test_Specifiers<decltype(part)>);
     Get_And_Apply_Bindings(tokens,settings,part,Parser_Bindings::Build_Import_Test_Specifiers2<decltype(part)>);
-    part.relationships = Parser_Token_Stripper::Strip_Out_Type<Import_Relationship>(settings,tokens,Token_Group::IMPORT_TEST_RELATIONSHIP,Build_Test_Relationships);
+    part.relationships = Parser_Token_Stripper::Strip_Out_Type_V2<Import_Relationship>(settings,tokens,Token_Group::IMPORT_TEST_RELATIONSHIP,Build_Test_Relationships);
     return part;
 ❱
 
@@ -606,15 +606,15 @@ class
     
     
     //sub data member properties
-    part.comment_pair = Parser_Token_Stripper::Strip_Out_Type<Key_Value_Pair>(settings,tokens,Token_Group::DATA_MEMBER_KEY_VALUES,Build_Data_Member_Key_Value_Pair);
-    part.value_constraints = Parser_Token_Stripper::Strip_Out_Type<Value_Constraints>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_CONSTRAINTS,Build_Data_Member_Value_Constraints);
-    part.value_meaning = Parser_Token_Stripper::Strip_Out_Type<Value_Meaning>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_MEANING,Build_Data_Member_Value_Meaning);
-    part.value_transition_meaning = Parser_Token_Stripper::Strip_Out_Type<Value_Transition_Meaning>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_TRANSITION_MEANING,Build_Data_Member_Value_Transition_Meaning);
+    part.comment_pair = Parser_Token_Stripper::Strip_Out_Type_V2<Key_Value_Pair>(settings,tokens,Token_Group::DATA_MEMBER_KEY_VALUES,Build_Data_Member_Key_Value_Pair);
+    part.value_constraints = Parser_Token_Stripper::Strip_Out_Type_V2<Value_Constraints>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_CONSTRAINTS,Build_Data_Member_Value_Constraints);
+    part.value_meaning = Parser_Token_Stripper::Strip_Out_Type_V2<Value_Meaning>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_MEANING,Build_Data_Member_Value_Meaning);
+    part.value_transition_meaning = Parser_Token_Stripper::Strip_Out_Type_V2<Value_Transition_Meaning>(settings,tokens,Token_Group::DATA_MEMBER_VALUE_TRANSITION_MEANING,Build_Data_Member_Value_Transition_Meaning);
 	part.type_specializations = Parser_Token_Stripper::Strip_Out_Type_V2<Type_Specialization>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_SPECIALIZATIONS,Build_Data_Member_Type_Specializations);
-    part.module_dependencies = Parser_Token_Stripper::Strip_Out_Type<Module_Dependency>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_MODULE_DEPENDENCIES,Build_Data_Member_Type_Module_Dependencies);
-    part.library_dependencies = Parser_Token_Stripper::Strip_Out_Type<Library_Dependency>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_LIBRARY_DEPENDENCIES,Build_Data_Member_Type_Library_Dependencies);
-    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type<Scope_Specifier>(settings,tokens,Token_Group::DATA_MEMBER_SCOPE,Build_Data_Member_Type_Scope_Specifiers);
-    part.parent_types = Parser_Token_Stripper::Strip_Out_Type<Parent_Type>(settings,tokens,Token_Group::PARENT_TYPES,Build_Data_Member_Parent_Type);
+    part.module_dependencies = Parser_Token_Stripper::Strip_Out_Type_V2<Module_Dependency>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_MODULE_DEPENDENCIES,Build_Data_Member_Type_Module_Dependencies);
+    part.library_dependencies = Parser_Token_Stripper::Strip_Out_Type_V2<Library_Dependency>(settings,tokens,Token_Group::DATA_MEMBER_TYPE_LIBRARY_DEPENDENCIES,Build_Data_Member_Type_Library_Dependencies);
+    part.scope_specifiers = Parser_Token_Stripper::Strip_Out_Type_V2<Scope_Specifier>(settings,tokens,Token_Group::DATA_MEMBER_SCOPE,Build_Data_Member_Type_Scope_Specifiers);
+    part.parent_types = Parser_Token_Stripper::Strip_Out_Type_V2<Parent_Type>(settings,tokens,Token_Group::PARENT_TYPES,Build_Data_Member_Parent_Type);
     
     return part;
 ❱
