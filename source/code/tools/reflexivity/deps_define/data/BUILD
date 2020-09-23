@@ -21,6 +21,14 @@ hcp(
 hcp(
     name = "dependency_specifications_getter",
     deps = [
+        "//code/tools/reflexivity/deps_define/data:common_patch_cmds_getter",
+        "//code/tools/reflexivity/deps_define/data:dependency_specifications",
+    ],
+)
+
+hcp(
+    name = "common_patch_cmds_getter",
+    deps = [
         "//code/tools/reflexivity/deps_define/data:dependency_specifications",
     ],
 )
