@@ -3,6 +3,8 @@
 
 load("//bazel/deps/get:bazel.bzl", "bazel")
 load("//bazel/deps/get:buildtools.bzl", "buildtools")
+load("//bazel/deps/get:buildfarm.bzl", "buildfarm")
+load("//bazel/deps/get:remote_apis.bzl", "remoteApis")
 load("//bazel/deps/get:debian_stretch_amd64_sysroot.bzl", "debianStretchAmd64Sysroot")
 load("//bazel/deps/get:ubuntu_14_04_clang_10_sysroot.bzl", "ubuntu1404Clang10Sysroot")
 load("//bazel/deps/get:system.bzl", "system")
@@ -217,6 +219,8 @@ load("//bazel/deps/get:gkrellm.bzl", "gkrellm")
 def third_party_libraries():
     bazel()
     buildtools()
+    buildfarm()
+    remoteApis()
     debianStretchAmd64Sysroot()
     ubuntu1404Clang10Sysroot()
     system()
