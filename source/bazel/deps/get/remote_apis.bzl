@@ -13,7 +13,8 @@ def remoteApis():
             "https://github.com/Unilang/remote-apis/archive/f54876595da9f2c2d66c98c318d00b60fd64900b.tar.gz",
         ],
         patch_cmds = [
-            "find . -name 'BUILD' -type f -delete",
             "find . -name 'WORKSPACE' -type f -delete",
+            "find . -name 'BUILD' -type f -delete",
+            "find ./* -mindepth 1 -name 'BUILD.bazel' -type f -delete",
         ],
     )
