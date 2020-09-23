@@ -1,6 +1,7 @@
 class
 ❪iostream❫
 ❪algorithm❫
+❪cstdlib❫
 ❪"code/utilities/output/printers/lib"❫
 ❪"code/tools/repo_tools/bazel_profile_slow_cc_files/program_options/program_options"❫
 ❪"code/utilities/types/strings/observers/path/lib"❫
@@ -33,8 +34,8 @@ class
     for (auto const& it: durations){
         
         //data for sending
-        std::string dataset = "https://api.honeycomb.io/1/events/" + options.Honeycomb_Dataset();
-        std::string api_key = options.Honeycomb_API_Key();
+        std::string dataset = Get_Dataset_Url(options);
+        std::string api_key = Get_API_Key(options);
         
         std::string data = As_Minified_JSON_String(Flatten(it));
         
@@ -45,6 +46,18 @@ class
         }
     }
 ❱
+
+◀private: static▶ std::string ☀Get_Dataset_Url(Program_Options const& options)❰
+    std::string dataset = "https://api.honeycomb.io/1/events/" + options.Honeycomb_Dataset();
+    return dataset;
+❱
+◀private: static▶ std::string ☀Get_API_Key(Program_Options const& options)❰
+    if (!options.Honeycomb_API_Key().empty()){
+        return options.Honeycomb_API_Key().empty();
+    }
+    return std::getenv("HONEYCOMB_WRITE_KEY");
+❱
+
 
 ◀private: static▶ Flat_Owned_Duration_File ☀Flatten(Owned_Duration_File x)❰
     Flat_Owned_Duration_File result;
