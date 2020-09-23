@@ -12,4 +12,9 @@ def googleapis():
         urls = [
             "https://github.com/Unilang/googleapis/archive/3dbeac0d54125b123c8dfd39c774b37473c36944.tar.gz",
         ],
+        patch_cmds = [
+            "find . -name 'WORKSPACE' -type f -delete",
+            "find . -name 'BUILD' -type f -delete",
+            "find ./* -mindepth 1 -name 'BUILD.bazel' -type f -delete",
+        ],
     )

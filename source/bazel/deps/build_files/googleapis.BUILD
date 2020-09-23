@@ -6,3 +6,8 @@ proto_library(
     name = "google_api_http",
     srcs = ["google/api/http.proto"],
 )
+
+cc_proto_library(
+    name = "google_api_http_cc",
+    deps = [":google_api_http"],
+)
