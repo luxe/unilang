@@ -11,3 +11,11 @@ cc_proto_library(
     name = "google_api_http_cc",
     deps = [":google_api_http"],
 )
+
+proto_library(
+    name = "status",
+    srcs = ["google/rpc/status.proto"],
+    deps = [
+        "@com_google_protobuf//:any_proto",
+    ]
+)
