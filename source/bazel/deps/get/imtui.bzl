@@ -13,9 +13,9 @@ def imtui():
             "https://github.com/Unilang/imtui/archive/f4d4b1eb8e57770a7c329b8dc76127013fa31a11.tar.gz",
         ],
         patch_cmds = [
-            "find . -type f -name '*.h' -exec sed -i 's/imgui\\/imgui/imgui/g' {} \;",
-            "find . -type f -name '*.h' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \;",
-            "find . -type f -name '*.cpp' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \;",
+            "find . -type f -name '*.h' -exec sed -i 's/imgui\\/imgui/imgui/g' {} \\;",
+            "find . -type f -name '*.h' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \\;",
+            "find . -type f -name '*.cpp' -exec sed -i 's/<ncurses.h>/<curses.h>/g' {} \\;",
             "sed -i '/ImGui::InputFloat(\"Font offset\"/d' examples/imtui-demo.cpp",
         ],
     )

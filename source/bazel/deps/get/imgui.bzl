@@ -13,7 +13,7 @@ def imgui():
             "https://github.com/Unilang/imgui/archive/ec945f44b5eff1d82129233be5643abbff2845da.tar.gz",
         ],
         patch_cmds = [
-            "find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \;",
+            "find . -type f -name '*.h' -exec sed -i 's/typedef unsigned short ImDrawIdx;/typedef unsigned int ImDrawIdx;/g' {} \\;",
             "sed -i '1s/^/#include <cfloat>\\n/' imgui_internal.h",
             "sed -i '1s/^/#include <float.h>\\n/' imgui_internal.h",
             "sed -i '1s/^/#include <cfloat>\\n/' imgui.h",
