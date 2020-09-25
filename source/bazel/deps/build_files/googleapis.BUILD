@@ -27,9 +27,9 @@ cc_proto_library(
 
 proto_library(
     name = "status",
-    srcs = ["google/rpc/status.proto"],
+    srcs = [],
     deps = [
-        "@com_google_protobuf//:any_proto",
+        "@googleapis//google/rpc:status_proto",
     ],
 )
 
