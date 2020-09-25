@@ -11,4 +11,7 @@ def comGoogleProtobuf():
         urls = [
             "https://github.com/Unilang/protobuf/archive/66e3562aafce093d30473555248f22b3fdc88aad.tar.gz",
         ],
+        repo_mapping = {
+            "@zlib": "@zlib_internal",
+        },
     )

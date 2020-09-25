@@ -30,4 +30,6 @@ def protobuf():
             "https://github.com/unilang/rules_proto/archive/d86ca6bc56b1589677ec59abfa0bed784d6b7767.tar.gz",
             "https://github.com/stackb/rules_proto/archive/d86ca6bc56b1589677ec59abfa0bed784d6b7767.tar.gz",
         ],
+        repo_mapping = {
+        },
     )
