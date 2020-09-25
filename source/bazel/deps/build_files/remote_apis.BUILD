@@ -1,7 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 
 #load("@build_stack_rules_proto//cpp:cpp_proto_library.bzl", "cpp_proto_library")
-load("@bazel_remote_apis_imports//:imports.bzl", "cc_grpc_library", "go_library", "go_proto_library", "java_proto_library")
+#load("@bazel_remote_apis_imports//:imports.bzl", "cc_grpc_library", "go_library", "go_proto_library", "java_proto_library")
+load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 
 proto_library(
     name = "semver_proto",
