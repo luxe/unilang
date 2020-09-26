@@ -1,10 +1,10 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/image:png_to_x11_artifacts.bzl", "png_to_x11_artifacts")
-load("//bazel/cookbook/sound:mp3_artifact.bzl", "mp3_artifact")
-load("//bazel/cookbook/sound:wav_artifact.bzl", "wav_artifact")
-load("//bazel/cookbook/sound:mp3_to_wav.bzl", "mp3_to_wav")
-load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
+load("//bazel/rules/image:png_to_x11_artifacts.bzl", "png_to_x11_artifacts")
+load("//bazel/rules/sound:mp3_artifact.bzl", "mp3_artifact")
+load("//bazel/rules/sound:wav_artifact.bzl", "wav_artifact")
+load("//bazel/rules/sound:mp3_to_wav.bzl", "mp3_to_wav")
+load("//bazel/rules/data:distributable_data.bzl", "distributable_data")
 
 # https://downloads.khinsider.com/game-soundtracks/album/super-mario-bros.-1-3-anthology
 

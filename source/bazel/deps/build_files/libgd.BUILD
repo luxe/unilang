@@ -3,7 +3,7 @@
 # Description:
 #   GD is a library for the dynamic creation of images.
 
-load("@//bazel/cookbook/config:config.bzl", "cc_fix_config")
+load("@//bazel/rules/config:config.bzl", "cc_fix_config")
 
 licenses(["notice"])  # simple notice-style license
 

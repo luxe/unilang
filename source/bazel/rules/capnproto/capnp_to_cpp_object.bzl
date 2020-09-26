@@ -1,6 +1,6 @@
-load("//bazel/cookbook/capnproto:capnp_to_intermediate.bzl", "capnp_to_intermediate")
-load("//bazel/cookbook/capnproto:intermediate_to_cpp.bzl", "intermediate_to_cpp")
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/capnproto:capnp_to_intermediate.bzl", "capnp_to_intermediate")
+load("//bazel/rules/capnproto:intermediate_to_cpp.bzl", "intermediate_to_cpp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 def capnp_to_cpp_object(name, deps = []):
     capnp_to_intermediate(name = name)

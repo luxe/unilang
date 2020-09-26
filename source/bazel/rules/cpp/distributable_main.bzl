@@ -1,6 +1,6 @@
-load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("//bazel/rules/cpp:main.bzl", "cpp_main")
 load("@rules_pkg//:pkg.bzl", "pkg_deb", "pkg_tar")
-load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
+load("//bazel/rules/data:package_binaries.bzl", "package_binaries")
 
 def distributable_cpp_main(name, description, depends = [], deps = []):
     AMD_64_EXTENSION = "-debian-amd64"

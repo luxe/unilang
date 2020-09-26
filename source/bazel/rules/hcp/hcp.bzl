@@ -1,4 +1,4 @@
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 #using the boot-strapped hcp compiler built from hcp files
 def hcp(name, deps = [], data = []):

@@ -2,7 +2,7 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
 
 hcp(
     name = "ldd_results",

@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 cc_binary(
     name = "main",

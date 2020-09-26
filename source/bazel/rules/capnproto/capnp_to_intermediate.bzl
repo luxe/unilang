@@ -1,4 +1,4 @@
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 def capnp_to_intermediate(name, deps = []):
     #the file names to use

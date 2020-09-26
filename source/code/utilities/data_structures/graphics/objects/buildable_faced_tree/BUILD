@@ -1,9 +1,9 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
-load("//bazel/cookbook/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
-load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
+load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 enum_cpp(
     name = "buildable_label_action",

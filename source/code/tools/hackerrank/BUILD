@@ -1,8 +1,8 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
-load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
-load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+load("//bazel/rules/cpp:gtest.bzl", "gtest")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 gtest(
     name = "bst_swap_test",

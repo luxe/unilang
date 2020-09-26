@@ -1,7 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
-load("//bazel/cookbook/enum_cpp:enum_cpp.bzl", "enum_cpp")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 enum_cpp(
     name = "current_screen",

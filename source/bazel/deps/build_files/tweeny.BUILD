@@ -1,5 +1,5 @@
-load("@//bazel/cookbook/system:mv_file.bzl", "mv_file")
-load("@//bazel/cookbook/system:search_and_replace.bzl", "search_and_replace")
+load("@//bazel/rules/system:mv_file.bzl", "mv_file")
+load("@//bazel/rules/system:search_and_replace.bzl", "search_and_replace")
 
 # hacks because the dev used .tcc as an extension..
 # mv_file("tween_cpp","include/tween.tcc","include/tween.cpp")

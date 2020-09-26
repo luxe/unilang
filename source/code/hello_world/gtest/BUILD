@@ -1,4 +1,4 @@
-load("//bazel/cookbook/cpp:gtest.bzl", "gtest")
+load("//bazel/rules/cpp:gtest.bzl", "gtest")
 
 package(
     default_visibility = ["//visibility:public"],

@@ -1,11 +1,11 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
-load("//bazel/cookbook/cpp:distributable_main.bzl", "distributable_cpp_main")
-load("//bazel/cookbook/data:package_binaries.bzl", "package_binaries")
-load("//bazel/cookbook/data:distributable_data.bzl", "distributable_data")
-load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
+load("//bazel/rules/data:package_binaries.bzl", "package_binaries")
+load("//bazel/rules/data:distributable_data.bzl", "distributable_data")
+load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
 hcp(
     name = "meta_settings",

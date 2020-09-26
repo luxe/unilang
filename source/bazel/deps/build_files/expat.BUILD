@@ -1,6 +1,6 @@
 licenses(["notice"])  # MIT-style
 
-load("@//bazel/cookbook/system:mv_file.bzl", "mv_file")
+load("@//bazel/rules/system:mv_file.bzl", "mv_file")
 
 mv_file("xmlparse_c", "expat/lib/xmlparse.c", "xmlparse.c")
 

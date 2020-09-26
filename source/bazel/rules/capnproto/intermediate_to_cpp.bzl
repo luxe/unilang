@@ -1,4 +1,4 @@
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 def intermediate_to_cpp(name, deps = []):
     #the file names to use

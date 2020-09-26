@@ -1,6 +1,6 @@
-load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("//bazel/rules/cpp:main.bzl", "cpp_main")
 load("@rules_pkg//:pkg.bzl", "pkg_deb", "pkg_tar")
-load("//bazel/cookbook/data:package_data.bzl", "package_data")
+load("//bazel/rules/data:package_data.bzl", "package_data")
 
 def distributable_data(name, description, file_groups):
     EVERYTHING_EXTENSION = "-debian-all"

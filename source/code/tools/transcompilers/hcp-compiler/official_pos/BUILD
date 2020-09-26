@@ -1,6 +1,6 @@
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/hcp:bootstrap_hcp.bzl", "bootstrap_hcp")
+load("//bazel/rules/hcp:bootstrap_hcp.bzl", "bootstrap_hcp")
 
 bootstrap_hcp(
     name = "task_executer",

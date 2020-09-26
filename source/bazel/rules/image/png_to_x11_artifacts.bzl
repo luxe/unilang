@@ -1,9 +1,9 @@
-load("//bazel/cookbook/image:png_to_xpm.bzl", "png_to_xpm")
-load("//bazel/cookbook/image:xpm_to_ppm.bzl", "xpm_to_ppm")
-load("//bazel/cookbook/image:ppm_to_mask.bzl", "ppm_to_mask")
-load("//bazel/cookbook/image:ppm_to_xpm.bzl", "ppm_to_xpm")
-load("//bazel/cookbook/image:xpm_to_xbm.bzl", "xpm_to_xbm")
-load("//bazel/cookbook/image:png_mirror.bzl", "png_mirror")
+load("//bazel/rules/image:png_to_xpm.bzl", "png_to_xpm")
+load("//bazel/rules/image:xpm_to_ppm.bzl", "xpm_to_ppm")
+load("//bazel/rules/image:ppm_to_mask.bzl", "ppm_to_mask")
+load("//bazel/rules/image:ppm_to_xpm.bzl", "ppm_to_xpm")
+load("//bazel/rules/image:xpm_to_xbm.bzl", "xpm_to_xbm")
+load("//bazel/rules/image:png_mirror.bzl", "png_mirror")
 
 def png_to_x11_artifacts(name):
     png_to_xpm(name)

@@ -1,8 +1,8 @@
-load("//bazel/cookbook/cpp:main.bzl", "cpp_main")
+load("//bazel/rules/cpp:main.bzl", "cpp_main")
 
 package(default_visibility = ["//visibility:public"])
 
-load("//bazel/cookbook/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
 
 hcp(
     name = "a",

@@ -1,4 +1,4 @@
-load("//bazel/cookbook/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 def generate_unilang_token_files():
     native.genrule(
