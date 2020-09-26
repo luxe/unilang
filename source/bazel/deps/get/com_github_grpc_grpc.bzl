@@ -11,7 +11,4 @@ def comGithubGrpcGrpc():
         urls = [
             "https://github.com/Unilang/grpc/archive/ac6f3a78188ee157a38973e7847a02aba80f4d1f.tar.gz",
         ],
-        repo_mapping = {
-            "@zlib": "@zlib_internal",
-        },
     )

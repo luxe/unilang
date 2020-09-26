@@ -173,6 +173,6 @@ cc_library(
         "@libevent",
         "@libevent//:sys_event",
         "@system//:glib",
-        "@zlib_internal//:zlib",
+        "@zlib//:zlib",
     ],
 )

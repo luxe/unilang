@@ -130,6 +130,6 @@ cc_library(
     deps = [
         "@expat",
         "@freetype2",
-        "@zlib_internal//:zlib",
+        "@zlib//:zlib",
     ],
 )

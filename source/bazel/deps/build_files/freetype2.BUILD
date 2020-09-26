@@ -269,6 +269,6 @@ cc_library(
     deps = [
         "@libpng",
         "@openssl//:ssl",
-        "@zlib_internal//:zlib",
+        "@zlib//:zlib",
     ],
 )

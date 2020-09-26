@@ -11,6 +11,6 @@ cc_library(
     ],
     linkopts = [],
     deps = [
-        "@zlib_internal//:zlib",
+        "@zlib//:zlib",
     ],
 )
