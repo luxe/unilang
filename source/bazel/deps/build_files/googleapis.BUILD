@@ -47,13 +47,13 @@ proto_library(
     srcs = ["google/longrunning/operations.proto"],
     deps = [
         ":google_api_annotations_proto",
+        ":google_api_client_proto",
         ":google_api_http_proto",
         ":google_rpc_status_proto",
-        ":google_api_client_proto",
         "@com_google_protobuf//:any_proto",
-        "@com_google_protobuf//:empty_proto",
-        "@com_google_protobuf//:duration_proto",
         "@com_google_protobuf//:descriptor_proto",
+        "@com_google_protobuf//:duration_proto",
+        "@com_google_protobuf//:empty_proto",
     ],
 )
 
@@ -65,9 +65,9 @@ cc_grpc_library(
     well_known_protos = True,
     deps = [
         ":google_api_annotations_cc_proto",
+        ":google_api_client_cc_proto",
         ":google_api_http_cc_proto",
         ":google_rpc_status_cc_proto",
-        ":google_api_client_cc_proto",
     ],
 )
 
@@ -85,7 +85,6 @@ cc_grpc_library(
     well_known_protos = True,
     deps = [],
 )
-
 
 proto_library(
     name = "google_api_client_proto",

@@ -1,7 +1,8 @@
-#These rules were copied from:  
+#These rules were copied from:
 #https://github.com/bazelbuild/remote-apis
 #They use some googleapis targets which were also taken from that repo
 package(default_visibility = ["//visibility:public"])
+
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 
 proto_library(
