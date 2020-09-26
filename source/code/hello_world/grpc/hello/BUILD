@@ -28,10 +28,8 @@ cc_grpc_library(
 cc_binary(
     name = "greeter_client",
     srcs = ["greeter_client.cc"],
-    #defines = ["BAZEL_BUILD"],
     deps = [
         ":helloworld_cc_grpc",
-        # "//:grpc++",
         "@com_github_grpc_grpc//:grpc++",
     ],
 )
@@ -56,16 +54,15 @@ cc_binary(
 #     ],
 # )
 
-# cc_binary(
-#     name = "greeter_server",
-#     srcs = ["cpp/helloworld/greeter_server.cc"],
-#     defines = ["BAZEL_BUILD"],
-#     deps = [
-#         ":helloworld_cc_grpc",
-#         "//:grpc++",
-#         "//:grpc++_reflection",
-#     ],
-# )
+cc_binary(
+    name = "greeter_server",
+    srcs = ["greeter_server.cc"],
+    deps = [
+        ":helloworld_cc_grpc",
+        "@com_github_grpc_grpc//:grpc++",
+        "@com_github_grpc_grpc//:grpc++_reflection",
+    ],
+)
 
 # cc_binary(
 #     name = "greeter_async_server",
