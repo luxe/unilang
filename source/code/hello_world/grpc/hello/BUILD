@@ -27,8 +27,8 @@ cc_grpc_library(
 
 cc_binary(
     name = "greeter_client",
-    srcs = ["cpp/helloworld/greeter_client.cc"],
-    defines = ["BAZEL_BUILD"],
+    srcs = ["greeter_client.cc"],
+    #defines = ["BAZEL_BUILD"],
     deps = [
         ":helloworld_cc_grpc",
         # "//:grpc++",
