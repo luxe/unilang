@@ -34,25 +34,23 @@ cc_binary(
     ],
 )
 
-# cc_binary(
-#     name = "greeter_async_client",
-#     srcs = ["cpp/helloworld/greeter_async_client.cc"],
-#     defines = ["BAZEL_BUILD"],
-#     deps = [
-#         ":helloworld_cc_grpc",
-#         "//:grpc++",
-#     ],
-# )
+cc_binary(
+    name = "greeter_async_client",
+    srcs = ["greeter_async_client.cc"],
+    deps = [
+        ":helloworld_cc_grpc",
+        "@com_github_grpc_grpc//:grpc++",
+    ],
+)
 
-# cc_binary(
-#     name = "greeter_async_client2",
-#     srcs = ["cpp/helloworld/greeter_async_client2.cc"],
-#     defines = ["BAZEL_BUILD"],
-#     deps = [
-#         ":helloworld_cc_grpc",
-#         "//:grpc++",
-#     ],
-# )
+cc_binary(
+    name = "greeter_async_client2",
+    srcs = ["greeter_async_client2.cc"],
+    deps = [
+        ":helloworld_cc_grpc",
+        "@com_github_grpc_grpc//:grpc++",
+    ],
+)
 
 cc_binary(
     name = "greeter_server",
@@ -64,12 +62,11 @@ cc_binary(
     ],
 )
 
-# cc_binary(
-#     name = "greeter_async_server",
-#     srcs = ["cpp/helloworld/greeter_async_server.cc"],
-#     defines = ["BAZEL_BUILD"],
-#     deps = [
-#         ":helloworld_cc_grpc",
-#         "//:grpc++",
-#     ],
-# )
+cc_binary(
+    name = "greeter_async_server",
+    srcs = ["greeter_async_server.cc"],
+    deps = [
+        ":helloworld_cc_grpc",
+        "@com_github_grpc_grpc//:grpc++",
+    ],
+)
