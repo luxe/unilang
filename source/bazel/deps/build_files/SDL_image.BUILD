@@ -57,7 +57,7 @@ cc_library(
         "@libjpeg",
         "@libpng",
         "@sdl2",
-        "@zlib//:zlib",
+        "@zlib",
     ],
 )
 
