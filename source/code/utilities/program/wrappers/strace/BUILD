@@ -5,9 +5,10 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
-    name = "tshark_spawner",
+    name = "network_ip_getter",
     deps = [
         "//code/utilities/program/call:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
     ],
 )
 
