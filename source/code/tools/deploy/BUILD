@@ -39,5 +39,6 @@ hcp(
         "//code/utilities/program/wrappers/git/update:git_updater",
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/tools/repo_tools/bazel_network_sync:bazel_network_sync_documentation_getter",
     ],
 )
