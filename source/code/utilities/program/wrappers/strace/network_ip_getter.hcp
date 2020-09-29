@@ -3,11 +3,28 @@ class
 ❪iostream❫
 ❪"code/utilities/program/call/lib"❫
 ❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/char/lib"❫
 ⚯
 ⚞⚟
 
-◀public: static▶ std::vector<std::string> ☀Spawn_And_Get_Results_When_Killed(std::string const& traced_command)❰
-    std::string command = "strace -f -e trace=network " + traced_command + " | grep -oP 'connect.*inet_addr\(\\"\K[^\\"]+'";
+◀public: static▶ std::vector<std::string> ☀Get_Ips(std::string const& traced_command)❰
+
+    //build command
+    std::string command = "strace -f -e trace=network " + traced_command + " | grep -oP ";
+    command += Get_Single_Quote();
+    command += "connect.*inet_addr";
+    command += Get_Back_Slash();
+    command += "(";
+    command += Get_Double_Quote();
+    command += Get_Back_Slash();
+    command += "K[^";
+    command += Get_Double_Quote();
+    command += "]+";
+    command += Get_Single_Quote();
+    
+    std::cout << command << std::endl;
+    
+    
     auto result = execute(command);
     return Put_Each_Line_Of_String_Into_A_Vector(result);
 ❱

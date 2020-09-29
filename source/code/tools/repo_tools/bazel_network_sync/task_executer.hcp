@@ -4,6 +4,8 @@ class
 ❪"code/tools/repo_tools/bazel_network_sync/program_options/program_options"❫
 ⚯
 ❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/program/wrappers/strace/network_ip_getter"❫
 ⚞⚟
 
 
@@ -18,5 +20,12 @@ class
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
 
-
+    //build sync command
+    std::string command = repo_context.program_to_run_build + " sync 2>&1 ";
+    auto ips = Network_Ip_Getter::Get_Ips(command);
+    Sort_And_Remove_Duplicates(ips);
+    std::cout << ips.size() << " found." << std::endl;
+    for (auto const& it: ips){
+        std::cout << it << std::endl;
+    }
 ❱

@@ -9,6 +9,7 @@ hcp(
     deps = [
         "//code/tools/repo_tools/bazel_network_sync/program_options:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
+        "//code/utilities/program/wrappers/strace:network_ip_getter",
     ],
 )
 
@@ -20,6 +21,7 @@ distributable_cpp_main(
     deps = [
         "//code/tools/repo_tools/bazel_network_sync:task_executer",
         "//code/tools/repo_tools/bazel_network_sync/program_options:lib",
+        "//code/utilities/types/vectors/transformers:lib",
     ],
 )
 
