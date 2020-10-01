@@ -11,6 +11,9 @@ hcp(
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
         "//code/utilities/program/wrappers/strace:network_ip_getter",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
+        "//code/utilities/build/build_repo_establisher:build_repo_settings",
+        "@bazel//:workspace_log_proto_cpp",
+        "//code/utilities/program/wrappers/bazel/sync:bazel_sync_logger",
     ],
 )
 

@@ -1,8 +1,14 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "code/utilities/formats/json/functions/lib.hpp"
 #include <google/protobuf/util/json_util.h>
+#include <google/protobuf/util/delimited_message_util.h>
+#include <google/protobuf/io/zero_copy_stream_impl.h>
+#include <google/protobuf/util/delimited_message_util.h>
 
 template <typename T>
 void Serialize(T const& t, std::string const& path){
@@ -37,4 +43,44 @@ std::vector<T> Deserialize_Multiple_From_Json_File(std::string const& path){
     }
     
     return results;
+}
+
+template <typename T>
+std::vector<T> Deserialize_Multiple_Protos_From_Bin_File(std::string const& filename){
+    int infd = open(filename.c_str(), O_RDONLY);
+
+    google::protobuf::io::FileInputStream fin(infd);
+    bool keep = true;
+    bool clean_eof = true;
+    std::vector<T> out;
+
+    while (keep) {
+        T msg;
+        keep = google::protobuf::util::ParseDelimitedFromZeroCopyStream(
+            &msg, &fin, nullptr);
+        if (keep)
+            out.push_back(msg);
+    }
+    fin.Close();
+    close(infd);
+    return out;
+}
+
+template <typename T>
+bool Serialize_Multiple_Protos_To_Bin_File(std::vector<T> messages, std::string filename) {
+    int outfd = open(filename.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
+    google::protobuf::io::FileOutputStream fout(outfd);
+
+    bool success;
+    for (auto msg: messages) {
+        success = google::protobuf::util::SerializeDelimitedToZeroCopyStream(
+            msg, &fout);
+        if (! success) {
+            std::cout << "Writing Failed" << std::endl;
+            break;
+        }
+    }
+    fout.Close();
+    close(outfd);
+    return success;
 }
