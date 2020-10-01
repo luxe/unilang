@@ -20,6 +20,9 @@
 //http://andescotia.com/products/marten/
 //https://divan.dev/posts/visual_programming_go/
 
+//community:
+//https://www.reddit.com/r/nosyntax/
+
 
 
 //optional thread pool on drawing grid
