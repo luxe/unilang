@@ -77,8 +77,9 @@ std::string Prepend_Cd_Path(std::string const& program_execution, std::string co
 std::string Prepend_Cd_Path_Unless_Its_Dot(std::string const& program_execution, std::string const& path)
 {
     if (path != "."){
-        Prepend_Cd_Path(program_execution, path);
+        return Prepend_Cd_Path(program_execution, path);
     }
+    return program_execution;
 }
 
 std::string Replace_File_Name(std::string const& path, std::string const& new_file_name)

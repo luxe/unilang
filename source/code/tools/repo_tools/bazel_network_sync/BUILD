@@ -10,6 +10,7 @@ hcp(
         "//code/tools/repo_tools/bazel_network_sync/program_options:lib",
         "//code/utilities/build/build_repo_establisher:build_repo_establisher",
         "//code/utilities/program/wrappers/strace:network_ip_getter",
+        "//code/utilities/program/wrappers/bazel:bazel_runner",
     ],
 )
 

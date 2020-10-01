@@ -6,6 +6,7 @@ class
 ❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/program/wrappers/strace/network_ip_getter"❫
+❪"code/utilities/program/wrappers/bazel/bazel_runner"❫
 ⚞⚟
 
 
@@ -22,10 +23,18 @@ class
 
     //build sync command
     std::string command = repo_context.program_to_run_build + " sync 2>&1 ";
-    auto ips = Network_Ip_Getter::Get_Ips(command);
-    Sort_And_Remove_Duplicates(ips);
-    std::cout << ips.size() << " found." << std::endl;
-    for (auto const& it: ips){
-        std::cout << it << std::endl;
-    }
+    
+    //strategy 1:
+    //run, extract, and print IPs
+    // auto ips = Network_Ip_Getter::Get_Ips(command);
+    // Sort_And_Remove_Duplicates(ips);
+    // std::cout << ips.size() << " found." << std::endl;
+    // for (auto const& it: ips){
+    //     std::cout << it << std::endl;
+    // }
+    
+    //strategy 2:
+    Bazel_Runner::Get_Sync_Information(repo_context.program_to_run_build,
+                                       repo_context.build_settings,
+                                       repo_context.bazel_setup_settings.config_settings);
 ❱
