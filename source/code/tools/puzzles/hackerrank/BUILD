@@ -7,13 +7,13 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 gtest(
     name = "bst_swap_test",
     deps = [
-        "//code/tools/hackerrank:bst_swap_algorithm",
-        "//code/tools/hackerrank:bst_swap_solution",
-        "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
-        "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
-        "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
-        "//code/tools/hackerrank:bst_swap_solution_in_out",
-        "//code/tools/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_algorithm",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_five_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_four_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_three_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_in_out",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
         "//code/utilities/data_structures/tree/bst:binary_nodes",
         "//code/utilities/types/tree/bst:prebuilt_bst_trees",
         "//code/utilities/types/tree/bst:tree_traversal",
@@ -86,7 +86,7 @@ hcp(
 hcp(
     name = "bst_swap_solution_morris_hickey",
     deps = [
-        "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_five_ptrs",
         "//code/utilities/data_structures/tree/bst:binary_node",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/tree/bst:annotated_bst_fix",
@@ -99,13 +99,13 @@ hcp(
 hcp(
     name = "bst_swap_solution",
     deps = [
-        "//code/tools/hackerrank:bst_swap_algorithm",
-        "//code/tools/hackerrank:bst_swap_solution_geeks_five_ptrs",
-        "//code/tools/hackerrank:bst_swap_solution_geeks_four_ptrs",
-        "//code/tools/hackerrank:bst_swap_solution_geeks_three_ptrs",
-        "//code/tools/hackerrank:bst_swap_solution_in_out",
-        "//code/tools/hackerrank:bst_swap_solution_morris_hickey",
-        "//code/tools/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_algorithm",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_five_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_four_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_geeks_three_ptrs",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_in_out",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_morris_hickey",
+        "//code/tools/puzzles/hackerrank:bst_swap_solution_sliding_window_two_ptrs",
         "//code/utilities/types/tree/bst:tree_traversal",
     ],
 )

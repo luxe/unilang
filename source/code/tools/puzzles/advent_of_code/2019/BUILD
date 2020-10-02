@@ -6,16 +6,16 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "task_executer",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
-        "//code/tools/advent_of_code:day_1",
-        "//code/tools/advent_of_code:day_2",
-        "//code/tools/advent_of_code:day_3",
-        "//code/tools/advent_of_code:day_4",
-        "//code/tools/advent_of_code:day_5",
-        "//code/tools/advent_of_code:day_6",
-        "//code/tools/advent_of_code:day_7",
-        "//code/tools/advent_of_code:day_8",
-        "//code/tools/advent_of_code:day_9",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:day_1",
+        "//code/tools/puzzles/advent_of_code/2019:day_2",
+        "//code/tools/puzzles/advent_of_code/2019:day_3",
+        "//code/tools/puzzles/advent_of_code/2019:day_4",
+        "//code/tools/puzzles/advent_of_code/2019:day_5",
+        "//code/tools/puzzles/advent_of_code/2019:day_6",
+        "//code/tools/puzzles/advent_of_code/2019:day_7",
+        "//code/tools/puzzles/advent_of_code/2019:day_8",
+        "//code/tools/puzzles/advent_of_code/2019:day_9",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -62,9 +62,9 @@ hcp(
 hcp(
     name = "int_code_computer",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
-        "//code/tools/advent_of_code:int_code_computer_state",
-        "//code/tools/advent_of_code:int_code_instruction",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:int_code_computer_state",
+        "//code/tools/puzzles/advent_of_code/2019:int_code_instruction",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -107,7 +107,7 @@ hcp(
 hcp(
     name = "day_1",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -135,8 +135,8 @@ hcp(
 hcp(
     name = "day_2",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
-        "//code/tools/advent_of_code:int_code_computer",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -164,7 +164,7 @@ hcp(
 hcp(
     name = "day_3",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -190,7 +190,7 @@ hcp(
 hcp(
     name = "day_4",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -216,8 +216,8 @@ hcp(
 hcp(
     name = "day_5",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
-        "//code/tools/advent_of_code:int_code_computer",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -244,7 +244,7 @@ hcp(
 hcp(
     name = "day_6",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -271,8 +271,8 @@ hcp(
 hcp(
     name = "day_7",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
-        "//code/tools/advent_of_code:int_code_computer",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -299,7 +299,7 @@ hcp(
 hcp(
     name = "day_8",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -327,8 +327,8 @@ hcp(
 hcp(
     name = "day_9",
     deps = [
-        "//code/tools/advent_of_code:advent_of_code_input_getter",
-        "//code/tools/advent_of_code:int_code_computer",
+        "//code/tools/puzzles/advent_of_code/2019:advent_of_code_input_getter",
+        "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -357,5 +357,5 @@ hcp(
 cc_binary(
     name = "main",
     srcs = ["main.cpp"],
-    deps = ["//code/tools/advent_of_code:task_executer"],
+    deps = ["//code/tools/puzzles/advent_of_code/2019:task_executer"],
 )
