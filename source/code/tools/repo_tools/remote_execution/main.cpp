@@ -15,6 +15,14 @@ using grpc::Status;
 
 // Logic and data behind the server's behavior.
 class ExecutionServiceImpl final : public build::bazel::remote::execution::v2::Execution::Service {
+
+    grpc::Status Execute(grpc::ServerContext* context, const build::bazel::remote::execution::v2::ExecuteRequest* request, grpc::ServerWriter< ::google::longrunning::Operation>* writer){
+        return grpc::Status::OK;
+    }
+    
+    grpc::Status WaitExecution(grpc::ServerContext* context, const build::bazel::remote::execution::v2::WaitExecutionRequest* request, grpc::ServerWriter< ::google::longrunning::Operation>* writer){
+        return grpc::Status::OK;
+    }
 };
 
 int main(){
