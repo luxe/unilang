@@ -14,14 +14,8 @@ using grpc::ServerContext;
 using grpc::Status;
 
 // Logic and data behind the server's behavior.
-// class GreeterServiceImpl final : public Greeter::Service {
-//   Status SayHello(ServerContext* context, const HelloRequest* request,
-//                   HelloReply* reply) override {
-//     std::string prefix("Hello ");
-//     reply->set_message(prefix + request->name());
-//     return Status::OK;
-//   }
-// };
+class ExecutionServiceImpl final : public build::bazel::remote::execution::v2::Execution::Service {
+};
 
 int main(){
 }
