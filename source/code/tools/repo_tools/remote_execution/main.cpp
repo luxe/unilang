@@ -29,7 +29,28 @@ class ActionCacheService final : public build::bazel::remote::execution::v2::Act
         return grpc::Status::OK;
     }
 };
-class ContentAddressableStorage final : public build::bazel::remote::execution::v2::ContentAddressableStorage::Service {
+class ContentAddressableStorageService final : public build::bazel::remote::execution::v2::ContentAddressableStorage::Service {
+    grpc::Status FindMissingBlobs(grpc::ServerContext* context, const build::bazel::remote::execution::v2::FindMissingBlobsRequest* request, build::bazel::remote::execution::v2::FindMissingBlobsResponse* response){
+        return grpc::Status::OK;
+    }
+    
+    grpc::Status BatchUpdateBlobs(grpc::ServerContext* context, const build::bazel::remote::execution::v2::BatchUpdateBlobsRequest* request, build::bazel::remote::execution::v2::BatchUpdateBlobsResponse* response){
+        return grpc::Status::OK;
+    }
+    
+    grpc::Status BatchReadBlobs(grpc::ServerContext* context, const build::bazel::remote::execution::v2::BatchReadBlobsRequest* request, build::bazel::remote::execution::v2::BatchReadBlobsResponse* response){
+        return grpc::Status::OK;
+    }
+
+    grpc::Status GetTree(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetTreeRequest* request, grpc::ServerWriter< build::bazel::remote::execution::v2::GetTreeResponse>* writer){
+        return grpc::Status::OK;
+    }
+};
+class CapabilitiesService final : public build::bazel::remote::execution::v2::Capabilities::Service {
+    
+    grpc::Status GetCapabilities(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetCapabilitiesRequest* request, build::bazel::remote::execution::v2::ServerCapabilities* response){
+        return grpc::Status::OK;
+    }
 };
 
 
