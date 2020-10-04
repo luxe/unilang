@@ -19,6 +19,7 @@ hcp(
         "//code/tools/games/mario:mario_documentation_getter",
         "//code/tools/gcalviz:gcalviz_documentation_getter",
         "//code/tools/noogle:noogle_documentation_getter",
+        "//code/tools/repo_tools/bazel_network_sync:bazel_network_sync_documentation_getter",
         "//code/tools/repo_tools/bazel_profile_slow_cc_files:bazel_profile_slow_cc_files_documentation_getter",
         "//code/tools/repo_tools/build_determinism:build_determinism_documentation_getter",
         "//code/tools/repo_tools/build_tools:build_tools_documentation_getter",
@@ -39,6 +40,5 @@ hcp(
         "//code/utilities/program/wrappers/git/update:git_updater",
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/tools/repo_tools/bazel_network_sync:bazel_network_sync_documentation_getter",
     ],
 )

@@ -8,8 +8,8 @@ hcp(
     name = "bazel_sync_logger",
     deps = [
         "//code/utilities/build/build_repo_establisher:build_repo_settings",
-        "//code/utilities/types/vectors/transformers:lib",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
+        "//code/utilities/types/vectors/transformers:lib",
         "@bazel//:workspace_log_proto_cpp",
     ],
 )

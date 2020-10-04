@@ -8,9 +8,7 @@ hcp(
     name = "network_ip_getter",
     deps = [
         "//code/utilities/program/call:lib",
-        "//code/utilities/types/strings/observers/converting:lib",
         "//code/utilities/types/char:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
     ],
 )
-
-

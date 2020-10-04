@@ -49,8 +49,8 @@ hcp(
         "//code/utilities/program/call:lib",
         "//code/utilities/program/inputs/flags:flag_util",
         "//code/utilities/program/inputs/flags/data:flags",
-        "//code/utilities/program/wrappers/bazel:build_settings",
         "//code/utilities/program/wrappers/bazel:bazel_flags_adder",
+        "//code/utilities/program/wrappers/bazel:build_settings",
         "//code/utilities/program/wrappers/bazel:run_environment",
         "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_settings",
         "//code/utilities/random:lib",
@@ -67,9 +67,9 @@ hcp(
 hcp(
     name = "bazel_flags_adder",
     deps = [
+        "//code/utilities/program/inputs/flags:flag_util",
+        "//code/utilities/program/inputs/flags/data:flags",
         "//code/utilities/program/wrappers/bazel:build_settings",
         "//code/utilities/program/wrappers/bazel/setup/config:bazel_config_settings",
-        "//code/utilities/program/inputs/flags/data:flags",
-        "//code/utilities/program/inputs/flags:flag_util",
     ],
 )
