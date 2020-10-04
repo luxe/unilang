@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <iostream>
+#include <string>
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -29,6 +30,18 @@ T Deserialize(std::string const& path){
         std::cerr << "failed to deserialize" << std::endl;
     }
     return t;
+}
+
+
+template <typename T>
+std::string Protobuf_Message_To_Json(T const& t){
+    google::protobuf::util::JsonPrintOptions options;
+    options.add_whitespace = true;
+    options.always_print_primitive_fields = true;
+    options.preserve_proto_field_names = true;
+    std::string str;
+    MessageToJsonString(t, &str, options);
+    return str;
 }
 
 template <typename T>

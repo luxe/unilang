@@ -5,8 +5,8 @@
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/health_check_service_interface.h>
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
-
 #include "build/bazel/remote/execution/v2/remote_execution.grpc.pb.h"
+#include "code/utilities/formats/serialization/protobuf.hpp"
 
 // Logic and data behind the server's behavior.
 class ExecutionService final : public build::bazel::remote::execution::v2::Execution::Service {
@@ -49,6 +49,7 @@ class ContentAddressableStorageService final : public build::bazel::remote::exec
 class CapabilitiesService final : public build::bazel::remote::execution::v2::Capabilities::Service {
     
     grpc::Status GetCapabilities(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetCapabilitiesRequest* request, build::bazel::remote::execution::v2::ServerCapabilities* response){
+        std::cout << Protobuf_Message_To_Json(*request) << std::endl;
         return grpc::Status::OK;
     }
 };
