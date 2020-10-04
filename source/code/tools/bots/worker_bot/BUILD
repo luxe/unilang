@@ -23,7 +23,7 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     deps = [
-        "//code/tools/worker_bot",
+        "//code/tools/bots/worker_bot",
         "//code/utilities/program/call:lib",
     ],
 )

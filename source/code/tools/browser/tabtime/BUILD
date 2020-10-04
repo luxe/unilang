@@ -12,7 +12,7 @@ cc_binary(
     name = "tabtime",
     srcs = ["tabtime.cpp"],
     deps = [
-        "//code/tools/tabtime:tabtime_runner",
+        "//code/tools/browser/tabtime:tabtime_runner",
     ],
 )
 

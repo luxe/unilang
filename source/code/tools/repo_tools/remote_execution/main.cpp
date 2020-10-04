@@ -20,6 +20,21 @@ class ExecutionService final : public build::bazel::remote::execution::v2::Execu
     }
 };
 
+class ActionCacheService final : public build::bazel::remote::execution::v2::ActionCache::Service {
+    grpc::Status GetActionResult(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
+        return grpc::Status::OK;
+    }
+    
+    grpc::Status UpdateActionResult(grpc::ServerContext* context, const build::bazel::remote::execution::v2::UpdateActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
+        return grpc::Status::OK;
+    }
+};
+class ContentAddressableStorage final : public build::bazel::remote::execution::v2::ContentAddressableStorage::Service {
+};
+
+
+
+
 void RunServer() {
   std::string server_address("0.0.0.0:50051");
   ExecutionService service;
