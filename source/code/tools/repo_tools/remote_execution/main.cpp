@@ -13,5 +13,14 @@ int main(int argc, char** argv) {
   x.enable_default_health_check_service = true;
   x.address = "0.0.0.0:50051";
   
-  Server::BuildAndRun(x);
+  std::cout << "1" << std::endl;
+  auto server = Server::BuildAndRun(x);
+  std::cout << "2" << std::endl;
+  
+  
+  std::cout << "Server listening on " << x.address << std::endl;
+
+  // Wait for the server to shutdown. Note that some other thread must be
+  // responsible for shutting down the server for this call to ever return.
+  server->Wait();
 }
