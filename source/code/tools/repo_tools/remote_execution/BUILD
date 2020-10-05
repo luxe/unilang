@@ -9,5 +9,7 @@ cc_binary(
         "@remote_apis//:remote_execution_cc_proto",
         "//code/utilities/formats/serialization:protobuf",
         "//code/tools/repo_tools/remote_execution/server:server_settings",
+        "//code/tools/repo_tools/remote_execution/server:server",
+        "//code/utilities/remote_execution/services:grpc_glue",
     ],
 )
