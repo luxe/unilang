@@ -64,7 +64,6 @@ std::vector<T> Deserialize_Multiple_Protos_From_Bin_File(std::string const& file
 
     google::protobuf::io::FileInputStream fin(infd);
     bool keep = true;
-    bool clean_eof = true;
     std::vector<T> out;
 
     while (keep) {
