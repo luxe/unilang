@@ -9,25 +9,61 @@
 #include "code/utilities/formats/serialization/protobuf.hpp"
 #include "code/tools/repo_tools/remote_execution/server/server_settings.hpp"
 
-// Logic and data behind the server's behavior.
+//GRPC Glue
+template <
+typename ExecuteFunImpl,
+typename WaitExecutionFunImpl
+>
 class ExecutionService final : public build::bazel::remote::execution::v2::Execution::Service {
 
+    //functions to implement
+    public:
+    ExecuteFunImpl ExecuteFun;
+    WaitExecutionFunImpl WaitExecutionFun;
+    
+    //constructor
+    ExecutionService(ExecuteFunImpl ExecuteFun,
+    WaitExecutionFunImpl WaitExecutionFun):
+    ExecuteFun(ExecuteFun),
+    WaitExecutionFun(WaitExecutionFun)
+    {}
+    
+    //function forwarding
     grpc::Status Execute(grpc::ServerContext* context, const build::bazel::remote::execution::v2::ExecuteRequest* request, grpc::ServerWriter<google::longrunning::Operation>* writer){
-        return grpc::Status::OK;
+        return ExecuteFun(context,request,writer);
     }
     
     grpc::Status WaitExecution(grpc::ServerContext* context, const build::bazel::remote::execution::v2::WaitExecutionRequest* request, grpc::ServerWriter<google::longrunning::Operation>* writer){
-        return grpc::Status::OK;
+        return WaitExecutionFun(context,request,writer);
     }
 };
 
+
+template <
+typename GetActionResultFunImpl,
+typename UpdateActionResultFunImpl
+>
 class ActionCacheService final : public build::bazel::remote::execution::v2::ActionCache::Service {
+  
+    //functions to implement
+    public:
+    GetActionResultFunImpl GetActionResultFun;
+    UpdateActionResultFunImpl UpdateActionResultFun;
+    
+    //constructor
+    ActionCacheService(GetActionResultFunImpl GetActionResultFun,
+    UpdateActionResultFunImpl UpdateActionResultFun):
+    GetActionResultFun(GetActionResultFun),
+    UpdateActionResultFun(UpdateActionResultFun)
+    {}
+    
+    //function forwarding
     grpc::Status GetActionResult(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
-        return grpc::Status::OK;
+        return GetActionResultFun(context,request,response);
     }
     
     grpc::Status UpdateActionResult(grpc::ServerContext* context, const build::bazel::remote::execution::v2::UpdateActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
-        return grpc::Status::OK;
+        return UpdateActionResultFun(context,request,response);
     }
 };
 
@@ -57,6 +93,7 @@ class ContentAddressableStorageService final : public build::bazel::remote::exec
     GetTreeFun(GetTreeFun)
     {}
     
+    //function forwarding
     grpc::Status FindMissingBlobs(grpc::ServerContext* context, const build::bazel::remote::execution::v2::FindMissingBlobsRequest* request, build::bazel::remote::execution::v2::FindMissingBlobsResponse* response){
         return FindMissingBlobsFun(context,request,response);
     }
@@ -86,7 +123,7 @@ class CapabilitiesService final : public build::bazel::remote::execution::v2::Ca
     GetCapabilitiesFun(GetCapabilitiesFun)
     {}
     
-    //forwarding calls
+    //function forwarding
     grpc::Status GetCapabilities(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetCapabilitiesRequest* request, build::bazel::remote::execution::v2::ServerCapabilities* response){
         return GetCapabilitiesFun(context,request,response);
     }
@@ -113,9 +150,23 @@ void RunServer() {
   
   
   //add all of the individual services from the proto definitions
-  ExecutionService execution_service;
-  ActionCacheService action_cache_service;
+  ExecutionService execution_service(
+  [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::ExecuteRequest* request, grpc::ServerWriter<google::longrunning::Operation>* writer){
+    return grpc::Status::OK;
+  },
+  [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::WaitExecutionRequest* request, grpc::ServerWriter<google::longrunning::Operation>* writer){
+    return grpc::Status::OK;
+  }
+  );
   
+  ActionCacheService action_cache_service(
+  [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
+    return grpc::Status::OK;
+  },
+  [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::UpdateActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
+    return grpc::Status::OK;
+  }
+  );
   
   ContentAddressableStorageService content_addressable_storage_service(
   [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::FindMissingBlobsRequest* request, build::bazel::remote::execution::v2::FindMissingBlobsResponse* response){
