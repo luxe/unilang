@@ -13,6 +13,7 @@ class
 ❪"code/utilities/remote_execution/services/grpc_glue"❫
 ❪"code/utilities/output/logging/debug_spdlog"❫
 ❪"code/tools/repo_tools/remote_execution/server/capabilities/capabilities_endpoint"❫
+❪"code/tools/repo_tools/remote_execution/server/action_cache/action_cache_endpoint"❫
 ⚯
 ⚞⚟
 
@@ -52,13 +53,10 @@ class
   
   ActionCacheService action_cache_service(
   [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
-    SPDLOG_DEBUG("in:" + Protobuf_Message_To_Inline_Json(*request));
-    
-    SPDLOG_DEBUG("out:" + Protobuf_Message_To_Inline_Json(*response));
-    return grpc::Status::OK;
+    return Action_Cache_Endpoint::GetActionResult(settings,context,request,response);
   },
   [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::UpdateActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
-    return grpc::Status::OK;
+    return Action_Cache_Endpoint::UpdateActionResult(settings,context,request,response);
   }
   );
   

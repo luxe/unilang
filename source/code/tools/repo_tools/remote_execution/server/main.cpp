@@ -8,8 +8,9 @@
 
 int main(int argc, char** argv) {
   
-  //grpc settings
   Server_Settings x;
+  
+  //grpc settings
   x.enable_default_health_check_service = true;
   
   //make sure clients do:

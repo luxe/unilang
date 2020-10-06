@@ -19,6 +19,7 @@ hcp(
         "@semver",
         "//code/utilities/output/logging:debug_spdlog",
         "//code/tools/repo_tools/remote_execution/server/capabilities:capabilities_endpoint",
+        "//code/tools/repo_tools/remote_execution/server/action_cache:action_cache_endpoint",
 ])
 
 cc_binary(
