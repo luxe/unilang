@@ -11,12 +11,15 @@ class
 ❪"code/utilities/formats/serialization/protobuf"❫
 ❪"code/tools/repo_tools/remote_execution/server/server_settings"❫
 ❪"code/utilities/remote_execution/services/grpc_glue"❫
-❪"code/tools/repo_tools/remote_execution/server/server_capabilities_getter"❫
+❪"code/utilities/output/logging/debug_spdlog"❫
+❪"code/tools/repo_tools/remote_execution/server/capabilities/capabilities_endpoint"❫
 ⚯
 ⚞⚟
 
 ◀public: static▶ void ☀BuildAndRun(Server_Settings const& settings)❰
 
+  spdlog::set_pattern("[%c] [%s:%!:%#] %v");
+  
   //setup grpc
   grpc::EnableDefaultHealthCheckService(settings.enable_default_health_check_service);
   grpc::reflection::InitProtoReflectionServerBuilderPlugin();
@@ -49,11 +52,9 @@ class
   
   ActionCacheService action_cache_service(
   [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
-    std::cout << "GOT(action_cache_service):" << std::endl;
-    std::cout << Protobuf_Message_To_Json(*request) << std::endl;
+    SPDLOG_DEBUG("in:" + Protobuf_Message_To_Inline_Json(*request));
     
-    std::cout << "SENT(action_cache_service):" << std::endl;
-    std::cout << Protobuf_Message_To_Json(*response) << std::endl;
+    SPDLOG_DEBUG("out:" + Protobuf_Message_To_Inline_Json(*response));
     return grpc::Status::OK;
   },
   [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::UpdateActionResultRequest* request, build::bazel::remote::execution::v2::ActionResult* response){
@@ -78,13 +79,7 @@ class
   
   CapabilitiesService capabilities_service(
   [&](grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetCapabilitiesRequest* request, build::bazel::remote::execution::v2::ServerCapabilities* response){
-    
-        std::cout << "GOT(capabilities_service):" << std::endl;
-        std::cout << Protobuf_Message_To_Json(*request) << std::endl;
-        *response = Server_Capabilities_Getter::Get(settings);
-        std::cout << "SENT(capabilities_service):" << std::endl;
-        std::cout << Protobuf_Message_To_Json(*response) << std::endl;
-        return grpc::Status::OK;
+    return Capabilities_Endpoint::GetCapabilities(settings,context,request,response);
   });
   
   builder.RegisterService(&execution_service);

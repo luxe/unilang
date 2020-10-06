@@ -45,6 +45,17 @@ std::string Protobuf_Message_To_Json(T const& t){
 }
 
 template <typename T>
+std::string Protobuf_Message_To_Inline_Json(T const& t){
+    google::protobuf::util::JsonPrintOptions options;
+    options.add_whitespace = false;
+    options.always_print_primitive_fields = true;
+    options.preserve_proto_field_names = true;
+    std::string str;
+    MessageToJsonString(t, &str, options);
+    return str;
+}
+
+template <typename T>
 std::vector<T> Deserialize_Multiple_From_Json_File(std::string const& path){
     auto j_blobs = Read_Jsons_From_File(path);
     std::vector<T> results;
