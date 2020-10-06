@@ -17,6 +17,7 @@ hcp(
         "//code/utilities/formats/serialization:protobuf",
         "//code/tools/repo_tools/remote_execution/server:server_settings",
         "//code/utilities/remote_execution/services:grpc_glue",
+        "@semver",
 ])
 
 cc_binary(
