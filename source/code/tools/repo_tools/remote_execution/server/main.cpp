@@ -11,7 +11,12 @@ int main(int argc, char** argv) {
   //grpc settings
   Server_Settings x;
   x.enable_default_health_check_service = true;
-  x.address = "0.0.0.0:50051";
+  
+  //make sure clients do:
+  //grpc://localhost:8980
+  //or they might see errors like:
+  //ERROR: io.netty.handler.ssl.NotSslRecordException: not an SSL/TLS record
+  x.address = "localhost:8980";
   
   Server::BuildAndRun(x);
 }
