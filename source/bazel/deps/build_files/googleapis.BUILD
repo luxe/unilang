@@ -108,6 +108,7 @@ proto_library(
     srcs = ["google/bytestream/bytestream.proto"],
     deps = [
         ":google_api_annotations_proto",
+        "@com_google_protobuf//:wrappers_proto",
     ],
 )
 
