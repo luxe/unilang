@@ -11,5 +11,6 @@ cc_library(
         "@com_github_grpc_grpc//:grpc++_reflection",
         "@remote_apis//:remote_execution_cc_proto",
         "//code/utilities/formats/serialization:protobuf",
+        "@googleapis//:google_bytestream_bytestream_cc_proto",
     ],
 )

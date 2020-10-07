@@ -16,6 +16,7 @@ class
 ❪"code/tools/repo_tools/remote_execution/server/action_cache/action_cache_endpoint"❫
 ❪"code/tools/repo_tools/remote_execution/server/cas/cas_endpoint"❫
 ❪"code/tools/repo_tools/remote_execution/server/execution/execution_endpoint"❫
+❪"code/tools/repo_tools/remote_execution/server/bytestream/bytestream_endpoint"❫
 ⚯
 ⚞⚟
 
@@ -82,10 +83,22 @@ class
     return Capabilities_Endpoint::GetCapabilities(settings,context,request,response);
   });
   
+  BytestreamService bytestream_service(
+  [&](grpc::ServerContext* context, const google::bytestream::ReadRequest* request, grpc::ServerWriter< google::bytestream::ReadResponse>* writer){
+    return Bytestream_Endpoint::Read(context,request,writer);
+  },
+  [&](grpc::ServerContext* context, grpc::ServerReader< google::bytestream::WriteRequest>* reader, google::bytestream::WriteResponse* response){
+    return Bytestream_Endpoint::Write(context,reader,response);
+  },
+  [&](grpc::ServerContext* context, const google::bytestream::QueryWriteStatusRequest* request, google::bytestream::QueryWriteStatusResponse* response){
+    return Bytestream_Endpoint::QueryWriteStatus(context,request,response);
+  });
+  
   builder.RegisterService(&execution_service);
   builder.RegisterService(&action_cache_service);
   builder.RegisterService(&content_addressable_storage_service);
   builder.RegisterService(&capabilities_service);
+  builder.RegisterService(&bytestream_service);
   
   
   // Finally assemble the server.

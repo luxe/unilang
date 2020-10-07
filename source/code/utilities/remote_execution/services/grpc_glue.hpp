@@ -8,6 +8,7 @@
 #include <grpcpp/ext/proto_server_reflection_plugin.h>
 #include "build/bazel/remote/execution/v2/remote_execution.grpc.pb.h"
 #include "code/utilities/formats/serialization/protobuf.hpp"
+#include "google/bytestream/bytestream.grpc.pb.h"
 
 //This code is essntially GRPC glue for the generated service code.
 //I don't want to force an OO design when deciding what these services should do.
@@ -132,5 +133,39 @@ class CapabilitiesService final : public build::bazel::remote::execution::v2::Ca
     //function forwarding
     grpc::Status GetCapabilities(grpc::ServerContext* context, const build::bazel::remote::execution::v2::GetCapabilitiesRequest* request, build::bazel::remote::execution::v2::ServerCapabilities* response) override {
         return GetCapabilitiesFun(context,request,response);
+    }
+};
+
+template <
+    typename ReadFunImpl,
+    typename WriteFunImpl,
+    typename QueryWriteStatusFunImpl
+>
+class BytestreamService final : public google::bytestream::ByteStream::Service {
+
+    //functions to implement
+    public:
+    ReadFunImpl ReadFun;
+    WriteFunImpl WriteFun;
+    QueryWriteStatusFunImpl QueryWriteStatusFun;
+    
+    //constructor
+    BytestreamService(ReadFunImpl ReadFun,
+    WriteFunImpl WriteFun,
+    QueryWriteStatusFunImpl QueryWriteStatusFun):
+    ReadFun(ReadFun),
+    WriteFun(WriteFun),
+    QueryWriteStatusFun(QueryWriteStatusFun)
+    {}
+    
+    //function forwarding
+    grpc::Status Read(grpc::ServerContext* context, const google::bytestream::ReadRequest* request, grpc::ServerWriter< google::bytestream::ReadResponse>* writer) override {
+        return ReadFun(context,request,writer);
+    }
+    grpc::Status Write(grpc::ServerContext* context, grpc::ServerReader< google::bytestream::WriteRequest>* reader, google::bytestream::WriteResponse* response) override {
+        return WriteFun(context,reader,response);
+    }
+    grpc::Status QueryWriteStatus(grpc::ServerContext* context, const google::bytestream::QueryWriteStatusRequest* request, google::bytestream::QueryWriteStatusResponse* response) override {
+        return QueryWriteStatusFun(context,request,response);
     }
 };

@@ -18,6 +18,7 @@ hcp(
         "//code/tools/repo_tools/remote_execution/server/action_cache:action_cache_endpoint",
         "//code/tools/repo_tools/remote_execution/server/cas:cas_endpoint",
         "//code/tools/repo_tools/remote_execution/server/execution:execution_endpoint",
+        "//code/tools/repo_tools/remote_execution/server/bytestream:bytestream_endpoint",
 ])
 
 cc_binary(
