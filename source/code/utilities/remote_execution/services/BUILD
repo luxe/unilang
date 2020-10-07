@@ -7,10 +7,10 @@ cc_library(
     srcs = ["grpc_glue.cpp"],
     hdrs = ["grpc_glue.hpp"],
     deps = [
+        "//code/utilities/formats/serialization:protobuf",
         "@com_github_grpc_grpc//:grpc++",
         "@com_github_grpc_grpc//:grpc++_reflection",
-        "@remote_apis//:remote_execution_cc_proto",
-        "//code/utilities/formats/serialization:protobuf",
         "@googleapis//:google_bytestream_bytestream_cc_proto",
+        "@remote_apis//:remote_execution_cc_proto",
     ],
 )
