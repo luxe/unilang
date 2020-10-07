@@ -102,3 +102,22 @@ cc_grpc_library(
     well_known_protos = True,
     deps = [],
 )
+
+proto_library(
+    name = "google_bytestream_bytestream_proto",
+    srcs = ["google/bytestream/bytestream.proto"],
+    deps = [
+        ":google_api_annotations_proto",
+    ],
+)
+
+cc_grpc_library(
+    name = "google_bytestream_bytestream_cc_proto",
+    srcs = ["google/bytestream/bytestream.proto"],
+    proto_only = False,
+    use_external = False,
+    well_known_protos = True,
+    deps = [
+        ":google_api_annotations_cc_proto",
+    ],
+)
