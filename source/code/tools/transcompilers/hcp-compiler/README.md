@@ -43,7 +43,7 @@ I hate writing header and source files in tandem.
 - it clutters your project with 2x as many files as classes you have
 - it is difficult to parse portions of a class file, into the higher level categories that they represent:  
 (constructors,function names(observers, transformers) inheritence, data members).  If this were easier, static analysis and documentation generation could be easier.
-- because of these reasons developers wither consciously or subconsciously tend to write classes then are necessary.  The same problem happens with functional decomposition.  If both of these things were cheaper, they would be done more frequently when writing software
+because of these reasons developers either consciously or subconsciously tend to write less classes then are necessary.  The same problem happens with functional decomposition.  If both of these things were cheaper, they would be done more frequently when writing software
 
 #####The Solution:
 Write your class in one file.  That one file can be turned into a `.cpp` and an `.hpp` using a transcompiler.  If you write your code in an `.hcp`, you'll be able to fix the problems above and get the added benefits of static analysis and generative code documentation.  
