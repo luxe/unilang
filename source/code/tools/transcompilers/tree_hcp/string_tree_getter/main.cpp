@@ -8,14 +8,7 @@ int main(int argc, char** argv){
     //get program options
     auto po = Program_Options(argc,argv);
 
-    auto path_name = po.Name();
-    if (!po.Output_Path().empty()){
-        path_name = po.Output_Path() + "/" + path_name;
-    }
-    
-    std::string data;
-
     //build it
-    Hcp_Maker::Create(path_name,data);
+    Hcp_Maker::Create(po.Output_Path(),po.Input_File());
 
 }

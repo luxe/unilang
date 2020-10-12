@@ -1,11 +1,12 @@
 def enum_cpp(name, values = []):
+    
     #implicit file names
     explicit_cpp_file = name + ".cpp"
     explicit_hpp_file = name + ".hpp"
     enum_target_name = name + "_enum"
     cpp_target_name = name
 
-    #converting bazel commands to c++ enum files
+    #converting bazel rules to c++ enum files
     native.genrule(
         name = enum_target_name,
         srcs = [],

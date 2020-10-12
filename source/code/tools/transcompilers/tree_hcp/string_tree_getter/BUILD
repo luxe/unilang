@@ -7,6 +7,8 @@ hcp(
     deps = [
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/tools/transcompilers/hcp-compiler/programatic/data:code",
+        "//code/tools/transcompilers/hcp-compiler/programatic:code_getter",
     ],
 )
 
