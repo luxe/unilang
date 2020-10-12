@@ -9,6 +9,11 @@ hcp(
         "//code/utilities/types/strings/transformers/casing:lib",
         "//code/tools/transcompilers/hcp-compiler/programatic/data:code",
         "//code/tools/transcompilers/hcp-compiler/programatic:code_getter",
+        "//code/utilities/types/strings/transformers/wrap:lib",
+        "//code/utilities/streams/filestreams/read_all:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/tools/transcompilers/hcp-compiler/programatic/data:function",
+        "//code/utilities/types/vectors/transformers:lib",
     ],
 )
 

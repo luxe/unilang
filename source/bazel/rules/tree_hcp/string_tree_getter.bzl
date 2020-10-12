@@ -18,6 +18,9 @@ def string_tree_getter(name):
     )
 
     #compile hcp file
-    deps = []
+    deps = [
+        "//code/utilities/data_structures/tree/generic:string_tree",
+        "//code/utilities/data_structures/tree/generic:string_to_string_tree",
+        "//code/utilities/types/strings/transformers/appending:lib"
+    ]
     hcp(name + "_string_tree_getter",deps)
-
