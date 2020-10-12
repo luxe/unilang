@@ -4,7 +4,7 @@
 //Boost Libraries
 #include "boost/program_options.hpp"
 
-class Program_Options: public Program_Options_Default{
+class Program_Options {
 
 	public:
 
