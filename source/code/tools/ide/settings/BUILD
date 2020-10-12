@@ -43,7 +43,7 @@ hcp(
     deps = [
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/transcompilers/unilang/tokens:get_tokens",
-        "//code/utilities/code:concept_tree_getter",
+        "//code/utilities/code:concept_string_tree_getter",
         "//code/utilities/code/style_theme:style_lookup_map_getter",
         "//code/utilities/colors/defaults:rectangle_shades",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",

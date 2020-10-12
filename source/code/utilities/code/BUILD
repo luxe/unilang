@@ -5,18 +5,9 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/tree_hcp:string_tree_getter.bzl", "string_tree_getter")
 
 hcp(
-    name = "concept_tree_getter",
-    deps = [
-        "//code/utilities/data_structures/tree/generic:string_to_string_tree",
-        "//code/utilities/data_structures/tree/generic:string_tree",
-        "@tree",
-    ],
-)
-
-hcp(
     name = "concept_tree_to_image",
     deps = [
-        "//code/utilities/code:concept_tree_getter",
+        "//code/utilities/code:concept_string_tree_getter",
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",

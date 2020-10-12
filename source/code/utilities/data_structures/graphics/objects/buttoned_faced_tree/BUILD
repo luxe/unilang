@@ -82,7 +82,7 @@ hcp(
 hcp(
     name = "string_tree_to_buttoned_face_tree",
     deps = [
-        "//code/utilities/code:concept_tree_getter",
+        "//code/utilities/code:concept_string_tree_getter",
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",
