@@ -5,8 +5,10 @@
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include "code/utilities/types/strings/transformers/squeeze/lib.hpp"
 #include "code/utilities/types/strings/transformers/other/lib.hpp"
+#include "code/utilities/types/strings/transformers/trimming/lib.hpp"
 #include "code/utilities/types/strings/observers/converting/lib.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
+
 
 
 
@@ -106,6 +108,12 @@ std::vector<std::string>& Remove_Whitespace_Lines(std::vector<std::string>& v){
     v.erase( std::remove_if(std::begin(v), std::end(v), [&](std::string const& line){
         return Contains_Only_Whitespace_Characters(line);
     }), std::end(v) );
+    return v;
+}
+std::vector<std::string>& Trim_Lines(std::vector<std::string>& v){
+    for (auto & it: v){
+        trim(it);
+    }
     return v;
 }
 

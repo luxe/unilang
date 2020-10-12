@@ -37,4 +37,4 @@ hcp(
     ],
 )
 
-string_tree_getter(name = "concept_tree");
+string_tree_getter(name = "concept");
