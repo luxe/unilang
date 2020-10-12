@@ -332,3 +332,12 @@ hcp(
         "//code/utilities/types/converters:lib",
     ],
 )
+
+hcp(
+    name = "type_specialize_getter",
+    deps = [
+        "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
+        "//code/utilities/types/converters:lib",
+    ],
+)
+

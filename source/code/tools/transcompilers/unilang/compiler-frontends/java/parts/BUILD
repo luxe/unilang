@@ -29,6 +29,7 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/tools/transcompilers/unilang/structure/print:type_specialize_getter",
     ],
 )
 

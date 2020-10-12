@@ -26,6 +26,7 @@ hcp(
         "//code/utilities/linguistics/computer/types/cross/language_type",
         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
         "//code/utilities/types/converters:lib",
+        "//code/tools/transcompilers/unilang/structure/print:type_specialize_getter",
     ],
 )
 

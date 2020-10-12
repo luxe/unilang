@@ -86,6 +86,8 @@ class
     x += " ";
     x += Visibility_Keyword_Getter::Get(method.class_access,Source_Language::JAVA);
     x += " ";
+    x += Function_Template_Getter(method);
+    x += " ";
     x += Return_Type_Str_Getter::Get_Java(name,method,settings);
     x += " ";
     x += Shared_Printer::Derive_Function_Name(name,Code_Type::PRODUCT_TYPE,method,bad_temp);
@@ -94,6 +96,29 @@ class
     
     
     return x;
+❱
+
+◀private: static▶ std::string ☀Function_Template_Getter(Method_Item const& method)❰
+    std::string x;
+    x += Get_Template_Syntax(method.template_arguments);
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Template_Syntax(std::vector<Template_Argument> const& type_specializations)❰
+    std::string special;
+    
+    if (!type_specializations.empty()){
+        special += "<";
+    }
+    
+    for (auto const& it: type_specializations){
+            special += as_string(it.identifier.value);
+        }
+        
+    if (!type_specializations.empty()){
+        special += ">";
+    }
+    return special;
 ❱
 
 ◀private: static▶ std::string ☀Get_Arguments(Method_Item const& method, Java_Settings const& settings)❰
