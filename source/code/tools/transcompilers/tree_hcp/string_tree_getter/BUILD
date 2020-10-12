@@ -18,5 +18,6 @@ cc_binary(
     deps = [
         ":hcp_maker",
         "//code/tools/transcompilers/tree_hcp/string_tree_getter/program_options:lib",
+        "//code/utilities/program/common_actions/locale:lib",
     ],
 )

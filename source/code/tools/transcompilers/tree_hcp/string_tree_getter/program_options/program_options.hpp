@@ -13,7 +13,7 @@ class Program_Options {
 
 	std::string Input_File() const;
 	std::string Name() const;
-	std::string Output_Path() const;
+	std::string Output_File() const;
 
 
 	private:

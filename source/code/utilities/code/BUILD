@@ -2,6 +2,7 @@ package(default_visibility = ["//visibility:public"])
 
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
+load("//bazel/rules/tree_hcp:string_tree_getter.bzl", "string_tree_getter")
 
 hcp(
     name = "concept_tree_getter",
@@ -35,3 +36,5 @@ hcp(
         "@tree",
     ],
 )
+
+string_tree_getter(name = "concept_tree");

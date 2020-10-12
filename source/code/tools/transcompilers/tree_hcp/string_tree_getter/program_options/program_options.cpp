@@ -34,9 +34,8 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//these are flag descriptions of that can be passed into the class.
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
-	("input_file",value<std::vector<std::string>>()->multitoken(),"")
-	("name",value<std::string>(),"the name of the string tree")
-	("output-path,o",value<std::string>(),"output path")
+	("input_file,i",value<std::string>(),"input file")
+	("output_file,o",value<std::string>(),"output path")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -98,18 +97,10 @@ std::string Program_Options::Input_File() const{
 
 	return data;
 }
-std::string Program_Options::Name() const{
+std::string Program_Options::Output_File() const{
 	std::string data;
-	if (vm.count("name")){
-		data = vm["name"].as<std::string>();
-	}
-
-	return data;
-}
-std::string Program_Options::Output_Path() const{
-	std::string data;
-	if (vm.count("output-path")){
-		data = vm["output-path"].as<std::string>();
+	if (vm.count("output_file")){
+		data = vm["output_file"].as<std::string>();
 	}
 	return data;
 }
