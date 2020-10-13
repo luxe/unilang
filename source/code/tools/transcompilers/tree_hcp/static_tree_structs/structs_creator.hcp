@@ -4,6 +4,9 @@ class
 ❪unordered_map❫
 ❪fstream❫
 ❪"code/tools/transcompilers/hcp-compiler/programatic/data/function"❫
+❪"code/utilities/data_structures/tree/generic/string_tree"❫
+❪"code/utilities/data_structures/tree/generic/string_to_string_tree"❫
+❪"code/utilities/types/strings/transformers/appending/lib"❫
 ⚯
 ❪"code/tools/transcompilers/hcp-compiler/programatic/data/code"❫
 ❪"code/tools/transcompilers/hcp-compiler/programatic/code_getter"❫
@@ -11,6 +14,9 @@ class
 ❪"code/utilities/streams/filestreams/read_all/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/types/tree/shortest_unique_name"❫
+❪"code/utilities/types/tree/converters/tree_full_paths_getter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Create(std::string const& input_file, std::string const& path_without_extension)❰
@@ -23,6 +29,63 @@ class
 ❱
 
 ◀private: static▶ void ☀Create_Header(String_Tree const& str_tree, std::string const& path_without_extension)❰
+    std::ofstream outfile(path_without_extension + ".hpp");
+    outfile << "#pragma once" << std::endl;
+    outfile << "#include <vector>" << std::endl;
+    outfile << "#include <string>" << std::endl;
+    outfile << std::endl;
+    
+    
+    outfile << "//forward declares" << std::endl;
+    auto full_paths = Tree_Full_Paths_Getter::Get_All_Paths_Ordered(str_tree);
+    for (auto const& it: full_paths){
+        outfile << Create_Forward_Declare(str_tree,it);
+    }
+    
+    outfile << "//decelerations" << std::endl;
+    for (auto const& it: full_paths){
+        outfile << Create_Struct_Definition(str_tree,it);
+    }
 ❱
+◀private: static▶ std::string ☀Create_Forward_Declare(String_Tree const& str_tree, std::string const& full_path)❰
+
+    std::string x;
+    x += "template <typename T>\n";
+    x += "struct " + Get_Struct_Typename(str_tree,full_path) + ";\n";
+    return x;
+❱
+◀private: static▶ std::string ☀Create_Struct_Definition(String_Tree const& str_tree, std::string const& full_path)❰
+    std::string x;
+    x += "template <typename T>\n";
+    x += "struct " + Get_Struct_Typename(str_tree,full_path) + "{\n";
+        auto children = Children_Path_Names::Get_All_Children_Names(str_tree,full_path);
+        for (auto const& it: children){
+            x += "    " + Get_Struct_Typename(str_tree,it) + "<T> " + Get_Struct_Identifier(str_tree,it) + ";\n"
+        }
+    x += "};\n";
+    return x;
+❱
+
+
+◀private: static▶ std::string ☀Get_Struct_Typename(String_Tree const& str_tree, std::string const& full_path)❰
+    auto short_path = Shortest_Unique_Name::Get(str_tree,full_path);
+    auto name = replace_fwd_slash_with_space(path);
+    auto struct_name = Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPS_PUSHED,name);
+    return struct_name;
+❱
+◀private: static▶ std::string ☀Get_Struct_Identifier(String_Tree const& str_tree, std::string const& full_path)❰
+    auto short_path = Shortest_Unique_Name::Get(str_tree,full_path);
+    auto name = replace_fwd_slash_with_space(path);
+    auto identifier = Case_Modifier::As_Modified_Casing(Case_Format_Style::SNAKE_CASE,name);
+    return identifier;
+❱
+
 ◀private: static▶ void ☀Create_Source(String_Tree const& str_tree, std::string const& path_without_extension)❰
+    std::ofstream outfile(path_without_extension + ".cpp");
+    outfile << "#include ";
+    outfile << '"';
+    outfile << path_without _extension << ".hpp";
+    outfile << '"';
+    outfile << std::endl;
+    outfile.close();
 ❱
