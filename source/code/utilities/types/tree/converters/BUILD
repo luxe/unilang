@@ -26,3 +26,11 @@ hcp(
         "//code/utilities/types/tree/bst:tree_traversal",
     ],
 )
+
+hcp(
+    name = "path_to_iterator",
+    deps = [
+        "//code/utilities/data_structures/tree/generic:string_tree",
+        "//code/utilities/types/tree:full_path_name",
+    ],
+)
