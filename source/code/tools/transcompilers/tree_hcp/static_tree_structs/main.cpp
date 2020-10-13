@@ -13,6 +13,6 @@ int main(int argc, char** argv){
     auto po = Program_Options(argc,argv);
 
     //build it
-    Structs_Creator::Create(po.Input_File(),po.Output_File());
+    Structs_Creator::Create(po.Input_File(),po.Output_Dir() + "/" + po.Name());
 
 }
