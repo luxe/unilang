@@ -20,6 +20,7 @@ hcp(
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "//code/utilities/types/tree:children_path_names",
         "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/strings/observers/characteristic:is_cpp_keyword_checker",
     ],
 )
 

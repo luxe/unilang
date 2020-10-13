@@ -44,6 +44,15 @@ hcp(
 )
 
 hcp(
+    name = "is_cpp_keyword_checker",
+    deps = [
+        "//code/utilities/types/strings/transformers/casing:lib",
+        "//code/utilities/types/vectors/observers:lib",
+    ],
+)
+
+
+hcp(
     name = "spirit_numeric_checker",
     deps = [
         "@boost//:foreach",
