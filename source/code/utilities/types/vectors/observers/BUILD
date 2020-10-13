@@ -10,6 +10,7 @@ cc_library(
     deps = [
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/observers/char:lib",
+        "//code/utilities/types/strings/observers/other:lib"
     ],
 )
 
