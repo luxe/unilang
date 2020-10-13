@@ -36,7 +36,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//program_options_maker flag interface
 	("input_file,i",value<std::string>(),"input file")
 	("output_dir,o",value<std::string>(),"output path")
-	("name,o",value<std::string>(),"base file name")
+	("name",value<std::string>(),"base file name")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
