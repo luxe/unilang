@@ -18,3 +18,12 @@ hcp(
         "//code/utilities/types/tree/bst:tree_traversal",
     ],
 )
+
+hcp(
+    name = "children_path_names",
+    deps = [
+        "//code/utilities/data_structures/tree/generic:string_tree",
+        "//code/utilities/types/tree:full_path_name",
+        "//code/utilities/types/tree/converters:path_to_iterator",
+    ],
+)
