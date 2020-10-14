@@ -7,7 +7,6 @@
 //convert a tree to/from a depth list
 //a depth list may be easier to serialize or store,
 //as there is no longer pointers in the data structure representing the tree
-
 template <typename T>
 std::vector<std::pair<int,T>> to_depth_list(tree<T> const& tr){
     std::vector<std::pair<int,T>> depth_list;
