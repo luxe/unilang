@@ -26,6 +26,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state_getter",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/tools/ide/global_actions:global_action_decider",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
