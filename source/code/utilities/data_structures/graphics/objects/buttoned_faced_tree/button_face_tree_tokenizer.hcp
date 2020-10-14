@@ -1,0 +1,42 @@
+class
+❪vector❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/buttoned_faced_label"❫
+❪"src/tree.hh"❫
+⚯
+
+⚞⚟
+
+
+//perform an inorder traversal and build up token information with enough relevant information to:  
+//build types, hold leaf values, and link back to components in the graphical tree
+◀public: static▶ std::vector<Tree_Token> ☀Tokenize(Button_Face_Tree const& tree)❰
+
+    std::vector<Tree_Token> results;
+    int index = 0;
+    for (auto it = tree.nodes.begin(); it != tree.nodes.end(); ++it){
+        results.emplace_back(Create_Token(tree,it,index));
+        ++index;
+    }
+    return results;
+❱
+◀private: static▶ Tree_Token ☀Create_Token(Button_Face_Tree const& tree, tree<Buttoned_Faced_Label>::pre_order_iterator it, int index)❰
+    Tree_Token x;
+    x.full_path = Get_Full_Path(tree,it);
+    x.value = Faced_Label_Message::Get(it->label);
+    x.index = index;
+    return x;
+❱
+
+◀public: static▶ std::string ☀Get_Full_Path(Button_Face_Tree const& tree, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+    std::string full_name;
+    
+    while (tree.nodes.parent(it) != nullptr){
+        
+        full_name = Faced_Label_First_Name::Get(it->label) + "/" + full_name;
+        it = tree.nodes.parent(it);
+    }
+    full_name = Faced_Label_First_Name::Get(it->label) + "/" + full_name;
+    
+    return full_name;
+❱
