@@ -40,6 +40,9 @@ int main(int argc, char** argv)
     auto render = [&](SDL_Window* window) {
         
         Frame_Renderer::Render(s.desktop.background,elements);
+        
+       //bool flag = true;
+       //ImGui::ShowDemoWindow(&flag);
 	};
     
     return Mechanics::render_each_frame(s.desktop.init,before,logic,render);
