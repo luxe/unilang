@@ -1,0 +1,124 @@
+􏶞o􏶟
+􏷲String utilities when dealing with key names that involve hashtags􏷱
+􏷰simple parsers for extracting out / adding hashtags to redis keys􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
+
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Iterator􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦build.buildfarm.common.StringVisitor􏷥
+􏷤􏷣􏷦java.util.Collections􏷥
+􏷤􏷣􏷦java.util.regex.Matcher􏷥
+􏷤􏷣􏷦java.util.regex.Pattern􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.QueueStatus􏷥
+
+􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
+􏲏􏲐􏲍build.buildfarm.instance.shard.queues.BalancedRedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏􏲐􏲍build.buildfarm.common.StringVisitor􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏􏲐􏲍build.buildfarm.v1test.QueueStatus􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+
+􏷐append the hashtag value to the base queue name􏷏
+􏶠creates a valid queue name for one of the entire queues􏶡
+􏷘+s􏷗􏴅observer􏴆􏷒hashed name􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶜􏶝􏷆string􏷅􏷄hashtag􏷃􏷀a hashtag for an individual internal queue􏶿
+􏶾string􏶽􏶼queue name􏶻􏶺a valid queue name for one of the internal queues􏶹
+􏶴
+    return "{" + hashtag + "}" + name;
+􏶳
+􏴱can retrieve distributed hashes􏴲
+􏲝a hashtag can be added to a name to get a hashed key name􏲞
+􏲛the format is not as expected when adding a hashtag􏲜
+􏴭
+    
+    //ASSERT
+    assertThat(RedisHashtags.hashedName("x","y")).isEqualTo("{y}x");
+    assertThat(RedisHashtags.hashedName("QueuedOperations","Execution")).isEqualTo("{Execution}QueuedOperations");
+􏴮
+
+􏷐remove any existing redis hashtag from the key name􏷏
+􏶠creates a valid key name with any existing hashtags removed􏶡
+􏷘s􏷗􏴅observer􏴆􏷒unhashed name􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶾string􏶽􏶼queue name􏶻􏶺a valid keyname without hashtags􏶹
+􏶴
+    return name.replaceAll("\\{.*?\\}", "");
+􏶳
+􏴱get the unhashed name􏴲
+􏲝the hashtag can be removed from the name􏲞
+􏲛the format is not as expected when removing a hashtag􏲜
+􏴭
+    
+    //ASSERT
+    assertThat(RedisHashtags.unhashedName("{y}x")).isEqualTo("x");
+    assertThat(RedisHashtags.unhashedName("x{y}")).isEqualTo("x");
+    assertThat(RedisHashtags.unhashedName("x{y}x")).isEqualTo("xx");
+    assertThat(RedisHashtags.unhashedName("{Execution}QueuedOperations")).isEqualTo("QueuedOperations");
+􏴮
+
+􏷐get the existing hashtag of the name􏷏
+􏶠parses out the first redis hashtag found
+if no hashtags are found, an empty string is returned􏶡
+􏷘s􏷗􏴅observer􏴆􏷒existing hash􏷑
+􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the queue􏶿
+􏶾string􏶽􏶼hashtag􏶻􏶺the existing hashtag name found in the string (brackets are removed)􏶹
+􏶴
+    String regex = "\\{.*?\\}";
+    Pattern pattern = Pattern.compile(regex);
+    Matcher matcher = pattern.matcher(name);
+    
+    //hashtag found
+    if (matcher.find()){
+    
+        //extract from matcher
+        String hashtag = matcher.group(0);
+        
+        //remove brackets
+        hashtag = hashtag.substring(1, hashtag.length()-1);
+        
+        return hashtag;
+    }
+    
+    //hashtag not found
+    return "";
+􏶳
+􏴱get the existing hash name􏴲
+􏲝the hashtag can be extracted from the full key name􏲞
+􏲛the format is not as expected when extracting the hashtag􏲜
+􏴭
+    
+    //ASSERT
+    assertThat(RedisHashtags.existingHash("{y}x")).isEqualTo("y");
+    assertThat(RedisHashtags.existingHash("x{y}")).isEqualTo("y");
+    assertThat(RedisHashtags.existingHash("x{y}x")).isEqualTo("y");
+    assertThat(RedisHashtags.existingHash("{Execution}QueuedOperations")).isEqualTo("Execution");
+􏴮

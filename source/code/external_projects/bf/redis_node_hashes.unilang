@@ -113,6 +113,21 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
     // ASSERT
     assertThat(hashtags.isEmpty()).isFalse();
 􏴮
+􏴱cannot retrieve distributed hashes􏴲􏴯mock􏴰
+􏲝without mocking we exercise the fallback behavior􏲞
+􏲛the fallback behavior does not result in successful completion of call􏲜
+􏴭
+    // ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis);
+
+    // ASSERT
+    assertThat(hashtags.isEmpty()).isTrue();
+􏴮
+
+
 􏴱can construct􏴲􏴯regular􏴰
 􏲝the object can be constructed􏲞
 􏲛the object cannot be constructed􏲜
@@ -141,6 +156,48 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
       return ImmutableList.of();
     }
 􏶳
+􏴱can retrieve distributed hashes􏴲􏴯redis􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = JedisClusterFactory.createTest();
+    
+    //ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashes(redis,"Execution");
+    
+    //ASSERT
+    assertThat(hashtags.isEmpty()).isFalse();
+􏴮
+􏴱expected prefix hashes􏴲􏴯mock􏴰
+􏲝an established redis cluster can be used to obtain distributed hashes with prefixes􏲞
+􏲛there is an error in the cluster's ability to report slot ranges or convert ranges to hashtags􏲜
+􏴭
+    // ARRANGE
+    Jedis node = mock(Jedis.class);
+    when(node.clusterSlots())
+        .thenReturn(Arrays.asList(Arrays.asList(0L, 100L), Arrays.asList(101L, 200L)));
+
+    JedisPool pool = mock(JedisPool.class);
+    when(pool.getResource()).thenReturn(node);
+
+    JedisCluster redis = mock(JedisCluster.class);
+    Map<String, JedisPool> poolMap =
+        new HashMap<String, JedisPool>() {
+          {
+            put("key1", pool);
+          }
+        };
+    when(redis.getClusterNodes()).thenReturn(poolMap);
+
+    // ACT
+    List<String> hashtags = RedisNodeHashes.getEvenlyDistributedHashesWithPrefix(redis, "Execution");
+
+    // ASSERT
+    assertThat(hashtags.size()).isEqualTo(2);
+    assertThat(hashtags.get(0)).isEqualTo("Execution:97");
+    assertThat(hashtags.get(1)).isEqualTo("Execution:66");
+􏴮
 
 
 􏷐get a list of slot ranges for each of the nodes in the cluster􏷏
