@@ -2,19 +2,23 @@
 􏷲a list of redis hashtags that each map to different nodes in the cluster􏷱
 􏷰when looking to evenly distribute keys across nodes, specific hashtags need obtained in which each hashtag hashes to a particular slot owned by a particular worker
 this class is used to obtain the hashtags needed to hit every node in the cluster􏷯
-􏷞build􏷝􏷞buildfarm􏷝􏷞instance􏷝􏷞shard􏷝􏷞queues􏷝
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝􏷞redis􏷝
 
 􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
 􏷤􏷣􏷦build.buildfarm.instance.shard.JedisClusterFactory􏷥
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦java.util.Set􏷥
 􏷤􏷣􏷦java.util.HashSet􏷥
+􏷤􏷣􏷦java.util.Map􏷥
 􏷤􏷣􏷦java.util.Iterator􏷥
 􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
 􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
 􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
 􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableList􏷥
+􏷤􏷣􏷦redis.clients.jedis.exceptions.JedisException􏷥
+􏷤􏷣􏷦redis.clients.jedis.exceptions.JedisNoReachableClusterNodeException􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -56,18 +60,22 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
 􏶠each hashtag will map to a slot on a different node􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒get evenly distributed hashes􏷑
-􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
 􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
 􏶴
-    List<List<Integer>> slotRanges = getSlotRanges(cluster);
-    List<String> hashTags = new ArrayList<String>();
-    for (List<Integer> slotRange: slotRanges){
-    
-        //we can use any slot that is in range for the node.
-        //in this case, we will use the first slot.
+    try {
+      List<List<Long>> slotRanges = getSlotRanges(jedis);
+      ImmutableList.Builder hashTags = ImmutableList.builder();
+      for (List<Long> slotRange : slotRanges) {
+
+        // we can use any slot that is in range for the node.
+        // in this case, we will use the first slot.
         hashTags.add(RedisSlotToHash.correlate(slotRange.get(0)));
+      }
+      return hashTags.build();
+    } catch (JedisException e) {
+      return ImmutableList.of();
     }
-    return hashTags;
 􏶳
 􏴱can retrieve distributed hashes􏴲􏴯redis􏴰
 􏲝an established redis cluster can be used to obtain distributed hashes􏲞
@@ -115,26 +123,30 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏷐get a list of evenly distributing hashtags for the provided redis cluster􏷏
 􏶠each hashtag will map to a slot on a different node􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒get evenly distributed hashes with prefix􏷑
-􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
 􏶜􏶝􏷆String􏷅􏷄prefix􏷃􏷀the prefix to include as part of hashtags􏶿
 􏶾List<String>􏶽􏶼hashtags􏶻􏶺hashtags that will each has to a slot on a different node􏶹
 􏶴
-    List<List<Integer>> slotRanges = getSlotRanges(cluster);
-    List<String> hashTags = new ArrayList<String>();
-    for (List<Integer> slotRange: slotRanges){
-    
-        //we can use any slot that is in range for the node.
-        //in this case, we will use the first slot.
-        hashTags.add(RedisSlotToHash.correlateRangeWithPrefix(slotRange.get(0),slotRange.get(1),prefix));
+    try {
+      List<List<Long>> slotRanges = getSlotRanges(jedis);
+      ImmutableList.Builder hashTags = ImmutableList.builder();
+      for (List<Long> slotRange : slotRanges) {
+
+        // we can use any slot that is in range for the node.
+        // in this case, we will use the first slot.
+        hashTags.add(RedisSlotToHash.correlateWithPrefix(slotRange.get(0),slotRange.get(1),prefix));
+      }
+      return hashTags.build();
+    } catch (JedisException e) {
+      return ImmutableList.of();
     }
-    return hashTags;
 􏶳
 
 
 􏷐get a list of slot ranges for each of the nodes in the cluster􏷏
 􏶠this information can be found from any of the redis nodes in the cluster􏶡
 􏷘-s􏷗􏴅Observer􏴆􏷒get slot ranges􏷑
-􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
 􏶾List<List<Long>>􏶽􏶼slot ranges􏶻􏶺slot ranges for all of the nodes in the cluster􏶹
 􏶴
 
@@ -157,18 +169,17 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏶠every redis node has a range of slots represented as integers􏶡
 􏷘-s􏷗􏴅Observer􏴆􏷒slot info to slot range􏷑
 􏶜􏶝􏷆List<Object>􏷅􏷄slot info􏷃􏷀slot info objects from a redis node􏶿
-􏶾List<Integer>􏶽􏶼slot range􏶻􏶺the slot number range for the particular redis node􏶹
+􏶾List<Long>􏶽􏶼slot range􏶻􏶺the slot number range for the particular redis node􏶹
 􏶴
     return ImmutableList.of((Long) slotInfo.get(0), (Long) slotInfo.get(1));
 􏶳
 
 􏷐query slot information for each redis node􏷏
 􏶠obtains cluster information for understanding slot ranges for balancing􏶡
-􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established jedis client to operate on a redis cluster􏶿
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀an established jedis client􏶿
 􏶾List<Object>􏶽􏶼cluster slots􏶻􏶺cluster slot information􏶹
 􏷘-s􏷗􏴅Observer􏴆􏷒get cluster slots􏷑
 􏶴
-  private static List<Object> getClusterSlots(JedisCluster cluster) {
     JedisException nodeException = null;
     for (Map.Entry<String, JedisPool> node : cluster.getClusterNodes().entrySet()) {
       JedisPool pool = node.getValue();
@@ -186,7 +197,6 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
       throw nodeException;
     }
     throw new JedisNoReachableClusterNodeException("No reachable node in cluster");
-  }
 􏶳
 
 
