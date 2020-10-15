@@ -70,7 +70,7 @@ https://gist.github.com/dvirsky/93f43277317f629bb06e858946416f7e
     RedisSlotToHash slotToHash = new RedisSlotToHash();
 􏴮
 
-􏷐dynamically convert a range of slot number  into string that hashes to a slot within the range􏷏
+􏷐dynamically convert a range of slot number into string that hashes to a slot within the range􏷏
 􏶠dynamically generates hashtags and tests them for valid slot number
 slower than static lookup, but less code􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒correlate range􏷑
@@ -101,6 +101,51 @@ slower than static lookup, but less code􏶡
     //check correct correlation
     assertThat(slotNumber >= 100 && slotNumber <= 200).isTrue();
 􏴮
+􏷐dynamically convert a range of slot number into string that hashes to a slot within the range􏷏
+􏶠dynamically generates hashtags and tests them for valid slot number
+slower than static lookup, but less code􏶡
+􏷘+s􏷗􏴅Observer􏴆􏷒correlate range with prefix􏷑
+􏶜􏶝􏷆l􏷅􏷄start􏷃􏷀the starting slot range number to find a hashable string for􏶿
+􏶜􏶝􏷆l􏷅􏷄end􏷃􏷀the ending slot range number to find a hashable string for􏶿
+􏶜􏶝􏷆String􏷅􏷄prefix􏷃􏷀a string prefix to include as part of the generated hashtag􏶿
+􏶾string􏶽􏶼hashtag􏶻􏶺the string value to be used in a key's hashtag􏶹
+􏶴
+    Preconditions.checkState(start >= 0 && end < HASHSLOTS);
+    
+    long hashNumber = 0;
+    int slotNumber = JedisClusterCRC16.getSlot(createHashtag(prefix,hashNumber));
+    while (slotNumber < start || slotNumber > end){
+        hashNumber++;
+        slotNumber = JedisClusterCRC16.getSlot(createHashtag(prefix,hashNumber));
+    }
+    return createHashtag(prefix,hashNumber);
+􏶳
+􏴱correct hashtag found for slot range􏴲􏴯regular􏴰
+􏲝given a slot range a correct hashtag is dynamically derived􏲞
+􏲛the hashtag does not correlate back to the slot number􏲜
+􏴭
+    //convert to hashtag
+    String hashtag = RedisSlotToHash.correlateRangeWithPrefix(100,200,"Execution");
+    
+    //convert hashtag back to slot
+    int slotNumber = JedisClusterCRC16.getSlot(hashtag);
+    
+    //check correct correlation
+    assertThat(slotNumber >= 100 && slotNumber <= 200).isTrue();
+    
+    //check correct hashtag prefix
+    assertThat(hashtag.startsWith("Execution:")).isTrue();
+􏴮
+
+􏷐create hashtag􏷏
+􏶠combine prefix with a generated number􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒create hashtag􏷑
+􏶜􏶝􏷆String􏷅􏷄prefix􏷃􏷀a prefix of the hashtag􏶿
+􏶜􏶝􏷆l􏷅􏷄generated􏷃􏷀a generated number for the balancing the hashtag􏶿
+􏶾string􏶽􏶼hashtag􏶻􏶺created hashtag􏶹
+􏶴
+    return String.format("%s:%d",prefix, generated);
+􏶳
 
 􏷐convert the slot to a hashtag using a static lookup table􏷏
 􏶠fastest, but requires all keys in memory􏶡
