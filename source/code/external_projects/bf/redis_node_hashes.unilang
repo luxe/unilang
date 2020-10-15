@@ -134,7 +134,7 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 
         // we can use any slot that is in range for the node.
         // in this case, we will use the first slot.
-        hashTags.add(RedisSlotToHash.correlateWithPrefix(slotRange.get(0),slotRange.get(1),prefix));
+        hashTags.add(RedisSlotToHash.correlateRangeWithPrefix(slotRange.get(0),slotRange.get(1),prefix));
       }
       return hashTags.build();
     } catch (JedisException e) {
@@ -181,16 +181,16 @@ this class is used to obtain the hashtags needed to hit every node in the cluste
 􏷘-s􏷗􏴅Observer􏴆􏷒get cluster slots􏷑
 􏶴
     JedisException nodeException = null;
-    for (Map.Entry<String, JedisPool> node : cluster.getClusterNodes().entrySet()) {
+    for (Map.Entry<String, JedisPool> node : jedis.getClusterNodes().entrySet()) {
       JedisPool pool = node.getValue();
-      Jedis jedis = pool.getResource();
+      Jedis resource = pool.getResource();
       try {
-        return jedis.clusterSlots();
+        return resource.clusterSlots();
       } catch (JedisException e) {
         nodeException = e;
         // log error with node
       } finally {
-        jedis.close();
+        resource.close();
       }
     }
     if (nodeException != null) {
