@@ -11,6 +11,7 @@ enum_cpp(
         "fullscreen",
         "quit",
         "save",
+        "load",
         "none",
     ],
 )
