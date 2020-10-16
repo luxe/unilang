@@ -23,6 +23,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse:cursor_mouse_connector",
         "//code/utilities/data_structures/graphics/objects/mouse:mouse_selection",
         "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
+        "//code/utilities/data_structures/graphics/gui_desktop:save_state",
         "//code/utilities/data_structures/graphics/objects/slider:positioned_slider",
         "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
@@ -47,3 +48,10 @@ hcp(
         "//code/utilities/graphics/sdl:standard_sdl_init_settings",
     ],
 )
+
+hcp(
+    name = "save_state",
+    deps = [
+    ],
+)
+

@@ -30,5 +30,7 @@ hcp(
         "//code/tools/ide/global_actions:global_action_decider",
         "@imgui//:imgui_sdl_opengl3",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
+        "//code/utilities/program/wrappers/zenity/file_selector:file_selector",
+        "//code/utilities/formats/json/functions:lib",
     ],
 )
