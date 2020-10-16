@@ -7,7 +7,6 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     deps = [
-        "//code/utilities/math/gmp:lib",
         "//code/utilities/types/char:lib",
         "//code/utilities/types/char:optional_letter_case",
     ],
