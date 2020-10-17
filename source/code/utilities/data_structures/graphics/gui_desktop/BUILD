@@ -9,6 +9,7 @@ hcp(
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
+        "//code/utilities/data_structures/graphics/gui_desktop:save_state",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
@@ -23,7 +24,6 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse:cursor_mouse_connector",
         "//code/utilities/data_structures/graphics/objects/mouse:mouse_selection",
         "//code/utilities/data_structures/graphics/objects/select_menu:positioned_select_menu",
-        "//code/utilities/data_structures/graphics/gui_desktop:save_state",
         "//code/utilities/data_structures/graphics/objects/slider:positioned_slider",
         "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:shade_rectangle_settings",
@@ -54,4 +54,3 @@ hcp(
     deps = [
     ],
 )
-

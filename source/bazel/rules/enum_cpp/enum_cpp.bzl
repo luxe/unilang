@@ -1,5 +1,4 @@
 def enum_cpp(name, values = []):
-    
     #implicit file names
     explicit_cpp_file = name + ".cpp"
     explicit_hpp_file = name + ".hpp"

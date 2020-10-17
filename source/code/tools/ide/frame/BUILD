@@ -8,6 +8,7 @@ hcp(
     name = "frame_logic_updater",
     deps = [
         "//code/tools/ide/frame:label_frame_getter",
+        "//code/tools/ide/global_actions:global_action_handler",
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_action_doer",
@@ -26,7 +27,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state_getter",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/tools/ide/global_actions:global_action_handler",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )

@@ -51,7 +51,6 @@ hcp(
     ],
 )
 
-
 hcp(
     name = "spirit_numeric_checker",
     deps = [

@@ -2,7 +2,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 #using the boot-strapped hcp compiler built from hcp files
 def hcp(name, deps = [], data = []):
-
     #the file names to use
     hcp_target_name = name + "_hcp"
     explicit_hcp_file = name + ".hcp"

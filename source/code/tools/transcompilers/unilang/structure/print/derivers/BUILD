@@ -21,12 +21,12 @@ hcp(
         "//code/tools/transcompilers/unilang/structure/model/sections/method/arguments/argument:function_result",
         "//code/tools/transcompilers/unilang/structure/model/sections/typedef:typedef_argument",
         "//code/tools/transcompilers/unilang/structure/model/sections/typedef:typedef_result",
+        "//code/tools/transcompilers/unilang/structure/print:type_specialize_getter",
         "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:stripped_unilang_type_with_qualifiers",
         "//code/tools/transcompilers/unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
         "//code/utilities/linguistics/computer/types/cross/language_type",
         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
         "//code/utilities/types/converters:lib",
-        "//code/tools/transcompilers/unilang/structure/print:type_specialize_getter",
     ],
 )
 

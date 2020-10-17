@@ -2,7 +2,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 
 def static_tree_structs(name):
-
     #the file names to use
     target_name = name + "_static_tree_structs_dat"
     in_file = name + ".dat"
@@ -13,7 +12,7 @@ def static_tree_structs(name):
     native.genrule(
         name = target_name,
         srcs = [in_file],
-        outs = [outfile1,outfile2],
+        outs = [outfile1, outfile2],
         tools = ["//code/tools/transcompilers/tree_hcp/static_tree_structs:static_tree_structs"],
         cmd = "$(location //code/tools/transcompilers/tree_hcp/static_tree_structs:static_tree_structs) -i $(SRCS) --name {}  -o $(@D)".format(name + "_static_tree_structs"),
     )
@@ -22,4 +21,4 @@ def static_tree_structs(name):
     deps = [
         "@tree",
     ]
-    cpp_object(name + "_static_tree_structs",deps)
+    cpp_object(name + "_static_tree_structs", deps)

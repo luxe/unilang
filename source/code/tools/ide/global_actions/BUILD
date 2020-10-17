@@ -19,19 +19,19 @@ enum_cpp(
 hcp(
     name = "global_action_decider",
     deps = [
-        "//code/utilities/peripheral/pc:pc_input_state",
         "//code/tools/ide/global_actions:global_action",
+        "//code/utilities/peripheral/pc:pc_input_state",
     ],
 )
 
 hcp(
     name = "global_action_handler",
     deps = [
-        "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/global_actions:global_action_decider",
-        "@imgui//:imgui_sdl_opengl3",
-        "//code/utilities/graphics/sdl:sdl_fullscreener",
-        "//code/utilities/program/wrappers/zenity/file_selector:file_selector",
+        "//code/tools/ide/settings:ide_settings",
         "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/graphics/sdl:sdl_fullscreener",
+        "//code/utilities/program/wrappers/zenity/file_selector",
+        "@imgui//:imgui_sdl_opengl3",
     ],
 )

@@ -14,6 +14,7 @@ hcp(
         "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/unilang/structure/model:structure",
         "//code/tools/transcompilers/unilang/structure/print:doxygen_block_printer",
+        "//code/tools/transcompilers/unilang/structure/print:type_specialize_getter",
         "//code/tools/transcompilers/unilang/structure/print/derivers:identifier_name_deriver",
         "//code/tools/transcompilers/unilang/structure/print/filename:file_name_getter",
         "//code/utilities/contributor",
@@ -29,7 +30,6 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/tools/transcompilers/unilang/structure/print:type_specialize_getter",
     ],
 )
 

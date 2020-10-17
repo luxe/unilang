@@ -29,5 +29,6 @@ hcp(
     ],
 )
 
-string_tree_getter(name = "concept");
-static_tree_structs(name = "concept");
+string_tree_getter(name = "concept")
+
+static_tree_structs(name = "concept")
