@@ -106,6 +106,36 @@ class
     return file_name;
 ❱
 
+◀public: static▶ std::string ☀Get_Sync_Information_From_Build(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings) ❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //sync
+    std::string file_name = Random_Files::Random_Tmp_Filename();
+    auto command = Get_Sync_Log_Command_From_Build(bazel_wrapper,settings,config_settings,file_name);
+    std::cout << command << std::endl;
+    auto return_code = Execute_Quietly_But_Report_Stderr_When_Nonzero(command);
+    
+    //whether success or failure, return file
+    return file_name;
+❱
+
+◀public: static▶ std::string ☀Get_Sync_Information_From_Test(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings) ❰
+
+    //clean
+    Clean(bazel_wrapper);
+    
+    //sync
+    std::string file_name = Random_Files::Random_Tmp_Filename();
+    auto command = Get_Sync_Log_Command_From_Test(bazel_wrapper,settings,config_settings,file_name);
+    std::cout << command << std::endl;
+    auto return_code = Execute_Quietly_But_Report_Stderr_When_Nonzero(command);
+    
+    //whether success or failure, return file
+    return file_name;
+❱
+
 
 
 //Sync the repository
@@ -120,6 +150,29 @@ class
     Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
     return Create_Full_Command(flags,bazel_wrapper);
     
+❱
+◀private: static▶ std::string ☀Get_Sync_Log_Command_From_Build(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"build");
+    Flag_Util::Add_Value(flags,"...");
+    
+    Flag_Util::Add_Flag(flags,"experimental_workspace_rules_log_file",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
+❱
+◀private: static▶ std::string ☀Get_Sync_Log_Command_From_Test(std::string const& bazel_wrapper, Build_Settings const& settings, Bazel_Config_Settings const& config_settings, std::string const& file_name) ❰
+
+    //decide flags
+    Flags flags;
+    Flag_Util::Add_Value(flags,"test");
+    
+    Flag_Util::Add_Flag(flags,"experimental_workspace_rules_log_file",file_name);
+    
+    Bazel_Flags_Adder::Add_Bazel_Flags(flags,settings,config_settings);
+    return Create_Full_Command(flags,bazel_wrapper);
 ❱
 
 
