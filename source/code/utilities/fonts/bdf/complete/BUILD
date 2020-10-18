@@ -29,3 +29,11 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
     ],
 )
+
+hcp(
+    name = "unilang_font_installer",
+    deps = [
+        "//code/utilities/fonts/bdf/complete/unilang:unilang_font_creation_settings",
+        "//code/utilities/fonts/bdf/complete:font_creator",
+    ],
+)

@@ -22,6 +22,7 @@ hcp(
         "//code/utilities/program/call:lib",
         "//code/utilities/program/wrappers/git:git_setuper",
         "//code/utilities/system/machine_setup:keygen_refresher",
+        "//code/utilities/fonts/bdf/complete:unilang_font_installer",
     ],
 )
 
