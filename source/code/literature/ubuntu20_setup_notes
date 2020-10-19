@@ -1,0 +1,62 @@
+These are the things I needed to do on a fresh install of ubuntu 20 to get the enviornment and unilang setup properly:
+
+#some pip thing in the workspace fails without:
+sudo apt install -y python3-pip
+sudo apt install -y build-essential libssl-dev libffi-dev python3-dev
+sudo apt install -y python3-venv
+sudo apt install python-is-python3
+
+#clang fails:
+#external/llvm_toolchain/bin/clang: error while loading shared libraries: libtinfo.so.5: cannot open shared object file: No such file or directory
+sudo apt install -y libtinfo5
+
+#machine setup builds, but I need xclip for the ssh
+#we should check if programs don't exist, and install them automatically
+sudo apt-get install --force-yes xclip
+
+#bitmap fonts no longer work in ubuntu 20 because of Pango's decision to use Harfbuzz
+#https://gitlab.gnome.org/GNOME/pango/-/issues/386#
+#https://www.reddit.com/r/linux/comments/cjcrwk/pango_144_drops_support_for_bitmap_fonts/
+#need to convert bdf fonts into bitmap openType fonts using: https://gitlab.freedesktop.org/xorg/app/fonttosfnt
+sudo apt-get install dh-autoreconf
+sudo apt-get install xutils-dev
+sudo apt-get install x11proto-core-dev
+sudo apt-get install  libfreetype6-dev
+sudo apt-get install texlive-fonts-extra
+sudo apt-get install texlive-xetex
+sudo apt-get install texlive-full
+actually required installing: git clone git@github.com:freedesktop/libfontenc.git
+
+example:
+./fonttosfnt -b -g 2 -m 2 -o terminusn.otb ../terminus-fonts/ter-*n.pcf.gz
+
+./fonttosfnt -b -m 2 -o ~/.fonts/Unilang.otb ~/.fonts/Unilang.bdf
+
+look at font blur: sudo apt install xzoom
+<SETTLE FOR NONPROFONT FOR NOW.  SINCE IT DOESN"T SHOW UP IN GNOME_TERMINAL AS AN OPTION.  SYSTEM IS USING PROFONT odf>
+
+terminal:
+sudo apt install gconf2 (didn't work- skipping)
+
+Themes:
+sudo add-apt-repository ppa:numix/ppa
+sudo apt-get update
+sudo apt-get install numix-gtk-theme numix-icon-theme-circle numix-icon-theme-square
+(Numix looks bad now)
+
+
+Looks good enough going to build all now.
+sudo apt-get install -y openal-info
+sudo apt-get install -y libsdl2-dev
+cd /usr/include/SDL2
+sudo cp SDL_config.h _real_SDL_config.h (or comment out)
+hack SDL_stdinc.h to include the right c headers
+sudo apt-get install libgmp3-dev
+sudo ln -s libopenal.so.1 libopenal.so
+sudo apt-get install -y libglew-dev
+sudo apt-get install libsdl2-image-dev
+sudo apt-get install -y libsdl2-mixer-dev
+sudo apt-get install -y libalut-dev
+
+a rule needs:
+sudo apt install ffmpeg
