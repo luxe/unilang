@@ -4,6 +4,6 @@ package(
     default_visibility = ["//visibility:public"],
 )
 
-gtest(
-    name = "main",
-)
+# gtest(
+#     name = "main",
+# )
