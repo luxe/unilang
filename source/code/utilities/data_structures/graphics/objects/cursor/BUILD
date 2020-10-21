@@ -5,35 +5,13 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
-    name = "label_cursor_selection",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
-        "//code/utilities/data_structures/position",
-    ],
-)
-
-hcp(
     name = "label_cursor_mover",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_selection",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor_selection",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
-    ],
-)
-
-hcp(
-    name = "cursor",
-    deps = [
-        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-    ],
-)
-
-hcp(
-    name = "label_cursor",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/cursor",
     ],
 )
 
@@ -56,6 +34,25 @@ hcp(
 
 hcp(
     name = "label_cursor_action_doer",
+    deps = [
+        "//code/tools/ide/settings:ide_settings",
+        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_mover",
+        "//code/utilities/data_structures/graphics/objects/cursor:text_box_action_decider",
+        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_actions",
+        "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
+        "//code/utilities/fonts/bdf/character_maps",
+        "//code/utilities/graphics/imgui:ui_renders",
+        "//code/utilities/graphics/imgui/loop:mechanics",
+        "//code/utilities/graphics/imgui/window:window_position_finder",
+        "//code/utilities/graphics/imgui/window:window_renderer",
+        "//code/utilities/peripheral/keyboard:key_detector",
+        "//code/utilities/peripheral/pc:pc_input_state",
+        "@imgui//:imgui_sdl_opengl3",
+    ],
+)
+
+hcp(
+    name = "label_cursor_actions",
     deps = [
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_mover",

@@ -1,0 +1,177 @@
+class
+❪"code/utilities/graphics/imgui/loop/mechanics"❫
+❪"SDL.h"❫
+❪"code/utilities/data_structures/graphics/objects/label/data/positioned_label"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+⚯
+❪"code/utilities/graphics/imgui/ui_renders"❫
+❪"code/utilities/graphics/imgui/window/window_renderer"❫
+❪"code/utilities/graphics/imgui/window/window_position_finder"❫
+❪"code/utilities/peripheral/keyboard/key_detector"❫
+❪"code/utilities/data_structures/graphics/objects/cursor/label_cursor_mover"❫
+❪"code/utilities/data_structures/graphics/objects/cursor/text_box_action_decider"❫
+⚞⚟
+
+
+
+//Main actions
+◀public: static▶ void ☀Selection_Forwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (!Cursor_At_End(label,selection)){
+        Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
+        Adjust_For_Forwards_Selection(label,selection);
+    }
+❱
+◀public: static▶ void ☀NonSelection_Forwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+
+    if (!Cursor_At_End(label,selection)){
+       if (!Highlighted_Chars_Exist(selection)){
+            Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
+        }
+        else{
+            Label_Cursor_Mover::Move_Cursor_To_End_Of_Selection(font_chars,pos,label,selection);
+        }
+    }
+    selection.additional_chars_selected = 0;
+❱
+◀public: static▶ void ☀Selection_Backwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (!Cursor_At_Beginning(selection)){
+        Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
+        Adjust_For_Backwards_Selection(label,selection);
+    }
+❱
+◀public: static▶ void ☀NonSelection_Backwards(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (!Cursor_At_Beginning(selection)){
+        if (!Highlighted_Chars_Exist(selection)){
+            Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
+        }
+        else{
+            Label_Cursor_Mover::Move_Cursor_To_Start_Of_Selection(font_chars,pos,label,selection);
+        }
+    }
+    selection.additional_chars_selected = 0;
+❱
+◀public: static▶ void ☀Handle_Backwards_Deletion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (Highlighted_Chars_Exist(selection)){
+        Backspace_On_Selection(font_chars,pos,label,selection);
+    }
+    else{
+        Backspace_On_NonSelection(font_chars,pos,label,selection);
+    }
+❱
+◀public: static▶ void ☀Handle_All_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+        selection.additional_chars_selected = label.message.size() * -1;
+        Label_Cursor_Mover::Move_Cursor_To_The_End(font_chars,pos,label,selection);
+❱
+◀public: static▶ void ☀Copy(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+
+    auto message = Message_Portion_Currently_Selected(label,selection);
+    ImGui::SetClipboardText(message.c_str());
+❱
+◀public: static▶ void ☀Paste(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    std::string str = ImGui::GetClipboardText();
+    //TODO
+❱
+◀public: static▶ void ☀Handle_Fowards_Insertion(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection, Pc_Input_State const& pc_input)❰
+
+    auto chars_to_type = pc_input.keyboard.buffered_chars;
+    if (!chars_to_type.empty()){
+        
+        if (Highlighted_Chars_Exist(selection)){
+            Backspace_On_Selection(font_chars,pos,label,selection);
+        }
+        
+        
+        for (auto const& c: chars_to_type){
+            label.message.insert(selection.label_index+1,1,c);
+            Label_Cursor_Mover::Move_Cursor_Forward(font_chars,pos,label,selection);
+        }
+    }
+❱
+
+
+
+
+
+
+
+◀private: static▶ std::string ☀Message_Portion_Currently_Selected(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    
+    auto start = selection.label_index;
+    auto end = start + selection.additional_chars_selected;
+    if (start > end){
+        std::swap(start,end);
+    }
+    auto message = label.message.substr(start+1,end-start);
+    return message;
+❱
+
+
+◀private: static▶ void ☀Backspace_On_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    Clear_Selection(font_chars,pos,label,selection);
+    selection.additional_chars_selected = 0;
+❱
+◀private: static▶ void ☀Backspace_On_NonSelection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (selection.label_index > -1){
+        auto for_deletion = selection.label_index;
+        Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
+        label.message.erase(for_deletion,1);
+    }
+❱
+
+
+◀private: static▶ void ☀Clear_Selection(Character_Maps const& font_chars, Position pos, Label_Settings & label, Label_Cursor_Selection & selection)❰
+   
+   auto for_deletion = selection.label_index;
+   if (selection.additional_chars_selected < 0){
+        for (size_t i = 0; i < std::abs(selection.additional_chars_selected); ++i){
+            Label_Cursor_Mover::Move_Cursor_Backward(font_chars,pos,label,selection);
+        }
+        label.message.erase(for_deletion+selection.additional_chars_selected+1,std::abs(selection.additional_chars_selected));
+    }
+    else{
+        label.message.erase(for_deletion+1,selection.additional_chars_selected);
+    }
+❱
+
+
+
+
+
+
+
+//state checking / settings
+◀private: static▶ bool ☀Cursor_At_Beginning(Label_Cursor_Selection const& selection)❰
+    return (selection.label_index == -1);
+❱
+◀private: static▶ bool ☀Cursor_At_End(Label_Settings const& label, Label_Cursor_Selection const& selection)❰
+    return (selection.label_index == static_cast<int>(label.message.size())-1);
+❱
+◀private: static▶ bool ☀Highlighted_Chars_Exist(Label_Cursor_Selection const& selection)❰
+    return (selection.additional_chars_selected != 0);
+❱
+◀private: static▶ void ☀Set_Cursor_At_End(Label_Settings const& label, Label_Cursor_Selection & selection)❰
+    selection.label_index = static_cast<int>(label.message.size())-1;
+❱
+◀private: static▶ void ☀Set_Cursor_At_Beginning(Label_Cursor_Selection & selection)❰
+    selection.label_index = -1;
+❱
+
+
+//selection movement
+◀private: static▶ void ☀Adjust_For_Backwards_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (Key_Detector::Shift_Down()){
+        selection.additional_chars_selected += 1;
+    }
+    else{
+        selection.additional_chars_selected = 0;
+    }
+❱
+◀private: static▶ void ☀Adjust_For_Forwards_Selection(Label_Settings & label, Label_Cursor_Selection & selection)❰
+    if (Key_Detector::Shift_Down()){
+        selection.additional_chars_selected -= 1;
+    }
+    else{
+        selection.additional_chars_selected = 0;
+    }
+❱

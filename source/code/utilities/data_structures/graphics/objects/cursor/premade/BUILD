@@ -7,7 +7,7 @@ hcp(
     name = "red_cursor",
     deps = [
         "//code/utilities/colors/defaults:color_defaults",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
     ],
 )
 
@@ -15,7 +15,7 @@ hcp(
     name = "blue_cursor",
     deps = [
         "//code/utilities/colors/defaults:color_defaults",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
     ],
 )
 
@@ -24,6 +24,6 @@ hcp(
     deps = [
         "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/data_structures/color:transparent_rgb_color",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
     ],
 )

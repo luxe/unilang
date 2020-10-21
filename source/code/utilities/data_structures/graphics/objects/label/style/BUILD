@@ -7,7 +7,7 @@ hcp(
     name = "label_style",
     deps = [
         "//code/utilities/data_structures/color:transparent_rgb_color",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
         "//code/utilities/data_structures/graphics/objects/label/style:label_width_style",
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
         "//code/utilities/data_structures/shapes/rectangle:rectangle_shade_colors",
