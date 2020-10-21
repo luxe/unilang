@@ -25,3 +25,18 @@ hcp(
         "//code/utilities/data_structures/position",
     ],
 )
+
+hcp(
+    name = "cursor_ability",
+    deps = [
+    ],
+)
+
+hcp(
+    name = "controlled_label_cursor_selections",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor_selection",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:cursor_ability",
+    ],
+)
+

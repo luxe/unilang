@@ -21,6 +21,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events",
         "//code/utilities/data_structures/position",
         "//code/utilities/data_structures/shapes/rectangle:rectangle_settings",
+        "//code/utilities/data_structures/graphics/objects/cursor/data:controlled_label_cursor_selections",
     ],
 )
 
