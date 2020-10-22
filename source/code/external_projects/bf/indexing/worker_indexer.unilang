@@ -33,6 +33,13 @@
 􏷤􏷣􏷦java.util.logging.Logger􏷥
 􏷤􏷣􏷦javax.annotation.Nullable􏷥
 􏷤i􏷣􏷦com.google.common.util.concurrent.MoreExecutors.directExecutor􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦redis.clients.jedis.Response􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
 
 
 􏷐Handle the reindexing the CAS entries based on a departing worker􏷏
@@ -58,6 +65,27 @@
     return results;
 􏶳
 
+􏷐Get a string message from performing worker indexing on the CAS􏷏
+􏶠This message is useful for logging􏶡
+􏷘+s􏷗􏴅Observers􏴆􏷒index results message􏷑
+􏶜􏶝􏷆CasIndexResults􏷅􏷄index results􏷃􏷀results from re-indexing the worker in the CAS􏶿
+􏶾String􏶽􏶼message􏶻􏶺a message representation of the CasIndexResults􏶹
+􏶴
+  StringBuilder message = new StringBuilder();
+  message.append(String.format("Total keys re-indexed: %d ", indexResults.totalKeys));
+  message.append(
+      String.format("Worker references removed: %d ", indexResults.removedHosts));
+  message.append(String.format("CAS keys deleted: %d ", indexResults.removedKeys));
+  message.append(
+      String.format(
+          "CAS lost: %f%%",
+          indexResults.totalKeys == 0
+              ? 0
+              : (indexResults.removedKeys / (float) indexResults.totalKeys) * 100));
+  return message.toString();
+􏶳
+
+
 􏷐Scan all CAS entires on existing Jedis node and remove particular worker indexes􏷏
 􏶠Results are accumulated onto􏶡
 􏷘-s􏷗􏴅Observers􏴆􏷒reindex node􏷑
@@ -70,7 +98,6 @@
     // and remove worker from the CAS keys.
     String cursor = "0";
     do {
-
       List<String> casKeys = scanCas(node,cursor,settings);
       removeWorkerFromCasKeys(cluster, casKeys, settings.hostName, results);
       
@@ -92,9 +119,9 @@
     params.count(settings.scanAmount);
     
     // perform scan iteration
-    ScanResult scanResult = node.scan(nextCursor, params);
+    ScanResult scanResult = node.scan(cursor, params);
     if (scanResult != null) {
-        nextCursor = scanResult.getCursor();
+        cursor = scanResult.getCursor();
         return scanResult.getResult();
     }
     return new ArrayList<>();
