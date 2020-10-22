@@ -1,0 +1,122 @@
+􏶞o􏶟
+􏷲Handle the reindexing the CAS entries based on a departing worker􏷱
+􏷰When workers leave the cluster, the CAS keys must be updated to inform other workers that they can no longer obtain CAS data from the missing worker􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝
+􏷤􏷣􏷦com.google.protobuf.Duration􏷥
+􏷤􏷣􏷦com.google.protobuf.util.Durations􏷥
+􏷤􏷣􏷦io.grpc.Deadline􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecuteRequest􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecutionGrpc􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.RequestMetadata􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.WaitExecutionRequest􏷥
+􏷤􏷣􏷦build.buildfarm.common.Time􏷥
+􏷤􏷣􏷦build.buildfarm.common.Watcher􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpointHandler􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.TracingMetadataUtils􏷥
+􏷤􏷣􏷦build.buildfarm.instance.Instance􏷥
+􏷤􏷣􏷦build.buildfarm.metrics.MetricsPublisher􏷥
+􏷤􏷣􏷦com.google.common.util.concurrent.FutureCallback􏷥
+􏷤􏷣􏷦com.google.common.util.concurrent.ListenableFuture􏷥
+􏷤􏷣􏷦com.google.longrunning.Operation􏷥
+􏷤􏷣􏷦com.google.protobuf.util.Durations􏷥
+􏷤􏷣􏷦io.grpc.Context􏷥
+􏷤􏷣􏷦io.grpc.Status􏷥
+􏷤􏷣􏷦io.grpc.stub.ServerCallStreamObserver􏷥
+􏷤􏷣􏷦io.grpc.stub.StreamObserver􏷥
+􏷤􏷣􏷦java.util.concurrent.CancellationException􏷥
+􏷤􏷣􏷦java.util.concurrent.ScheduledExecutorService􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦java.util.logging.Level􏷥
+􏷤􏷣􏷦java.util.logging.Logger􏷥
+􏷤􏷣􏷦javax.annotation.Nullable􏷥
+􏷤i􏷣􏷦com.google.common.util.concurrent.MoreExecutors.directExecutor􏷥
+
+
+􏷐Handle the reindexing the CAS entries based on a departing worker􏷏
+􏶠This is intended to be called by a service endpoint as part of gracefully shutting down a worker􏶡
+􏷘+s􏷗􏴅Observers􏴆􏷒remove worker indexes from cas􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆CasIndexSettings􏷅􏷄settings􏷃􏷀settings on how to traverse the CAS and which worker to remove􏶿
+􏶾CasIndexResults􏶽􏶼index results􏶻􏶺results from re-indexing the worker in the CAS􏶹
+􏶴
+    CasIndexResults results = new CasIndexResults();
+
+    //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
+    //This prevents us from using the cluster's SCAN to traverse all of the CAS.  
+    //That's why we choose to scan each of the jedisNode's individually.
+    cluster.getClusterNodes().values().stream()
+        .forEach(
+            pool -> {
+              try (Jedis node = pool.getResource()) {
+                reindexNode(cluster,node,settings,results);
+              }
+            });
+
+    return results;
+􏶳
+
+􏷐Scan all CAS entires on existing Jedis node and remove particular worker indexes􏷏
+􏶠Results are accumulated onto􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒reindex node􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀a node of the cluster􏶿
+􏶜􏶝􏷆CasIndexSettings􏷅􏷄settings􏷃􏷀settings on how to traverse the CAS and which worker to remove􏶿
+􏶜􏶝􏷆CasIndexResults􏷅􏷄results􏷃􏷀accumulating results from performing reindexing􏶿
+􏶴
+    // iterate over all CAS entries via scanning
+    // and remove worker from the CAS keys.
+    String cursor = "0";
+    do {
+
+      List<String> casKeys = scanCas(node,cursor,settings);
+      removeWorkerFromCasKeys(cluster, casKeys, workerName, results);
+      
+    } while (!cursor.equals("0"));
+􏶳
+
+􏷐scan the cas to obtain CAS keys􏷏
+􏶠scanning is done incrementally via a cursor􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒scan cas􏷑
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀a node of the cluster􏶿
+􏶜􏶝􏷆String􏷅􏷄cursor􏷃􏷀scan cursor􏶿
+􏶜􏶝􏷆CasIndexSettings􏷅􏷄settings􏷃􏷀settings on how to traverse the CAS􏶿
+􏶾List<String>􏶽􏶼cas keys􏶻􏶺resulting CAS keys from scanning􏶹
+􏶴
+    // construct CAS query
+    int defaultScanCount = 10000;
+    String casQuery = config.getCasPrefix() + ":*";
+    ScanParams params = new ScanParams();
+    params.match(casQuery);
+    params.count(defaultScanCount);
+    
+    // perform scan iteration
+    ScanResult scanResult = node.scan(nextCursor, params);
+    if (scanResult != null) {
+        nextCursor = scanResult.getCursor();
+        return scanResult.getResult();
+    }
+    return new ArrayList<>();
+􏶳
+
+􏷐delete the worker index from the given cas keys􏷏
+􏶠accumulates results about the deletion􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒remove worker from cas keys􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄cas keys􏷃􏷀keys to remove worker index from􏶿
+􏶜􏶝􏷆String􏷅􏷄worker name􏷃􏷀index to remove􏶿
+􏶜􏶝􏷆CasIndexResults􏷅􏷄results􏷃􏷀accumulating results from performing reindexing􏶿
+􏶴
+    for (String casKey : casKeys) {
+      results.totalKeys++;
+      if (cluster.srem(casKey, workerName) == 1) {
+        results.removedHosts++;
+      }
+      if (cluster.scard(casKey) == 0) {
+        results.removedKeys++;
+        cluster.del(casKey);
+      }
+    }
+􏶳
