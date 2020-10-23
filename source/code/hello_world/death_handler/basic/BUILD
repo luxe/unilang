@@ -5,6 +5,6 @@ package(default_visibility = ["//visibility:public"])
 cpp_main(
     name = "main",
     deps = [
-        "@death_handler//:death_handler"
+        "@death_handler",
     ],
 )

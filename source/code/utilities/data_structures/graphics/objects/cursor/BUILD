@@ -36,9 +36,9 @@ hcp(
     name = "label_cursor_action_doer",
     deps = [
         "//code/tools/ide/settings:ide_settings",
+        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_actions",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_mover",
         "//code/utilities/data_structures/graphics/objects/cursor:text_box_action_decider",
-        "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_actions",
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/graphics/imgui:ui_renders",
