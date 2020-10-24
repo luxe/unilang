@@ -4,6 +4,7 @@ class
 ❪unordered_map❫
 ❪fstream❫
 ❪"code/tools/transcompilers/hcp-compiler/programatic/data/function"❫
+❪"code/tools/transcompilers/hcp-compiler/programatic/data/headers"❫
 ⚯
 ❪"code/tools/transcompilers/hcp-compiler/programatic/data/code"❫
 ❪"code/tools/transcompilers/hcp-compiler/programatic/code_getter"❫
@@ -17,17 +18,21 @@ class
 
 
     Code code;
-    code.headers.public_headers.emplace_back("string");
-    code.headers.public_headers.emplace_back(As_Wrapped_In_Double_Quotes("code/utilities/data_structures/tree/generic/string_tree"));
-    code.headers.public_headers.emplace_back(As_Wrapped_In_Double_Quotes("code/utilities/data_structures/tree/generic/string_to_string_tree"));
-    code.headers.public_headers.emplace_back(As_Wrapped_In_Double_Quotes("code/utilities/types/strings/transformers/appending/lib"));
+    code.headers = Get_Headers(input_file);
     code.functions.emplace_back(Get_Function(input_file));
     auto file_content = Code_Getter::Get(code);
     
-    //write to file
-    std::wofstream outfile(output_file);
-    outfile << file_content;
-    outfile.close();
+    Write_Output(output_file,file_content);
+❱
+
+◀private: static▶ Headers ☀Get_Headers(std::string const& input_file)❰
+
+    Headers x;
+    x.public_headers.emplace_back("string");
+    x.public_headers.emplace_back(As_Wrapped_In_Double_Quotes("code/utilities/data_structures/tree/generic/string_tree"));
+    x.public_headers.emplace_back(As_Wrapped_In_Double_Quotes("code/utilities/data_structures/tree/generic/string_to_string_tree"));
+    x.public_headers.emplace_back(As_Wrapped_In_Double_Quotes("code/utilities/types/strings/transformers/appending/lib"));
+    return x;
 ❱
 
 ◀private: static▶ Function ☀Get_Function(std::string const& input_file)❰
@@ -55,4 +60,10 @@ class
     
     x += "    return String_To_String_Tree::Convert(x);\n";
     return x;
+❱
+
+◀private: static▶ void ☀Write_Output(std::string const& output_file, std::wstring const& file_content)❰
+    std::wofstream outfile(output_file);
+    outfile << file_content;
+    outfile.close();
 ❱
