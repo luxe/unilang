@@ -21,6 +21,9 @@ hcp(
         "//code/utilities/types/tree:shortest_unique_name",
         "//code/utilities/types/tree:children_path_names",
         "//code/utilities/types/strings/observers/characteristic:is_cpp_keyword_checker",
+        "//code/utilities/types/tree:first_full_path_name",
+        "//code/tools/transcompilers/tree_hcp/shared:path_naming",
+        "//code/tools/transcompilers/hcp-compiler/programatic/data:headers",
     ],
 )
 

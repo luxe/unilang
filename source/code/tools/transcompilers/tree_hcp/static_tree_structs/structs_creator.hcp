@@ -20,6 +20,7 @@ class
 ❪"code/utilities/types/tree/children_path_names"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ❪"code/utilities/types/strings/observers/characteristic/is_cpp_keyword_checker"❫
+❪"code/tools/transcompilers/tree_hcp/shared/path_naming"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Create(std::string const& input_file, std::string const& path_without_extension)❰
@@ -60,16 +61,16 @@ class
 
     std::string x;
     x += "template <typename T> ";
-    x += "struct " + Get_Struct_Typename(str_tree,full_path) + ";\n";
+    x += "struct " + Path_Naming::Get_Struct_Typename(str_tree,full_path) + ";\n";
     return x;
 ❱
 ◀private: static▶ std::string ☀Create_Struct_Definition(String_Tree const& str_tree, std::string const& full_path)❰
     std::string x;
     x += "template <typename T> ";
-    x += "struct " + Get_Struct_Typename(str_tree,full_path) + "{\n";
+    x += "struct " + Path_Naming::Get_Struct_Typename(str_tree,full_path) + "{\n";
         auto children = Children_Path_Names::Get_All_Children_Names(str_tree,full_path);
         for (auto const& it: children){
-            x += "    std::vector<" + Get_Struct_Typename(str_tree,it) + "<T>> " + Get_Struct_Identifier(str_tree,it) + ";\n";
+            x += "    std::vector<" + Path_Naming::Get_Struct_Typename(str_tree,it) + "<T>> " + Path_Naming::Get_Struct_Identifier(str_tree,it) + ";\n";
         }
         
         //add a pointer back to the visual tree node
@@ -89,27 +90,6 @@ class
         
     x += "};\n\n";
     return x;
-❱
-
-
-◀private: static▶ std::string ☀Get_Struct_Typename(String_Tree const& str_tree, std::string const& full_path)❰
-    auto short_path = Shortest_Unique_Name::Get(str_tree,full_path);
-    auto name = replace_fwd_slash_with_space(short_path);
-    auto struct_name = Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPS_PUSHED,name);
-    return struct_name;
-❱
-◀private: static▶ std::string ☀Get_Struct_Identifier(String_Tree const& str_tree, std::string const& full_path)❰
-    auto short_path = Shortest_Unique_Name::Get(str_tree,full_path);
-    auto name = replace_fwd_slash_with_space(short_path);
-    auto identifier = Case_Modifier::As_Modified_Casing(Case_Format_Style::SNAKE_CASE,name);
-    Adjust_To_Avoid_Cpp_Keyword_Conflict(identifier);
-    return identifier;
-❱
-
-◀private: static▶ void ☀Adjust_To_Avoid_Cpp_Keyword_Conflict(std::string & str)❰
-    if (Is_Cpp_Keyword_Checker::Check(str)){
-        str += "_";
-    }
 ❱
 
 ◀private: static▶ void ☀Create_Source(String_Tree const& str_tree, std::string const& path_without_extension)❰

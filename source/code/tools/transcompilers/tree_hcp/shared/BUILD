@@ -4,7 +4,7 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 hcp(
-    name = "structs_creator",
+    name = "path_naming",
     deps = [
         "//code/tools/transcompilers/hcp-compiler/programatic:code_getter",
         "//code/tools/transcompilers/hcp-compiler/programatic/data:code",
@@ -22,16 +22,5 @@ hcp(
         "//code/utilities/types/tree:shortest_unique_name",
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/tools/transcompilers/tree_hcp/shared:path_naming",
-    ],
-)
-
-cc_binary(
-    name = "static_tree_structs",
-    srcs = ["main.cpp"],
-    deps = [
-        ":structs_creator",
-        "//code/tools/transcompilers/tree_hcp/static_tree_structs/program_options:lib",
-        "//code/utilities/program/common_actions/locale:lib",
     ],
 )
