@@ -26,7 +26,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	using namespace boost::program_options;
 
 	//Program Description
-	options_description desc("creates nested structs based on the tree");
+	options_description desc("creates a string tree getter");
 
 	//Program Flags
 	desc.add_options()
@@ -35,8 +35,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//the code inserted,  are the flags added by the user through the
 	//program_options_maker flag interface
 	("input_file,i",value<std::string>(),"input file")
-	("output_dir,o",value<std::string>(),"output path")
-	("name",value<std::string>(),"base file name")
+	("output_file,o",value<std::string>(),"output path")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -67,7 +66,7 @@ void Program_Options::Process_Immediate_Options( boost::program_options::options
 
 	//do not continue the program if the user wanted to see the version or help data
 	if (vm.count("version")){
-		std::cout << "\nThis is version " << 1 << " of the static_tree_structs getter.\n\n";
+		std::cout << "\nThis is version " << 1 << " of the string tree getter.\n\n";
 		exit(EXIT_SUCCESS);
 	}
 	else if (vm.count("help")){
@@ -98,17 +97,10 @@ std::string Program_Options::Input_File() const{
 
 	return data;
 }
-std::string Program_Options::Output_Dir() const{
+std::string Program_Options::Output_File() const{
 	std::string data;
-	if (vm.count("output_dir")){
-		data = vm["output_dir"].as<std::string>();
-	}
-	return data;
-}
-std::string Program_Options::Name() const{
-	std::string data;
-	if (vm.count("name")){
-		data = vm["name"].as<std::string>();
+	if (vm.count("output_file")){
+		data = vm["output_file"].as<std::string>();
 	}
 	return data;
 }

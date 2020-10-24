@@ -12,8 +12,7 @@ class Program_Options {
 	explicit Program_Options(int const& argc, char** const& argv);
 
 	std::string Input_File() const;
-	std::string Output_Dir() const;
-	std::string Name() const;
+	std::string Output_File() const;
 
 
 	private:

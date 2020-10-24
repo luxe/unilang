@@ -13,6 +13,6 @@ int main(int argc, char** argv){
     auto po = Program_Options(argc,argv);
 
     //build it
-    Hcp_Creator::Create(po.Input_File(),po.Output_Dir() + "/" + po.Name());
+    Hcp_Creator::Create(po.Input_File(),po.Output_File());
 
 }
