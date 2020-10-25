@@ -102,6 +102,7 @@ bootstrap_hcp(
         "class_structure",
         "include_file_printer",
         "//code/tools/transcompilers/hcp-compiler/bootstrap/core/structure:lib",
+        "//code/tools/transcompilers/shared:json_gen",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/path:lib",

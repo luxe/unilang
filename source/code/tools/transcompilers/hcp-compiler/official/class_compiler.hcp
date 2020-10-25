@@ -13,6 +13,7 @@ class
 ❪"code/utilities/types/converters/lib"❫
 ❪"include_file_printer"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/tools/transcompilers/shared/json_gen"❫
 ⚞⚟
 
 
@@ -43,8 +44,7 @@ class
     Include_File_Printer::Print(cpp_stream,structure.Source_Includes());
     hpp_stream << '\n';
     hpp_stream << as_wstring(boost_serialization_headers());
-    hpp_stream << as_wstring(nlohmann_serialization_headers());
-    hpp_stream << as_wstring(nlohmann_serialization_support_headers());
+    hpp_stream << as_wstring(Json_Gen::all_nlohmann_serialization_headers());
     
     
     
@@ -119,7 +119,7 @@ class
     outfile << "\n";
     
     if (utility_functions){
-      outfile << as_wstring(nlohmann_serialization_interface_methods(structure,str));
+      outfile << as_wstring(Json_Gen::nlohmann_serialization_interface_methods(str));
     }
     
 ❱
@@ -129,7 +129,12 @@ class
   auto str = Get_Class_Name(structure);
   
   if (utility_functions){
-    outfile << as_wstring(nlohmann_serialization_implementation_methods(structure,str));
+    
+    std::vector<std::string> data_member_strs;
+    for (auto const& data_member: structure.Data_Members()){
+      data_member_strs.emplace_back(as_string(data_member));
+    }
+    outfile << as_wstring(Json_Gen::nlohmann_serialization_implementation_methods(str,data_member_strs));
   }
 ❱
 
@@ -154,64 +159,4 @@ class
   str += "#include <boost/archive/text_iarchive.hpp>\n";
   return str;
 ❱
-
-◀private: static▶ std::string ☀nlohmann_serialization_interface_methods(Class_Structure const& structure, std::string const& class_name)❰
-  std::string str;
-  Append(str,"void to_json(nlohmann::json& j, const ");
-  Append(str,class_name);
-  Append_With_Newline(str,"&x);");
-  
-  Append(str,"void from_json(const nlohmann::json& j, ");
-  Append(str,class_name);
-  Append_With_Newline(str,"&x);");
-  return str;
-❱
-
-◀private: static▶ std::string ☀nlohmann_serialization_implementation_methods(Class_Structure const& structure, std::string const& class_name)❰
-  std::string str;
-  
-  //to json
-  Append(str,"void to_json(nlohmann::json& j, const ");
-  Append(str,class_name);
-  Append_With_Newline(str,"&x) {");
-  Append_With_Newline(str,"j = nlohmann::json{");
-  for (auto const& data_member: structure.Data_Members()){
-    Append(str,"{\"");
-    Append(str,as_string(data_member));
-    Append(str,"\", x.");
-    Append(str,as_string(data_member));
-    Append_With_Newline(str,"},");
-  }
-  Append_With_Newline(str,"};");
-  Append_With_Newline(str,"}");
-  
-  
-  //from json
-  Append(str,"void from_json(const nlohmann::json& j, ");
-  Append(str,class_name);
-  Append_With_Newline(str,"&x) {");
-  for (auto const& data_member: structure.Data_Members()){
-    Append(str,"j.at(\"");
-    Append(str,as_string(data_member));
-    Append(str,"\").get_to(x.");
-    Append(str,as_string(data_member));
-    Append_With_Newline(str,");");
-  }
-  Append_With_Newline(str,"}");
-  
-  return str;
-❱
-
-◀private: static▶ std::string ☀nlohmann_serialization_headers()❰
-  std::string str;
-  str += "#include \"nlohmann/json.hpp\"\n";
-  return str;
-❱
-◀private: static▶ std::string ☀nlohmann_serialization_support_headers()❰
-  std::string str;
-  str += "#include \"code/utilities/formats/json/overloads/tree_json_converters.hpp\"\n";
-  return str;
-❱
-
-
 
