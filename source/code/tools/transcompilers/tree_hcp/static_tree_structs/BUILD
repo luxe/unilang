@@ -23,6 +23,7 @@ hcp(
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "//code/utilities/types/vectors/transformers:lib",
         "//code/tools/transcompilers/tree_hcp/shared:path_naming",
+        "//code/tools/transcompilers/shared:json_gen",
     ],
 )
 
