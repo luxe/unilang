@@ -158,6 +158,17 @@ T Last_Element(std::vector<T> const& v){
     return v.back();
 }
 template<typename T>
+T& Modifiable_Last_Element(std::vector<T> const& v){
+    return v.back();
+}
+template<typename T>
+T& Safe_Modifiable_Last_Element(std::vector<T> & v){
+    if (v.empty()){
+      v.emplace_back(T{});
+    }
+    return v.back();
+}
+template<typename T>
 T Second_To_Last_Element(std::vector<T> const& v){
     return v[v.size()-2];
 }

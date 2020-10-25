@@ -11,6 +11,7 @@ cc_library(
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
         "@boost//:range",
     ],
 )

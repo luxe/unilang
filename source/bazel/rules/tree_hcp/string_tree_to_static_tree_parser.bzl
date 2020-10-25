@@ -26,6 +26,7 @@ def string_tree_to_static_tree_parser(name):
         "//code/utilities/data_structures/tree/generic:string_to_string_tree",
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/data_structures/tree/generic/tokens:tree_token",
+        "//code/utilities/types/vectors/observers:lib",
         static_struct_dep,
     ]
     hcp(name + "_string_tree_parser", deps)

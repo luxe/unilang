@@ -4,6 +4,7 @@
 #include "boost/range/adaptor/reversed.hpp"
 #include "code/utilities/types/strings/observers/other/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
+#include "code/utilities/types/strings/observers/splitting/lib.hpp"
 
 std::string Get_File_Extension(std::string const& str){
     std::string extension;
@@ -104,4 +105,18 @@ std::string Append_onto_Basename(std::string const& path, std::string const& add
 {
     //TODO implement
     return "";
+}
+
+std::vector<std::string> All_Paths_Of_Path(std::string const& path){
+    
+    auto path_parts = Get_Path_In_Parts(path);
+    
+    std::vector<std::string> all_paths;
+    std::string build_up;
+    for (auto const& it: path_parts){
+        build_up += it;
+        build_up += "/";
+        all_paths.emplace_back(build_up);
+    }
+    return all_paths;
 }

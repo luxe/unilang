@@ -18,3 +18,5 @@ std::string Replace_File_Name(std::string const& path, std::string const& new_fi
 //base name
 std::string Prepend_Onto_Basename(std::string const& path, std::string const& add);
 std::string Append_onto_Basename(std::string const& path, std::string const& add);
+
+std::vector<std::string> All_Paths_Of_Path(std::string const& path);

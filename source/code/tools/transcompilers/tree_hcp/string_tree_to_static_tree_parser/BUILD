@@ -24,6 +24,7 @@ hcp(
         "//code/utilities/types/tree:first_full_path_name",
         "//code/tools/transcompilers/tree_hcp/shared:path_naming",
         "//code/tools/transcompilers/hcp-compiler/programatic/data:headers",
+        "//code/utilities/types/strings/observers/path:lib",
     ],
 )
 
