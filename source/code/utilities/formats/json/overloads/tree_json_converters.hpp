@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <iostream>
 #include "nlohmann/json.hpp"
 #include <sstream>
 #include "src/tree.hh"

@@ -52,6 +52,7 @@ template <typename T>
 void Read_Json_From_File(T & t, std::string const& path){
     auto str = Read_Entire_File_Into_String(path);
     auto j = nlohmann::json::parse(str);
+    std::cout << j.dump() << std::endl;
     t = j.get<T>();
 }
 
