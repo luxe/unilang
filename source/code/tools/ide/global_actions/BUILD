@@ -28,6 +28,7 @@ hcp(
     name = "global_action_handler",
     deps = [
         "//code/tools/ide/global_actions:global_action_decider",
+        "//code/tools/ide/global_actions:global_action",
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/formats/json/functions:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
