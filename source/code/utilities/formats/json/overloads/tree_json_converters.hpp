@@ -10,11 +10,16 @@
 template <typename T>
 void to_json(nlohmann::json& j, tree<T> const& tr) {
     auto depth_list = to_depth_list(tr);
+    //j = nlohmann::json{{"depth_list", depth_list}};
     j = depth_list;
 }
 
 template <typename T>
 void from_json(const nlohmann::json& j, tree<T> & tr) {
-    auto depth_list = j.get<std::vector<std::pair<int,T>>>();
-    tr = from_depth_list(depth_list);
+    
+     auto depth_list = j.get<std::vector<std::pair<int,T>>>();
+     
+     //If I assign directly to tr it segfaults
+     tree<T> tr_new = from_depth_list(depth_list);
+     tr = tr_new;
 }
