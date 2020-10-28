@@ -4,9 +4,12 @@
 #include <sstream>
 #include "src/tree.hh"
 
-//convert a tree to/from a depth list
-//a depth list may be easier to serialize or store,
-//as there is no longer pointers in the data structure representing the tree
+// convert a tree to/from a "depth list"
+// a "depth list" represents the nodes in a preorder list with their depths attached
+// this makes it easy to serialize the tree since it will exclude the pointers
+// Be careful not to serialize a tree directly with nlohmann::json, because it will use
+// the iterators and lose the depth and store it incorrectly.
+// these functions are intended to be used in nlohmann::json's custom serialize functions.
 template <typename T>
 std::vector<std::pair<int,T>> to_depth_list(tree<T> const& tr){
     std::vector<std::pair<int,T>> depth_list;
