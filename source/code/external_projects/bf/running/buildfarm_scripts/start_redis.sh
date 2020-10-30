@@ -1,6 +1,13 @@
 #!/bin/bash
 printf "\e]2;redis\a"
 
+sudo rm -rf /tmp/worker/*
+sudo rm -rf /tmp/worker2/*
+sudo rm -rf /tmp/gpu_worker/*
+sudo mkdir /tmp/worker; sudo chmod 777 /tmp/worker;
+sudo mkdir /tmp/worker2; sudo chmod 777 /tmp/worker2;
+sudo mkdir /tmp/gpu_worker; sudo chmod 777 /tmp/gpu_worker;
+
 #make sure redis is downloaded
 if [ ! -d ~/Desktop/redis ]; then
 	git clone git@github.com:redis/redis.git ~/Desktop/redis
