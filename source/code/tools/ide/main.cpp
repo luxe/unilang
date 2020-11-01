@@ -5,6 +5,8 @@
 #include "code/utilities/graphics/imgui/render/frame_renderer.hpp"
 #include "code/tools/ide/frame/frame_logic_updater.hpp"
 #include "code/utilities/data_structures/graphics/objects/frame_elements.hpp"
+#include "code/utilities/peripheral/pc/pc_input_state_getter.hpp"
+#include "code/tools/ide/global_actions/global_action_handler.hpp"
 
 
 //other programming editors for inspiration:
@@ -36,10 +38,19 @@ int main(int argc, char** argv)
     auto s = Ide_Settings_Getter::Get();
     Frame_Elements elements;
     auto before = [&]()                  {};
-    auto logic =  [&](SDL_Window* window) {elements = Frame_Logic_Updater::each_frame(s,window);};
+    auto logic =  [&](SDL_Window* window) {
+    
+        elements = Frame_Logic_Updater::each_frame(s,window);
+    
+    };
     auto render = [&](SDL_Window* window) {
         
         Frame_Renderer::Render(s.desktop.background,elements);
+        
+        //this is handled here because for some reason blocking on an OS window during logic update causes a double key-press.  
+        //so for example, ctrl+s to save will be triggered twice, and the window will pop up twice.  Maybe I should do something with futures/async,
+        //but as far as I can tell, having this here instead of logic is the easiest fix.
+        Global_Action_Handler::Handle(s, window);
         
        //bool flag = true;
        //ImGui::ShowDemoWindow(&flag);

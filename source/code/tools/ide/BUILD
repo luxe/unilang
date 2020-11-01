@@ -15,6 +15,7 @@ cpp_main(
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
         "//code/utilities/graphics/sdl:sdl_init_settings",
+        "//code/utilities/peripheral/pc:pc_input_state_getter",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
