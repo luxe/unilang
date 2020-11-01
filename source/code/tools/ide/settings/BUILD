@@ -34,6 +34,7 @@ hcp(
         "//code/utilities/graphics/imgui/window:window_settings",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/peripheral/pc:pc_input_state",
+        "//code/tools/ide/global_actions:global_action",
         "@boost//:asio",
     ],
 )
