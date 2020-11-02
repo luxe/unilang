@@ -96,6 +96,15 @@ hcp(
 )
 
 hcp(
+    name = "buildable_face_tree_tokenizer",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
+        "//code/utilities/data_structures/tree/generic/tokens:tree_token",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_tokenizer",
+    ],
+)
+
+hcp(
     name = "buildable_face_tree_action_doer",
     deps = [
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",

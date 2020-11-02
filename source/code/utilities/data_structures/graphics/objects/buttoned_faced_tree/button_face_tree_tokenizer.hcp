@@ -2,6 +2,9 @@ class
 ❪vector❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/buttoned_faced_label"❫
+❪"code/utilities/data_structures/tree/generic/tokens/tree_token"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_first_name"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_message"❫
 ❪"src/tree.hh"❫
 ⚯
 
@@ -10,19 +13,19 @@ class
 
 //perform an inorder traversal and build up token information with enough relevant information to:  
 //build populated static language types, hold leaf values, and link back to components in the graphical tree
-◀public: static▶ std::vector<Tree_Token> ☀Tokenize(Button_Face_Tree const& tree)❰
+◀public: static▶ std::vector<Tree_Token> ☀Tokenize(Button_Face_Tree const& t)❰
 
     std::vector<Tree_Token> results;
     int index = 0;
-    for (auto it = tree.nodes.begin(); it != tree.nodes.end(); ++it){
-        results.emplace_back(Create_Token(tree,it,index));
+    for (auto it = t.nodes.begin(); it != t.nodes.end(); ++it){
+        results.emplace_back(Create_Token(t,it,index));
         ++index;
     }
     return results;
 ❱
-◀private: static▶ Tree_Token ☀Create_Token(Button_Face_Tree const& tree, tree<Buttoned_Faced_Label>::pre_order_iterator it, int index)❰
+◀private: static▶ Tree_Token ☀Create_Token(Button_Face_Tree const& t, tree<Buttoned_Faced_Label>::pre_order_iterator it, int index)❰
     Tree_Token x;
-    x.full_path = Get_Full_Path(tree,it);
+    x.full_path = Get_Full_Path(t,it);
     x.value = Faced_Label_Message::Get(it->label);
     
     //no need to store an explicit index on the token, as an index is derivable based on its position in the list
@@ -30,13 +33,13 @@ class
     return x;
 ❱
 
-◀private: static▶ std::string ☀Get_Full_Path(Button_Face_Tree const& tree, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
+◀private: static▶ std::string ☀Get_Full_Path(Button_Face_Tree const& t, tree<Buttoned_Faced_Label>::pre_order_iterator it)❰
     std::string full_name;
     
-    while (tree.nodes.parent(it) != nullptr){
+    while (t.nodes.parent(it) != nullptr){
         
         full_name = Faced_Label_First_Name::Get(it->label) + "/" + full_name;
-        it = tree.nodes.parent(it);
+        it = t.nodes.parent(it);
     }
     full_name = Faced_Label_First_Name::Get(it->label) + "/" + full_name;
     

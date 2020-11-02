@@ -12,6 +12,7 @@ enum_cpp(
         "quit",
         "save",
         "load",
+        "build",
         "none",
     ],
 )
@@ -33,6 +34,8 @@ hcp(
         "//code/utilities/formats/json/functions:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
+        "//code/utilities/code:concept_string_tree_parser",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
