@@ -38,6 +38,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	//program_options_maker flag interface
 	("dep",value<std::string>(),"third party dep name (per bazel's external dir')")
     ("run_dir",value<std::string>(),"where to run the analysis")
+    ("out_dir",value<std::string>(),"where to put the result files")
 
 	//+----------------------------------------------------------+
 	//| Obligatory                                               |
@@ -111,6 +112,14 @@ std::string Program_Options::Run_Dir() const{
 	std::string data;
 	if (vm.count("run_dir")){
 		data = vm["run_dir"].as<std::string>();
+	}
+
+	return data;
+}
+std::string Program_Options::Out_Dir() const{
+	std::string data;
+	if (vm.count("out_dir")){
+		data = vm["out_dir"].as<std::string>();
 	}
 
 	return data;

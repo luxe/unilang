@@ -35,6 +35,22 @@ hcp(
     ],
 )
 
+hcp(
+    name = "recursive_ldd_results_getter",
+    deps = [
+        "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/filesystem/files/observers/other:lib",
+        "//code/tools/repo_tools/shared_object_trace:file_and_type",
+        "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
+        "//code/utilities/filesystem/files/observers/other:ldd_results_getter",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)
+
 cc_library(
     name = "lib",
     srcs = ["lib.cpp"],

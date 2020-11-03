@@ -8,6 +8,7 @@ class
 ❪"code/tools/repo_tools/shared_object_trace/file_and_type"❫
 ❪"code/utilities/filesystem/files/observers/other/file_and_ldd_results"❫
 ❪"code/utilities/filesystem/files/observers/other/ldd_results_getter"❫
+❪"code/utilities/filesystem/files/observers/other/recursive_ldd_results_getter"❫
 ❪"code/tools/repo_tools/shared_object_trace/correlated_so_ldd"❫
 ❪"code/tools/repo_tools/shared_object_trace/correlation_results"❫
 ❪"code/utilities/language_basic/std_hackery/std_aliases"❫
@@ -50,7 +51,11 @@ class
     
     auto all_correlations = Get_All_So_Ldd_Correlations(options.Dep());
     std::cout << all_correlations.connections.size() << std::endl;
-    So_Ldd_Correlation_Visualizer::Visualize(all_correlations,options.Dep());
+    
+        for (auto const& it2: all_correlations.connections){
+            std::cout << it2.ldd.file << std::endl;
+        }
+    So_Ldd_Correlation_Visualizer::Visualize(all_correlations,options.Out_Dir(),options.Dep());
 ❱
 
 ◀private: static▶ Correlation_Results ☀Get_All_So_Ldd_Correlations(std::string const& dep_name)❰
@@ -59,7 +64,6 @@ class
     
     //get all the shared library files from this third party dependency
     Output_And_Flush("Getting shared objects from " + dep_name + "...");
-    std::cout.flush();
     auto sos = Get_Shared_Objects_From_Dir(dep_name);
     Output_And_Flush_With_Newline(" " + std::to_string(sos.size()) + " found");
     x.original_sos = sos;
@@ -68,7 +72,7 @@ class
     auto dirs = Get_Dir_Names_Excluding(Ignore_Deps::Dirs_To_Skip(dep_name));
     for (auto dir: dirs){
         Output_And_Flush("Getting LDD data from " + dir + "...");
-        auto ldd_results = Ldd_Results_From_Dir(dir);
+        auto ldd_results = Recursive_Ldd_Results_Getter::Get_From_Dir(dir);
         Output_And_Flush(" " + std::to_string(ldd_results.size()) + " ldd results");
         
         auto correlations = Get_Correlations(sos,ldd_results);
@@ -117,18 +121,6 @@ class
 ❱
 
 //extracting info from filesystem
-◀private: static▶ std::vector<File_And_Ldd_Results> ☀Ldd_Results_From_Dir(std::string const& dir)❰
-    std::vector<File_And_Ldd_Results> results;
-    auto files = Recursively_Get_All_Paths_To_Files_From_Path(dir);
-    for (auto const& it: files){
-        auto ldd_results = Ldd_Results_Getter::Get(it);
-        
-        if (ldd_results.results.valid){
-            results.emplace_back(ldd_results);
-        }
-    }
-    return results;
-❱
 
 
 
@@ -151,9 +143,9 @@ class
     return results;
 ❱
 
-◀private: static▶ std::vector<std::string> ☀Get_Dir_Names_Excluding(strings deps)❰
+◀private: static▶ strings ☀Get_Dir_Names_Excluding(strings deps)❰
 
-    std::vector<std::string> paths;
+    strings paths;
     
     auto dirs = Get_Dirs_Of_Path();
     for (auto dir: Get_Dirs_Of_Path()){
