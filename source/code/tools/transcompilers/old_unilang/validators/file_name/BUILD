@@ -1,0 +1,27 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
+
+hcp(
+    name = "filename_exception",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser/tokenizer/file_marker",
+    ],
+)
+
+hcp(name = "filename_validation_settings")
+
+hcp(
+    "filename_validator",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/validators/file_name:filename_exception",
+        "//code/tools/transcompilers/old_unilang/validators/file_name:filename_validation_settings",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/types/strings/observers/char:lib",
+        "//code/utilities/types/strings/observers/path:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)

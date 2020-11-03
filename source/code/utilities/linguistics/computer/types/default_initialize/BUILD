@@ -7,8 +7,8 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "default_initialize_getter",
     deps = [
-        "//code/tools/transcompilers/unilang/structure/model/sections/data_member:data_member_item",
-        "//code/tools/transcompilers/unilang/structure/print/derivers:type_name_deriver",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
+        "//code/tools/transcompilers/old_unilang/structure/print/derivers:type_name_deriver",
         "//code/utilities/linguistics/computer:source_language",
         "//code/utilities/linguistics/computer/literals/adjuster:literal_adjuster",
         "//code/utilities/types/converters:lib",

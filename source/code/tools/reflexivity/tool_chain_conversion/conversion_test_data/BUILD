@@ -28,8 +28,8 @@ hcp(
     name = "test_getter",
     deps = [
         "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:bazel_conversion_tests",
-        "//code/tools/transcompilers/unilang/tokens:get_tokens",
-        "//code/tools/transcompilers/unilang/tokens/builder:token_builder",
+        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
+        "//code/tools/transcompilers/old_unilang/tokens/builder:token_builder",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/types/strings/transformers/appending:lib",

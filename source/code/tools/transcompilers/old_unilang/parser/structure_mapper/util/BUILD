@@ -1,0 +1,55 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
+
+cpp_object(
+    name = "parser_aliases",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser:token_value",
+        "//code/tools/transcompilers/old_unilang/tokens:token_name",
+    ],
+)
+
+hcp(
+    name = "special_parser_filters",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/options/parser:parser_settings",
+        "//code/tools/transcompilers/old_unilang/options/parser/symbols:token_attribute_settings",
+        "//code/tools/transcompilers/old_unilang/parser:parser_token",
+        "//code/tools/transcompilers/old_unilang/parser/structure_mapper/util:parser_utilities",
+        "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
+        "//code/tools/transcompilers/old_unilang/tokens:token_group",
+        "//code/utilities/types/vectors/observers:lib",
+    ],
+)
+
+hcp(
+    name = "parser_utilities",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser:parser_token",
+        "//code/tools/transcompilers/old_unilang/parser:token_value",
+        "//code/tools/transcompilers/old_unilang/tokens:token_group",
+        "//code/tools/transcompilers/old_unilang/tokens:token_name",
+        "//code/utilities/types/sets:lib",
+        "//code/utilities/types/vectors/observers:lib",
+    ],
+)
+
+hcp(
+    name = "parser_token_stripper",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/options/parser:parser_settings",
+        "//code/tools/transcompilers/old_unilang/options/parser/symbols:token_attribute_settings",
+        "//code/tools/transcompilers/old_unilang/parser/structure_mapper/util:parser_utilities",
+        "//code/tools/transcompilers/old_unilang/parser/structure_mapper/util:special_parser_filters",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/import:import_item",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/inheritance:inheritance_item",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/macro:macro_item",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections/namespace:namespace_item",
+    ],
+)

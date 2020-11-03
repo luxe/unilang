@@ -1,0 +1,51 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
+
+hcp(
+    name = "structure_static_analyzer",
+    deps = [
+        ":error_message",
+        "//code/tools/transcompilers/old_unilang/options/static_analysis:static_analysis_settings",
+        "//code/tools/transcompilers/old_unilang/structure/analyze:error_message_getter",
+        "//code/tools/transcompilers/old_unilang/structure/analyze:error_message_printer",
+        "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/tools/transcompilers/old_unilang/structure/query:closed_box_function_checker",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/sets:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+    ],
+)
+
+hcp(
+    name = "error_message",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser/body_parser:file_range_location",
+    ],
+)
+
+hcp(
+    name = "error_message_printer",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/options/static_analysis:static_analysis_settings",
+        "//code/tools/transcompilers/old_unilang/structure/analyze:error_message",
+    ],
+)
+
+hcp(
+    name = "error_message_getter",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/options/static_analysis:static_analysis_settings",
+        "//code/tools/transcompilers/old_unilang/structure/analyze:error_message",
+        "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/tools/transcompilers/old_unilang/structure/query:closed_box_function_checker",
+        "//code/tools/transcompilers/old_unilang/structure/query:duplicated_identifier_information_with_parent_checker",
+        "//code/tools/transcompilers/old_unilang/structure/query:duplicated_type_information_with_parent_checker",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/sets:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+    ],
+)

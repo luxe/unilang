@@ -1,0 +1,34 @@
+package(default_visibility = ["//visibility:public"])
+
+load("//bazel/rules/hcp:hcp.bzl", "hcp")
+load("//bazel/rules/cpp:object.bzl", "cpp_object")
+
+hcp(
+    name = "unit_tests",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/structure/model/unit_tests:test_case",
+    ],
+)
+
+hcp(
+    name = "test_case",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser:token_value",
+        "//code/tools/transcompilers/old_unilang/structure/model/unit_tests:aaa_bodies",
+        "//code/tools/transcompilers/old_unilang/structure/model/unit_tests:test_failure_reason",
+    ],
+)
+
+hcp(
+    name = "test_failure_reason",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser:token_value",
+    ],
+)
+
+hcp(
+    name = "aaa_bodies",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/parser:token_value",
+    ],
+)

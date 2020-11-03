@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "pdf_settings",
     deps = [
-        "//code/tools/transcompilers/unilang/options/language-specific/markdown:markdown_settings",
+        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
         "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
     ],
 )
@@ -14,10 +14,10 @@ hcp(
 hcp(
     name = "pdf_creator",
     deps = [
-        "//code/tools/transcompilers/unilang/compiler-frontends/markdown:markdown_str_getter",
-        "//code/tools/transcompilers/unilang/main:program_input",
-        "//code/tools/transcompilers/unilang/main/root_settings:root_settings_getter",
-        "//code/tools/transcompilers/unilang/structure/model:inlined_structures",
+        "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_str_getter",
+        "//code/tools/transcompilers/old_unilang/main:program_input",
+        "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
+        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/filesystem/files/temp:temp_file",

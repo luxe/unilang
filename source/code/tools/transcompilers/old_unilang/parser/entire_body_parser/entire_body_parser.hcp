@@ -1,0 +1,163 @@
+class
+❪iostream❫
+❪"code/tools/transcompilers/old_unilang/structure/model/sections/method/body/function_body"❫
+❪"code/tools/transcompilers/old_unilang/parser/entire_body_parser/nested_body_tokens"❫
+❪"code/tools/transcompilers/old_unilang/parser/entire_body_parser/body_tokenizer"❫
+❪"code/tools/transcompilers/old_unilang/options/parser/parser_settings"❫
+⚯
+❪"code/tools/transcompilers/old_unilang/parser/global_tokens_table_utilities"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/converters/lib"❫
+⚞⚟
+
+◀public: static▶ Function_Body ☀Parse(std::wstring body, Parser_Settings const& settings)❰
+    
+    //trim the body
+    auto body2 = as_string(body);
+    trim(body2);
+    body = as_wstring(body2);
+    
+    Function_Body entire_body;
+    entire_body.elements = Parse_List_Of_Root_Elements(body, settings);
+    
+    return entire_body;
+❱
+
+◀public: static▶ std::vector<Root_Body_Element> ☀Parse_List_Of_Root_Elements(std::wstring body, Parser_Settings const& settings)❰
+    
+    
+    
+    //a recursive decent tokenizer
+    auto nested_tokens = Body_Tokenizer::Turn_Body_Into_Nested_Tokens(body,settings);
+    
+    //now that we have nested tokens, we recursively build a variant out of their values
+    std::vector<Root_Body_Element> results;
+    for (auto const& it: nested_tokens.tokens.get()){
+        results.emplace_back(Create_Root_Body_Element(it));
+    }
+    
+    return results;
+❱
+
+
+◀private: static▶ Root_Body_Element ☀Create_Root_Body_Element(Nested_Body_Tokens const& all)❰
+    Root_Body_Element element;
+    
+    //maybe its a comment
+    if (all.single.name == Body_Token_Name::REGULAR_COMMENT){
+        element.types = Create_Regular_Body_Comment(all);
+        return element;
+    }
+    
+    if (all.single.name == Body_Token_Name::TODO_COMMENT){
+        element.types = Create_Todo_Body_Comment(all);
+        return element;
+    }
+    
+    if (all.single.name == Body_Token_Name::WARNING_COMMENT){
+        element.types = Create_Warning_Body_Comment(all);
+        return element;
+    }
+    
+    //maybe its a scape hatch
+    if (all.single.name == Body_Token_Name::SELF_FUNCTION_CALL){
+        element.types = Create_Self_Function_Call(all);
+        return element;
+    }
+    
+    //maybe its a statement of some kind
+    if (all.single.name == Body_Token_Name::REGULAR_STATEMENT){
+        element.types = Create_Regular_Statement(all);
+        return element;
+    }
+    if (all.single.name == Body_Token_Name::RETURN_STATEMENT){
+        element.types = Create_Return_Statement(all);
+        return element;
+    }
+    if (all.single.name == Body_Token_Name::UNCAUGHT_STATEMENT){
+        element.types = Create_Uncaught_Statement(all);
+        return element;
+    }
+    
+    //maybe its a control structure of some kind
+    
+    
+    
+    
+    
+    //catch all
+    element.types = Create_Uncaught_Statement(all);
+    //std::cerr << "I have no idea what that token was" << std::endl;
+    
+    return element;
+❱
+
+◀private: static▶ Regular_Body_Comment ☀Create_Regular_Body_Comment(Nested_Body_Tokens const& all)❰
+    
+    Warn_About_Leaf_Nodes_Having_More_Than_1_Sub_Token(all,"regular body comment");
+    
+    Regular_Body_Comment a;
+    a.value = all.single;
+    return a;
+❱
+◀private: static▶ Todo_Body_Comment ☀Create_Todo_Body_Comment(Nested_Body_Tokens const& all)❰
+
+    Warn_About_Leaf_Nodes_Having_More_Than_1_Sub_Token(all,"todo comment");
+    
+    Todo_Body_Comment a;
+    a.value = all.single;
+    return a;
+❱
+◀private: static▶ Warning_Body_Comment ☀Create_Warning_Body_Comment(Nested_Body_Tokens const& all)❰
+
+    Warn_About_Leaf_Nodes_Having_More_Than_1_Sub_Token(all,"warning comment");
+    Warning_Body_Comment a;
+    a.value = all.single;
+    return a;
+❱
+◀private: static▶ Function_Call_Local ☀Create_Self_Function_Call(Nested_Body_Tokens const& all)❰
+
+    Warn_About_Leaf_Nodes_Having_More_Than_1_Sub_Token(all,"self function call");
+    Function_Call_Local a;
+    a.value = all.single;
+    return a;
+❱
+
+
+◀private: static▶ Uncaught_Statement ☀Create_Uncaught_Statement(Nested_Body_Tokens const& all)❰
+
+    Warn_About_Leaf_Nodes_Having_A_Sub_Token(all,"uncaught statement");
+    
+    Uncaught_Statement a;
+    a.value = all.single;
+    return a;
+❱
+
+
+
+
+◀private: static▶ Regular_Statement ☀Create_Regular_Statement(Nested_Body_Tokens const& all)❰
+    Regular_Statement a;
+    return a;
+❱
+◀private: static▶ Return_Statement ☀Create_Return_Statement(Nested_Body_Tokens const& all)❰
+    Return_Statement a;
+    return a;
+❱
+
+
+◀private: static▶ void ☀Warn_About_Leaf_Nodes_Having_More_Than_1_Sub_Token(Nested_Body_Tokens const& all, std::string const& str)❰
+
+    if (all.tokens.get().size() != 1){
+        std::cerr << str << " should not have sub tokens" << std::endl;
+    }
+❱
+◀private: static▶ void ☀Warn_About_Leaf_Nodes_Having_A_Sub_Token(Nested_Body_Tokens const& all, std::string const& str)❰
+
+    if (all.tokens.get().size() > 1){
+        std::cerr << str << " should not have sub tokens" << std::endl;
+    }
+❱
+
+
+

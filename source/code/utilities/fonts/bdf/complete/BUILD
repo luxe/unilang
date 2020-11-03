@@ -13,10 +13,10 @@ hcp(
 hcp(
     name = "font_creator",
     deps = [
-        "//code/tools/transcompilers/unilang/language-and-theme-creator/sublime:global",
-        "//code/tools/transcompilers/unilang/tokens:generic_token",
-        "//code/tools/transcompilers/unilang/tokens:get_tokens",
-        "//code/tools/transcompilers/unilang/tokens/uniqueness:unique_tokens_checker",
+        "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
+        "//code/tools/transcompilers/old_unilang/tokens:generic_token",
+        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
+        "//code/tools/transcompilers/old_unilang/tokens/uniqueness:unique_tokens_checker",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/fonts/bdf/complete:font_creation_settings",
         "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",

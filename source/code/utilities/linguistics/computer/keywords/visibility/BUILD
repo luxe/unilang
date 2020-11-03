@@ -13,7 +13,7 @@ hcp(
 hcp(
     name = "language_visibility_getter",
     deps = [
-        "//code/tools/transcompilers/unilang/structure/model/sections:structure_enums",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
         "//code/utilities/linguistics/computer:source_language",
         "//code/utilities/linguistics/computer/keywords/visibility:visibility_strs",
         "//code/utilities/types/map:lib",
@@ -24,7 +24,7 @@ hcp(
 hcp(
     name = "visibility_keyword_getter",
     deps = [
-        "//code/tools/transcompilers/unilang/structure/model/sections:structure_enums",
+        "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
         "//code/utilities/linguistics/computer:source_language",
         "//code/utilities/linguistics/computer/keywords/visibility:language_visibility_getter",
         "//code/utilities/linguistics/computer/keywords/visibility:visibility_strs",

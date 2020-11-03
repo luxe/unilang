@@ -8,7 +8,7 @@ hcp(
     name = "faced_label_premades",
     deps = [
         "//code/tools/ide/settings:ide_settings",
-        "//code/tools/transcompilers/unilang/tokens:get_tokens",
+        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/colors/defaults:rectangle_shades",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap",

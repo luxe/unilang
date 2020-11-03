@@ -1,0 +1,42 @@
+class
+❪vector❫
+❪string❫
+❪"code/tools/transcompilers/old_unilang/structure/model/inlined_structures"❫
+❪"code/tools/transcompilers/old_unilang/dependency_graph_creator/code_graph"❫
+❪"code/tools/transcompilers/old_unilang/main/program_input"❫
+❪"code/tools/transcompilers/old_unilang/user-frontend/action_graphs/actionable_code_graphs"❫
+⚯
+❪"code/tools/transcompilers/old_unilang/user-frontend/artifact_actions/artifact_guesser"❫
+⚞⚟
+
+◀public: static▶ Actionable_Code_Graphs ☀Convert(std::vector<Code_Graph> const& code_graphs, Program_Input const& input)❰
+    Actionable_Code_Graphs all;
+    for (auto const& it: code_graphs){
+        all.graphs.emplace_back(To_Actionable_Graph(it,input));
+    }
+    
+    //enrich the graph with artifact information
+    
+    if (input.options.user_chosen_export_settings.languages.empty()){
+        all.actions = Artifact_Guesser::Guess(code_graphs);
+    }
+    else{
+        //TODO?
+    }
+    return all;
+❱
+
+◀private: static▶ Actionable_Code_Graph ☀To_Actionable_Graph(Code_Graph const& graph, Program_Input const& input)❰
+    
+    //enrich the structure with artifact information
+    Actionable_Code_Graph x;
+    x.graph = graph;
+    
+    if (input.options.user_chosen_export_settings.languages.empty()){
+        x.actions = Artifact_Guesser::Guess(graph.structure);
+    }
+    else{
+        x.actions.artifacts = input.options.user_chosen_export_settings.languages;
+    }
+    return x;
+❱

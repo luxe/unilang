@@ -1,0 +1,188 @@
+class
+❪"code/tools/transcompilers/old_unilang/main/program_options/program_options"❫
+❪"code/tools/transcompilers/old_unilang/main/root_settings/root_settings"❫
+⚯
+❪"code/tools/transcompilers/old_unilang/f2si_frontend_compiler/f2si_contributors_getter"❫
+❪"code/tools/transcompilers/old_unilang/f2si_frontend_compiler/uber_contributors_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/hidl/hidl_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/f2si_frontend_compiler/bazel_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/cpp/cpp_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/plant_uml_exporter/plant_uml_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/processing/processing_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/mermaid/mermaid_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/html_table/html_table_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/f2si_frontend_compiler/file_transfer_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/cpp_test/cpp_test_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/cpp_benchmark/cpp_benchmark_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/markdown/markdown_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/java/java_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/java_test/java_test_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/dzslides/dzslides_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/slidy/slidy_settings_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/protobuf/protobuf_options_getter"❫
+❪"code/tools/transcompilers/old_unilang/tokens/get_tokens"❫
+⚞⚟
+◀public: static▶ Root_Settings ☀Get() ❰
+
+    //MASS SET ALL OF THE SETTINGS
+    //IN THE FUTURE, ALL OF THIS DATA NEEDS BUBBLED UP TO THE TOP HERE
+    //IT NEEDS TO BE SERIALIZABLE, AND THEN WE CAN THINK ABOUT A DATABASE OR SOMETHING
+    //maybe look into ORM... by that time, hopefully we can rewrite things in unilang and
+    //get that kind of functionality though transcompilation
+    Root_Settings settings;
+    
+    //how to error out when there are no files
+    settings.initial_diags = Get_Initial_Diagnostics_Settings();
+    
+    //how to transfer files (often across a network)
+    settings.transfer = File_Transfer_Settings_Getter::Get();
+    
+    //how to build on the remote machine
+    settings.remote_build.run = true;
+    settings.remote_build.run_from_remote_git_root = true;
+    settings.remote_build.program = "bops";
+
+    //TODO(thickey): customize this after we've derived the target(s).  
+    //then we can just build the target(s) instead of the whole repo.
+    settings.remote_build.flags = "build //...:all";
+    settings.remote_programs = Get_Remote_Programs();
+    
+    //related to frontend parsing
+    settings.parser.all_language_tokens = Get_Tokens::Get();
+    
+    //how to export code by default (if not specified by the user)
+    settings.default_exporter = Chosen_Exporter::UBER;
+    settings.workspace.root_of_unilang_projects = "external_projects";
+    
+    //all of the language settings
+    settings.compiler_settings = Language_Transcompilation_Settings();
+    
+    return settings;
+❱
+
+◀private: static▶ std::vector<Remote_Program_Settings> ☀Get_Remote_Programs() ❰
+    std::vector<Remote_Program_Settings> programs;
+    
+    // how to run autofix on the generated code
+    {
+        Remote_Program_Settings remote_program;
+        remote_program.run = true;
+        remote_program.pipe_sponge = false;
+        remote_program.temp_file = false;
+        remote_program.run_from_remote_git_root = true;
+        remote_program.program = "bin/autofix";
+        remote_program.flags = "";
+        programs.emplace_back(remote_program);
+    }
+    
+    //this was some experiment with cat (and sponge)?
+    //we have it off right now
+    {
+        Remote_Program_Settings remote_program;
+        remote_program.run = false;
+        remote_program.pipe_sponge = false;
+        remote_program.temp_file = true;
+        remote_program.run_from_remote_git_root = false;
+        remote_program.program = "cat";
+        remote_program.flags = "-s";
+        programs.emplace_back(remote_program);
+    }
+    
+    return programs;
+❱
+
+
+◀private: static▶ Initial_Diagnostics ☀Get_Initial_Diagnostics_Settings() ❰
+    Initial_Diagnostics diags;
+    
+    //how to error out when there are no files
+    diags.no_files_to_process.print = true;
+    diags.no_files_to_process.flush = true;
+    diags.no_files_to_process.exit = false;
+    diags.no_files_to_process.message = "no files to process";
+    diags.no_files_to_process.color = Diagnostic_Color::REGULAR;
+    diags.no_files_to_process.stream = Diagnostic_Stream::STDOUT;
+    
+    //how to error out if no exporter was chosen
+    diags.no_exporter_chosen.print = true;
+    diags.no_exporter_chosen.flush = true;
+    diags.no_exporter_chosen.exit = false;
+    diags.no_exporter_chosen.message = "no exporter chosen";
+    diags.no_exporter_chosen.color = Diagnostic_Color::REGULAR;
+    diags.no_exporter_chosen.stream = Diagnostic_Stream::STDOUT;
+    
+    return diags;
+❱
+
+
+◀private: static▶ Compile_Units ☀Language_Transcompilation_Settings() ❰
+    
+    Compile_Units compiler_settings;
+    
+    compiler_settings.uber.contributors = Uber_Contributors_Getter::Get();
+    //compiler_settings.f2si.contributors = F2si_Contributors_Getter::Get();
+    //compiler_settings.trevor.contributors = Trevor_Contributors_Getter::Get();
+    
+    //dead
+    //compiler_settings.uber.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.hidl = Hidl_Options_Getter::Get();
+
+    compiler_settings.uber.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.bazel_build = Bazel_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.cpp = Cpp_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.cpp_test = Cpp_Test_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.cpp_benchmark = Cpp_Benchmark_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.java = Java_Settings_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.java = Java_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.java = Java_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.java_test = Java_Test_Settings_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.java_test = Java_Test_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.java_test = Java_Test_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.plant_uml = Plant_Uml_Options_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.html_table = Html_Table_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.html_table = Html_Table_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.processing = Processing_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.processing = Processing_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.processing = Processing_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.mermaid = Mermaid_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.markdown = Markdown_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.dzslides = Dzslides_Settings_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.dzslides = Dzslides_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.dzslides = Dzslides_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.slidy = Slidy_Settings_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.slidy = Slidy_Settings_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.slidy = Slidy_Settings_Getter::Get();
+    
+    compiler_settings.uber.settings.foreign_language.proto_buff = Protobuf_Options_Getter::Get();
+    //compiler_settings.f2si.settings.foreign_language.proto_buff = Protobuf_Options_Getter::Get();
+    //compiler_settings.trevor.settings.foreign_language.proto_buff = Protobuf_Options_Getter::Get();
+    
+    return compiler_settings;
+❱

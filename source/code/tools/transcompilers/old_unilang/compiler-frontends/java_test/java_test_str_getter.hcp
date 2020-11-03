@@ -1,0 +1,196 @@
+class
+
+❪fstream❫
+❪iostream❫
+❪"code/tools/transcompilers/old_unilang/structure/model/structure"❫
+❪"code/utilities/contributor/contributor"❫
+❪"code/tools/transcompilers/old_unilang/structure/model/inlined_structures"❫
+❪"code/tools/transcompilers/old_unilang/options/language-specific/java/java_test_settings"❫
+❪"code/tools/transcompilers/old_unilang/options/language-specific/c/c_export_settings"❫
+⚯
+❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/tools/transcompilers/old_unilang/structure/adjust/structure_adjuster"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/converters/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/tools/transcompilers/old_unilang/boilerplate_printer/boilerplate_printer"❫
+❪"code/tools/transcompilers/old_unilang/structure/print/filename/file_name_getter"❫
+❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
+❪"code/tools/transcompilers/old_unilang/structure/print/doxygen_block_printer"❫
+❪"code/tools/transcompilers/old_unilang/structure/print/shared_printer"❫
+❪"code/tools/transcompilers/old_unilang/test_export/test_comment_getter"❫
+❪"code/tools/transcompilers/old_unilang/test_export/test_body_getter"❫
+❪"code/tools/transcompilers/old_unilang/compiler-frontends/java/parts/import_getter"❫
+⚞⚟
+
+◀public: static▶ std::string ☀Get(Structure structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    
+    structure.meta.brief_description.value = L"tests" + structure.meta.brief_description.value;
+    
+    std::string text;
+    Append_With_Newline(text,Get_Boilerplate(structure,contributors,settings));
+    Append_With_Newline(text,Get_Package_Name(structure,contributors,settings));
+    Append_With_Newline(text,Import_Getter::Get_Imports_For_Tests(structure,contributors));
+    Append_With_Newline(text,Get_Class(structure,contributors,settings));
+    return text;
+❱
+
+◀private: static▶ std::string ☀Get_Boilerplate(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
+    std::string text;
+    
+    Export_File_Settings file_settings;
+    file_settings.language = Source_Language::JAVA;
+    file_settings.code = Code_Type::GLOBAL;
+    file_settings.special = Special_File_Type::TEST;
+    file_settings.file = File_Type::DATA;
+    
+    auto final_file_name = File_Name_Getter::Get(file_settings,structure.name,settings.general.filesystem_naming);
+    text += Boilerplate_Printer::Get_Top_Comment(structure,file_settings,settings.portion.meta,final_file_name);
+    
+    return text;
+❱
+
+◀private: static▶ std::string ☀Get_Package_Name(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    
+    //convert the name spaces into package names
+    std::vector<std::string> packages;
+    for (auto const& it: structure.namespaces.namespaces){
+        packages.emplace_back(as_string(it.name.value));
+    }
+    
+    //put into java format
+    std::string text;
+    text += "package ";
+    text += Get_As_String_With_Dot_In_Between_Each_Element(packages);
+    text += ";\n";
+    return text;
+❱
+
+◀private: static▶ std::string ☀Get_Imports(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    
+    std::string imports;
+    for (auto const& it: structure.imports.test_dependencies){
+        imports += "import ";
+        
+        //we'll abuse "inline" to mean static here in java
+        if (it.inlined){
+            imports += "static ";
+        }
+        imports += as_string(it.name.value);
+        imports += ";\n";
+    }
+    return imports;
+❱
+
+◀private: static▶ std::string ☀Get_Class(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+
+    //java, everything is a class:
+    std::string text;
+    text += Doxygen_Block_Printer::Get_Struct_Block(0,as_string(structure.meta.brief_description.value),as_string(structure.meta.detailed_description.value),Class_Name(structure,settings),settings.general.comment.doxygen);
+    text += "\n";
+    Append_With_Newline(text,Class_Start(structure,contributors,settings));
+    Append_With_Newline(text,Get_Each_Unit_Test_Section(structure,settings));
+    Append_With_Newline(text,"}");
+    
+    return text;
+❱
+
+
+◀private: static▶ std::string ☀Class_Start(Structure const& structure, std::vector<Contributor> const& contributors, Java_Test_Settings const& settings)❰
+    std::string str;
+    
+    str += "@RunWith(JUnit4.class)";
+    str += "\n";
+    str += "public ";
+    str += "class ";
+    str += Class_Name(structure,settings);
+    str += " {\n";
+    return str;
+❱
+
+◀private: static▶ std::string ☀Class_Name(Structure const& structure, Java_Test_Settings const& settings)❰
+    return Case_Modifier::As_Modified_Casing(settings.general.filesystem_naming.file_casing,structure.name) + "Test";
+❱
+
+
+
+
+
+
+
+
+
+
+
+◀private: static▶ std::string ☀Get_Each_Unit_Test_Section(Structure const& structure, Java_Test_Settings const& settings)❰
+    std::string result;
+    
+    for (auto const& it: structure.methods.methods){
+        for (auto const& j: it.unit_tests.test_cases){
+            if (Should_Include_Test_Case(j,settings)){
+            
+                //add test comment
+                auto settings2 = dont_do_this(settings);
+                auto func_name = Shared_Printer::Derive_Function_Name(structure.name,Code_Type::GLOBAL,it,settings2);
+                result += Test_Comment_Getter::Get(structure,func_name,j,settings.test_case_attributes);
+                
+                result += "@Test";
+                result += "\n";
+                result += Get_Test_Signature(j,func_name,settings);
+                result += Test_Body_Getter::Get(j);
+            }
+        }
+    }
+    return result;
+❱
+
+◀private: static▶ bool ☀Should_Include_Test_Case(Test_Case const& test_case, Java_Test_Settings const& settings)❰
+    
+    //TODO: this should be a vector of strings, not just a string
+    auto tag_value = as_string(test_case.tag.value);
+    
+    
+    if (tag_value.empty()){
+        if (settings.include_test_cases_without_tags){
+            return true;
+        }
+    }
+    
+    for (auto const& it: settings.test_cases_include_because_tags){
+        if (it == tag_value){
+            return true;
+        }
+    }
+    return false;
+❱
+
+◀private: static▶ std::string ☀Get_Test_Signature(Test_Case const& test_case, std::string const& func_name, Java_Test_Settings const& settings)❰
+    
+    //extract all the data into strings
+    std::string test_name = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_name_casing,func_name + " " + as_string(test_case.name.value));
+    std::string test_tag = Case_Modifier::As_Modified_Casing(settings.portion.method_options.test_case.test_tag_casing,as_string(test_case.tag.value));
+    
+    //build signature
+    std::string str;
+    str += "public void ";
+    str += test_name;
+    str += "()";
+    str += " throws Exception";
+    
+    return str;
+❱
+
+//TODO: REMOVE THIS
+◀private: static▶ C_Export_Settings ☀dont_do_this(Java_Test_Settings const& settings)❰
+    C_Export_Settings x;
+    x.portion = settings.portion;
+    x.general = settings.general;
+    x.manipulations = settings.manipulations;
+    return x;
+❱
