@@ -11,7 +11,7 @@
 
 
 ## Summary
-Unilang is a programming language and IDE.  It has a graphical and textual fronted for creating programs.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person.  You might find something useful in it as well.  
+Unilang is a programming language and IDE.  It has a graphical and textual fronted for creating programs.  The language unifies with other languages through transcompilation.  It was written to automate and improve the productivity of a single person.  But maybe you'll find something useful in it too?  
 
 
 ## GPL Shortcomings
@@ -23,7 +23,7 @@ The creation of this language is different from traditional programing languages
 
 
 ## The Next Layer
-Unilang is a **universal programming language (UPL)**.  A UPL has not been formally defined prior to this document, but as an informal definition, envision a UPL as a language abstraction over GPLs and IDLs.  UPLs are a universal encoding for developing software.  
+Unilang is a **universal programming language (UPL)**.  A UPL has not been formally defined prior to this document, but as an informal definition, envision a UPL as a language abstraction over GPLs and IDLs.  It's a high level Universal Computer Oriented Language (UNCOL).  UPLs are a universal encoding for developing software.  In this case, Unilang is also a visual programming language (VPL).  
 
 
 ## Addressing Scope
@@ -50,7 +50,7 @@ Various CIs are used to test the correctness of the build.  Referencing these bu
 | App Veyor | [![Build status](https://ci.appveyor.com/api/projects/status/wscwfed3pk5pxk6y?svg=true)](https://ci.appveyor.com/project/luxe/unilang) | Bootstraps Build | 
 Circle | [![CircleCI](https://circleci.com/gh/luxe/unilang.svg?style=svg)](https://circleci.com/gh/luxe/unilang) | Bootstraps Build | 
 Cirrus | [![Build Status](https://api.cirrus-ci.com/github/luxe/unilang.svg)](https://cirrus-ci.com/github/luxe/unilang) | Bootstraps Build | 
-Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/status?branch=master)](https://app.codeship.com/projects/87336dd0-50a7-0137-d1ab-4a6287d94fd4/) | Bootstraps Build | 
+Codeship | [![Codeship Status for luxe/unilang](https://app.codeship.com/projects/d4f94f6b-5462-4a6e-8468-af99c4aee8c5/status?branch=master)](https://app.codeship.com/projects/416731) | Bootstraps Build | 
 Drone | [![Build Status](https://cloud.drone.io/api/badges/luxe/unilang/status.svg)](https://cloud.drone.io/luxe/unilang) | Bootstraps Build | 
 Scrutinizer | [![Build Status](https://scrutinizer-ci.com/g/luxe/unilang/badges/build.png?b=master)](https://scrutinizer-ci.com/g/luxe/unilang/build-status/master) | Bootstraps Build | 
 Semaphore | [![Build Status](https://semaphoreci.com/api/v1/luxe/everything/branches/master/shields_badge.svg)](https://semaphoreci.com/luxe/unilang) | Bootstraps Build | 
