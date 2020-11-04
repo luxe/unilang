@@ -58,12 +58,12 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
-#     name = "markdown_settings_getter",
-#     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
-#     ],
-# )
+hcp(
+    name = "markdown_settings_getter",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+    ],
+)
 
 hcp(
     name = "markdown_header_getter",
@@ -127,19 +127,18 @@ hcp(
 #     ],
 # )
 
-# hcp(
-#     name = "markdown_sentence_extra_getter",
-#     deps = [
-#         "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_code_getter",
-#         "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_image_getter",
-#         "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_table_getter",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/utilities/contributor",
-#         "//code/utilities/types/strings/transformers/appending:lib",
-#     ],
-# )
+hcp(
+    name = "markdown_sentence_extra_getter",
+    deps = [
+        "//code/utilities/linguistics/computer/frontends/markdown:markdown_image_getter",
+        "//code/utilities/linguistics/computer/frontends/markdown:markdown_table_getter",
+        "//code/utilities/linguistics/computer/frontends/markdown:markdown_code_getter",
+        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/contributor",
+        "//code/utilities/types/strings/transformers/appending:lib",
+    ],
+)
 
 hcp(
     name = "markdown_table_getter",
