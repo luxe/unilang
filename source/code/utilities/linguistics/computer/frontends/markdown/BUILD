@@ -65,22 +65,21 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     ],
 # )
 
-# hcp(
-#     name = "markdown_header_getter",
-#     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/utilities/contributor",
-#         "//code/utilities/types/char:lib",
-#         "//code/utilities/types/converters:lib",
-#         "//code/utilities/types/strings/observers/converting:lib",
-#         "//code/utilities/types/strings/observers/other:lib",
-#         "//code/utilities/types/strings/transformers/appending:lib",
-#         "//code/utilities/types/vectors/observers:lib",
-#         "//code/utilities/types/vectors/operators:lib",
-#     ],
-# )
+hcp(
+    name = "markdown_header_getter",
+    deps = [
+        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/contributor",
+        "//code/utilities/types/char:lib",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)
 
 hcp(
     name = "markdown_image_getter",

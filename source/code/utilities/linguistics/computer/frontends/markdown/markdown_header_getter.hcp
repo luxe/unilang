@@ -1,9 +1,8 @@
 class
 ❪fstream❫
 ❪iostream❫
-❪"code/tools/transcompilers/old_unilang/structure/model/structure"❫
 ❪"code/utilities/contributor/contributor"❫
-❪"code/tools/transcompilers/old_unilang/structure/model/inlined_structures"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
 ❪"code/tools/transcompilers/old_unilang/options/language-specific/markdown/markdown_settings"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
@@ -15,57 +14,66 @@ class
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+◀public: static▶ std::string ☀Get(model::Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string title;
-    if (!p.title.value.empty()){
+    if (!p.paragraph_title.empty()){
         
         //add the title marker
         Append_A_Newline(title);
-        const auto depth = as_signed(as_string(p.depth.value));
-        
-        //decide what kind of header we want to build
-        if (Should_Do_Summary_Tags(depth,settings)){
-            Append(title,Summary_Tagged_Header(p,contributors,settings));
-        }
-        else{
-            Append(title,Regular_Header(p,contributors,settings));
+        for (auto const& it: p.paragraph_depth){
+            const auto depth = as_signed(it.value);
+            
+            //decide what kind of header we want to build
+            if (Should_Do_Summary_Tags(depth,settings)){
+                Append(title,Summary_Tagged_Header(p,contributors,settings));
+            }
+            else{
+                Append(title,Regular_Header(p,contributors,settings));
+            }
         }
     }
     return title;
 ❱
 
 
-◀private: static▶ std::string ☀Regular_Header(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+◀private: static▶ std::string ☀Regular_Header(model::Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
         std::string title;
-        const auto depth = as_signed(as_string(p.depth.value));
-        Append(title,Depth_To_Header_Marker(depth,settings));
+        
+        for (auto const& it: p.paragraph_depth){
+            const auto depth = as_signed(it.value);
+            Append(title,Depth_To_Header_Marker(depth,settings));
+        }
         Append_A_Space(title);
         
         //add the possible numbered
         //in markdown you can just mark everything
         //as 1., and it will be rendered with the correct numbers
-        if (p.is_numbered){
-            Append(title,settings.headers.standard_number_list);
-        }
+        //if (p.is_numbered){
+        //    Append(title,settings.headers.standard_number_list);
+        //}
         
         //add the actual title
-        Append_With_Newline(title,p.title.value);
+        for (auto const& it: p.paragraph_title){
+            Append_With_Newline(title,it.value);
+        }
         return title;
 ❱
 
-◀private: static▶ std::string ☀Summary_Tagged_Header(Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
+◀private: static▶ std::string ☀Summary_Tagged_Header(model::Paragraph const& p, std::vector<Contributor> const& contributors, Markdown_Settings const& settings)❰
     std::string title;
     
     Append(title,settings.headers.summary_start_tag);
     //add the possible numbered
     //in markdown you can just mark everything
     //as 1., and it will be rendered with the correct numbers
-    if (p.is_numbered){
-        Append(title,settings.headers.standard_number_list);
-    }
+    //if (p.is_numbered){
+    //    Append(title,settings.headers.standard_number_list);
+    //}
     
     //add the actual title
-    Append(title,p.title.value);
+    for (auto const& it: p.paragraph_title){
+    Append(title,it.value);
+    }
     Append_With_Newline(title,settings.headers.summary_end_tag);
     Append_A_Newline(title);
         
