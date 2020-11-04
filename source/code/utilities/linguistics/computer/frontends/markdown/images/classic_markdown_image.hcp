@@ -1,10 +1,9 @@
 class
 ❪fstream❫
 ❪iostream❫
-❪"code/tools/transcompilers/old_unilang/structure/model/structure"❫
 ❪"code/utilities/contributor/contributor"❫
-❪"code/tools/transcompilers/old_unilang/structure/model/inlined_structures"❫
 ❪"code/tools/transcompilers/old_unilang/options/language-specific/markdown/markdown_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/converters/lib"❫
@@ -15,7 +14,7 @@ class
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(Sentence_Image const& i, Markdown_Settings const& settings)❰
+◀public: static▶ std::string ☀Get(model::Image const& i, Markdown_Settings const& settings)❰
     std::string text;
     
     //Append_With_Newline(text,"<p align=\"center\">");
@@ -34,23 +33,28 @@ class
     
     
     Append(text,settings.image.alternative_text_start_marker);
-    Append(text,as_string(i.alternative_text.value));
+    
+    for (auto const& it: i.alternative_text){Append(text,it.value);}
     Append(text,settings.image.alternative_text_end_marker);
     Append(text,settings.image.image_path_start_marker);
-    Append(text,as_string(i.image_path.value));
+    for (auto const& it: i.image_path){Append(text,it.value);}
     Append_A_Space(text);
     Append(text,settings.image.hover_text_start_marker);
-    Append(text,as_string(i.hover_text.value));
+    for (auto const& it: i.hover_text){Append(text,it.value);}
     Append(text,settings.image.hover_text_end_marker);
     Append(text,settings.image.image_path_end_marker);
     
     if (!Image_Has_No_Specified_Dimensions(i)){
         Append(text,"{ ");
         Append(text,"width=\"");
-        Append(text,as_string(i.size.width.value));
+        for (auto const& width: i.width){
+            Append(text,width.value);
+        }
         Append(text,"\" ");
         Append(text,"height=\"");
-        Append(text,as_string(i.size.height.value));
+        for (auto const& height: i.height){
+            Append(text,height.value);
+        }
         Append(text,"\"");
         Append(text," .center }");
     }
@@ -68,6 +72,6 @@ class
     return text;
 ❱
 
-◀private: static▶ bool ☀Image_Has_No_Specified_Dimensions(Sentence_Image const& image)❰
-    return image.size.width.value.empty() && image.size.height.value.empty();
+◀private: static▶ bool ☀Image_Has_No_Specified_Dimensions(model::Image const& image)❰
+    return image.width.empty() && image.height.empty();
 ❱

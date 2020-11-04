@@ -7,8 +7,7 @@ hcp(
     name = "classic_markdown_image",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/types/char:lib",
         "//code/utilities/types/converters:lib",
@@ -24,8 +23,7 @@ hcp(
     name = "html_markdown_image",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/types/char:lib",
         "//code/utilities/types/converters:lib",
