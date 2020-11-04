@@ -18,7 +18,6 @@ hcp(
         "//code/tools/transcompilers/old_unilang/compiler-frontends/html_table:html_table_exporter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/java:java_exporter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/java_test:java_test_exporter",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_exporter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/mermaid:mermaid_exporter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/plant_uml_exporter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/processing:processing_exporter",
