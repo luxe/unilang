@@ -176,6 +176,13 @@ template<typename T>
 T First_Element(std::vector<T> const& v){
     return v.front();
 }
+template<typename T>
+T First_Element_Or(std::vector<T> const& v, T const& val_if_empty){
+    if (!v.empty()){
+      return v.front();
+    }
+    return val_if_empty;
+}
 
 template<typename T>
 T Flatten(std::vector<T> const& v){
