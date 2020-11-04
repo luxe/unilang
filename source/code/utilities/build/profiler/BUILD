@@ -8,7 +8,6 @@ hcp(
     name = "profile_compilation_timer",
     deps = [
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/other_language:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/removing:lib",

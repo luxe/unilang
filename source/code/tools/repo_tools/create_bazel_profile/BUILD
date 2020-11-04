@@ -10,7 +10,6 @@ hcp(
         "//code/tools/repo_tools/create_bazel_profile/program_options:lib",
         "//code/utilities/build/profiler:profile_compilation_timer",
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/other_language:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/program/wrappers/bazel:build_settings",

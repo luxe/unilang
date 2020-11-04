@@ -8,7 +8,6 @@ hcp(
     name = "file_owners_getter",
     deps = [
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/other_language:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/program/call/process_spawn:process_spawner",
         "//code/utilities/types/strings/observers/other:lib",
