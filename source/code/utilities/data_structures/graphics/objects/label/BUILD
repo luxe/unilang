@@ -65,6 +65,16 @@ hcp(
 )
 
 hcp(
+    name = "label_is_mouse_over",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
+        "//code/utilities/peripheral/pc:pc_input_state",
+        "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
+        "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
+    ],
+)
+
+hcp(
     name = "label_length_getter",
     deps = [
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
