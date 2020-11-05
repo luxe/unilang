@@ -7,7 +7,7 @@ load("//bazel/rules/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 hcp_and_hcp_pos(
     name = "face_tree",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/line_break:should_line_break",
         "@tree",
     ],
@@ -18,7 +18,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_tree:face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_tree:positioned_face_tree",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
@@ -34,7 +34,7 @@ hcp(
 hcp(
     name = "tree_label_click_finder",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_tree:face_tree",
         "@tree",
     ],

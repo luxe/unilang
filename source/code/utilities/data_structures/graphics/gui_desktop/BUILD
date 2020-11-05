@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/cursor/data:cursor",
         "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
         "//code/utilities/data_structures/graphics/objects/faced_grid:positioned_face_grid",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_tree:positioned_face_tree",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",

@@ -5,41 +5,27 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 
 hcp(
-    name = "label_face",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
-    ],
-)
-
-hcp_and_hcp_pos(
-    name = "faced_label",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label:label_face",
-    ],
-)
-
-hcp(
     name = "faced_label_converter",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
     ],
 )
 
 hcp(
     name = "faced_label_is_active",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
     ],
 )
 
 hcp(
     name = "faced_label_set_active",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],
 )
@@ -47,9 +33,9 @@ hcp(
 hcp(
     name = "faced_label_first_name",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],
 )
@@ -57,9 +43,9 @@ hcp(
 hcp(
     name = "faced_label_message",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],
 )
@@ -67,8 +53,8 @@ hcp(
 hcp(
     name = "faced_label_set_cursor",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],
 )
@@ -77,8 +63,8 @@ hcp(
     name = "faced_label_drawer",
     deps = [
         "//code/utilities/data_structures/graphics/objects:frame_elements",
-        "//code/utilities/data_structures/graphics/objects/faced_label",
-        "//code/utilities/data_structures/graphics/objects/faced_label:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label:label_dimension_getter",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",

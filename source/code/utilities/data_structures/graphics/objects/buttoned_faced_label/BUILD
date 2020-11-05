@@ -8,7 +8,7 @@ hcp_and_hcp_pos(
     name = "buttoned_faced_label",
     deps = [
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:multi_color_bitmap_button",
-        "//code/utilities/data_structures/graphics/objects/faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
     ],
 )
 
