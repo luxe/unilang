@@ -2,6 +2,9 @@
 #providing a relative path is actually important,
 #because it will fail when I right click a directory (open in terminal)
 cd Desktop > /dev/null 2>&1;
+export UBER_LDAP_UID=thickey
+export UBER_OWNER=thickey
+
 
 #-------------------#
 #     OH-MY-ZSH     #
