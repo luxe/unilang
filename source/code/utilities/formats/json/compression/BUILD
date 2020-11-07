@@ -6,6 +6,17 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
     name = "bson_converter",
-    deps = [
-    ],
+    deps = [],
+)
+hcp(
+    name = "cbor_converter",
+    deps = [],
+)
+hcp(
+    name = "msgpack_converter",
+    deps = [],
+)
+hcp(
+    name = "ubjson_converter",
+    deps = [],
 )
