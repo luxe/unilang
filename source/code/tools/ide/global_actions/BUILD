@@ -31,7 +31,7 @@ hcp(
         "//code/tools/ide/global_actions:global_action_decider",
         "//code/tools/ide/global_actions:global_action",
         "//code/tools/ide/settings:ide_settings",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/code:concept_string_tree_parser",

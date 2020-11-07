@@ -9,7 +9,7 @@ cc_binary(
     linkopts = [
     ],
     deps = [
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
@@ -25,7 +25,7 @@ cc_binary(
     linkopts = [
     ],
     deps = [
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/F310_gamepad/functions:f310_gamepads_state_getter",
         "@glfw",
         #"@opengl",

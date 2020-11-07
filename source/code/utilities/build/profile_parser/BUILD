@@ -10,7 +10,7 @@ hcp(
         "//code/utilities/build/profile_parser/data:duration_file",
         "//code/utilities/build/profile_parser/data:owned_duration_file",
         "//code/utilities/filesystem/paths:lib",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",

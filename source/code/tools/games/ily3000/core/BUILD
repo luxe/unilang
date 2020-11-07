@@ -7,7 +7,7 @@ hcp(
     deps = [
         "//code/tools/games/ily3000/assets:assets_loader",
         "//code/tools/games/ily3000/state:game_state",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
@@ -20,7 +20,7 @@ hcp(
     deps = [
         "//code/tools/games/ily3000/assets:assets_loader",
         "//code/tools/games/ily3000/state:game_state",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/math",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",

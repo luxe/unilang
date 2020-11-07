@@ -2,7 +2,7 @@
 #include <iostream>
 #include <SFML/Window/Joystick.hpp>
 #include "code/utilities/peripheral/keyboard/joycons/joycon_state_getter.hpp"
-#include "code/utilities/formats/json/functions/lib.hpp"
+#include "code/utilities/formats/json/converters/lib.hpp"
 
 
 //setting up the joycons are stupid.

@@ -20,7 +20,7 @@ hcp(
         "//code/tools/repo_tools/build_determinism/settings:settings_getter",
         "//code/utilities/filesystem/files/moving:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/program/wrappers/bazel/setup:bazel_setup_deriver",
@@ -100,7 +100,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/documentation:common_documentation_getter",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/types/converters:lib",
     ],
 )

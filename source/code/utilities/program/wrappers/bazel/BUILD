@@ -44,7 +44,7 @@ hcp(
 hcp(
     name = "bazel_runner",
     deps = [
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/serialization:protobuf",
         "//code/utilities/program/call:lib",
         "//code/utilities/program/inputs/flags:flag_util",

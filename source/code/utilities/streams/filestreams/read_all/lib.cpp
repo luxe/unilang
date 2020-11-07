@@ -22,6 +22,12 @@ std::string Read_Entire_File_Into_String(std::string const& file){
 	std::ifstream t(file);
 	return std::string((std::istreambuf_iterator<char>(t)),std::istreambuf_iterator<char>());
 }
+std::vector<std::uint8_t> Read_Entire_Binary_File_Into_Byte_Vec(std::string const& file)
+{
+    std::ifstream instream(file, std::ios::in | std::ios::binary);
+    std::vector<std::uint8_t> data((std::istreambuf_iterator<char>(instream)), std::istreambuf_iterator<char>());
+    return data;
+}
 std::string Read_Entire_Binary_File_Into_String(std::string const& file){
 	std::ifstream t(file, std::ios::in | std::ios::binary);
 	return std::string((std::istreambuf_iterator<char>(t)),std::istreambuf_iterator<char>());

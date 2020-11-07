@@ -7,7 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include "code/utilities/peripheral/keyboard/joycons/joycon_state_getter.hpp"
-#include "code/utilities/formats/json/functions/lib.hpp"
+#include "code/utilities/formats/json/converters/lib.hpp"
 #include "code/tools/games/word_build/gui/assets/assets_loader.hpp"
 #include "code/tools/games/word_build/gui/state/game_state.hpp"
 #include "code/tools/games/word_build/gui/state/game_state_getter.hpp"

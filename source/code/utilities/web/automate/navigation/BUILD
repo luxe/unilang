@@ -7,7 +7,7 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "browser_navigator",
     deps = [
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/time/sleeping:lib",

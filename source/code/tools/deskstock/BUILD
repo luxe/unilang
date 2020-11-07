@@ -88,7 +88,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/documentation:common_documentation_getter",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/types/converters:lib",
     ],
 )

@@ -13,7 +13,7 @@ cc_binary(
         "//code/tools/games/scattergories/gui/core:state_updater",
         "//code/tools/games/scattergories/gui/state:game_state",
         "//code/tools/games/scattergories/gui/state:game_state_getter",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/graphics/sfml:game_loop",
         "//code/utilities/graphics/sfml:standard_sfml_game_loop",
         "//code/utilities/peripheral/keyboard/joycons",

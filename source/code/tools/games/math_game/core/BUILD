@@ -7,7 +7,7 @@ hcp(
     deps = [
         "//code/tools/games/math_game/assets:assets_loader",
         "//code/tools/games/math_game/state:game_state",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
@@ -22,7 +22,7 @@ hcp(
         "//code/tools/games/math_game/core:character_select_screen_handler",
         "//code/tools/games/math_game/core:main_screen_handler",
         "//code/tools/games/math_game/state:game_state",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
@@ -35,7 +35,7 @@ hcp(
     deps = [
         "//code/tools/games/math_game/assets:assets_loader",
         "//code/tools/games/math_game/state:game_state",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
@@ -49,7 +49,7 @@ hcp(
     deps = [
         "//code/tools/games/math_game/assets:assets_loader",
         "//code/tools/games/math_game/state:game_state",
-        "//code/utilities/formats/json/functions:lib",
+        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/peripheral/keyboard/joycons",
         "//code/utilities/peripheral/keyboard/joycons:joycon_horizontal_state",
         "//code/utilities/peripheral/keyboard/joycons:joycon_state_getter",
