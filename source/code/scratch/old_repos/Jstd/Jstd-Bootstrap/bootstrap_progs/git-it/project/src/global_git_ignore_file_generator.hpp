@@ -1,1 +1,0 @@
-.pulls/global_ignore_generator.pulled/global_git_ignore_file_generator.hpp
