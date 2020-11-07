@@ -239,7 +239,6 @@ rm -rf hcp-compiler;
 ```c++
 public:  
 std::string Class_Name();
-nlohmann::json As_JSON_Assignable();
 std::string As_YAML_String();
 std::string As_XML_String(); 
 

@@ -19,7 +19,7 @@ class
 ◀public: static▶ Frame_Elements ☀Full_Draw(Character_Maps const& font_chars, Positioned_Faced_Label & label, Pc_Input_State const& pc_input)❰
     return Label_Drawer::Full_Draw(font_chars,
                               label.pos,
-                              label.faces[label.index].label,
+                              label.state.faces[label.state.index].label,
                               pc_input);
 ❱
 
@@ -29,21 +29,21 @@ class
 ◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Faced_Label & label, Position const& pos, Pc_Input_State const& pc_input)❰
     Label_Drawer::Event_It(font_chars,
                               pos,
-                              label.faces[label.index].label,
+                              label.state.faces[label.state.index].label,
                               pc_input);
 ❱
 
 
 //DRAW IT
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Faced_Label & label, Mouse_State const& mouse_state)❰
-
-    if (!label.style.print_all){
-      return Regular_Draw(font_chars,label,mouse_state);
-    }
-    return All_Face_Draw(font_chars,label,mouse_state);
+    return Draw(font_chars,label.state,label.pos,mouse_state);
 ❱
 
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Faced_Label & label, Position const& pos, Mouse_State const& mouse_state)❰
+    return Draw(font_chars,label.state,pos,mouse_state);
+❱
+
+◀private: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Mouse_State const& mouse_state)❰
 
     if (!label.style.print_all){
       return Regular_Draw(font_chars,label,pos,mouse_state);
@@ -51,15 +51,8 @@ class
     return All_Face_Draw(font_chars,label,pos,mouse_state);
 ❱
 
-◀private: static▶ Frame_Elements ☀Regular_Draw(Character_Maps const& font_chars, Positioned_Faced_Label & label, Mouse_State const& mouse_state)❰
 
-    //leverage single face label drawer
-    return Label_Drawer::Draw(font_chars,
-                              label.pos,
-                              label.faces[label.index].label,
-                              mouse_state);
-❱
-◀private: static▶ Frame_Elements ☀Regular_Draw(Character_Maps const& font_chars, Faced_Label & label, Position const& pos, Mouse_State const& mouse_state)❰
+◀private: static▶ Frame_Elements ☀Regular_Draw(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Mouse_State const& mouse_state)❰
 
     //leverage single face label drawer
     return Label_Drawer::Draw(font_chars,
@@ -68,17 +61,7 @@ class
                               mouse_state);
 ❱
 
-◀private: static▶ Frame_Elements ☀All_Face_Draw(Character_Maps const& font_chars, Positioned_Faced_Label & label, Mouse_State const& mouse_state)❰
-  
-  Frame_Elements elements;
-  auto current_pos = label.pos;
-  for (size_t i = 0; i < label.faces.size(); ++i){
-    elements.types += Label_Drawer::Draw(font_chars,current_pos,label.faces[i].label,mouse_state).types;
-    current_pos.x += Label_Dimension_Getter::Get(label.faces[i].label).x -1;
-  }
-  return elements;
-❱
-◀private: static▶ Frame_Elements ☀All_Face_Draw(Character_Maps const& font_chars, Faced_Label & label, Position const& pos, Mouse_State const& mouse_state)❰
+◀private: static▶ Frame_Elements ☀All_Face_Draw(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Mouse_State const& mouse_state)❰
   
   Frame_Elements elements;
   auto current_pos = pos;
@@ -95,16 +78,10 @@ class
 
 //size it
 ◀public: static▶ Two_D_Dimensions ☀Get_Dimensions(Faced_Label const& label)❰
-    return Label_Dimension_Getter::Get(label.faces[label.index].label);
+    return Label_Dimension_Getter::Get(label.state.faces[label.state.index].label);
 ❱
-◀private: static▶ std::vector<Two_D_Dimensions> ☀Get_All_Face_Dimensions(Faced_Label const& label)❰
-    std::vector<Two_D_Dimensions> x;
-    for (auto const& it: label.faces){
-      x.emplace_back(Label_Dimension_Getter::Get(it.label));
-    }
-    return x;
-❱
-◀private: static▶ std::vector<Two_D_Dimensions> ☀Get_All_Face_Dimensions(Positioned_Faced_Label const& label)❰
+
+◀private: static▶ std::vector<Two_D_Dimensions> ☀Get_All_Face_Dimensions(Faced_Label_State const& label)❰
     std::vector<Two_D_Dimensions> x;
     for (auto const& it: label.faces){
       x.emplace_back(Label_Dimension_Getter::Get(it.label));

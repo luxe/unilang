@@ -58,12 +58,6 @@
     cpp_stream << "//functions added automatically by hcp-compiler\n";
     
         //json function implementation
-        cpp_stream << "nlohmann::json As_JSON_Assignable(" <<  class_name << " const& class_object){\n";
-        cpp_stream << "\tnlohmann::json j;\n";
-        for (auto const& data_member: structure.Data_Members()){
-            cpp_stream << "\tj[\"" << data_member << "\"] = As_JSON_Assignable(class_object." << data_member << ");\n";
-        }
-        cpp_stream << "\treturn j;\n}";
         
         //class name function implementation
         cpp_stream << "std::string Class_Name(" <<  class_name << " const& class_object){\n";
@@ -112,7 +106,6 @@
       outfile << "//functions added automatically by hcp-compiler\n";
       outfile << "public:\n";
       outfile << "\tfriend  std::string Class_Name(" <<  wstr << " const& class_object);\n";
-      outfile << "\tfriend nlohmann::json As_JSON_Assignable(" <<  wstr << " const& class_object);\n";
       outfile << "\tfriend  std::string As_YAML_String(" <<  wstr << " const& class_object);\n";
       outfile << "\tfriend  std::string As_XML_String(" <<  wstr << " const& class_object);\n";
       
@@ -123,8 +116,13 @@
       for (auto const& data_member: structure.Data_Members()){
           outfile << "\tar & " << data_member << ";\n";
       }
-      
       outfile << "}\n";
+      
+      
+      // outfile << "public:\n";
+      // outfile << "NLOHMANN_DEFINE_TYPE_INTRUSIVE(";
+      // outfile << Get_As_Comma_Seperated_String(structure.Data_Members());
+      // outfile << ")";
     }
     
     outfile << "};";
