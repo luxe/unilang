@@ -6,12 +6,7 @@
 #include "nlohmann/json.hpp"
 #include "code/utilities/streams/filestreams/lib.hpp"
 #include "code/utilities/streams/filestreams/read_all/lib.hpp"
-
-template <typename T>
-std::string As_JSON_String(T const& t){
-    nlohmann::json r = t;
-    return r.dump(2);
-}
+#include "code/utilities/formats/json/converters/type_to_json_string.hpp"
 
 template<typename T>
 T From_JSON_String(std::string const& str){
@@ -20,16 +15,7 @@ T From_JSON_String(std::string const& str){
     return t;
 }
 
-template <typename T>
-std::string As_JSON_String_Indented_N_Spaces(T const& t, unsigned int const& number_of_spaces){
-    nlohmann::json r = t;
-    return r.dump(number_of_spaces);
-}
-template <typename T>
-std::string As_Minified_JSON_String(T const& t){
-    nlohmann::json r = t;
-    return r.dump();
-}
+
 template <typename T>
 void Write_Json_To_File(T const& t, std::string const& path){
     nlohmann::json j = t;
@@ -51,7 +37,7 @@ std::vector<std::string> Read_Jsons_From_File(std::string const& path);
 
 template <typename T>
 void Print_Json(T const& t){
-    auto str = As_JSON_String(t);
+    auto str = Type_To_Json_String::As_JSON_String(t);
     std::cout << str << std::endl;
 }
 

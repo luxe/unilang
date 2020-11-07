@@ -3,6 +3,7 @@
 #include <SFML/Window/Joystick.hpp>
 #include "code/utilities/peripheral/keyboard/joycons/joycon_state_getter.hpp"
 #include "code/utilities/formats/json/converters/lib.hpp"
+#include "code/utilities/formats/json/converters/type_to_json_string.hpp"
 
 
 //setting up the joycons are stupid.
@@ -21,7 +22,7 @@ int main()
 {
     while (true){
         auto joys = Joycon_State_Getter::Get();
-        std::cout << As_JSON_String(joys) << std::endl;
+        std::cout << Type_To_Json_String::As_JSON_String(joys) << std::endl;
     }
 
     return 0;
