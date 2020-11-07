@@ -16,34 +16,7 @@ T From_JSON_String(std::string const& str){
 }
 
 
-template <typename T>
-void Write_Json_To_File(T const& t, std::string const& path){
-    nlohmann::json j = t;
-    auto str = j.dump(2);
-    std::ofstream outfile(path);
-    outfile << str;
-    outfile.close();
-}
-template <typename T>
-void Read_Json_From_File(T & t, std::string const& path){
-    auto str = Read_Entire_File_Into_String(path);
-    auto j = nlohmann::json::parse(str);
-    t = j.get<T>();
-}
 
-nlohmann::json Read_Json_From_File(std::string const& path);
-std::vector<std::string> Read_Jsons_From_File(std::string const& path);
-
-
-template <typename T>
-void Print_Json(T const& t){
-    auto str = Type_To_Json_String::As_JSON_String(t);
-    std::cout << str << std::endl;
-}
-
-
-//validating json
-bool Is_Valid_JSON_File(std::string const& file_name);
 bool Is_Valid_JSON_String(std::string const& json_string);
 
 

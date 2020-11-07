@@ -16,5 +16,12 @@ cc_library(
     ],
 )
 
-hcp(name = "type_to_json_string",deps = [
+hcp(name = "type_to_json_string",deps = [])
+
+hcp(name = "json_file_io",deps = [
+    "//code/utilities/formats/json/compression:json_compression_format",
+    "//code/utilities/formats/json/compression:json_compressor",
+    "//code/utilities/streams/filestreams/read_all:lib",
+    "//code/utilities/streams/filestreams/write_all:lib",
+    "//code/utilities/formats/json/converters:type_to_json_string",
 ])

@@ -36,6 +36,7 @@ hcp(
         "//code/utilities/program/wrappers/zenity/file_selector",
         "//code/utilities/code:concept_string_tree_parser",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+        "//code/utilities/formats/json/converters:json_file_io",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )

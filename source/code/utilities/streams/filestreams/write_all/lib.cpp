@@ -9,5 +9,5 @@ void Write_Each_Line_Of_Vector_Into_File(std::string const& file, std::vector<st
 }
 void Write_Byte_Vec_To_Binary_File(std::string const& file, std::vector<std::uint8_t> const& vec){
     std::ofstream output_file(file, std::ios::out | std::ios::binary);
-    output_file.write(vec.data(), vec.size());
+    output_file.write(reinterpret_cast<const char*>(vec.data()), vec.size());
 }
