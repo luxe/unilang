@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
+load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp_and_hcp_pos(
     name = "button_face_tree",
@@ -68,6 +69,8 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_action_decider",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_action",
     ],
 )
 
@@ -111,5 +114,25 @@ hcp(
         "//code/utilities/personal/hosting:hosting_repo",
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "@tree",
+    ],
+)
+
+
+hcp(
+    name = "button_face_tree_action_decider",
+    deps = [
+        "//code/utilities/peripheral/pc:pc_input_state",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_action",
+    ],
+)
+
+
+enum_cpp(
+    name = "button_face_tree_action",
+    values = [
+        "down_activation",
+        "up_activation",
+        "collapse_toggle",
+        "none",
     ],
 )
