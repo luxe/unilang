@@ -23,6 +23,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_tree:positioned_face_tree",
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_eventer",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
         "//code/utilities/peripheral/mouse/state:mouse_state",

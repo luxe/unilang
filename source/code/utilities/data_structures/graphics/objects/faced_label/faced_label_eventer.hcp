@@ -1,0 +1,44 @@
+class
+❪string❫
+❪unordered_map❫
+❪utility❫
+❪cstdlib❫
+❪"code/utilities/fonts/bdf/settings/character_segment"❫
+❪"code/utilities/data_structures/graphics/objects/label/data/label_settings"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/data/positioned_faced_label"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/data/faced_label"❫
+❪"code/utilities/data_structures/graphics/objects/label/label_drawer"❫
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+❪"code/utilities/peripheral/mouse/state/mouse_state"❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+❪"code/utilities/data_structures/graphics/objects/label/label_dimension_getter"❫
+⚯
+⚞⚟
+
+//EVENT IT
+◀public: static▶ void ☀Event_It(Character_Maps const& font_chars, Faced_Label & label, Position const& pos, Pc_Input_State const& pc_input)❰
+    Do_Events(font_chars,label.state,pos,pc_input);
+❱
+
+◀private: static▶ void ☀Do_Events(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Pc_Input_State const& pc_input)❰
+
+    if (!label.style.print_all){
+      return Regular_Events(font_chars,label,pos,pc_input);
+    }
+    return All_Face_Events(font_chars,label,pos,pc_input);
+❱
+
+
+◀private: static▶ void ☀Regular_Events(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Pc_Input_State const& pc_input)❰
+
+    Label_Drawer::Event_It(font_chars,pos,label.faces[label.index].label,pc_input);
+❱
+
+◀private: static▶ void ☀All_Face_Events(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Pc_Input_State const& pc_input)❰
+  
+  auto current_pos = pos;
+  for (size_t i = 0; i < label.faces.size(); ++i){
+     Label_Drawer::Event_It(font_chars,current_pos,label.faces[label.index].label,pc_input);
+    current_pos.x += Label_Dimension_Getter::Get(label.faces[i].label).x -1;
+  }
+❱
