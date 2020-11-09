@@ -20,3 +20,13 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_active",
     ],
 )
+
+hcp(
+    name = "buttoned_faced_label_toggle_button",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_active",
+    ],
+)
+
