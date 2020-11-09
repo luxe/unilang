@@ -8,6 +8,7 @@ hcp(
     deps = [
         "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
+        "//code/utilities/data_structures/graphics/objects/cursor/premade:color_cursor",
     ],
 )
 
@@ -16,6 +17,7 @@ hcp(
     deps = [
         "//code/utilities/colors/defaults:color_defaults",
         "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor",
+        "//code/utilities/data_structures/graphics/objects/cursor/premade:color_cursor",
     ],
 )
 
