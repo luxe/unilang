@@ -12,3 +12,9 @@ hcp(
         "@cxx_url",
     ],
 )
+
+hcp(
+    name = "github_url_getter",
+    deps = [
+    ],
+)
