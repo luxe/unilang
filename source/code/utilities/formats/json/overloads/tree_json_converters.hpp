@@ -22,6 +22,5 @@ void from_json(const nlohmann::json& j, tree<T> & tr) {
      
      //If I assign directly to tr we segfault
      //https://github.com/kpeeters/tree.hh/issues/4
-     tree<T> tr_new = from_depth_list(depth_list);
-     tr = tr_new;
+     tr = from_depth_list(depth_list);
 }

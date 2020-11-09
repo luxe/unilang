@@ -7,9 +7,9 @@ def tree():
     http_archive(
         name = "tree",
         build_file = "//bazel/deps/build_files:tree.BUILD",
-        sha256 = "2f38133e582abc484bdede9bde391d097ed15f4c348bb05c8476e5feecd4a96f",
-        strip_prefix = "tree.hh-edb44045df64efd72dc0dab97388915641987acd",
+        sha256 = "0781e19d4279cb1ca0b088496050f10c80e9533e4da83d7aa307f99fa46a2c7f",
+        strip_prefix = "tree.hh-c0201bbd57e5711a0de87af31c54b68c64818131",
         urls = [
-            "https://github.com/Unilang/tree.hh/archive/edb44045df64efd72dc0dab97388915641987acd.tar.gz",
+            "https://github.com/Unilang/tree.hh/archive/c0201bbd57e5711a0de87af31c54b68c64818131.tar.gz",
         ],
     )
