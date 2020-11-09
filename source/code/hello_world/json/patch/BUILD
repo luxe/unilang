@@ -7,7 +7,7 @@ package(
 cpp_main(
     name = "main",
     deps = [
+        "//code/utilities/formats/json/patching:json_patch_builder",
         "@nlohmann_json",
-        "//code/utilities/formats/json/patching:json_patch_builder"
     ],
 )

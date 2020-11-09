@@ -21,8 +21,8 @@ hcp_and_hcp_pos(
 hcp(
     name = "faced_label_state",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label/data:label_face",
         "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label_style",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:label_face",
     ],
 )
 

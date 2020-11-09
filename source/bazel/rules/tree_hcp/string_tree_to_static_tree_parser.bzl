@@ -17,10 +17,10 @@ def string_tree_to_static_tree_parser(name):
     )
 
     #compile hcp file
-    
+
     #unique dep (TODO: dynamically decide)
     static_struct_dep = "//code/utilities/code:concept_static_tree_structs"
-    
+
     deps = [
         "//code/utilities/data_structures/tree/generic:string_tree",
         "//code/utilities/data_structures/tree/generic:string_to_string_tree",

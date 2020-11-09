@@ -99,9 +99,9 @@ hcp(
 hcp(
     name = "buildable_schema_faced_tree_tokenizer",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_tokenizer",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/tree/generic/tokens:tree_token",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_tokenizer",
     ],
 )

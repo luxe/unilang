@@ -9,19 +9,25 @@ cc_library(
     srcs = ["lib.cpp"],
     hdrs = ["lib.hpp"],
     deps = [
+        "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/streams/filestreams/read_all:lib",
-        "//code/utilities/formats/json/converters:type_to_json_string",
         "@nlohmann_json",
     ],
 )
 
-hcp(name = "type_to_json_string",deps = [])
+hcp(
+    name = "type_to_json_string",
+    deps = [],
+)
 
-hcp(name = "json_file_io",deps = [
-    "//code/utilities/formats/json/compression:json_compression_format",
-    "//code/utilities/formats/json/compression:json_compressor",
-    "//code/utilities/streams/filestreams/read_all:lib",
-    "//code/utilities/streams/filestreams/write_all:lib",
-    "//code/utilities/formats/json/converters:type_to_json_string",
-])
+hcp(
+    name = "json_file_io",
+    deps = [
+        "//code/utilities/formats/json/compression:json_compression_format",
+        "//code/utilities/formats/json/compression:json_compressor",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/streams/filestreams/read_all:lib",
+        "//code/utilities/streams/filestreams/write_all:lib",
+    ],
+)

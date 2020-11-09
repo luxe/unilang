@@ -29,4 +29,3 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_active",
     ],
 )
-

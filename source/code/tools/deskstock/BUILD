@@ -89,8 +89,8 @@ hcp(
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/documentation:common_documentation_getter",
         "//code/utilities/formats/json/converters:lib",
-        "//code/utilities/types/converters:lib",
         "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/types/converters:lib",
     ],
 )
 

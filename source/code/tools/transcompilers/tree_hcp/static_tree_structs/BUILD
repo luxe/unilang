@@ -9,6 +9,8 @@ hcp(
         "//code/tools/transcompilers/hcp-compiler/programatic:code_getter",
         "//code/tools/transcompilers/hcp-compiler/programatic/data:code",
         "//code/tools/transcompilers/hcp-compiler/programatic/data:function",
+        "//code/tools/transcompilers/shared:json_gen",
+        "//code/tools/transcompilers/tree_hcp/shared:path_naming",
         "//code/utilities/data_structures/tree/generic:string_to_string_tree",
         "//code/utilities/data_structures/tree/generic:string_tree",
         "//code/utilities/streams/filestreams/read_all:lib",
@@ -22,8 +24,6 @@ hcp(
         "//code/utilities/types/tree:shortest_unique_name",
         "//code/utilities/types/tree/converters:tree_full_paths_getter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/tools/transcompilers/tree_hcp/shared:path_naming",
-        "//code/tools/transcompilers/shared:json_gen",
     ],
 )
 

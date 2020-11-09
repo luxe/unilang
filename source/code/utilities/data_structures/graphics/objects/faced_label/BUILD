@@ -23,8 +23,8 @@ hcp(
 hcp(
     name = "faced_label_set_active",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],
@@ -33,8 +33,8 @@ hcp(
 hcp(
     name = "faced_label_first_name",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],
@@ -43,8 +43,8 @@ hcp(
 hcp(
     name = "faced_label_message",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_cursor",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
     ],

@@ -6,6 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "ide_settings",
     deps = [
+        "//code/tools/ide/global_actions:global_action",
         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
@@ -34,7 +35,6 @@ hcp(
         "//code/utilities/graphics/imgui/window:window_settings",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/peripheral/pc:pc_input_state",
-        "//code/tools/ide/global_actions:global_action",
         "@boost//:asio",
     ],
 )
