@@ -1,0 +1,39 @@
+class
+❪string❫
+❪stdio.h❫
+⚯
+❪"code/utilities/program/call/lib.hpp"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/repo_location"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/repo_establisher"❫
+❪"code/utilities/program/wrappers/git/repo_establisher/established_repo"❫
+❪"code/utilities/filesystem/paths/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Sync(std::string const& dev_name, std::string const& dev_proj_name, std::string const& fork_name)❰
+    
+    
+    //1. Clone your fork:
+    //git clone git@github.com:YOUR-USERNAME/YOUR-FORKED-REPO.git
+    //cd into/cloned/fork-repo
+
+    //clone repo and step into it
+    Repo_Location location;
+    location.verbose = true;
+    location.use_clone = true;
+    location.clone_url = "git@github.com:Unilang/" + fork_name + ".git";
+    auto repo = Repo_Establisher::Establish_And_Get_Path(location);
+    std::cout << "moving to folder" << std::endl;
+    Set_Path(repo.path);
+    
+    //2. Add remote from original repository in your forked repository:
+    //git remote add upstream git://github.com/ORIGINAL-DEV-USERNAME/REPO-YOU-FORKED-FROM.git
+    //git fetch upstream
+    print_and_execute("git remote add upstream git://github.com/" + dev_name + "/" + dev_proj_name + ".git");
+    print_and_execute("git fetch upstream");
+    
+    //3. Updating your fork from original repo to keep up with their changes:
+    //git pull upstream master
+    print_and_execute("git pull upstream master");
+    print_and_execute("git push --force");
+    
+❱
