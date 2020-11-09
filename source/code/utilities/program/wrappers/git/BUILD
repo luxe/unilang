@@ -35,6 +35,13 @@ hcp(
     ],
 )
 
+hcp(
+    name = "latest_commit_getter",
+    deps = [
+        "//code/utilities/program/call:lib",
+    ],
+)
+
 cc_binary(
     name = "setup_git",
     srcs = ["setup_git.cpp"],

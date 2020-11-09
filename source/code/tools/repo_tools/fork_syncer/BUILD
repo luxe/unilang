@@ -10,6 +10,6 @@ distributable_cpp_main(
     ],
     description = "sync a fork with the original upstream",
     deps = [
-        "//code/utilities/program/wrappers/git/sync_fork:fork_syncer"
+        "//code/utilities/program/wrappers/git/sync_fork:fork_syncer",
     ],
 )
