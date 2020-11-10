@@ -40,6 +40,7 @@ class
         case Button_Face_Tree_Action::DOWN_ACTIVATION: Handle_Down_Activation(font_chars,elements,pc_input,pos,tr,it,end); break;
         case Button_Face_Tree_Action::UP_ACTIVATION: Handle_Up_Activation(font_chars,elements,pc_input,pos,tr,it,end); break;
         case Button_Face_Tree_Action::COLLAPSE_TOGGLE: Handle_Collapse_Expand_Toggle(font_chars,elements,pc_input,pos,tr,it,end); break;
+        case Button_Face_Tree_Action::ENABLE_TOGGLE: Handle_Enable_Disable_Toggle(font_chars,elements,pc_input,pos,tr,it,end); break;
     }
     
 ❱
@@ -87,9 +88,46 @@ class
         Buttoned_Faced_Label_Toggle_Button::Toggle(*linear_nodes[it]);
     }
 ❱
+◀private: static▶ void ☀Handle_Enable_Disable_Toggle(Character_Maps const& font_chars, Frame_Elements const& elements, Pc_Input_State const& pc_input, Position const& pos, const tree<Buttoned_Faced_Label>& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+
+    //get all the nodes to toggle
+    auto linear_nodes = Get_Self_And_Recursive_Children(tr,it,end);
+    
+    //toggle them
+    for (auto const& it: linear_nodes){
+        Buttoned_Faced_Label_Toggle_Button::Toggle(*it);
+    }
+❱
 
 
-
+◀private: static▶ std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> ☀Get_Self_And_Recursive_Children(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰
+    
+    std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> all;
+    
+    //exit early if tree if empty
+    if(!tr.is_valid(it)) return all;
+    
+    //calculate the current depth of the iterator given
+    int rootdepth=tr.depth(it);
+    
+    //add self
+    all.emplace_back(it);
+    ++it;
+    
+    while(it!=end) {
+        
+        //only keep nodes that are at the lower depth
+        int depth = tr.depth(it);
+        if (depth <= rootdepth){
+            return all;
+        }
+        
+        all.emplace_back(it);
+        ++it;
+    }
+    
+    return all;
+❱
 
 
 ◀private: static▶ std::vector<tree<Buttoned_Faced_Label>::pre_order_iterator> ☀Get_Ordered_Visible_Tree_Nodes(tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, tree<Buttoned_Faced_Label>::pre_order_iterator end)❰

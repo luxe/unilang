@@ -132,6 +132,7 @@ enum_cpp(
         "down_activation",
         "up_activation",
         "collapse_toggle",
+        "enable_toggle",
         "none",
     ],
 )
