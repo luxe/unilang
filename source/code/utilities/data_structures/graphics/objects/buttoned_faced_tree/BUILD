@@ -66,6 +66,8 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_enabled",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_set_enabled",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
         "//code/utilities/peripheral/mouse/state:mouse_state",
