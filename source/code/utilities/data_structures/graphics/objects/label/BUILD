@@ -20,6 +20,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
+        "//code/utilities/data_structures/graphics/objects/label:label_apply_events",
         "//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
         "//code/utilities/data_structures/graphics/text:text_to_bitmap",
         "//code/utilities/fonts/bdf/character_maps",
@@ -71,6 +72,18 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/peripheral/pc:pc_input_state",
+    ],
+)
+
+hcp(
+    name = "label_apply_events",
+    deps = [
+        "//code/utilities/fonts/bdf/character_maps:character_maps",
+        "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
+        "//code/utilities/peripheral/pc:pc_input_state",
+        "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
+        "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
+        "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
     ],
 )
 
