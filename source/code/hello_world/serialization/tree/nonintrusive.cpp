@@ -7,11 +7,12 @@
 #include "code/utilities/formats/json/converters/lib.hpp"
 
 
-//SERIALIZE TEST OBJECT
+//TEST OBJECT
 struct foo{
     int i;
 };
 
+//SERIALIZATION
 void to_json(nlohmann::json& j, const foo& f) {
     j = nlohmann::json{{"i", f.i}};
 }

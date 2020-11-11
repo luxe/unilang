@@ -12,3 +12,11 @@ cpp_object(
         "@tree",
     ],
 )
+
+cpp_object(
+    name = "variant_json_converters",
+    deps = [
+        "@nlohmann_json",
+    ],
+)
+
