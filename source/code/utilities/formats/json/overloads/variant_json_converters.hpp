@@ -1,3 +1,6 @@
+//This allows serializing variants to/from json
+//https://github.com/nlohmann/json/issues/1261#issuecomment-426209912
+#pragma once
 #include <iostream>
 #include <stdexcept>
 #include <string>

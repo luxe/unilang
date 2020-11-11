@@ -1,3 +1,4 @@
+//This allows serializing trees to/from json
 #pragma once
 #include <string>
 #include <iostream>
