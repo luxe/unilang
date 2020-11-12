@@ -8,7 +8,7 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp_and_hcp_pos(
     name = "button_face_tree",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
         "//code/utilities/data_structures/line_break:should_line_break",
         "@tree",
     ],
@@ -24,7 +24,7 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/premade:vertical_line",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_active",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_global_navigation",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
@@ -55,7 +55,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_active",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_toggle_button",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:positioned_buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_action",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_action_decider",
@@ -80,7 +80,7 @@ hcp(
 hcp(
     name = "button_face_tree_click_finder",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "@tree",
     ],
@@ -89,7 +89,7 @@ hcp(
 hcp(
     name = "button_face_tree_tokenizer",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_first_name",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_message",

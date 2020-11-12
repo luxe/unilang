@@ -8,7 +8,7 @@ hcp(
     name = "buttoned_faced_label_premades",
     deps = [
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
     ],
 )
