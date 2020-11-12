@@ -28,6 +28,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_is_active"❫
 ❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_set_active"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_tree_global_navigation"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/buttoned_faced_label_drawer"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Positioned_Button_Face_Tree & tree, Pc_Input_State const& pc_input)❰
@@ -85,10 +86,12 @@ class
             //add label
             Adjust_Positions_For_Next_Cell(it->label,start_pos,current_pos,depth);
             Faced_Label_Eventer::Event_It(font_chars,it->label,current_pos,pc_input);
-            Append(elements.types,Faced_Label_Drawer::Draw(font_chars,it->label,current_pos,pc_input.mouse).types);
             
-            //add button
-            buttons.types += Possibly_Add_Button(pc_input.mouse,tr,it,current_pos).types;
+            
+            //should we show the button
+            it->style.show_button = tr.number_of_children(it) > 0;
+            Append(buttons.types,Buttoned_Faced_Label_Drawer::Draw(font_chars,*it,current_pos,pc_input).types);
+            
         }
         
         //collapse
@@ -156,29 +159,6 @@ class
     return another_parent_child;
 ❱
 
-◀private: static▶ Frame_Elements  ☀Possibly_Add_Button(Mouse_State const& mouse, tree<Buttoned_Faced_Label> const& tr, tree<Buttoned_Faced_Label>::pre_order_iterator it, Position const& current_pos)❰
-    
-    Frame_Elements elements;
-    
-    if (tr.number_of_children(it) > 0){
-        
-        //draw
-        Positioned_Multi_Color_Bitmap button;
-        button.pos = current_pos;
-        button.pos.x -= 10;
-        button.pos.y += 3;
-        button.bitmap = it->button.faces[it->button.current_face];
-        elements.types.emplace_back(button);
-        
-        //change on click
-        auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(button.pos,it->button.click_size,mouse);
-        if (events.state.left.clicked){
-            Set_Next_Index_In_Round_Robin(it->button.faces,it->button.current_face);
-        }
-    }
-    
-    return elements;
-❱
 
 ◀private: static▶ void  ☀Adjust_Positions_For_Next_Cell(Faced_Label const& label, Position const& start_pos, Position & current_pos, int const& depth)❰
         auto dim = Faced_Label_Drawer::Get_Dimensions(label);

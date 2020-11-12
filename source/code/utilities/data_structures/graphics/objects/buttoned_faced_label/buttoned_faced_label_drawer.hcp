@@ -1,0 +1,49 @@
+class
+❪string❫
+❪unordered_map❫
+❪utility❫
+❪cstdlib❫
+❪"code/utilities/fonts/bdf/character_maps/character_maps"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/data/buttoned_faced_label"❫
+❪"code/utilities/peripheral/pc/pc_input_state"❫
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+⚯
+❪"code/utilities/data_structures/graphics/objects/mouse/events/mouse_events_checker"❫
+❪"code/utilities/data_structures/graphics/objects/faced_label/faced_label_drawer"❫
+❪"code/utilities/types/vectors/operators/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ Frame_Elements ☀Draw(Character_Maps const& font_chars, Buttoned_Faced_Label & label, Position const& pos, Pc_Input_State const& pc_input)❰
+    
+    Frame_Elements elements;
+    Append(elements.types,Faced_Label_Drawer::Draw(font_chars,label.label,pos,pc_input.mouse).types);
+    Append(elements.types,Possibly_Add_Button(pc_input,label,pos).types);
+    
+    return elements;
+❱
+
+◀private: static▶ Frame_Elements  ☀Possibly_Add_Button(Pc_Input_State const& pc_input, Buttoned_Faced_Label & label, Position const& pos)❰
+    
+    Frame_Elements elements;
+    
+    if (label.style.show_button){
+    
+        
+        //draw
+        Positioned_Multi_Color_Bitmap button;
+        button.pos = pos;
+        button.pos.x -= 10;
+        button.pos.y += 3;
+        button.bitmap = label.button.faces[label.button.current_face];
+        elements.types.emplace_back(button);
+        
+        //change on click
+        auto events = Mouse_Events_Checker::search_for_mouse_events_in_rectangle(button.pos,label.button.click_size,pc_input.mouse);
+        if (events.state.left.clicked){
+            Set_Next_Index_In_Round_Robin(label.button.faces,label.button.current_face);
+        }
+    }
+    
+    return elements;
+❱
