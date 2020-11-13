@@ -42,6 +42,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_drawer",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:for_each_noncollapsed",
     ],
 )
 
@@ -75,6 +76,14 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+    ],
+)
+
+hcp(
+    name = "for_each_noncollapsed",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
+        "@tree",
     ],
 )
 
