@@ -107,3 +107,18 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_state",
     ],
 )
+
+hcp(
+    name = "faced_label_is_mouse_over",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:positioned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/faced_label/data:faced_label",
+        "//code/utilities/data_structures/graphics/objects/label:label_drawer",
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
+        "//code/utilities/peripheral/mouse/state:mouse_state",
+        "//code/utilities/fonts/bdf/character_maps:character_maps",
+        "//code/utilities/data_structures/graphics/objects/label:label_is_mouse_over",
+        "//code/utilities/data_structures/graphics/objects/label:label_dimension_getter",
+    ],
+)
