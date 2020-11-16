@@ -7,7 +7,7 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 hcp(
     name = "frame_logic_updater",
     deps = [
-        "//code/tools/ide/frame:label_frame_getter",
+        "//code/tools/ide/frame:ide_element_drawer",
         "//code/tools/ide/global_actions:global_action_handler",
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
@@ -32,7 +32,7 @@ hcp(
 )
 
 hcp(
-    name = "label_frame_getter",
+    name = "ide_element_drawer",
     deps = [
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
@@ -54,5 +54,6 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_state",
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/types/variant:lib",
     ],
 )

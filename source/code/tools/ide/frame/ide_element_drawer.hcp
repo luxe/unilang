@@ -20,15 +20,16 @@ class
 ❪"code/utilities/data_structures/graphics/objects/cursor/cursor_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/slider/slider_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/buildable_schema_face_tree_drawer"❫
+❪"code/utilities/types/variant/lib"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
     Frame_Elements elements;
-    Draw_Label(elements,settings,pc_input);
+    Draw_Ide_Elements(elements,settings,pc_input);
     return elements;
 ❱
 
-◀private: static▶ void ☀Draw_Label(Frame_Elements & elements, Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+◀private: static▶ void ☀Draw_Ide_Elements(Frame_Elements & elements, Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 
 
     //settings.test_label.state.message = std::to_string(static_cast<int>(ImGui::GetIO().Framerate));
@@ -52,11 +53,10 @@ class
     //elements.types += Button_Tree_Label_Drawer::Draw(settings.unilang_font_lookup,settings.tree,pc_input).types;
     
     //buildable faced tree
-    elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,settings.btree,pc_input).types;
-    
-    
-    
-    elements.types += Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,settings.gtree,pc_input).types;
+    //TODO: renable
+    //elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,settings.btree,pc_input).types;
+    //elements.types += Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,settings.gtree,pc_input).types;
+    elements.types = Convert_To_Frame_Elements(settings.elements).types;
     
     //slider:
     //elements.types += Slider_Drawer::Draw(settings.unilang_font_lookup,settings.slider,pc_input).types;
@@ -68,17 +68,34 @@ class
     //}
 ❱
 
+◀private: static▶ Frame_Elements ☀Convert_To_Frame_Elements(Ide_Elements const& e)❰
+
+    Frame_Elements elements;
+    for (auto const& it: e.types){
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree const& x) {
+                //Rectangle_Drawer::draw_rectangle(draw_list,x);
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree const& x) {
+                //Multi_Color_Bitmap_Drawer::Draw(draw_list,x);
+            },
+        }, it);
+    }
+    return elements;
+❱
+
+
 
 ◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
 
     Position pos = settings.desktop.mouse.view_anchor;
     
     //loop over all elements
-    settings.gtree.pos.x = pos.x + 400;
-    settings.gtree.pos.y = pos.y + 100;
+    //settings.gtree.pos.x = pos.x + 400;
+    //settings.gtree.pos.y = pos.y + 100;
     
-    settings.btree.pos.x = pos.x + 220;
-    settings.btree.pos.y = pos.y + 100;
+    //settings.btree.pos.x = pos.x + 220;
+    //settings.btree.pos.y = pos.y + 100;
     
 ❱
 
