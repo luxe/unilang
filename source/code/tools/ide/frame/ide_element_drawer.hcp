@@ -56,7 +56,7 @@ class
     //TODO: renable
     //elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,settings.btree,pc_input).types;
     //elements.types += Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,settings.gtree,pc_input).types;
-    elements.types = Convert_To_Frame_Elements(settings.elements).types;
+    elements.types = Convert_To_Frame_Elements(settings.elements,settings,pc_input).types;
     
     //slider:
     //elements.types += Slider_Drawer::Draw(settings.unilang_font_lookup,settings.slider,pc_input).types;
@@ -68,16 +68,16 @@ class
     //}
 ❱
 
-◀private: static▶ Frame_Elements ☀Convert_To_Frame_Elements(Ide_Elements const& e)❰
+◀private: static▶ Frame_Elements ☀Convert_To_Frame_Elements(Ide_Elements & e, Ide_Settings const& settings, Pc_Input_State const& pc_input)❰
 
     Frame_Elements elements;
-    for (auto const& it: e.types){
+    for (auto & it: e.types){
         std::visit(overloaded {
-            [&](Positioned_Buildable_Face_Tree const& x) {
-                //Rectangle_Drawer::draw_rectangle(draw_list,x);
+            [&](Positioned_Buildable_Face_Tree & x) {
+                elements.types += Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
             },
-            [&](Positioned_Buildable_Schema_Faced_Tree const& x) {
-                //Multi_Color_Bitmap_Drawer::Draw(draw_list,x);
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+                elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
             },
         }, it);
     }
