@@ -62,5 +62,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_is_mouse_over",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:absolute_button_maker",
     ],
 )

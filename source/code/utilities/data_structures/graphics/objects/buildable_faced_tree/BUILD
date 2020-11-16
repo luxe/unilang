@@ -86,7 +86,6 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label:label_drawer",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_is_mouse_over",
         "//code/utilities/data_structures/graphics/objects/select_menu",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
@@ -94,6 +93,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:buttoned_faced_tree_is_mouse_over",
     ],
 )
 

@@ -38,6 +38,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_drawer",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_face_tree_drawer",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_is_mouse_over",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/data_structures/graphics/objects/cursor:label_cursor_action_doer",

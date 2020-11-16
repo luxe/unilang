@@ -86,14 +86,14 @@ hcp(
         "//code/utilities/fonts/bdf/character_maps:character_maps",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
         "//code/utilities/peripheral/pc:pc_input_state",
-        "//code/utilities/data_structures/graphics/objects/frame_elements",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label_is_mouse_over",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_mouse_over",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:for_each_noncollapsed",
     ],
 )
 
