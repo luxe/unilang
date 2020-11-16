@@ -66,6 +66,7 @@ hcp(
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/web/honeycomb:honeycomb_poster",
+        "//code/utilities/formats/json/converters:type_to_json_string",
     ],
 )
 

@@ -6,6 +6,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "code/utilities/formats/json/converters/lib.hpp"
+#include "code/utilities/formats/json/converters/json_file_io.hpp"
 #include <google/protobuf/util/json_util.h>
 #include <google/protobuf/util/delimited_message_util.h>
 #include <google/protobuf/io/zero_copy_stream_impl.h>
@@ -57,7 +58,7 @@ std::string Protobuf_Message_To_Inline_Json(T const& t){
 
 template <typename T>
 std::vector<T> Deserialize_Multiple_From_Json_File(std::string const& path){
-    auto j_blobs = Read_Jsons_From_File(path);
+    auto j_blobs = Json_File_Io::Read_Jsons_From_File(path);
     std::vector<T> results;
     for (auto const& it: j_blobs){
         T x;

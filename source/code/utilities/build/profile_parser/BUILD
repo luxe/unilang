@@ -14,5 +14,6 @@ hcp(
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
