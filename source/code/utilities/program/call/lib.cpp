@@ -57,6 +57,10 @@ std::string execute_and_get_back_stderr_only(const char* cmd){
 	return exec(std::string(cmd) + " 1> /dev/null");
 }
 
+void execute_to_file(std::string const& cmd, std::string const& file){
+    exec(cmd + " > " + file);
+}
+
 //runs in the shell and gives you back nothing (sends all the streams into dev/null/)
 void execute_quietly(std::string const& cmd) {
 	exec_quietly(cmd.c_str());

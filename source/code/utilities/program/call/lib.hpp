@@ -22,6 +22,8 @@ std::string execute_and_get_back_stdout_only(const char* cmd);
 std::string execute_and_get_back_stderr_only(std::string const& cmd);
 std::string execute_and_get_back_stderr_only(const char* cmd);
 
+void execute_to_file(std::string const& cmd, std::string const& file);
+
 //runs in the shell and gives you back nothing (sends all the streams into dev/null/)
 void exec_quietly(std::string const& cmd);
 void exec_quietly(const char* cmd);

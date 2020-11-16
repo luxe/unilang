@@ -1,9 +1,12 @@
 class
 ❪iostream❫
+❪fstream❫
 ❪"code/tools/repo_tools/aquery_size/program_options/program_options"❫
 ⚯
 ❪"code/utilities/build/build_repo_establisher/build_repo_establisher"❫
 ❪"code/utilities/program/wrappers/bazel/query/bazel_aquery_runner"❫
+❪"code/utilities/filesystem/paths/lib"❫
+❪"code/utilities/filesystem/files/observers/lstat_wrap/lib"❫
 ⚞⚟
 
 
@@ -17,4 +20,27 @@ class
     auto repo_context = Build_Repo_Establisher::Establish_Repo_For_Building(options.Run_Dir(),options.Url(),options.Branch());
     
     auto actions = Bazel_Aquery_Runner::Run_Aquery(repo_context.program_to_run_build,options.Target());
+    
+    std::vector<std::string> all_files;
+    for (auto const& x: actions){
+        for (auto const& x2: x.artifacts()){
+            all_files.emplace_back(x2.exec_path());
+        }
+    }
+    
+    Set_Path(repo_context.repo.path + "/source/bazel-source");
+    
+    std::vector<std::pair<std::uintmax_t,std::string>> sized_files;
+    for (auto const& it: all_files){
+        if (File_Exists(it)){
+            sized_files.emplace_back(std::filesystem::file_size(it),it);
+        }
+    }
+    
+    std::sort(sized_files.begin(),sized_files.end(),[&](std::pair<std::uintmax_t,std::string> const& a, std::pair<std::uintmax_t,std::string> const& b){
+        return a.first < b.first;
+    });
+    for (auto const& it: sized_files){
+        std::cout << it.first << " " << it.second << std::endl;
+    }
 ❱
