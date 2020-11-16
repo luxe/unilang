@@ -26,8 +26,12 @@ class
 
 ◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
     Frame_Elements elements;
-    std::cout << Is_Mouse_Over_Ide_Element(settings,pc_input) << std::endl;
-    Update_All_Positions_Via_View_Anchor(settings);
+    bool was_performed = Adjust_First_Mouse_Over_Element_Via_View_Anchor(settings,pc_input);
+    
+    if (!was_performed){
+        Update_All_Positions_Via_View_Anchor(settings);
+    }
+    
     Draw_Ide_Elements(elements,settings,pc_input);
     return elements;
 ❱
@@ -54,6 +58,37 @@ class
     return elements;
 ❱
 
+◀private: static▶ bool ☀Adjust_First_Mouse_Over_Element_Via_View_Anchor(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+
+    Position pos = settings.desktop.mouse.change;
+    Position prev_pos = settings.desktop.mouse.prev_position;
+    
+    bool was_performed = false;
+    
+    
+    for (auto & it: settings.elements.types){
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree & x) {
+                was_performed = Buildable_Face_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,pc_input);
+                if (was_performed){
+                    x.pos.x += pos.x;
+                    x.pos.y += pos.y;
+                }
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+                //x.pos.x += pos.x;
+                //x.pos.y += pos.y;
+            },
+        }, it);
+        
+        if (was_performed){
+            return was_performed;
+        }
+    }
+    
+    return false;
+❱
+
 ◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
 
     Position pos = settings.desktop.mouse.change;
@@ -72,7 +107,6 @@ class
             },
         }, it);
     }
-    
 ❱
 
 ◀private: static▶ bool ☀Is_Mouse_Over_Ide_Element(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
