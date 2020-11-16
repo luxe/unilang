@@ -28,7 +28,7 @@ boost::program_options::options_description Program_Options::Get_Options_Descrip
 	using namespace boost::program_options;
 
 	//Program Description
-	options_description desc("find slowest cc files from bazel's profile-file");
+	options_description desc("find file sizes with aquery");
 
 	//Program Flags
 	desc.add_options()
@@ -76,7 +76,7 @@ void Program_Options::Process_Immediate_Options( boost::program_options::options
 
 	//do not continue the program if the user wanted to see the version or help data
 	if (vm.count("version")){
-		std::cout << "\nThis is version " << "1" << " of bazel_profile_cc_files.\n\n";
+		std::cout << "\nThis is version " << "1" << " of aquery_size.\n\n";
 		exit(EXIT_SUCCESS);
 	}
 	else if (vm.count("help")){
