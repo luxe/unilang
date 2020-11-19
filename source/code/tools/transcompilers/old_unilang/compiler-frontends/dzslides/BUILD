@@ -13,7 +13,6 @@ hcp(
 hcp(
     name = "dzslides_exporter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_str_getter",
         "//code/tools/transcompilers/old_unilang/doxygen_block_printer:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/language-specific/dzslides:dzslides_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",

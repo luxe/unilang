@@ -7,7 +7,6 @@ hcp(
     name = "unilang_documentation_generator",
     deps = [
         "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_str_getter",
         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",

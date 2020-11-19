@@ -30,7 +30,6 @@ hcp(
         "//code/tools/transcompilers/old_unilang/compiler-frontends/html_table:html_table_options_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/java:java_settings_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/java_test:java_test_settings_getter",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_settings_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/mermaid:mermaid_settings_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/plant_uml_exporter:plant_uml_options_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/processing:processing_options_getter",

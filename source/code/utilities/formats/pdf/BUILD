@@ -14,7 +14,6 @@ hcp(
 hcp(
     name = "pdf_creator",
     deps = [
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_str_getter",
         "//code/tools/transcompilers/old_unilang/main:program_input",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
