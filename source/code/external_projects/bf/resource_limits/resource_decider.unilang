@@ -96,19 +96,49 @@
     ResourceLimits limits = getDefaultLimitations();
     
     setCpuLimits(limits,command,onlyMulticoreTests);
-    
-    try{
-    JSONParser parser = new JSONParser();
-    Map<String, String> newMap = (Map<String, String>)parser.parse(getStringPlatformValue(command, EXEC_PROPERTY_ENV_VARS, "{}"));
-    }catch(ParseException pe) {
-    }
-    
-    //Map<String, String> myMap = myJsonObject.toMap();
-    //setExtraEnvironmentVariables(limits
+    setEnvironmentVariables(limits,command,onlyMulticoreTests);
     
     return limits;
 
 􏶳
+􏴱test core setting􏴲􏴯regular􏴰
+􏲝test that cores can be set􏲞
+􏲛cores were not decided as expected􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("7"))
+    .addProperties(Platform.Property.newBuilder()
+    .setName("max-cores").setValue("14")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,false);
+    
+    //ASSERT
+    assertThat(limits.cpu.min).isEqualTo(7);
+    assertThat(limits.cpu.max).isEqualTo(14);
+􏴮
+􏴱test core setting skipped on nontest􏴲􏴯regular􏴰
+􏲝test that cores are skipped􏲞
+􏲛cores were not decided as expected􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("7"))
+    .addProperties(Platform.Property.newBuilder()
+    .setName("max-cores").setValue("14")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    
+    //ASSERT
+    assertThat(limits.cpu.min).isEqualTo(1);
+    assertThat(limits.cpu.max).isEqualTo(1);
+􏴮
 􏴱test default environment parse􏴲􏴯regular􏴰
 􏲝if the user does not pass extra environment variables via platform properties they appear empty􏲞
 􏲛the parsing crashed or did not provide an empty map􏲜
@@ -145,7 +175,7 @@
     //ARRANGE
     Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
     .setName("env-vars")
-    .setValue("{'foo': 'bar'")
+    .setValue("{\"foo\": \"bar\"}")
     )).build();
 
     //ACT
@@ -155,6 +185,68 @@
     assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(1);
     assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
     assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("bar");
+􏴮
+􏴱test double environment parse􏴲􏴯regular􏴰
+􏲝if the user passes an extra environment variable via platform properties they should be parsed into the map􏲞
+􏲛the parsing crashed or the map was not correctly populated􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("env-vars")
+    .setValue("{\"foo\": \"bar\", \"baz\": \"qux\"}")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(2);
+    assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("bar");
+    assertThat(limits.extraEnvironmentVariables.containsKey("baz")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("baz")).isEqualTo("qux");
+􏴮
+􏴱test malformed environment parse􏴲􏴯regular􏴰
+􏲝when a user passes malformed json to the extra environment variables, safely ignore it􏲞
+􏲛the parsing crashed or the map was not correctly populated􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("env-vars")
+    .setValue("{\"foo\": \"bar\", \"baz\": \"qux\"} xxxx")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(0);
+􏴮
+􏴱test environment mustache resolution􏴲􏴯regular􏴰
+􏲝test that environment variables can have their values resolved􏲞
+􏲛values were not resolved as expected􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("7"))
+    .addProperties(Platform.Property.newBuilder()
+    .setName("max-cores").setValue("14"))
+    
+    .addProperties(Platform.Property.newBuilder()
+    .setName("env-vars")
+    .setValue("{\"foo\": \"{{limits.cpu.min}}\", \"bar\": \"{{limits.cpu.max}}\"}")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,false);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(2);
+    assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("7");
+    assertThat(limits.extraEnvironmentVariables.containsKey("bar")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("bar")).isEqualTo("14");
 􏴮
 
 􏷐decide CPU limitations􏷏
@@ -174,6 +266,34 @@
         limits.cpu.min = 1;
         limits.cpu.max = 1;
     }
+􏶳
+
+􏷐decide extra environment variables􏷏
+􏶠given a default set of limitations, use the command and global configuration to adjust the extra environment variables􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒set environment variables􏷑
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to decide resource limitations􏶿
+􏶜􏶝􏷆bool􏷅􏷄only multicore tests􏷃􏷀only allow ttests to be multicore􏶿
+􏶴
+    
+    // parse any user given environment variables into a map
+    // if the json is malformed assume no environment variables were given
+    try {
+      JSONParser parser = new JSONParser();
+      limits.extraEnvironmentVariables =
+          (Map<String, String>)
+              parser.parse(getStringPlatformValue(command, EXEC_PROPERTY_ENV_VARS, "{}"));
+    } catch (ParseException pe) {
+    }
+    
+    // resolve any template values
+    limits.extraEnvironmentVariables.replaceAll((key, val) 
+                    -> {
+                    val = val.replace("{{limits.cpu.min}}",String.valueOf(limits.cpu.min));
+                    val = val.replace("{{limits.cpu.max}}",String.valueOf(limits.cpu.max));
+                    return val;}
+                    );
+    
 􏶳
 
 􏷐get default resource limits􏷏
