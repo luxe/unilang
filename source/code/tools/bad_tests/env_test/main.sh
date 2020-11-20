@@ -1,6 +1,6 @@
 #!/bin/bash
 env
-if [ "$TESTVAR" = "foobar" ]
+if [ "$MKL_NUM_THREADS" = "1" ]
 then
     exit 0;
 fi
