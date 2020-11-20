@@ -18,6 +18,61 @@
 􏷤􏷣􏷦build.bazel.remote.execution.v2.Command􏷥
 􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform.Property􏷥
 􏷤􏷣􏷦com.google.common.collect.Iterables􏷥
+􏷤􏷣􏷦java.util.Collections􏷥
+􏷤􏷣􏷦org.json.simple.parser.JSONParser􏷥
+􏷤􏷣􏷦org.json.simple.parser.ParseException􏷥
+􏲏􏲐􏲍com.google.common.collect.LinkedHashMultimap􏲎
+􏲏􏲐􏲍com.google.common.collect.Lists􏲎
+􏲏􏲐􏲍com.google.common.collect.SetMultimap􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍java.util.HashSet􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.Set􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableSet􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableSetMultimap􏲎
+􏲏􏲐􏲍java.util.stream.Collectors􏲎
+􏲏􏲐􏲍build.bazel.remote.execution.v2.Command􏲎
+􏲏􏲐􏲍build.bazel.remote.execution.v2.Platform􏲎
+􏲏􏲐􏲍build.bazel.remote.execution.v2.Platform.Property􏲎
+􏲏􏲐􏲍com.google.common.collect.Iterables􏲎
+􏲏􏲐􏲍java.util.Collections􏲎
+􏲏􏲐􏲍org.json.simple.parser.JSONParser􏲎
+􏲏􏲐􏲍org.json.simple.parser.ParseException􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+􏲏􏲐􏲍java.util.HashSet􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.Set􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableList􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
+􏲏􏲐􏲍com.google.common.collect.Maps􏲎
+􏲏􏲐􏲍com.google.common.collect.HashMultimap􏲎
+􏲏􏲐􏲍java.util.stream.Collectors􏲎
+􏲏􏲐􏲍com.google.common.collect.SetMultimap􏲎
+􏲏􏲐􏲍com.google.common.collect.Multimap􏲎
+􏲏􏲐􏲍build.buildfarm.worker.ResourceLimits􏲎
+􏲏􏲐􏲍build.buildfarm.worker.ResourceDecider􏲎
 
 􏶨the exec_property and platform property name for setting min cores􏶧
 􏶦this is decided between client and server􏶥
@@ -26,6 +81,10 @@
 􏶨the exec_property and platform property name for setting max cores􏶧
 􏶦this is decided between client and server􏶥
 􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property max cores􏶫􏶪"max-cores"􏶩
+
+􏶨the exec_property and platform property name for providing additional environment variables􏶧
+􏶦this is decided between client and server􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property env vars􏶫􏶪"env-vars"􏶩
 
 􏷐decide resource limitations for the given command􏷏
 􏶠platform properties from specified exec_properties are taken into account as well as global buildfarm configuration􏶡
@@ -38,9 +97,65 @@
     
     setCpuLimits(limits,command,onlyMulticoreTests);
     
+    try{
+    JSONParser parser = new JSONParser();
+    Map<String, String> newMap = (Map<String, String>)parser.parse(getStringPlatformValue(command, EXEC_PROPERTY_ENV_VARS, "{}"));
+    }catch(ParseException pe) {
+    }
+    
+    //Map<String, String> myMap = myJsonObject.toMap();
+    //setExtraEnvironmentVariables(limits
+    
     return limits;
 
 􏶳
+􏴱test default environment parse􏴲􏴯regular􏴰
+􏲝if the user does not pass extra environment variables via platform properties they appear empty􏲞
+􏲛the parsing crashed or did not provide an empty map􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().build();
+    
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.isEmpty()).isTrue();
+􏴮
+􏴱test empty environment parse􏴲􏴯regular􏴰
+􏲝if the user does not pass extra environment variables via platform properties they appear empty􏲞
+􏲛the parsing crashed or did not provide an empty map􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("env-vars")
+    .setValue("")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.isEmpty()).isTrue();
+􏴮
+􏴱test single environment parse􏴲􏴯regular􏴰
+􏲝if the user passes an extra environment variable via platform properties they should be parsed into the map􏲞
+􏲛the parsing crashed or the map was not correctly populated􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("env-vars")
+    .setValue("{'foo': 'bar'")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(1);
+    assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("bar");
+􏴮
 
 􏷐decide CPU limitations􏷏
 􏶠given a default set of limitations, use the command and global configuration to adjust CPU limitations􏶡
@@ -61,11 +176,6 @@
     }
 􏶳
 
-    if (!has platform property(command,EXEC_PROPERTY_MIN_CORES) && !has platform property(command,EXEC_PROPERTY_MAX_CORES)){
-        limits.cpu.limit = false;
-        return;
-    }
-
 􏷐get default resource limits􏷏
 􏶠get the default resource limits before adjusting based on action's exec_properties global configuration􏶡
 􏷘-s􏷗􏴅Observer􏴆􏷒get default limitations􏷑
@@ -74,31 +184,24 @@
     // These can be moved to configuration in the future
     ResourceLimits limits = new ResourceLimits();
     
-    //supported
+    // we usually prefer to isolate operations through some kind of visualization (cgroups)
+    // and then limit their execution to a single core.  When necessary, user's request more cores.
+    limits.cpu = new CpuLimits();
     limits.cpu.limit = true;
     limits.cpu.min = 1;
     limits.cpu.max = 1;
     
-    //not supported
-    limits.gpu.limit = false;
-    limits.gpu.min = 0;
-    limits.gpu.max = 0;
-    
-    //not supported
-    limits.mem.limit = false;
-    limits.mem.min_gb = 4;
-    limits.mem.max_gb = 32;
-    
-    //not supported
-    limits.disk.limit = false;
-    limits.disk.min_mb = 2 * 1024;
-    limits.disk.max_mb = 2 * 1024;
-    
-    //not supported
-    limits.network.restrict = false;
-    
-    //supported elsewhere
-    limits.time.timeout_s = 10 * 60;
+    // Sometimes a client needs to add extra environment variables to their execution.  
+    // If they are unable to set these in their code, and --action_env is not sufficient,
+    // they may choose to annotate extra environment variables this way.
+    // these environment variables can be templated, which allows them to reference
+    // other values related to their execution.
+    // for example, a client may want certain rules to set environment variables
+    // based on what buildfarm decides to limit the core count to.
+    // that could look like this:  
+    // "OMP_NUM_THREADS": "{limits.cpu.max}"
+    // "MKL_NUM_THREADS": "{limits.cpu.max}"
+    limits.extraEnvironmentVariables = Collections.emptyMap();
     
     return limits;
 􏶳
@@ -119,20 +222,21 @@ If the property name does not exist the default provided is returned􏶡
     }
     return defaultVal;
 􏶳
-
-􏷐whether the command has the platform property􏷏
-􏶠checks whether the command has the given platform property name􏶡
-􏷘-s􏷗􏴅Observer􏴆􏷒has platform property􏷑
+􏷐get a string value from a platform property􏷏
+􏶠Get the first value of the property name given
+If the property name does not exist the default provided is returned􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get string platform value􏷑
 􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to extract the platform value from􏶿
 􏶜􏶝􏷆String􏷅􏷄name􏷃􏷀the platform property name􏶿
-􏶾bool􏶽􏶼exists􏶻􏶺whether the platform name exists􏶹
+􏶜􏶝􏷆String􏷅􏷄default val􏷃􏷀the default value if the property name does not exist􏶿
+􏶾String􏶽􏶼platform value􏶻􏶺the decided platform value􏶹
 􏶴
     for (Property property : command.getPlatform().getPropertiesList()) {
         if (property.getName().equals(name)) {
-            return true;
+            return property.getValue();
         }
     }
-    return false;
+    return defaultVal;
 􏶳
 
 􏷐derive if command is a test run􏷏
