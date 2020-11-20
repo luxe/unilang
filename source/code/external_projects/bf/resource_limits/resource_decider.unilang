@@ -91,11 +91,12 @@
 􏷘+s􏷗􏴅Observer􏴆􏷒decide resource limitations􏷑
 􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to decide resource limitations for􏶿
 􏶜􏶝􏷆bool􏷅􏷄only multicore tests􏷃􏷀only allow ttests to be multicore􏶿
+􏶜􏶝􏷆i􏷅􏷄execute stage width􏷃􏷀the maximum amount of cores available for the operation􏶿
 􏶾ResourceLimits􏶽􏶼resource limits􏶻􏶺default resource limits􏶹
 􏶴
     ResourceLimits limits = getDefaultLimitations();
     
-    setCpuLimits(limits,command,onlyMulticoreTests);
+    setCpuLimits(limits,command,onlyMulticoreTests,executeStageWidth);
     setEnvironmentVariables(limits,command,onlyMulticoreTests);
     
     return limits;
@@ -114,7 +115,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,false);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,false,100);
     
     //ASSERT
     assertThat(limits.cpu.min).isEqualTo(7);
@@ -133,7 +134,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
     
     //ASSERT
     assertThat(limits.cpu.min).isEqualTo(1);
@@ -147,7 +148,7 @@
     Command command = Command.newBuilder().build();
     
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
     
     //ASSERT
     assertThat(limits.extraEnvironmentVariables.isEmpty()).isTrue();
@@ -163,7 +164,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
     
     //ASSERT
     assertThat(limits.extraEnvironmentVariables.isEmpty()).isTrue();
@@ -179,7 +180,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
     
     //ASSERT
     assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(1);
@@ -197,7 +198,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
     
     //ASSERT
     assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(2);
@@ -217,7 +218,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
     
     //ASSERT
     assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(0);
@@ -239,7 +240,7 @@
     )).build();
 
     //ACT
-    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,false);
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,false,100);
     
     //ASSERT
     assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(2);
@@ -255,6 +256,7 @@
 􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
 􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to decide resource limitations􏶿
 􏶜􏶝􏷆bool􏷅􏷄only multicore tests􏷃􏷀only allow ttests to be multicore􏶿
+􏶜􏶝􏷆i􏷅􏷄execute stage width􏷃􏷀the maximum amount of cores available for the operation􏶿
 􏶴
     
     // apply cpu limits specified on command
@@ -266,6 +268,9 @@
         limits.cpu.min = 1;
         limits.cpu.max = 1;
     }
+    
+    // claim core amount according to execute stage width
+    limits.cpu.claimed =Math.min(limits.cpu.min, executeStageWidth);
 􏶳
 
 􏷐decide extra environment variables􏷏
@@ -291,6 +296,7 @@
                     -> {
                     val = val.replace("{{limits.cpu.min}}",String.valueOf(limits.cpu.min));
                     val = val.replace("{{limits.cpu.max}}",String.valueOf(limits.cpu.max));
+                    val = val.replace("{{limits.cpu.claimed}}",String.valueOf(limits.cpu.claimed));
                     return val;}
                     );
     
@@ -310,6 +316,7 @@
     limits.cpu.limit = true;
     limits.cpu.min = 1;
     limits.cpu.max = 1;
+    limits.cpu.claimed = 1;
     
     // Sometimes a client needs to add extra environment variables to their execution.  
     // If they are unable to set these in their code, and --action_env is not sufficient,
