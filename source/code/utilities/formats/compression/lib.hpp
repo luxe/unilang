@@ -2,8 +2,13 @@
 #include <string>
 #include <vector>
 #include "code/utilities/filesystem/files/temp/existing_temp_file.hpp"
-#include "code/utilities/filesystem/files/paths/lib.hpp"
+#include "code/utilities/filesystem/files/moving/lib.hpp"
+#include "code/utilities/filesystem/files/creating/lib.hpp"
+#include "code/utilities/filesystem/files/getting/lib.hpp"
 #include "code/utilities/random/files/random_files.hpp"
+#include "code/utilities/types/strings/observers/path/lib.hpp"
+#include "code/utilities/filesystem/paths/lib.hpp"
+#include "code/utilities/filesystem/files/getting/lib.hpp"
 
 bool Make_Tar_GZ_File(std::string const& directory_name);
 bool Make_TGZ_File(std::string const& directory_name);
@@ -21,7 +26,7 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     std::cout << base_name << std::endl;
     
     //create a scope-lived /tmp/xxx
-    auto tmp = Random_Tmp_Directory();
+    auto tmp = Random_Files::Random_Tmp_Directory();
     Create_Path_If_It_Doesnt_Already_Exist(tmp);
     Existing_Temp_File x(tmp,true);
     std::cout << tmp << std::endl;
@@ -34,7 +39,7 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     fun(tmp);
     
     //where to re-create the zip
-    auto tmp2 = Random_Tmp_Directory();
+    auto tmp2 = Random_Files::Random_Tmp_Directory();
     Create_Path_If_It_Doesnt_Already_Exist(tmp2);
     Existing_Temp_File x2(tmp2,true);
     std::cout << tmp2 << std::endl;

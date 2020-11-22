@@ -14,5 +14,6 @@ cpp_main(
 hcp(
     name = "arch_pruner",
     deps = [
+        "//code/utilities/formats/compression:lib",
     ],
 )
