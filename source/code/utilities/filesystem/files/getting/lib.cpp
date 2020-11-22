@@ -607,6 +607,9 @@ std::vector<std::string> Recursively_Get_All_Paths_To_cpp_Files_Of_Path(std::str
  std::vector<std::string> Recursively_Get_All_Paths_To_Deb_Files_Of_Path(std::string const& path){
     return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("deb",path);
  }
+ std::vector<std::string> Recursively_Get_All_Paths_To_Static_Libraries_Of_Path(std::string const& path){
+    return Recursively_Get_All_Paths_To_Files_Of_Given_File_Extension_From_Path("a",path);
+ }
 std::vector<std::string> Recursively_Get_All_Paths_To_Directories_Of_Given_Name_From_Path(std::string directory_name, std::string const& path){
   std::string str = exec("find " + path + " -type d -name " + directory_name + " 2>/dev/null;");
     auto vec = Put_Each_Line_Of_String_Into_A_Vector(str);
