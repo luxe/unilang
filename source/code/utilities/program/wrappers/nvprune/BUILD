@@ -4,7 +4,7 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 hcp(
-    name = "cuobjdump_finder",
+    name = "nvprune_finder",
     deps = [
         "//code/utilities/system:lib",
         "//code/utilities/filesystem/paths:lib",

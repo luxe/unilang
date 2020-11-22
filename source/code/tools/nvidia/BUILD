@@ -20,5 +20,7 @@ hcp(
         "//code/utilities/filesystem/files/observers:filename_size_printer",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/random/files:random_files",
+        "//code/utilities/formats/objects:cuda_arch_pruner",
     ],
 )

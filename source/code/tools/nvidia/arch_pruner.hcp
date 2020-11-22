@@ -8,6 +8,8 @@ class
 ❪"code/utilities/filesystem/files/observers/filename_size_printer"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
+❪"code/utilities/random/files/random_files"❫
+❪"code/utilities/formats/objects/cuda_arch_pruner"❫
 ⚯
 ⚞⚟
 
@@ -32,20 +34,23 @@ class
     auto symbol_counts = Cuda_Arch_Symbol_Counter::Count(file_name);
     for (auto const& it: symbol_counts){
         
-        auto removed_size = Test_Size_With_Arch_Removed(Take_Seconds(arch_counts),it.second);
-        std::cout << "    arch: " << it.second << " syms: " << it.first << " bytes: " << original_size - removed_size << std::endl;
+        auto removed_size = Test_Size_With_Arch_Removed(file_name, Take_Seconds(symbol_counts),it.second);
+        std::cout << "    arch: " << it.second << " cubins: " << it.first << " bytes: " << original_size - removed_size << std::endl;
     }
     std::cout << "  "; Filename_Size_Printer::Print(file_name);
 ❱
 
 
-◀private: static▶ int ☀Test_Size_With_Arch_Removed(std::vector<std::string> all_arch, std::string const& remove_arch)❰
+◀private: static▶ int ☀Test_Size_With_Arch_Removed(std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
 
-    auto archs = Take_Seconds(arch_counts);
     auto preserve_archs = Remove_Element(all_arch,remove_arch);
+    //auto preserve_archs = Remove_Element(preserve_archs,"sm_86");
     
     
-    int new_size = 0;
-    return new_size;
+    auto tmp_output = Random_Files::Random_Tmp_Filename() + ".a";
+    Cuda_Arch_Pruner::Prune(file_name,preserve_archs,tmp_output);
+    
+    
+    return std::filesystem::file_size(tmp_output);
 ❱
 
