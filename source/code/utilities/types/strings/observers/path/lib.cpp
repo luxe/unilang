@@ -39,6 +39,16 @@ std::string Get_File_Name(std::string const& str){
     
     return filename;
 }
+std::string Get_File_Name_Without_Extension(std::string const& str){
+    auto fname = Get_File_Name(str);
+    auto it = fname.rfind(".");
+    if (it !=  std::string::npos) {
+        fname.erase(it, fname.size());
+    }
+    return fname;
+    
+}
+
 std::string Get_First_Folder_Name(std::string const& str){
     std::string filename;
     for (auto const& it : str){
