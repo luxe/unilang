@@ -85,6 +85,23 @@ size_t Largest_Element_Size_Of_Pair_Second(std::vector<std::pair<T,int>> const& 
   return val;
 }
 
+template <typename T, typename U>
+std::vector<T> Take_Firsts(std::vector<std::pair<T,U>> const& v){
+  std::vector<T> x;
+  for (auto const& it: v){
+    x.emplace_back(it.first);
+  }
+  return x;
+}
+template <typename T, typename U>
+std::vector<U> Take_Seconds(std::vector<std::pair<T,U>> const& v){
+  std::vector<U> x;
+  for (auto const& it: v){
+    x.emplace_back(it.second);
+  }
+  return x;
+}
+
 
 template<typename T>
 size_t Get_Index_Of_Element(std::vector<T> const& v, T const& element){

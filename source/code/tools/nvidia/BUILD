@@ -18,5 +18,7 @@ hcp(
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/formats/objects:cuda_arch_symbol_counter",
         "//code/utilities/filesystem/files/observers:filename_size_printer",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
     ],
 )
