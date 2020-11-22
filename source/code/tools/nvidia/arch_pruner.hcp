@@ -5,28 +5,41 @@ class
 ❪"code/utilities/formats/compression/lib"❫
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/formats/objects/cuda_arch_symbol_counter"❫
+❪"code/utilities/filesystem/files/observers/filename_size_printer"❫
 ⚯
 ⚞⚟
 
 ◀public: static▶ void ☀Prune(std::string const& file_name)❰
 
     
-    std::cout << std::filesystem::file_size(file_name) << " bytes.\n";
+    Filename_Size_Printer::Print(file_name);
     Unzip_Do_Rezip_TGZ(file_name,[&](std::string const& unziped_area){
         auto objs = Recursively_Get_All_Paths_To_Static_Libraries_Of_Path(unziped_area);
         for (auto const& it: objs){
             Prune_Archs(unziped_area,it);
         }
     });
-    std::cout << std::filesystem::file_size(file_name) << " bytes.\n";
+    Filename_Size_Printer::Print(file_name);
     
 ❱
 
 ◀public: static▶ void ☀Prune_Archs(std::string const& unziped_area, std::string const& file_name)❰
     
-    std::cout << file_name << std::endl;
+    auto original_size = std::filesystem::file_size(file_name);
+    std::cout << "  "; Filename_Size_Printer::Print(file_name);
     auto symbol_counts = Cuda_Arch_Symbol_Counter::Count(file_name);
     for (auto const& it: symbol_counts){
-        std::cout << "\t" << it.first << " " it.second << std::endl;
+        
+        auto removed_size = Test_Size_With_Arch_Removed(symbol_counts,it.second);
+        std::cout << "    arch: " << it.second << " syms: " << it.first << " bytes: " << original_size - removed_size << std::endl;
     }
+    std::cout << "  "; Filename_Size_Printer::Print(file_name);
 ❱
+
+
+◀private: static▶ int ☀Test_Size_With_Arch_Removed(std::vector<std::pair<int,std::string>> const& arch_counts, std::string const& remove_arch)❰
+    int new_size = 0;
+    
+    return new_size;
+❱
+

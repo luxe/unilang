@@ -12,5 +12,8 @@ hcp(
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/program/wrappers/cuobjdump:cuobjdump_finder",
+        "//code/utilities/program/call:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
     ],
 )

@@ -17,5 +17,6 @@ hcp(
         "//code/utilities/formats/compression:lib",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/formats/objects:cuda_arch_symbol_counter",
+        "//code/utilities/filesystem/files/observers:filename_size_printer",
     ],
 )

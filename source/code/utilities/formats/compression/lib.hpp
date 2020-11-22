@@ -28,10 +28,10 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     auto tmp = Random_Files::Random_Tmp_Directory();
     Create_Path_If_It_Doesnt_Already_Exist(tmp);
     Existing_Temp_File x(tmp,false);
-    std::cout << tmp << std::endl;
+    //std::cout << tmp << std::endl;
     
     //extract the data into the tmp folder
-    std::cout << "extracting..." << std::endl;
+    //std::cout << "extracting..." << std::endl;
     Extract(filename,tmp);
     
     //do the user provided changes to content
@@ -44,7 +44,7 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     
     //rezip
     auto extracted_content = Get_Everything_At_Path(tmp);
-    std::cout << "taring..." << std::endl;
+    //std::cout << "taring..." << std::endl;
     Make_TGZ_File(tmp,extracted_content,tmp2 + "/" + base_name);
     
     

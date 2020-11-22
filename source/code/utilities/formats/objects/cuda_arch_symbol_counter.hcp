@@ -10,9 +10,12 @@ class
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
 ❪"code/utilities/program/wrappers/cuobjdump/cuobjdump_finder"❫
+❪"code/utilities/program/call/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
 ⚞⚟
 
-◀public: static▶ std::vector<std::parir<int,std::string>> ☀Count(std::string const& filename)❰
+◀public: static▶ std::vector<std::pair<int,std::string>> ☀Count(std::string const& filename)❰
     
     auto command = Get_Command(filename);
     auto command_results = Get_Each_Line_Of_Shell_Command(command);
@@ -28,11 +31,12 @@ class
     return command;
 ❱
 
-◀public: static▶ std::vector<std::parir<int,std::string>> ☀Parse_Command_Results(std::vector<std::string> const& command_results)❰
+◀public: static▶ std::vector<std::pair<int,std::string>> ☀Parse_Command_Results(std::vector<std::string> const& command_results)❰
 
-    std::vector<std::parir<int,std::string>> x;
-    for (auto const& line: command_results){
-        auto parsed = Default_Boost_Tokenize(line);
+    std::vector<std::pair<int,std::string>> x;
+    for (auto line: command_results){
+        trim(line);
+        auto parsed = Split_By_Spaces(line);
         x.emplace_back(as_signed(parsed[0]),parsed[1]);
     }
     return x;
