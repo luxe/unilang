@@ -23,12 +23,11 @@ template <typename Fun>
 void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     
     auto base_name = Get_File_Name_Without_Extension(filename);
-    std::cout << base_name << std::endl;
     
     //create a scope-lived /tmp/xxx
     auto tmp = Random_Files::Random_Tmp_Directory();
     Create_Path_If_It_Doesnt_Already_Exist(tmp);
-    Existing_Temp_File x(tmp,true);
+    Existing_Temp_File x(tmp,false);
     std::cout << tmp << std::endl;
     
     //extract the data into the tmp folder
@@ -41,8 +40,7 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     //where to re-create the zip
     auto tmp2 = Random_Files::Random_Tmp_Directory();
     Create_Path_If_It_Doesnt_Already_Exist(tmp2);
-    Existing_Temp_File x2(tmp2,true);
-    std::cout << tmp2 << std::endl;
+    Existing_Temp_File x2(tmp2,false);
     
     //rezip
     auto extracted_content = Get_Everything_At_Path(tmp);
