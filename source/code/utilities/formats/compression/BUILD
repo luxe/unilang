@@ -16,5 +16,6 @@ cc_library(
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/program/call/process_spawn:process_spawner",
     ],
 )

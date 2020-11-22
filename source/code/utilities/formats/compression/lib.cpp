@@ -1,28 +1,33 @@
 #include "code/utilities/formats/compression/lib.hpp"
 #include "code/utilities/program/call/lib.hpp"
 #include "code/utilities/types/strings/observers/columns/lib.hpp"
+#include "code/utilities/program/call/process_spawn/process_spawner.hpp"
 
-bool Make_Tar_GZ_File(std::string const& directory_name){
-  return Successful_Run_Of_Command("tar -zcvf " + directory_name + ".tar.gz " + directory_name);
+void Make_Tar_GZ_File(std::string const& directory_name){
+  auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -zcvf " + directory_name + ".tar.gz " + directory_name);
+  std::cout << results.stderr << std::endl;
 }
-bool Make_TGZ_File(std::string const& directory_name){
-  return Successful_Run_Of_Command("tar -zcvf " + directory_name + ".tgz " + directory_name);
+void Make_TGZ_File(std::string const& directory_name){
+  auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -zcvf " + directory_name + ".tgz " + directory_name);
+  std::cout << results.stderr << std::endl;
 }
-bool Make_TGZ_File(std::vector<std::string> const& files, std::string const& out_name){
+void Make_TGZ_File(std::vector<std::string> const& files, std::string const& out_name){
     
     std::string command = "tar -zcvf " + out_name + ".tgz ";
     for (auto const& file: files){
         command += file + " ";
     }
-  return Successful_Run_Of_Command(command);
+  auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+  std::cout << results.stderr << std::endl;
 }
   
-bool Make_Zip_File(std::string const& directory_name){
-  return Successful_Run_Of_Command("zip -r " + directory_name + ".zip " + directory_name);
+void Make_Zip_File(std::string const& directory_name){
+  auto results = Process_Spawner::Execute_And_Get_Back_Results("zip -r " + directory_name + ".zip " + directory_name);
 }
 
-bool Extract(std::string const& from, std::string const& into){
-    return Successful_Run_Of_Command("tar -xvzf " + from + " -C " + into);
+void Extract(std::string const& from, std::string const& into){
+    auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -xvzf " + from + " -C " + into);
+    std::cout << results.stderr << std::endl;
 }
 
 std::string Sha256sum_Of_Url_Artifact(std::string const& url)

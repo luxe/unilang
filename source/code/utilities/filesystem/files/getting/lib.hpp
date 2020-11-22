@@ -13,6 +13,8 @@ std::vector<std::string> Get_FIFO_Special_Files_Of_Path(std::string path = ".");
 std::vector<std::string> Get_Character_Special_Files_Of_Path(std::string path = ".");
 std::vector<std::string> Get_Block_Special_Files_Of_Path(std::string path = ".");
 
+std::vector<std::string> Get_Full_Paths_Of_Everything_At_Path(std::string path = ".");
+
 //getting files from a path based on file extension
 std::vector<std::string> Get_Everything_At_Path_With_The_File_Extension(std::string const& file_extension, std::string path = ".");
 std::vector<std::string> Get_Symbolic_Links_Of_Path_With_The_File_Extension(std::string const& file_extension, std::string path = ".");

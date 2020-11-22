@@ -64,6 +64,17 @@ std::vector<std::string> Get_Everything_At_Path(std::string path){
     
     return elements;
 }
+
+std::vector<std::string> Get_Full_Paths_Of_Everything_At_Path(std::string path){
+    auto get = Get_Everything_At_Path(path);
+    
+    std::vector<std::string> results;
+    for (auto const& it: get){
+        results.emplace_back(path + "/" + it);
+    }
+    return results;
+}
+
 std::vector<std::string> Get_Symbolic_Links_Of_Path(std::string path){
     std::vector<std::string> elements;
     struct dirent* entry;

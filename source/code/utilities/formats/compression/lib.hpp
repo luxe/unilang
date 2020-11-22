@@ -10,12 +10,12 @@
 #include "code/utilities/filesystem/paths/lib.hpp"
 #include "code/utilities/filesystem/files/getting/lib.hpp"
 
-bool Make_Tar_GZ_File(std::string const& directory_name);
-bool Make_TGZ_File(std::string const& directory_name);
-bool Make_TGZ_File(std::vector<std::string> const& files, std::string const& out_name);
-bool Make_Zip_File(std::string const& directory_name);
+void Make_Tar_GZ_File(std::string const& directory_name);
+void Make_TGZ_File(std::string const& directory_name);
+void Make_TGZ_File(std::vector<std::string> const& files, std::string const& out_name);
+void Make_Zip_File(std::string const& directory_name);
 
-bool Extract(std::string const& from, std::string const& into);
+void Extract(std::string const& from, std::string const& into);
 
 std::string Sha256sum_Of_Url_Artifact(std::string const& url);
 
@@ -45,12 +45,12 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     std::cout << tmp2 << std::endl;
     
     //rezip
-    auto extracted_content = Get_Everything_At_Path(tmp);
+    auto extracted_content = Get_Full_Paths_Of_Everything_At_Path(tmp);
     std::cout << "taring..." << std::endl;
     Make_TGZ_File(extracted_content,tmp2 + "/" + base_name);
     
     auto final_file = tmp2 + "/" + base_name + ".tgz";
     
     //rewrite
-    execute("mv -f " + final_file + " " + filename);
+    execute("mv -f " + final_file + " " + filename + "_v2");
 }
