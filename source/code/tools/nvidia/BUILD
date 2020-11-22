@@ -16,5 +16,6 @@ hcp(
     deps = [
         "//code/utilities/formats/compression:lib",
         "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/formats/objects:cuda_arch_symbol_counter",
     ],
 )

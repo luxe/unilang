@@ -8,11 +8,32 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/filesystem/files/creating/lib"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/program/wrappers/cuobjdump/cuobjdump_finder"❫
 ⚞⚟
 
 ◀public: static▶ std::vector<std::parir<int,std::string>> ☀Count(std::string const& filename)❰
-     
-    std::vector<std::parir<int,std::string>> x;
     
+    auto command = Get_Command(filename);
+    auto command_results = Get_Each_Line_Of_Shell_Command(command);
+    
+    return Parse_Command_Results(command_results);
+❱
+
+◀public: static▶ std::string ☀Get_Command(std::string const& filename)❰
+    std::string command;
+    command += Cuobjdump_Finder::Find_Binary();
+    command += " " + filename;
+    command += " -lelf | awk -F. '{print $3}' | grep \"sm_\" | sort | uniq -c";
+    return command;
+❱
+
+◀public: static▶ std::vector<std::parir<int,std::string>> ☀Parse_Command_Results(std::vector<std::string> const& command_results)❰
+
+    std::vector<std::parir<int,std::string>> x;
+    for (auto const& line: command_results){
+        auto parsed = Default_Boost_Tokenize(line);
+        x.emplace_back(as_signed(parsed[0]),parsed[1]);
+    }
     return x;
 ❱
