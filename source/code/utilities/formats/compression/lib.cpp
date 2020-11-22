@@ -4,19 +4,26 @@
 #include "code/utilities/program/call/process_spawn/process_spawner.hpp"
 
 void Make_Tar_GZ_File(std::string const& directory_name){
-  auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -zcvf " + directory_name + ".tar.gz " + directory_name);
+  
+  std::string command = "tar -zcvf " + directory_name + ".tar.gz " + directory_name;
+  std::cout << command << std::endl;
+  auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
   std::cout << results.stderr << std::endl;
 }
 void Make_TGZ_File(std::string const& directory_name){
+  
   auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -zcvf " + directory_name + ".tgz " + directory_name);
   std::cout << results.stderr << std::endl;
 }
-void Make_TGZ_File(std::vector<std::string> const& files, std::string const& out_name){
+void Make_TGZ_File(std::string const& location, std::vector<std::string> const& files, std::string const& out_name){
     
     std::string command = "tar -zcvf " + out_name + ".tgz ";
+    command += " -C " + location + " ";
     for (auto const& file: files){
         command += file + " ";
     }
+    
+  std::cout << command << std::endl;
   auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
   std::cout << results.stderr << std::endl;
 }
@@ -26,7 +33,9 @@ void Make_Zip_File(std::string const& directory_name){
 }
 
 void Extract(std::string const& from, std::string const& into){
-    auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -xvzf " + from + " -C " + into);
+    std::string command = "tar -xvzf " + from + " -C " + into;
+    std::cout << command << std::endl;
+    auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
     std::cout << results.stderr << std::endl;
 }
 

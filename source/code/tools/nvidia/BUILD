@@ -15,5 +15,6 @@ hcp(
     name = "arch_pruner",
     deps = [
         "//code/utilities/formats/compression:lib",
+        "//code/utilities/filesystem/files/getting:lib",
     ],
 )
