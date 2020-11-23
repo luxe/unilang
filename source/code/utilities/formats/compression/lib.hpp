@@ -31,8 +31,9 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     //std::cout << tmp << std::endl;
     
     //extract the data into the tmp folder
-    //std::cout << "extracting..." << std::endl;
+    std::cout << "extracting..." << std::endl;
     Extract(filename,tmp);
+    std::cout << "done extracting" << std::endl;
     
     //do the user provided changes to content
     fun(tmp);
