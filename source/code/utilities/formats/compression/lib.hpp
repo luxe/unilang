@@ -22,15 +22,11 @@ std::string Sha256sum_Of_Url_Artifact(std::string const& url);
 template <typename Fun>
 void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     
-    std::cout << "a" << std::endl;
     auto base_name = Get_File_Name_Without_Extension(filename);
-    std::cout << "b" << std::endl;
     
     //create a scope-lived /tmp/xxx
     auto tmp = Random_Files::Random_Tmp_Directory();
-    std::cout << "c" << std::endl;
     Create_Path_If_It_Doesnt_Already_Exist(tmp);
-    std::cout << "d" << std::endl;
     Existing_Temp_File x(tmp,false);
     //std::cout << tmp << std::endl;
     
