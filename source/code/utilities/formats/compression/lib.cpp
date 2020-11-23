@@ -34,7 +34,7 @@ void Make_Zip_File(std::string const& directory_name){
 
 void Extract(std::string const& from, std::string const& into){
     std::string command = "tar -xvzf " + from + " -C " + into;
-    //std::cout << command << std::endl;
+    std::cout << command << std::endl;
     auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
     std::cout << results.stderr << std::endl;
 }
