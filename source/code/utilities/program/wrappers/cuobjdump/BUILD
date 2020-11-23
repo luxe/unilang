@@ -8,5 +8,6 @@ hcp(
     deps = [
         "//code/utilities/system:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ],
 )
