@@ -3,5 +3,8 @@
 
 int main(int const argc, char** const argv){
     
-    Arch_Pruner::Prune(argv[1]);
+    
+    Arch_Prune_Settings settings;
+    
+    Arch_Pruner::Prune(settings);
 }
