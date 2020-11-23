@@ -52,3 +52,15 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     auto final_file = tmp2 + "/" + base_name + ".tgz";
     execute("cp -f " + final_file + " " + filename);
 }
+
+
+template <typename Fun>
+void Perform_Action_On_Each_Static_Library_In_TGZ(std::string const& filename, Fun fun){
+    
+    Unzip_Do_Rezip_TGZ(filename,[&](std::string const& unziped_area){
+        auto objs = Recursively_Get_All_Paths_To_Static_Libraries_Of_Path(unziped_area);
+        for (auto const& it: objs){
+            fun(unziped_area,it);
+        }
+    });
+}
