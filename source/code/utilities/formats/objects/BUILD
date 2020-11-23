@@ -4,6 +4,12 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 hcp(
+    name = "arch_prune_settings",
+    deps = [
+    ],
+)
+
+hcp(
     name = "cuda_arch_prune_analyzer",
     deps = [
         "//code/utilities/formats/compression:lib",
@@ -14,6 +20,8 @@ hcp(
         "//code/utilities/types/vectors/transformers:lib",
         "//code/utilities/random/files:random_files",
         "//code/utilities/formats/objects:cuda_arch_pruner",
+        "//code/utilities/formats/objects:arch_prune_settings",
+        "//code/utilities/types/general:lib",
     ],
 )
 

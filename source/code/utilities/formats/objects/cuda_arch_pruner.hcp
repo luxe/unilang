@@ -17,12 +17,24 @@ class
 ❪"code/utilities/program/call/process_spawn/process_spawner"❫
 ⚞⚟
 
-◀public: static▶ void ☀Prune(std::string const& filename, std::vector<std::string> const& keep_archs, std::string const& filename_out)❰
+◀public: static▶ void ☀Prune(std::string const& filename, std::vector<std::string> const& keep_archs, std::string filename_out)❰
+
+    //avoiding trying to overwrite the file directly
+    bool wants_to_overwrite = false;
+    if (filename == filename_out){
+        wants_to_overwrite = true;
+        filename_out = Random_Files::Random_Tmp_Filename() + ".a";
+    }
     
     auto command = Get_Command(filename,keep_archs,filename_out);
     std::cout << command << std::endl;
     auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
     std::cout << results.stderr << std::endl;
+    
+    //perform overwrite
+    if (wants_to_overwrite){
+        execute("mv -f " + filename_out + " " + filename);
+    }
 ❱
 
 ◀public: static▶ std::string ☀Get_Command(std::string const& filename, std::vector<std::string> const& keep_archs, std::string const& filename_out)❰

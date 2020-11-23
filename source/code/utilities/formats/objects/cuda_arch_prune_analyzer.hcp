@@ -10,6 +10,8 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/random/files/random_files"❫
 ❪"code/utilities/formats/objects/cuda_arch_pruner"❫
+❪"code/utilities/formats/objects/arch_prune_settings"❫
+❪"code/utilities/types/general/lib"❫
 ⚯
 ⚞⚟
 
@@ -28,18 +30,18 @@ class
 
 ◀private: static▶ std::string ☀Size_Contribution_Message(Arch_Prune_Settings const& settings, std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
 
-    if (Exists_In_Vector(settings.skip_archs,remove_arch)){
+    if (Contains(settings.skip_archs,remove_arch)){
         return "skipped";
     }
 
     auto original_size = std::filesystem::file_size(file_name);
     
-    auto removed_size = Test_Size_With_Arch_Removed(file_name, all_arch,remove_arch);
+    auto removed_size = Test_Size_With_Arch_Removed(settings, file_name, all_arch,remove_arch);
     auto difference = original_size - removed_size;
     return std::to_string(difference);
 ❱
 
-◀private: static▶ int ☀Test_Size_With_Arch_Removed(std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
+◀private: static▶ int ☀Test_Size_With_Arch_Removed(Arch_Prune_Settings const& settings, std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
 
     auto preserve_archs = Remove_Element(all_arch,remove_arch);
     

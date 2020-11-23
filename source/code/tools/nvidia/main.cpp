@@ -1,6 +1,6 @@
 #include <iostream>
 #include "code/tools/nvidia/arch_pruner.hpp"
-#include "code/tools/nvidia/arch_prune_settings.hpp"
+#include "code/utilities/formats/objects/arch_prune_settings.hpp"
 #include "code/tools/nvidia/program_options/program_options.hpp"
 
 int main(int const argc, char** const argv){

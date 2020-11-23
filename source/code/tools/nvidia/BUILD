@@ -8,14 +8,8 @@ cpp_main(
     name = "main",
     deps = [
         "//code/tools/nvidia:arch_pruner",
-        "//code/tools/nvidia:arch_prune_settings",
+        "//code/utilities/formats/objects:arch_prune_settings",
         "//code/tools/nvidia/program_options:lib",
-    ],
-)
-
-hcp(
-    name = "arch_prune_settings",
-    deps = [
     ],
 )
 
