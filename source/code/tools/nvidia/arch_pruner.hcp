@@ -29,22 +29,33 @@ class
 
 ◀public: static▶ void ☀Prune_Archs(std::string const& unziped_area, std::string const& file_name)❰
     
-    auto original_size = std::filesystem::file_size(file_name);
     std::cout << "  "; Filename_Size_Printer::Print(file_name);
     auto symbol_counts = Cuda_Arch_Symbol_Counter::Count(file_name);
     for (auto const& it: symbol_counts){
         
-        auto removed_size = Test_Size_With_Arch_Removed(file_name, Take_Seconds(symbol_counts),it.second);
-        std::cout << "    arch: " << it.second << " cubins: " << it.first << " bytes: " << original_size - removed_size << std::endl;
+        auto size_message = Size_Contribution_Message(file_name, Take_Seconds(symbol_counts),it.second);
+        std::cout << "    arch: " << it.second << " cubins: " << it.first << " bytes: " << size_message << std::endl;
     }
     std::cout << "  "; Filename_Size_Printer::Print(file_name);
 ❱
 
 
+
+
+
+◀private: static▶ std::string ☀Size_Contribution_Message(std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
+
+    auto original_size = std::filesystem::file_size(file_name);
+    
+    auto removed_size = Test_Size_With_Arch_Removed(file_name, all_arch,remove_arch);
+    auto difference = original_size - removed_size;
+    return std::to_string(difference);
+❱
+
 ◀private: static▶ int ☀Test_Size_With_Arch_Removed(std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
 
     auto preserve_archs = Remove_Element(all_arch,remove_arch);
-    preserve_archs = Remove_Element(preserve_archs,"sm_86");
+    preserve_archs = Remove_Element(preserve_archs,std::string("sm_86")); //nvprune segfaults
     
     
     auto tmp_output = Random_Files::Random_Tmp_Filename() + ".a";
