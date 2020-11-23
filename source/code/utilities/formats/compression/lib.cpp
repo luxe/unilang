@@ -27,8 +27,9 @@ void Make_TGZ_File(std::string const& location, std::vector<std::string> const& 
     }
     
   //std::cout << command << std::endl;
-  auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
-  std::cout << results.stderr << std::endl;
+  // auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+  // std::cout << results.stderr << std::endl;
+    execute(command);
 }
   
 void Make_Zip_File(std::string const& directory_name){
