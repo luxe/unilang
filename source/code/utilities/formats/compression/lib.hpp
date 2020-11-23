@@ -45,7 +45,7 @@ void Unzip_Do_Rezip_TGZ(std::string const& filename, Fun fun){
     
     //rezip
     auto extracted_content = Get_Everything_At_Path(tmp);
-    //std::cout << "taring..." << std::endl;
+    std::cout << "taring..." << std::endl;
     Make_TGZ_File(tmp,extracted_content,tmp2 + "/" + base_name);
     
     

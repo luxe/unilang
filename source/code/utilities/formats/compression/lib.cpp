@@ -7,13 +7,16 @@ void Make_Tar_GZ_File(std::string const& directory_name){
   
   std::string command = "tar -zcvf " + directory_name + ".tar.gz " + directory_name;
   //std::cout << command << std::endl;
-  auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
-  std::cout << results.stderr << std::endl;
+  // auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+  // std::cout << results.stderr << std::endl;
+  execute(command);
 }
 void Make_TGZ_File(std::string const& directory_name){
   
-  auto results = Process_Spawner::Execute_And_Get_Back_Results("tar -zcvf " + directory_name + ".tgz " + directory_name);
-  std::cout << results.stderr << std::endl;
+  std::string command = "tar -zcvf " + directory_name + ".tgz " + directory_name;
+  // auto results = Process_Spawner::Execute_And_Get_Back_Results(command);
+  // std::cout << results.stderr << std::endl;
+  execute(command);
 }
 void Make_TGZ_File(std::string const& location, std::vector<std::string> const& files, std::string const& out_name){
     
