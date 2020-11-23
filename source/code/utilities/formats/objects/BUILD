@@ -4,6 +4,20 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 hcp(
+    name = "cuda_arch_prune_analyzer",
+    deps = [
+        "//code/utilities/formats/compression:lib",
+        "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/formats/objects:cuda_arch_symbol_counter",
+        "//code/utilities/filesystem/files/observers:filename_size_printer",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/random/files:random_files",
+        "//code/utilities/formats/objects:cuda_arch_pruner",
+    ],
+)
+
+hcp(
     name = "cuda_arch_symbol_counter",
     deps = [
         "//code/utilities/types/vectors/creators:lib",

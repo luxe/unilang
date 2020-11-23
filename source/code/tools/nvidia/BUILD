@@ -8,8 +8,17 @@ cpp_main(
     name = "main",
     deps = [
         "//code/tools/nvidia:arch_pruner",
+        "//code/tools/nvidia:arch_prune_settings",
+        "//code/tools/nvidia/program_options:lib",
     ],
 )
+
+hcp(
+    name = "arch_prune_settings",
+    deps = [
+    ],
+)
+
 
 hcp(
     name = "arch_pruner",
@@ -22,5 +31,6 @@ hcp(
         "//code/utilities/types/vectors/transformers:lib",
         "//code/utilities/random/files:random_files",
         "//code/utilities/formats/objects:cuda_arch_pruner",
+        "//code/utilities/formats/objects:cuda_arch_prune_analyzer",
     ],
 )

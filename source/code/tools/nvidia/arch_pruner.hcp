@@ -10,6 +10,7 @@ class
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/random/files/random_files"❫
 ❪"code/utilities/formats/objects/cuda_arch_pruner"❫
+❪"code/utilities/formats/objects/cuda_arch_prune_analyzer"❫
 ⚯
 ⚞⚟
 
@@ -20,55 +21,10 @@ class
     Unzip_Do_Rezip_TGZ(settings.file_name,[&](std::string const& unziped_area){
         auto objs = Recursively_Get_All_Paths_To_Static_Libraries_Of_Path(unziped_area);
         for (auto const& it: objs){
-            Prune_Archs(settings, unziped_area,it);
+            Cuda_Arch_Prune_Analyzer::Analyze_Via_Prunning(settings,unziped_area,it);
         }
     });
     Filename_Size_Printer::Print(settings.file_name);
     
-❱
-
-◀public: static▶ void ☀Prune_Archs(Arch_Prune_Settings const& settings, std::string const& unziped_area, std::string const& file_name)❰
-    
-    std::cout << "  "; Filename_Size_Printer::Print(file_name);
-    auto symbol_counts = Cuda_Arch_Symbol_Counter::Count(file_name);
-    for (auto const& it: symbol_counts){
-        
-        auto size_message = Size_Contribution_Message(settings, file_name, Take_Seconds(symbol_counts),it.second);
-        std::cout << "    arch: " << it.second << " cubins: " << it.first << " bytes: " << size_message << std::endl;
-    }
-    std::cout << "  "; Filename_Size_Printer::Print(file_name);
-❱
-
-
-
-
-
-◀private: static▶ std::string ☀Size_Contribution_Message(Arch_Prune_Settings const& settings, std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
-
-    if (Exists_In_Vector(settings.skip_archs,remove_arch)){
-        return "skipped";
-    }
-
-    auto original_size = std::filesystem::file_size(file_name);
-    
-    auto removed_size = Test_Size_With_Arch_Removed(file_name, all_arch,remove_arch);
-    auto difference = original_size - removed_size;
-    return std::to_string(difference);
-❱
-
-◀private: static▶ int ☀Test_Size_With_Arch_Removed(std::string const& file_name, std::vector<std::string> all_arch, std::string const& remove_arch)❰
-
-    auto preserve_archs = Remove_Element(all_arch,remove_arch);
-    
-    for (auto const& it: settings.skip_archs){
-        preserve_archs = Remove_Element(preserve_archs,it); //nvprune segfaults
-    }
-    
-    
-    auto tmp_output = Random_Files::Random_Tmp_Filename() + ".a";
-    Cuda_Arch_Pruner::Prune(file_name,preserve_archs,tmp_output); //allow overwriting the same file by using a tmp internally
-    
-    
-    return std::filesystem::file_size(tmp_output);
 ❱
 
