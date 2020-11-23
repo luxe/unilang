@@ -1,5 +1,5 @@
 #include <iostream>
-#include "code/tools/nvidia/arch_pruner.hpp"
+#include "code/utilities/formats/objects/tgz_cuda_arch_pruner.hpp"
 #include "code/utilities/formats/objects/arch_prune_settings.hpp"
 #include "code/tools/nvidia/program_options/program_options.hpp"
 
@@ -12,5 +12,5 @@ int main(int const argc, char** const argv){
     settings.keep_archs = program_options.Keep();
     settings.skip_archs = program_options.Skip();
     
-    Arch_Pruner::Prune(settings);
+    Tgz_Cuda_Arch_Pruner::Prune(settings);
 }

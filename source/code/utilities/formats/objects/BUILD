@@ -57,3 +57,18 @@ hcp(
         "//code/utilities/random/files:random_files",
     ],
 )
+
+hcp(
+    name = "tgz_cuda_arch_pruner",
+    deps = [
+        "//code/utilities/formats/compression:lib",
+        "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/formats/objects:cuda_arch_symbol_counter",
+        "//code/utilities/filesystem/files/observers:filename_size_printer",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/random/files:random_files",
+        "//code/utilities/formats/objects:cuda_arch_pruner",
+        "//code/utilities/formats/objects:cuda_arch_prune_analyzer",
+    ],
+)
