@@ -10,8 +10,8 @@ distributable_cpp_main(
     depends = [],
     description = "prune arch from static objects of .tgz files",
     deps = [
-        "//code/utilities/formats/objects:tgz_cuda_arch_pruner",
-        "//code/utilities/formats/objects:arch_prune_settings",
         "//code/tools/nvidia/program_options:lib",
+        "//code/utilities/formats/objects:arch_prune_settings",
+        "//code/utilities/formats/objects:tgz_cuda_arch_pruner",
     ],
 )

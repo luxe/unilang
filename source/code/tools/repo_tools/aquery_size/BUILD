@@ -8,10 +8,10 @@ hcp(
     name = "task_executer",
     deps = [
         "//code/tools/repo_tools/aquery_size/program_options:lib",
-        "//code/utilities/build/build_repo_establisher:build_repo_establisher",
+        "//code/utilities/build/build_repo_establisher",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/wrappers/bazel/query:bazel_aquery_runner",
-"//code/utilities/filesystem/paths:lib",
-"//code/utilities/filesystem/files/observers/lstat_wrap:lib",
     ],
 )
 

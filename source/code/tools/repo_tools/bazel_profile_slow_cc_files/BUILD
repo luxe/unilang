@@ -61,12 +61,12 @@ hcp(
         "//code/utilities/build/profile_parser/data:flat_owned_duration_file",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/formats/json/converters:type_to_json_string",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/path:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/web/honeycomb:honeycomb_poster",
-        "//code/utilities/formats/json/converters:type_to_json_string",
     ],
 )
 

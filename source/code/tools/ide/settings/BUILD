@@ -7,6 +7,7 @@ hcp(
     name = "ide_settings",
     deps = [
         "//code/tools/ide/global_actions:global_action",
+        "//code/tools/ide/settings:ide_elements",
         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
@@ -35,7 +36,6 @@ hcp(
         "//code/utilities/graphics/imgui/window:window_settings",
         "//code/utilities/graphics/sdl:sdl_init_settings",
         "//code/utilities/peripheral/pc:pc_input_state",
-        "//code/tools/ide/settings:ide_elements",
         "@boost//:asio",
     ],
 )
@@ -82,11 +82,10 @@ hcp(
 hcp(
     name = "ide_elements",
     deps = [
-        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-        "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
+        "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
+        "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
     ],
 )
-

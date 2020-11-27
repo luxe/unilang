@@ -6,8 +6,8 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "cuobjdump_finder",
     deps = [
-        "//code/utilities/system:lib",
-        "//code/utilities/filesystem/paths:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/system:lib",
     ],
 )

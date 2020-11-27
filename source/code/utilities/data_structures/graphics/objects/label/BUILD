@@ -14,13 +14,13 @@ hcp(
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/data_structures/graphics/objects/cursor/data:label_cursor_selection",
+        "//code/utilities/data_structures/graphics/objects/label:label_apply_events",
         "//code/utilities/data_structures/graphics/objects/label:label_dimension_getter",
         "//code/utilities/data_structures/graphics/objects/label:label_text_bitmap_getter",
         "//code/utilities/data_structures/graphics/objects/label/data:label_settings",
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
-        "//code/utilities/data_structures/graphics/objects/label:label_apply_events",
         "//code/utilities/data_structures/graphics/text:str_to_bdf_segments",
         "//code/utilities/data_structures/graphics/text:text_to_bitmap",
         "//code/utilities/fonts/bdf/character_maps",
@@ -78,12 +78,12 @@ hcp(
 hcp(
     name = "label_apply_events",
     deps = [
-        "//code/utilities/fonts/bdf/character_maps:character_maps",
+        "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
         "//code/utilities/data_structures/graphics/objects/label/data:positioned_label",
-        "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/data_structures/graphics/objects/label/style:label_style_chooser",
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
-        "//code/utilities/data_structures/graphics/objects/cursor:cursor_drawer",
+        "//code/utilities/fonts/bdf/character_maps",
+        "//code/utilities/peripheral/pc:pc_input_state",
     ],
 )
 

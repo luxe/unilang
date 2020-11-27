@@ -78,6 +78,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_click_finder",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:buttoned_faced_tree_is_mouse_over",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
         "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
@@ -93,7 +94,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:buttoned_faced_tree_is_mouse_over",
     ],
 )
 

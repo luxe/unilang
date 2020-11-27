@@ -16,8 +16,8 @@ cc_library(
     srcs = ["protobuf.cpp"],
     hdrs = ["protobuf.hpp"],
     deps = [
-        "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/json/converters:json_file_io",
+        "//code/utilities/formats/json/converters:lib",
         "@com_google_protobuf//:protobuf",
     ],
 )
