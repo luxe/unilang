@@ -12,6 +12,7 @@ hcp(
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/filesystem/files/observers/other:recursive_ldd_results_getter",
+        "//code/utilities/filesystem/files/observers/other:recursive_ldd_scan_printer",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/wrappers/bazel:bazel_runner",
         "//code/utilities/program/wrappers/bazel/query:bazel_aquery_runner",

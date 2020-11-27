@@ -10,6 +10,7 @@ class
 ❪"code/utilities/filesystem/files/getting/lib"❫
 ❪"code/utilities/program/wrappers/bazel/bazel_runner"❫
 ❪"code/utilities/filesystem/files/observers/other/recursive_ldd_results_getter"❫
+❪"code/utilities/filesystem/files/observers/other/recursive_ldd_scan_printer"❫
 ❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
@@ -44,22 +45,7 @@ class
         //current step
         std::cout << "[" << i+1 << "/" << external_dirs.size() << "] " << external_dirs[i] << std::endl;
         
-        //scanning
-        Report_Shared_Object_References_From_Dir(path_to_external_folder + "/" + external_dirs[i],options.Shared_Object());
+        //scan and print
+        Recursive_Ldd_Scan_Printer::Report_Shared_Object_References_From_Dir(external_dirs[i],options.Shared_Object());
     }
-❱
-
-◀private: static▶ void ☀Report_Shared_Object_References_From_Dir(std::string const& dir, std::string const& shared_object)❰
-
-        //scan
-        auto ldd_results = Recursive_Ldd_Results_Getter::Get_From_Dir(dir);
-        
-        //report
-        for (auto const& result: ldd_results){
-            for (auto const& entry: result.results.entries){
-                if (Contains_Substring(entry.so,shared_object)){
-                    std::cout << result.file << ": " << entry.so << std::endl;
-                }
-            }
-        }
 ❱
