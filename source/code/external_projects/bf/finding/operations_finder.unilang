@@ -40,6 +40,7 @@
 􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
 􏷤􏷣􏷦java.util.List􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦com.google.longrunning.Operation􏷥
 
 
 􏷐Finds operations based on search settings􏷏
@@ -52,16 +53,13 @@
     FindOperationsResults results = new FindOperationsResults();
     results.operations = new ArrayList<>();
     
-    //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
-    //This prevents us from using the cluster's SCAN to traverse all of the operations.  
-    //That's why we choose to scan each of the jedisNode's individually.
-    cluster.getClusterNodes().values().stream()
-        .forEach(
-            pool -> {
-              try (Jedis node = pool.getResource()) {
-                findOperationNode(cluster,node,settings,results);
-              }
-            });
+    //Get a Jedis node and run the query on it
+    Collection<JedisPool> pools = cluster.getClusterNodes().values();
+    if (!pools.isEmpty()){
+      try (Jedis node = ((JedisPool)pools.toArray()[0]).getResource()) {
+        findOperationNode(cluster, node, settings, results);
+      }
+    }
 
     return results;
 􏶳
@@ -114,6 +112,39 @@
 􏶜􏶝􏷆FindOperationsResults􏷅􏷄results􏷃􏷀accumulating results from finding operations􏶿
 􏶴
     for (String operationKey : operationKeys) {
+      Operation operation = OperationKeyToOperation(cluster,operationKey);
       results.operations.add(operationKey);
+    }
+􏶳
+
+
+􏷐convert an operation key into the actual Operation type􏷏
+􏶠extracts json from redis and parses it.  Null if json was invalid􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒operation key to operation􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆String􏷅􏷄operation key􏷃􏷀the key to lookup and get back the operation of􏶿
+􏶾Operation􏶽􏶼operation􏶻􏶺the looked up operation􏶹
+􏶴
+      String json = cluster.get(operationKey);
+      Operation = jsonToOperation(json);
+􏶳
+
+
+􏷐convert string json into operation type􏷏
+􏶠parses json and returns null if invalid􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒json to operation􏷑
+􏶜􏶝􏷆String􏷅􏷄json􏷃􏷀the json to convert to Operation type􏶿
+􏶾Operation􏶽􏶼operation􏶻􏶺the created operation􏶹
+􏶴
+    if (json == null) {
+      return null;
+    }
+    try {
+      Operation.Builder operationBuilder = Operation.newBuilder();
+      operationParser.merge(json, operationBuilder);
+      return operationBuilder.build();
+    } catch (InvalidProtocolBufferException e) {
+      logger.log(Level.SEVERE, "error parsing operation from " + json, e);
+      return null;
     }
 􏶳
