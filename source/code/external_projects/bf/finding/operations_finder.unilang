@@ -50,6 +50,56 @@
 􏶾FindOperationsResults􏶽􏶼results􏶻􏶺results from searching for operations􏶹
 􏶴
     FindOperationsResults results = new FindOperationsResults();
+    
+    //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
+    //This prevents us from using the cluster's SCAN to traverse all of the CAS.  
+    //That's why we choose to scan each of the jedisNode's individually.
+    cluster.getClusterNodes().values().stream()
+        .forEach(
+            pool -> {
+              try (Jedis node = pool.getResource()) {
+                findOperationNode(cluster,node,settings,results);
+              }
+            });
 
     return results;
+􏶳
+
+􏷐Scan all operation entires on existing Jedis node and keep ones that meet query requirements􏷏
+􏶠Results are accumulated onto􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒find operation node􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀a node of the cluster􏶿
+􏶜􏶝􏷆FindOperationsSettings􏷅􏷄settings􏷃􏷀settings on what operations to find and keep􏶿
+􏶜􏶝􏷆FindOperationsResults􏷅􏷄results􏷃􏷀accumulating results from performing a search􏶿
+􏶴
+    // iterate over all operation entries via scanning
+    String cursor = "0";
+    do {
+      List<String> casKeys = scanOperations(node,cursor,settings);
+      //removeWorkerFromCasKeys(cluster, casKeys, settings.hostName, results);
+      
+    } while (!cursor.equals("0"));
+􏶳
+
+􏷐scan the operations list to obtain operation keys􏷏
+􏶠scanning is done incrementally via a cursor􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒scan operations􏷑
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀a node of the cluster􏶿
+􏶜􏶝􏷆String􏷅􏷄cursor􏷃􏷀scan cursor􏶿
+􏶜􏶝􏷆FindOperationsSettings􏷅􏷄settings􏷃􏷀settings on how to traverse the Operations􏶿
+􏶾List<String>􏶽􏶼operation keys􏶻􏶺resulting operation keys from scanning􏶹
+􏶴
+    // construct query
+    ScanParams params = new ScanParams();
+    params.match(settings.operationQuery);
+    params.count(settings.scanAmount);
+    
+    // perform scan iteration
+    ScanResult scanResult = node.scan(cursor, params);
+    if (scanResult != null) {
+        cursor = scanResult.getCursor();
+        return scanResult.getResult();
+    }
+    return new ArrayList<>();
 􏶳
