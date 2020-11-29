@@ -50,9 +50,10 @@
 􏶾FindOperationsResults􏶽􏶼results􏶻􏶺results from searching for operations􏶹
 􏶴
     FindOperationsResults results = new FindOperationsResults();
+    results.operations = new ArrayList<>();
     
     //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
-    //This prevents us from using the cluster's SCAN to traverse all of the CAS.  
+    //This prevents us from using the cluster's SCAN to traverse all of the operations.  
     //That's why we choose to scan each of the jedisNode's individually.
     cluster.getClusterNodes().values().stream()
         .forEach(
@@ -76,8 +77,8 @@
     // iterate over all operation entries via scanning
     String cursor = "0";
     do {
-      List<String> casKeys = scanOperations(node,cursor,settings);
-      //removeWorkerFromCasKeys(cluster, casKeys, settings.hostName, results);
+      List<String> operationKeys = scanOperations(node,cursor,settings);
+      collectOperations(cluster, operationKeys, settings.user, results);
       
     } while (!cursor.equals("0"));
 􏶳
@@ -102,4 +103,17 @@
         return scanResult.getResult();
     }
     return new ArrayList<>();
+􏶳
+
+􏷐collect operations based on settings􏷏
+􏶠populates results􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒collect operations􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆List<String>􏷅􏷄operation keys􏷃􏷀keys to get operations from􏶿
+􏶜􏶝􏷆String􏷅􏷄user􏷃􏷀the user operations to search for􏶿
+􏶜􏶝􏷆FindOperationsResults􏷅􏷄results􏷃􏷀accumulating results from finding operations􏶿
+􏶴
+    for (String operationKey : operationKeys) {
+      results.operations.add(operationKey);
+    }
 􏶳
