@@ -42,6 +42,21 @@
 􏷤􏷣􏷦java.util.ArrayList􏷥
 􏷤􏷣􏷦com.google.longrunning.Operation􏷥
 
+􏷤􏷣􏷦java.util.Collection􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisPool􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦com.google.protobuf.util.JsonFormat􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.ExecutingOperationMetadata􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.QueuedOperationMetadata􏷥
+􏷤􏷣􏷦build.buildfarm.v1test.CompletedOperationMetadata􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.RequestMetadata􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecuteOperationMetadata􏷥
+􏷤􏷣􏷦com.google.protobuf.InvalidProtocolBufferException􏷥
+􏷤􏷣􏷦com.google.rpc.PreconditionFailure􏷥
+
 
 􏷐Finds operations based on search settings􏷏
 􏶠Operations can be found based on different search queries depending on the context a caller has or wants to filter on􏶡
@@ -112,7 +127,7 @@
 􏶜􏶝􏷆FindOperationsResults􏷅􏷄results􏷃􏷀accumulating results from finding operations􏶿
 􏶴
     for (String operationKey : operationKeys) {
-      Operation operation = OperationKeyToOperation(cluster,operationKey);
+      Operation operation = operationKeyToOperation(cluster,operationKey);
       results.operations.add(operationKey);
     }
 􏶳
@@ -126,7 +141,8 @@
 􏶾Operation􏶽􏶼operation􏶻􏶺the looked up operation􏶹
 􏶴
       String json = cluster.get(operationKey);
-      Operation = jsonToOperation(json);
+      Operation operation = jsonToOperation(json);
+      return operation;
 􏶳
 
 
@@ -136,6 +152,19 @@
 􏶜􏶝􏷆String􏷅􏷄json􏷃􏷀the json to convert to Operation type􏶿
 􏶾Operation􏶽􏶼operation􏶻􏶺the created operation􏶹
 􏶴
+  //create a json parser
+  JsonFormat.Parser operationParser =
+      JsonFormat.parser()
+          .usingTypeRegistry(
+              JsonFormat.TypeRegistry.newBuilder()
+                  .add(CompletedOperationMetadata.getDescriptor())
+                  .add(ExecutingOperationMetadata.getDescriptor())
+                  .add(ExecuteOperationMetadata.getDescriptor())
+                  .add(QueuedOperationMetadata.getDescriptor())
+                  .add(PreconditionFailure.getDescriptor())
+                  .build())
+          .ignoringUnknownFields();
+          
     if (json == null) {
       return null;
     }
@@ -144,7 +173,7 @@
       operationParser.merge(json, operationBuilder);
       return operationBuilder.build();
     } catch (InvalidProtocolBufferException e) {
-      logger.log(Level.SEVERE, "error parsing operation from " + json, e);
+      //logger.log(Level.SEVERE, "error parsing operation from " + json, e);
       return null;
     }
 􏶳
