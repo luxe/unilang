@@ -156,8 +156,10 @@
 􏶜􏶝􏷆FindOperationsResults􏷅􏷄results􏷃􏷀accumulating results from finding operations􏶿
 􏶴
     for (String operationKey : operationKeys) {
-      Operation operation = EnrichedOperationBuilder.build(cluster,instance,operationKey).operation;
-      results.operations.add(operationKey);
+      EnrichedOperation operation = EnrichedOperationBuilder.build(cluster,instance,operationKey);
+      if (keepOperation(operation)){
+        results.operations.add(operationKey);
+      }
     }
 􏶳
 
@@ -167,10 +169,18 @@
 􏶜􏶝􏷆EnrichedOperation􏷅􏷄operation􏷃􏷀the operation to analyze based on filter settings􏶿
 􏶾boolean􏶽􏶼should keep􏶻􏶺whether to keep the operation based on the filter settings􏶹
 􏶴
-    for (environmentVariable: operation.command.getEnvironmentVariables()){
-        System.out.println(environmentVariable.getName());
-        System.out.println(environmentVariable.getValue());
+    System.out.println("-------------------");
+    for (Command.EnvironmentVariable environmentVariable :
+        operation.command.getEnvironmentVariablesList()) {
+      System.out.println(environmentVariable.getName());
+      System.out.println(environmentVariable.getValue());
     }
+    System.out.println("--------ARGS:-----------");
+    for (String environmentVariable :
+        operation.command.getArgumentsList()) {
+      System.out.println(environmentVariable);
+    }
+    System.out.println("-------------------");
     return false;
 􏶳
 
