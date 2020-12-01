@@ -1,3 +1,3 @@
 #!/bin/bash
 env
-exit -1
+exit 0

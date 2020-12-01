@@ -101,13 +101,16 @@
     FindOperationsResults results = new FindOperationsResults();
     results.operations = new ArrayList<>();
     
-    //Get a Jedis node and run the query on it
-    Collection<JedisPool> pools = cluster.getClusterNodes().values();
-    if (!pools.isEmpty()){
-      try (Jedis node = ((JedisPool)pools.toArray()[0]).getResource()) {
-        findOperationNode(cluster, node, instance, settings, results);
-      }
-    }
+    //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
+    //This prevents us from using the cluster's SCAN to traverse all of the CAS.  
+    //That's why we choose to scan each of the jedisNode's individually.
+    cluster.getClusterNodes().values().stream()
+        .forEach(
+            pool -> {
+              try (Jedis node = pool.getResource()) {
+                findOperationNode(cluster, node, instance, settings, results);
+              }
+            });
 
     return results;
 􏶳
@@ -180,7 +183,12 @@
     System.out.println(json);
     
     //test the predicate
-    List<Map<String, Object>> matches =  JsonPath.parse(json).read(filterPredicate);
-    return !matches.isEmpty();
+    try {
+        List<Map<String, Object>> matches =  JsonPath.parse(json).read(filterPredicate);
+        return !matches.isEmpty();
+    }
+    catch (Exception e) {
+        return false;
+    }
 􏶳
 
