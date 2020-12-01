@@ -7,6 +7,7 @@
 􏷤􏷣􏷦io.grpc.Deadline􏷥
 􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
 􏷤􏷣􏷦java.util.Map􏷥
+􏷤􏷣􏷦java.util.HashMap􏷥
 􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
 􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecuteRequest􏷥
 􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecutionGrpc􏷥
@@ -99,7 +100,7 @@
 􏶾FindOperationsResults􏶽􏶼results􏶻􏶺results from searching for operations􏶹
 􏶴
     FindOperationsResults results = new FindOperationsResults();
-    results.operations = new ArrayList<>();
+    results.operations = new HashMap<String, EnrichedOperation>();
     
     //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
     //This prevents us from using the cluster's SCAN to traverse all of the CAS.  
@@ -166,15 +167,15 @@
 􏶴
     for (String operationKey : operationKeys) {
       EnrichedOperation operation = EnrichedOperationBuilder.build(cluster,instance,operationKey);
-      if (keepOperation(operation,filterPredicate)){
-        results.operations.add(operationKey);
+      if (shouldKeepOperation(operation,filterPredicate)){
+        results.operations.put(operationKey,operation);
       }
     }
 􏶳
 
 􏷐whether or not to keep operation based on filter settings􏷏
 􏶠true if the operation should be returned. false if it should be ignored􏶡
-􏷘-s􏷗􏴅Observers􏴆􏷒keep operation􏷑
+􏷘-s􏷗􏴅Observers􏴆􏷒should keep operation􏷑
 􏶜􏶝􏷆EnrichedOperation􏷅􏷄operation􏷃􏷀the operation to analyze based on filter settings􏶿
 􏶜􏶝􏷆String􏷅􏷄filter predicate􏷃􏷀the search query used to find particular operations􏶿
 􏶾boolean􏶽􏶼should keep􏶻􏶺whether to keep the operation based on the filter settings􏶹
