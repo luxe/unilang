@@ -6,8 +6,7 @@ But should the worker always blindly take what it pops off? And can they trust t
 
 There may be situations where the worker chooses to give operations back based on particular contexts not known to the scheduler.  
 For example, you might have a variety of workers with different amounts of cpu cores all sharing the same queue.
-The queue may accept N-core operations, because N-core workers exist in the pool,
-but there are additionally some lower core workers that would need to forfeit running the operation.
+The queue may accept N-core operations, because N-core workers exist in the pool, but there are additionally some lower core workers that would need to forfeit running the operation.
 All the reasons a worker may decide it can't take on the operation and should give it back are implemented here.
 The settings provided allow varying amount of leniency when evaluating the platform properties.􏷯
 􏷞build􏷝􏷞buildfarm􏷝􏷞worker􏷝
@@ -118,6 +117,60 @@ The settings provided allow varying amount of leniency when evaluating the platf
 􏷤􏷣􏷦build.buildfarm.v1test.QueueEntry􏷥
 􏷤􏷣􏷦com.google.common.collect.Iterables􏷥
 
+􏲏􏲐􏲍com.google.common.collect.LinkedHashMultimap􏲎
+􏲏􏲐􏲍com.google.common.collect.Lists􏲎
+􏲏􏲐􏲍com.google.common.collect.SetMultimap􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍java.util.HashSet􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.Set􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableSet􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableSetMultimap􏲎
+􏲏􏲐􏲍java.util.stream.Collectors􏲎
+􏲏􏲐􏲍build.bazel.remote.execution.v2.Command􏲎
+􏲏􏲐􏲍build.bazel.remote.execution.v2.Platform􏲎
+􏲏􏲐􏲍build.bazel.remote.execution.v2.Platform.Property􏲎
+􏲏􏲐􏲍com.google.common.collect.Iterables􏲎
+􏲏􏲐􏲍java.util.Collections􏲎
+􏲏􏲐􏲍org.json.simple.parser.JSONParser􏲎
+􏲏􏲐􏲍org.json.simple.parser.ParseException􏲎
+􏲏􏲐􏲍redis.clients.jedis.JedisCluster􏲎
+􏲏􏲐􏲍org.junit.Test􏲎
+􏲏􏲐􏲍java.util.List􏲎
+􏲏􏲐􏲍java.util.ArrayList􏲎
+􏲏􏲐􏲍org.junit.runner.RunWith􏲎
+􏲏􏲐􏲍org.junit.runners.JUnit4􏲎
+􏲏􏲐􏲍java.lang.Thread􏲎
+􏲏􏲐􏲍java.util.concurrent.TimeUnit􏲎
+􏲏􏲐􏲍java.lang.RuntimeException􏲎
+􏲏􏲐􏲍java.io.IOException􏲎
+􏲏􏲐􏲍java.util.function.Supplier􏲎
+􏲏􏲐􏲍org.mockito.Mock􏲎
+􏲏􏲐􏲍org.mockito.MockitoAnnotations􏲎
+􏲏􏲐􏲍java.util.Arrays􏲎
+􏲏i􏲐􏲍com.google.common.truth.Truth.assertThat􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.eq􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.mock􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.times􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.verify􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.when􏲎
+􏲏i􏲐􏲍org.mockito.Mockito.any􏲎
+􏲏􏲐􏲍java.util.HashSet􏲎
+􏲏􏲐􏲍java.util.Map􏲎
+􏲏􏲐􏲍java.util.Set􏲎
+􏲏􏲐􏲍com.google.common.collect.ImmutableList􏲎
+􏲏􏲐􏲍build.buildfarm.common.redis.ProvisionedRedisQueue􏲎
+􏲏􏲐􏲍com.google.common.collect.Maps􏲎
+􏲏􏲐􏲍com.google.common.collect.HashMultimap􏲎
+􏲏􏲐􏲍java.util.stream.Collectors􏲎
+􏲏􏲐􏲍com.google.common.collect.SetMultimap􏲎
+􏲏􏲐􏲍com.google.common.collect.Multimap􏲎
+􏲏􏲐􏲍build.buildfarm.worker.ResourceLimits􏲎
+􏲏􏲐􏲍build.buildfarm.worker.ResourceDecider􏲎
+􏲏􏲐􏲍build.buildfarm.v1test.QueueEntry􏲎
+
 􏶨the exec_property and platform property name for setting min cores􏶧
 􏶦this is decided between client and server􏶥
 􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property min cores􏶫􏶪"min-cores"􏶩
@@ -147,6 +200,199 @@ The settings provided allow varying amount of leniency when evaluating the platf
   
   return shouldKeepViaPlatform(matchSettings,workerProvisions,queueEntry.getPlatform());
 􏶳
+􏴱keep null queue entry􏴲􏴯regular􏴰
+􏲝null queue entries should be kept􏲞
+􏲛this decision has changed􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    QueueEntry entry = null;
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    assertThat(shouldKeep).isTrue();
+􏴮
+􏴱keep empty queue entry􏴲􏴯regular􏴰
+􏲝empty plaform queue entries should be kept􏲞
+􏲛properties are being evaluated differently now􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    assertThat(shouldKeep).isTrue();
+􏴮
+􏴱valid min cores queue entry􏴲􏴯regular􏴰
+􏲝the entry should be kept because the min cores are valid for the worker properties􏲞
+􏲛either the property names changed or we evaluate these properties differently􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    workerProvisions.put("cores","11");
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("10"))).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    //the worker accepts because it has more cores than the min-cores requested
+    assertThat(shouldKeep).isTrue();
+􏴮
+
+􏴱valid equal min cores queue entry􏴲􏴯regular􏴰
+􏲝the entry should be kept because the min cores are valid for the worker properties􏲞
+􏲛either the property names changed or we evaluate these properties differently􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    workerProvisions.put("cores","10");
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("10"))).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    //the worker accepts because it has the same cores as the min-cores requested
+    assertThat(shouldKeep).isTrue();
+􏴮
+
+􏴱invalid min cores queue entry􏴲􏴯regular􏴰
+􏲝the entry should not be kept because the min cores are invalid for the worker properties􏲞
+􏲛either the property names changed or we evaluate these properties differently􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    workerProvisions.put("cores","10");
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("11"))).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    //the worker rejects because it has less cores than the min-cores requested
+    assertThat(shouldKeep).isFalse();
+􏴮
+
+􏴱max cores do not influence acceptance􏴲􏴯regular􏴰
+􏲝a higher max-core than what the worker has does not result in rejection􏲞
+􏲛either the property names changed or max-cores is evaluated differently􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    workerProvisions.put("cores","10");
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("10"))
+    .addProperties(Platform.Property.newBuilder()
+    .setName("max-cores").setValue("20"))
+    ).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    //the worker accepts because it has the same cores as the min-cores requested
+    assertThat(shouldKeep).isTrue();
+􏴮
+
+􏴱unmatched properties cause rejection􏴲􏴯regular􏴰
+􏲝the worker should reject a property if it is not provided in the worker platform􏲞
+􏲛ensuring exact property matches is not behaving correctly by default􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("foo-key").setValue("foo-value"))
+    ).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    assertThat(shouldKeep).isFalse();
+􏴮
+
+􏴱unmatched properties force acceptance􏴲􏴯regular􏴰
+􏲝the worker usually rejects a property if it is not provided in the worker platform, but we can choose to accept all entries regardless􏲞
+􏲛this overwriting decision is not being respected􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    settings.acceptEverything = true;
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("foo-key").setValue("foo-value"))
+    ).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    assertThat(shouldKeep).isTrue();
+􏴮
+
+􏴱unmatched properties allow unmatched􏴲􏴯regular􏴰
+􏲝the worker usually rejects a property if it is not provided in the worker platform, but we can choose to allow unmatched properties􏲞
+􏲛this matching decision is not being respected􏲜
+􏴭
+    //ARRANGE
+    DequeueMatchSettings settings = new DequeueMatchSettings();
+    settings.allowUnmatched = true;
+    
+    SetMultimap<String, String> workerProvisions = HashMultimap.create();
+    
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("foo-key").setValue("foo-value"))
+    ).build();
+    
+    //ACT
+    boolean shouldKeep = DequeueMatchEvaluator.shouldKeepOperation(settings,workerProvisions,entry);
+    
+    //ASSERT
+    assertThat(shouldKeep).isTrue();
+􏴮
+
+
+    QueueEntry entry = QueueEntry.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("min-cores").setValue("7"))
+    .addProperties(Platform.Property.newBuilder()
+    .setName("max-cores").setValue("14")
+    )).build();
 
 􏷐Decide whether the worker should keep the operation or put it back on the queue􏷏
 􏶠Compares the platform properties of the worker to the operation's platform properties􏶡
