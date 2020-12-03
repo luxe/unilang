@@ -86,6 +86,10 @@
 􏶦this is decided between client and server􏶥
 􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property env vars􏶫􏶪"env-vars"􏶩
 
+􏶨the exec_property and platform property prefix name for providing an additional environment variable􏶧
+􏶦this is decided between client and server􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property env var􏶫􏶪"env-var:"􏶩
+
 􏷐decide resource limitations for the given command􏷏
 􏶠platform properties from specified exec_properties are taken into account as well as global buildfarm configuration􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒decide resource limitations􏷑
@@ -249,6 +253,64 @@
     assertThat(limits.extraEnvironmentVariables.containsKey("bar")).isTrue();
     assertThat(limits.extraEnvironmentVariables.get("bar")).isEqualTo("14");
 􏴮
+􏴱test individual environment var parse􏴲􏴯regular􏴰
+􏲝if the user passes an extra individual environment variable via platform properties they should be parsed into the map􏲞
+􏲛the parsing was not done correctly and the variable was somehow ignored􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("env-var:foo")
+    .setValue("bar")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(1);
+    assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("bar");
+􏴮
+􏴱test two individual environment var parse􏴲􏴯regular􏴰
+􏲝if the user passes two extra individual environment variable via platform properties they should be parsed into the map􏲞
+􏲛the parsing was not done correctly and the variables were ignored for some reason􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder()
+    .addProperties(Platform.Property.newBuilder()
+    .setName("env-var:foo").setValue("bar"))
+    .addProperties(Platform.Property.newBuilder()
+    .setName("env-var:baz").setValue("qux")))
+    .build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(2);
+    assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("bar");
+    assertThat(limits.extraEnvironmentVariables.containsKey("baz")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("baz")).isEqualTo("qux");
+􏴮
+􏴱test empty environment var parse􏴲􏴯regular􏴰
+􏲝if the user passes an extra individual environment var with no value, it should still be parsed into the map􏲞
+􏲛the parsing was not done correctly and the variable was ignored or the value contents are wrong􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("env-var:foo")
+    .setValue("")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
+    
+    //ASSERT
+    assertThat(limits.extraEnvironmentVariables.size()).isEqualTo(1);
+    assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
+    assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("");
+􏴮
 
 􏷐decide CPU limitations􏷏
 􏶠given a default set of limitations, use the command and global configuration to adjust CPU limitations􏶡
@@ -291,6 +353,8 @@
     } catch (ParseException pe) {
     }
     
+    addIndividualEnvVars(limits,command);
+    
     // resolve any template values
     limits.extraEnvironmentVariables.replaceAll((key, val) 
                     -> {
@@ -300,6 +364,23 @@
                     return val;}
                     );
     
+􏶳
+
+􏷐extend env variables that were individual passed􏷏
+􏶠these are discovered by identifying execution property key names􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒add individual env vars􏷑
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
+􏶜􏶝􏷆Command􏷅􏷄command􏷃􏷀the command to decide resource limitations􏶿
+􏶴
+    command.getPlatform().getPropertiesList().forEach((property)-> {
+        if (property.getName().startsWith(EXEC_PROPERTY_ENV_VAR)){
+            String keyValue[] = property.getName().split(":",2);
+            String key = keyValue[1];
+            String value = property.getValue();
+            limits.extraEnvironmentVariables.put(key,value);
+            
+        }
+    });
 􏶳
 
 􏷐get default resource limits􏷏
