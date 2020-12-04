@@ -90,6 +90,14 @@
 􏶦this is decided between client and server􏶥
 􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property env var􏶫􏶪"env-var:"􏶩
 
+􏶨the exec_property and platform property name for indicating whether a user wants to debug the before action state of an execution􏶧
+􏶦this is intended to be used interactively to debug remote executions􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property debug before execution􏶫􏶪"debug-before-execution"􏶩
+
+􏶨the exec_property and platform property name for indicating whether a user wants to get debug information from after the execution􏶧
+􏶦this is intended to be used interactively to debug remote executions􏶥
+􏶘-s􏶙􏶰c􏶯􏶮String􏶭􏶬exec property debug after execution􏶫􏶪"debug-after-execution"􏶩
+
 􏷐decide resource limitations for the given command􏷏
 􏶠platform properties from specified exec_properties are taken into account as well as global buildfarm configuration􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒decide resource limitations􏷑
@@ -101,24 +109,7 @@
     ResourceLimits limits = new ResourceLimits();
     
     command.getPlatform().getPropertiesList().forEach((property)-> {
-        
-        //handle cpu properties
-        if (property.getName().equals(EXEC_PROPERTY_MIN_CORES)) {
-            storeMinCores(limits,property);
-        }
-        else if (property.getName().equals(EXEC_PROPERTY_MAX_CORES)) {
-            storeMaxCores(limits,property);
-        }
-        
-        //handle env properties
-        else if (property.getName().equals(EXEC_PROPERTY_ENV_VARS)) {
-            storeEnvVars(limits,property);
-        }
-        else if (property.getName().startsWith(EXEC_PROPERTY_ENV_VAR)){
-            storeEnvVar(limits,property);
-        }
-        
-        //handle debug properties
+        evaluateProperty(limits,property);
     });
     
     // force limits on non-test actions
@@ -341,8 +332,86 @@
     assertThat(limits.extraEnvironmentVariables.containsKey("foo")).isTrue();
     assertThat(limits.extraEnvironmentVariables.get("foo")).isEqualTo("");
 􏴮
+􏴱test debug before parse􏴲􏴯regular􏴰
+􏲝we can parse out a positive bool for "before execution debugging"􏲞
+􏲛the bool was not parsed as true like we would have expected􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("debug-before-execution")
+    .setValue("true")
+    )).build();
 
-ResourceLimits limits
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
+    
+    //ASSERT
+    assertThat(limits.debugBeforeExecution).isTrue();
+􏴮
+􏴱test debug after parse􏴲􏴯regular􏴰
+􏲝we can parse out a positive bool for "after execution debugging"􏲞
+􏲛the bool was not parsed as true like we would have expected􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("debug-after-execution")
+    .setValue("true")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
+    
+    //ASSERT
+    assertThat(limits.debugAfterExecution).isTrue();
+􏴮
+􏴱test invalid debug parse􏴲􏴯regular􏴰
+􏲝if we provide an invalid boolean value, it is stored as false􏲞
+􏲛the value was not parsed gracefully or was somehow interpreted as true􏲜
+􏴭
+    //ARRANGE
+    Command command = Command.newBuilder().setPlatform(Platform.newBuilder().addProperties(Platform.Property.newBuilder()
+    .setName("debug-before-execution")
+    .setValue("BAD_FORMAT")
+    )).build();
+
+    //ACT
+    ResourceLimits limits = ResourceDecider.decideResourceLimitations(command,true,100);
+    
+    //ASSERT
+    assertThat(limits.debugBeforeExecution).isFalse();
+􏴮
+
+
+􏷐evaluate a given platform property of a command and use it to adjust execution settings􏷏
+􏶠parses the property key/value and stores them appropriately􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒evaluate property􏷑
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
+􏶜􏶝􏷆Property􏷅􏷄property􏷃􏷀the property to store􏶿
+􏶴
+    //handle cpu properties
+    if (property.getName().equals(EXEC_PROPERTY_MIN_CORES)) {
+        storeMinCores(limits,property);
+    }
+    else if (property.getName().equals(EXEC_PROPERTY_MAX_CORES)) {
+        storeMaxCores(limits,property);
+    }
+    
+    //handle env properties
+    else if (property.getName().equals(EXEC_PROPERTY_ENV_VARS)) {
+        storeEnvVars(limits,property);
+    }
+    else if (property.getName().startsWith(EXEC_PROPERTY_ENV_VAR)){
+        storeEnvVar(limits,property);
+    }
+    
+    //handle debug properties
+    else if (property.getName().equals(EXEC_PROPERTY_DEBUG_BEFORE_EXECUTION)) {
+        storeBeforeExecutionDebug(limits,property);
+    }
+    else if (property.getName().equals(EXEC_PROPERTY_DEBUG_AFTER_EXECUTION)) {
+        storeAfterExecutionDebug(limits,property);
+    }
+􏶳
 
 􏷐store the property for min cores􏷏
 􏶠parses and stores the property􏶡
@@ -385,6 +454,24 @@ ResourceLimits limits
     String key = keyValue[1];
     String value = property.getValue();
     limits.extraEnvironmentVariables.put(key,value);
+􏶳
+
+􏷐store the property for debugging before an execution􏷏
+􏶠parses and stores a boolean􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒store before execution debug􏷑
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
+􏶜􏶝􏷆Property􏷅􏷄property􏷃􏷀the property to store􏶿
+􏶴
+    limits.debugBeforeExecution = Boolean.parseBoolean(property.getValue());
+􏶳
+
+􏷐store the property for debugging after an execution􏷏
+􏶠parses and stores a boolean􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒store after execution debug􏷑
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀current limits to apply changes to􏶿
+􏶜􏶝􏷆Property􏷅􏷄property􏷃􏷀the property to store􏶿
+􏶴
+    limits.debugAfterExecution = Boolean.parseBoolean(property.getValue());
 􏶳
 
 
