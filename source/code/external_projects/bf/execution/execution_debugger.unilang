@@ -54,16 +54,59 @@ This can also be helpful in debugging buildfarm itself􏷯
 􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
 􏷤􏷣􏷦java.util.logging.Level􏷥
 􏷤􏷣􏷦java.util.logging.Logger􏷥
+􏷤􏷣􏷦com.google.gson.Gson􏷥
 
 
 􏷐fail the operation before executing it but provide relevant debug information to the user via a failed result􏷏
 􏶠This allows users to see relevant debug information related to the executor􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒perform before execution debug􏷑
+􏶜􏶝􏷆ProcessBuilder􏷅􏷄processBuilder􏷃􏷀information about the constructed process􏶿
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀the resource limitations of an execution􏶿
+􏶜􏶝􏷆ActionResult.Builder􏷅􏷄resultBuilder􏷃􏷀used to report back debug information􏶿
+􏶾Code􏶽􏶼code􏶻􏶺return code for the debugged execution􏶹
 􏶴
+    String message = getBeforeExecutionDebugInfo(processBuilder,limits,resultBuilder);
+    resultBuilder.setStderrRaw(ByteString.copyFromUtf8(message));
+    return Code.INVALID_ARGUMENT;
 􏶳
 
 􏷐fail the operation after executing it but provide relevant debug information to the user via a failed result􏷏
 􏶠This allows users to see relevant debug information related to the executor􏶡
 􏷘+s􏷗􏴅Observer􏴆􏷒perform after execution debug􏷑
+􏶜􏶝􏷆ProcessBuilder􏷅􏷄processBuilder􏷃􏷀information about the constructed process􏶿
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀the resource limitations of an execution􏶿
+􏶜􏶝􏷆ActionResult.Builder􏷅􏷄resultBuilder􏷃􏷀used to report back debug information􏶿
+􏶾Code􏶽􏶼code􏶻􏶺return code for the debugged execution􏶹
 􏶴
+    String message = getAfterExecutionDebugInfo(processBuilder,limits,resultBuilder);
+    resultBuilder.setStderrRaw(ByteString.copyFromUtf8(message));
+    return Code.INVALID_ARGUMENT;
+􏶳
+
+􏷐Build the debug log message that we want users to see􏷏
+􏶠This be sent back to the user via the stderr of their execution􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get before execution debug info􏷑
+􏶜􏶝􏷆ProcessBuilder􏷅􏷄processBuilder􏷃􏷀information about the constructed process􏶿
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀the resource limitations of an execution􏶿
+􏶜􏶝􏷆ActionResult.Builder􏷅􏷄resultBuilder􏷃􏷀used to report back debug information􏶿
+􏶾String􏶽􏶼debug message􏶻􏶺the debug information to show the user􏶹
+􏶴
+    String message = "Buildfarm debug information before execution:\n";
+    Gson gson = new Gson();
+    message += gson.toJson(limits); 
+    return message;
+􏶳
+
+􏷐Build the debug log message that we want users to see􏷏
+􏶠This be sent back to the user via the stderr of their execution􏶡
+􏷘-s􏷗􏴅Observer􏴆􏷒get after execution debug info􏷑
+􏶜􏶝􏷆ProcessBuilder􏷅􏷄processBuilder􏷃􏷀information about the constructed process􏶿
+􏶜􏶝􏷆ResourceLimits􏷅􏷄limits􏷃􏷀the resource limitations of an execution􏶿
+􏶜􏶝􏷆ActionResult.Builder􏷅􏷄resultBuilder􏷃􏷀used to report back debug information􏶿
+􏶾String􏶽􏶼debug message􏶻􏶺the debug information to show the user􏶹
+􏶴
+    String message = "Buildfarm debug information after execution:\n";
+    Gson gson = new Gson();
+    message += gson.toJson(limits); 
+    return message;
 􏶳
