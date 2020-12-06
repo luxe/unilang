@@ -15,6 +15,37 @@ size_t Longest_Element_Size(std::vector<std::string> strs);
 bool An_Element_Ends_With(std::vector<std::string> const& strs, std::string const& str);
 
 
+template <class T>
+bool All_Elements_Unique(std::vector<T> &x) {
+    std::sort( x.begin(), x.end() ); // O(N log N)
+    return std::adjacent_find( x.begin(), x.end() ) == x.end();
+}
+
+template <typename T, typename Fun>
+void Compare_All_2_Elements(std::vector<T> const& v, Fun fun){
+  for (size_t i = 0; i < v.size(); ++i){
+    for (size_t j = 0; j < v.size(); ++j){
+      if (i != j){
+        fun(v[i],v[j]);
+      }
+    }
+  }
+}
+
+template <typename T, typename Fun>
+void Compare_All_3_Elements(std::vector<T> const& v, Fun fun){
+  for (size_t i = 0; i < v.size(); ++i){
+    for (size_t j = 0; j < v.size(); ++j){
+      for (size_t k = 0; k < v.size(); ++k){
+        std::vector<T> temp {static_cast<int>(i),static_cast<int>(j),static_cast<int>(k)};
+        if (All_Elements_Unique(temp)){
+          fun(v[i],v[j],v[k]);
+        }
+      }
+    }
+  }
+}
+
 
 template <typename T>
 size_t Next_Index_In_Round_Robin(T const& t, size_t const& i){

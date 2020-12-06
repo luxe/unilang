@@ -21,5 +21,6 @@ hcp(
     name = "day_1",
     deps = [
         "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
     ],
 )
