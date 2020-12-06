@@ -7,9 +7,9 @@ def chromeDrivers():
     http_archive(
         name = "chrome_drivers",
         build_file = "//bazel/deps/build_files:chrome_drivers.BUILD",
-        sha256 = "ff116b6d354f97c7e789a50ca7dae15ae1899e5627c38551860ccbede13fb5c6",
-        strip_prefix = "chrome-drivers-e47bfe70331bcd06420eadcb64a374fbd98bca18",
+        sha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        strip_prefix = "chrome-drivers-8a426d5d974d155363d7dc47cd3021266985c89d",
         urls = [
-            "https://github.com/Unilang/chrome-drivers/archive/e47bfe70331bcd06420eadcb64a374fbd98bca18.tar.gz",
+            "https://github.com/Unilang/chrome-drivers/archive/8a426d5d974d155363d7dc47cd3021266985c89d.tar.gz",
         ],
     )

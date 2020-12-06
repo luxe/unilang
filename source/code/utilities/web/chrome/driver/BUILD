@@ -8,6 +8,7 @@ load("//bazel/rules/cpp:main.bzl", "cpp_main")
 hcp(
     name = "chrome_driver_selector",
     deps = [
+        "//code/utilities/assets:chrome_drivers",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call:lib",
