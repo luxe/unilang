@@ -8,5 +8,8 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     linkopts = [],
-    deps = ["//code/utilities/assets:chrome_drivers"],
+    deps = [
+        "//code/utilities/assets:chrome_drivers",
+        "//code/utilities/filesystem/files/getting:lib",
+    ],
 )
