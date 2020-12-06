@@ -48,6 +48,32 @@ void Compare_All_3_Elements(std::vector<T> const& v, Fun fun){
 
 
 template <typename T>
+std::vector<T> Find_2_Elements_That_Sum_To(std::vector<T> const& v, T sum){
+  std::vector<T> results;
+  Compare_All_2_Elements(v,[&](T x, T y){
+      if (x + y == sum){
+        results.emplace_back(x);
+        results.emplace_back(y);
+      }
+  });
+  return results;
+}
+
+template <typename T>
+std::vector<T> Find_3_Elements_That_Sum_To(std::vector<T> const& v, T sum){
+  std::vector<T> results;
+  Compare_All_3_Elements(v,[&](T x, T y, T z){
+      if (x + y + z == sum){
+        results.emplace_back(x);
+        results.emplace_back(y);
+        results.emplace_back(z);
+      }
+  });
+  return results;
+}
+
+
+template <typename T>
 size_t Next_Index_In_Round_Robin(T const& t, size_t const& i){
   if (i == t.size()-1){
     return 0;
