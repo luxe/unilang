@@ -14,6 +14,7 @@ hcp(
     deps = [
         "//code/tools/puzzles/advent_of_code:advent_of_code_input_getter",
         "//code/tools/puzzles/advent_of_code/2020:day_1",
+        "//code/tools/puzzles/advent_of_code/2020:day_2",
     ],
 )
 
@@ -23,5 +24,16 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
+    ],
+)
+
+hcp(
+    name = "day_2",
+    deps = [
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/counters:lib",
     ],
 )
