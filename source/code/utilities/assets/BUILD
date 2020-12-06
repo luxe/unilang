@@ -14,3 +14,9 @@ hcp(
     data = ["@english_sounds//:all"],
     deps = [],
 )
+
+hcp(
+    name = "chrome_drivers",
+    data = ["@chrome_drivers//:all"],
+    deps = [],
+)
