@@ -41,6 +41,13 @@ int Accumulate(std::vector<std::string> const& v){
     }
     return total;
 }
+int Multiply(std::vector<int> const& v){
+    int total = 1;
+    for (auto const& it: v){
+        total *= it;
+    }
+    return total;
+}
 
 
 

@@ -26,7 +26,10 @@ void Compare_All_2_Elements(std::vector<T> const& v, Fun fun){
   for (size_t i = 0; i < v.size(); ++i){
     for (size_t j = 0; j < v.size(); ++j){
       if (i != j){
-        fun(v[i],v[j]);
+        auto should_return = fun(v[i],v[j]);
+        if (should_return){
+          return;
+        }
       }
     }
   }
@@ -39,7 +42,10 @@ void Compare_All_3_Elements(std::vector<T> const& v, Fun fun){
       for (size_t k = 0; k < v.size(); ++k){
         std::vector<T> temp {static_cast<int>(i),static_cast<int>(j),static_cast<int>(k)};
         if (All_Elements_Unique(temp)){
-          fun(v[i],v[j],v[k]);
+          auto should_return = fun(v[i],v[j],v[k]);
+          if (should_return){
+            return;
+          }
         }
       }
     }
@@ -54,7 +60,9 @@ std::vector<T> Find_2_Elements_That_Sum_To(std::vector<T> const& v, T sum){
       if (x + y == sum){
         results.emplace_back(x);
         results.emplace_back(y);
+        return true;
       }
+      return false;
   });
   return results;
 }
@@ -67,7 +75,9 @@ std::vector<T> Find_3_Elements_That_Sum_To(std::vector<T> const& v, T sum){
         results.emplace_back(x);
         results.emplace_back(y);
         results.emplace_back(z);
+        return true;
       }
+      return false;
   });
   return results;
 }

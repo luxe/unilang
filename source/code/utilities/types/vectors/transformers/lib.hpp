@@ -28,6 +28,7 @@ void Subtract_Each_Line_By(std::vector<std::string> & v, int num);
 void Multiply_Each_Line_By(std::vector<std::string> & v, int num);
 void Divide_Each_Line_By(std::vector<std::string> & v, int num);
 int Accumulate(std::vector<std::string> const& v);
+int Multiply(std::vector<int> const& v);
 
 template <typename T, typename Fun>
 int Accumulate(std::vector<T> const& v, Fun f){

@@ -22,5 +22,6 @@ hcp(
     deps = [
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
     ],
 )
