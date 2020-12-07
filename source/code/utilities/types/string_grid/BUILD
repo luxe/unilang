@@ -20,3 +20,13 @@ hcp(
         "//code/utilities/types/strings/observers/comparing:lib",
     ],
 )
+
+hcp(
+    name = "string_grid_builder",
+    deps = [
+        "//code/utilities/data_structures/counters/unique_counter",
+        "//code/utilities/language_basic/std_hackery:std_aliases",
+        "//code/utilities/types/strings/observers/comparing:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
+    ],
+)

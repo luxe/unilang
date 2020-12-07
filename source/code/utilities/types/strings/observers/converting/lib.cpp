@@ -43,6 +43,15 @@ std::vector<std::string> Put_Each_Line_Of_String_Into_A_Vector(std::string const
 
     return lines;
 }
+std::vector<std::string> Put_Each_Char_Of_String_Into_A_Vector(std::string const& str) {
+    std::vector<std::string> results;
+    for (auto const& it: str){
+        std::string temp;
+        temp += it;
+        results.emplace_back(temp);
+    }
+    return results;
+}
 
 std::vector<std::pair<std::string,std::string>> Put_Each_Line_Of_String_Into_A_Vector_Of_Pairs_Where_The_First_Pair_Elements_Are_Empty(std::string const& str){
 	//very ineffecient.  I don't care.  fix later.  pray that the compiler ellides.
