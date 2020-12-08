@@ -2,7 +2,7 @@
 layout: default
 title: Action Cache
 parent: Architecture
-nav_order: 1
+nav_order: 5
 ---
 
 ActionCahe is a service that can be used to query whether a defined action has already been executed and, if so, download its result. The service API is defined in the [Remote Execution API](https://github.com/bazelbuild/remote-apis). `ActionCache` service would require [`ContentAddressableStorage`](https://github.com/bazelbuild/bazel-buildfarm/wiki/ContentAddressableStorage) service to store file data. 
