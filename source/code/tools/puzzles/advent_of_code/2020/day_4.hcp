@@ -5,7 +5,11 @@ class
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/types/vectors/transformers/lib"❫
 ❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/types/strings/observers/counters/lib"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/observers/char/lib"❫
+❪"code/utilities/types/char/lib"❫
 ❪"code/utilities/output/printers/lib"❫
 ❪"code/utilities/types/string_grid/string_grid_builder"❫
 ❪"code/utilities/data_structures/compass_directions/compass_direction_diagnonal_movement"❫
@@ -18,22 +22,50 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
-    auto passports = Split_By_Spaces(lines);
+    auto passports = Get_Passports(lines);
     int total = 0;
     for (auto const& it: passports){
-        
+        if (Check(it)){
+            total += 1;
+        }
+    }
+    std::cout << total << std::endl;
+❱
+◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+
+    auto passports = Get_Passports(lines);
+    int total = 0;
+    for (auto const& it: passports){
+        if (Check_With_Validation(it)){
+            total += 1;
+        }
+    }
+    std::cout << total << std::endl;
+❱
+
+
+
+
+
+
+◀public: static▶ std::vector<std::vector<std::string>> ☀Get_Passports(std::vector<std::string> lines) ❰
+
+    std::vector<std::vector<std::string>> results;
+    
+    auto passports = Split_By_Spaces(lines);
+    for (auto const& it: passports){
         std::string all;
         for (auto const& x: it){
             all += x + " ";
         }
         auto key_vals = Split_By_Spaces(all);
-        if (Check(key_vals)){
-            total += 1;
-        }
+        results.emplace_back(key_vals);
     }
-    std::cout << total << std::endl;
-    
+
+
+    return results;
 ❱
+
 ◀public: static▶ bool ☀Check(std::vector<std::string> const& key_vals) ❰
 
     bool byr = false;
@@ -80,5 +112,90 @@ class
 
 ❱
 
-◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+◀public: static▶ bool ☀Check_With_Validation(std::vector<std::string> const& key_vals) ❰
+
+    bool byr = false;
+    bool iyr = false;
+    bool eyr = false;
+    bool hgt = false;
+    bool hcl = false;
+    bool ecl = false;
+    bool pid = false;
+
+    for (auto it: key_vals){
+        trim(it);
+        auto key = Split_Into_Parts_From_Colon(it)[0];
+        auto value = Split_Into_Parts_From_Colon(it)[1];
+        if (key == "byr"){
+            if (as_signed(value) >= 1920 && as_signed(value) <= 2002){
+                byr = true;
+            }
+        }
+        if (key == "iyr"){
+            if (as_signed(value) >= 2010 && as_signed(value) <= 2020){
+                iyr = true;
+            }
+        }
+        if (key == "eyr"){
+            
+            if (as_signed(value) >= 2020 && as_signed(value) <= 2030){
+                eyr = true;
+            }
+        }
+        if (key == "hgt"){
+            if (Ends_With(value,"cm")){
+                Remove_Last_N_Chars(value,2);
+                if (as_signed(value) >= 150 && as_signed(value) <= 193){
+                    hgt = true;
+                }
+            }
+            else if (Ends_With(value,"in")){
+                Remove_Last_N_Chars(value,2);
+                if (as_signed(value) >= 59 && as_signed(value) <= 76){
+                    hgt = true;
+                }
+            }
+        }
+        if (key == "hcl"){
+            if (Is_Valid_Hex_Color(value)){
+                hcl = true;
+            }
+        }
+        if (key == "ecl"){
+            if (value == "amb" || value == "blu" || value == "brn" || value == "gry" || value == "grn" || value == "hzl" || value == "oth"){
+                ecl = true;
+            }
+        }
+        if (key == "pid"){
+            if (value.size() == 9){
+                if (Is_Only_Numeric_Characters(value)){
+                pid = true;
+                }
+            }
+        }
+    }
+    
+    return     byr &&
+    iyr &&
+    eyr &&
+    hgt &&
+    hcl &&
+    ecl &&
+    pid;
+❱
+
+
+◀public: static▶ bool ☀Is_Valid_Hex_Color(std::string value) ❰
+    if (Begins_With(value,"#")){
+        Remove_First_Char(value);
+        if (value.size() == 6){
+            for (auto it: value){
+                if (!Is_A_Hexidecimal_Character(it)){
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+    return false;
 ❱

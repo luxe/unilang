@@ -72,6 +72,10 @@ hcp(
         "//code/utilities/data_structures/point:point",
         "//code/utilities/data_structures/point:point_mover",
         "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/char:lib",
+        "//code/utilities/types/strings/observers/char:lib",
     ],
 )
 
