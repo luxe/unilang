@@ -26,6 +26,7 @@ hcp(
         "//code/utilities/data_structures:compass_direction",
         "//code/utilities/data_structures:compass_direction_diagnonal",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movements",
         "//code/utilities/data_structures/point",
     ],
 )

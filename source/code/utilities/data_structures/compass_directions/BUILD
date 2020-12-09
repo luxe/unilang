@@ -9,3 +9,10 @@ hcp(
         "//code/utilities/data_structures:compass_direction_diagnonal",
     ],
 )
+
+hcp(
+    name = "compass_direction_diagnonal_movements",
+    deps = [
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+    ],
+)

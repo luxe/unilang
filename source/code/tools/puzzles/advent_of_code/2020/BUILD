@@ -49,5 +49,9 @@ hcp(
         "//code/utilities/types/strings/observers/counters:lib",
         "//code/utilities/output/printers:lib",
         "//code/utilities/types/string_grid:string_grid_builder",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movements",
+        "//code/utilities/data_structures/point:point",
+        "//code/utilities/data_structures/point:point_mover",
     ],
 )
