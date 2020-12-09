@@ -16,6 +16,7 @@ hcp(
         "//code/tools/puzzles/advent_of_code/2020:day_1",
         "//code/tools/puzzles/advent_of_code/2020:day_2",
         "//code/tools/puzzles/advent_of_code/2020:day_3",
+        "//code/tools/puzzles/advent_of_code/2020:day_4",
     ],
 )
 
@@ -55,3 +56,22 @@ hcp(
         "//code/utilities/data_structures/point:point_mover",
     ],
 )
+
+hcp(
+    name = "day_4",
+    deps = [
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/counters:lib",
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/types/string_grid:string_grid_builder",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movements",
+        "//code/utilities/data_structures/point:point",
+        "//code/utilities/data_structures/point:point_mover",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+    ],
+)
+

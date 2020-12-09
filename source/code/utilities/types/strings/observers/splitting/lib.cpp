@@ -49,6 +49,9 @@ std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& str,
 std::vector<std::string> Split_Into_Parts_From_Comma(std::string const& str){
 	return Split_Into_Parts_From_Delimiter(str,',');
 }
+std::vector<std::string> Split_Into_Parts_From_Colon(std::string const& str){
+    return Split_Into_Parts_From_Delimiter(str,':');
+}
 std::vector<std::string> Split_Into_Parts_From_Dot(std::string const& str){
     return Split_Into_Parts_From_Delimiter(str,'.');
 }
@@ -68,6 +71,27 @@ std::string Get_Path_Basename(std::string const& str)
         return parts[parts.size()-1];
     }
     return "";
+}
+
+std::vector<std::vector<std::string>> Split_By_Spaces(std::vector<std::string> const& strs){
+    std::vector<std::vector<std::string>> results;
+    
+    std::vector<std::string> tmp;
+    for (auto const& it: strs){
+        if (it == ""){
+            results.emplace_back(tmp);
+            tmp.clear();
+        }
+        else{
+            tmp.emplace_back(it);
+        }
+    }
+    
+    if (!tmp.empty()){
+        results.emplace_back(tmp);
+    }
+    
+    return results;
 }
 
 std::vector<std::string> Split_By_Spaces(std::string const& str){
