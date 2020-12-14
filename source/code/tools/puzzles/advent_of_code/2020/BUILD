@@ -99,6 +99,8 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/types/char:lib",
         "//code/utilities/types/strings/observers/char:lib",
+        "//code/utilities/types/range:range_shrinker",
+        "//code/utilities/data_structures/range:range",
     ],
 )
 
