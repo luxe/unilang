@@ -18,6 +18,7 @@ hcp(
         "//code/tools/puzzles/advent_of_code/2020:day_3",
         "//code/tools/puzzles/advent_of_code/2020:day_4",
         "//code/tools/puzzles/advent_of_code/2020:day_5",
+        "//code/tools/puzzles/advent_of_code/2020:day_6",
     ],
 )
 
@@ -82,6 +83,30 @@ hcp(
 
 hcp(
     name = "day_5",
+    deps = [
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/counters:lib",
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/types/string_grid:string_grid_builder",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movements",
+        "//code/utilities/data_structures/point:point",
+        "//code/utilities/data_structures/point:point_mover",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/char:lib",
+        "//code/utilities/types/strings/observers/char:lib",
+        "//code/utilities/types/range:range_shrinker",
+        "//code/utilities/data_structures/range:range",
+    ],
+)
+
+hcp(
+    name = "day_6",
     deps = [
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
