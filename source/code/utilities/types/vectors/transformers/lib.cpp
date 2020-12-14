@@ -34,6 +34,13 @@ void Divide_Each_Line_By(std::vector<std::string> & v, int num){
         it = std::to_string(as_signed(it) / num);
     }
 }
+int Accumulate(std::vector<int> const& v){
+    int total = 0;
+    for (auto const& it: v){
+        total += it;
+    }
+    return total;
+}
 int Accumulate(std::vector<std::string> const& v){
     int total = 0;
     for (auto const& it: v){

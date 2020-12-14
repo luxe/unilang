@@ -126,6 +126,7 @@ hcp(
         "//code/utilities/types/strings/observers/char:lib",
         "//code/utilities/types/range:range_shrinker",
         "//code/utilities/data_structures/range:range",
+        "//code/utilities/data_structures/counters/unique_counter:unique_counter",
     ],
 )
 

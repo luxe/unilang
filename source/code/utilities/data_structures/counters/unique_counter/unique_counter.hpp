@@ -25,6 +25,10 @@ class Unique_Counter{
     }
   }
   
+  size_t Number_Of_Unique_Entries() const{
+    return hash_table.size();
+  }
+  
   T Most_Common() const{
     auto it = std::max_element(hash_table.begin(),hash_table.end(),[](auto x, auto y){
       return x.second < y.second;

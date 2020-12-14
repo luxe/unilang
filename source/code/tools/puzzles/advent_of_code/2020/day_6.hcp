@@ -20,9 +20,52 @@ class
 ❪"code/utilities/types/strings/transformers/trimming/lib"❫
 ❪"code/utilities/types/range/range_shrinker"❫
 ❪"code/utilities/data_structures/range/range"❫
+❪"code/utilities/data_structures/counters/unique_counter/unique_counter"❫
+❪"code/utilities/types/vectors/transformers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
+    auto parts = Split_By_Spaces(lines);
+    
+    std::vector<int> totals;
+    for (auto const& it: parts){
+        totals.emplace_back(Unique_Counts(it));
+    }
+    std::cout << Accumulate(totals) << std::endl;
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+    auto parts = Split_By_Spaces(lines);
+    
+    std::vector<int> totals;
+    for (auto const& it: parts){
+        totals.emplace_back(Occured_On_Every_Line(it));
+    }
+    std::cout << Accumulate(totals) << std::endl;
+❱
+
+◀public: static▶ int ☀Unique_Counts(std::vector<std::string> answers) ❰
+    Unique_Counter<char> counter;
+    for (auto const& x: answers){
+        for (auto const& y: x){
+            counter.Add(y);
+        }
+    }
+    return counter.Number_Of_Unique_Entries();
+❱
+◀public: static▶ int ☀Occured_On_Every_Line(std::vector<std::string> answers) ❰
+    Unique_Counter<char> counter;
+    for (auto const& x: answers){
+        for (auto const& y: x){
+            counter.Add(y);
+        }
+    }
+    
+    int total = 0;
+    for (auto const it: counter.hash_table){
+        if (it.second == answers.size()){
+            ++total;
+        }
+    }
+    
+    return total;
 ❱

@@ -27,6 +27,7 @@ void Add_Each_Line_By(std::vector<std::string> & v, int num);
 void Subtract_Each_Line_By(std::vector<std::string> & v, int num);
 void Multiply_Each_Line_By(std::vector<std::string> & v, int num);
 void Divide_Each_Line_By(std::vector<std::string> & v, int num);
+int Accumulate(std::vector<int> const& v);
 int Accumulate(std::vector<std::string> const& v);
 int Multiply(std::vector<int> const& v);
 
