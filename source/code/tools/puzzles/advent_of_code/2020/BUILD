@@ -158,6 +158,9 @@ hcp(
         "//code/utilities/types/strings/transformers/inflection:inflection_converter",
         "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
         "//code/utilities/data_structures/graph:object_to_counted_objects",
+        "@cpp_graph_library//:lib",
+        "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
     ],
 )
 

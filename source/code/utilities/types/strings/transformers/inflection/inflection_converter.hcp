@@ -4,6 +4,9 @@ class
 ❪vector❫
 ❪"code/utilities/types/strings/transformers/inflection/settings/inflection_settings"❫
 ⚯
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/output/printers/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ⚞⚟
 
 ◀public: static▶ std::string ☀Inflect_Based_On_Count(std::string s, Inflection_Settings const& settings, int count) ❰
@@ -13,6 +16,16 @@ class
     return As_Plural(s,settings);
 ❱
 
+
+
+//a simple and inaccurate version of making a word singular
+◀public: static▶ std::string ☀As_Singular_Simple(std::string s, Inflection_Settings const& settings) ❰
+
+    if (Ends_With(s,"s")){
+        s.pop_back();
+    }
+    return s;
+❱
 ◀public: static▶ std::string ☀As_Singular(std::string s, Inflection_Settings const& settings) ❰
     
     //first check to see if it is one of our known uninfected words
@@ -57,12 +70,27 @@ class
         return false;
 ❱
 ◀private: static▶ std::string ☀Convert_Through_Rules(std::string s, std::vector<Inflection> inflections) ❰
+
+    //make sure its actually 1 word
+    auto words = Split_By_Spaces(s);
+    //std::cout << words << std::endl;
+    auto last_word = words.back();
+    words.pop_back();
     
     for (auto inflection: inflections){
-      if (std::regex_search(s,inflection.rule)){
-        auto replace_version = std::regex_replace(s,inflection.rule,inflection.replacement);
-        return replace_version;
+      if (std::regex_search(last_word,inflection.rule)){
+        auto replace_version = std::regex_replace(last_word,inflection.rule,inflection.replacement);
+        last_word = replace_version;
+        break;
       }
     }
-    return s;
+    
+    //re-assemble if it was not 1 word
+    std::string final;
+    for (auto const& it: words){
+        final += it + " ";
+    }
+    final += last_word;
+    
+    return final;
 ❱

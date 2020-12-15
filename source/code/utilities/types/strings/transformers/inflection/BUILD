@@ -7,5 +7,8 @@ hcp(
     name = "inflection_converter",
     deps = [
         "//code/utilities/types/strings/transformers/inflection/settings:inflection_settings",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/types/strings/observers/other:lib",
     ],
 )
