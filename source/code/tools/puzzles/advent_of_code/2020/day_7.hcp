@@ -47,29 +47,35 @@ class
 
     std::string start_node = "shiny gold bag";
     auto rels = Create_Relationships(lines);
-    auto graph = Build_Graph(rels);
-    auto reachable = graph.reachableDists(start_node);
     
-    int total = 1;
-    for (auto const& it: reachable){
-        total += (it.second) * Recurse(graph,it.first);
-    }
-    std::cout << total << std::endl;
+    std::cout << Recurse(rels,start_node)-1 << std::endl;
 ❱
 
-◀public: static▶ int ☀Recurse(Graph graph, std::string const& name) ❰
-    auto reachable = graph.reachableDists(name);
-    
-    int total=1;
-    for (auto const& it: reachable){
-        total += (reachable[0].second) * Recurse(graph,it.first);
+
+◀private: static▶ int ☀Recurse(std::vector<Object_To_Counted_Objects> const& rels, std::string const& start_node)❰
+
+    int total = 1;
+    auto find = Find(rels,start_node);
+    if (!find.from.empty()){
+        for (auto const& it2: find.to){
+            total += (it2.count * Recurse(rels,it2.object));
+        }
     }
     
-    reachable[0].second
     return total;
 ❱
 
 
+◀private: static▶ Object_To_Counted_Objects ☀Find(std::vector<Object_To_Counted_Objects> const& rels, std::string const& name)❰
+    for (auto const& it: rels){
+        if (it.from == name){
+            return it;
+        }
+    }
+    //std::cout << "should not have happened" << std::endl;
+    Object_To_Counted_Objects empty;
+    return empty;
+❱
 
 ◀private: static▶ std::vector<Object_To_Counted_Objects> ☀Create_Relationships(std::vector<std::string> const& lines) ❰
     std::vector<Object_To_Counted_Objects> results;
