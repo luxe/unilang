@@ -162,6 +162,8 @@ hcp(
         "@cpp_graph_library//:lib",
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/data_structures/graph:graph_builder",
+        "//code/utilities/program/common_actions/exits:lib",
     ],
 )
 
