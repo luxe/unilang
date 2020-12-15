@@ -81,3 +81,12 @@ enum_cpp(
         "parallel",
     ],
 )
+
+enum_cpp(
+    name = "halting_problem_result",
+    values = [
+        "halts",
+        "does_not_halt",
+    ],
+)
+
