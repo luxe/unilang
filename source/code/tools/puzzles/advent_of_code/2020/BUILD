@@ -29,6 +29,7 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/program/common_actions/exits:lib",
     ],
 )
 
