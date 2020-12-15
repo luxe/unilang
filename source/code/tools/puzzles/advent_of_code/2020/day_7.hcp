@@ -34,29 +34,41 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
+    std::string start_node = "shiny gold bag";
     auto rels = Create_Relationships(lines);
     auto graph = Build_Graph(rels);
-    
-    //std::cout << graph.As_Graphviz() << std::endl;
-    auto reachable = graph.explore("shiny gold bag");
+    auto reachable = graph.explore(start_node);
     
     //-1 because we don't want to count ourselves
     std::cout << reachable.size()-1 << std::endl;
     
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
+
+    std::string start_node = "shiny gold bag";
     auto rels = Create_Relationships(lines);
     auto graph = Build_Graph(rels);
+    auto reachable = graph.reachableDists(start_node);
     
-    //std::cout << graph.As_Graphviz() << std::endl;
-    auto reachable = graph.reachableDists("shiny gold bag");
-    
-    int total = 0;
+    int total = 1;
     for (auto const& it: reachable){
-        total += it.second;
+        total += (it.second) * Recurse(graph,it.first);
     }
     std::cout << total << std::endl;
 ❱
+
+◀public: static▶ int ☀Recurse(Graph graph, std::string const& name) ❰
+    auto reachable = graph.reachableDists(name);
+    
+    int total=1;
+    for (auto const& it: reachable){
+        total += (reachable[0].second) * Recurse(graph,it.first);
+    }
+    
+    reachable[0].second
+    return total;
+❱
+
 
 
 ◀private: static▶ std::vector<Object_To_Counted_Objects> ☀Create_Relationships(std::vector<std::string> const& lines) ❰
@@ -92,7 +104,6 @@ class
         for (auto const& it2: it.to){
             G.addNode(it2.object);
             G.addEdge(it2.object,it.from,it2.count);
-            //G.addEdge(it.from,it2.object,it2.count);
         }
     }
     
