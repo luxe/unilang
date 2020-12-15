@@ -153,6 +153,8 @@ hcp(
         "//code/utilities/types/range:range_shrinker",
         "//code/utilities/data_structures/range:range",
         "//code/utilities/data_structures/counters/unique_counter:unique_counter",
+        "//code/utilities/linguistics/counted_object:counted_object_parser",
+        "//code/utilities/formats/json/converters:type_to_json_string",
     ],
 )
 

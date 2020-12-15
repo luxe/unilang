@@ -28,6 +28,25 @@ std::vector<std::vector<std::string>> Split_Into_Parts(std::string const& str, i
     
     return results;
 }
+
+std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& i_str, std::string const& i_delim)
+{
+    std::vector<std::string> result;
+    
+    size_t found = i_str.find(i_delim);
+    size_t startIndex = 0;
+
+    while(found != std::string::npos)
+    {
+        result.push_back(std::string(i_str.begin()+startIndex, i_str.begin()+found));
+        startIndex = found + i_delim.size();
+        found = i_str.find(i_delim, startIndex);
+    }
+    if(startIndex != i_str.size())
+        result.push_back(std::string(i_str.begin()+startIndex, i_str.end()));
+    return result;      
+}
+
 std::vector<std::string> Split_Into_Parts_From_Delimiter(std::string const& str, char const& delimiter){
 	std::vector<std::string> parts;
 	

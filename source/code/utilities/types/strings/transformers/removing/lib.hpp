@@ -8,6 +8,7 @@ std::string& Remove_First_Instance_Of_Char(std::string & str, char const& c);
 //remove certain chars
 std::string& Remove_Commas(std::string & str);
 std::string& Remove_Spaces(std::string & str);
+std::string& Remove_Periods(std::string & str);
 std::string& Remove_Dashes(std::string & str);
 std::string& Remove_Double_Quotes(std::string & str);
 

@@ -38,6 +38,10 @@ std::string& Remove_Dashes(std::string & str)
 {
     return Remove_All_Instances_Of_Char(str,'-');
 }
+std::string& Remove_Periods(std::string & str)
+{
+    return Remove_All_Instances_Of_Char(str,'.');
+}
 
 std::string As_Removed_Dashes(std::string const& str){
     auto str2 = str;

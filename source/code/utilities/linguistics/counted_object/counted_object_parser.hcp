@@ -1,0 +1,42 @@
+class
+❪string❫
+❪vector❫
+❪"code/utilities/linguistics/counted_object/counted_object"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/transformers/trimming/lib"❫
+❪"code/utilities/types/strings/observers/splitting/lib"❫
+❪"code/utilities/types/strings/observers/converting/lib"❫
+❪"code/utilities/types/strings/transformers/inflection/inflection_converter"❫
+❪"code/utilities/types/strings/transformers/inflection/getters/inflection_settings_getter"❫
+⚯
+⚞⚟
+
+◀public: static▶ std::vector<Counted_Object> ☀Parse_Statement_Into_Counted_Objects(std::string const& statement)❰
+    std::vector<Counted_Object> x;
+    
+    auto parts = Split_Into_Parts_From_Delimiter(statement,",");
+    for (auto const& it: parts){
+        x.emplace_back(Extract_Counted_Object(it));
+    }
+    
+    return x;
+❱
+
+◀private: static▶ Counted_Object ☀Extract_Counted_Object(std::string statement)❰
+    trim(statement);
+    auto parts = Split_By_Spaces(statement);
+    
+    Counted_Object x;
+    x.count = as_signed(parts.front());
+    parts.erase(parts.begin());
+    
+    for (auto const& it: parts){
+        x.object += it + " ";
+    }
+    trim(x.object);
+    Remove_Periods(x.object);
+    
+    auto settings = Inflection_Settings_Getter::Get();
+    x.object = Inflection_Converter::As_Singular(x.object,settings);
+    return x;
+❱
