@@ -21,6 +21,7 @@ hcp(
         "//code/tools/puzzles/advent_of_code/2020:day_6",
         "//code/tools/puzzles/advent_of_code/2020:day_7",
         "//code/tools/puzzles/advent_of_code/2020:day_8",
+        "//code/tools/puzzles/advent_of_code/2020:day_9",
     ],
 )
 
@@ -170,6 +171,44 @@ hcp(
 
 hcp(
     name = "day_8",
+    deps = [
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/transformers:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/types/strings/observers/counters:lib",
+        "//code/utilities/output/printers:lib",
+        "//code/utilities/types/string_grid:string_grid_builder",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
+        "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movements",
+        "//code/utilities/data_structures/point:point",
+        "//code/utilities/data_structures/point:point_mover",
+        "//code/utilities/types/strings/transformers/trimming:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/char:lib",
+        "//code/utilities/types/strings/observers/char:lib",
+        "//code/utilities/types/range:range_shrinker",
+        "//code/utilities/data_structures/range:range",
+        "//code/utilities/data_structures/counters/unique_counter:unique_counter",
+        "//code/utilities/linguistics/counted_object:counted_object_parser",
+        "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/types/strings/transformers/inflection:inflection_converter",
+        "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
+        "//code/utilities/data_structures/graph:object_to_counted_objects",
+        "@cpp_graph_library//:lib",
+        "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
+        "//code/utilities/data_structures/graph:graph_builder",
+        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/simulate/int_computer:instruction",
+        "//code/utilities/simulate/int_computer:instructions_getter",
+        "//code/utilities/simulate/int_computer:int_computer_runner",
+    ],
+)
+
+hcp(
+    name = "day_9",
     deps = [
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
