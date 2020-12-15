@@ -38,7 +38,6 @@ class
 
 ◀public: static▶ void ☀Part_1(std::vector<std::string> lines) ❰
 
-
     Int_Computer computer;
     computer.instructions = Instructions_Getter::Get_Instructions(lines);
     
@@ -47,7 +46,33 @@ class
 ❱
 ◀public: static▶ void ☀Part_2(std::vector<std::string> lines) ❰
 
+    //original computer
+    Int_Computer computer;
+    computer.instructions = Instructions_Getter::Get_Instructions(lines);
+    
     auto answer = 0;
-    Exit_If_Not_Equal(answer,0);
+    for (size_t i = 0; i < computer.instructions.size(); ++i){
+        
+        //flip operation
+        if (computer.instructions[i].op_code == Operation_Type::NOP){
+            Int_Computer tmp_computer = computer;
+            tmp_computer.instructions[i].op_code = Operation_Type::JMP;
+            auto result = Int_Computer_Runner::Run(tmp_computer);
+            if (result == Halting_Problem_Result::HALTS){
+                answer = tmp_computer.acc;
+            }
+        }
+        
+        //flip operation
+        else if (computer.instructions[i].op_code == Operation_Type::JMP){
+            Int_Computer tmp_computer = computer;
+            tmp_computer.instructions[i].op_code = Operation_Type::NOP;
+            auto result = Int_Computer_Runner::Run(tmp_computer);
+            if (result == Halting_Problem_Result::HALTS){
+                answer = tmp_computer.acc;
+            }
+        }
+    }
+    Exit_If_Not_Equal(answer,662);
     
 ❱
