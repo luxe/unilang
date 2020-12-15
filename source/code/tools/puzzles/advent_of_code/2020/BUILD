@@ -155,6 +155,9 @@ hcp(
         "//code/utilities/data_structures/counters/unique_counter:unique_counter",
         "//code/utilities/linguistics/counted_object:counted_object_parser",
         "//code/utilities/formats/json/converters:type_to_json_string",
+        "//code/utilities/types/strings/transformers/inflection:inflection_converter",
+        "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
+        "//code/utilities/data_structures/graph:object_to_counted_objects",
     ],
 )
 
