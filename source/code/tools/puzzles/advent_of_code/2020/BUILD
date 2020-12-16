@@ -242,6 +242,7 @@ hcp(
         "//code/utilities/simulate/int_computer:instruction",
         "//code/utilities/simulate/int_computer:instructions_getter",
         "//code/utilities/simulate/int_computer:int_computer_runner",
+        "//code/utilities/types/vectors/observers:index_range_algorithms",
     ],
 )
 
