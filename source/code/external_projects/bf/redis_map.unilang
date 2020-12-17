@@ -22,6 +22,8 @@ Therefore, two redis maps with the same name, would in fact be the same underlyi
 􏷤􏷣􏷦java.util.concurrent.Executors􏷥
 􏷤􏷣􏷦java.util.concurrent.TimeoutException􏷥
 􏷤􏷣􏷦java.util.concurrent.Future􏷥
+􏷤􏷣􏷦com.google.common.collect.Iterables􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisClusterPipeline􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.instance.shard.queues.RedisQueue􏲎
@@ -68,3 +70,103 @@ If two maps had the same name, they would be instances of the same underlying re
     //ARRANGE
     RedisMap map = new RedisMap("test");
 􏴮
+
+􏷐Set key to hold the string value and set key to timeout after a given number of seconds􏷏
+􏶠if the key already exists, then the value is replaced􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒insert􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆string􏷅􏷄key􏷃􏷀the name of the key􏶿
+􏶜􏶝􏷆string􏷅􏷄value􏷃􏷀the value for the key􏶿
+􏶜􏶝􏷆i􏷅􏷄timeout􏷃􏵘seconds􏵙􏷀timeout to expire the entry􏶿
+􏶴
+    jedis.setex(createKeyName(key), timeout_s, value);
+􏶳
+􏴱insert􏴲􏴯mock􏴰
+􏲝test how an element is added to a map􏲞
+􏲛jedis was not called as expected􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisMap map = new RedisMap("test");
+    
+    //ACT
+    map.insert(redis,"key","value",60);
+    
+    //ASSERT
+    verify(redis, times(1)).setex("test:key",60,"value");
+􏴮
+
+􏷐remove a key from the map􏷏
+􏶠deletes the key/value pair􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆string􏷅􏷄key􏷃􏷀the name of the key􏶿
+􏶴
+    jedis.del(createKeyName(key));
+􏶳
+􏴱remove􏴲􏴯mock􏴰
+􏲝test how an element is removed to a map􏲞
+􏲛jedis was not called as expected􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    RedisMap map = new RedisMap("test");
+    
+    //ACT
+    map.insert(redis,"key","value",60);
+    map.remove(redis,"key");
+    
+    //ASSERT
+    verify(redis, times(1)).del("test:key");
+􏴮
+
+􏷐remove multiple keys from the map􏷏
+􏶠done via pipeline􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒remove􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆Iterable<String>􏷅􏷄keys􏷃􏷀the name of the keys􏶿
+􏶴
+  JedisClusterPipeline p = jedis.pipelined();
+  for (String key : keys) {
+    p.del(createKeyName(key));
+  }
+  p.sync();
+􏶳
+
+􏷐get the value of the key􏷏
+􏶠if the key does not exist, null is returned􏶡
+􏷘+􏷗􏴅Observer􏴆􏷒get􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄jedis􏷃􏷀jedis cluster client􏶿
+􏶜􏶝􏷆string􏷅􏷄key􏷃􏷀the name of the key􏶿
+􏶾string􏶽􏶼value􏶻􏶺the value of the key. null if key does not exist􏶹
+􏶴
+    return jedis.get(createKeyName(key));
+􏶳
+􏴱get􏴲􏴯mock􏴰
+􏲝test how an element is looked up in a map􏲞
+􏲛jedis was not called as expected􏲜
+􏴭
+    //ARRANGE
+    JedisCluster redis = mock(JedisCluster.class);
+    when(redis.get("test:key")).thenReturn("value");
+    RedisMap map = new RedisMap("test");
+    
+    //ACT
+    map.insert(redis,"key","value",60);
+    String value = map.get(redis,"key");
+    
+    //ASSERT
+    verify(redis, times(1)).get("test:key");
+    assertThat(value).isEqualTo("value");
+􏴮
+
+
+
+􏷐create the key name used in redis􏷏
+􏶠the key name is made more unique by leveraging the map's name􏶡
+􏷘-􏷗􏴅Implementation􏴆􏷒create key name􏷑
+􏶜􏶝􏷆string􏷅􏷄key name􏷃􏷀the name of the key􏶿
+􏶾string􏶽􏶼redis key name􏶻􏶺the key name to use in redis􏶹
+􏶴
+    return name + ":" + keyName;
+􏶳
