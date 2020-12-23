@@ -1,6 +1,6 @@
 #include <iostream>
-#include "code/tools/repo_tools/find_shared_object/task_executer.hpp"
-#include "code/tools/repo_tools/find_shared_object/program_options/program_options.hpp"
+#include "code/tools/repo_tools/shared_objects/find_shared_object/task_executer.hpp"
+#include "code/tools/repo_tools/shared_objects/find_shared_object/program_options/program_options.hpp"
 
 
 int main(int const argc, char** const argv){

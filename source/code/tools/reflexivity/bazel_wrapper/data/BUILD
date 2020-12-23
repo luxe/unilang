@@ -10,6 +10,13 @@ hcp(
 )
 
 hcp(
+    name = "bazel_version_info_getter",
+    deps = [
+        "//code/tools/reflexivity/bazel_wrapper/data:bazel_version_info",
+    ],
+)
+
+hcp(
     name = "bazel_wrapper_refresh_settings",
     deps = [
         "//code/tools/reflexivity/bazel_wrapper/data:bazel_version_info",
@@ -20,5 +27,6 @@ hcp(
     name = "bazel_wrapper_refresh_settings_getter",
     deps = [
         ":bazel_wrapper_refresh_settings",
+        ":bazel_version_info_getter",
     ],
 )

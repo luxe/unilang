@@ -234,7 +234,7 @@ hcp(
 distributable_data(
     name = "chrome_drivers",
     description = "chrome drivers for automating google chrome with selenium",
-    file_groups = ["@chrome_drivers//:chrome_drivers"],
+    file_groups = ["@chrome_drivers//:all"],
 )
 
 distributable_cpp_main(

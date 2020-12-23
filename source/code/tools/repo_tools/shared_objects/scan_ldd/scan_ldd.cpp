@@ -1,6 +1,6 @@
 #include <iostream>
-#include "code/tools/repo_tools/scan_ldd/task_executer.hpp"
-#include "code/tools/repo_tools/scan_ldd/program_options/program_options.hpp"
+#include "code/tools/repo_tools/shared_objects/scan_ldd/task_executer.hpp"
+#include "code/tools/repo_tools/shared_objects/scan_ldd/program_options/program_options.hpp"
 
 
 int main(int const argc, char** const argv){

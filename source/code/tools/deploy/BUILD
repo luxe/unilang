@@ -24,7 +24,7 @@ hcp(
         "//code/tools/repo_tools/build_determinism:build_determinism_documentation_getter",
         "//code/tools/repo_tools/build_tools:build_tools_documentation_getter",
         "//code/tools/repo_tools/external_deps_analysis:external_deps_analysis_documentation_getter",
-        "//code/tools/repo_tools/shared_object_trace:shared_object_trace_documentation_getter",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:shared_object_trace_documentation_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/markdown:markdown_str_getter",
         "//code/tools/transcompilers/old_unilang/main:program_input",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",

@@ -7,11 +7,11 @@ load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
 hcp(
     name = "task_executer",
     deps = [
-        "//code/tools/repo_tools/shared_object_trace:correlated_so_ldd",
-        "//code/tools/repo_tools/shared_object_trace:file_and_type",
-        "//code/tools/repo_tools/shared_object_trace:ignore_deps",
-        "//code/tools/repo_tools/shared_object_trace:so_ldd_correlation_visualizer",
-        "//code/tools/repo_tools/shared_object_trace/program_options:lib",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:correlated_so_ldd",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:file_and_type",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:ignore_deps",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:so_ldd_correlation_visualizer",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace/program_options:lib",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
         "//code/utilities/filesystem/files/observers/other:ldd_results_getter",
@@ -38,7 +38,7 @@ hcp(
 hcp(
     name = "correlated_so_ldd",
     deps = [
-        "//code/tools/repo_tools/shared_object_trace:file_and_type",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:file_and_type",
         "//code/utilities/filesystem/files/observers/other:file_and_ldd_results",
     ],
 )
@@ -46,16 +46,16 @@ hcp(
 hcp(
     name = "correlation_results",
     deps = [
-        "//code/tools/repo_tools/shared_object_trace:correlated_so_ldd",
-        "//code/tools/repo_tools/shared_object_trace:file_and_type",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:correlated_so_ldd",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:file_and_type",
     ],
 )
 
 hcp(
     name = "so_ldd_correlation_visualizer",
     deps = [
-        "//code/tools/repo_tools/shared_object_trace:correlated_so_ldd",
-        "//code/tools/repo_tools/shared_object_trace:correlation_results",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:correlated_so_ldd",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:correlation_results",
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call:lib",
@@ -72,7 +72,7 @@ hcp(
 hcp(
     name = "shared_object_trace_documentation_getter",
     deps = [
-        "//code/tools/repo_tools/shared_object_trace/program_options:lib",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace/program_options:lib",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/documentation:common_documentation_getter",
@@ -94,7 +94,7 @@ distributable_cpp_main(
     ],
     description = "track shared objects from 3rd party libraries to other third party libaries that use them",
     deps = [
-        "//code/tools/repo_tools/shared_object_trace:task_executer",
-        "//code/tools/repo_tools/shared_object_trace/program_options:lib",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace:task_executer",
+        "//code/tools/repo_tools/shared_objects/shared_object_trace/program_options:lib",
     ],
 )

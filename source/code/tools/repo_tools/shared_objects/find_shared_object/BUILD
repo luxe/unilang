@@ -7,7 +7,7 @@ load("//bazel/rules/cpp:distributable_main.bzl", "distributable_cpp_main")
 hcp(
     name = "task_executer",
     deps = [
-        "//code/tools/repo_tools/find_shared_object/program_options:lib",
+        "//code/tools/repo_tools/shared_objects/find_shared_object/program_options:lib",
         "//code/utilities/build/build_repo_establisher",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
@@ -26,7 +26,7 @@ distributable_cpp_main(
     ],
     description = "find where a shared object is comming from via a particular bazel target",
     deps = [
-        "//code/tools/repo_tools/find_shared_object:task_executer",
-        "//code/tools/repo_tools/find_shared_object/program_options:lib",
+        "//code/tools/repo_tools/shared_objects/find_shared_object:task_executer",
+        "//code/tools/repo_tools/shared_objects/find_shared_object/program_options:lib",
     ],
 )
