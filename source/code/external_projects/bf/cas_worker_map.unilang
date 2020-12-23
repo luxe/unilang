@@ -62,6 +62,10 @@
 If two maps had the same name, they would be instances of the same underlying redis map􏶥
 􏶘-􏶙􏶰c􏶯􏶮string􏶭􏶬name􏶫􏶪􏶩
 
+􏶨when keys will expire automatically􏶧
+􏶦this is currently the same for every key added or adjusted􏶥
+􏶘-􏶙􏶰c􏶯􏶮int􏶭􏶬key expiration􏶫􏵚seconds􏵛􏶪􏶩
+
 􏶨whether or not the data should be cached in memory􏶧
 􏶦we have this as an option for experimentation because profiling fully cached builds showed that a significant amount of time was spent waiting on jedis sockets
 we think using a cached redis container may provide better performance under load􏶥
@@ -75,8 +79,10 @@ we think using a cached redis container may provide better performance under loa
 􏶠construct storage object under the assumption that all calls will go to redis (no caching)􏶡
 􏷘+􏷗􏴅Constructor􏴆􏷒cas worker map􏷑
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the map􏶿
+􏶜􏶝􏷆int􏷅􏷄key expiration􏷃􏵘seconds􏵙􏷀when to have keys expire automatically􏶿
 􏶴
     this.name = name;
+    this.keyExpiration_s = keyExpiration_s;
     
     //since no redisson client was given, we can assume this is false and skip constructing the cacheMap
     this.useMemoryCache = false;
@@ -87,9 +93,11 @@ we think using a cached redis container may provide better performance under loa
 􏷘+􏷗􏴅Constructor􏴆􏷒cas worker map􏷑
 􏶜􏶝􏷆RedissonClient􏷅􏷄client􏷃􏷀the redisson client used to initialize the cache container􏶿
 􏶜􏶝􏷆string􏷅􏷄name􏷃􏷀the global name of the map􏶿
+􏶜􏶝􏷆int􏷅􏷄key expiration􏷃􏵘seconds􏵙􏷀when to have keys expire automatically􏶿
 􏶜􏶝􏷆bool􏷅􏷄use memory cache􏷃􏷀whether some of the data should be stored in memory􏶿
 􏶴
     this.name = name;
+    this.keyExpiration_s = keyExpiration_s;
     this.useMemoryCache = useMemoryCache;
     
     if (useMemoryCache) {
@@ -122,7 +130,7 @@ we think using a cached redis container may provide better performance under loa
 􏶜􏶝􏷆Set<String>􏷅􏷄remove workers􏷃􏷀workers to remove􏶿
 􏶴
 
-    String key = DigestUtil.toString(blobDigest);
+    String key = cacheMapCasKey(blobDigest);
     cacheMap.putAll(key,addWorkers);
     for (String workerName : removeWorkers) {
        cacheMap.remove(key,workerName);
@@ -139,7 +147,7 @@ we think using a cached redis container may provide better performance under loa
 􏶜􏶝􏷆Set<String>􏷅􏷄remove workers􏷃􏷀workers to remove􏶿
 􏶴
 
-    String key = casKey(blobDigest);
+    String key = redisCasKey(blobDigest);
     client.run(
         jedis -> {
           for (String workerName : addWorkers) {
@@ -148,6 +156,52 @@ we think using a cached redis container may provide better performance under loa
           for (String workerName : removeWorkers) {
             jedis.srem(key, workerName);
           }
+          jedis.expire(key, config.getCasExpire());
+        });
+􏶳
+
+
+􏷐update the blob entry for the worker􏷏
+􏶠this may add a new key if the blob did not previously exist, or it will adjust the worker values based on the worker name
+the expiration time is always refreshed􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒add blob location􏷑
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to adjust worker information from􏶿
+􏶜􏶝􏷆string􏷅􏷄worker name􏷃􏷀the worker to add for looking up the blob􏶿
+􏶴
+    if (useMemoryCache){
+        addBlobLocationRedisson(blobDigest,workerName);
+    }
+    else{
+        addBlobLocationJedis(client,blobDigest,workerName);
+    }
+􏶳
+
+􏷐update the blob entry for the worker􏷏
+􏶠this may add a new key if the blob did not previously exist, or it will adjust the worker values based on the worker name
+the expiration time is always refreshed􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒add blob location redisson􏷑
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to adjust worker information from􏶿
+􏶜􏶝􏷆string􏷅􏷄worker name􏷃􏷀the worker to add for looking up the blob􏶿
+􏶴
+
+    String key = cacheMapCasKey(blobDigest);
+    cacheMap.put(key,workerName);
+    cacheMap.expireKey(key,config.getCasExpire(),TimeUnit.SECONDS);
+􏶳
+
+􏷐update the blob entry for the worker􏷏
+􏶠this may add a new key if the blob did not previously exist, or it will adjust the worker values based on the worker name
+the expiration time is always refreshed􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒add blob location jedis􏷑
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to adjust worker information from􏶿
+􏶜􏶝􏷆string􏷅􏷄worker name􏷃􏷀the worker to add for looking up the blob􏶿
+􏶴
+    String key = redisCasKey(blobDigest);
+    client.run(
+        jedis -> {
+          jedis.sadd(key, workerName);
           jedis.expire(key, config.getCasExpire());
         });
 􏶳
