@@ -12,12 +12,12 @@ hcp(
 hcp(
     name = "counted_object_parser",
     deps = [
-        "//code/utilities/linguistics/counted_object:counted_object",
-        "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/types/strings/transformers/trimming:lib",
-        "//code/utilities/types/strings/observers/splitting:lib",
+        "//code/utilities/linguistics/counted_object",
         "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/transformers/inflection:inflection_converter",
         "//code/utilities/types/strings/transformers/inflection/getters:inflection_settings_getter",
+        "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/types/strings/transformers/trimming:lib",
     ],
 )

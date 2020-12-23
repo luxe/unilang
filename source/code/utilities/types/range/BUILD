@@ -6,6 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "range_shrinker",
     deps = [
-        "//code/utilities/data_structures/range:range",
+        "//code/utilities/data_structures/range",
     ],
 )

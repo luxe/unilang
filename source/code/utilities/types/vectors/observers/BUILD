@@ -24,6 +24,6 @@ hcp(
 hcp(
     name = "index_range_algorithms",
     deps = [
-        "//code/utilities/data_structures/range:range",
+        "//code/utilities/data_structures/range",
     ],
 )

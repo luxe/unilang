@@ -6,15 +6,15 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "object_to_counted_objects",
     deps = [
-        "//code/utilities/linguistics/counted_object:counted_object",
+        "//code/utilities/linguistics/counted_object",
     ],
 )
 
 hcp(
     name = "graph_builder",
     deps = [
-        "@cpp_graph_library//:lib",
         "//code/utilities/data_structures/graph:object_to_counted_objects",
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
+        "@cpp_graph_library//:lib",
     ],
 )

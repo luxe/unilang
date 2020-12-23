@@ -26,7 +26,7 @@ hcp(
 hcp(
     name = "bazel_wrapper_refresh_settings_getter",
     deps = [
-        ":bazel_wrapper_refresh_settings",
         ":bazel_version_info_getter",
+        ":bazel_wrapper_refresh_settings",
     ],
 )
