@@ -20,6 +20,7 @@
 􏷤􏷣􏷦build.bazel.remote.execution.v2.Platform􏷥
 􏷤􏷣􏷦java.lang.RuntimeException􏷥
 􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦java.util.Random􏷥
 
 􏷤􏷣􏷦org.redisson.Redisson􏷥
 􏷤􏷣􏷦org.redisson.api.RSet􏷥
@@ -43,6 +44,7 @@
 􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
 􏷤􏷣􏷦java.io.IOException􏷥
 􏷤􏷣􏷦redis.clients.jedis.JedisClusterPipeline􏷥
+􏷤􏷣􏷦com.google.common.collect.ImmutableMap􏷥
 
 􏲏􏲐􏲍build.buildfarm.instance.shard.JedisClusterFactory􏲎
 􏲏􏲐􏲍build.buildfarm.common.redis.BalancedRedisQueue􏲎
@@ -359,11 +361,9 @@ the expiration time is always refreshed􏶡
 􏶾string􏶽􏶼worker name􏶻􏶺a worker for where the blob is􏶹
 􏶴
     if (useMemoryCache){
-        getAnyRedisson(blobDigest);
+        return getAnyRedisson(blobDigest);
     }
-    else{
-        getAnyJedis(client,blobDigest);
-    }
+    return getAnyJedis(client,blobDigest);
 􏶳
 
 􏷐get a random worker for where the blob resides􏷏
@@ -374,7 +374,7 @@ the expiration time is always refreshed􏶡
 􏶴
     String key = cacheMapCasKey(blobDigest);
     Set<String> all = cacheMap.get(key).readAll();
-    return getRandomSetElement(all);
+    return getRandomElement(all);
 􏶳
 
 􏷐get a random worker for where the blob resides􏷏
@@ -389,20 +389,111 @@ the expiration time is always refreshed􏶡
 􏶳
 
 
-
-  public static <E> E getRandomSetElement(Set<E> set) {
+􏷐get a random element from the set􏷏
+􏶠assumes the set is not empty􏶡
+􏷘-􏷗􏴅Observer􏴆􏷒get random element􏷑
+􏷌T􏷋
+􏶜􏶝􏷆Set<T>􏷅􏷄set􏷃􏷀the set to get a random element from􏶿
+􏶾T􏶽􏶼random element􏶻􏶺a random element from the set􏶹
+􏶴
     return set.stream().skip(new Random().nextInt(set.size())).findFirst().orElse(null);
-  }
+􏶳
+
+
+􏷐get all of the workers for where a blob resides􏷏
+􏶠set is empty if the locaion of the blob is unknown􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒get􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to lookup a worker for􏶿
+􏶾Set<String>􏶽􏶼worker names􏶻􏶺all the workers where the blob is expected to be􏶹
+􏶴
+    if (useMemoryCache){
+        return getRedisson(blobDigest);
+    }
+    return getJedis(client,blobDigest);
+􏶳
+
+
+􏷐get all of the workers for where a blob resides􏷏
+􏶠set is empty if the locaion of the blob is unknown􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒get redisson􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to lookup a worker for􏶿
+􏶾Set<String>􏶽􏶼worker names􏶻􏶺all the workers where the blob is expected to be􏶹
+􏶴
+    String key = cacheMapCasKey(blobDigest);
+    return cacheMap.get(key).readAll();
+􏶳
+
+􏷐get all of the workers for where a blob resides􏷏
+􏶠set is empty if the locaion of the blob is unknown􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒get jedis􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to lookup a worker for􏶿
+􏶾Set<String>􏶽􏶼worker names􏶻􏶺all the workers where the blob is expected to be􏶹
+􏶴
+    String key = redisCasKey(blobDigest);
+    return client.call(jedis -> jedis.smembers(key));
+􏶳
+
+􏷐get all of the key values as a map from the digests given􏷏
+􏶠if there are no workers for the digest, the key is left out of the returned map􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒get map􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Iterable<Digest>􏷅􏷄blob digests􏷃􏷀the blob digests to get the key/values for􏶿
+􏶾Map<Digest, Set<String>>􏶽􏶼cas worker map􏶻􏶺the key/value map for digests to workers􏶹
+􏶴
+    if (useMemoryCache){
+        return getMapRedisson(blobDigests);
+    }
+    return getMapJedis(client,blobDigests);
+􏶳
+
+􏷐get all of the key values as a map from the digests given􏷏
+􏶠if there are no workers for the digest, the key is left out of the returned map􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒get map redisson􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆Iterable<Digest>􏷅􏷄blob digests􏷃􏷀the blob digests to get the key/values for􏶿
+􏶾Map<Digest, Set<String>>􏶽􏶼cas worker map􏶻􏶺the key/value map for digests to workers􏶹
+􏶴
+    ImmutableMap.Builder<Digest, Set<String>> blobDigestsWorkers = new ImmutableMap.Builder<>();
+      for (Digest blobDigest : blobDigests) {
+
+        String key = cacheMapCasKey(blobDigest);
+        Set<String> workers = cacheMap.get(key).readAll();
+
+        if (workers.isEmpty()) {
+          continue;
+        }
+        blobDigestsWorkers.put(blobDigest, workers);
+      }
+    return blobDigestsWorkers.build();
+􏶳
+
+􏷐get all of the key values as a map from the digests given􏷏
+􏶠if there are no workers for the digest, the key is left out of the returned map􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒get map jedis􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Iterable<Digest>􏷅􏷄blob digests􏷃􏷀the blob digests to get the key/values for􏶿
+􏶾Map<Digest, Set<String>>􏶽􏶼cas worker map􏶻􏶺the key/value map for digests to workers􏶹
+􏶴
+    ImmutableMap.Builder<Digest, Set<String>> blobDigestsWorkers = new ImmutableMap.Builder<>();
+    client.run(
+        jedis -> {
+          for (Digest blobDigest : blobDigests) {
+
+            String key = redisCasKey(blobDigest);
+            Set<String> workers = jedis.smembers(key);
+
+            if (workers.isEmpty()) {
+              continue;
+            }
+            blobDigestsWorkers.put(blobDigest, workers);
+          }
+        });
+    return blobDigestsWorkers.build();
+􏶳
 
 
 
-  @Override
-  public Set<String> getBlobLocationSet(Digest blobDigest) throws IOException {
-    return client.call(jedis -> jedis.smembers(casKey(blobDigest)));
-
-    // String key = DigestUtil.toString(blobDigest);
-    // return casLookup.get(key).readAll();
-  }
 
   @Override
   public Map<Digest, Set<String>> getBlobDigestsWorkers(Iterable<Digest> blobDigests)
