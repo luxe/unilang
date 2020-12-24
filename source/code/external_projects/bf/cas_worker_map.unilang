@@ -322,36 +322,108 @@ the expiration time is always refreshed􏶡
 
 􏷐remove worker value from all blob keys􏷏
 􏶠if the blob is already missing, or the worker doesn't exist, this will be no effect on the key􏶡
-􏷘+􏷗􏴅Transformer􏴆􏷒remove all redisson􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏷘-􏷗􏴅Transformer􏴆􏷒remove all redisson􏷑􏶸IOException􏶷􏶶exception changing state􏶵
 􏶜􏶝􏷆Iterable<Digest>􏷅􏷄blob digests􏷃􏷀the blob digests to remove the worker from􏶿
 􏶜􏶝􏷆string􏷅􏷄worker name􏷃􏷀the worker name to remove􏶿
 􏶴
+     for (Digest blobDigest : blobDigests) {
+       String key = cacheMapCasKey(blobDigest);
+       cacheMap.remove(key,workerName);
+     }
 􏶳
 
 􏷐remove worker value from all blob keys􏷏
 􏶠if the blob is already missing, or the worker doesn't exist, this will be no effect on the key􏶡
-􏷘+􏷗􏴅Transformer􏴆􏷒remove all jedis􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏷘-􏷗􏴅Transformer􏴆􏷒remove all jedis􏷑􏶸IOException􏶷􏶶exception changing state􏶵
 􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
 􏶜􏶝􏷆Iterable<Digest>􏷅􏷄blob digests􏷃􏷀the blob digests to remove the worker from􏶿
 􏶜􏶝􏷆string􏷅􏷄worker name􏷃􏷀the worker name to remove􏶿
 􏶴
-􏶳
-
-
 
     client.run(
         jedis -> {
           JedisClusterPipeline p = jedis.pipelined();
           for (Digest blobDigest : blobDigests) {
-            p.srem(casKey(blobDigest), workerName);
+            String key = redisCasKey(blobDigest);
+            p.srem(key, workerName);
           }
           p.sync();
         });
+􏶳
 
-    // for (Digest blobDigest : blobDigests) {
-    //   String key = DigestUtil.toString(blobDigest);
-    //   casLookup.remove(key,workerName);
-    // }
+􏷐get a random worker for where the blob resides􏷏
+􏶠picking a worker may done differently in the future􏶡
+􏷘+􏷗􏴅Transformer􏴆􏷒get any􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to lookup a worker for􏶿
+􏶾string􏶽􏶼worker name􏶻􏶺a worker for where the blob is􏶹
+􏶴
+    if (useMemoryCache){
+        getAnyRedisson(blobDigest);
+    }
+    else{
+        getAnyJedis(client,blobDigest);
+    }
+􏶳
+
+􏷐get a random worker for where the blob resides􏷏
+􏶠picking a worker may done differently in the future􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒get any redisson􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to lookup a worker for􏶿
+􏶾string􏶽􏶼worker name􏶻􏶺a worker for where the blob is􏶹
+􏶴
+    String key = cacheMapCasKey(blobDigest);
+    Set<String> all = cacheMap.get(key).readAll();
+    return getRandomSetElement(all);
+􏶳
+
+􏷐get a random worker for where the blob resides􏷏
+􏶠picking a worker may done differently in the future􏶡
+􏷘-􏷗􏴅Transformer􏴆􏷒get any jedis􏷑􏶸IOException􏶷􏶶exception changing state􏶵
+􏶜􏶝􏷆RedisClient􏷅􏷄client􏷃􏷀client used for interacting with redis when not using cacheMap􏶿
+􏶜􏶝􏷆Digest􏷅􏷄blob digest􏷃􏷀the blob digest to lookup a worker for􏶿
+􏶾string􏶽􏶼worker name􏶻􏶺a worker for where the blob is􏶹
+􏶴
+    String key = redisCasKey(blobDigest);
+    return client.call(jedis -> jedis.srandmember(key));
+􏶳
+
+
+
+
+
+
+
+  @Override
+  public Set<String> getBlobLocationSet(Digest blobDigest) throws IOException {
+    return client.call(jedis -> jedis.smembers(casKey(blobDigest)));
+
+    // String key = DigestUtil.toString(blobDigest);
+    // return casLookup.get(key).readAll();
+  }
+
+  @Override
+  public Map<Digest, Set<String>> getBlobDigestsWorkers(Iterable<Digest> blobDigests)
+      throws IOException {
+    // FIXME pipeline
+    ImmutableMap.Builder<Digest, Set<String>> blobDigestsWorkers = new ImmutableMap.Builder<>();
+    client.run(
+        jedis -> {
+          for (Digest blobDigest : blobDigests) {
+
+            Set<String> workers = jedis.smembers(casKey(blobDigest));
+
+            // String key = DigestUtil.toString(blobDigest);
+            // Set<String> workers = casLookup.get(key).readAll();
+
+            if (workers.isEmpty()) {
+              continue;
+            }
+            blobDigestsWorkers.put(blobDigest, workers);
+          }
+        });
+    return blobDigestsWorkers.build();
+  }
 
 􏷐get the redis key name􏷏
 􏶠this is to be used for the direct redis implementation􏶡
