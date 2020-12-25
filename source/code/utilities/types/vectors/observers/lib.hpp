@@ -268,6 +268,16 @@ T First_Element_Or(std::vector<T> const& v, T const& val_if_empty){
     return val_if_empty;
 }
 
+template <class T>
+std::vector<T> Flatten(std::vector<std::vector<T>> const& v){
+  std::vector<T> results;
+  for (auto const& it: v){
+    results.insert(results.end(), it.begin(), it.end());
+  }
+  
+  return results;
+}
+
 template<typename T>
 T Flatten(std::vector<T> const& v){
 	T t;

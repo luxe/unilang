@@ -93,10 +93,18 @@ void Add_To_Vector_If_Not_Already_There(std::vector<T> & vec, T const& item){
 }
 
 template <typename T>
+void Expand_Vector_For_Index(std::vector<T> & vec, size_t at_index){
+    for (int i = vec.size(); i < at_index+1; ++i){
+        T t;
+        vec.emplace_back(t);
+    }
+}
+
+template <typename T>
 void Safely_Add_To_Vector_At_Index(std::vector<T> & vec, size_t at_index, T const& item){
     
     //buffer with the item as needed
-    for (int i = vec.size(); i < at_index; ++i){
+    for (int i = vec.size(); i < at_index+1; ++i){
         vec.emplace_back(item);
     }
     
