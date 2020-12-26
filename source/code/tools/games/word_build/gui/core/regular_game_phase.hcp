@@ -348,19 +348,8 @@ class
 
 ◀private: static▶ void ☀Update_Game_State(Game_State & state, Assets & assets) ❰
     
-    //update timer
-    sf::Time elapsed_time = state.countdown.getElapsedTime();
-    long time_left = state.total_round_time_s - elapsed_time.asSeconds();
-    assets.countdown.setString(std::to_string(time_left));
-    
-    //end the game if the time has run out
-    if (time_left <= 0){
-        assets.countdown.setString("0");
-        
-        End_Game_Changes(state,assets);
-        
-        state.phase = Game_Phase::END_GAME;
-    }
+    Update_Main_Timer_And_Game_End(state,assets);
+    Update_No_Action_Timer_And_Game_End(state,assets);
     
     //update score
     std::string score = std::to_string(state.puzzle.words.size());
@@ -374,6 +363,40 @@ class
     Update_Player_Combo_Bar(state.p1_state,assets.p1);
     Update_Player_Combo_Bar(state.p2_state,assets.p2);
 
+❱
+
+◀private: static▶ void ☀Update_Main_Timer_And_Game_End(Game_State & state, Assets & assets) ❰
+
+    //update timer
+    sf::Time elapsed_time = state.countdown.getElapsedTime();
+    long time_left = state.total_round_time_s - elapsed_time.asSeconds();
+    assets.countdown.setString(std::to_string(time_left));
+    
+    //end the game if the time has run out
+    if (time_left <= 0){
+        assets.countdown.setString("0");
+        
+        End_Game_Changes(state,assets);
+        
+        state.phase = Game_Phase::END_GAME;
+    }
+❱
+
+◀private: static▶ void ☀Update_No_Action_Timer_And_Game_End(Game_State & state, Assets & assets) ❰
+
+    //update timer
+    sf::Time elapsed_time = state.no_action_countdown.getElapsedTime();
+    long time_left = state.no_action_duration_end_game_early_s - elapsed_time.asSeconds();
+    assets.no_action_countdown.setString(std::to_string(time_left));
+    
+    //end the game if the time has run out
+    if (time_left <= 0){
+        assets.no_action_countdown.setString("0");
+        
+        End_Game_Changes(state,assets);
+        
+        state.phase = Game_Phase::END_GAME;
+    }
 ❱
 
 ◀private: static▶ std::string ☀Get_Fraction_And_Percentage(Game_State & state, Assets & assets) ❰
