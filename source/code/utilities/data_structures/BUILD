@@ -89,3 +89,12 @@ enum_cpp(
         "does_not_halt",
     ],
 )
+
+
+enum_cpp(
+    name = "string_sort_strategy",
+    values = [
+        "alphabetize",
+        "alphabetize_and_sort_by_length",
+    ],
+)

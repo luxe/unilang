@@ -14,6 +14,7 @@ hcp(
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
         "//code/utilities/peripheral/keyboard/joycons",
+        "//code/utilities/data_structures:string_sort_strategy",
         "@sfml",
     ],
 )
