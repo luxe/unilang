@@ -111,6 +111,8 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
+        "//code/tools/games/word_build/gui/core/regular_actions:regular_actions_getter",
+        "//code/tools/games/word_build/gui/core/regular_actions:regular_actions",
         "@sfml",
     ],
 )
