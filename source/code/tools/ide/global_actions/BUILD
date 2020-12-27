@@ -38,5 +38,30 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "@imgui//:imgui_sdl_opengl3",
+        "//code/tools/ide/global_actions:save_state_serializer",
+    ],
+)
+
+hcp(
+    name = "save_state",
+    deps = [
+        "//code/tools/ide/settings:ide_elements",
+    ],
+)
+
+hcp(
+    name = "save_state_serializer",
+    deps = [
+        "//code/tools/ide/global_actions:global_action",
+        "//code/tools/ide/global_actions:global_action_decider",
+        "//code/tools/ide/settings:ide_settings",
+        "//code/utilities/code:concept_string_tree_parser",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+        "//code/utilities/formats/json/converters:json_file_io",
+        "//code/utilities/formats/json/converters:lib",
+        "//code/utilities/graphics/sdl:sdl_fullscreener",
+        "//code/utilities/program/wrappers/zenity/file_selector",
+        "@imgui//:imgui_sdl_opengl3",
+        "//code/tools/ide/global_actions:save_state",
     ],
 )
