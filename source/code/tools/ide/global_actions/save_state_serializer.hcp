@@ -23,13 +23,35 @@ class
     x.elements = settings.elements;
     
     //save it
-    Json_File_Io::Read_Compressed_Json_File(x,settings.desktop.save.file_name,Json_Compression_Format::BSON);
+    Json_File_Io::Write_Compressed_Json_File(x,settings.desktop.save.file_name,Json_Compression_Format::BSON);
     
 ❱
 ◀public: static▶ void ☀Load(Ide_Settings & settings)❰
     
-    //load raw json first
+    //load raw json first so that we understand the version it was saved at
     auto json = Json_File_Io::Read_Compressed_Json_From_File(settings.desktop.save.file_name,Json_Compression_Format::BSON);
     int version = json["version"];
-    std::cout << version << std::endl;
+    
+    //provide forward compatibility on the json object by adjusting it to meet the needs of the current version
+    //after thuis adjustment it will be safe to deserialize.
+    Upgrade_Json_For_Deserialization_Compadibility(json,version);
+    
+    //Now that the json has been modified, we can deserialize the object
+    Save_State x;
+    x = json.get<Save_State>();
+    
+    //unpack it
+    settings.elements = x.elements;
+❱
+
+
+
+◀private: static▶ void ☀Upgrade_Json_For_Deserialization_Compadibility(nlohmann::json & j, int version)❰
+
+    if (version <= 1){
+        //DO WHEN NEEDED
+    }
+    if (version <= 2){
+        //DO WHEN NEEDED
+    }
 ❱
