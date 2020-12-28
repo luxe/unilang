@@ -1,0 +1,43 @@
+class
+❪"code/tools/ide/settings/ide_elements"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+⚯
+❪"code/utilities/types/variant/lib"❫
+❪"code/utilities/code/concept_string_tree_parser"❫
+❪"code/utilities/formats/json/converters/lib"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/buildable_schema_faced_tree_tokenizer"❫
+⚞⚟
+
+◀public: static▶ model::Code ☀Convert(Ide_Elements & elements)❰
+
+
+    model::Code code;
+    bool found = false;
+
+    //find the type we care about
+    for (auto & it: elements.types){
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree & x) {
+                //don't care
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+                
+                //tokenize
+                auto tokens = Buildable_Schema_Faced_Tree_Tokenizer::Tokenize(x);
+                //Json_File_Io::Print_Json(tokens);
+                
+                //parse
+                code = Concept_String_Tree_Parser::Parse(tokens);
+                //Json_File_Io::Print_Json(code);
+                found = true;
+                
+            },
+        }, it.element);
+        
+        if (found){
+            break;
+        }
+    }
+    
+    return code;
+❱

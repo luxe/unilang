@@ -35,3 +35,15 @@ hcp(
         "//code/utilities/code/state:save_state",
     ],
 )
+
+hcp(
+    name = "state_to_code_converter",
+    deps = [
+        "//code/tools/ide/settings:ide_elements",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/types/variant:lib",
+        "//code/utilities/code:concept_string_tree_parser",
+        "//code/utilities/formats/json/converters:lib",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+    ],
+)

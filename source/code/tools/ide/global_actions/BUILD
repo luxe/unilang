@@ -39,6 +39,7 @@ hcp(
         "//code/utilities/program/wrappers/zenity/file_selector",
         "@imgui//:imgui_sdl_opengl3",
         "//code/tools/ide/global_actions:save_state_serializer",
+        "//code/utilities/code/state:state_to_code_converter",
     ],
 )
 
