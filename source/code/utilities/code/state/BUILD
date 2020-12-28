@@ -45,5 +45,6 @@ hcp(
         "//code/utilities/code:concept_string_tree_parser",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_tokenizer",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
