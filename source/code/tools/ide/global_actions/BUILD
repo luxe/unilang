@@ -63,5 +63,7 @@ hcp(
         "//code/utilities/program/wrappers/zenity/file_selector",
         "@imgui//:imgui_sdl_opengl3",
         "//code/tools/ide/global_actions:save_state",
+        "//code/utilities/code/state:save_state_loader",
+        "//code/utilities/code/state:save_state_saver",
     ],
 )

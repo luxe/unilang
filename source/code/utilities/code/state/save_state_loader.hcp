@@ -1,0 +1,42 @@
+class
+❪"code/tools/ide/settings/ide_elements"❫
+❪"code/utilities/formats/json/converters/json_file_io"❫
+⚯
+❪"code/tools/ide/global_actions/global_action_decider"❫
+❪"code/utilities/program/wrappers/zenity/file_selector/file_selector"❫
+❪"code/utilities/formats/json/converters/lib"❫
+❪"code/utilities/code/concept_string_tree_parser"❫
+❪"code/utilities/formats/json/converters/lib"❫
+❪"code/tools/ide/global_actions/save_state"❫
+⚞⚟
+
+
+◀public: static▶ Ide_Elements ☀Load(std::string const& file_name)❰
+    
+    //load raw json first so that we understand the version it was saved at
+    auto json = Json_File_Io::Read_Compressed_Json_From_File(file_name,Json_Compression_Format::BSON);
+    int version = json["version"];
+    
+    //provide forward compatibility on the json object by adjusting it to meet the needs of the current version
+    //after thuis adjustment it will be safe to deserialize.
+    Upgrade_Json_For_Deserialization_Compadibility(json,version);
+    
+    //Now that the json has been modified, we can deserialize the object
+    Save_State x;
+    x = json.get<Save_State>();
+    
+    //unpack it
+    return x.elements;
+❱
+
+
+
+◀private: static▶ void ☀Upgrade_Json_For_Deserialization_Compadibility(nlohmann::json & j, int version)❰
+
+    if (version <= 1){
+        //DO WHEN NEEDED
+    }
+    if (version <= 2){
+        //DO WHEN NEEDED
+    }
+❱
