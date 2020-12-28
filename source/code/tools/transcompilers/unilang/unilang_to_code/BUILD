@@ -8,5 +8,9 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = [
         "//code/tools/transcompilers/unilang/unilang_to_code/program_options:lib",
+        "//code/utilities/formats/json/converters:json_file_io",
+        "//code/tools/ide/global_actions:save_state_serializer",
+        "//code/utilities/code/state:state_to_code_converter",
+        "//code/utilities/code/state:save_state_loader",
     ],
 )
