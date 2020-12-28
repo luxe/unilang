@@ -4,6 +4,13 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 hcp(
+    name = "save_state",
+    deps = [
+        "//code/tools/ide/settings:ide_elements",
+    ],
+)
+
+hcp(
     name = "save_state_loader",
     deps = [
         "//code/tools/ide/settings:ide_elements",
@@ -12,7 +19,7 @@ hcp(
         "//code/utilities/program/wrappers/zenity/file_selector:file_selector",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/code:concept_string_tree_parser",
-        "//code/tools/ide/global_actions:save_state",
+        "//code/utilities/code/state:save_state",
     ],
 )
 
@@ -25,6 +32,6 @@ hcp(
         "//code/utilities/program/wrappers/zenity/file_selector:file_selector",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/code:concept_string_tree_parser",
-        "//code/tools/ide/global_actions:save_state",
+        "//code/utilities/code/state:save_state",
     ],
 )

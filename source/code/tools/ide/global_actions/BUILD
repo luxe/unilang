@@ -43,13 +43,6 @@ hcp(
 )
 
 hcp(
-    name = "save_state",
-    deps = [
-        "//code/tools/ide/settings:ide_elements",
-    ],
-)
-
-hcp(
     name = "save_state_serializer",
     deps = [
         "//code/tools/ide/global_actions:global_action",
@@ -62,7 +55,6 @@ hcp(
         "//code/utilities/graphics/sdl:sdl_fullscreener",
         "//code/utilities/program/wrappers/zenity/file_selector",
         "@imgui//:imgui_sdl_opengl3",
-        "//code/tools/ide/global_actions:save_state",
         "//code/utilities/code/state:save_state_loader",
         "//code/utilities/code/state:save_state_saver",
     ],
