@@ -24,6 +24,7 @@ hcp(
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
@@ -42,6 +43,7 @@ hcp(
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
@@ -62,6 +64,7 @@ hcp(
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
@@ -88,6 +91,7 @@ hcp(
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
         "@pybind11",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 

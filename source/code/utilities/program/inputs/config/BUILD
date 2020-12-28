@@ -16,6 +16,7 @@ hcp(
         "//code/utilities/output/diagnostic:diagnostic_settings",
         "//code/utilities/program/inputs/config:config_monitor_settings",
         "//code/utilities/streams/filestreams/read_all:lib",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 

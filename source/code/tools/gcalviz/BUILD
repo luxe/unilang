@@ -41,6 +41,7 @@ hcp(
         "//code/utilities/web/endpoints/gcal:gcal_credentials",
         "//code/utilities/web/endpoints/gcal:gcal_getter",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
+        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
