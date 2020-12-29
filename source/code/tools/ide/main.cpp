@@ -7,6 +7,7 @@
 #include "code/utilities/data_structures/graphics/objects/frame_elements.hpp"
 #include "code/utilities/peripheral/pc/pc_input_state_getter.hpp"
 #include "code/tools/ide/global_actions/global_action_handler.hpp"
+#include "code/tools/ide/program_options/program_options.hpp"
 
 
 //other programming editors for inspiration:
@@ -33,6 +34,9 @@
 //maybe reorganize all draw things (functions with the objects / mouse under label)
 int main(int argc, char** argv)
 {
+    
+    Program_Options po(argc,argv);
+    std::cout << po.File() << std::endl;
     
     //lambdas into main application loop
     auto s = Ide_Settings_Getter::Get();
