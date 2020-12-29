@@ -121,6 +121,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_first_name",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_message",
         "//code/utilities/data_structures/tree/generic/tokens:tree_token",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_enabled",
         "@tree",
     ],
 )
