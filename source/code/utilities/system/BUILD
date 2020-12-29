@@ -29,3 +29,11 @@ cc_binary(
     srcs = ["env.cpp"],
     deps = ["//code/utilities/system:lib"],
 )
+
+hcp(
+    name = "mime_xml_creator",
+    deps = [
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/creators:lib",
+    ],
+)

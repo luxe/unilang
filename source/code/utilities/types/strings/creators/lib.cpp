@@ -27,6 +27,51 @@ std::string Chars_To_String(std::vector<char> chars){
   }
   return str;
 }
+
+std::string Start_Tag(std::string const& tag_name, std::string const& key, std::string const& value)
+{
+  std::string str;
+  str += "<";
+  str += tag_name;
+  str += " ";
+  str += Create_XML_Attribute_Equals_Quoted_Value(key,value);
+  str += ">";
+  return str;
+}
+
+std::string Tag_Content(std::string const& tag_name,std::string const& content)
+{
+  std::string str;
+  str += "<";
+  str += tag_name;
+  str += ">";
+  str += content;
+  str += "</";
+  str += tag_name;
+  str += ">";
+  return str;
+}
+
+std::string Single_End_Tag(std::string const& tag_name)
+{
+  std::string str;
+  str += "<";
+  str += tag_name;
+  str += "/>";
+  return str;
+}
+
+std::string Single_End_Tag(std::string const& tag_name, std::string const& key, std::string const& value)
+{
+  std::string str;
+  str += "<";
+  str += tag_name;
+  str += " ";
+  str += Create_XML_Attribute_Equals_Quoted_Value(key,value);
+  str += "/>";
+  return str;
+}
+
 std::string Create_XML_Attribute_Equals_Quoted_Value(std::string const& key, std::string const& value)
 {
   std::string str;
@@ -35,5 +80,14 @@ std::string Create_XML_Attribute_Equals_Quoted_Value(std::string const& key, std
   str += "\"";
   str += value;
   str += "\"";
+  return str;
+}
+
+std::string End_Tag(std::string const& tag_name)
+{
+  std::string str;
+  str += "</";
+  str += tag_name;
+  str += ">";
   return str;
 }
