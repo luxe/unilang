@@ -1,0 +1,52 @@
+class
+❪string❫
+❪iostream❫
+❪"code/tools/ide/program_options/program_options"❫
+⚯
+❪"code/tools/ide/settings/ide_settings"❫
+❪"code/tools/ide/settings/ide_settings_getter"❫
+❪"code/utilities/data_structures/graphics/objects/frame_elements"❫
+❪"code/utilities/graphics/imgui/loop/mechanics"❫
+❪"code/utilities/graphics/imgui/ui_renders"❫
+❪"code/utilities/graphics/imgui/render/frame_renderer"❫
+❪"code/tools/ide/frame/frame_logic_updater"❫
+❪"code/tools/ide/global_actions/global_action_handler"❫
+❪"code/tools/ide/global_actions/save_state_serializer"❫
+⚞⚟
+
+
+◀public: static▶ int ☀Run(Program_Options const& po)❰
+
+    //lambdas into main application loop
+    auto s = Ide_Settings_Getter::Get();
+    
+    //perform initial file load if requested
+    if (!po.File().empty()){
+        s.desktop.save.file_name = po.File();
+        Save_State_Serializer::Load(s);
+    }
+    
+    Frame_Elements elements;
+    auto before = [&]()                  {};
+    auto logic =  [&](SDL_Window* window) {
+    
+        elements = Frame_Logic_Updater::each_frame(s,window);
+    
+    };
+    auto render = [&](SDL_Window* window) {
+        
+        Frame_Renderer::Render(s.desktop.background,elements);
+        
+        //this is handled here because for some reason blocking on an OS window during logic update causes a double key-press.  
+        //so for example, ctrl+s to save will be triggered twice, and the window will pop up twice.  Maybe I should do something with futures/async,
+        //but as far as I can tell, having this here instead of logic is the easiest fix.
+        Global_Action_Handler::Handle(s, window);
+        
+       //bool flag = true;
+       //ImGui::ShowDemoWindow(&flag);
+    };
+    
+    return Mechanics::render_each_frame(s.desktop.init,before,logic,render);
+
+
+❱
