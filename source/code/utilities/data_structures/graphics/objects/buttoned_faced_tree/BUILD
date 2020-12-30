@@ -163,6 +163,7 @@ enum_cpp(
         "up_activation",
         "collapse_toggle",
         "enable_toggle",
+        "delete",
         "none",
     ],
 )
