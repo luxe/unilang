@@ -25,10 +25,15 @@
 //label button
 //use it set growth bool
 //maybe reorganize all draw things (functions with the objects / mouse under label)
+
+//menu selection:
+//change label
+//color
+//muli-level
+
+//drag functionality to reformat tree
 int main(int argc, char** argv)
 {
-    
     Program_Options po(argc,argv);
-    
     return Unilang_Ide::Run(po);
 }
