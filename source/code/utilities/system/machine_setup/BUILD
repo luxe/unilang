@@ -10,11 +10,6 @@ hcp(
     ],
 )
 
-cc_binary(
-    name = "refresh_keygen",
-    srcs = ["refresh_keygen.cpp"],
-    deps = ["//code/utilities/system/machine_setup:keygen_refresher"],
-)
 
 hcp(
     name = "machine_provisioner",
@@ -24,10 +19,4 @@ hcp(
         "//code/utilities/program/wrappers/git:git_setuper",
         "//code/utilities/system/machine_setup:keygen_refresher",
     ],
-)
-
-cc_binary(
-    name = "provision_machine",
-    srcs = ["provision_machine.cpp"],
-    deps = ["//code/utilities/system/machine_setup:machine_provisioner"],
 )

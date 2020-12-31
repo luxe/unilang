@@ -26,6 +26,13 @@ hcp(
 )
 
 hcp(
+    name = "child_lookup_map_find",
+    deps = [
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
+    ],
+)
+
+hcp(
     name = "string_to_string_tree",
     deps = [
         "//code/utilities/data_structures/tree/generic:string_tree",

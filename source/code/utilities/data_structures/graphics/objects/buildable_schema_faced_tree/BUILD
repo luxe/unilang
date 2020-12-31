@@ -93,6 +93,22 @@ hcp(
         "//code/utilities/types/tree:full_path_name",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_creator",
+    ],
+)
+
+hcp(
+    name = "schema_tree_menu_creator",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
+        "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
+        "//code/utilities/data_structures/graphics/objects/select_menu:select_menu",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
     ],
 )
 

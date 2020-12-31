@@ -24,12 +24,6 @@ cc_library(
     deps = ["//code/utilities/program/call:lib"],
 )
 
-cc_binary(
-    name = "env",
-    srcs = ["env.cpp"],
-    deps = ["//code/utilities/system:lib"],
-)
-
 hcp(
     name = "mime_xml_creator",
     deps = [
