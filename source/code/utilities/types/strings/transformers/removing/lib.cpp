@@ -8,6 +8,16 @@
 #include <iostream>
 
 
+std::string Remove_And_Get_First_Char(std::string & s){
+    
+    std::string result = "";
+    if (!s.empty()){
+        result += s.front();
+        s.erase(0,1);
+    }
+    return result;
+}
+
 std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c)
 {
 	str.erase(std::remove(str.begin(), str.end(), c), str.end());

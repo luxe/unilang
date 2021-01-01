@@ -5,6 +5,8 @@
 std::string& Remove_All_Instances_Of_Char(std::string & str, char const& c);
 std::string& Remove_First_Instance_Of_Char(std::string & str, char const& c);
 
+std::string Remove_And_Get_First_Char(std::string & str);
+
 //remove certain chars
 std::string& Remove_Commas(std::string & str);
 std::string& Remove_Spaces(std::string & str);

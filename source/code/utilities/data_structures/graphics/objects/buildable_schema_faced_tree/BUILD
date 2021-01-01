@@ -96,6 +96,7 @@ hcp(
         "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_creator",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_click_handler",
     ],
 )
 
@@ -119,5 +120,18 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/tree/generic/tokens:tree_token",
+    ],
+)
+
+hcp(
+    name = "schema_tree_menu_click_handler",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
+        "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_click_finder",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
+        "//code/utilities/types/strings/transformers/removing:lib",
     ],
 )

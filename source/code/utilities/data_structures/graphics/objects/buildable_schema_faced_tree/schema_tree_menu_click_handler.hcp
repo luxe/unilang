@@ -1,0 +1,55 @@
+class
+❪string❫
+❪unordered_map❫
+❪utility❫
+❪cstdlib❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/data/buildable_face_tree"❫
+❪"code/utilities/data_structures/tree/generic/child_lookup_map"❫
+⚯
+❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_click_finder"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade/buttoned_faced_label_premades"❫
+❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree_full_path_name"❫
+❪"code/utilities/data_structures/tree/generic/child_lookup_map_find"❫
+❪"code/utilities/types/strings/transformers/removing/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup)❰
+
+    auto found = Tree_Label_Click_Finder::Find_Clicked_Label(tree.menu.menu);
+    if (found != tree.menu.menu.nodes.end()){
+        Handle_Menu_Action(tree,lookup,found->state.faces[0].label.message);
+    }
+❱
+
+
+◀private: static▶ void ☀Handle_Menu_Action(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string message)❰
+    
+    auto symbol = Remove_And_Get_First_Char(message);
+    
+    if (symbol == "+"){
+        Add_Child_Node(tree,lookup,message);
+    }
+
+❱
+
+◀private: static▶ void ☀Add_Child_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+
+    auto x = Create_Styled_Unilang_Node(tree,lookup,message);
+    tree.structure.nodes.append_child(tree.selected_node,x);
+❱
+◀private: static▶ Buttoned_Faced_Label ☀Create_Styled_Unilang_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+
+    if (Is_Chosen_Child_A_Leaf(tree.structure,lookup,tree.selected_node,message)){
+        return Buttoned_Faced_Label_Premades::Opened_Unilang_Leaf_Node(message);
+    }
+    return Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
+❱
+
+
+◀private: static▶ bool ☀Is_Chosen_Child_A_Leaf(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
+    auto full_name = Button_Face_Tree_Full_Path_Name::Get(structure,it);
+    full_name += child_name + "/";
+    
+    auto strs = Child_Lookup_Map_Find::Get_Children(lookup,full_name);
+    return strs.empty();
+❱
