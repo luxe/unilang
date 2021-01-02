@@ -1,4 +1,4 @@
-def cpp_main(name, deps = [], copts = []):
+def cpp_main(name, deps = [], copts = [], data = []):
     #implicit file names
     explicit_cpp_file = name + ".cpp"
 
@@ -8,4 +8,5 @@ def cpp_main(name, deps = [], copts = []):
         srcs = [explicit_cpp_file],
         copts = copts,
         deps = deps,
+        data = data
     )

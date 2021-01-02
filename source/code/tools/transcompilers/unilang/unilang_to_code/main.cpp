@@ -10,6 +10,9 @@ int main(int argc, char** argv){
 
     //get program options
     Program_Options po = Program_Options(argc,argv);
+    
+    //std::cout << po.Input_File() << std::endl;
+    //std::cout << po.Output_File() << std::endl;
 
     //read
     auto elements = Save_State_Loader::Load(po.Input_File());
