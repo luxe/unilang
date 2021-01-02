@@ -5,12 +5,6 @@
 
 int main(){
     
-    //system("ls");
-    //system("ls code");
-    //system("ls code/hello_world");
-    //system("ls code/hello_world/unilang/hello_world");
-    //system("env");
-    
     std::cout << Read_Entire_File_Into_String(Hello_World_Json_Data_Getter::Get()) << std::endl;
     
 }
