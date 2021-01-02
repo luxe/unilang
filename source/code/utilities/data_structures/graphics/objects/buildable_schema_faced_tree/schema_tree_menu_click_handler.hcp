@@ -11,6 +11,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_tree/button_face_tree_full_path_name"❫
 ❪"code/utilities/data_structures/tree/generic/child_lookup_map_find"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup)❰
@@ -33,32 +34,42 @@ class
         Replace_Selected_Node(tree,lookup,message);
     }
     if (symbol == ":"){
-        if (symbol == "delete"){
-        }
+        Handle_Generic_Tree_Actions(tree,lookup,message);
     }
 
 ❱
 
+◀private: static▶ void ☀Handle_Generic_Tree_Actions(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+    if (message == "delete"){
+        Buildable_Face_Tree_Action_Doer::Do_Label_Action(tree,Buildable_Label_Action::DELETE);
+    }
+❱
 ◀private: static▶ void ☀Add_Child_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
 
-    auto x = Create_Styled_Unilang_Node(tree,lookup,message);
+    auto x = Create_Styled_Unilang_Node_Via_Parent(tree,tree.selected_node,lookup,message);
     tree.structure.nodes.append_child(tree.selected_node,x);
 ❱
 ◀private: static▶ void ☀Replace_Selected_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
-    auto x = Create_Styled_Unilang_Node(tree,lookup,message);
+
+    //I think this will always be valid because you won't have the choice to replace on a non-parent node.
+    //so this should not through a navigation error.
+    auto parent = tree.structure.nodes.parent(tree.selected_node);
+    
+    
+    auto x = Create_Styled_Unilang_Node_Via_Parent(tree,parent,lookup,message);
     *tree.selected_node = x;
 ❱
 
-◀private: static▶ Buttoned_Faced_Label ☀Create_Styled_Unilang_Node(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, std::string const& message)❰
+◀private: static▶ Buttoned_Faced_Label ☀Create_Styled_Unilang_Node_Via_Parent(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Child_Lookup_Map const& lookup, std::string const& message)❰
 
-    if (Is_Chosen_Child_A_Leaf(tree.structure,lookup,tree.selected_node,message)){
+    if (Is_Chosen_Child_A_Leaf(tree.structure,lookup,parent,message)){
         return Buttoned_Faced_Label_Premades::Opened_Unilang_Leaf_Node(message);
     }
     return Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
 ❱
 
 
-◀private: static▶ bool ☀Is_Chosen_Child_A_Leaf(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
+◀private: static▶ bool ☀Is_Chosen_Child_A_Leaf(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, ::tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
     auto full_name = Button_Face_Tree_Full_Path_Name::Get(structure,it);
     full_name += child_name + "/";
     
