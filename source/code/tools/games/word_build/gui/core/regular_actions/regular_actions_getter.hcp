@@ -7,21 +7,39 @@ class
 ❪SFML/Graphics.hpp❫
 ❪SFML/Graphics/Transformable.hpp❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_gamepad_phases"❫
-❪"code/tools/games/word_build/gui/core/regular_actions/regular_actions"❫
+❪"code/tools/games/word_build/gui/core/regular_actions/regular_action"❫
 ⚯
 ⚞⚟
 
-◀public: static▶ Regular_Actions ☀Get(F310_Gamepad_Phases const& phases) ❰
-    Regular_Actions x;
+◀public: static▶ Regular_Action ☀Get(F310_Gamepad_Phases const& phases) ❰
     
-    x.restart_game = (!phases.previous.center.start && phases.current.center.start);
-    x.end_game = (!phases.previous.center.back && phases.current.center.back);
-    x.go_to_menu = (!phases.previous.center.center && phases.current.center.center);
+    if (!phases.previous.center.start && phases.current.center.start){
+        return Regular_Action::RESTART_GAME;
+    }
+    if (!phases.previous.center.back && phases.current.center.back){
+        return Regular_Action::END_GAME;
+    }
     
-    x.move_left = (!phases.previous.arrows.left && phases.current.arrows.left);
-    x.move_right = (!phases.previous.arrows.right && phases.current.arrows.right);
-    x.select = (!phases.previous.buttons.right && phases.current.buttons.right);
-    x.clear = (!phases.previous.buttons.down && phases.current.buttons.down);
-    x.backspace = (!phases.previous.buttons.left && phases.current.buttons.left);
-    return x;
+    if (!phases.previous.center.center && phases.current.center.center){
+        return Regular_Action::GO_TO_MENU;
+    }
+    
+    if (!phases.previous.arrows.left && phases.current.arrows.left){
+        return Regular_Action::MOVE_LEFT;
+    }
+    if (!phases.previous.arrows.right && phases.current.arrows.right){
+        return Regular_Action::MOVE_RIGHT;
+    }
+    if (!phases.previous.buttons.right && phases.current.buttons.right){
+        return Regular_Action::SELECT;
+    }
+    if (!phases.previous.buttons.down && phases.current.buttons.down){
+        return Regular_Action::BACKSPACE;
+    }
+    if (!phases.previous.buttons.left && phases.current.buttons.left){
+        return Regular_Action::CLEAR;
+    }
+    
+    
+    return Regular_Action::NONE;
 ❱
