@@ -5,6 +5,11 @@ load("//bazel/rules/unilang:unilang_to_code.bzl", "unilang_to_code")
 
 unilang_to_code("hello_world")
 
-cpp_main("main",data=[
-    ":hello_world_json_data"
-])
+cpp_main("main",
+
+deps = [
+    "//code/hello_world/unilang/hello_world:hello_world_json_data_getter",
+    "//code/utilities/streams/filestreams/read_all:lib",
+    ],
+
+)

@@ -10,5 +10,8 @@ cc_binary(
         "//code/tools/transcompilers/data_getter/program_options:lib",
         "//code/tools/transcompilers/hcp-compiler/programatic/data:code",
         "//code/tools/transcompilers/hcp-compiler/programatic:code_getter",
+        "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/program/common_actions/locale:lib",
+        "//code/utilities/types/strings/transformers/removing:lib",
     ],
 )

@@ -395,6 +395,11 @@ std::string& Remove_Everything_After_Found_Instance(std::string & str, std::stri
     str.erase(str.find (instance), str [str.length() - 1]);
     return str;
 }
+std::string& Remove_Everything_Before_Found_Instance(std::string & str, std::string const& instance)
+{
+    str.erase(0, str.find(instance) + instance.size());
+    return str;
+}
 
 
 //keeping back

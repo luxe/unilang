@@ -19,3 +19,9 @@ void Write_To_File(std::string path_to_file, std::wstring const& content)
 	outfile << content;
     outfile.close();
 }
+void Write_To_File_As_Wstring(std::string path_to_file, std::wstring const& content)
+{
+    std::wofstream outfile(path_to_file);
+    outfile << content;
+    outfile.close();
+}

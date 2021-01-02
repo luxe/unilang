@@ -72,4 +72,5 @@ std::string& Empty_String_If_It_Only_Contains_Whitespace(std::string & str);
 std::string As_Empty_String_If_It_Only_Contains_Whitespace(std::string str);
 
 
+std::string& Remove_Everything_Before_Found_Instance(std::string & str, std::string const& instance);
 std::string& Remove_Everything_After_Found_Instance(std::string & str, std::string const& instance);
