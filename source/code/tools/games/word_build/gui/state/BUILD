@@ -33,6 +33,7 @@ hcp(
     name = "user_state",
     deps = [
         "//code/utilities/data_structures/position",
+        "//code/tools/games/word_build/gui/core/regular_actions:regular_action",
         "@sfml",
     ],
 )

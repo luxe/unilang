@@ -43,17 +43,26 @@ class
 
 ◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets)❰
 
-    auto p1_choices = Regular_Actions_Getter::Get(state.controller.left);
-    auto p2_choices = Regular_Actions_Getter::Get(state.controller.right);
+    //get player actions
+    auto p1_choice = Regular_Actions_Getter::Get(state.controller.left);
+    auto p2_choice = Regular_Actions_Getter::Get(state.controller.right);
     
-    Handle_Player_Selections(state,p1_choices,state.p1_state,assets.p1);
-    Handle_Player_Selections(state,p2_choices,state.p2_state,assets.p2);
+    //record these actions
+    if (p1_choice != Regular_Action::NONE){
+        state.p1_state.moves.emplace_back(p1_choice);
+    }
+    if (p2_choice != Regular_Action::NONE){
+        state.p2_state.moves.emplace_back(p2_choice);
+    }
+    
+    Handle_Player_Selections(state,p1_choice,state.p1_state,assets.p1);
+    Handle_Player_Selections(state,p2_choice,state.p2_state,assets.p2);
     
     Player_Match_Check(state.p1_state,assets.p1,state,assets);
     Player_Match_Check(state.p2_state,assets.p2,state,assets);
     
-    Handle_Player_Game_Changes(state,p1_choices,assets);
-    Handle_Player_Game_Changes(state,p2_choices,assets);
+    Handle_Player_Game_Changes(state,p1_choice,assets);
+    Handle_Player_Game_Changes(state,p2_choice,assets);
     
     
 ❱
@@ -503,27 +512,91 @@ class
 ◀private: static▶ void ☀Show_More_Stats(Game_State & state, Assets & assets, std::vector<std::string> const& p1_words, std::vector<std::string> const& p2_words) ❰
 
     
+    std::vector<std::vector<std::string>> p1_freq_str;
+    std::vector<std::vector<std::string>> p2_freq_str;
+    
+    //show wins
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("wins: ");
+        tmp.emplace_back(std::to_string(state.p1_state.total_wins));
+        p1_freq_str.emplace_back(tmp);
+    }
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("wins: ");
+        tmp.emplace_back(std::to_string(state.p2_state.total_wins));
+        p2_freq_str.emplace_back(tmp);
+    }
+    
+    //show score
+    auto p1_blocks = Words_Blocked_By_P1(assets,state);
+    auto p2_blocks = Words_Blocked_By_P2(assets,state);
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("score: ");
+        tmp.emplace_back(std::to_string(as_signed(assets.p1.score.getString()) + p2_blocks));
+        p1_freq_str.emplace_back(tmp);
+    }
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("score: ");
+        tmp.emplace_back(std::to_string(as_signed(assets.p2.score.getString()) + p1_blocks));
+        p2_freq_str.emplace_back(tmp);
+    }
+    
+    //show blocks
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("too late: ");
+        tmp.emplace_back(std::to_string(p2_blocks));
+        p1_freq_str.emplace_back(tmp);
+    }
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("too late: ");
+        tmp.emplace_back(std::to_string(p1_blocks));
+        p2_freq_str.emplace_back(tmp);
+    }
+    
+    //show total moves
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("moves:");
+        tmp.emplace_back(std::to_string(state.p1_state.moves.size()));
+        p1_freq_str.emplace_back(tmp);
+    }
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back("moves: ");
+        tmp.emplace_back(std::to_string(state.p2_state.moves.size()));
+        p2_freq_str.emplace_back(tmp);
+    }
+    
+    
     //get p1 and p2 frequencies
     auto p1_freq = Size_Frequency_Counter::Get(p1_words);
     auto p2_freq = Size_Frequency_Counter::Get(p2_words);
-    
-    auto p1_freq_str = To_String(p1_freq);
-    auto p2_freq_str = To_String(p2_freq);
-    
-    p1_freq_str += "= " + assets.p1.score.getString();
-    p2_freq_str += "= " + assets.p2.score.getString();
-    
-    p1_freq_str = "Wins: " + std::to_string(state.p1_state.total_wins) + "\n" + p1_freq_str + "\n";
-    p2_freq_str = "Wins: " + std::to_string(state.p2_state.total_wins) + "\n" + p2_freq_str + "\n";
-    
-    auto p1_blocks = Words_Blocked_By_P1(assets,state);
-    auto p2_blocks = Words_Blocked_By_P2(assets,state);
-    p1_freq_str += "actual: " + std::to_string(as_signed(assets.p1.score.getString()) + p2_blocks) + " (-" + std::to_string(p2_blocks) + ")";
-    p2_freq_str += "actual: " + std::to_string(as_signed(assets.p2.score.getString()) + p1_blocks) + " (-" + std::to_string(p1_blocks) + ")";
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back(To_String(p1_freq));
+        tmp.emplace_back("");
+        p1_freq_str.emplace_back(tmp);
+    }
+    {
+        std::vector<std::string> tmp;
+        tmp.emplace_back(To_String(p2_freq));
+        tmp.emplace_back("");
+        p2_freq_str.emplace_back(tmp);
+    }
     
     
-    assets.p1.stats.setString(p1_freq_str);
-    assets.p2.stats.setString(p2_freq_str);
+    auto p1_str = Table_As_Column_Aligned(p1_freq_str);
+    auto p2_str = Table_As_Column_Aligned(p2_freq_str);
+    
+    
+    assets.p1.stats.setString(p1_str);
+    assets.p2.stats.setString(p2_str);
 ❱
 
 
