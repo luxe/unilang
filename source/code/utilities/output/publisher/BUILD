@@ -38,6 +38,7 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/web/dropbox:dropbox_uploader",
+        "//code/utilities/code:concept_static_tree_structs",
     ],
 )
 
