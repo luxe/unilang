@@ -1,5 +1,4 @@
 class
-
 ❪"code/tools/transcompilers/old_unilang/structure/model/inlined_structures"❫
 ❪"code/tools/transcompilers/old_unilang/tokens/generic_token"❫
 ❪"code/tools/transcompilers/old_unilang/tokens/get_tokens"❫
@@ -36,7 +35,7 @@ class
 ❪"code/utilities/data_structures/graph/unique_str_vertex_graph/lib"❫
 ❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
 ❪"code/utilities/filesystem/paths/lib"❫
-❪"code/tools/transcompilers/old_unilang/compiler-frontends/bibtex/bibtex_str_getter"❫
+❪"code/utilities/linguistics/computer/frontends/bibtex/bibtex_str_getter"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Generate(model::Module const& structure, std::string const& essay_name) ❰
@@ -81,10 +80,14 @@ class
     
     Existing_Temp_File created_pdf(pdf_settings.pandoc_settings.resulting_pdf);
     
-    
+    Upload(to_manual_pdf,basename);
+❱
+
+◀private: static▶ void ☀Upload(std::string const& local_name, std::string const& basename)❰
+
     //upload file
     File_Upload_Settings upload_settings;
-    upload_settings.local_file_name = to_manual_pdf;
+    upload_settings.local_file_name = local_name;
     upload_settings.remote_file_name = "essays/" + basename + ".pdf";
     
     //dropbox specific
@@ -158,22 +161,41 @@ class
     Append_With_Newline(x,"height=.1");
     Append_With_Newline(x,"]");
     
-    for (auto const& z: structure.literature.paragraphs){
-        for (auto const& y: z.thought_connections){
-            auto from = as_string(y.from.value);
-            auto edge = as_string(y.edge.value);
-            auto to = as_string(y.to.value);
-            
-            Append_In_DQuotes(x,from);
-            Append(x," -> ");
-            Append_In_DQuotes(x,to);
-            Append(x,"[ label=");
-            Append_In_DQuotes(x,edge);
-            Append_With_Newline(x,"]");
+    for (auto const& l: structure.literature){
+        for (auto const& p: l.paragraph){
+            for (auto const& y: p.thought_connection){
+                auto from = Get_From(y);
+                auto edge = Get_Edge(y);
+                auto to = Get_To(y);
+                
+                Append_In_DQuotes(x,from);
+                Append(x," -> ");
+                Append_In_DQuotes(x,to);
+                Append(x,"[ label=");
+                Append_In_DQuotes(x,edge);
+                Append_With_Newline(x,"]");
+            }
         }
     }
     
     Append_With_Newline(x,"}");
     
+    return x;
+❱
+
+
+◀private: static▶ std::string ☀Get_From(model::ThoughtConnection const& tc)❰
+    std::string x;
+    for (auto const& it: tc.from){Append(x,it.value);}
+    return x;
+❱
+◀private: static▶ std::string ☀Get_Edge(model::ThoughtConnection const& tc)❰
+    std::string x;
+    for (auto const& it: tc.edge){Append(x,it.value);}
+    return x;
+❱
+◀private: static▶ std::string ☀Get_To(model::ThoughtConnection const& tc)❰
+    std::string x;
+    for (auto const& it: tc.to){Append(x,it.value);}
     return x;
 ❱

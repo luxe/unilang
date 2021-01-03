@@ -29,6 +29,7 @@ hcp(
         "//code/utilities/program/wrappers/pandoc:pandoc_pdf_generator",
         "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
         "//code/utilities/types/general:lib",
+        "//code/utilities/code:concept_static_tree_structs",
     ],
 )
 
