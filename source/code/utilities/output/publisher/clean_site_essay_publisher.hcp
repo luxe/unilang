@@ -5,6 +5,7 @@ class
 ❪"code/tools/transcompilers/old_unilang/tokens/get_tokens"❫
 ❪"code/utilities/formats/pdf/pdf_settings"❫
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/program/common_actions/exits/lib"❫
@@ -35,12 +36,12 @@ class
 ❪"code/utilities/data_structures/graph/unique_str_vertex_graph/lib"❫
 ❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
 ❪"code/utilities/filesystem/paths/lib"❫
-❪"code/tools/transcompilers/old_unilang/compiler-frontends/bibtex/bibtex_str_getter"❫
+❪"code/utilities/linguistics/computer/frontends/bibtex/bibtex_str_getter"❫
 ❪"code/utilities/formats/html/full/blog_essay"❫
 ❪"code/tools/transcompilers/old_unilang/doxygen_block_printer/grammar_adjuster"❫
 ⚞⚟
 
-◀public: static▶ void ☀Generate(Structure const& structure, std::string const& essay_name) ❰
+◀public: static▶ void ☀Generate(model::Module const& structure, std::string const& essay_name) ❰
     
     
     //create html file
@@ -69,7 +70,7 @@ class
 ❱
 
 
-◀public: static▶ std::string ☀Get_Body_Html(Structure const& structure) ❰
+◀public: static▶ std::string ☀Get_Body_Html(model::Module const& structure) ❰
     std::string x;
     
     x += "<div class=\"container\">";
@@ -78,22 +79,30 @@ class
     x += "<h2><a href=\"http://luxe.github.io/essays/essays.html\">Home</a></h2>";
     x += "\n";
     
-    for (auto const& p: structure.literature.paragraphs){
-        
-        x += "<h3>";
-        x += as_string(p.title.value);
-        x += "</h3>\n";
-        
-        x += "<p>";
-        for (auto const& s: p.sentences){
-            Comment_Grammar_Settings grammar;
-            Append(x,Grammar_Adjuster::Get_Adjusted(as_string(s.text.value),grammar));
-            x += "  ";
+    for (auto const& l: structure.literature){
+        for (auto const& p: l.paragraph){
+            
+            x += "<h3>";
+            for (auto const& it: p.paragraph_title){Append(x,it.value);}
+            x += "</h3>\n";
+            
+            x += "<p>";
+            for (auto const& s: p.sentence){
+                Comment_Grammar_Settings grammar;
+                Append(x,Grammar_Adjuster::Get_Adjusted(Get_Sentence(s),grammar));
+                x += "  ";
+            }
+            
+            x += "</p>";
         }
-        
-        x += "</p>";
     }
     
     x += "</div>";
+    return x;
+❱
+
+◀private: static▶ std::string ☀Get_Sentence(model::Sentence sentence)❰
+    std::string x;
+    for (auto const& it: sentence.sentence_text){Append(x,it.value);}
     return x;
 ❱

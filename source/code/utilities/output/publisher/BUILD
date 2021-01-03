@@ -46,7 +46,7 @@ hcp(
     name = "clean_site_essay_publisher",
     deps = [
         "//code/literature/publish:essay_list_maker",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/bibtex:bibtex_str_getter",
+        "//code/utilities/linguistics/computer/frontends/bibtex:bibtex_str_getter",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
         "//code/tools/transcompilers/old_unilang/doxygen_block_printer:grammar_adjuster",
@@ -79,5 +79,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
         "//code/utilities/web/dropbox:dropbox_uploader",
+        "//code/utilities/code:concept_static_tree_structs",
     ],
 )
