@@ -54,6 +54,13 @@ cpp_main(
     ],
 )
 
+cpp_main(
+    name = "generate_essays",
+    deps = [
+        "//code/tools/reflexivity/publish:all_essay_publisher",
+    ],
+)
+
 hcp(
     name = "reflexive_refresher",
     deps = [
