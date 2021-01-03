@@ -3,7 +3,8 @@ class
 ❪"code/tools/transcompilers/old_unilang/tokens/generic_token"❫
 ❪"code/tools/transcompilers/old_unilang/tokens/get_tokens"❫
 ❪"code/utilities/formats/pdf/pdf_settings"❫
-❪"code/literature/publish/essay"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/output/publisher/essay/essay"❫
 ⚯
 ❪"code/utilities/types/general/lib"❫
 ❪"code/utilities/program/common_actions/exits/lib"❫
@@ -32,6 +33,7 @@ class
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/utilities/formats/html/style/link_list_styling"❫
 ❪"code/utilities/formats/html/full/list_of_links"❫
+❪"code/utilities/formats/json/converters/json_file_io"❫
 ⚞⚟
 
 
@@ -44,9 +46,11 @@ class
 ◀private: static▶ std::vector<std::pair<std::string,std::string>> ☀Gather_Links_And_Names(std::vector<Essay> const& all_essays) ❰
     std::vector<std::pair<std::string,std::string>> x;
     for (auto const& it: all_essays){
-        auto structure = File_To_Structure_Converter::Convert(it.name + ".unilang");
+        
+        model::Module structure;
+        Json_File_Io::Read_Json_From_File(structure,it.json_file_name);
         auto title = Get_Title_Name_For_Link(structure);
-        auto link = it.name;
+        auto link = it.json_file_name;
         
         link += Assumed_Output_Extension(it);
         
@@ -55,20 +59,23 @@ class
     return x;
 ❱
 
-◀private: static▶ std::string ☀Get_Title_Name_For_Link(Structure const& structure) ❰
+◀private: static▶ std::string ☀Get_Title_Name_For_Link(model::Module const& structure) ❰
 
     // Instead of relying on the file name, we expect the content of the file to have the title
     // It should be the title of the first paragraph.
-    if (!structure.literature.paragraphs.empty()){
-        auto title = as_string(structure.literature.paragraphs[0].title.value);
-        if (!title.empty()){
-            return title;
+    for (auto const& l: structure.literature){
+        if (!l.paragraph.empty()){
+            auto title = l.paragraph[0].paragraph_title[0].value;
+            if (!title.empty()){
+                return title;
+            }
         }
     }
     
     //actually... we couldn't find the title in the content of the literature
     //lets resort to the file name now instead.
-    return Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPITAL,structure.name);
+    //return Case_Modifier::As_Modified_Casing(Case_Format_Style::CAPITAL,structure.name);
+    return "";
 ❱
 
 ◀private: static▶ std::string ☀Assumed_Output_Extension(Essay const& essay) ❰
