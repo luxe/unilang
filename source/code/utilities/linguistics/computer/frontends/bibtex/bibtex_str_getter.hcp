@@ -7,6 +7,7 @@ class
 ❪"code/tools/transcompilers/old_unilang/structure/model/inlined_structures"❫
 ❪"code/tools/transcompilers/old_unilang/options/language-specific/markdown/markdown_settings"❫
 ❪"code/tools/transcompilers/old_unilang/options/language-specific/bibtex/bibtex_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
 ❪"code/utilities/types/converters/lib"❫
@@ -26,35 +27,45 @@ class
 ❪"code/utilities/types/strings/observers/converting/lib"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(Structure const& structure, std::vector<Contributor> const& contributors, Bibtex_Settings const& settings)❰
+◀public: static▶ std::string ☀Get(model::Module const& structure, std::vector<Contributor> const& contributors, Bibtex_Settings const& settings)❰
     std::string text;
     
-    for (auto const& citation: structure.literature.citations){
+    for (auto const& citation: structure.citation){
         Append_With_Newline(text,Make_BibTex_Citation_Entry(citation));
     }
     
     return text;
 ❱
 
-◀public: static▶ std::string ☀Make_BibTex_Citation_Entry(Citation const& citation)❰
+◀private: static▶ std::string ☀Make_BibTex_Citation_Entry(model::Citation const& citation)❰
     std::string str;
     
     Append(str,"@");
-    Append(str,as_string(citation.type.value));
-    Append(str,"{");
-    Append(str,as_string(citation.id.value));
     
-    for (auto const& kv: citation.attributes){
+    for (auto const& it: citation.citation_type){Append(str,it.value);}
+    Append(str,"{");
+    for (auto const& it: citation.citation_id){Append(str,it.value);}
+    
+    for (auto const& kv: citation.citation_attribute){
         Append_With_Newline(str,",");
         Append(str,"\t");
-        Append(str,as_string(kv.key.value));
+        Append(str,Get_Key(kv));
         Append(str," = ");
-        Append_In_DQuotes(str,as_string(kv.value.value));
+        Append_In_DQuotes(str,Get_Value(kv));
     }
-    
-    
     
     Append_With_Newline(str,"}");
     
     return str;
+❱
+
+◀private: static▶ std::string ☀Get_Key(model::CitationAttribute attribute)❰
+    std::string x;
+    for (auto const& it: attribute.citation_attribute_key){Append(x,it.value);}
+    return x;
+❱
+◀private: static▶ std::string ☀Get_Value(model::CitationAttribute attribute)❰
+    std::string x;
+    for (auto const& it: attribute.citation_attribute_value){Append(x,it.value);}
+    return x;
 ❱
