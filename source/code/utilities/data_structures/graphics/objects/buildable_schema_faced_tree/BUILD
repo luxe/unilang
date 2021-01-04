@@ -71,9 +71,12 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_label_action",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_click_handler",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_creator",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_click_finder",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_tree_label_drawer",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_drawer",
@@ -85,6 +88,7 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/mouse/events:mouse_events_checker",
         "//code/utilities/data_structures/graphics/objects/select_menu",
         "//code/utilities/data_structures/tree/generic:child_lookup_map",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/settings:character_segment",
         "//code/utilities/output/printers:lib",
@@ -93,23 +97,19 @@ hcp(
         "//code/utilities/types/tree:full_path_name",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_creator",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_tree_menu_click_handler",
     ],
 )
 
 hcp(
     name = "schema_tree_menu_creator",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
-        "//code/utilities/data_structures/tree/generic:child_lookup_map",
-        "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
-        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
-        "//code/utilities/data_structures/graphics/objects/select_menu:select_menu",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:positioned_button_face_tree",
+        "//code/utilities/data_structures/graphics/objects/faced_label/premade:faced_label_premades",
+        "//code/utilities/data_structures/graphics/objects/select_menu",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
     ],
 )
 
@@ -126,13 +126,13 @@ hcp(
 hcp(
     name = "schema_tree_menu_click_handler",
     deps = [
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
-        "//code/utilities/data_structures/tree/generic:child_lookup_map",
-        "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_click_finder",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
+        "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_click_finder",
+        "//code/utilities/data_structures/tree/generic:child_lookup_map",
         "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
         "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
     ],
 )

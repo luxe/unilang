@@ -8,13 +8,13 @@ hcp(
     deps = [
         "//code/tools/games/word_build/gui:game_phase",
         "//code/tools/games/word_build/gui/state:user_state",
+        "//code/utilities/data_structures:string_sort_strategy",
         "//code/utilities/data_structures/color:rgb_color",
         "//code/utilities/linguistics/build_word/game:build_word_puzzle",
         "//code/utilities/linguistics/build_word/game/settings:build_word_game_settings",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_gamepads_phases",
         "//code/utilities/peripheral/keyboard/joycons",
-        "//code/utilities/data_structures:string_sort_strategy",
         "@sfml",
     ],
 )
@@ -32,8 +32,8 @@ hcp(
 hcp(
     name = "user_state",
     deps = [
-        "//code/utilities/data_structures/position",
         "//code/tools/games/word_build/gui/core/regular_actions:regular_action",
+        "//code/utilities/data_structures/position",
         "@sfml",
     ],
 )

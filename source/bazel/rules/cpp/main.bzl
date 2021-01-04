@@ -8,5 +8,5 @@ def cpp_main(name, deps = [], copts = [], data = []):
         srcs = [explicit_cpp_file],
         copts = copts,
         deps = deps,
-        data = data
+        data = data,
     )

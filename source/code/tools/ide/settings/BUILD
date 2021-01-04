@@ -82,12 +82,12 @@ hcp(
 hcp(
     name = "ide_elements",
     deps = [
+        "//code/tools/ide/settings:ide_element",
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
-        "//code/tools/ide/settings:ide_element",
     ],
 )
 

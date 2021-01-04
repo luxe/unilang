@@ -27,7 +27,7 @@ cc_library(
 hcp(
     name = "mime_xml_creator",
     deps = [
-        "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/creators:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )

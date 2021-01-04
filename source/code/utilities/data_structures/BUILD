@@ -90,7 +90,6 @@ enum_cpp(
     ],
 )
 
-
 enum_cpp(
     name = "string_sort_strategy",
     values = [

@@ -11,12 +11,12 @@ hcp(
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/output/diagnostic:diagnostic_printer",
         "//code/utilities/output/diagnostic:diagnostic_settings",
         "//code/utilities/program/inputs/config:config_monitor_settings",
         "//code/utilities/streams/filestreams/read_all:lib",
-        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 

@@ -95,6 +95,8 @@ hcp(
     deps = [
         "//code/tools/games/word_build/gui/assets",
         "//code/tools/games/word_build/gui/assets:assets_loader",
+        "//code/tools/games/word_build/gui/core/regular_actions:regular_action",
+        "//code/tools/games/word_build/gui/core/regular_actions:regular_actions_getter",
         "//code/tools/games/word_build/gui/state:game_state",
         "//code/utilities/colors/converters",
         "//code/utilities/colors/transformers:color_transitioner",
@@ -111,8 +113,6 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/observers:size_frequency_counter",
         "//code/utilities/types/vectors/transformers:lib",
-        "//code/tools/games/word_build/gui/core/regular_actions:regular_actions_getter",
-        "//code/tools/games/word_build/gui/core/regular_actions:regular_action",
         "@sfml",
     ],
 )

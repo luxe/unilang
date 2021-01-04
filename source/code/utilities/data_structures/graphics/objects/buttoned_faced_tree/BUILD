@@ -116,8 +116,8 @@ hcp(
 hcp(
     name = "button_face_tree_full_path_name",
     deps = [
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "@tree",
     ],
 )
@@ -125,12 +125,12 @@ hcp(
 hcp(
     name = "button_face_tree_tokenizer",
     deps = [
+        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_enabled",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_first_name",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_message",
         "//code/utilities/data_structures/tree/generic/tokens:tree_token",
-        "//code/utilities/data_structures/graphics/objects/buttoned_faced_label:buttoned_faced_label_is_enabled",
         "@tree",
     ],
 )

@@ -11,9 +11,9 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     deps = [
-        "//code/utilities/system/mime:mime_xml_creator",
-        "//code/utilities/system/mime:mime_xml_creation_settings",
-        "//code/utilities/filesystem/paths:lib",
         "//code/utilities/filesystem/files/creating:lib",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/system/mime:mime_xml_creation_settings",
+        "//code/utilities/system/mime:mime_xml_creator",
     ],
 )

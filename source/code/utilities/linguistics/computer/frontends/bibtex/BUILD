@@ -15,6 +15,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/print:struct_derivers",
+        "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/program/call:lib",
@@ -27,6 +28,5 @@ hcp(
         "//code/utilities/types/strings/transformers/casing:case_modifier",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/code:concept_static_tree_structs",
     ],
 )

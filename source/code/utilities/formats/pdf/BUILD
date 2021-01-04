@@ -17,6 +17,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/main:program_input",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
+        "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/filesystem/files/temp:temp_file",
@@ -29,7 +30,6 @@ hcp(
         "//code/utilities/program/wrappers/pandoc:pandoc_pdf_generator",
         "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
         "//code/utilities/types/general:lib",
-        "//code/utilities/code:concept_static_tree_structs",
     ],
 )
 

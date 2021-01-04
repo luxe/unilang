@@ -16,6 +16,7 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
         "//code/utilities/formats/json/attribute_check:json_attribute_checker",
+        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
         "//code/utilities/time/date:rfc333_datetime_within_range_checker",
@@ -24,7 +25,6 @@ hcp(
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
-        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
@@ -34,6 +34,7 @@ hcp(
         "//code/utilities/data_structures/counters/unique_counter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
         "//code/utilities/time/date:rfc333_datetime_within_range_checker",
@@ -43,7 +44,6 @@ hcp(
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
-        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
@@ -55,6 +55,7 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
         "//code/utilities/formats/json/attribute_check:json_attribute_checker",
+        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
         "//code/utilities/time/date:rfc333_datetime_within_range_checker",
@@ -64,7 +65,6 @@ hcp(
         "//code/utilities/types/strings/transformers/search_replace:lib",
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
-        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 
@@ -76,6 +76,7 @@ hcp(
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/formats/json/attribute_check:json_attribute_check_settings",
         "//code/utilities/formats/json/attribute_check:json_attribute_checker",
+        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/program/common_actions/signals:lib",
         "//code/utilities/time/date:rfc333_datetime_to_epoch_converter",
@@ -91,7 +92,6 @@ hcp(
         "//code/utilities/web/endpoints/gcal/data:gcal_rooms",
         "//code/utilities/web/endpoints/gcal/data:gcal_sorted_events",
         "@pybind11",
-        "//code/utilities/formats/json/converters:json_file_io",
     ],
 )
 

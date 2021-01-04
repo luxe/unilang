@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "task_executer",
     deps = [
-        
+        "//code/tools/puzzles/advent_of_code:advent_of_code_input_getter",
         "//code/tools/puzzles/advent_of_code/2019:day_1",
         "//code/tools/puzzles/advent_of_code/2019:day_2",
         "//code/tools/puzzles/advent_of_code/2019:day_3",
@@ -35,10 +35,8 @@ hcp(
         "//code/utilities/web/automate/browser:browser_creator",
         "//code/utilities/web/automate/browser:default_browser_settings_getter",
         "//code/utilities/web/automate/navigation:browser_navigator",
-        "//code/tools/puzzles/advent_of_code:advent_of_code_input_getter",
     ],
 )
-
 
 hcp(
     name = "int_code_computer",
@@ -88,7 +86,6 @@ hcp(
 hcp(
     name = "day_1",
     deps = [
-        
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -116,7 +113,6 @@ hcp(
 hcp(
     name = "day_2",
     deps = [
-        
         "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
@@ -145,7 +141,6 @@ hcp(
 hcp(
     name = "day_3",
     deps = [
-        
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -171,7 +166,6 @@ hcp(
 hcp(
     name = "day_4",
     deps = [
-        
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -197,7 +191,6 @@ hcp(
 hcp(
     name = "day_5",
     deps = [
-        
         "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
@@ -225,7 +218,6 @@ hcp(
 hcp(
     name = "day_6",
     deps = [
-        
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -252,7 +244,6 @@ hcp(
 hcp(
     name = "day_7",
     deps = [
-        
         "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
@@ -280,7 +271,6 @@ hcp(
 hcp(
     name = "day_8",
     deps = [
-        
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
         "//code/utilities/data_structures/point:point_line",
@@ -308,7 +298,6 @@ hcp(
 hcp(
     name = "day_9",
     deps = [
-        
         "//code/tools/puzzles/advent_of_code/2019:int_code_computer",
         "//code/utilities/data_structures/compass_directions:compass_direction_diagnonal_movement",
         "//code/utilities/data_structures/point",
@@ -339,5 +328,6 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     deps = [
-    "//code/tools/puzzles/advent_of_code/2019:task_executer"],
+        "//code/tools/puzzles/advent_of_code/2019:task_executer",
+    ],
 )

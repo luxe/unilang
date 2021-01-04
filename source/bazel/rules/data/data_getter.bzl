@@ -1,7 +1,4 @@
-
-
 def data_getter(target_name, file_name, data_name):
-    
     #rule
     native.genrule(
         name = target_name,

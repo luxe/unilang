@@ -6,9 +6,9 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "mime_xml_creator",
     deps = [
-        "//code/utilities/types/strings/transformers/appending:lib",
-        "//code/utilities/types/strings/creators:lib",
         "//code/utilities/system/mime:mime_xml_creation_settings",
+        "//code/utilities/types/strings/creators:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
 
