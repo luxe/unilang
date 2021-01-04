@@ -13,6 +13,7 @@ hcp(
         "//code/utilities/output/publisher/essay/specific:latex_essay_publisher",
         "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
     ],
 )
 

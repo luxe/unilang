@@ -2,6 +2,13 @@
 #include <algorithm>
 #include <map>
 
+std::string destroy_path_name_with_underscores(std::string path){
+
+    path = string_replace_all(path,"/","_");
+    path = string_replace_all(path,".","_");
+    return path;
+    
+}
 std::string string_replace_first_instance( std::string src, std::string const& target, std::string const& repl){
     // handle error situations/trivial cases
 

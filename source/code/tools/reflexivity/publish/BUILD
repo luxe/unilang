@@ -78,5 +78,6 @@ hcp(
         "//code/utilities/formats/html/full:list_of_links",
         "//code/utilities/output/publisher/essay:essay",
         "//code/utilities/formats/json/converters:json_file_io",
+        "//code/utilities/types/strings/transformers/search_replace:lib",
     ],
 )

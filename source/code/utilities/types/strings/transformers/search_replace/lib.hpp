@@ -2,6 +2,7 @@
 #include <string>
 
 //search and replace
+std::string destroy_path_name_with_underscores(std::string path);
 std::string string_replace_first_instance( std::string src, std::string const& target, std::string const& repl);
 std::string string_replace_all( std::string src, std::string const& target, std::string const& repl);
 std::string& replace_spaces_with_plus(std::string & str);
