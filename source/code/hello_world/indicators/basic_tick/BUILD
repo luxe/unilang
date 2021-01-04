@@ -7,6 +7,6 @@ package(
 cpp_main(
     name = "main",
     deps = [
-        "@indicators//:indicators"
+        "@indicators",
     ],
 )
