@@ -26,11 +26,25 @@ bool Unique_Str_Vertex_Graph::Connect(std::string const& x, std::string const& y
   
   //only connect if its not yourself
   if (x_find != vertexes.end() && y_find != vertexes.end()){
-    boost::add_edge(x_find->second, y_find->second, graph);
+    
+      //only connect if we haven't already
+      std::string connect_name = x + "->" + y;
+      auto connect_find = std::find(connections.begin(),connections.end(),connect_name);
+      if (connect_find == connections.end()){
+        
+        
+        boost::add_edge(x_find->second, y_find->second, graph);
+        connections.emplace_back(connect_name);
+      }
     return true;
   }
   
   return false;
+}
+
+bool Unique_Str_Vertex_Graph::Exists(std::string const& x){
+  auto x_find = vertexes.find(x);
+  return x_find != vertexes.end();
 }
 
 void Unique_Str_Vertex_Graph::Print(){

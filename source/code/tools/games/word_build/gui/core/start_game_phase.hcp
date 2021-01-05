@@ -12,14 +12,18 @@ class
 ❪"code/utilities/math/math"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
 ❪"code/utilities/peripheral/keyboard/F310_gamepad/data/f310_events"❫
+❪"code/utilities/data_structures/graph/unique_str_vertex_graph/lib"❫
 ⚯
 ❪"code/utilities/linguistics/build_word/game/puzzle_builder"❫
+❪"code/utilities/program/wrappers/graphviz/graphviz_image_maker"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Run_Phase(F310_Events const& events, Game_State & state, Assets & assets) ❰
 
     //generate a new puzzle
     state.puzzle = Puzzle_Builder::Create_Puzzles(state.puzzle_build_settings)[0];
+    
+    //auto word_graph = Build_Word_Graph(state.puzzle);
     
     
     //recolor if needed
@@ -125,3 +129,57 @@ class
     state.p2_state.moves.clear();
     
 ❱
+
+
+
+
+
+◀public: static▶ Unique_Str_Vertex_Graph ☀Build_Word_Graph(Build_Word_Puzzle const& puzzle)❰
+
+    Unique_Str_Vertex_Graph x;
+    
+    //add all nodes as unique indexed letters
+    for (auto const& word: puzzle.words){
+        for (size_t i = 0; i < word.size(); ++i){
+            std::string str = Build_Char_Node(word[i],i);
+            x.Add(str);
+        }
+    }
+    
+    //connect by earliest next letter
+    for (auto const& word: puzzle.words){
+        for (size_t i = 0; i < word.size() -1; ++i){
+            
+            //from
+            std::string from = Build_Char_Node(word[i],i);
+            
+            //to
+            char to_letter = word[i+1];
+            
+            
+            //eventually we'll find an attempt that fits
+            int c = i;
+            auto attempt = Build_Char_Node(to_letter,c);
+            while (!x.Exists(attempt)){
+                ++c;
+                attempt = Build_Char_Node(to_letter,c);
+            }
+            x.Connect(from,attempt);
+        }
+    }
+    
+    std::cout << x.As_Graphviz() << std::endl;
+    
+    Graphviz_Image_Maker::Make(x.As_Graphviz(),"/home/luxe/Desktop","word_graph");
+    
+    
+    return x;
+❱
+
+◀private: static▶ std::string ☀Build_Char_Node(char c, int index)❰
+    std::string str;
+    str += c;
+    str += std::to_string(index);
+    return str;
+❱
+

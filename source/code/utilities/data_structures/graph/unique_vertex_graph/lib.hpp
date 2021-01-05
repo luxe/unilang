@@ -50,6 +50,7 @@ bool Unique_Vertex_Graph<T>::Connect(T const& x, T const& y){
   
   //only connect if its not yourself
   if (x_find != vertexes.end() && y_find != vertexes.end()){
+    
     boost::add_edge(x_find->second, y_find->second, graph);
     return true;
   }
