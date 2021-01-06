@@ -5,6 +5,8 @@ hdrs = glob(
     include = [
         "include/**/*.h",
         "include/**/*.hpp",
+        "src/**/*.hpp",
+        "src/**/*.h",
     ],
     exclude = [
     ],
@@ -27,6 +29,8 @@ cc_library(
     includes = [
         ".",
         "include",
+        "src",
+        "src/core",
     ],
 )
 
@@ -35,7 +39,9 @@ cc_library(
     srcs = srcs,
     includes = [
         ".",
+        "include",
         "src",
+        "src/core",
     ],
     deps = [
         ":hdrs",
