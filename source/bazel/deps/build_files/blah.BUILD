@@ -28,6 +28,8 @@ cc_library(
     ],
     copts = [
         "-DOPENGL_ENABLED",
+        "-DBLAH_USE_OPENGL",
+        
         "-DSDL2_ENABLED",
         "-DBLAH_USE_SDL2",
     ],
@@ -37,61 +39,3 @@ cc_library(
         "@system//:SDL2",
     ],
 )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# srcs = glob(
-#     include = [
-#         "src/**/*.cpp",
-#         "src/**/*.c",
-#         "src/**/*.hpp",
-#         "src/**/*.h",
-#     ],
-#     exclude = [
-#     ],
-# )
-
-# cc_library(
-#     name = "blah",
-#     srcs = srcs,
-#     includes = [
-#         ".",
-#         "include",
-#         "include/blah",
-#         "include/blah/containers",
-#         "include/blah/core",
-#         "include/blah/drawing",
-#         "include/blah/graphics",
-#         "include/blah/images",
-#         "include/blah/input",
-#         "include/blah/math",
-#         "include/blah/streams",
-#         "src",
-#         "src/containers",
-#         "src/core",
-#         "src/drawing",
-#         "src/graphics",
-#         "src/images",
-#         "src/input",
-#         "src/internal",
-#         "src/math",
-#         "src/streams",
-#         "src/third_party",
-#     ],
-#     deps = [
-#         ":hdrs",
-#     ],
-# )
