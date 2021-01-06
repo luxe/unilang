@@ -51,12 +51,12 @@ hcp(
     deps = [
         "//code/tools/games/word_build/gui/assets",
         "//code/tools/games/word_build/gui/state:game_state",
+        "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/linguistics/build_word/game:puzzle_builder",
         "//code/utilities/math",
         "//code/utilities/peripheral/keyboard/F310_gamepad/data:f310_events",
-        "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/program/wrappers/graphviz:graphviz_image_maker",
+        "//code/utilities/types/vectors/observers:lib",
         "@sfml",
     ],
 )
