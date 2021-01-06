@@ -6,7 +6,7 @@ TextureRef tex;
 
 void startup()
 {
-    tex = Texture::create("player.png");
+    //tex = Texture::create("player.png");
 }
 
 void render()
@@ -19,7 +19,7 @@ void render()
 
     batch.push_matrix(transform);
     batch.rect(Rect(-32, -32, 64, 64), Color::red);
-    batch.tex(tex, Vec2(64, 0), Color::white);
+    //batch.tex(tex, Vec2(64, 0), Color::white);
     batch.pop_matrix();
     
     batch.render();
