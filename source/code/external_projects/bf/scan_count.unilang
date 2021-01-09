@@ -1,0 +1,120 @@
+􏶞o􏶟
+􏷲Count element of a scan query􏷱
+􏷰Some things are laid out in redis where in order to get their conceptual size we need to query for wildcard keys and count non-duplicates
+this may not scale because we need to filter non duplicates􏷯
+􏷞build􏷝􏷞buildfarm􏷝􏷞common􏷝
+􏷤􏷣􏷦com.google.protobuf.Duration􏷥
+􏷤􏷣􏷦com.google.protobuf.util.Durations􏷥
+􏷤􏷣􏷦io.grpc.Deadline􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecuteRequest􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.ExecutionGrpc􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.RequestMetadata􏷥
+􏷤􏷣􏷦build.bazel.remote.execution.v2.WaitExecutionRequest􏷥
+􏷤􏷣􏷦build.buildfarm.common.Time􏷥
+􏷤􏷣􏷦build.buildfarm.common.Watcher􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpoint􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.GrpcEndpointHandler􏷥
+􏷤􏷣􏷦build.buildfarm.common.grpc.TracingMetadataUtils􏷥
+􏷤􏷣􏷦build.buildfarm.instance.Instance􏷥
+􏷤􏷣􏷦build.buildfarm.metrics.MetricsPublisher􏷥
+􏷤􏷣􏷦com.google.common.util.concurrent.FutureCallback􏷥
+􏷤􏷣􏷦com.google.common.util.concurrent.ListenableFuture􏷥
+􏷤􏷣􏷦com.google.longrunning.Operation􏷥
+􏷤􏷣􏷦com.google.protobuf.util.Durations􏷥
+􏷤􏷣􏷦io.grpc.Context􏷥
+􏷤􏷣􏷦io.grpc.Status􏷥
+􏷤􏷣􏷦io.grpc.stub.ServerCallStreamObserver􏷥
+􏷤􏷣􏷦io.grpc.stub.StreamObserver􏷥
+􏷤􏷣􏷦java.util.concurrent.CancellationException􏷥
+􏷤􏷣􏷦java.util.concurrent.ScheduledExecutorService􏷥
+􏷤􏷣􏷦java.util.concurrent.TimeUnit􏷥
+􏷤􏷣􏷦java.util.logging.Level􏷥
+􏷤􏷣􏷦java.util.logging.Logger􏷥
+􏷤􏷣􏷦javax.annotation.Nullable􏷥
+􏷤i􏷣􏷦com.google.common.util.concurrent.MoreExecutors.directExecutor􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦redis.clients.jedis.Response􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦java.util.ArrayList􏷥
+􏷤􏷣􏷦java.util.List􏷥
+􏷤􏷣􏷦java.util.Map􏷥
+􏷤􏷣􏷦java.util.Set􏷥
+􏷤􏷣􏷦org.redisson.api.RSetMultimapCache􏷥
+􏷤􏷣􏷦redis.clients.jedis.Jedis􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisCluster􏷥
+􏷤􏷣􏷦redis.clients.jedis.JedisClusterPipeline􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanParams􏷥
+􏷤􏷣􏷦redis.clients.jedis.ScanResult􏷥
+􏷤􏷣􏷦com.google.common.collect.Sets􏷥
+
+
+􏷐Run a scan and count the results􏷏
+􏶠This is intended to get the size of certain conceptual containers made of many different keys􏶡
+􏷘+s􏷗􏴅Observers􏴆􏷒get􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆string􏷅􏷄query􏷃􏷀the query to perform􏶿
+􏶜􏶝􏷆i􏷅􏷄scan count􏷃􏷀the count per scan􏶿
+􏶾i􏶽􏶼count􏶻􏶺total number of query results􏶹
+􏶴
+    Set<String> keys = Sets.newHashSet();
+
+    //JedisCluster only supports SCAN commands with MATCH patterns containing hash-tags.
+    //This prevents us from using the cluster's SCAN to traverse all existing keys.  
+    //That's why we choose to scan each of the jedisNode's individually.
+    cluster.getClusterNodes().values().stream()
+        .forEach(
+            pool -> {
+              try (Jedis node = pool.getResource()) {
+                addKeys(cluster,node,keys,query,scanCount);
+              }
+            });
+
+    return keys.size();
+􏶳
+
+
+􏷐Scan all entires on node to get key count.􏷏
+􏶠keys are accumulated onto􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒add keys􏷑
+􏶜􏶝􏷆JedisCluster􏷅􏷄cluster􏷃􏷀an established redis cluster􏶿
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀a node of the cluster􏶿
+􏶜􏶝􏷆Set<String>􏷅􏷄keys􏷃􏷀keys to accumulate􏶿
+􏶜􏶝􏷆string􏷅􏷄query􏷃􏷀the query to perform􏶿
+􏶜􏶝􏷆i􏷅􏷄scan count􏷃􏷀the count per scan􏶿
+􏶴
+    // iterate over all entries via scanning
+    String cursor = "0";
+    do {
+      keys.addAll(scan(node,cursor,query,scanCount));
+      
+    } while (!cursor.equals("0"));
+􏶳
+
+􏷐run scan query to get keys􏷏
+􏶠scanning is done incrementally via a cursor􏶡
+􏷘-s􏷗􏴅Observers􏴆􏷒scan􏷑
+􏶜􏶝􏷆Jedis􏷅􏷄node􏷃􏷀a node of the cluster􏶿
+􏶜􏶝􏷆String􏷅􏷄cursor􏷃􏷀scan cursor􏶿
+􏶜􏶝􏷆string􏷅􏷄query􏷃􏷀the query to perform􏶿
+􏶜􏶝􏷆i􏷅􏷄scan count􏷃􏷀the count per scan􏶿
+􏶾List<String>􏶽􏶼keys􏶻􏶺resulting keys from scanning􏶹
+􏶴
+    // construct query
+    ScanParams params = new ScanParams();
+    params.match(query);
+    params.count(scanCount);
+    
+    // perform scan iteration
+    ScanResult scanResult = node.scan(cursor, params);
+    if (scanResult != null) {
+        cursor = scanResult.getCursor();
+        return scanResult.getResult();
+    }
+    return new ArrayList<>();
+􏶳
