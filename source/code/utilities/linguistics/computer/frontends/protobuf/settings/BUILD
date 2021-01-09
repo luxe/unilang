@@ -13,14 +13,3 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings/version:protocol_buffer_version_settings",
     ],
 )
-
-hcp(
-    "protocol_buffer_export_settings",
-    deps = [
-        "//code/tools/transcompilers/old_unilang/options:general_options",
-        "//code/tools/transcompilers/old_unilang/options/bazel:build_rule_settings",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings",
-        "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections:portion_options",
-    ],
-)
