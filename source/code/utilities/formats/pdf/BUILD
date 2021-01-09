@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "pdf_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/utilities/program/wrappers/pandoc/settings:pandoc_pdf_settings",
     ],
 )

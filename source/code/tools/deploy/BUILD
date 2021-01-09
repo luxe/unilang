@@ -27,7 +27,7 @@ hcp(
         "//code/tools/repo_tools/shared_objects/shared_object_trace:shared_object_trace_documentation_getter",
         "//code/tools/transcompilers/old_unilang/main:program_input",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/filesystem/files/getting:lib",

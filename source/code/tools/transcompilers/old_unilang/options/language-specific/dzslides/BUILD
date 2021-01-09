@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/options:general_options",
         "//code/tools/transcompilers/old_unilang/options/language-specific/dzslides:dzslide_creation_settings",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
         "//code/tools/transcompilers/old_unilang/options/sections:portion_options",
     ],

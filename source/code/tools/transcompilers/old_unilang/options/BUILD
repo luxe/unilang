@@ -40,7 +40,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/language-specific/html_table:html_table_options",
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_test_settings",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/mermaid:mermaid_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/plant_uml_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/processing:processing_options",

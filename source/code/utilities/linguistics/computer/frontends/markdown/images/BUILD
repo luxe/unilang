@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "classic_markdown_image",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/types/char:lib",
@@ -22,7 +22,7 @@ hcp(
 hcp(
     name = "html_markdown_image",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/types/char:lib",

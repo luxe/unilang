@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/doxygen_block_printer:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/language-specific/bibtex:bibtex_settings",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/markdown:markdown_settings",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",
         "//code/tools/transcompilers/old_unilang/structure/adjust:casing_adjuster",
         "//code/tools/transcompilers/old_unilang/structure/adjust:structure_adjuster",
