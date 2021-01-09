@@ -64,21 +64,6 @@ hcp(
 )
 
 hcp(
-    name = "grammar_adjuster",
-    deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_settings",
-        "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
-        "//code/utilities/types/general:lib",
-        "//code/utilities/types/strings/observers/other:lib",
-        "//code/utilities/types/strings/transformers/casing:lib",
-        "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/types/strings/transformers/trimming:lib",
-        "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/types/vectors/operators:lib",
-    ],
-)
-
-hcp(
     name = "value_constraint_comment_deriver",
     deps = [
         "//code/tools/transcompilers/old_unilang/constraint_exporter:value_constraints_to_interval_constraints",
