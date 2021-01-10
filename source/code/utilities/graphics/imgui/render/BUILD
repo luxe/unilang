@@ -25,6 +25,7 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/peripheral/pc:pc_input_state_getter",
         "//code/utilities/types/variant:lib",
+        "//code/utilities/image:stb_image_setter",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
