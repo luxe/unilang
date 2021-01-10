@@ -50,29 +50,11 @@ cc_binary(
     name = "main",
     srcs = ["main.cpp"],
     copts = [
-        #"-static",
     ],
     linkopts = [
-        #"-lsfml-graphics",
-        #"-lsfml-window",
-        #"-lsfml-system",
-        #"-lc++",
-        #"-lGL",
-
-        #"-ludev",
-        #"-pthread",
-        #"-lrt",
-        #"-lsfml-graphics",
-        #"-lsfml-window",
-        #"-lsfml-system",
     ],
     deps = [
         "@GL",
-        #"@glfw",
-        #"@SFML_unhermetic",
-        #"@SFML_unhermetic_libs",
         "@sfml",
-        #"@x11",
-        #"@SFML_unhermetic",
     ],
 )
