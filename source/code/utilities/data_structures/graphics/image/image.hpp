@@ -2,8 +2,7 @@
 
 #include <string>
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "code/utilities/image/stb_image.hpp"
 #include "code/utilities/data_structures/position/position.hpp"
 
 class Image

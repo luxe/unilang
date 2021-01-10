@@ -14,7 +14,6 @@ hcp(
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
-        "//code/utilities/data_structures/graphics/image:image",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )

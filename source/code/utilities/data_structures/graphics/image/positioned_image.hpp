@@ -2,9 +2,12 @@
 
 #include <string>
 #include <iostream>
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <GL/gl3w.h>
+//#include "imgui.h"
+
+#include "code/utilities/image/stb_image.hpp"
 #include "code/utilities/data_structures/position/position.hpp"
+
 
 class Positioned_Image
 {
@@ -36,9 +39,9 @@ public:
 
     ~Positioned_Image() { free(img_data); }
 
-    void imgui_image() { ImGui::Image((void *) (intptr_t) texture, ImVec2(width, height)); }
-    void imgui_drawlist(ImDrawList *draw_list)
-    {
-        draw_list->AddImage((void *) (intptr_t) texture, ImVec2(pos.x, pos.y), ImVec2(pos.x + width, pos.y + height));
-    }
+    // void imgui_image() { ImGui::Image((void *) (intptr_t) texture, ImVec2(width, height)); }
+    // void imgui_drawlist(ImDrawList *draw_list)
+    // {
+    //     draw_list->AddImage((void *) (intptr_t) texture, ImVec2(pos.x, pos.y), ImVec2(pos.x + width, pos.y + height));
+    // }
 };
