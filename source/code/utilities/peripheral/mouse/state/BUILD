@@ -15,6 +15,7 @@ hcp(
     deps = [
         "//code/utilities/data_structures/position",
         "//code/utilities/peripheral/mouse/state:mouse_button_state",
+        "//code/utilities/peripheral/mouse/state:mouse_wheel",
     ],
 )
 
@@ -34,3 +35,10 @@ hcp(
         "//code/utilities/peripheral/mouse/state:mouse_state",
     ],
 )
+
+hcp(
+    name = "mouse_wheel",
+    deps = [
+    ],
+)
+
