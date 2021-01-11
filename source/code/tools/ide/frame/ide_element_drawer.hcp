@@ -64,6 +64,9 @@ class
 ◀private: static▶ bool ☀Adjust_First_Mouse_Over_Element_Via_View_Anchor(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 
     Position pos = settings.desktop.mouse.change;
+    Position prev_pos = settings.desktop.mouse.prev_position;
+    Position current_pos = pc_input.mouse.pos;
+    Position real_prev_pos = settings.desktop.previous_input.mouse.pos;
     
     bool was_performed = false;
     
@@ -71,7 +74,7 @@ class
     for (auto & it: settings.elements.types){
         std::visit(overloaded {
             [&](Positioned_Buildable_Face_Tree & x) {
-                was_performed = Buildable_Face_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,pc_input);
+                was_performed = Buildable_Face_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,real_prev_pos);
                 if (was_performed){
                     x.pos.x += pos.x;
                     x.pos.y += pos.y;
@@ -86,10 +89,12 @@ class
         }, it.element);
         
         if (was_performed){
+            std::cout << "true" << std::endl;
             return true;
         }
     }
     
+    std::cout << "false" << std::endl;
     return false;
 ❱
 
