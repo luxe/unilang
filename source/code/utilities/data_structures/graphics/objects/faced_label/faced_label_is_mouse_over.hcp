@@ -17,27 +17,34 @@ class
 
 
 ◀public: static▶ bool ☀Check(Character_Maps const& font_chars, Faced_Label & label, Position const& pos, Pc_Input_State const& pc_input)❰
-    return Do_Check(font_chars,label.state,pos,pc_input);
+    return Do_Check(font_chars,label.state,pos,pc_input.mouse.pos);
 ❱
 
-◀private: static▶ bool ☀Do_Check(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Pc_Input_State const& pc_input)❰
+
+
+
+
+
+
+
+◀private: static▶ bool ☀Do_Check(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Position const& mouse_pos)❰
 
     if (!label.style.print_all){
-      return Regular_Check(font_chars,label,pos,pc_input);
+      return Regular_Check(font_chars,label,pos,mouse_pos);
     }
-    return All_Face_Check(font_chars,label,pos,pc_input);
+    return All_Face_Check(font_chars,label,pos,mouse_pos);
 ❱
 
 
-◀private: static▶ bool ☀Regular_Check(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Pc_Input_State const& pc_input)❰
+◀private: static▶ bool ☀Regular_Check(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Position const& mouse_pos)❰
 
     return Label_Is_Mouse_Over::Check(
                               pos,
                               label.faces[label.index].label,
-                              pc_input);
+                              mouse_pos);
 ❱
 
-◀private: static▶ bool ☀All_Face_Check(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Pc_Input_State const& pc_input)❰
+◀private: static▶ bool ☀All_Face_Check(Character_Maps const& font_chars, Faced_Label_State & label, Position const& pos, Position const& mouse_pos)❰
   
   Frame_Elements elements;
   auto current_pos = pos;
@@ -45,7 +52,7 @@ class
     auto check = Label_Is_Mouse_Over::Check(
                               current_pos,
                               label.faces[i].label,
-                              pc_input);
+                              mouse_pos);
      if (check){ return true;}
      current_pos.x += Label_Dimension_Getter::Get(label.faces[i].label).x -1;
   }
