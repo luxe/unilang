@@ -23,6 +23,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/buildable_schema_face_tree_drawer"❫
 ❪"code/utilities/types/variant/lib"❫
 ❪"code/tools/ide/frame/move_all_ide_elements"❫
+❪"code/tools/ide/frame/convert_all_ide_elements"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
@@ -33,26 +34,7 @@ class
         Update_All_Positions_Via_View_Anchor(settings);
     }
     
-    elements.types = Convert_To_Frame_Elements(settings.elements,settings,pc_input).types;
-    return elements;
-❱
-
-◀private: static▶ Frame_Elements ☀Convert_To_Frame_Elements(Ide_Elements & e, Ide_Settings const& settings, Pc_Input_State const& pc_input)❰
-
-    Frame_Elements elements;
-    for (auto & it: e.types){
-        std::visit(overloaded {
-            [&](Positioned_Buildable_Face_Tree & x) {
-                elements.types += Buildable_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
-            },
-            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
-                elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
-            },
-            [&](Positioned_Image_Data & x) {
-                elements.types.emplace_back(x);
-            }
-        }, it.element);
-    }
+    elements.types = Convert_All_Ide_Elements::Convert(settings.elements,settings,pc_input).types;
     return elements;
 ❱
 
