@@ -18,6 +18,11 @@
 //community:
 //https://www.reddit.com/r/nosyntax/
 
+//https://github.com/enso-org/enso
+//(previously luna)
+
+//unity & bolt visual scripting
+
 
 
 //ideas:
