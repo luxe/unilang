@@ -22,59 +22,31 @@ class
 ❪"code/utilities/data_structures/graphics/objects/slider/slider_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/buildable_schema_face_tree_drawer"❫
 ❪"code/utilities/types/variant/lib"❫
-❪"code/tools/ide/frame/move_all_ide_elements"❫
-❪"code/tools/ide/frame/convert_all_ide_elements"❫
-❪"code/tools/ide/frame/find_mouse_over_index"❫
 ⚞⚟
 
-◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
-    Frame_Elements elements;
-    bool was_performed = Adjust_First_Mouse_Over_Element_Via_View_Anchor(settings,pc_input);
-    
-    if (!was_performed){
-        Update_All_Positions_Via_View_Anchor(settings);
-    }
-    
-    elements.types = Convert_All_Ide_Elements::Convert(settings.elements,settings,pc_input).types;
-    return elements;
-❱
 
-◀private: static▶ bool ☀Adjust_First_Mouse_Over_Element_Via_View_Anchor(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
+◀public: static▶ int ☀Find(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
 
-    Position pos = settings.desktop.mouse.change;
     Position prev_pos = settings.desktop.previous_input.mouse.pos;
-    
     bool was_performed = false;
+    int found_index = 0;
     
-    
-    auto index = Find_Mouse_Over_Index::Find(settings,pc_input);
-    
-    if (index != -1){
-        
+    for (auto & it: settings.elements.types){
         std::visit(overloaded {
             [&](Positioned_Buildable_Face_Tree & x) {
-                //was_performed = Buildable_Face_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,prev_pos);
-                //if (was_performed){
-                    x.pos.x += pos.x;
-                    x.pos.y += pos.y;
-                //}
-                was_performed = true;
+                was_performed = Buildable_Face_Tree_Is_Mouse_Over::Check(settings.desktop.unilang_font_lookup,x,prev_pos);
             },
             [&](Positioned_Buildable_Schema_Faced_Tree & x) {
-                //x.pos.x += pos.x;
-                //x.pos.y += pos.y;
             },
             [&](Positioned_Image_Data & x) {
             },
-        }, settings.elements.types[index].element);
-    
-        return true;
-    
+        }, it.element);
+        
+        if (was_performed){
+            return found_index;
+        }
+        ++found_index;
     }
-    return false;
     
-❱
-
-◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
-    Move_All_Ide_Elements::Move(settings,settings.desktop.mouse.change);
+    return -1;
 ❱
