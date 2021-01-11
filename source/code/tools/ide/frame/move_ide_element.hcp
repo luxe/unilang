@@ -22,40 +22,22 @@ class
 ❪"code/utilities/data_structures/graphics/objects/slider/slider_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/buildable_schema_face_tree_drawer"❫
 ❪"code/utilities/types/variant/lib"❫
-❪"code/tools/ide/frame/move_all_ide_elements"❫
-❪"code/tools/ide/frame/convert_all_ide_elements"❫
-❪"code/tools/ide/frame/find_mouse_over_index"❫
-❪"code/tools/ide/frame/move_ide_element"❫
 ⚞⚟
 
-◀public: static▶ Frame_Elements ☀Get(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
-    Frame_Elements elements;
-    bool was_performed = Adjust_First_Mouse_Over_Element_Via_View_Anchor(settings,pc_input);
+◀public: static▶ void ☀Move(Ide_Element & it, Position const& pos)❰
     
-    if (!was_performed){
-        Update_All_Positions_Via_View_Anchor(settings);
-    }
-    
-    elements.types = Convert_All_Ide_Elements::Convert(settings.elements,settings,pc_input).types;
-    return elements;
-❱
-
-◀private: static▶ bool ☀Adjust_First_Mouse_Over_Element_Via_View_Anchor(Ide_Settings & settings, Pc_Input_State const& pc_input)❰
-
-    Position pos = settings.desktop.mouse.change;
-    
-    //if mouse is over something
-    auto index = Find_Mouse_Over_Index::Find(settings,pc_input);
-    if (index != -1){
-        
-        Move_Ide_Element::Move(settings.elements.types[index],pos);
-        return true;
-    
-    }
-    return false;
-    
-❱
-
-◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
-    Move_All_Ide_Elements::Move(settings,settings.desktop.mouse.change);
+        std::visit(overloaded {
+            [&](Positioned_Buildable_Face_Tree & x) {
+                x.pos.x += pos.x;
+                x.pos.y += pos.y;
+            },
+            [&](Positioned_Buildable_Schema_Faced_Tree & x) {
+                x.pos.x += pos.x;
+                x.pos.y += pos.y;
+            },
+            [&](Positioned_Image_Data & x) {
+                x.pos.x += pos.x;
+                x.pos.y += pos.y;
+            },
+        }, it.element);
 ❱
