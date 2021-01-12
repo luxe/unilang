@@ -1,9 +1,9 @@
-package(default_visibility = ["//visibility:public"])
-
 load("//bazel/rules/cpp:main.bzl", "cpp_main")
-load("//bazel/rules/unilang:transfer_unilang_java.bzl", "transfer_unilang_java")
+load("//bazel/rules/unilang:unilang_to_code.bzl", "unilang_to_code")
 load("//bazel/rules/code:code_to_java.bzl", "code_to_java")
 load("//bazel/rules/move_file:move_file.bzl", "move_file")
 load("//bazel/rules/move_file:move_file_java.bzl", "move_java_file")
 
-transfer_unilang_java("hello_world","/home/luxe/Desktop/output_test/sdfsdf.java")
+def unilang_to_java(name):
+    unilang_to_code(name)
+    code_to_java(name)
