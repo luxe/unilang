@@ -9,6 +9,9 @@
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 #include <iostream>
 
+void Copy_File_And_Follow_Symlink(std::string file, std::string to){
+    execute("cp -rfHL " + file + " " + to);
+}
 void Copy_Folder_To_Path(std::string folder_name, std::string directory_to_copy_to){
     execute("cp -rf " + folder_name + " " + directory_to_copy_to);
 }

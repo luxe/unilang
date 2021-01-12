@@ -8,6 +8,10 @@
 #include "code/utilities/program/common_actions/locale/lib.hpp"
 #include "code/utilities/types/strings/transformers/removing/lib.hpp"
 
+
+//a program that exports an hcp file for getting a particular path to a data file
+//this is useful inside bazel rules for making sure data can be accessed through code, and to ensure
+//that code which uses this generated API does not break.
 Code Build_Code(Program_Options const& po){
 
     Code x;
