@@ -21,8 +21,8 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/constraint_exporter:concise_constraint_line_exporter",
         "//code/tools/transcompilers/old_unilang/constraint_exporter/interval_constraint",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
@@ -46,8 +46,8 @@ hcp(
     deps = [
         "value_constraints_to_interval_constraints",
         "//code/tools/transcompilers/old_unilang/constraint_exporter/interval_constraint",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
@@ -64,8 +64,8 @@ hcp(
 hcp(
     name = "if_chain_constraint_exporter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",

@@ -22,7 +22,7 @@ hcp(
     name = "enum_options",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/comment:comment_settings",
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_block_options",
+        "//code/utilities/comments/doxygen/settings:doxygen_block_options",
         "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_utility_values_options",
         "//code/tools/transcompilers/old_unilang/options/sections/enum:when_to_show_empty_enum_comment",
         "//code/utilities/types/strings/transformers/casing:case_format_style",

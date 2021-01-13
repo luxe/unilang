@@ -10,7 +10,7 @@ cpp_object(name = "doxygen_parameter_direction")
 hcp(
     name = "doxygen_block_options",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_block_style",
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen/standard:standard_doxygen_style_lines",
+        "//code/utilities/comments/doxygen/settings:doxygen_block_style",
+        "//code/utilities/comments/doxygen/settings/standard:standard_doxygen_style_lines",
     ],
 )

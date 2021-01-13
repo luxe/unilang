@@ -7,7 +7,7 @@ hcp(
     name = "doxygen_block_maker",
     deps = [
         "doxygen_data",
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_block_options",
+        "//code/utilities/comments/doxygen/settings:doxygen_block_options",
         "//code/utilities/types/strings/creators:lib",
         "//code/utilities/types/strings/observers/front_back:lib",
         "//code/utilities/types/strings/observers/other:lib",
@@ -18,10 +18,10 @@ hcp(
 hcp(
     name = "doxygen_data_getter_for_data_members",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data_shared",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:value_constraint_comment_deriver",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/comments/doxygen/maker:value_constraint_comment_deriver",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
@@ -36,11 +36,11 @@ hcp(
     name = "doxygen_data_getter",
     deps = [
         "doxygen_data_getter_for_data_members",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data_shared",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:value_constraint_comment_deriver",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer/method_getter:doxygen_data_getter_for_methods",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/comments/doxygen/maker:value_constraint_comment_deriver",
+        "//code/utilities/comments/doxygen/maker/method_getter:doxygen_data_getter_for_methods",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
@@ -57,8 +57,8 @@ hcp(
 hcp(
     name = "doxygen_data_shared",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:grammar_adjuster",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_settings",
     ],
 )

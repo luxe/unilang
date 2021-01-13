@@ -6,8 +6,8 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "argument_direction_decider",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data_shared",
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_parameter_direction",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
@@ -20,7 +20,7 @@ hcp(
 hcp(
     name = "closed_box_function_checker",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_parameter_direction",
+        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/tools/transcompilers/old_unilang/structure/query:argument_direction_decider",

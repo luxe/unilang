@@ -7,7 +7,7 @@ hcp(
     name = "java_test_exporter",
     deps = [
         "//code/tools/transcompilers/old_unilang/compiler-frontends/java_test:java_test_str_getter",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:grammar_adjuster",
+        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_test_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",
         "//code/tools/transcompilers/old_unilang/structure/adjust:casing_adjuster",
@@ -64,7 +64,7 @@ hcp(
     name = "java_test_settings_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_test_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/meta/organizations:organization",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/personal/life:company_getter",
         "//code/utilities/program/common_actions/exits:lib",

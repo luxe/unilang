@@ -34,9 +34,9 @@ cpp_object(name = "function_declaration_location")
 hcp(
     name = "doxygen_block_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data_getter",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_getter",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
@@ -89,7 +89,7 @@ hcp(
 hcp(
     name = "namespace_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data_getter",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_getter",
         "//code/tools/transcompilers/old_unilang/options/sections/namespace:namespace_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/namespace:namespace_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/namespace:namespace_section",

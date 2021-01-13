@@ -16,6 +16,6 @@ hcp(
     deps = [
         "author_order_method",
         "meta_author_print_method",
-        "//code/tools/transcompilers/old_unilang/options/sections/meta/other:meta_tag_existence_option",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/other:meta_tag_existence_option",
     ],
 )

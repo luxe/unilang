@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "direct_methods_called_by_methods_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_parameter_direction",
+        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/tools/transcompilers/old_unilang/structure/query:argument_direction_decider",

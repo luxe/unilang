@@ -39,7 +39,7 @@ hcp(
     name = "protobuf_options_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/meta/organizations:organization",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/personal/life:company_getter",
         "//code/utilities/program/common_actions/exits:lib",

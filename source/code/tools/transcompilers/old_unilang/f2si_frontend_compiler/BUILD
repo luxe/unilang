@@ -33,7 +33,7 @@ hcp(
     name = "f2si_c_options_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/meta/organizations:organization",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/program/common_actions/exits:lib",
     ],

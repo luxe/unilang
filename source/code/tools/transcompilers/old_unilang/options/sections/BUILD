@@ -23,7 +23,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/sections/include_guard:include_guard_options",
         "//code/tools/transcompilers/old_unilang/options/sections/inheritance:inheritance_options",
         "//code/tools/transcompilers/old_unilang/options/sections/macro:macro_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/meta:meta_options",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/tools/transcompilers/old_unilang/options/sections/method:method_options",
         "//code/tools/transcompilers/old_unilang/options/sections/namespace:namespace_options",
         "//code/tools/transcompilers/old_unilang/options/sections/type:type_options",

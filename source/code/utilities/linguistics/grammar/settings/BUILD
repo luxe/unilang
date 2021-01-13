@@ -34,6 +34,6 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_cliche_settings",
         "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_preposition_settings",
         "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_puncuation_settings",
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_block_options",
+        "//code/utilities/comments/doxygen/settings:doxygen_block_options",
     ],
 )

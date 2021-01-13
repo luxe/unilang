@@ -18,8 +18,8 @@ hcp(
 hcp(
     name = "subgroup_tag_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_block_maker",
-        "//code/tools/transcompilers/old_unilang/doxygen_block_printer:doxygen_data",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/tools/transcompilers/old_unilang/options/sections/method/sorting:method_subgroup_tag_settings",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/streams/filestreams:lib",

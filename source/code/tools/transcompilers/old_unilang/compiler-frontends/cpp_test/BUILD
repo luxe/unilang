@@ -33,7 +33,7 @@ hcp(
     name = "cpp_test_options_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_test_export_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/meta/organizations:organization",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",

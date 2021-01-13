@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "method_contract_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/sections/meta/other:meta_tag_existence_option",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/other:meta_tag_existence_option",
     ],
 )
 
@@ -20,7 +20,7 @@ hcp(
         "method_subgroup_settings",
         "outside_body_comment_settings",
         "//code/tools/transcompilers/old_unilang/options/comment:comment_settings",
-        "//code/tools/transcompilers/old_unilang/options/comment/doxygen:doxygen_block_options",
+        "//code/utilities/comments/doxygen/settings:doxygen_block_options",
         "//code/tools/transcompilers/old_unilang/options/sections/method:method_benchmark_case_settings",
         "//code/tools/transcompilers/old_unilang/options/sections/method:method_test_case_settings",
         "//code/tools/transcompilers/old_unilang/options/sections/method/attributes:all_method_attribute_settings",
