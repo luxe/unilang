@@ -7,12 +7,12 @@ cpp_object(name = "hungarian_characteristic")
 
 hcp(
     name = "hungarian_characteristic_qualifier",
-    deps = ["//code/tools/transcompilers/old_unilang/options/hungarian/characteristic:hungarian_characteristic"],
+    deps = ["//code/utilities/linguistics/computer/hungarian/settings/characteristic:hungarian_characteristic"],
 )
 
 hcp(
     name = "hungarian_characteristic_trump_rules",
-    deps = ["//code/tools/transcompilers/old_unilang/options/hungarian/characteristic:hungarian_characteristic"],
+    deps = ["//code/utilities/linguistics/computer/hungarian/settings/characteristic:hungarian_characteristic"],
 )
 
 hcp(

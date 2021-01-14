@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "hungarian_left_prefix_decider",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/hungarian/characteristic:hungarian_characteristic_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings/characteristic:hungarian_characteristic_settings",
         "//code/utilities/program/common_actions/exits:lib",
     ],
 )
@@ -14,7 +14,7 @@ hcp(
 hcp(
     "hungarian_type_prefix_decider",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/hungarian/type:hungarian_type_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings/type:hungarian_type_settings",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
     ],

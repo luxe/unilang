@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "identifier_notation_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/hungarian/characteristic:hungarian_characteristic_settings",
-        "//code/tools/transcompilers/old_unilang/options/hungarian/type:hungarian_type_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings/characteristic:hungarian_characteristic_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings/type:hungarian_type_settings",
     ],
 )

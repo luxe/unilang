@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "type_to_hungarian_notation_converter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/hungarian:identifier_notation_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings:identifier_notation_settings",
         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian/prefix_creators:hungarian_left_prefix_decider",
         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian/prefix_creators:hungarian_type_prefix_decider",
     ],
@@ -15,7 +15,7 @@ hcp(
 hcp(
     name = "data_member_to_hungarian_notation_converter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/hungarian:identifier_notation_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings:identifier_notation_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_argument",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_result",

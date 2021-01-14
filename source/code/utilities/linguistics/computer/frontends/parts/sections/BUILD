@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "notation_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/hungarian:identifier_notation_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings:identifier_notation_settings",
         "//code/utilities/linguistics/computer/frontends/parts/sections/data_member:data_member_casing_settings",
         "//code/utilities/linguistics/computer/frontends/parts/sections/method/parameters:method_parameter_unit_settings",
         "//code/tools/transcompilers/old_unilang/options/self_describe_type:extra_type_suffix_settings",
