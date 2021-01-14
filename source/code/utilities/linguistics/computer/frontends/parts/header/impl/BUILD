@@ -14,9 +14,9 @@ hcp(
 hcp(
     name = "header_collector",
     deps = [
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header:implicit_global_header_comment_deriver",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header/relationships:import_relationship_comment_deriver",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header/unilang-convert:header_extension_deriver",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl:implicit_global_header_comment_deriver",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl/relationships:import_relationship_comment_deriver",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl/unilang-convert:header_extension_deriver",
         "//code/tools/transcompilers/old_unilang/comment_creator",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
@@ -36,9 +36,9 @@ hcp(
 hcp(
     name = "header_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header:header_collector",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header/block:header_block_comment_getter",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header/unilang-convert:header_adjuster",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl:header_collector",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl/block:header_block_comment_getter",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl/unilang-convert:header_adjuster",
         "//code/tools/transcompilers/old_unilang/comment_creator",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/hidl:hidl_export_settings",

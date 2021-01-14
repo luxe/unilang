@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/boilerplate_printer",
         "//code/tools/transcompilers/old_unilang/boilerplate_printer:code_wrap_printer",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/header:header_printer",
+        "//code/utilities/linguistics/computer/frontends/parts/header/impl:header_printer",
         "//code/tools/transcompilers/old_unilang/compiler-frontends/protobuf:protobuf_options_getter",
         "//code/tools/transcompilers/old_unilang/enum_printer:enum_section_printer",
         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler:file_transferer",
