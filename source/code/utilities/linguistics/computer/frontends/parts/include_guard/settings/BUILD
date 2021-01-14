@@ -17,8 +17,8 @@ hcp(
 hcp(
     name = "include_guard_options",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/include_guard:begin_include_guard_options",
-        "//code/utilities/linguistics/computer/frontends/parts/include_guard:end_include_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/include_guard/settings:begin_include_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/include_guard/settings:end_include_guard_options",
         "//code/utilities/types/strings/transformers/casing:case_format_style",
     ],
 )

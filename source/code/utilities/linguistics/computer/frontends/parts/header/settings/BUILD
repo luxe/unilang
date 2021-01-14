@@ -13,9 +13,9 @@ hcp(
     deps = [
         "//code/utilities/comments/code/settings:comment_settings",
         "//code/utilities/comments/doxygen/settings:doxygen_block_options",
-        "//code/utilities/linguistics/computer/frontends/parts/sections/import:implicit_header_comment_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections/import:import_relation_label_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections/import:shared_headers_block_comment",
+        "//code/utilities/linguistics/computer/frontends/parts/header/settings:implicit_header_comment_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/header/settings:import_relation_label_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/header/settings:shared_headers_block_comment",
     ],
 )
 
