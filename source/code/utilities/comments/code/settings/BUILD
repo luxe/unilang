@@ -8,9 +8,9 @@ cpp_object(name = "comment_style_category")
 hcp(
     name = "comment_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_settings",
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_style_category",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
+        "//code/utilities/comments/code/settings:comment_style_category",
         "//code/utilities/comments/doxygen/settings:doxygen_block_options",
-        "//code/tools/transcompilers/old_unilang/options/comment/language_default:c_comment_settings",
+        "//code/utilities/comments/language:c_comment_settings",
     ],
 )

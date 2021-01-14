@@ -33,7 +33,7 @@ hcp(
 hcp(
     name = "comment_adjustment_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_settings",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:comment_reflow_settings",
     ],
 )

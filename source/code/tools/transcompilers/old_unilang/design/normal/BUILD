@@ -7,7 +7,7 @@ hcp(
     name = "method_sorter",
     deps = [
         "//code/tools/transcompilers/old_unilang/design/normal/data:subgroup_sorted_methods",
-        "//code/tools/transcompilers/old_unilang/options/sections/method/sorting/method_sort_algorithms",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/method/sorting/method_sort_algorithms",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/converters:lib",
@@ -20,7 +20,7 @@ hcp(
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/comments/doxygen/maker:doxygen_data",
-        "//code/tools/transcompilers/old_unilang/options/sections/method/sorting:method_subgroup_tag_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/method/sorting:method_subgroup_tag_settings",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/types/converters:lib",

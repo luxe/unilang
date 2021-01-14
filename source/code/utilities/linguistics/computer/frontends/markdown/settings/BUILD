@@ -8,7 +8,7 @@ hcp(
     "markdown_settings",
     deps = [
         "//code/tools/transcompilers/old_unilang/options:general_options",
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_settings",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/utilities/linguistics/computer/frontends/markdown/settings:header_settings",
         "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_code_settings",
         "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_image_settings",
@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/markdown/settings:outline_settings",
         "//code/utilities/linguistics/computer/frontends/markdown/settings:sentence_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections:portion_options",
     ],
 )
 

@@ -21,7 +21,7 @@ hcp(
     name = "import_relationship_comment_deriver",
     deps = [
         "//code/tools/transcompilers/old_unilang/boilerplate_printer/header/relationships:import_relation_and_label_getter",
-        "//code/tools/transcompilers/old_unilang/options/sections/import:import_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/import:import_options",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/types/sets:lib",
         "//code/utilities/types/vectors/converters:lib",

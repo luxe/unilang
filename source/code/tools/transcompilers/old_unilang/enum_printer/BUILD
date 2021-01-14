@@ -10,7 +10,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_without_utility_values_printer",
         "//code/tools/transcompilers/old_unilang/enum_printer/extra/data:enum_utility_value_printer",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
         "//code/utilities/streams/filestreams:lib",

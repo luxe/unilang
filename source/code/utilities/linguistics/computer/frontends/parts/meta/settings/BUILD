@@ -33,7 +33,7 @@ hcp(name = "meta_task_order_options")
 hcp(
     name = "meta_options",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_settings",
+        "//code/utilities/comments/code/settings:comment_settings",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_blank_line_options",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_classification_options",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_contract_number_options",

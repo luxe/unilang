@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/comment_creator",
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
         "//code/utilities/streams/filestreams:lib",
@@ -23,7 +23,7 @@ hcp(
     name = "enum_boilerplate_printer",
     deps = [
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
         "//code/utilities/streams/filestreams:lib",
@@ -38,7 +38,7 @@ hcp(
 hcp(
     name = "enum_value_creator",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/types/converters:lib",
@@ -54,7 +54,7 @@ hcp(
         "enum_argument_printer",
         "enum_boilerplate_printer",
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
         "//code/utilities/streams/filestreams:lib",
@@ -73,7 +73,7 @@ hcp(
     deps = [
         "enum_argument_printer",
         "enum_boilerplate_printer",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
         "//code/utilities/streams/filestreams:lib",

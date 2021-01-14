@@ -7,6 +7,6 @@ hcp(
     name = "header_block_comment_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/comment_creator",
-        "//code/tools/transcompilers/old_unilang/options/sections/import:shared_headers_block_comment",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/import:shared_headers_block_comment",
     ],
 )

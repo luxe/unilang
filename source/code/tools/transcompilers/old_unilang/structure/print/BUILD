@@ -90,7 +90,7 @@ hcp(
     name = "namespace_printer",
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_data_getter",
-        "//code/tools/transcompilers/old_unilang/options/sections/namespace:namespace_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/namespace:namespace_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/namespace:namespace_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/namespace:namespace_section",
         "//code/utilities/streams/filestreams:lib",
@@ -201,7 +201,7 @@ hcp(
     name = "struct_printer",
     deps = [
         "//code/tools/transcompilers/old_unilang/options:general_options",
-        "//code/tools/transcompilers/old_unilang/options/sections:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections:portion_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_section",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/types:type_section",
         "//code/tools/transcompilers/old_unilang/structure/print:data_member_printer",
@@ -218,7 +218,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/options:general_options",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections:portion_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_section",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/types:type_section",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",

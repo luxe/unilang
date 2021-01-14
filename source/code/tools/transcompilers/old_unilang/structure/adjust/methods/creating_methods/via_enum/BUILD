@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "enum_utility_function_shared",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/utilities/types/converters:lib",
@@ -17,7 +17,7 @@ hcp(
 hcp(
     name = "enum_utility_function_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str:enum_to_str_getter",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str:enum_to_str_inflection_count_getter",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum/individual_getters/enum_to_str:enum_to_str_plural_getter",

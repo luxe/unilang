@@ -11,11 +11,11 @@ hcp(
 hcp(
     name = "import_options",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_settings",
+        "//code/utilities/comments/code/settings:comment_settings",
         "//code/utilities/comments/doxygen/settings:doxygen_block_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/import:implicit_header_comment_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/import:import_relation_label_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections/import:shared_headers_block_comment",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/import:implicit_header_comment_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/import:import_relation_label_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/import:shared_headers_block_comment",
     ],
 )
 
@@ -27,6 +27,6 @@ hcp(
 hcp(
     name = "shared_headers_block_comment",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_settings",
+        "//code/utilities/comments/code/settings:comment_settings",
     ],
 )

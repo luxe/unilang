@@ -59,7 +59,7 @@ hcp(
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/utilities/comments/doxygen/maker:grammar_adjuster",
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_grammar_settings",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
     ],
 )
 

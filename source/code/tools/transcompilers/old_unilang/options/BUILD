@@ -14,7 +14,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/options:code_partition_method",
         "//code/tools/transcompilers/old_unilang/options:constraint_export_style",
-        "//code/tools/transcompilers/old_unilang/options/comment:comment_settings",
+        "//code/utilities/comments/code/settings:comment_settings",
         "//code/tools/transcompilers/old_unilang/options/design_strategy:in_out_export_api_style",
         "//code/tools/transcompilers/old_unilang/options/design_strategy:object_export_method",
         "//code/tools/transcompilers/old_unilang/options/filesystem:general_filesystem_naming",

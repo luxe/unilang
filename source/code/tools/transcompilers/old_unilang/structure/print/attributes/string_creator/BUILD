@@ -6,6 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "attribute_style_to_string_converter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/sections/method/attributes/specific/parts:attribute_style",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/method/attributes/specific/parts:attribute_style",
     ],
 )

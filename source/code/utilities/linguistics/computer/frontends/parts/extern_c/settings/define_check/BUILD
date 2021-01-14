@@ -15,6 +15,6 @@ hcp(
 hcp(
     name = "define_check_end_comment_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment/language_default:comment_style",
+        "//code/utilities/comments/language:comment_style",
     ],
 )

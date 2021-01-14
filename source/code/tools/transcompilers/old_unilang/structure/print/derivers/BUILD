@@ -42,7 +42,7 @@ hcp(
     name = "identifier_name_deriver",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections:notation_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/sections:notation_settings",
         "//code/tools/transcompilers/old_unilang/options/self_describe_type:modify_identifier_with_extra_type_info",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_argument",

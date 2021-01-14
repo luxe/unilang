@@ -10,7 +10,7 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/slidy:slidy_creation_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
-        "//code/tools/transcompilers/old_unilang/options/sections:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections:portion_options",
     ],
 )
 

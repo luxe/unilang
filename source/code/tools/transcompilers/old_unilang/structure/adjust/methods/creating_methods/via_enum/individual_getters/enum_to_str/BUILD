@@ -8,7 +8,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
@@ -27,7 +27,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
@@ -46,7 +46,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
@@ -65,7 +65,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/enum:enum_options",
+        "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_enum:enum_utility_function_shared",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",

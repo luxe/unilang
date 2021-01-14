@@ -10,15 +10,15 @@ hcp(
 hcp(
     name = "end_include_guard_options",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/comment/language_default:comment_style",
+        "//code/utilities/comments/language:comment_style",
     ],
 )
 
 hcp(
     name = "include_guard_options",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/sections/include_guard:begin_include_guard_options",
-        "//code/tools/transcompilers/old_unilang/options/sections/include_guard:end_include_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/include_guard:begin_include_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/include_guard:end_include_guard_options",
         "//code/utilities/types/strings/transformers/casing:case_format_style",
     ],
 )
