@@ -18,8 +18,8 @@ hcp(
     name = "macro_options",
     deps = [
         "//code/utilities/comments/code/settings:comment_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/define_check:define_check_end_comment_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/define_check:define_check_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/define_check:define_check_end_comment_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/define_check:define_check_settings",
         "//code/utilities/linguistics/computer/frontends/parts/sections/macro:if_else_style",
         "//code/utilities/linguistics/computer/frontends/parts/sections/macro:macro_redefinition_message_settings",
         "//code/utilities/linguistics/computer/frontends/parts/sections/macro:preprocessor_directives",

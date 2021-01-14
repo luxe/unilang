@@ -6,15 +6,15 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "define_guard_settings",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/define_check:define_check_end_comment_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/define_check:define_check_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/define_check:define_check_end_comment_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/define_check:define_check_settings",
     ],
 )
 
 hcp(
     name = "begin_extern_c_guard_options",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/guard_sections:define_guard_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/guard_sections:define_guard_settings",
         "//code/utilities/linguistics/computer/frontends/parts/sections/macro:preprocessor_directives",
     ],
 )
@@ -22,7 +22,7 @@ hcp(
 hcp(
     name = "end_extern_c_guard_options",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/guard_sections:define_guard_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/guard_sections:define_guard_settings",
         "//code/utilities/linguistics/computer/frontends/parts/sections/macro:preprocessor_directives",
     ],
 )

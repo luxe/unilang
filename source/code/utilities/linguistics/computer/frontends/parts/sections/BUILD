@@ -18,7 +18,7 @@ hcp(
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/sections/data_member:data_member_options",
         "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c:extern_c_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings:extern_c_guard_options",
         "//code/utilities/linguistics/computer/frontends/parts/sections/import:import_options",
         "//code/utilities/linguistics/computer/frontends/parts/include_guard:include_guard_options",
         "//code/utilities/linguistics/computer/frontends/parts/sections/inheritance:inheritance_options",

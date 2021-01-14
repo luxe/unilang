@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "extern_c_guard_options",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/guard_sections:begin_extern_c_guard_options",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c/guard_sections:end_extern_c_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/guard_sections:begin_extern_c_guard_options",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/guard_sections:end_extern_c_guard_options",
     ],
 )
