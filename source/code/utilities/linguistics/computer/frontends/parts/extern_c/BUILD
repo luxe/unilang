@@ -6,10 +6,9 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "extern_wrap_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/extern_c:macro_define_check_getter",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/extern_c:macro_endif_getter",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c:macro_define_check_getter",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c:macro_endif_getter",
         "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings:extern_c_guard_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/streams/filestreams:lib",
     ],
 )

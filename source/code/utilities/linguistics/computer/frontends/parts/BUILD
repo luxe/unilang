@@ -27,7 +27,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/boilerplate_printer:code_wrap_printer",
         "//code/tools/transcompilers/old_unilang/boilerplate_printer:include_guard_wrap_printer",
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/extern_c:extern_wrap_printer",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c:extern_wrap_printer",
         "//code/tools/transcompilers/old_unilang/boilerplate_printer/header:header_printer",
         "//code/tools/transcompilers/old_unilang/boilerplate_printer/meta_block:meta_block_printer",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
