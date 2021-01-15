@@ -32,3 +32,20 @@ hcp(
         "//code/utilities/types/strings/observers/converting:lib",
     ],
 )
+
+hcp(
+    name = "imports_getter",
+    deps = [
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/contributor",
+        "//code/utilities/filesystem/paths:lib",
+        "//code/utilities/program/call:lib",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/types/strings/transformers/appending:lib",
+        "//code/utilities/types/strings/transformers/casing:case_modifier",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/vectors/operators:lib",
+    ],
+)

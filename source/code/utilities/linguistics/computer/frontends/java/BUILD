@@ -22,5 +22,6 @@ hcp(
         "//code/utilities/types/strings/observers/converting:lib",
         "//code/utilities/linguistics/computer/frontends/java/parts:boilerplate_getter",
         "//code/utilities/linguistics/computer/frontends/java/parts:package_name_getter",
+        "//code/utilities/linguistics/computer/frontends/java/parts:imports_getter",
     ],
 )
