@@ -20,5 +20,6 @@ hcp(
         "//code/utilities/types/char:lib",
         "//code/utilities/time/date:lib",
         "//code/utilities/types/strings/observers/converting:lib",
+        "//code/utilities/linguistics/computer/frontends/java/parts:boilerplate_getter",
     ],
 )
