@@ -6,6 +6,9 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "java_settings",
     deps = [
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts:notation_settings",
+        "//code/tools/transcompilers/old_unilang/options:general_options",
     ],
 )
 
