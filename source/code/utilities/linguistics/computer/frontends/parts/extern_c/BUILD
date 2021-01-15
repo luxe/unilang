@@ -25,6 +25,6 @@ hcp(
     name = "macro_endif_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/define_check:define_check_end_comment_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections/macro:preprocessor_directives",
+        "//code/utilities/linguistics/computer/frontends/parts/macro:preprocessor_directives",
     ],
 )

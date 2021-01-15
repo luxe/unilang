@@ -23,7 +23,7 @@ hcp(
     name = "build_rule_settings",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/bazel:bazel_load_db_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
     ],
 )
 

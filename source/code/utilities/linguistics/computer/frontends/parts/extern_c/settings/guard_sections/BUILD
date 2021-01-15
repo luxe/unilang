@@ -15,7 +15,7 @@ hcp(
     name = "begin_extern_c_guard_options",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/guard_sections:define_guard_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections/macro:preprocessor_directives",
+        "//code/utilities/linguistics/computer/frontends/parts/macro:preprocessor_directives",
     ],
 )
 
@@ -23,6 +23,6 @@ hcp(
     name = "end_extern_c_guard_options",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/extern_c/settings/guard_sections:define_guard_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections/macro:preprocessor_directives",
+        "//code/utilities/linguistics/computer/frontends/parts/macro:preprocessor_directives",
     ],
 )

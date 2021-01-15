@@ -16,7 +16,7 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/markdown/settings:outline_settings",
         "//code/utilities/linguistics/computer/frontends/markdown/settings:sentence_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/sections:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
     ],
 )
 
