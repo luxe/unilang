@@ -1,7 +1,6 @@
 class
-
-
-❪"code/tools/transcompilers/old_unilang/structure/model/sections/meta/meta_section"❫
+❪vector❫
+❪string❫
 ❪"code/utilities/linguistics/computer/frontends/parts/meta/settings/author/meta_author_tag_options"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/appending/lib"❫
@@ -9,7 +8,7 @@ class
 ❪"code/utilities/types/converters/lib"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+◀public: static▶ std::string ☀Get(std::vector<std::string> authors, Meta_Author_Tag_Options const& options)❰
 
     std::string str;
     
@@ -33,10 +32,10 @@ class
 ❱
 
 
-◀private: static▶ void ☀Order_Authors(std::vector<Token_Value> & authors,  Author_Order_Method const& order_method)❰
+◀private: static▶ void ☀Order_Authors(std::vector<std::string> & authors,  Author_Order_Method const& order_method)❰
 ❱
 
-◀private: static▶ std::string ☀Get_Author_Part_When_There_Are_Authors(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Author_Part_When_There_Are_Authors(std::vector<std::string> authors, Meta_Author_Tag_Options const& options)❰
     std::string str;
     
     if (options.print_method == Meta_Author_Print_Method::SEPERATE_LINES){
@@ -49,24 +48,24 @@ class
     return str;
 ❱
 
-◀private: static▶ std::string ☀Get_Authors_On_Each_Line(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Authors_On_Each_Line(std::vector<std::string> authors, Meta_Author_Tag_Options const& options)❰
     std::string str;
     
     for (auto const& it: authors){
-        Append_With_Newline(str,Get_Author_Tag(options) + " " + as_string(it.value));
+        Append_With_Newline(str,Get_Author_Tag(options) + " " + it);
     }
     Append_With_Newline(str,"");
     
     return str;
 ❱
-◀private: static▶ std::string ☀Get_Authors_On_Shared_Line(std::vector<Token_Value> authors, Meta_Author_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Authors_On_Shared_Line(std::vector<std::string> authors, Meta_Author_Tag_Options const& options)❰
     std::string str;
     
     Append(str,Get_Authors_Tag(options) + " ");
     
     Call_Function_On_All_Elements_Except_Last_Element_Then_Call_Function_On_Last_Element(authors
-        ,[&](Token_Value author){Append(str,std::string(as_string(author.value) + ", ")); return;}
-        ,[&](Token_Value author){Append(str,as_string(author.value));        return;}
+        ,[&](std::string author){Append(str,std::string(author + ", ")); return;}
+        ,[&](std::string author){Append(str,author);        return;}
     );
     
     Append_With_Newline(str,"");

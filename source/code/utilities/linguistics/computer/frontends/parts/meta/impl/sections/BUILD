@@ -7,7 +7,6 @@ hcp(
     name = "meta_author_printer",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings/author:meta_author_tag_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
