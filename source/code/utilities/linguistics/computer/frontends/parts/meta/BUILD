@@ -11,5 +11,6 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings:export_file_settings",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/impl:meta_block_printer",
     ],
 )
