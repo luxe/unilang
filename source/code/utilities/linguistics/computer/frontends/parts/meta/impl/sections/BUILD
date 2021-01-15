@@ -17,7 +17,6 @@ hcp(
     name = "meta_blank_line_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
     ],
 )
 
@@ -25,7 +24,6 @@ hcp(
     name = "meta_classification_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -34,7 +32,6 @@ hcp(
     name = "meta_company_name_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -43,7 +40,6 @@ hcp(
     name = "meta_contract_number_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -52,7 +48,6 @@ hcp(
     name = "meta_contract_statement_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -61,7 +56,6 @@ hcp(
     name = "meta_copyright_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/time/calendar/tm_wrappers:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
@@ -72,7 +66,6 @@ hcp(
     name = "meta_copyright_statement_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -82,7 +75,6 @@ hcp(
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_distribution_statement_options",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/other:lib",
     ],
@@ -92,7 +84,6 @@ hcp(
     name = "meta_external_links_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -101,7 +92,6 @@ hcp(
     name = "meta_file_statement_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -110,7 +100,6 @@ hcp(
     name = "meta_group_names_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
@@ -124,7 +113,6 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_company_name_getter",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_organization_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/other:lib",
     ],
@@ -134,7 +122,6 @@ hcp(
     name = "meta_project_name_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
@@ -143,7 +130,6 @@ hcp(
     name = "meta_task_order_getter",
     deps = [
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],
 )
