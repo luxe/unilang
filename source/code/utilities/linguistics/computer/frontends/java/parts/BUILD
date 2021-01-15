@@ -47,5 +47,6 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/types/strings/observers/other:lib",
     ],
 )
