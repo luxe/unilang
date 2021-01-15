@@ -122,7 +122,7 @@ hcp(
 hcp(
     name = "meta_organizations_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/meta_block/sections:meta_company_name_getter",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_company_name_getter",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_organization_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:meta_section",

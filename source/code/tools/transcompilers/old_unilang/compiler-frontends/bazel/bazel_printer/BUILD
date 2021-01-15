@@ -30,7 +30,7 @@ hcp(
 hcp(
     name = "top_comment_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/boilerplate_printer/meta_block/sections:meta_copyright_getter",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_copyright_getter",
         "//code/tools/transcompilers/old_unilang/options/bazel:build_rule_settings",
         "//code/utilities/types/strings/creators:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
