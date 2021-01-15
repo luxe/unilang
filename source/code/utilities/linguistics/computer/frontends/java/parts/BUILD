@@ -17,3 +17,18 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/parts/meta:boilerplate_printer",
     ],
 )
+
+hcp(
+    name = "package_name_getter",
+    deps = [
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/contributor:contributor",
+        "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
+        "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings:export_file_settings",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
+        "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/types/vectors/converters:lib",
+        "//code/utilities/types/strings/observers/converting:lib",
+    ],
+)
