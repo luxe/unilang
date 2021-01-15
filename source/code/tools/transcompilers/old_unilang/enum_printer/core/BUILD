@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "enum_argument_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/comment_creator",
+        "//code/utilities/comments/code:comment_creator",
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
         "//code/utilities/linguistics/computer/frontends/parts/sections/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",

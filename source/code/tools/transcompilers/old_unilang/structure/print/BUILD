@@ -71,7 +71,7 @@ hcp(
 hcp(
     name = "method_body_token_printer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/comment_creator",
+        "//code/utilities/comments/code:comment_creator",
         "//code/tools/transcompilers/old_unilang/in-method-printers:body_param_in_method_printer",
         "//code/tools/transcompilers/old_unilang/in-method-printers:data_member_in_method_printer",
         "//code/tools/transcompilers/old_unilang/in-method-printers:foreign_method_call_in_method_printer",
@@ -119,7 +119,7 @@ hcp(
 hcp(
     name = "method_block_ender",
     deps = [
-        "//code/tools/transcompilers/old_unilang/comment_creator",
+        "//code/utilities/comments/code:comment_creator",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
