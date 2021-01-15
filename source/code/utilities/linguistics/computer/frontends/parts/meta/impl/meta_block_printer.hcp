@@ -6,6 +6,7 @@ class
 ❪"code/utilities/linguistics/computer/frontends/parts/meta/impl/sections/meta_author_printer"❫
 ❪"code/tools/transcompilers/old_unilang/structure/print/export_file_settings/export_file_settings"❫
 ❪"code/utilities/linguistics/computer/frontends/parts/meta/settings/meta_watermark_settings"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
 ⚯
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/utilities/linguistics/computer/frontends/parts/meta/impl/sections/notes/meta_note_creator"❫
@@ -40,22 +41,22 @@ class
 ❪"code/utilities/licenses/apache_2_getter"❫
 ⚞⚟
 
-◀public: static▶ std::string ☀Get(std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options,bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+◀public: static▶ std::string ☀Get(std::string file_name, Export_File_Settings const& file_settings, model::Module const& structure, Meta_Options const& options,bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
 
-    auto str = Get_Printable_Meta_Block_Comment(file_name,file_settings,meta,options,contains_data,contains_methods, final_file_name);
+    auto str = Get_Printable_Meta_Block_Comment(file_name,file_settings,structure,options,contains_data,contains_methods, final_file_name);
     str += "\n";
     return str;
 
 ❱
 
 
-◀private: static▶ std::string ☀Get_Printable_Meta_Block_Comment(std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+◀private: static▶ std::string ☀Get_Printable_Meta_Block_Comment(std::string file_name, Export_File_Settings const& file_settings, model::Module const& structure, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
     
     std::string str;
     
     if (options.print_block){
         
-        auto block_text = Get_Block_Text(file_name,file_settings,meta,options,contains_data,contains_methods,final_file_name);
+        auto block_text = Get_Block_Text(file_name,file_settings,structure,options,contains_data,contains_methods,final_file_name);
         str = As_Comment(block_text,options);
     }
     
@@ -84,25 +85,52 @@ class
     return final;
 ❱
 
-◀private: static▶ std::string ☀Get_Block_Text(std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+◀private: static▶ std::string ☀Get_Block_Text(std::string file_name, Export_File_Settings const& file_settings, model::Module const& structure, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
     std::string block_text;
     for (auto const& section_name: options.section_order){
         
-        auto section = Get_Printable_Section(section_name,file_name,file_settings,meta,options,contains_data,contains_methods,final_file_name);
+        auto section = Get_Printable_Section(section_name,file_name,file_settings,structure,options,contains_data,contains_methods,final_file_name);
         Append(block_text,section);
     }
     return block_text;
 ❱
 
-◀private: static▶ std::string ☀Get_Printable_Section(Meta_Section_Name const& section_name, std::string file_name, Export_File_Settings const& file_settings, Meta_Section const& meta, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
+◀private: static▶ std::string ☀Get_Printable_Section(Meta_Section_Name const& section_name, std::string file_name, Export_File_Settings const& file_settings, model::Module const& structure, Meta_Options const& options, bool const& contains_data, bool const& contains_methods, std::string const& final_file_name)❰
     std::string str;
+    
+    
+    
+    //extracted from structure
+    auto brief_desc = First_Element_Or_Default(structure.module_brief).value;
+    auto detail_desc = First_Element_Or_Default(structure.module_detail).value;
+    auto groups = First_Element_Or_Default(structure.group);
+    std::vector<std::string> group_names;
+    for (auto const& it : groups.group_name){
+        group_names.emplace_back(it.value);
+    }
+    auto authors = First_Element_Or_Default(structure.author);
+    std::vector<std::string> author_names;
+    for (auto const& it : authors.author_name){
+        author_names.emplace_back(it.value);
+    }
+    auto bugs = First_Element_Or_Default(structure.bug);
+    std::vector<std::string> bug_names;
+    for (auto const& it : bugs.bug_name){
+        bug_names.emplace_back(it.value);
+    }
+    auto warnings = First_Element_Or_Default(structure.warning);
+    std::vector<std::string> warning_names;
+    for (auto const& it : warnings.warning_name){
+        warning_names.emplace_back(it.value);
+    }
+    
     
     switch (section_name){
         case Meta_Section_Name::FILE_TAG:             Append(str,Meta_File_Statement_Getter::Get(final_file_name,options.file));                                              break;
         case Meta_Section_Name::BLANK_LINE:           Append(str,Meta_Blank_Line_Getter::Get(options.blank_lines));                                                     break;
         case Meta_Section_Name::GENERIC_NOTE:         Append(str,Meta_Notes_Getter::Get(file_name,file_settings,options.generic_note,contains_data,contains_methods));  break;
-        case Meta_Section_Name::BRIEF:                Append(str,Get_Brief_Part(as_string(meta.brief_description.value),options.brief));                                break;
-        case Meta_Section_Name::DETAILS:              Append(str,Get_Details_Part(as_string(meta.detailed_description.value),options.details));                         break;
+        case Meta_Section_Name::BRIEF:                Append(str,Get_Brief_Part(brief_desc,options.brief));                                break;
+        case Meta_Section_Name::DETAILS:              Append(str,Get_Details_Part(detail_desc,options.details));                         break;
         
         case Meta_Section_Name::COMPANY_NAME:            Append(str,Meta_Company_Name_Getter::Get(options.organizations));                                              break;
         case Meta_Section_Name::COPYRIGHT_STATEMENT:     Append(str,Meta_Copyright_Statement_Getter::Get(options.copyright_statement));                                 break;
@@ -116,10 +144,10 @@ class
         
         case Meta_Section_Name::EXTERNAL_LINKS: Append(str,Meta_External_Links_Getter::Get());                                                                          break;
         case Meta_Section_Name::COPYRIGHT:      Append(str,Meta_Copyright_Getter::Get(options.copyright,options.organizations,file_name));                                                              break;
-        case Meta_Section_Name::GROUP_NAMES:    Append(str,Meta_Group_Names_Getter::Get(meta.group_names,options.group_names));                                         break;
-        case Meta_Section_Name::AUTHOR:         Append(str,Meta_Author_Printer::Get(meta.authors,options.authors));                                                     break;
-        case Meta_Section_Name::BUG:            Append(str,Get_Bugs_Part(meta.bugs,options.bugs));                                                                      break;
-        case Meta_Section_Name::WARNING:        Append(str,Get_Warnings_Part(meta.warnings,options.warnings));                                                          break;
+        case Meta_Section_Name::GROUP_NAMES:    Append(str,Meta_Group_Names_Getter::Get(group_names,options.group_names));                                         break;
+        case Meta_Section_Name::AUTHOR:         Append(str,Meta_Author_Printer::Get(author_names,options.authors));                                                     break;
+        case Meta_Section_Name::BUG:            Append(str,Get_Bugs_Part(bug_names,options.bugs));                                                                      break;
+        case Meta_Section_Name::WARNING:        Append(str,Get_Warnings_Part(warning_names,options.warnings));                                                          break;
         case Meta_Section_Name::WATERMARK:      Append(str,Get_Watermark_Part(options.watermark_settings)); break;
         
         case Meta_Section_Name::APACHE_2_LICENSE: Append(str,Apache_2_Getter::Get());                                                                          break;
@@ -146,14 +174,14 @@ class
     }
     return str;
 ❱
-◀private: static▶ std::string ☀Get_Bugs_Part(std::vector<Token_Value> const& bugs, Meta_Bug_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Bugs_Part(std::vector<std::string> const& bugs, Meta_Bug_Tag_Options const& options)❰
     std::string str;
     if (options.existence.print){
         str += Potentially_Print_Multiline_Tag("bug",bugs,options.existence.print_when_empty);
     }
     return str;
 ❱
-◀private: static▶ std::string ☀Get_Warnings_Part(std::vector<Token_Value> const& warnings, Meta_Warning_Tag_Options const& options)❰
+◀private: static▶ std::string ☀Get_Warnings_Part(std::vector<std::string> const& warnings, Meta_Warning_Tag_Options const& options)❰
     std::string str;
     if (options.existence.print){
         str += Potentially_Print_Multiline_Tag("warning",warnings,options.existence.print_when_empty);
@@ -171,13 +199,13 @@ class
 ❱
 
 
-◀private: static▶ std::string ☀Potentially_Print_Multiline_Tag(std::string tag_name, std::vector<Token_Value> tokens, bool print_when_empty)❰
+◀private: static▶ std::string ☀Potentially_Print_Multiline_Tag(std::string tag_name, std::vector<std::string> tokens, bool print_when_empty)❰
     std::string str;
     
         //if there is data to print
         if (!tokens.empty()){
             for (auto const& it: tokens){
-                str += Get_Multiline_Tag(tag_name,as_string(it.value));
+                str += Get_Multiline_Tag(tag_name,it);
             }
         }
         
