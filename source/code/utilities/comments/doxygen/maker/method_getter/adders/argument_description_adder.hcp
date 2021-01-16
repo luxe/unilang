@@ -1,12 +1,10 @@
 class
 
 
-❪"code/tools/transcompilers/old_unilang/structure/model/sections/method/method_item"❫
-❪"code/tools/transcompilers/old_unilang/structure/model/sections/data_member/data_member_item"❫
-❪"code/tools/transcompilers/old_unilang/options/language-specific/c/c_export_settings"❫
 ❪"code/utilities/comments/doxygen/maker/doxygen_block_maker"❫
 ❪"code/utilities/comments/doxygen/maker/doxygen_data"❫
 ❪"code/utilities/comments/doxygen/settings/doxygen_parameter_direction"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
 ⚯
 ❪"code/utilities/linguistics/computer/literals/adjuster/literal_adjuster"❫
 ❪"code/utilities/comments/doxygen/maker/value_constraint_comment_deriver"❫
@@ -22,32 +20,32 @@ class
 ⚞⚟
 
 
-◀public: static▶ void ☀Add(Doxygen_Data & data, Method_Item const& method, C_Export_Settings const& options)❰
-  Add_Template_Arguments(data,method.template_arguments,options);
-  Add_Function_Arguments(data,method.function_arguments,options);
+◀public: static▶ void ☀Add(Doxygen_Data & data, model::Function const& method, Portion_Options const& options)❰
+  Add_Template_Arguments(data,method.function_template_argument,options);
+  Add_Function_Arguments(data,method.function_argument,options);
 ❱
-◀private: static▶ void ☀Add_Template_Arguments(Doxygen_Data & data, std::vector<Template_Argument> const& template_arguments, C_Export_Settings const& options)❰
+◀private: static▶ void ☀Add_Template_Arguments(Doxygen_Data & data, std::vector<model::FunctionTemplateArgument> const& template_arguments, Portion_Options const& options)❰
 
     for (auto it: template_arguments){
-        auto description = as_string(it.comment.value);
-        Units_Description_Adder::Add(it,description,options.portion.method_options.parameters.template_parameter_units);
-        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"tparam",description,options.portion.method_options.comment.grammar);
+        auto description = First_Element_Or_Default(it.function_template_argument_comment).value;
+        Units_Description_Adder::Add(it,description,options.method_options.parameters.template_parameter_units);
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"tparam",description,options.method_options.comment.grammar);
     }
 ❱
-◀private: static▶ void ☀Add_Function_Arguments(Doxygen_Data & data, std::vector<Function_Argument> const& function_arguments, C_Export_Settings const& options)❰
+◀private: static▶ void ☀Add_Function_Arguments(Doxygen_Data & data, std::vector<model::FunctionArgument> const& function_arguments, Portion_Options const& options)❰
     
     for (auto it: function_arguments){
         auto new_identifier = Identifier_Name_Deriver::Derive_Name(it,options);
-        auto grammar_fixed_comment = Grammar_Adjuster::Get_Adjusted(as_string(it.comment.value),options.portion.method_options.comment.grammar);
+        auto grammar_fixed_comment = Grammar_Adjuster::Get_Adjusted(as_string(it.comment.value),options.method_options.comment.grammar);
         
         auto new_description = new_identifier + " " + grammar_fixed_comment;
-        Units_Description_Adder::Add(it,new_description,options.portion.method_options.parameters.regular_parameter_units);
+        Units_Description_Adder::Add(it,new_description,options.method_options.parameters.regular_parameter_units);
         auto dir = Decide_In_Out_Pass_String(it,options);
         
         Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"param"+dir,new_description);
     }
 ❱
-◀private: static▶ std::string ☀Decide_In_Out_Pass_String(Function_Argument const& argument, C_Export_Settings const& options)❰
+◀private: static▶ std::string ☀Decide_In_Out_Pass_String(Function_Argument const& argument, Portion_Options const& options)❰
 
 auto direction = Argument_Direction_Decider::Decide_Direction(argument);
   auto tag = direction_to_tag(direction,options);
@@ -56,7 +54,7 @@ auto direction = Argument_Direction_Decider::Decide_Direction(argument);
 
 
 
-◀private: static▶ std::string ☀direction_to_tag(Doxygen_Parameter_Direction direction, C_Export_Settings const& options)❰
+◀private: static▶ std::string ☀direction_to_tag(Doxygen_Parameter_Direction direction, Portion_Options const& options)❰
   
   switch (direction){
     case Doxygen_Parameter_Direction::IN: return options.general.comment.doxygen.in_parameters;
