@@ -13,7 +13,7 @@ hcp(
 hcp(
     name = "slidy_exporter",
     deps = [
-        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/language-specific/slidy:slidy_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",
         "//code/tools/transcompilers/old_unilang/structure/adjust:casing_adjuster",

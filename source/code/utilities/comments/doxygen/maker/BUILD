@@ -58,7 +58,7 @@ hcp(
     name = "doxygen_data_shared",
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_data",
-        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
     ],
 )

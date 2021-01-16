@@ -16,7 +16,7 @@ hcp(
 hcp(
     name = "markdown_str_getter",
     deps = [
-        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",

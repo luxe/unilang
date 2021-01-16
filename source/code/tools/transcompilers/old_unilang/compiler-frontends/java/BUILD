@@ -7,7 +7,7 @@ hcp(
     name = "java_exporter",
     deps = [
         "//code/tools/transcompilers/old_unilang/compiler-frontends/java:java_str_getter",
-        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",
         "//code/tools/transcompilers/old_unilang/structure/adjust:casing_adjuster",

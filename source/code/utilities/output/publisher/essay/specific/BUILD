@@ -46,7 +46,7 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
