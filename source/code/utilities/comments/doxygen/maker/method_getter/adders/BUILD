@@ -6,16 +6,8 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "units_description_adder",
     deps = [
-        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
-        "//code/utilities/comments/doxygen/maker:doxygen_data",
-        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
-        "//code/utilities/comments/doxygen/maker:grammar_adjuster",
-        "//code/utilities/comments/doxygen/maker:value_constraint_comment_deriver",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-        "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
-        "//code/utilities/linguistics/computer/literals/adjuster:literal_adjuster",
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/utilities/types/converters:lib",
         "//code/utilities/units:unit_suffix_lookuper",
     ],
