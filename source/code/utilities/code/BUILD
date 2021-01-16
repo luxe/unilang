@@ -31,7 +31,5 @@ hcp(
 )
 
 string_tree_getter(name = "concept")
-
 static_tree_structs(name = "concept")
-
 string_tree_to_static_tree_parser(name = "concept")
