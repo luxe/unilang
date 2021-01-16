@@ -61,6 +61,14 @@ bool Contains_Substring(std::string const& str, std::string const& part){
     }
     return false;
 }
+bool Contains_Substring(std::string const& str, char const& part){
+    for (auto const& it: str){
+        if (it == part){
+            return true;
+        }
+    }
+    return false;
+}
 bool Contains_Only_Whitespace_Characters(std::string const& str){
   
     for (auto const& it: str){
