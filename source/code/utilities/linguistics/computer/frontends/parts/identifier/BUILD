@@ -18,3 +18,11 @@ hcp(
         "//code/utilities/code:concept_static_tree_structs",
     ],
 )
+
+hcp(
+    name = "data_member_to_identifier",
+    deps = [
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
+        "//code/utilities/code:concept_static_tree_structs",
+    ],
+)

@@ -1,6 +1,19 @@
+class
 
 
-◀private: static▶ void ☀Add_Main_Descriptions(Doxygen_Data & data, model::DataMember const& item, C_Export_Settings const& options)❰
+❪"code/utilities/comments/doxygen/maker/doxygen_block_maker"❫
+❪"code/utilities/comments/doxygen/maker/doxygen_data"❫
+❪"code/utilities/code/concept_static_tree_structs"❫
+❪"code/utilities/linguistics/computer/frontends/parts/module_settings"❫
+❪"code/utilities/linguistics/computer/frontends/parts/identifier/data_member_to_identifier"❫
+⚯
+❪"code/utilities/comments/doxygen/maker/doxygen_data_shared"❫
+❪"code/utilities/linguistics/grammar/grammar_adjuster"❫
+❪"code/utilities/types/converters/lib"❫
+❪"code/utilities/types/vectors/observers/lib"❫
+⚞⚟
+
+◀public: static▶ void ☀Add(Doxygen_Data & data, model::DataMember const& item, Module_Settings const& options)❰
 
     //TODO: settings
     bool add_stupid_var_tag = true;
@@ -10,7 +23,7 @@
     
     if (add_stupid_var_tag){
         //no grammar on purpose
-        auto derived_name = Identifier_Name_Deriver::Derive_Name(item,options,false,true);
+        auto derived_name = Data_Member_To_Identifier::Derive_Name(item,options,false,true);
         Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,var_tag,derived_name);
     }
 
@@ -19,32 +32,36 @@
     Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,details_tag,Derive_Data_Detail(item,options),options.portion.data_member_options.comment.grammar);
 ❱
 
-◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(model::DataMember const& it,C_Export_Settings const& options)❰
+◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(model::DataMember const& it,Module_Settings const& options)❰
     
     std::string derived_brief = "";
     
-    if (as_string(it.brief.value).empty() && options.portion.data_member_options.derive_brief_comment){
-      derived_brief = as_string(it.name.value);
+    auto comment = First_Element_Or_Default(it.data_member_brief).value;
+    auto name = First_Element_Or_Default(it.data_member_identifier).value;
+    
+    if (comment.empty() && options.portion.data_member_options.derive_brief_comment){
+      derived_brief = name;
     }
     else{
-      derived_brief = as_string(it.brief.value);
+      derived_brief = comment;
     }
     
     return derived_brief;
 ❱
 
-◀private: static▶ std::string ☀Derive_Data_Detail(model::DataMember const& item, C_Export_Settings const& options)❰
-    std::string str = as_string(item.detail.value);
+◀private: static▶ std::string ☀Derive_Data_Detail(model::DataMember const& item, Module_Settings const& options)❰
+    auto comment = First_Element_Or_Default(item.data_member_detail).value;
+    std::string str = comment;
     
     //add value meanings as part of the detail section
-    if (!str.empty()){
-        str += "\n";
-        for (auto const& it: item.value_meaning){
-            if (!as_string(it.value.value).empty() && !as_string(it.meaning.value).empty()){
-                str += as_string(it.value.value) + " = " + as_string(it.meaning.value) + "\n";
-            }
-        }
-    }
+    // if (!str.empty()){
+    //     str += "\n";
+    //     for (auto const& it: item.value_meaning){
+    //         if (!as_string(it.value.value).empty() && !as_string(it.meaning.value).empty()){
+    //             str += as_string(it.value.value) + " = " + as_string(it.meaning.value) + "\n";
+    //         }
+    //     }
+    // }
     
     return str;
 ❱
