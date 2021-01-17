@@ -66,3 +66,12 @@ hcp(
         "//code/utilities/code/symbols:token_attribute_settings",
 ],
 )
+
+hcp(
+    name = "method_is_overloaded",
+    deps = [
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+],
+)

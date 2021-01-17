@@ -91,9 +91,11 @@ hcp(
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-        "//code/tools/transcompilers/old_unilang/structure/query:is_overload_decider",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/code/query:method_is_overloaded",
     ],
 )
