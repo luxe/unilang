@@ -11,7 +11,7 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
-        "//code/utilities/comments/doxygen/maker/data_getter/adders:main_description_adder",
+        "//code/utilities/comments/doxygen/maker/data_getter/adders:data_main_description_adder",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/general:lib",
     ],

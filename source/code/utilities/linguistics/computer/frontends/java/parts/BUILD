@@ -67,5 +67,6 @@ hcp(
         "//code/utilities/types/strings/observers/converting:lib",
         "//code/utilities/types/strings/transformers/casing:case_modifier",
         "//code/utilities/code/query:virtual_method_checker",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_printer",
     ],
 )

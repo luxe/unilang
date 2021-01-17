@@ -4,7 +4,7 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
 hcp(
-    name = "main_description_adder",
+    name = "data_main_description_adder",
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/comments/doxygen/maker:doxygen_data",
