@@ -35,6 +35,7 @@ hcp(
     name = "general_options",
     deps = [
         "//code/utilities/comments/code/settings:comment_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/filesystem:filesystem_settings",
     ],
 )
 
