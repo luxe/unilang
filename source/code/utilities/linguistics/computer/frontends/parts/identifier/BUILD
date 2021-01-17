@@ -10,3 +10,11 @@ hcp(
         "//code/utilities/code:concept_static_tree_structs",
     ],
 )
+
+hcp(
+    name = "function_result_to_identifier",
+    deps = [
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
+        "//code/utilities/code:concept_static_tree_structs",
+    ],
+)

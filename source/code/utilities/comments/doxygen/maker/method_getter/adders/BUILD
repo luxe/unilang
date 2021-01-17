@@ -32,13 +32,13 @@ hcp(
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
         "//code/utilities/comments/doxygen/maker/method_getter/adders:units_description_adder",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-        "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
         "//code/utilities/types/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/linguistics/computer/frontends/parts/identifier:function_result_to_identifier",
     ],
 )
 
