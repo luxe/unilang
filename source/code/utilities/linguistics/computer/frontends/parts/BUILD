@@ -30,3 +30,22 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/parts/typedef:typedef_options",
     ],
 )
+
+hcp(
+    name = "general_options",
+    deps = [
+        "//code/utilities/comments/code/settings:comment_settings",
+    ],
+)
+
+hcp(
+    name = "module_settings",
+    deps = [
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts:notation_settings",
+        "//code/utilities/linguistics/computer/frontends/parts:general_options",
+    ],
+)
+
+
+

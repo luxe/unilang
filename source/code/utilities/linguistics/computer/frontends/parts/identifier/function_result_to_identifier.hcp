@@ -1,0 +1,27 @@
+
+◀public: static▶ std::string ☀Derive_Name(Function_Result const& arg, C_Export_Settings const& settings)❰
+        
+        
+        //get prefixes and suffixes
+        auto prefix = Data_Member_To_Hungarian_Notation_Converter::Get_Hungarian_Notation_Prefix(arg,settings,false,false);
+        auto suffix = Get_Raw_Unit_Suffix(arg);
+        suffix = Get_Properly_Cased_Suffix_For_Non_Constant(suffix);
+        
+        //create the identifier
+        std::string new_identifier = Case_Modifier::As_Modified_Casing(settings.portion.method_options.argument_casing,as_string(arg.identifier.value));
+        Possibly_Add_Identifier_Prefixes_And_Suffixes(new_identifier,settings.portion.method_options.parameters.notation,prefix,suffix);
+        
+        //return it
+        return new_identifier;
+❱
+
+◀private: static▶ std::string ☀Get_Raw_Unit_Suffix(Function_Result const& construct)❰
+    std::string suffix;
+    if (!construct.units.value.empty()){
+        suffix = Unit_Suffix_Lookuper::Get_Unit_Suffix_From_Data_Unit(as_string(construct.units.value));
+        if (suffix.empty()){
+            suffix = as_string(construct.units.value);
+        }
+    }
+    return suffix;
+❱

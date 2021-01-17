@@ -9,7 +9,7 @@ hcp(
         "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-        "//code/tools/transcompilers/old_unilang/structure/query:argument_direction_decider",
+        "//code/utilities/code/query:argument_direction_decider",
         "//code/tools/transcompilers/old_unilang/structure/query/call_stack:direct_method_call_and_count",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/strings/observers/other:lib",
