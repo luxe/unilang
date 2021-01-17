@@ -5,7 +5,7 @@ class
 ❪"code/utilities/comments/doxygen/maker/doxygen_data"❫
 ❪"code/utilities/comments/doxygen/settings/doxygen_parameter_direction"❫
 ❪"code/utilities/code/concept_static_tree_structs"❫
-❪"code/utilities/linguistics/computer/frontends/parts/portion_options"❫
+❪"code/utilities/linguistics/computer/frontends/parts/module_settings"❫
 ⚯
 ❪"code/utilities/comments/doxygen/maker/doxygen_data_shared"❫
 ❪"code/utilities/units/unit_suffix_lookuper"❫
@@ -20,32 +20,37 @@ class
 ⚞⚟
 
 
-◀public: static▶ void ☀Add(Doxygen_Data & data, model::Function const& method, Portion_Options const& options)❰
+◀public: static▶ void ☀Add(Doxygen_Data & data, model::Function const& method, Module_Settings const& options)❰
   Add_Template_Arguments(data,method.function_template_argument,options);
   Add_Function_Arguments(data,method.function_argument,options);
 ❱
-◀private: static▶ void ☀Add_Template_Arguments(Doxygen_Data & data, std::vector<model::FunctionTemplateArgument> const& template_arguments, Portion_Options const& options)❰
+◀private: static▶ void ☀Add_Template_Arguments(Doxygen_Data & data, std::vector<model::FunctionTemplateArgument> const& template_arguments, Module_Settings const& options)❰
 
     for (auto it: template_arguments){
         auto description = First_Element_Or_Default(it.function_template_argument_comment).value;
-        Units_Description_Adder::Add(it,description,options.method_options.parameters.template_parameter_units);
-        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"tparam",description,options.method_options.comment.grammar);
+        
+        auto units = First_Element_Or_Default(it.function_template_argument_units).value;
+        Units_Description_Adder::Add(units,description,options.portion.method_options.parameters.template_parameter_units);
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"tparam",description,options.portion.method_options.comment.grammar);
     }
 ❱
-◀private: static▶ void ☀Add_Function_Arguments(Doxygen_Data & data, std::vector<model::FunctionArgument> const& function_arguments, Portion_Options const& options)❰
+◀private: static▶ void ☀Add_Function_Arguments(Doxygen_Data & data, std::vector<model::FunctionArgument> const& function_arguments, Module_Settings const& options)❰
     
     for (auto it: function_arguments){
-        auto new_identifier = Function_Argument_To_Identifier::Derive_Name(it,options);
-        auto grammar_fixed_comment = Grammar_Adjuster::Get_Adjusted(as_string(it.comment.value),options.method_options.comment.grammar);
+        auto new_identifier = Function_Argument_To_Identifier::Derive_Name(it,options.portion);
+        
+        auto comment = First_Element_Or_Default(it.function_argument_comment).value;
+        auto grammar_fixed_comment = Grammar_Adjuster::Get_Adjusted(comment,options.portion.method_options.comment.grammar);
         
         auto new_description = new_identifier + " " + grammar_fixed_comment;
-        Units_Description_Adder::Add(it,new_description,options.method_options.parameters.regular_parameter_units);
+        auto units = First_Element_Or_Default(it.argument_units).value;
+        Units_Description_Adder::Add(units,new_description,options.portion.method_options.parameters.regular_parameter_units);
         auto dir = Decide_In_Out_Pass_String(it,options);
         
         Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,"param"+dir,new_description);
     }
 ❱
-◀private: static▶ std::string ☀Decide_In_Out_Pass_String(model::FunctionArgument const& argument, Portion_Options const& options)❰
+◀private: static▶ std::string ☀Decide_In_Out_Pass_String(model::FunctionArgument const& argument, Module_Settings const& options)❰
 
 auto direction = Argument_Direction_Decider::Decide_Direction(argument);
   auto tag = direction_to_tag(direction,options);
@@ -54,7 +59,7 @@ auto direction = Argument_Direction_Decider::Decide_Direction(argument);
 
 
 
-◀private: static▶ std::string ☀direction_to_tag(Doxygen_Parameter_Direction direction, Portion_Options const& options)❰
+◀private: static▶ std::string ☀direction_to_tag(Doxygen_Parameter_Direction direction, Module_Settings const& options)❰
   
   switch (direction){
     case Doxygen_Parameter_Direction::IN: return options.general.comment.doxygen.in_parameters;

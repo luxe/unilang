@@ -90,7 +90,7 @@ hcp(
         "//code/utilities/types/strings/transformers/stripping:lib",
         "//code/utilities/units:unit_suffix_lookuper",
         "//code/utilities/linguistics/computer/frontends/parts/identifier:function_argument_to_identifier",
-        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
