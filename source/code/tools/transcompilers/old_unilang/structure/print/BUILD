@@ -22,7 +22,7 @@ hcp(
 hcp(
     name = "stream_creator",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/filesystem:general_filesystem_naming",
+        "//code/utilities/linguistics/computer/frontends/parts/filesystem:general_filesystem_naming",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
         "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",

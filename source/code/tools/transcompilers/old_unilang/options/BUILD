@@ -17,7 +17,7 @@ hcp(
         "//code/utilities/comments/code/settings:comment_settings",
         "//code/tools/transcompilers/old_unilang/options/design_strategy:in_out_export_api_style",
         "//code/tools/transcompilers/old_unilang/options/design_strategy:object_export_method",
-        "//code/tools/transcompilers/old_unilang/options/filesystem:general_filesystem_naming",
+        "//code/utilities/linguistics/computer/frontends/parts/filesystem:general_filesystem_naming",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_language_version",
     ],
 )
