@@ -1,0 +1,50 @@
+
+
+◀private: static▶ void ☀Add_Main_Descriptions(Doxygen_Data & data, model::DataMember const& item, C_Export_Settings const& options)❰
+
+    //TODO: settings
+    bool add_stupid_var_tag = true;
+    std::string var_tag = "field";
+    std::string brief_tag = "brief";
+    std::string details_tag = "details";
+    
+    if (add_stupid_var_tag){
+        //no grammar on purpose
+        auto derived_name = Identifier_Name_Deriver::Derive_Name(item,options,false,true);
+        Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,var_tag,derived_name);
+    }
+
+    auto brief = Potentially_Derive_Brief_Statement(item,options);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,brief_tag,brief,options.portion.data_member_options.comment.grammar);
+    Doxygen_Data_Shared::Add_If_There_Is_A_Value(data,details_tag,Derive_Data_Detail(item,options),options.portion.data_member_options.comment.grammar);
+❱
+
+◀private: static▶ std::string ☀Potentially_Derive_Brief_Statement(model::DataMember const& it,C_Export_Settings const& options)❰
+    
+    std::string derived_brief = "";
+    
+    if (as_string(it.brief.value).empty() && options.portion.data_member_options.derive_brief_comment){
+      derived_brief = as_string(it.name.value);
+    }
+    else{
+      derived_brief = as_string(it.brief.value);
+    }
+    
+    return derived_brief;
+❱
+
+◀private: static▶ std::string ☀Derive_Data_Detail(model::DataMember const& item, C_Export_Settings const& options)❰
+    std::string str = as_string(item.detail.value);
+    
+    //add value meanings as part of the detail section
+    if (!str.empty()){
+        str += "\n";
+        for (auto const& it: item.value_meaning){
+            if (!as_string(it.value.value).empty() && !as_string(it.meaning.value).empty()){
+                str += as_string(it.value.value) + " = " + as_string(it.meaning.value) + "\n";
+            }
+        }
+    }
+    
+    return str;
+❱
