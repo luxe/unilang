@@ -42,3 +42,16 @@ hcp(
         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
     ],
 )
+
+hcp(
+    name = "doxygen_block_printer",
+    deps = [
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_getter",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/types/strings/transformers/other:lib",
+    ],
+)

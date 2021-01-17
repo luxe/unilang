@@ -43,6 +43,12 @@ std::vector<char> Convert_To_Vec_Of_Chars(std::string const& str){
         return all;
 }
 
+std::string& Indent_Each_Line_N_Amount(std::string & str, unsigned int amount){
+      std::string indent_line(amount,' ');
+      Add_Prefix_To_Each_Line(str,indent_line);
+      return str;
+}
+
 
 std::string& Add_Prefix_To_Each_Line(std::string & str, std::string const& prefix){
         std::string new_str = prefix;

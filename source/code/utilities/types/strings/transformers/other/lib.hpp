@@ -10,6 +10,7 @@ std::vector<float> Collect_Whitespace_Separated_Floats(std::string const& s);
 
 
 
+std::string& Indent_Each_Line_N_Amount(std::string & str, unsigned int amount);
 std::string& Add_Prefix_To_Each_Line(std::string & str, std::string const& prefix);
 std::string& Add_Prefix_To_All_Lines_Except_First(std::string & str, std::string const& prefix);
 
