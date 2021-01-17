@@ -18,9 +18,12 @@ hcp(
     deps = [
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/comments/doxygen/maker:doxygen_data",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
         "//code/utilities/comments/doxygen/maker/method_getter/adders:units_description_adder",
         "//code/utilities/types/converters:lib",
+        "//code/utilities/types/vectors/observers:lib",
     ],
 )
 
