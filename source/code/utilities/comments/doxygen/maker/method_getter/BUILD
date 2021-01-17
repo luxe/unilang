@@ -13,8 +13,7 @@ hcp(
         "//code/utilities/comments/doxygen/maker/method_getter/adders:overload_note_adder",
         "//code/utilities/comments/doxygen/maker/method_getter/adders:return_results_description_adder",
         "//code/utilities/comments/doxygen/maker/method_getter/adders:suggested_return_identifier_adder",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
     ],
 )
