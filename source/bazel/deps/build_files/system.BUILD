@@ -22,7 +22,8 @@ cc_import(
 
 cc_import(
     name = "GL",
-    shared_library = "usr/lib/libGL.so",
+    #shared_library = "usr/lib/libGL.so",
+    shared_library = "usr/lib/x86_64-linux-gnu/libGL.so"
 )
 
 cc_import(
