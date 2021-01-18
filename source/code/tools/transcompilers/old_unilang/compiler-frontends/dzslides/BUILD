@@ -13,7 +13,6 @@ hcp(
 hcp(
     name = "dzslides_exporter",
     deps = [
-        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/options/language-specific/dzslides:dzslides_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",
         "//code/tools/transcompilers/old_unilang/structure/adjust:casing_adjuster",
@@ -25,6 +24,7 @@ hcp(
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/linguistics/computer/file_extension:file_extension_getter",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/utilities/program/call:lib",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/char:lib",

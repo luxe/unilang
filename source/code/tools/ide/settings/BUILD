@@ -54,6 +54,7 @@ hcp(
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_button",
         "//code/utilities/data_structures/graphics/bitmap/premade:tree_expand_symbol",
         "//code/utilities/data_structures/graphics/gui_desktop:gui_desktop_getter",
+        "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/cursor/premade:blue_cursor",
         "//code/utilities/data_structures/graphics/objects/faced_label:faced_label_converter",
@@ -76,7 +77,6 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:full_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
         "//code/utilities/graphics/sdl:standard_sdl_init_settings",
-        "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/image:stb_image_setter",
     ],
 )
@@ -98,10 +98,10 @@ hcp(
     deps = [
         "//code/utilities/data_structures/graphics/bitmap/full_color_bitmap:positioned_full_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
+        "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
         "//code/utilities/formats/json/converters:lib",
         "//code/utilities/formats/json/overloads:variant_json_converters",
-        "//code/utilities/data_structures/graphics/image:positioned_image_data",
     ],
 )

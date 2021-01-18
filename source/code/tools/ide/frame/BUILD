@@ -34,6 +34,10 @@ hcp(
 hcp(
     name = "ide_element_drawer",
     deps = [
+        "//code/tools/ide/frame:convert_all_ide_elements",
+        "//code/tools/ide/frame:find_mouse_over_index",
+        "//code/tools/ide/frame:move_all_ide_elements",
+        "//code/tools/ide/frame:move_ide_element",
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_drawer",
@@ -56,16 +60,13 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/variant:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/tools/ide/frame:move_all_ide_elements",
-        "//code/tools/ide/frame:convert_all_ide_elements",
-        "//code/tools/ide/frame:find_mouse_over_index",
-        "//code/tools/ide/frame:move_ide_element",
     ],
 )
 
 hcp(
     name = "move_all_ide_elements",
     deps = [
+        "//code/tools/ide/frame:move_ide_element",
         "//code/tools/ide/settings:ide_settings",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_drawer",
@@ -88,7 +89,6 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/variant:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/tools/ide/frame:move_ide_element",
     ],
 )
 
@@ -175,5 +175,3 @@ hcp(
         "//code/utilities/types/vectors/operators:lib",
     ],
 )
-
-

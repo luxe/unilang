@@ -10,13 +10,13 @@ hcp(
         "//code/tools/ide/program_options:lib",
         "//code/tools/ide/settings:ide_settings",
         "//code/tools/ide/settings:ide_settings_getter",
+        "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/graphics/imgui:ui_renders",
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
-        "@imgui//:imgui_sdl_opengl3",
-        "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/image:stb_image_setter",
+        "@imgui//:imgui_sdl_opengl3",
     ],
 )
 

@@ -20,22 +20,20 @@ cc_library(
     ],
 )
 
-
 cc_library(
     name = "blah",
     srcs = glob(["src/**/*.cpp"]),
-    includes = [
-    ],
     copts = [
         "-DOPENGL_ENABLED",
         "-DBLAH_USE_OPENGL",
-        
         "-DSDL2_ENABLED",
         "-DBLAH_USE_SDL2",
     ],
+    includes = [
+    ],
     deps = [
-    ":hdrs",
-        "@system//:SDL2_hdrs",
+        ":hdrs",
         "@system//:SDL2",
+        "@system//:SDL2_hdrs",
     ],
 )

@@ -3,9 +3,8 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/data:data_getter.bzl", "data_getter")
 
 def move_file(target_name, file_name, output_path):
-    
     output_name = file_name + "_dummy"
-    
+
     #create file
     native.genrule(
         name = target_name,

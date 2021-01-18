@@ -12,7 +12,7 @@ cc_binary(
         "@system//:GL",
         "@system//:GL_hdrs",
         "@system//:KHR_hdrs",
-        "@system//:glut",
         "@system//:X11",
+        "@system//:glut",
     ],
 )

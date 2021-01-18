@@ -8,7 +8,6 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_language_version",
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
-        "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_options",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters:printable_function_getter",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/comparison:comparison_function_getter",
         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods/via_data_members/individual_getters/serialization:serializable_function_getter",
@@ -16,5 +15,6 @@ hcp(
         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
         "//code/tools/transcompilers/old_unilang/structure/print:function_declaration_location",
+        "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_options",
     ],
 )

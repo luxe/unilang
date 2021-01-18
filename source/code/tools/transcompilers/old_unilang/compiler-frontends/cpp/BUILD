@@ -20,9 +20,9 @@ hcp(
     name = "cpp_options_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_export_settings",
-        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/utilities/personal/life:company_getter",
         "//code/utilities/program/common_actions/exits:lib",
     ],

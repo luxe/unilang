@@ -7,11 +7,11 @@ hcp(
     name = "single_macro_printer",
     deps = [
         "macro_redefinition_message_getter",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c:macro_define_check_getter",
-        "//code/utilities/linguistics/computer/frontends/parts/extern_c:macro_endif_getter",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/macro:macro_item",
         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c:macro_define_check_getter",
+        "//code/utilities/linguistics/computer/frontends/parts/extern_c:macro_endif_getter",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/strings/transformers/casing:case_modifier",

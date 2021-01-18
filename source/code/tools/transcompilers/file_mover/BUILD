@@ -8,10 +8,10 @@ cc_binary(
     srcs = ["main.cpp"],
     deps = [
         "//code/tools/transcompilers/file_mover/program_options:lib",
-        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/moving:lib",
+        "//code/utilities/formats/json/converters:json_file_io",
         "//code/utilities/program/call:lib",
     ],
 )

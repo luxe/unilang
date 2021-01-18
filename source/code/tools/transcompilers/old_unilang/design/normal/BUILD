@@ -7,8 +7,8 @@ hcp(
     name = "method_sorter",
     deps = [
         "//code/tools/transcompilers/old_unilang/design/normal/data:subgroup_sorted_methods",
-        "//code/utilities/linguistics/computer/frontends/parts/method/sorting/method_sort_algorithms",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
+        "//code/utilities/linguistics/computer/frontends/parts/method/sorting/method_sort_algorithms",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/vectors/observers:lib",

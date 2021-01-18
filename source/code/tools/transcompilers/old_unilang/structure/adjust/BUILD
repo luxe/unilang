@@ -6,8 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "comment_adjuster",
     deps = [
-        "//code/utilities/linguistics/grammar:grammar_adjuster",
-        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:comment_reflow_settings",
         "//code/tools/transcompilers/old_unilang/parser:token_value",
@@ -15,6 +13,8 @@ hcp(
         "//code/tools/transcompilers/old_unilang/structure/adjust:knuth_plass_reflower",
         "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
@@ -86,13 +86,13 @@ hcp(
 hcp(
     name = "greedy_reflower",
     deps = [
-        "//code/utilities/linguistics/grammar:grammar_adjuster",
-        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:greedy_reflow_settings",
         "//code/tools/transcompilers/old_unilang/parser:token_value",
         "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",
@@ -107,14 +107,14 @@ hcp(
 hcp(
     name = "knuth_plass_reflower",
     deps = [
-        "//code/utilities/linguistics/grammar:grammar_adjuster",
-        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:knuth_plass_reflow_settings",
         "//code/tools/transcompilers/old_unilang/parser:token_value",
         "//code/tools/transcompilers/old_unilang/structure/adjust:knuth_plass_entry",
         "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
+        "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/observers/splitting:lib",
         "//code/utilities/types/strings/transformers/trimming:lib",

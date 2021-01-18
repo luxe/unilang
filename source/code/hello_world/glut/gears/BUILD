@@ -12,7 +12,6 @@ cc_binary(
         # "@GL",
         # "@glut",
         # "@x11",
-        
         "@system//:GL",
         "@system//:GL_hdrs",
         "@system//:KHR_hdrs",

@@ -3,11 +3,10 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/data:data_getter.bzl", "data_getter")
 
 def code_to_java(name):
-    
     target_name = name + "_java"
     input_name = name + ".json"
     output_name = name + ".java"
-    
+
     #create file
     native.genrule(
         name = target_name,

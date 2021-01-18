@@ -45,8 +45,8 @@ enum_cpp(
 hcp(
     name = "filesystem_partioning",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/filesystem:object_code_partition_method",
         "//code/utilities/linguistics/computer/frontends/parts/filesystem:global_code_partition_method",
+        "//code/utilities/linguistics/computer/frontends/parts/filesystem:object_code_partition_method",
     ],
 )
 

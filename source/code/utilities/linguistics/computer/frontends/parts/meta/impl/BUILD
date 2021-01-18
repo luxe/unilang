@@ -6,6 +6,10 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "meta_block_printer",
     deps = [
+        "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/licenses:apache_2_getter",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_author_printer",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_blank_line_getter",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_classification_getter",
@@ -23,11 +27,8 @@ hcp(
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_task_order_getter",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections/notes:meta_note_creator",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections/notes:meta_notes_getter",
-        "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_watermark_settings",
-        "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
-        "//code/utilities/licenses:apache_2_getter",
         "//code/utilities/program/common_actions/exits:lib",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/types/converters:lib",
@@ -40,6 +41,5 @@ hcp(
         "//code/utilities/types/strings/transformers/trimming:lib",
         "//code/utilities/types/strings/transformers/watermark:lib",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/code:concept_static_tree_structs",
     ],
 )

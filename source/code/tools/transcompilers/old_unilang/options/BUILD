@@ -14,11 +14,11 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/options:code_partition_method",
         "//code/tools/transcompilers/old_unilang/options:constraint_export_style",
-        "//code/utilities/comments/code/settings:comment_settings",
         "//code/tools/transcompilers/old_unilang/options/design_strategy:in_out_export_api_style",
         "//code/tools/transcompilers/old_unilang/options/design_strategy:object_export_method",
-        "//code/utilities/linguistics/computer/frontends/parts/filesystem:general_filesystem_naming",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_language_version",
+        "//code/utilities/comments/code/settings:comment_settings",
+        "//code/utilities/linguistics/computer/frontends/parts/filesystem:general_filesystem_naming",
     ],
 )
 
@@ -40,7 +40,6 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/language-specific/html_table:html_table_options",
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_test_settings",
-        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/mermaid:mermaid_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/plant_uml_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/processing:processing_options",
@@ -48,6 +47,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/language-specific/rust:rust_export_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/slidy:slidy_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/treesheets:treesheets_options",
+        "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
     ],
 )
 

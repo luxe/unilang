@@ -13,11 +13,11 @@ hcp(
 hcp(
     name = "java_default_rule_settings",
     deps = [
-        "//code/utilities/contributor:contributor",
-        "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
         "//code/utilities/code:concept_static_tree_structs",
-        "//code/utilities/program/common_actions/exits:lib",
+        "//code/utilities/contributor",
+        "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/utilities/personal/life:company_getter",
+        "//code/utilities/program/common_actions/exits:lib",
     ],
 )

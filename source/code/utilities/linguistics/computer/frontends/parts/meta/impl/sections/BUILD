@@ -55,8 +55,8 @@ hcp(
 hcp(
     name = "meta_copyright_getter",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
+        "//code/utilities/linguistics/computer/frontends/parts/meta/settings:meta_options",
         "//code/utilities/time/calendar/tm_wrappers:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
     ],

@@ -46,7 +46,6 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
@@ -67,6 +66,7 @@ hcp(
         "//code/utilities/formats/pdf:pdf_creator",
         "//code/utilities/formats/pdf:pdf_settings",
         "//code/utilities/linguistics/computer/frontends/bibtex:bibtex_str_getter",
+        "//code/utilities/linguistics/grammar:grammar_adjuster",
         "//code/utilities/output/upload:file_upload_settings",
         "//code/utilities/output/upload:file_uploader",
         "//code/utilities/personal/secret:secret_getter",

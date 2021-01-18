@@ -6,11 +6,11 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "argument_direction_decider",
     deps = [
-        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
-        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
+        "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/stripping:lib",
@@ -20,10 +20,10 @@ hcp(
 hcp(
     name = "closed_box_function_checker",
     deps = [
-        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
         "//code/utilities/code/query:argument_direction_decider",
+        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/stripping:lib",

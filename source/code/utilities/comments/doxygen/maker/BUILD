@@ -18,13 +18,13 @@ hcp(
 hcp(
     name = "doxygen_data_getter",
     deps = [
-        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/utilities/code:concept_static_tree_structs",
-        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
-        "//code/utilities/comments/doxygen/maker/method_getter:doxygen_data_getter_for_methods",
-        "//code/utilities/comments/doxygen/maker/data_getter:doxygen_data_getter_for_data_members",
-        "//code/utilities/comments/doxygen/maker/module_getter:doxygen_data_getter_for_modules",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/comments/doxygen/maker/data_getter:doxygen_data_getter_for_data_members",
+        "//code/utilities/comments/doxygen/maker/method_getter:doxygen_data_getter_for_methods",
+        "//code/utilities/comments/doxygen/maker/module_getter:doxygen_data_getter_for_modules",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
     ],
 )
 
@@ -46,12 +46,12 @@ hcp(
 hcp(
     name = "doxygen_block_printer",
     deps = [
-        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/utilities/code:concept_static_tree_structs",
-        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
+        "//code/utilities/comments/doxygen/maker:doxygen_data",
         "//code/utilities/comments/doxygen/maker:doxygen_data_getter",
         "//code/utilities/comments/doxygen/maker:doxygen_data_shared",
+        "//code/utilities/linguistics/computer/frontends/parts:module_settings",
         "//code/utilities/types/strings/transformers/other:lib",
     ],
 )

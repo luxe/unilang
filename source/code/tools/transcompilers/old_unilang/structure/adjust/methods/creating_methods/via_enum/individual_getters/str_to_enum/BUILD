@@ -7,9 +7,9 @@ hcp(
     name = "str_plural_to_enum_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/utilities/linguistics/computer/frontends/parts/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
+        "//code/utilities/linguistics/computer/frontends/parts/enum:enum_options",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/transformers/casing:lib",
@@ -20,9 +20,9 @@ hcp(
     name = "str_singular_to_enum_getter",
     deps = [
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/utilities/linguistics/computer/frontends/parts/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
+        "//code/utilities/linguistics/computer/frontends/parts/enum:enum_options",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/transformers/casing:lib",
@@ -34,9 +34,9 @@ hcp(
     deps = [
         "//code/tools/transcompilers/old_unilang/enum_printer/core:enum_value_creator",
         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:enum_utility_conversion_function_options",
-        "//code/utilities/linguistics/computer/frontends/parts/enum:enum_options",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item:enum_item",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
+        "//code/utilities/linguistics/computer/frontends/parts/enum:enum_options",
         "//code/utilities/types/converters:lib",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/transformers/casing:lib",

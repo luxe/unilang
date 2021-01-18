@@ -21,11 +21,11 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/window:window_position_finder",
         "//code/utilities/graphics/imgui/window:window_renderer",
+        "//code/utilities/image:stb_image_setter",
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/peripheral/pc:pc_input_state_getter",
         "//code/utilities/types/variant:lib",
-        "//code/utilities/image:stb_image_setter",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )

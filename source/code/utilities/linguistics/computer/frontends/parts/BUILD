@@ -6,10 +6,10 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "notation_settings",
     deps = [
-        "//code/utilities/linguistics/computer/hungarian/settings:identifier_notation_settings",
+        "//code/tools/transcompilers/old_unilang/options/self_describe_type:extra_type_suffix_settings",
         "//code/utilities/linguistics/computer/frontends/parts/data_member:data_member_casing_settings",
         "//code/utilities/linguistics/computer/frontends/parts/method/parameters:method_parameter_unit_settings",
-        "//code/tools/transcompilers/old_unilang/options/self_describe_type:extra_type_suffix_settings",
+        "//code/utilities/linguistics/computer/hungarian/settings:identifier_notation_settings",
     ],
 )
 
@@ -42,11 +42,8 @@ hcp(
 hcp(
     name = "module_settings",
     deps = [
-        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
-        "//code/utilities/linguistics/computer/frontends/parts:notation_settings",
         "//code/utilities/linguistics/computer/frontends/parts:general_options",
+        "//code/utilities/linguistics/computer/frontends/parts:notation_settings",
+        "//code/utilities/linguistics/computer/frontends/parts:portion_options",
     ],
 )
-
-
-
