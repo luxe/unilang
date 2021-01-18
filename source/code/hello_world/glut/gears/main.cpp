@@ -15,6 +15,9 @@
 // this fixed it for me:
 // sudo ubuntu-drivers autoinstall
 
+//Actually, I had better luck just pointing the 3rd party dependencies to system shared objects
+// instead of the ones built from source or in the sysroot.
+
 #include <math.h>
 #include <stdlib.h>
 #include <GL/glut.h>
