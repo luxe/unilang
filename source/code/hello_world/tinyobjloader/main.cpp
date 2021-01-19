@@ -2,25 +2,34 @@
 #include <string>
 #include "tiny_obj_loader.h"
 
-int main(){
 
-  //std::string inputfile = "/home/luxe/Desktop/airboat.obj";
-  std::string inputfile = "/home/luxe/Desktop/glExamples/src/examples/05-hello_mesh/test_mesh.obj";
+tinyobj::ObjReader Get_Loaded_Obj_Reader(std::string const& path, std::string const& name){
+  
+  //build config settings
   tinyobj::ObjReaderConfig reader_config;
-  reader_config.mtl_search_path = "/home/luxe/Desktop/glExamples/src/examples/05-hello_mesh/"; // Path to material files
-
+  reader_config.mtl_search_path = path;
+  
+  //path to file
+  std::string inputfile = path + name + ".obj";
+  
   tinyobj::ObjReader reader;
-
   if (!reader.ParseFromFile(inputfile, reader_config)) {
     if (!reader.Error().empty()) {
         std::cerr << "TinyObjReader: " << reader.Error();
     }
     exit(1);
   }
-
+  
   if (!reader.Warning().empty()) {
     std::cout << "TinyObjReader: " << reader.Warning();
   }
+  
+  return reader;
+}
+
+int main(){
+
+  auto reader = Get_Loaded_Obj_Reader("/home/luxe/Desktop/glExamples/src/examples/05-hello_mesh/","test_mesh");
 
   auto& attrib = reader.GetAttrib();
   auto& shapes = reader.GetShapes();
@@ -45,10 +54,13 @@ int main(){
         tinyobj::real_t nz = attrib.normals[3*idx.normal_index+2];
         tinyobj::real_t tx = attrib.texcoords[2*idx.texcoord_index+0];
         tinyobj::real_t ty = attrib.texcoords[2*idx.texcoord_index+1];
+        
         // Optional: vertex colors
         // tinyobj::real_t red = attrib.colors[3*idx.vertex_index+0];
         // tinyobj::real_t green = attrib.colors[3*idx.vertex_index+1];
         // tinyobj::real_t blue = attrib.colors[3*idx.vertex_index+2];
+        
+        std::cout << vx << std::endl;
       }
       index_offset += fv;
 
