@@ -6,5 +6,5 @@ package(
 
 cpp_main(
     name = "main",
-    deps = ["@tinyobjloader"],
+    deps = ["//code/utilities/formats/obj:loaded_obj_reader_getter"],
 )
