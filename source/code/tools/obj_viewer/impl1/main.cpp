@@ -227,8 +227,8 @@ void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat loo
     vector3f x, y, z;
     z = vector3f(eyeX-lookAtX, eyeY-lookAtY, eyeZ-lookAtZ).as_normalized();
     y = vector3f(upX, upY, upZ);
-    x = y ^ z;
-    y = z ^ x;
+    //x = y ^ z;
+    //y = z ^ x;
     x = x.as_normalized();
     y = y.as_normalized();
     // mat is given transposed so OpenGL can handle it.
@@ -269,6 +269,7 @@ void display()
     glPushMatrix();
 
     //util_compat_gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
+    gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
 
     Draw(gDrawObjects, materials, textures);
     

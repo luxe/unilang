@@ -42,6 +42,21 @@ cc_import(
 )
 
 cc_import(
+    name = "EGL",
+    shared_library = "usr/lib/x86_64-linux-gnu/libEGL.so",
+)
+
+cc_import(
+    name = "OpenGL",
+    shared_library = "usr/lib/x86_64-linux-gnu/libOpenGL.so",
+)
+
+cc_import(
+    name = "GLdispatch",
+    shared_library = "usr/lib/x86_64-linux-gnu/libGLdispatch.so",
+)
+
+cc_import(
     name = "GLX",
     shared_library = "usr/lib/x86_64-linux-gnu/libGLX.so",
 )
