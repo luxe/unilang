@@ -25,6 +25,7 @@ public:
                float m2, float m6, float m10, float m14,
                float m3, float m7, float m11, float m15 );
 
+    //transformers
     void identity(void);
     void translate(const vector3f &trans);
     void translate_x(const float &dist);
@@ -37,8 +38,11 @@ public:
     void scale(const vector3f &scale);
     void transformPoint( vector3f *vec );
     void transformVector( vector3f *vec );
+    
+    //observers
+    float* getComponents() { return m;}
 
-    // Operators...
+    //operators
     matrix4x4f operator + (const matrix4x4f &other);
     matrix4x4f operator - (const matrix4x4f &other);
     matrix4x4f operator * (const matrix4x4f &other);

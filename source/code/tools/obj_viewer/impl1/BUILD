@@ -27,6 +27,8 @@ cc_binary(
         "@tinyobjloader",
         "@glm",
         "//code/utilities/image:stb_image",
+        "//code/utilities/data_structures/vector:vector3f",
+        "//code/utilities/data_structures/matrix:matrix4x4f",
     ],
 )
 

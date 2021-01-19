@@ -9,6 +9,9 @@
 #include "glm/glm.hpp"
 #include "GL/glew.h"
 
+#include "code/utilities/data_structures/vector/vector3f.h"
+#include "code/utilities/data_structures/matrix/matrix4x4f.h"
+
 #ifdef __APPLE__
 #include "GLUT/glut.h"
 #else
@@ -220,22 +223,22 @@ randomGLfloat randomGLFloat4()
 
 
 //Compat method: gluLookAt deprecated
-// void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
-//     Vector3f x, y, z;
-//     z = Vector3f(eyeX-lookAtX, eyeY-lookAtY, eyeZ-lookAtZ).normalize();
-//     y = Vector3f(upX, upY, upZ);
-//     x = y ^ z;
-//     y = z ^ x;
-//     x = x.normalize();
-//     y = y.normalize();
-//     // mat is given transposed so OpenGL can handle it.
-//     Matrix4x4 mat (new GLfloat[16]
-//                      {x.getX(), y.getX(),   z.getX(),   0,
-//                      x.getY(),  y.getY(),   z.getY(),   0,
-//                      x.getZ(),  y.getZ(),   z.getZ(),   0,
-//                      -eyeX,     -eyeY,      -eyeZ,      1});
-//     glMultMatrixf(mat.getComponents());
-// }
+void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
+    vector3f x, y, z;
+    z = vector3f(eyeX-lookAtX, eyeY-lookAtY, eyeZ-lookAtZ).as_normalized();
+    y = vector3f(upX, upY, upZ);
+    //x = y ^ z;
+    //y = z ^ x;
+    x = x.as_normalized();
+    y = y.as_normalized();
+    // mat is given transposed so OpenGL can handle it.
+    matrix4x4f mat (/*new GLfloat[16]*/
+                     {x.getX(), y.getX(),   z.getX(),   0,
+                     x.getY(),  y.getY(),   z.getY(),   0,
+                     x.getZ(),  y.getZ(),   z.getZ(),   0,
+                     -eyeX,     -eyeY,      -eyeZ,      1});
+    glMultMatrixf(mat.getComponents());
+}
 
 
 void display() 
@@ -265,7 +268,7 @@ void display()
     glLoadIdentity();
     glPushMatrix();
 
-    //gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
+    //util_compat_gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
 
     Draw(gDrawObjects, materials, textures);
     

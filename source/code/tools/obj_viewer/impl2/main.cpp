@@ -140,9 +140,9 @@ void reshape(int w, int h) {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     if (h == 0) {
-        gluPerspective(80, (float) w, 1.0, 5000.0);
+        //gluPerspective(80, (float) w, 1.0, 5000.0);
     } else {
-        gluPerspective(80, (float) w / (float) h, 1.0, 5000.0);
+        //gluPerspective(80, (float) w / (float) h, 1.0, 5000.0);
     }
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -186,22 +186,22 @@ void keyboard(unsigned char key, int x, int y) {
 }
 
 //Compat method: gluLookAt deprecated
-// void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
-//     vector3f x, y, z;
-//     z = vector3f(eyeX-lookAtX, eyeY-lookAtY, eyeZ-lookAtZ).as_normalized();
-//     y = vector3f(upX, upY, upZ);
-//     //x = y ^ z;
-//     //y = z ^ x;
-//     x = x.as_normalized();
-//     y = y.as_normalized();
-//     // mat is given transposed so OpenGL can handle it.
-//     matrix4x4 mat (new GLfloat[16]
-//                      {x.getX(), y.getX(),   z.getX(),   0,
-//                      x.getY(),  y.getY(),   z.getY(),   0,
-//                      x.getZ(),  y.getZ(),   z.getZ(),   0,
-//                      -eyeX,     -eyeY,      -eyeZ,      1});
-//     glMultMatrixf(mat.getComponents());
-// }
+void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
+    vector3f x, y, z;
+    z = vector3f(eyeX-lookAtX, eyeY-lookAtY, eyeZ-lookAtZ).as_normalized();
+    y = vector3f(upX, upY, upZ);
+    //x = y ^ z;
+    //y = z ^ x;
+    x = x.as_normalized();
+    y = y.as_normalized();
+    // mat is given transposed so OpenGL can handle it.
+    matrix4x4f mat (/*new GLfloat[16]*/
+                     {x.getX(), y.getX(),   z.getX(),   0,
+                     x.getY(),  y.getY(),   z.getY(),   0,
+                     x.getZ(),  y.getZ(),   z.getZ(),   0,
+                     -eyeX,     -eyeY,      -eyeZ,      1});
+    glMultMatrixf(mat.getComponents());
+}
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -211,7 +211,7 @@ void display() {
     camera.y = 2.0f + DISTANCE * sin(camera.phi)*sin(camera.theta);
     camera.z =        DISTANCE * cos(camera.theta);
 
-    gluLookAt(camera.x, camera.y, camera.z, 0, 2.0f, 0, 0.0f, 1.0f, 0.0f);
+    util_compat_gluLookAt(camera.x, camera.y, camera.z, 0, 2.0f, 0, 0.0f, 1.0f, 0.0f);
     draw_obj();
     glutSwapBuffers();
     glutPostRedisplay();
