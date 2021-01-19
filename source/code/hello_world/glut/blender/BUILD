@@ -7,10 +7,14 @@ cc_binary(
     srcs = ["main.cpp"],
     linkopts = [
         "-lGL",
+        #"-lGLU",
     ],
     deps = [
-        "@GL",
-        "@glut",
-        "@x11",
+        "@system//:GL",
+        "@system//:glut",
+        "@system//:X11",
+        "@system//:GL_hdrs",
+        "@system//:KHR_hdrs",
+        #"@system//:GLU",
     ],
 )

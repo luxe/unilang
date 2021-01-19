@@ -218,6 +218,26 @@ randomGLfloat randomGLFloat4()
     return arr;
 }
 
+
+//Compat method: gluLookAt deprecated
+// void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
+//     Vector3f x, y, z;
+//     z = Vector3f(eyeX-lookAtX, eyeY-lookAtY, eyeZ-lookAtZ).normalize();
+//     y = Vector3f(upX, upY, upZ);
+//     x = y ^ z;
+//     y = z ^ x;
+//     x = x.normalize();
+//     y = y.normalize();
+//     // mat is given transposed so OpenGL can handle it.
+//     Matrix4x4 mat (new GLfloat[16]
+//                      {x.getX(), y.getX(),   z.getX(),   0,
+//                      x.getY(),  y.getY(),   z.getY(),   0,
+//                      x.getZ(),  y.getZ(),   z.getZ(),   0,
+//                      -eyeX,     -eyeY,      -eyeZ,      1});
+//     glMultMatrixf(mat.getComponents());
+// }
+
+
 void display() 
 {
     (RGBBackground) ? glClearColor(randomFloat(), randomFloat(), randomFloat(), 1) : glClearColor(0.1f, 0.25f, 0.3f, 1.0f);
@@ -253,6 +273,21 @@ void display()
     glutSwapBuffers();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void reshape(GLint w, GLint h)
 {
     if (w == 0 || h == 0)
@@ -265,6 +300,10 @@ void reshape(GLint w, GLint h)
     glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, w, h);
 }
+
+
+
+
 
 void changeLight(int light)
 {
