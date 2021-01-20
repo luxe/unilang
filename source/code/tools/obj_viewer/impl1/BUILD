@@ -8,7 +8,7 @@ cc_binary(
     linkopts = [
         "-lGLEW",
         "-GL",
-        "-lGLU",
+        #"-lGLU",
         "-lglut",
     ],
     deps = [
@@ -19,7 +19,7 @@ cc_binary(
         "@system//:GL_hdrs",
         "@system//:GL",
         #"@system//OpenGL",
-        "@system//:GLU",
+        #"@system//:GLU",
         "@system//:KHR_hdrs",
         "@system//:glut",
         "@system//:X11",

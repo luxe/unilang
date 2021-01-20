@@ -241,6 +241,14 @@ void util_compat_gluLookAt(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat loo
 }
 
 
+void util_compat_gluLookAt2(GLfloat eyeX, GLfloat eyeY, GLfloat eyeZ, GLfloat lookAtX, GLfloat lookAtY, GLfloat lookAtZ, GLfloat upX, GLfloat upY, GLfloat upZ) {
+    glRotatef(-eyeY, 0.0f, 1.0, 0.0f);
+    glRotatef(-eyeX, 1.0f, 0.0f, 0.0f);
+    //glTranslatef(-upX, -upY, -upZ);
+}
+
+
+
 void display() 
 {
     (RGBBackground) ? glClearColor(randomFloat(), randomFloat(), randomFloat(), 1) : glClearColor(0.1f, 0.25f, 0.3f, 1.0f);
@@ -268,8 +276,8 @@ void display()
     glLoadIdentity();
     glPushMatrix();
 
-    //util_compat_gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
-    gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
+    util_compat_gluLookAt2(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
+    //gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
 
     Draw(gDrawObjects, materials, textures);
     
