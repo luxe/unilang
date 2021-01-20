@@ -1034,10 +1034,12 @@ inline bool LoadObjAndConvert(float bmin[3], float bmax[3],
 
 int main(int argc, char** argv)
 {
+    std::cout << "sdfsdf3" << std::endl;
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH | GLUT_MULTISAMPLE);
     glutInitWindowPosition(100, 100);
     glutInitWindowSize(800, 600);
+    std::cout << "sdfsdf2" << std::endl;
     glutCreateWindow("prenis   [aethus 3d software]   [1.3]");
     glewInit();
     
@@ -1050,6 +1052,7 @@ int main(int argc, char** argv)
         '/';
     #endif
 
+    std::cout << "sdfsdf" << std::endl;
     std::string path = "obj";
     path += pathSeparator + std::string("default.obj");
     
