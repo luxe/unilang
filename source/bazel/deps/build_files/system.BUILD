@@ -177,21 +177,25 @@ cc_library(
     hdrs = glob(["usr/include/GL/**/*.h"]),
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "GL_hdr",
     hdrs = glob(["usr/include/GL/gl.h"]),
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "GLEW_hdrs",
     hdrs = glob(["usr/include/GL/glew.h"]),
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "GLU_hdrs",
     hdrs = glob(["usr/include/GL/glu.h"]),
     includes = ["usr/include"],
 )
+
 cc_library(
     name = "glut_hdrs",
     hdrs = glob(["usr/include/GL/glut.h"]),
