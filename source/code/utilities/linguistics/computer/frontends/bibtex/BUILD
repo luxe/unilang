@@ -6,12 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "bibtex_str_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/manipulation:case_adjustment_settings",
-        "//code/tools/transcompilers/old_unilang/structure/adjust:casing_adjuster",
-        "//code/tools/transcompilers/old_unilang/structure/adjust:structure_adjuster",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
-        "//code/tools/transcompilers/old_unilang/structure/print:struct_derivers",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/filesystem/paths:lib",

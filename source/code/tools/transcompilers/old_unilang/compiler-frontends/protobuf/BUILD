@@ -14,7 +14,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_settings",
         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_transferer",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
+        "//code/utilities/linguistics/computer/frontends/protobuf/settings:protocol_buffer_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/adjust:structure_adjuster",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
@@ -38,7 +38,7 @@ hcp(
 hcp(
     name = "protobuf_options_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
+        "//code/utilities/linguistics/computer/frontends/protobuf/settings:protocol_buffer_export_settings",
         "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
         "//code/utilities/personal/life:company_getter",

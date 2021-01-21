@@ -8,6 +8,6 @@ cpp_object("protocol_buffer_version_number")
 hcp(
     name = "protocol_buffer_version_settings",
     deps = [
-        "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings/version:protocol_buffer_version_number",
+        "//code/utilities/linguistics/computer/frontends/protobuf/settings/version:protocol_buffer_version_number",
     ],
 )

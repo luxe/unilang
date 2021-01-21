@@ -43,7 +43,7 @@ hcp(
         "//code/tools/transcompilers/old_unilang/options/language-specific/mermaid:mermaid_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/plant_uml_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/processing:processing_options",
-        "//code/tools/transcompilers/old_unilang/options/language-specific/protocol_buffer_settings:protocol_buffer_export_settings",
+        "//code/utilities/linguistics/computer/frontends/protobuf/settings:protocol_buffer_export_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/rust:rust_export_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/slidy:slidy_settings",
         "//code/tools/transcompilers/old_unilang/options/language-specific/treesheets:treesheets_options",
