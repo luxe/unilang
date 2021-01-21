@@ -72,3 +72,17 @@ hcp(
         "//code/utilities/types/vectors/observers:lib",
     ],
 )
+
+hcp(
+    name = "data_member_visibility",
+    deps = [
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/comments/doxygen/settings:doxygen_parameter_direction",
+        "//code/utilities/types/converters:lib",
+        "//code/utilities/types/strings/transformers/stripping:lib",
+        "//code/utilities/types/strings/observers/other:lib",
+        "//code/utilities/code/symbols:token_attribute_settings",
+        "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/code:class_access",
+    ],
+)

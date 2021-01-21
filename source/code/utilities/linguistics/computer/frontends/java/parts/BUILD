@@ -67,5 +67,29 @@ hcp(
         "//code/utilities/types/vectors/converters:lib",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/linguistics/computer/frontends/java/parts:data_members_getter",
+        "//code/utilities/linguistics/computer/frontends/java/parts:methods_getter",
+    ],
+)
+
+hcp(
+    name = "data_members_getter",
+    deps = [
+        "//code/utilities/contributor:contributor",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
+        "//code/utilities/linguistics/computer/keywords/visibility:visibility_keyword_getter",
+        "//code/utilities/code/query:data_member_visibility",
+    ],
+)
+
+hcp(
+    name = "methods_getter",
+    deps = [
+        "//code/utilities/contributor:contributor",
+        "//code/utilities/code:concept_static_tree_structs",
+        "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
+        "//code/utilities/linguistics/computer/keywords/visibility:visibility_keyword_getter",
+        "//code/utilities/code/query:data_member_visibility",
     ],
 )
