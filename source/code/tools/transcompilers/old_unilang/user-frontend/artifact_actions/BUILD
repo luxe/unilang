@@ -4,28 +4,28 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
-hcp(
-    name = "artifact_guesser",
-    deps = [
-        "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
-        "//code/tools/transcompilers/old_unilang/user-frontend/artifact_actions",
-        "//code/tools/transcompilers/old_unilang/user-frontend/artifact_actions:artifact_guess_settings",
-        "//code/utilities/formats/artifact:artifact_type",
-        "//code/utilities/types/vectors/operators:lib",
-    ],
-)
+# hcp(
+#     name = "artifact_guesser",
+#     deps = [
+#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
+#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
+#         "//code/tools/transcompilers/old_unilang/user-frontend/artifact_actions",
+#         "//code/tools/transcompilers/old_unilang/user-frontend/artifact_actions:artifact_guess_settings",
+#         "//code/utilities/formats/artifact:artifact_type",
+#         "//code/utilities/types/vectors/operators:lib",
+#     ],
+# )
 
-hcp(
-    name = "artifact_actions",
-    deps = [
-        "//code/utilities/formats/artifact:artifact_type",
-    ],
-)
+# hcp(
+#     name = "artifact_actions",
+#     deps = [
+#         "//code/utilities/formats/artifact:artifact_type",
+#     ],
+# )
 
-hcp(
-    name = "artifact_guess_settings",
-    deps = [
-        "//code/utilities/formats/artifact:artifact_type",
-    ],
-)
+# hcp(
+#     name = "artifact_guess_settings",
+#     deps = [
+#         "//code/utilities/formats/artifact:artifact_type",
+#     ],
+# )
