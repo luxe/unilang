@@ -1,6 +1,7 @@
 //https://imois.in/posts/card-network/
 
 #include <vector>
+#include <cmath>
 #include <stdio.h>
 
 typedef float f;typedef std::vector<f> v;
