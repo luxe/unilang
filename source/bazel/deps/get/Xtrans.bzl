@@ -20,6 +20,7 @@ def xtrans():
             "sed -i '1s/^/#include <Xtransint.h>\\n/' Xtransutil.c",
             "sed -i -z 's/static int\\nis_numeric/int\\nis_numeric/g' Xtransutil.c",
             "sed -i -z 's/static int\\ntrans_mkdir/int\\ntrans_mkdir/g' Xtransutil.c",
+            "sed -i '/stropts/d' Xtranslcl.c",
             "mkdir -p X11/Xtrans",
             "mv *.h X11/Xtrans/",
             "mv *.c X11/Xtrans/",
