@@ -8,7 +8,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     srcs = glob(["*.cpp"]),
 #     hdrs = glob(["*.hpp"]),
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/compiler:chosen_exporter",
 #         "//code/utilities/formats/artifact:artifact_type",
 #         "@boost//:program_options",
 #     ],

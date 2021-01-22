@@ -7,7 +7,7 @@ load("//bazel/rules/cpp:main.bzl", "cpp_main")
 hcp(
     name = "deps_repo_scanner",
     deps = [
-        "//code/literature/publish:essay_publisher",
+        "//code/utilities/output/publisher/essay:essay_publisher",
         "//code/tools/reflexivity/bazel_wrapper:bazel_wrapper_refresher",
         "//code/tools/reflexivity/bazelrc:bazelrc_refresher",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
@@ -17,7 +17,6 @@ hcp(
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
         "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
-        "//code/tools/transcompilers/old_unilang/self_readme:unilang_documentation_generator",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/temp:existing_temp_file",

@@ -28,8 +28,6 @@ hcp(
 #     name = "noogle_documentation_getter",
 #     deps = [
 #         "//code/tools/noogle/program_options:lib",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/documentation:common_documentation_getter",
 #         "//code/utilities/formats/json/converters:lib",
 #         "//code/utilities/types/converters:lib",

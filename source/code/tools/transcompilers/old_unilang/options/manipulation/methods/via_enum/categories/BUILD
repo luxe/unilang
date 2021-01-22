@@ -8,8 +8,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "function_build_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
 #     ],
 # )
 

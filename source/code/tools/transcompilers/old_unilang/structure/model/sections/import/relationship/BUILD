@@ -13,6 +13,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "import_relationship",
 #     deps = [
 #         "type_relationships",
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )

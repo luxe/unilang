@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "subgroup_methods",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
 #     ],
 # )
 

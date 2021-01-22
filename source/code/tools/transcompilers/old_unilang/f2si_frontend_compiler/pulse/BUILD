@@ -22,15 +22,12 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "transfer_account_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_settings",
 #     ],
 # )
 
 # hcp(
 #     name = "pulse_action_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_settings",
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/system:lib",

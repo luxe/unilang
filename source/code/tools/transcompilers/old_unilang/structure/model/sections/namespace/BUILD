@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "namespace_item",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 

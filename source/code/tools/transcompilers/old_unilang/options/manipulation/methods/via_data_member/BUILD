@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "comparison_function_build_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:function_build_settings",
 #     ],
 # )
 
@@ -14,6 +13,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "data_member_utility_function_options",
 #     deps = [
 #         "comparison_function_build_settings",
-#         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum/categories:function_build_settings",
 #     ],
 # )

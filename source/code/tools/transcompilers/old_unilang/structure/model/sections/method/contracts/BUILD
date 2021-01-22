@@ -6,14 +6,12 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "contract_postcondition",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "contract_precondition",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 

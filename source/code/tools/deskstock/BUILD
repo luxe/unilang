@@ -81,8 +81,6 @@ hcp(
 #     deps = [
 #         "//code/tools/deskstock:default_settings_getter",
 #         "//code/tools/deskstock/settings:startup_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/documentation:common_documentation_getter",
 #         "//code/utilities/formats/json/converters:lib",
 #         "//code/utilities/formats/json/converters:type_to_json_string",

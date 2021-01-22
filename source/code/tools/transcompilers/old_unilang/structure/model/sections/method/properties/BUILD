@@ -8,13 +8,11 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "method_inheritence_specifiers",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
 #     ],
 # )
 
 # hcp(
 #     name = "method_overload_specifiers",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
 #     ],
 # )

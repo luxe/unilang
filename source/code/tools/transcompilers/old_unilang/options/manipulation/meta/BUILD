@@ -6,6 +6,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "meta_manipulation_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/manipulation:comment_adjustment_settings",
 #     ],
 # )

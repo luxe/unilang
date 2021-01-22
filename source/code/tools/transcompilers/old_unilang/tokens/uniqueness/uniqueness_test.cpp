@@ -1,6 +1,4 @@
 #include "gtest/gtest.h"
-#include "code/tools/transcompilers/old_unilang/tokens/get_tokens.hpp"
-#include "code/tools/transcompilers/old_unilang/tokens/uniqueness/unique_tokens_checker.hpp"
 
 TEST(Unilang_Tokens, Are_Unique) {
     

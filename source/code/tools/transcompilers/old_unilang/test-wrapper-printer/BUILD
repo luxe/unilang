@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "test_wrapper_utilities",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
 #         "//code/utilities/types/strings/transformers/appending:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",
 #     ],
@@ -15,9 +14,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "va_list_part_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
 #         "//code/utilities/types/vectors/observers:lib",
 #     ],
 # )
@@ -25,17 +21,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "wrapper_interface_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print:data_member_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:stream_creator",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:type_name_deriver",
 #         "//code/utilities/linguistics/computer/export_file_settings",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_methods_printer",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_utilities",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",
@@ -45,16 +31,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "wrapper_source_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:stream_creator",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
 #         "//code/utilities/linguistics/computer/export_file_settings",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_methods_printer",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_utilities",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",
@@ -66,8 +43,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     deps = [
 #         "wrapper_interface_printer",
 #         "wrapper_source_printer",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
@@ -78,8 +53,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     deps = [
 #         "wrapper_interface_printer",
 #         "wrapper_source_printer",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
@@ -88,9 +61,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "test_wrapper_alias_helper_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_utilities",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
@@ -99,10 +69,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "test_wrapper_method_shared",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_utilities",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/vectors/observers:lib",
@@ -113,23 +79,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "test_wrapper_methods_printer",
 #     deps = [
 #         "va_list_part_getter",
-#         "//code/tools/transcompilers/old_unilang/design/in-out:input_struct_getter",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:function_declaration_location",
-#         "//code/tools/transcompilers/old_unilang/structure/print:method_signature_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:return_type_str_getter",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:type_name_deriver",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_method_shared",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_special_method_printer",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_utilities",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",
@@ -142,9 +91,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     deps = [
 #         "in_out_design_test_wrapper_printer",
 #         "normal_design_test_wrapper_printer",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/observers/comparing:lib",
@@ -156,17 +102,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "test_wrapper_special_method_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/design/in-out:input_struct_getter",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print:doxygen_block_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_method_shared",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_utilities",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",

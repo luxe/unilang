@@ -6,14 +6,11 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "citation",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/literature/citation:citation_attribute",
 #     ],
 # )
 
 # hcp(
 #     name = "citation_attribute",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )

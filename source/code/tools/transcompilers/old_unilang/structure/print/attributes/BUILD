@@ -6,13 +6,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "method_attributes_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_argument",
-#         "//code/tools/transcompilers/old_unilang/structure/print:function_declaration_location",
-#         "//code/tools/transcompilers/old_unilang/structure/print/attributes/print_decider:attribute_print_decider",
-#         "//code/tools/transcompilers/old_unilang/structure/print/attributes/print_decider:attribute_section_newline_getter",
-#         "//code/tools/transcompilers/old_unilang/structure/print/attributes/string_creator:attribute_style_to_string_converter",
 #     ],
 # )

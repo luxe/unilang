@@ -12,11 +12,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "general_options",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options:code_partition_method",
-#         "//code/tools/transcompilers/old_unilang/options:constraint_export_style",
-#         "//code/tools/transcompilers/old_unilang/options/design_strategy:in_out_export_api_style",
-#         "//code/tools/transcompilers/old_unilang/options/design_strategy:object_export_method",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_language_version",
 #         "//code/utilities/comments/code/settings:comment_settings",
 #         "//code/utilities/linguistics/computer/frontends/parts/filesystem:general_filesystem_naming",
 #     ],
@@ -25,28 +20,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "foreign_language_export_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/bazel:build_rule_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-agnostic:language_agnostic_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/call_graph:call_graph_options",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_benchmark_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_fuzz_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_test_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/csharp:csharp_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/d:d_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/dzslides:dzslides_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/hidl:hidl_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/html_table:html_table_options",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/java:java_test_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/mermaid:mermaid_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/plant_uml_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/processing:processing_options",
 #         "//code/utilities/linguistics/computer/frontends/protobuf/settings:protocol_buffer_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/rust:rust_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/slidy:slidy_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/treesheets:treesheets_options",
 #         "//code/utilities/linguistics/computer/frontends/markdown/settings:markdown_settings",
 #     ],
 # )
@@ -55,7 +29,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "export_settings",
 #     deps = [
 #         "foreign_language_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/unilang:unilang_export_settings",
 #     ],
 # )
 

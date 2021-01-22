@@ -6,10 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "body_param_in_method_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/program/common_actions/exits:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/casing:case_modifier",
@@ -19,11 +15,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "data_member_in_method_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/program/common_actions/exits:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/casing:case_modifier",
@@ -34,10 +25,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "foreign_method_call_in_method_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
 #         "//code/utilities/program/common_actions/exits:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
@@ -46,10 +33,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "method_call_in_method_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
 #         "//code/utilities/colors:lib",
 #         "//code/utilities/program/common_actions/exits:lib",
 #         "//code/utilities/types/converters:lib",

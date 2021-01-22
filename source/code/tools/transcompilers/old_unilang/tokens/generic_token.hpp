@@ -1,8 +1,6 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "code/tools/transcompilers/old_unilang/tokens/token_name.hpp"
-#include "code/tools/transcompilers/old_unilang/tokens/token_group.hpp"
 #include "code/utilities/fonts/bdf/tokens/token_bdf_settings.hpp"
 
 template <typename Token_Name_Type, typename Token_Group_Type>

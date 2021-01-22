@@ -8,21 +8,18 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "bazel_load_data",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/bazel:bazel_build_object",
 #     ],
 # )
 
 # hcp(
 #     name = "bazel_load_db_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/bazel:bazel_load_data",
 #     ],
 # )
 
 # hcp(
 #     name = "build_rule_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/bazel:bazel_load_db_settings",
 #         "//code/utilities/linguistics/computer/frontends/parts:portion_options",
 #     ],
 # )
@@ -30,7 +27,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "language_to_build_object",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/bazel:bazel_build_object",
 #         "//code/utilities/formats/artifact:artifact_type",
 #     ],
 # )

@@ -7,7 +7,7 @@ load("//bazel/rules/cpp:main.bzl", "cpp_main")
 cpp_main(
     name = "reflexive_refresh",
     deps = [
-        "//code/literature/publish:essay_publisher",
+        "//code/utilities/output/publisher/essay:essay_publisher",
         "//code/tools/reflexivity:reflexive_refresher",
         "//code/tools/reflexivity/bazel_wrapper:bazel_wrapper_refresher",
         "//code/tools/reflexivity/bazelrc:bazelrc_refresher",
@@ -16,7 +16,6 @@ cpp_main(
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
         "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
-        "//code/tools/transcompilers/old_unilang/self_readme:unilang_documentation_generator",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/program/common_actions/locale:lib",
         "//code/utilities/program/name:program_name_getter",
@@ -64,7 +63,7 @@ cpp_main(
 hcp(
     name = "reflexive_refresher",
     deps = [
-        "//code/literature/publish:essay_publisher",
+        "//code/utilities/output/publisher/essay:essay_publisher",
         "//code/tools/reflexivity:target_build_file_refresher",
         "//code/tools/reflexivity/bazel_wrapper:bazel_wrapper_refresher",
         "//code/tools/reflexivity/bazelrc:bazelrc_refresher",
@@ -74,7 +73,6 @@ hcp(
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
         "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
-        "//code/tools/transcompilers/old_unilang/self_readme:unilang_documentation_generator",
         "//code/utilities/build:self_builder",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/filesystem/files/creating:lib",

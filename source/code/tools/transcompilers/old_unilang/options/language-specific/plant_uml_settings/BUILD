@@ -20,7 +20,6 @@ load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 #         ":description_section_settings",
 #         ":show_hide_settings",
 #         ":skin_param_settings",
-#         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
 #         "//code/utilities/types/strings/transformers/casing:case_format_style",
 #     ],
 # )

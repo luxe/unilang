@@ -14,7 +14,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "special_json_type",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser/body_parser:body_token_value",
 #     ],
 # )
 

@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "code_graph",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/data_structures/graph/unique_vertex_graph:lib",
 #     ],
 # )
@@ -20,13 +19,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "dependency_graph_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:dependency_looker_upper",
-#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:seen_structure_dependencies",
-#         "//code/tools/transcompilers/old_unilang/parser:structure_creator",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/user-frontend:fully_read_file",
 #         "//code/utilities/types/sets:lib",
 #     ],
 # )
@@ -34,10 +26,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "dependency_looker_upper",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:seen_structure_dependencies",
-#         "//code/tools/transcompilers/old_unilang/parser:structure_creator",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],

@@ -13,12 +13,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "value_constraints",
 #         "value_deriving_type",
 #         "value_meaning",
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:library_dependency",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:module_dependency",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:type_specialization",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member/transition:value_transition_meaning",
 #     ],
 # )
 
@@ -32,49 +26,41 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "data_member_reflection",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
 #     ],
 # )
 
 # hcp(
 #     name = "key_value_pair",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "parent_type",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "scope_specifier",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "value_constraints",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "value_deriving_type",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "value_meaning",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )

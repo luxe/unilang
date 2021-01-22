@@ -15,15 +15,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "type_name_deriver",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_argument",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_result",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/typedef:typedef_argument",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/typedef:typedef_result",
-#         "//code/tools/transcompilers/old_unilang/structure/print:type_specialize_getter",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian/qualifier_stripper:stripped_unilang_type_with_qualifiers",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian/qualifier_stripper:type_qualifier_stripper",
 #         "//code/utilities/linguistics/computer/types/cross/language_type",
 #         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 #         "//code/utilities/types/converters:lib",
@@ -33,7 +24,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "structure_typename_deriver",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:structure_name_kind",
 #         "//code/utilities/types/strings/transformers/casing:lib",
 #     ],
 # )
@@ -41,13 +31,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "identifier_name_deriver",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
 #         "//code/utilities/linguistics/computer/types/self_describe_type:modify_identifier_with_extra_type_info",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_argument",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_result",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/type_converters/type_to_hungarian:data_member_to_hungarian_notation_converter",
 #         "//code/utilities/linguistics/computer/frontends/parts:notation_settings",
 #         "//code/utilities/linguistics/computer/types/generic:unilang_type_to_language_type_converter",
 #         "//code/utilities/types:tri_bool",

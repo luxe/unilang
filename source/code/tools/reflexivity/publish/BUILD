@@ -8,11 +8,6 @@ hcp(
     name = "all_essay_publisher",
     deps = [
         "//code/tools/reflexivity/publish:essay_list_maker",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
-        "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-        "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
-        "//code/tools/transcompilers/old_unilang/user-frontend:code_graphs_creator",
-        "//code/tools/transcompilers/old_unilang/user-frontend:file_to_structure_converter",
         "//code/utilities/assets/literature:linguistics_json_data_getter",
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/filesystem/files/creating:lib",
@@ -44,14 +39,6 @@ hcp(
 hcp(
     name = "essay_list_maker",
     deps = [
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
-        "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-        "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
-        "//code/tools/transcompilers/old_unilang/user-frontend:code_graphs_creator",
-        "//code/tools/transcompilers/old_unilang/user-frontend:file_to_structure_converter",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/getting:lib",

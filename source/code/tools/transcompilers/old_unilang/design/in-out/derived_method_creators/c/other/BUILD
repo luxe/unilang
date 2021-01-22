@@ -6,13 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "good_api_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/print:implicit_contract_adder",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/general:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",
@@ -23,13 +16,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "deep_copy_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/design/in-out:object_name_resolver",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
-#         "//code/tools/transcompilers/old_unilang/structure/print:implicit_contract_adder",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/general:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",

@@ -6,9 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "import_item",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/import:import_type",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/import/relationship:import_relationship",
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )

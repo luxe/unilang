@@ -6,14 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "unilang_documentation_generator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
-#         "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-#         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
-#         "//code/tools/transcompilers/old_unilang/user-frontend:code_graphs_creator",
-#         "//code/tools/transcompilers/old_unilang/user-frontend:file_to_structure_converter",
 #         "//code/utilities/filesystem/files/creating:lib",
 #         "//code/utilities/filesystem/files/getting:lib",
 #         "//code/utilities/filesystem/files/temp:temp_file",
@@ -34,5 +26,4 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # cc_binary(
 #     name = "create_readme",
 #     srcs = ["main.cpp"],
-#     deps = ["//code/tools/transcompilers/old_unilang/self_readme:unilang_documentation_generator"],
 # )

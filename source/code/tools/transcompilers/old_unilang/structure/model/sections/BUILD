@@ -10,21 +10,17 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "library_dependency",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "module_dependency",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "type_specialization",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:scope_specifier",
 #     ],
 # )

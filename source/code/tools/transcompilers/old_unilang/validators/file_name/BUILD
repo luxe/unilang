@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "filename_exception",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser/tokenizer/file_marker",
 #     ],
 # )
 
@@ -15,8 +14,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     "filename_validator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/validators/file_name:filename_exception",
-#         "//code/tools/transcompilers/old_unilang/validators/file_name:filename_validation_settings",
 #         "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
 #         "//code/utilities/types/strings/observers/char:lib",
 #         "//code/utilities/types/strings/observers/path:lib",

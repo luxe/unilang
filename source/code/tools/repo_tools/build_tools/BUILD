@@ -20,17 +20,15 @@ hcp(
     ],
 )
 
-hcp(
-    name = "build_tools_documentation_getter",
-    deps = [
-        "//code/tools/repo_tools/build_tools/program_options:lib",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
-        "//code/utilities/documentation:common_documentation_getter",
-        "//code/utilities/formats/json/converters:lib",
-        "//code/utilities/types/converters:lib",
-    ],
-)
+# hcp(
+#     name = "build_tools_documentation_getter",
+#     deps = [
+#         "//code/tools/repo_tools/build_tools/program_options:lib",
+#         "//code/utilities/documentation:common_documentation_getter",
+#         "//code/utilities/formats/json/converters:lib",
+#         "//code/utilities/types/converters:lib",
+#     ],
+# )
 
 distributable_cpp_main(
     name = "build_tools",

@@ -6,17 +6,12 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "program_input",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/main/composed_program_options",
-#         "//code/tools/transcompilers/old_unilang/main/root_settings",
 #     ],
 # )
 
 # hcp(
 #     name = "program_input_validator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/main:program_input",
-#         "//code/tools/transcompilers/old_unilang/main/program_options:lib",
-#         "//code/tools/transcompilers/old_unilang/user-frontend:dependency_path_validator",
 #     ],
 # )
 
@@ -33,10 +28,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "task_executer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/main:program_input",
-#         "//code/tools/transcompilers/old_unilang/main/composed_program_options",
-#         "//code/tools/transcompilers/old_unilang/main/root_settings",
-#         "//code/tools/transcompilers/old_unilang/user-frontend:user_frontend",
 #     ],
 # )
 
@@ -44,14 +35,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "unilang-transcompiler",
 #     srcs = ["main.cpp"],
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/main:program_input",
-#         "//code/tools/transcompilers/old_unilang/main:program_input_validator",
-#         "//code/tools/transcompilers/old_unilang/main:root_exception_handler",
-#         "//code/tools/transcompilers/old_unilang/main:task_executer",
-#         "//code/tools/transcompilers/old_unilang/main/composed_program_options",
-#         "//code/tools/transcompilers/old_unilang/main/composed_program_options:program_options_composer",
-#         "//code/tools/transcompilers/old_unilang/main/program_options:lib",
-#         "//code/tools/transcompilers/old_unilang/main/root_settings",
-#         "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
 #     ],
 # )

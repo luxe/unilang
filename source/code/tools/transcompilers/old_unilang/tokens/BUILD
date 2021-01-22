@@ -40,8 +40,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "all_language_tokens",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:standalone_symbols",
 #     ],
 # )
 
@@ -52,11 +50,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "get_tokens",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/tokens:all_ast_markers",
-#         "//code/tools/transcompilers/old_unilang/tokens:all_language_tokens",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:token_group",
-#         "//code/tools/transcompilers/old_unilang/tokens:token_name",
 #         "//code/utilities/fonts/bdf/tokens:token_bdf_settings_getter",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/strings/transformers/casing:lib",
@@ -75,8 +68,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # cpp_object(
 #     name = "generic_token",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/tokens:token_group",
-#         "//code/tools/transcompilers/old_unilang/tokens:token_name",
 #         "//code/utilities/fonts/bdf/tokens:token_bdf_settings",
 #     ],
 # )

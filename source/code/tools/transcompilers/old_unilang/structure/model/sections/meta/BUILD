@@ -8,21 +8,18 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "foreseeable_change",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "meta_subgroup",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "specification_file",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
@@ -32,7 +29,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "foreseeable_change",
 #         "meta_subgroup",
 #         "specification_file",
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/meta:code_type",
 #     ],
 # )

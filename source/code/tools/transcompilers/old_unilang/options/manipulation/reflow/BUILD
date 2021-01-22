@@ -6,9 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "comment_reflow_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:greedy_reflow_settings",
-#         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:knuth_plass_reflow_settings",
-#         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:reflow_algorithm",
 #     ],
 # )
 

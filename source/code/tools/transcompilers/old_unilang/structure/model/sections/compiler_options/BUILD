@@ -6,13 +6,11 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "compile_options",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/compiler_options:compile_option",
 #     ],
 # )
 
 # hcp(
 #     name = "compile_option",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )

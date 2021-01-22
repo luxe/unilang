@@ -6,15 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "f2si_c_exporter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler:f2si_c_options_getter",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust:structure_adjuster",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust/methods/creating_methods:extra_methods_creator",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print:file_printer",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_alias_helper_printer",
-#         "//code/tools/transcompilers/old_unilang/test-wrapper-printer:test_wrapper_printer",
 #         "//code/utilities/contributor",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/linguistics/computer:source_language",
@@ -32,8 +23,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "f2si_c_options_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
 #         "//code/utilities/program/common_actions/exits:lib",
 #     ],
@@ -49,7 +38,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "bazel_options_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/bazel:build_rule_settings",
 #         "//code/utilities/personal/life:company_getter",
 #     ],
 # )
@@ -57,10 +45,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "file_transferer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_action_getter",
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_settings",
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_transfer_action",
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_transferer",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/system:lib",
@@ -73,8 +57,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "file_transfer_settings_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:pulse_settings",
-#         "//code/tools/transcompilers/old_unilang/f2si_frontend_compiler/pulse:transfer_account_settings",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/system:lib",
 #     ],

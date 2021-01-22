@@ -7,8 +7,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "token_builder",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/tokens:all_language_tokens",
-#         "//code/tools/transcompilers/old_unilang/tokens:token_name",
 #         "//code/utilities/types/converters:lib",
 #     ],
 # )

@@ -7,13 +7,11 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "method_stamp",
 #     deps = [
 #         "method_stamp_value",
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "method_stamp_value",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )

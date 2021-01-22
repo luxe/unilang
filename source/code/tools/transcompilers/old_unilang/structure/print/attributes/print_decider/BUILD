@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "attribute_section_newline_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/print:function_declaration_location",
 #         "//code/utilities/linguistics/computer/frontends/parts/method/attributes/specific/argument:argument_attribute_settings",
 #         "//code/utilities/linguistics/computer/frontends/parts/method/attributes/specific/method:method_attribute_settings",
 #     ],
@@ -15,7 +14,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "attribute_placement_tester",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/print:function_declaration_location",
 #         "//code/utilities/linguistics/computer/frontends/parts/method/attributes/specific/parts/placements:all_argument_attribute_placements",
 #         "//code/utilities/linguistics/computer/frontends/parts/method/attributes/specific/parts/placements:all_method_attribute_placements",
 #     ],
@@ -25,9 +23,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "attribute_print_decider",
 #     deps = [
 #         "attribute_placement_tester",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/arguments/argument:function_argument",
-#         "//code/tools/transcompilers/old_unilang/structure/print:function_declaration_location",
 #         "//code/utilities/linguistics/computer/frontends/parts/method/attributes:all_method_attribute_settings",
 #     ],
 # )

@@ -8,10 +8,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "language_file_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:shared",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
@@ -20,10 +16,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "reference_file_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:shared",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
@@ -34,10 +26,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "settings_file_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:shared",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],
@@ -53,9 +41,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "stylized_reference_file_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:shared",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
 #         "//code/utilities/filesystem/paths:lib",
 #     ],
 # )
@@ -63,22 +48,12 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "unilang_file_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:language_file_creator",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:reference_file_creator",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:settings_file_creator",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:stylized_reference_file_creator",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:theme_file_creator",
 #     ],
 # )
 
 # hcp(
 #     name = "theme_file_creator",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:shared",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
 #         "//code/utilities/filesystem/paths:lib",
 #         "//code/utilities/types/converters:lib",
 #     ],

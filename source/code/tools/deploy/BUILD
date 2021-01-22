@@ -15,14 +15,6 @@ cc_binary(
 hcp(
     name = "software_deployer",
     deps = [
-        "//code/tools/deskstock:deskstock_documentation_getter",
-        "//code/tools/games/mario:mario_documentation_getter",
-        "//code/tools/gcalviz:gcalviz_documentation_getter",
-        "//code/tools/noogle:noogle_documentation_getter",
-        "//code/tools/transcompilers/old_unilang/main:program_input",
-        "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/files/moving:lib",
         "//code/utilities/filesystem/paths:lib",

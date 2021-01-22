@@ -6,16 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "cpp_benchmark_exporter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/boilerplate_printer",
-#         "//code/tools/transcompilers/old_unilang/compiler-frontends/cpp_benchmark:benchmark_coverage_summary_getter",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_benchmark_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust:structure_adjuster",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print:file_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:namespace_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
 #         "//code/utilities/linguistics/computer/export_file_settings",
 #         "//code/utilities/contributor",
 #         "//code/utilities/filesystem/paths:lib",
@@ -30,10 +20,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "cpp_benchmark_options_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_benchmark_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
 #         "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
 #         "//code/utilities/personal/life:company_getter",
 #         "//code/utilities/program/common_actions/exits:lib",
@@ -43,12 +29,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "benchmark_coverage_summary_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/design/normal:method_sorter",
-#         "//code/tools/transcompilers/old_unilang/design/normal/data:subgroup_methods",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_benchmark_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/types/char:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/transformers/appending:lib",

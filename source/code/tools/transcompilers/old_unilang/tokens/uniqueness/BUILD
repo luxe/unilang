@@ -8,10 +8,6 @@ load("//bazel/rules/cpp:gtest.bzl", "gtest")
 # hcp(
 #     name = "unique_tokens_checker",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:global",
-#         "//code/tools/transcompilers/old_unilang/language-and-theme-creator/sublime:unilang_file_creator",
-#         "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
 #         "//code/utilities/program/common_actions/exits:lib",
 #         "//code/utilities/types/general:lib",
 #         "//code/utilities/types/vectors/observers:lib",
@@ -22,7 +18,5 @@ load("//bazel/rules/cpp:gtest.bzl", "gtest")
 # gtest(
 #     name = "uniqueness_test",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
-#         "//code/tools/transcompilers/old_unilang/tokens/uniqueness:unique_tokens_checker",
 #     ],
 # )

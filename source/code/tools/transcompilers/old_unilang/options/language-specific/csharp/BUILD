@@ -6,6 +6,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     "csharp_export_settings",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
 #     ],
 # )

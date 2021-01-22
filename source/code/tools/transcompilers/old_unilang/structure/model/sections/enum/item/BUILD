@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "enum_subgroup",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
@@ -14,8 +13,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "enum_item",
 #     deps = [
 #         "enum_subgroup",
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections:structure_enums",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/enum/item/arg:enum_arg",
 #     ],
 # )

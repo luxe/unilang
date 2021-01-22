@@ -6,8 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "value_constraints_to_interval_constraints",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/constraint_exporter/interval_constraint",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:value_constraints",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/strings/observers/char:lib",
 #         "//code/utilities/types/strings/observers/other:lib",
@@ -19,14 +17,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "concise_constraint_exporter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/constraint_exporter:concise_constraint_line_exporter",
-#         "//code/tools/transcompilers/old_unilang/constraint_exporter/interval_constraint",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
 #         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
 #         "//code/utilities/comments/doxygen/maker:doxygen_data",
 #         "//code/utilities/contributor",
@@ -45,13 +35,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "concise_constraint_line_exporter",
 #     deps = [
 #         "value_constraints_to_interval_constraints",
-#         "//code/tools/transcompilers/old_unilang/constraint_exporter/interval_constraint",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
 #         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
 #         "//code/utilities/comments/doxygen/maker:doxygen_data",
 #         "//code/utilities/contributor",
@@ -64,13 +47,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "if_chain_constraint_exporter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/data_member:data_member_item",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method:method_item",
-#         "//code/tools/transcompilers/old_unilang/structure/print:methods_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print/derivers:identifier_name_deriver",
 #         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
 #         "//code/utilities/comments/doxygen/maker:doxygen_data",
 #         "//code/utilities/contributor",
@@ -86,11 +62,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "constraint_exporter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/constraint_exporter:concise_constraint_exporter",
-#         "//code/tools/transcompilers/old_unilang/constraint_exporter:if_chain_constraint_exporter",
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/contributor",
 #     ],
 # )

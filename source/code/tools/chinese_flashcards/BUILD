@@ -6,14 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "task_executer",
     deps = [
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/slidy:slidy_exporter",
-        "//code/tools/transcompilers/old_unilang/dependency_graph_creator:code_graph",
-        "//code/tools/transcompilers/old_unilang/main/root_settings:root_settings_getter",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
-        "//code/tools/transcompilers/old_unilang/user-frontend:code_graphs_creator",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/paths:lib",

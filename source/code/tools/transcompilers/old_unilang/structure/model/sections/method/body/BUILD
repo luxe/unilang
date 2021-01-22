@@ -6,7 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "function_body",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/method/body/body-ast:root_body_element",
 #         "@boost//:variant",
 #     ],
 # )

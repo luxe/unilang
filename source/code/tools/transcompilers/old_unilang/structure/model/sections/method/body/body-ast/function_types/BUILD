@@ -6,6 +6,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "function_call_local",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser/body_parser:body_token_value",
 #     ],
 # )

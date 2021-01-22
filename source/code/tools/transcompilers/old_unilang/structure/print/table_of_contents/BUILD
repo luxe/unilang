@@ -6,8 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "function_table_of_contents_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/linguistics/computer/export_file_settings",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",

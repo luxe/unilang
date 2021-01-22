@@ -6,11 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "cpp_exporter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust:structure_adjuster",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print:file_printer",
 #         "//code/utilities/contributor",
 #         "//code/utilities/linguistics/computer:source_language",
 #     ],
@@ -19,9 +14,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "cpp_options_getter",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/cpp:cpp_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/linguistics/computer/frontends/parts/meta/settings/organizations:organization",
 #         "//code/utilities/personal/life:company_getter",
 #         "//code/utilities/program/common_actions/exits:lib",

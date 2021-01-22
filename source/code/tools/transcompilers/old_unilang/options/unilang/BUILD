@@ -12,6 +12,5 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     deps = [
 #         "unilang_general_settings",
 #         "unilang_section_settings",
-#         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
 #     ],
 # )

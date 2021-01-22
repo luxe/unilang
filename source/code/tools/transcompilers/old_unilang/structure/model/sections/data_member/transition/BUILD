@@ -7,13 +7,11 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     name = "value_transition_meaning",
 #     deps = [
 #         "data_member_transition_state",
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
 
 # hcp(
 #     name = "data_member_transition_state",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #     ],
 # )
