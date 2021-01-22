@@ -9,6 +9,7 @@ hcp(
         "//code/utilities/fonts/bdf/exporter:bdf_settings_to_format",
         "//code/utilities/fonts/bdf/glyph:glyphs",
         "//code/utilities/fonts/bdf/settings:bdf_settings",
+        "//code/utilities/fonts/bdf/characters:predefined_characters",
     ],
 )
 

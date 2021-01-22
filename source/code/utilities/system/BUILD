@@ -23,11 +23,3 @@ cc_library(
     hdrs = ["lib.hpp"],
     deps = ["//code/utilities/program/call:lib"],
 )
-
-hcp(
-    name = "mime_xml_creator",
-    deps = [
-        "//code/utilities/types/strings/creators:lib",
-        "//code/utilities/types/strings/transformers/appending:lib",
-    ],
-)
