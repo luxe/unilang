@@ -80,7 +80,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/tools/transcompilers/old_unilang/design/in-out:component_struct_printer",
 #         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
 #         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
+#         "//code/utilities/linguistics/computer/export_file_settings",
 #         "//code/tools/transcompilers/old_unilang/structure/print/macro:macro_printer",
 #     ],
 # )

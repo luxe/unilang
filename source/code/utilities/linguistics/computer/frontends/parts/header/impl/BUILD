@@ -17,7 +17,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
 #         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
 #         "//code/tools/transcompilers/old_unilang/structure/model/sections/import:import_section",
-#         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
+#         "//code/utilities/linguistics/computer/export_file_settings",
 #         "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
 #         "//code/utilities/comments/code:comment_creator",
 #         "//code/utilities/linguistics/computer:source_language",

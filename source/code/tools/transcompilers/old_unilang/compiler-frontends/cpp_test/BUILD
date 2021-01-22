@@ -16,7 +16,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/tools/transcompilers/old_unilang/structure/print:file_printer",
 #         "//code/tools/transcompilers/old_unilang/structure/print:namespace_printer",
 #         "//code/tools/transcompilers/old_unilang/structure/print:shared_printer",
-#         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
+#         "//code/utilities/linguistics/computer/export_file_settings",
 #         "//code/tools/transcompilers/old_unilang/test_export:test_body_getter",
 #         "//code/tools/transcompilers/old_unilang/test_export:test_comment_getter",
 #         "//code/utilities/contributor",

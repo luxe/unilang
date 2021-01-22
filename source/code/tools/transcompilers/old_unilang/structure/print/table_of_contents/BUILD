@@ -8,7 +8,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     deps = [
 #         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
 #         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
+#         "//code/utilities/linguistics/computer/export_file_settings",
 #         "//code/utilities/streams/filestreams:lib",
 #         "//code/utilities/types/converters:lib",
 #         "//code/utilities/types/general:lib",

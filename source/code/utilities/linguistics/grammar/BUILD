@@ -6,7 +6,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "grammar_adjuster",
     deps = [
-        "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
+        "//code/utilities/types/strings/observers/splitting:words_deriver",
         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/strings/observers/other:lib",

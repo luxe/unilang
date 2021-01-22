@@ -6,8 +6,8 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "boilerplate_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
-        "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
+        "//code/utilities/linguistics/computer/export_file_settings",
+        "//code/utilities/linguistics/computer/filename:file_name_getter",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",
@@ -20,8 +20,7 @@ hcp(
 hcp(
     name = "package_name_getter",
     deps = [
-        "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings",
-        "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
+        "//code/utilities/linguistics/computer/export_file_settings",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/contributor",
         "//code/utilities/linguistics/computer/frontends/java/settings:java_settings",

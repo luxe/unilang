@@ -11,7 +11,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #         "//code/tools/transcompilers/old_unilang/structure/adjust:greedy_reflower",
 #         "//code/tools/transcompilers/old_unilang/structure/adjust:knuth_plass_reflower",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
+#         "//code/utilities/types/strings/observers/splitting:words_deriver",
 #         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/linguistics/grammar:grammar_adjuster",
 #         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
@@ -36,7 +36,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #     deps = [
 #         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
 #         "//code/tools/transcompilers/old_unilang/structure/model:structure",
-#         "//code/tools/transcompilers/old_unilang/structure/print/export_file_settings:file_type",
+#         "//code/utilities/linguistics/computer/export_file_settings:file_type",
 #     ],
 # )
 
@@ -89,7 +89,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/tools/transcompilers/old_unilang/options/manipulation:struct_manipulation_settings",
 #         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:greedy_reflow_settings",
 #         "//code/tools/transcompilers/old_unilang/parser:token_value",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
+#         "//code/utilities/types/strings/observers/splitting:words_deriver",
 #         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/linguistics/grammar:grammar_adjuster",
 #         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",
@@ -111,7 +111,7 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 #         "//code/tools/transcompilers/old_unilang/options/manipulation/reflow:knuth_plass_reflow_settings",
 #         "//code/tools/transcompilers/old_unilang/parser:token_value",
 #         "//code/tools/transcompilers/old_unilang/structure/adjust:knuth_plass_entry",
-#         "//code/tools/transcompilers/old_unilang/structure/adjust:words_deriver",
+#         "//code/utilities/types/strings/observers/splitting:words_deriver",
 #         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #         "//code/utilities/linguistics/grammar:grammar_adjuster",
 #         "//code/utilities/linguistics/grammar/settings:comment_grammar_settings",

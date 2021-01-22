@@ -17,7 +17,7 @@ hcp(
     name = "needed_import",
     deps = [
         "type_size",
-        "//code/tools/transcompilers/old_unilang/structure/model/sections/import:import_type",
+        "//code/utilities/code:import_type",
     ],
 )
 
