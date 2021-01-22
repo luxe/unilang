@@ -6,9 +6,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "unilang_segments",
     deps = [
-        "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
-        "//code/tools/transcompilers/old_unilang/tokens/uniqueness:unique_tokens_checker",
         "//code/utilities/fonts/bdf/exporter:bdf_settings_to_format",
         "//code/utilities/fonts/bdf/glyph:glyphs",
         "//code/utilities/fonts/bdf/settings:bdf_settings",
@@ -27,7 +24,6 @@ hcp(
 hcp(
     name = "unilang_character_maps",
     deps = [
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/fonts/bdf/character_maps",
         "//code/utilities/fonts/bdf/character_maps:character_maps_getter",
         "//code/utilities/fonts/bdf/complete/unilang:unilang_segments",

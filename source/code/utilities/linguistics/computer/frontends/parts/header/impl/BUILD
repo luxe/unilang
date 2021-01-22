@@ -6,19 +6,13 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "implicit_global_header_comment_deriver",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
 #     ],
 # )
 
 # hcp(
 #     name = "header_collector",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/import:import_section",
 #         "//code/utilities/linguistics/computer/export_file_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
 #         "//code/utilities/comments/code:comment_creator",
 #         "//code/utilities/linguistics/computer:source_language",
 #         "//code/utilities/linguistics/computer/frontends/parts/header/impl:implicit_global_header_comment_deriver",
@@ -36,10 +30,6 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 # hcp(
 #     name = "header_printer",
 #     deps = [
-#         "//code/tools/transcompilers/old_unilang/options/language-specific/c:c_export_settings",
-#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-#         "//code/tools/transcompilers/old_unilang/structure/model/sections/import:import_section",
-#         "//code/tools/transcompilers/old_unilang/structure/print/filename:file_name_getter",
 #         "//code/utilities/comments/code:comment_creator",
 #         "//code/utilities/linguistics/computer:source_language",
 #         "//code/utilities/linguistics/computer/frontends/parts/header/impl:header_collector",
