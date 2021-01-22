@@ -8,7 +8,9 @@ load("//bazel/rules/tree_hcp:string_tree_to_static_tree_parser.bzl", "string_tre
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 string_tree_getter(name = "concept")
+
 static_tree_structs(name = "concept")
+
 string_tree_to_static_tree_parser(name = "concept")
 
 hcp(
@@ -35,9 +37,9 @@ hcp(
     ],
 )
 
-# how the data is to be thought of and understood.  
+# how the data is to be thought of and understood.
 # this also effects how the code is generated.
-# every UniLang file represents one of the following:  
+# every UniLang file represents one of the following:
 # It's either:
 # GLOBAL: global collection of data and functions
 # SUM_TYPE: a union/variant/sum type with possible methods and other miscellanous data (typedefs/enums/inlined includes/etc)

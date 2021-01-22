@@ -6,10 +6,10 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "meta_block_printer",
     deps = [
-        "//code/utilities/linguistics/computer/export_file_settings",
         "//code/utilities/code:concept_static_tree_structs",
         "//code/utilities/comments/doxygen/maker:doxygen_block_maker",
         "//code/utilities/licenses:apache_2_getter",
+        "//code/utilities/linguistics/computer/export_file_settings",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_author_printer",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_blank_line_getter",
         "//code/utilities/linguistics/computer/frontends/parts/meta/impl/sections:meta_classification_getter",

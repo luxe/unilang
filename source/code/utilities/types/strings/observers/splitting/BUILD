@@ -1,6 +1,7 @@
 package(
     default_visibility = ["//visibility:public"],
 )
+
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 
 cc_library(

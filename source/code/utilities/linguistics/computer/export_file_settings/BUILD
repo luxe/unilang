@@ -8,10 +8,10 @@ hcp(
     name = "export_file_settings",
     deps = [
         "//code/utilities/code:code_type",
+        "//code/utilities/linguistics/computer:source_language",
         "//code/utilities/linguistics/computer/export_file_settings:export_path_settings",
         "//code/utilities/linguistics/computer/export_file_settings:file_type",
         "//code/utilities/linguistics/computer/export_file_settings:special_file_type",
-        "//code/utilities/linguistics/computer:source_language",
     ],
 )
 

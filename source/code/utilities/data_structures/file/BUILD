@@ -4,5 +4,5 @@ load("//bazel/rules/hcp:hcp.bzl", "hcp")
 
 hcp(
     name = "file_range_location",
-    deps = ["//code/utilities/data_structures/file/file_marker:file_marker",],
+    deps = ["//code/utilities/data_structures/file/file_marker"],
 )
