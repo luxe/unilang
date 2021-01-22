@@ -9,9 +9,6 @@ hcp(
     deps = [
         "//code/tools/reflexivity/comment:generated_comment_getter",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
-        "//code/tools/reflexivity/tool_chain_conversion:readme_creator",
-        "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:bazel_conversion_tests",
-        "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:test_getter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/deleting:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -30,9 +27,6 @@ hcp(
     deps = [
         "//code/tools/reflexivity/comment:generated_comment_getter",
         "//code/tools/reflexivity/deps_define/data:dependency_specifications_getter",
-        "//code/tools/reflexivity/tool_chain_conversion:readme_creator",
-        "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:bazel_conversion_tests",
-        "//code/tools/reflexivity/tool_chain_conversion/conversion_test_data:test_getter",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/deleting:lib",
         "//code/utilities/filesystem/paths:lib",
