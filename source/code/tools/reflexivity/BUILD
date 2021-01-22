@@ -15,7 +15,6 @@ cpp_main(
         "//code/tools/reflexivity/docker:dockerfile_refresher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
-        "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/program/common_actions/locale:lib",
         "//code/utilities/program/name:program_name_getter",
@@ -32,7 +31,6 @@ cpp_main(
         "//code/tools/reflexivity/docker:dockerfile_refresher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
-        "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/utilities/program/common_actions/locale:lib",
     ],
 )
@@ -72,7 +70,6 @@ hcp(
         "//code/tools/reflexivity/docker:dockerfile_refresher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
-        "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/utilities/build:self_builder",
         "//code/utilities/code:concept_tree_to_image",
         "//code/utilities/filesystem/files/creating:lib",
@@ -92,7 +89,6 @@ hcp(
         "//code/tools/reflexivity/docker:dockerfile_refresher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
-        "//code/tools/reflexivity/tool_chain_conversion:tool_chain_conversion_refresher",
         "//code/utilities/build:self_builder",
     ],
 )
