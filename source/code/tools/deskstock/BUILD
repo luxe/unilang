@@ -14,10 +14,6 @@ hcp(
         "//code/tools/deskstock:system_effecter",
         "//code/tools/deskstock/settings:deskstock_settings",
         "//code/tools/deskstock/settings:deskstock_state",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/dzslides:dzslides_exporter",
-        "//code/tools/transcompilers/old_unilang/compiler-frontends/slidy:slidy_exporter",
-        "//code/tools/transcompilers/old_unilang/tokens:generic_token",
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/getting:lib",
         "//code/utilities/filesystem/paths:lib",
@@ -80,19 +76,19 @@ hcp(
     ],
 )
 
-hcp(
-    name = "deskstock_documentation_getter",
-    deps = [
-        "//code/tools/deskstock:default_settings_getter",
-        "//code/tools/deskstock/settings:startup_settings",
-        "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
-        "//code/tools/transcompilers/old_unilang/structure/model:structure",
-        "//code/utilities/documentation:common_documentation_getter",
-        "//code/utilities/formats/json/converters:lib",
-        "//code/utilities/formats/json/converters:type_to_json_string",
-        "//code/utilities/types/converters:lib",
-    ],
-)
+# hcp(
+#     name = "deskstock_documentation_getter",
+#     deps = [
+#         "//code/tools/deskstock:default_settings_getter",
+#         "//code/tools/deskstock/settings:startup_settings",
+#         "//code/tools/transcompilers/old_unilang/structure/model:inlined_structures",
+#         "//code/tools/transcompilers/old_unilang/structure/model:structure",
+#         "//code/utilities/documentation:common_documentation_getter",
+#         "//code/utilities/formats/json/converters:lib",
+#         "//code/utilities/formats/json/converters:type_to_json_string",
+#         "//code/utilities/types/converters:lib",
+#     ],
+# )
 
 hcp(
     name = "meta_settings",

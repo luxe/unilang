@@ -3,12 +3,12 @@ package(default_visibility = ["//visibility:public"])
 load("//bazel/rules/hcp:hcp.bzl", "hcp")
 load("//bazel/rules/cpp:object.bzl", "cpp_object")
 
-hcp(
-    name = "method_manipulation_settings",
-    deps = [
-        "//code/tools/transcompilers/old_unilang/options/manipulation:comment_adjustment_settings",
-        "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
-        "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum:enum_utility_function_options",
-        "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_other_methods:method_utility_function_options",
-    ],
-)
+# hcp(
+#     name = "method_manipulation_settings",
+#     deps = [
+#         "//code/tools/transcompilers/old_unilang/options/manipulation:comment_adjustment_settings",
+#         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_data_member:data_member_utility_function_options",
+#         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_enum:enum_utility_function_options",
+#         "//code/tools/transcompilers/old_unilang/options/manipulation/methods/via_other_methods:method_utility_function_options",
+#     ],
+# )
