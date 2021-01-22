@@ -6,9 +6,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 def comGrailBazelToolchain():
     http_archive(
         name = "com_grail_bazel_toolchain",
-        sha256 = "b060a4f28c7a03485a914e9c03683ddaf6792edb5d72c91f82a28f393b1bbb0b",
-        strip_prefix = "bazel-toolchain-f4c17a3ae40f927ff62cc0fb8fe22b1530871807",
+        sha256 = "6bf2b30c8ab190eee44e1843f0cff457a5379250ad8239155dcf5bd38e4cc70f",
+        strip_prefix = "bazel-toolchain-f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a",
         urls = [
-            "https://github.com/Unilang/bazel-toolchain/archive/f4c17a3ae40f927ff62cc0fb8fe22b1530871807.tar.gz",
+            "https://github.com/Unilang/bazel-toolchain/archive/f2d1ba2c9d713b2aa6e7063f6d11dd3d64aa402a.tar.gz",
         ],
     )
