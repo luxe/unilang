@@ -8,7 +8,6 @@ hcp(
     deps = [
         "//code/tools/ide/global_actions:global_action",
         "//code/tools/ide/settings:ide_elements",
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/data_structures/color:transparent_rgb_color",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap",
         "//code/utilities/data_structures/graphics/bitmap/multi_color_bitmap:positioned_multi_color_bitmap",
@@ -44,7 +43,6 @@ hcp(
     name = "ide_settings_getter",
     deps = [
         "//code/tools/ide/settings:ide_settings",
-        "//code/tools/transcompilers/old_unilang/tokens:get_tokens",
         "//code/utilities/code:concept_string_tree_getter",
         "//code/utilities/code/style_theme:style_lookup_map_getter",
         "//code/utilities/colors/defaults:rectangle_shades",
