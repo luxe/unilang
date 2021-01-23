@@ -1,3 +1,5 @@
+//from a project called prenis
+
 //#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup") // ukryj konsole
 //#pragma comment(lib, "GL/glew32.lib")
 #define _CRT_SECURE_NO_WARNINGS
@@ -276,8 +278,8 @@ void display()
     glLoadIdentity();
     glPushMatrix();
 
-    util_compat_gluLookAt2(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
-    //gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
+    //util_compat_gluLookAt2(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
+    gluLookAt(camera.getX(), camera.getY(), camera.getZ(),0, 0.0, 0,0.0, 2.0, 0.0);
 
     Draw(gDrawObjects, materials, textures);
     
@@ -307,7 +309,7 @@ void reshape(GLint w, GLint h)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //FIX: gluPerspective(40.0, (GLdouble)w / (GLdouble)h, 0.5, 1000.0);
+    gluPerspective(40.0, (GLdouble)w / (GLdouble)h, 0.5, 1000.0);
 
     glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, w, h);

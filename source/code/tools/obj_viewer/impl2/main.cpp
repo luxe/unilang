@@ -211,7 +211,8 @@ void display() {
     camera.y = 2.0f + DISTANCE * sin(camera.phi)*sin(camera.theta);
     camera.z =        DISTANCE * cos(camera.theta);
 
-    util_compat_gluLookAt(camera.x, camera.y, camera.z, 0, 2.0f, 0, 0.0f, 1.0f, 0.0f);
+    gluLookAt(camera.x, camera.y, camera.z, 0, 2.0f, 0, 0.0f, 1.0f, 0.0f);
+    //util_compat_gluLookAt(camera.x, camera.y, camera.z, 0, 2.0f, 0, 0.0f, 1.0f, 0.0f);
     draw_obj();
     glutSwapBuffers();
     glutPostRedisplay();
@@ -294,6 +295,7 @@ void open_obj(int argc, char *argv[]) {
         std::cerr << "Error opening " << filename << std::endl;
         exit(1);
     }
+    
 
     while (file_stream.good()) {
         char file_line[100];
@@ -304,6 +306,7 @@ void open_obj(int argc, char *argv[]) {
     file_stream.close();
 
     is_quad = (faces_quads.size() > faces_triangles.size());
+    
 }
 
 int main(int argc, char *argv[]) {
