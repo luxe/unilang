@@ -23,7 +23,7 @@ srcs = glob(
         "src/w32-thread.c",
         "src/w32-gettext.c",
         "src/spawn-w32.c",
-        
+
         #programs
         "src/gpg-error.c",
         "src/mkheader.c",
