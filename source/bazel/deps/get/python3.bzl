@@ -12,4 +12,7 @@ def python3():
         urls = [
             "https://github.com/Unilang/python3/archive/7f755fe87d217177603a27d9dcc2fedc979f0f1a.tar.gz",
         ],
+        patch_cmds = [
+            "sed -i '/HAVE_CRYPT_H/d'  usr/include/x86_64-linux-gnu/python3.6m/pyconfig.h",
+        ],
     )
