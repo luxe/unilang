@@ -27,6 +27,7 @@ int main()
     Standard_Sfml_Game_Loop::Run(
     "Word Build",
     [&](sf::RenderWindow & window, sf::Time const& TimePerFrame){
+        std::cout << TimePerFrame.asMicroseconds() << std::endl;
         State_Updater::Run_Frame_Logic(window,TimePerFrame,state,assets);
     },
     [&](sf::RenderWindow & window){
