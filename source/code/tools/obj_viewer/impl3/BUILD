@@ -19,42 +19,42 @@ srcs = glob(
         "*.cpp",
     ],
     exclude = [
-        "main.cpp"
+        "main.cpp",
     ],
 )
 
 cc_library(
     name = "impl_lib",
-    hdrs = hdrs,
     srcs = srcs,
-    linkopts = [
-        # "-lGLEW",
-        # "-GL",
-        # "-lGLU",
-        # "-lglut",
-    ],
+    hdrs = hdrs,
     copts = [
         "-DGL_GLEXT_PROTOTYPES",
     ],
     includes = [
         ".",
     ],
+    linkopts = [
+        # "-lGLEW",
+        # "-GL",
+        # "-lGLU",
+        # "-lglut",
+    ],
     deps = [
-        "@system//:GL_hdrs",
-        "@system//:GL",
-        "@system//:OpenGL",
-        "@system//:KHR_hdrs",
-        "@system//:SDL_hdrs",
-        "@system//:SDL",
-        "@system//:SDL_image",
-        "@system//:SDL2_hdrs",
-        "@system//:SDL2",
-        "@system//:GLU",
-        "@system//:glut",
-        "@system//:GLEW",
         "@system//:EGL",
+        "@system//:GL",
+        "@system//:GLEW",
+        "@system//:GLU",
         "@system//:GLX",
+        "@system//:GL_hdrs",
+        "@system//:KHR_hdrs",
+        "@system//:OpenGL",
+        "@system//:SDL",
+        "@system//:SDL2",
+        "@system//:SDL2_hdrs",
+        "@system//:SDL_hdrs",
+        "@system//:SDL_image",
         "@system//:Xi",
+        "@system//:glut",
     ],
 )
 

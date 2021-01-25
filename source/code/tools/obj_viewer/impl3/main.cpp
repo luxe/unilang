@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <string>
 
+//https://github.com/empyreanx/obj-viewer
 int main(int argc, char** argv) {
 	bool useParams = false;
 	std::string flag, fileName;
