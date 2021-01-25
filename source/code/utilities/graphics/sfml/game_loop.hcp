@@ -1,5 +1,6 @@
 class
 ❪string❫
+❪chrono❫
 ❪"SFML/Graphics"❫
 ❪"SFML/Graphics/Transformable"❫
 ⚯
@@ -97,6 +98,45 @@ static void Fixed_Step_Interpolation(T stop_predicate, U logic, V render){
 ▶
 
 
+//https://github.com/MitchBarnett/chronoGameLoop/blob/master/physicsGame/src/Game.cpp
+◀public:
+template <typename T, typename U, typename V>
+static void Chrono_Loop(T stop_predicate, U logic, V render){
+    
+    using namespace std::chrono_literals;
+    
+    //not used
+    sf::Clock timer;
+    
+    const std::chrono::nanoseconds FRAMETIME(16666667);     // Equal to 16.66ms or 1000/60
+    using clock = std::chrono::high_resolution_clock;
+    
+    auto gameTimeStart  = clock::now();                     // Total runtime of the program
+    auto frameTimeStart = clock::now();     
+    std::chrono::nanoseconds accumulator(0ns);              // Time passed since the last update
+    
+    while (stop_predicate()){
+        
+        if (clock::now() - frameTimeStart > std::chrono::milliseconds(1))
+        {
+            auto deltaTime = clock::now() - frameTimeStart;     // Time passed for last loop
+            frameTimeStart = clock::now();                      // Reset
+            accumulator += deltaTime;                           // Add time passed last loop
+        }
+        
+        
+        while (accumulator >= FRAMETIME)                    // Update if enough time has passed
+        {
+            accumulator -= FRAMETIME;                       
+            logic(timer.getElapsedTime());
+            
+        }
+        render();
+    }
+    
+    
+}
+▶
 
 
 
@@ -105,9 +145,49 @@ static void Fixed_Step_Interpolation(T stop_predicate, U logic, V render){
 
 
 
+//https://en.sfml-dev.org/forums/index.php?topic=921.0
+◀public:
+template <typename T, typename U, typename V>
+static void Fix_Your_Timestep(T stop_predicate, U logic, V render){
+    
+    sf::Clock clock;
+    float dt = 1.f/40.f; // Modify this to change physics rate.
+    float accumulator = 0.f;
+    bool drawn = false;
+    
+    while (stop_predicate()){
+        
+        accumulator += clock.getElapsedTime().asMicroseconds();
+        clock.restart();
 
-//from fix your timestamp
-//https://gafferongames.com/post/fix_your_timestep/
+        while (accumulator >= dt)
+        {
+            // Physics and gameplay updates.
+
+            accumulator -= dt;
+            drawn = false;
+            logic(clock.getElapsedTime());
+        }
+
+        if (drawn)
+        {
+            //sf::Sleep(0.01);
+        }
+        else
+        {
+            // Draw everything.
+
+            drawn = true;
+            render();
+        }
+    
+    }
+}
+▶
+
+
+
+
 
 
     // double t = 0.0;

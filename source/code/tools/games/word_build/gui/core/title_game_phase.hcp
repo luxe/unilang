@@ -23,13 +23,13 @@ class
 ❪"code/utilities/math/math"❫
 ⚞⚟
 
-◀public: static▶ void ☀Run_Phase(F310_Events const& events, Game_State & state, Assets & assets) ❰
+◀public: static▶ void ☀Run_Phase(F310_Events const& events, sf::Time const& TimePerFrame, Game_State & state, Assets & assets) ❰
     
     Handle_Player_Input(state,assets);
     
     //Handle_Floating_Letters(state,assets);
     
-    Handle_Sliding_Letters(state,assets);
+    Handle_Sliding_Letters(state,TimePerFrame,assets);
 ❱
 
 ◀private: static▶ void ☀Handle_Player_Input(Game_State & state, Assets & assets) ❰
@@ -169,20 +169,20 @@ class
 ❱
 
 
-◀private: static▶ void ☀Handle_Floating_Letters(Game_State & state, Assets & assets) ❰
+◀private: static▶ void ☀Handle_Floating_Letters(Game_State & state, sf::Time const& TimePerFrame, Assets & assets) ❰
 
-    Add_Random_Player_Letters(state,assets,assets.floating_p1_letters,state.p1_state.color);
-    Add_Random_Player_Letters(state,assets,assets.floating_p2_letters,state.p2_state.color);
+    Add_Random_Player_Letters(state,TimePerFrame,assets,assets.floating_p1_letters,state.p1_state.color);
+    Add_Random_Player_Letters(state,TimePerFrame,assets,assets.floating_p2_letters,state.p2_state.color);
 ❱
 
 
-◀private: static▶ void ☀Handle_Sliding_Letters(Game_State & state, Assets & assets) ❰
+◀private: static▶ void ☀Handle_Sliding_Letters(Game_State & state, sf::Time const& TimePerFrame, Assets & assets) ❰
 
-    Add_Sliding_Player_Letter(state,assets,assets.floating_p1_letters,state.p1_state.color);
-    Add_Sliding_Player_Letter(state,assets,assets.floating_p2_letters,state.p2_state.color);
+    Add_Sliding_Player_Letter(state,TimePerFrame,assets,assets.floating_p1_letters,state.p1_state.color);
+    Add_Sliding_Player_Letter(state,TimePerFrame,assets,assets.floating_p2_letters,state.p2_state.color);
 ❱
 
-◀private: static▶ void ☀Add_Sliding_Player_Letter(Game_State & state, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
+◀private: static▶ void ☀Add_Sliding_Player_Letter(Game_State & state, sf::Time const& TimePerFrame, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
 
     int total_alive_letters = 200;
     
@@ -200,10 +200,10 @@ class
         }
     }
     
-    Move_And_Expire_Letters(floating_letters);
+    Move_And_Expire_Letters(floating_letters,TimePerFrame);
 ❱
 
-◀private: static▶ void ☀Add_Random_Player_Letters(Game_State & state, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
+◀private: static▶ void ☀Add_Random_Player_Letters(Game_State & state, sf::Time const& TimePerFrame, Assets & assets, std::vector<Moving_Text> & floating_letters,sf::Color const& color) ❰
 
     int total_alive_letters = 100;
     
@@ -213,15 +213,15 @@ class
         floating_letters.emplace_back(temp);
     }
     
-    Move_And_Expire_Letters(floating_letters);
+    Move_And_Expire_Letters(floating_letters,TimePerFrame);
 ❱
 
-◀private: static▶ void ☀Move_And_Expire_Letters(std::vector<Moving_Text> & floating_letters)❰
+◀private: static▶ void ☀Move_And_Expire_Letters(std::vector<Moving_Text> & floating_letters, sf::Time const& TimePerFrame)❰
 
     for (auto & it: floating_letters){
         auto cur_pos = it.text.getPosition();
-        cur_pos.x += it.x_change;
-        cur_pos.y += it.y_change;
+        cur_pos.x += (TimePerFrame.asMicroseconds() * -.0005);
+        cur_pos.y += (TimePerFrame.asMicroseconds() * it.y_change);
         it.text.setPosition(cur_pos);
     }
     
@@ -264,7 +264,7 @@ class
     else{
         temp.text.setPosition(500,820);
     }
-    temp.x_change = -10;
+    temp.x_change = -1;
     temp.y_change = 0;
     
     return temp;
@@ -284,7 +284,7 @@ class
     auto new_pos = last_letter.text.getPosition();
     new_pos.x += 80;
     temp.text.setPosition(new_pos);
-    temp.x_change = -10;
+    temp.x_change = -1;
     temp.y_change = 0;
     
     return temp;
