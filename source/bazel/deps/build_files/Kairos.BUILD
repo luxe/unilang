@@ -31,7 +31,6 @@ cc_library(
     ],
 )
 
-
 #an example to test laggy-ness
 cc_binary(
     name = "time_step_example",
@@ -40,8 +39,9 @@ cc_binary(
         ":Kairos",
         "@sfml",
         "@system//:GL",
-    ]
+    ],
 )
+
 cc_binary(
     name = "time_step_lite_example",
     srcs = ["examples/timestepLiteExample.cpp"],
@@ -49,5 +49,5 @@ cc_binary(
         ":Kairos",
         "@sfml",
         "@system//:GL",
-    ]
+    ],
 )

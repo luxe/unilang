@@ -14,7 +14,6 @@ std::string Bazel_Derived_Root_Of_Repo();
 std::string Bazel_Derived_Path_To_Self_Unilang();
 std::string Bazel_Derived_Path_To_Essays();
 std::string Bazel_Deps_Directory();
-std::string Bazel_Deps_Get_Directory();
 std::string Root_Readme_Directory();
 
 // moving into those known repo paths

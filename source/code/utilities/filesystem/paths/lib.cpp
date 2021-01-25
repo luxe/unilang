@@ -42,9 +42,6 @@ std::string Bazel_Derived_Path_To_Essays(){
 std::string Bazel_Deps_Directory(){
     return Bazel_Workspace_Directory() + "/bazel/deps/";
 }
-std::string Bazel_Deps_Get_Directory(){
-    return Bazel_Workspace_Directory() + "/bazel/deps/get/";
-}
 std::string Root_Readme_Directory(){
 	return Bazel_Derived_Root_Of_Repo() + ".readme/";
 }
