@@ -3,6 +3,8 @@ class
 ❪chrono❫
 ❪"SFML/Graphics"❫
 ❪"SFML/Graphics/Transformable"❫
+❪Kairos/TimestepLite.hpp❫
+❪Kairos/Stopwatch.hpp❫
 ⚯
 ⚞⚟
 
@@ -139,12 +141,6 @@ static void Chrono_Loop(T stop_predicate, U logic, V render){
 ▶
 
 
-
-
-
-
-
-
 //https://en.sfml-dev.org/forums/index.php?topic=921.0
 ◀public:
 template <typename T, typename U, typename V>
@@ -186,6 +182,29 @@ static void Fix_Your_Timestep(T stop_predicate, U logic, V render){
 ▶
 
 
+
+◀public:
+template <typename T, typename U, typename V>
+static void Kairos_Fix_Step(T stop_predicate, U logic, V render){
+
+    kairos::Stopwatch clock;
+    kairos::TimestepLite timestep;
+    timestep.setStep(1.0 / 60.0);
+    
+    while (stop_predicate()){
+        
+        timestep.update(clock.restart().asSeconds()); // add frame time each cycle
+        while (timestep.isTimeToIntegrate()) // this is true as long as there are unprocessed timesteps.
+        {
+            float dt{ static_cast<float>(timestep.getStep()) };
+            logic(sf::seconds(dt));
+            //render();
+        }
+        render();
+    }
+    
+}
+▶
 
 
 

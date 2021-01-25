@@ -8,6 +8,7 @@ hcp(
     name = "game_loop",
     deps = [
         "@sfml",
+        "@Kairos",
         #"@sfml//:hdrs",
         #"@system//:SFML_hdrs",
         #"@system//:KHR_hdrs",

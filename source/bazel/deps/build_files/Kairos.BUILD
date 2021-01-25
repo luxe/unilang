@@ -30,3 +30,24 @@ cc_library(
     deps = [
     ],
 )
+
+
+#an example to test laggy-ness
+cc_binary(
+    name = "time_step_example",
+    srcs = ["examples/timeStepExample.cpp"],
+    deps = [
+        ":Kairos",
+        "@sfml",
+        "@system//:GL",
+    ]
+)
+cc_binary(
+    name = "time_step_lite_example",
+    srcs = ["examples/timestepLiteExample.cpp"],
+    deps = [
+        ":Kairos",
+        "@sfml",
+        "@system//:GL",
+    ]
+)
