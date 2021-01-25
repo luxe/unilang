@@ -3,6 +3,7 @@ package(default_visibility = ["//visibility:public"])
 hdrs = glob(
     include = [
         "Kairos/*.hpp",
+        "Kairos/*.inl",
     ],
     exclude = [
     ],
