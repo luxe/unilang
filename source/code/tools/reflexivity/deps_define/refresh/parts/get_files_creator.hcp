@@ -24,18 +24,27 @@ class
     
     for (auto it: all_specs.specs){
         
+            //create folder
             auto folder_name = As_Removed_Dashes(it.lib_name);
             Create_Path_If_It_Doesnt_Already_Exist(folder_name);
             
-            //make sure a BUILD file is in there
-            Write_To_File(folder_name + "/BUILD","package(default_visibility = [\"//visibility:public\"])");
-            
-        if (Should_Print_Get_File(it)){
-            
-            auto source_data  = Create_Get_File_Content(it);
+            //generate the needed files
+            Make_Sure_A_BUILD_File_Is_Available(folder_name);
+            Possibily_Print_Get_File(it,folder_name);
+    }
+❱
+
+◀private: static▶ void ☀Make_Sure_A_BUILD_File_Is_Available(std::string const& folder_name)❰
+    Write_To_File(folder_name + "/BUILD","package(default_visibility = [\"//visibility:public\"])");
+❱
+
+
+◀private: static▶ void ☀Possibily_Print_Get_File(Dependency_Specification const& spec, std::string const& folder_name)❰
+
+        if (Should_Print_Get_File(spec)){
+            auto source_data  = Create_Get_File_Content(spec);
             Write_To_File(folder_name + "/get.bzl",source_data);
         }
-    }
 ❱
 
 
