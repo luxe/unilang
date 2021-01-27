@@ -4,7 +4,7 @@ load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 def sqlite3():
     http_archive(
         name = "sqlite3",
-        build_file = "//bazel/deps/build_files:sqlite3.BUILD",
+        build_file = "//bazel/deps/sqlite3:build.BUILD",
         sha256 = "ad68c1216c3a474cf360c7581a4001e952515b3649342100f2d7ca7c8e313da6",
         strip_prefix = "sqlite-amalgamation-3240000",
         urls = [
