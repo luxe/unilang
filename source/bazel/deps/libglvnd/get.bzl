@@ -13,7 +13,7 @@ def libglvnd():
             "https://github.com/Unilang/libglvnd/archive/3e8684a739dffe1d5441362679b4ee149425e6d6.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libglvnd_gen.patch",
+            "//bazel/deps/libglvnd/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

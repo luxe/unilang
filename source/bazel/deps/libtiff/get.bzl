@@ -13,7 +13,7 @@ def libtiff():
             "https://github.com/Unilang/libtiff/archive/9f657ff8a7411c95ffe83ec39e3e881c3fec6bb0.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libtiff_config.patch",
+            "//bazel/deps/libtiff/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

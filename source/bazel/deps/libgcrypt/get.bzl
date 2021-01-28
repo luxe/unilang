@@ -13,7 +13,7 @@ def libgcrypt():
             "https://github.com/Unilang/libgcrypt/archive/1a83df98b198902ee6d71549231a3af37088d452.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libgcrypt.patch",
+            "//bazel/deps/libgcrypt/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

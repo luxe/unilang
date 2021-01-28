@@ -13,7 +13,7 @@ def xorgLibXext():
             "https://github.com/Unilang/xorg-libXext/archive/a07b4bb8290d0c1bba7bcecd5bb6896fbe1b169c.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXext_config.patch",
+            "//bazel/deps/xorg_libXext/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

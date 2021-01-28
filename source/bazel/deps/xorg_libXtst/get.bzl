@@ -13,7 +13,7 @@ def xorgLibXtst():
             "https://github.com/Unilang/xorg-libXtst/archive/769598f20386845f5839fbc68dfed1f4245197be.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXtst_config.patch",
+            "//bazel/deps/xorg_libXtst/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

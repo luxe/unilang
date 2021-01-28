@@ -13,7 +13,7 @@ def libXpm():
             "https://github.com/Unilang/libXpm/archive/42ca8d956276bc00bec09e410d76daf053ae35f9.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libXpm_config.patch",
+            "//bazel/deps/libXpm/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

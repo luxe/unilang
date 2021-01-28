@@ -13,7 +13,7 @@ def xorgLibXfixes():
             "https://github.com/Unilang/xorg-libXfixes/archive/174a94975af710247719310cfc53bd13e1f3b44d.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXfixes_config.patch",
+            "//bazel/deps/xorg_libXfixes/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

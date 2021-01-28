@@ -28,7 +28,7 @@ def boost():
         name = "com_github_nelhage_rules_boost",
         sha256 = "3dade7836dd5dc21935a5e4a9fbf40605957be31088bf47397dff6f9a0d700bb",
         patches = [
-            "//bazel/deps/build_files:rules_boost.patch",
+            "//bazel/deps/boost/patches:p1.patch",
         ],
         strip_prefix = "rules_boost-67c383977a82196164498431f98864135beed7f0",
         urls = [

@@ -31,6 +31,7 @@ hcp(
         "//code/utilities/filesystem/files/deleting:lib",
         "//code/utilities/filesystem/paths:lib",
         "//code/utilities/linguistics/computer/file_extension:file_extension_getter",
+        "//code/utilities/types/strings/observers/other:lib",
         "//code/utilities/types/strings/transformers/appending:lib",
         "//code/utilities/types/strings/transformers/casing:case_modifier",
         "//code/utilities/types/strings/transformers/casing:lib",

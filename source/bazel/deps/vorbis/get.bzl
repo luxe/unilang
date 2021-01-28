@@ -13,7 +13,7 @@ def vorbis():
             "https://github.com/Unilang/vorbis/archive/0a4beb1d04f802c48016b11fb939690e24173168.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:vorbis_config.patch",
+            "//bazel/deps/vorbis/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

@@ -13,7 +13,7 @@ def xorgLibXrandr():
             "https://github.com/Unilang/xorg-libXrandr/archive/55dcda4518eda8ae03ef25ea29d3c994ad71eb0a.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXrandr_config.patch",
+            "//bazel/deps/xorg_libXrandr/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

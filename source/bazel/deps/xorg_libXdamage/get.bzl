@@ -13,7 +13,7 @@ def xorgLibXdamage():
             "https://github.com/Unilang/xorg-libXdamage/archive/8c8f9c1e356e9481fdf5a7bd1927dbfdac196310.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXdamage_config.patch",
+            "//bazel/deps/xorg_libXdamage/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

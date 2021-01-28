@@ -13,7 +13,7 @@ def gl3w():
             "https://github.com/Unilang/gl3w/archive/7729692af8a2322cddb636b90393a42c130b1c85.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:gl3w_gen.patch",
+            "//bazel/deps/gl3w/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

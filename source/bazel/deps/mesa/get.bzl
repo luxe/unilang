@@ -13,7 +13,7 @@ def mesa():
             "https://github.com/Unilang/mesa/archive/d1f9d1e26a2aab71d6ba6edcf195b972f12cff80.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:mesa_gen.patch",
+            "//bazel/deps/mesa/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

@@ -13,7 +13,7 @@ def xdotool():
             "https://github.com/Unilang/xdotool/archive/a7903d0fdad57e12209b77d9126587a6f9aa87dc.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xdotool.patch",
+            "//bazel/deps/xdotool/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

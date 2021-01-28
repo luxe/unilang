@@ -13,7 +13,7 @@ def xcbUtil():
             "https://github.com/Unilang/xcb-util/archive/e3d56200f322c6e25a80381d27fe37205826a4c1.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xcb_util.patch",
+            "//bazel/deps/xcb_util/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

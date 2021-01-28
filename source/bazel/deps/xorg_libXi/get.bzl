@@ -13,7 +13,7 @@ def xorgLibXi():
             "https://github.com/Unilang/xorg-libXi/archive/e05da79a98775edb91ffe3de3b413f156bc4d6e7.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXi_config.patch",
+            "//bazel/deps/xorg_libXi/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

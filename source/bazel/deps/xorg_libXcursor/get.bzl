@@ -13,7 +13,7 @@ def xorgLibXcursor():
             "https://github.com/Unilang/xorg-libXcursor/archive/75b10c972d15c036a692ef4590a81a6c54d384f6.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXcursor_config.patch",
+            "//bazel/deps/xorg_libXcursor/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

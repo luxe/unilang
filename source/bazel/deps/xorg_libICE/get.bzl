@@ -13,7 +13,7 @@ def xorgLibICE():
             "https://github.com/Unilang/xorg-libICE/archive/ff5e59f32255913bb1cdf51441b98c9107ae165b.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libICE_config.patch",
+            "//bazel/deps/xorg_libICE/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

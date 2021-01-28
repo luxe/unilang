@@ -13,7 +13,7 @@ def xau():
             "https://github.com/Unilang/xorg-libXau/archive/42e152c6f2d1bd839e77c5e97f3a509d890c3237.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:Xau.patch",
+            "//bazel/deps/Xau/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

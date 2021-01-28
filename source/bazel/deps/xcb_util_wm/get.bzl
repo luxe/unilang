@@ -13,7 +13,7 @@ def xcbUtilWm():
             "https://github.com/Unilang/xcb__util-wm/archive/24eb17df2e1245885e72c9d4bbb0a0f69f0700f2.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xcb_util_wm.patch",
+            "//bazel/deps/xcb_util_wm/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

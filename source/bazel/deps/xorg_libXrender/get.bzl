@@ -13,7 +13,7 @@ def xorgLibXrender():
             "https://github.com/Unilang/xorg-libXrender/archive/bce0618839fc33f44edd8b5498b8e33d167806ff.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXrender_config.patch",
+            "//bazel/deps/xorg_libXrender/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

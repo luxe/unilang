@@ -13,10 +13,10 @@ def ibus():
             "https://github.com/Unilang/ibus/archive/f591381e3c892947ecaffe9131b9039ab9014498.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:ibus_config.patch",
-            "//bazel/deps/build_files:ibus_src_gen.patch",
-            "//bazel/deps/build_files:ibus_marshalers.patch",
-            "//bazel/deps/build_files:ibus_srcs.patch",
+            "//bazel/deps/ibus/patches:config.patch",
+            "//bazel/deps/ibus/patches:src_gen.patch",
+            "//bazel/deps/ibus/patches:marshalers.patch",
+            "//bazel/deps/ibus/patches:srcs.patch",
         ],
         patch_args = [
             "-p1",

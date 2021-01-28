@@ -13,7 +13,7 @@ def freeGLUT():
             "https://github.com/Unilang/FreeGLUT/archive/349a23dcc1264a76deb79962d1c90462ad0c6f50.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:freeglut_version.patch",
+            "//bazel/deps/FreeGLUT/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

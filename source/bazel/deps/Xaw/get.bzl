@@ -13,7 +13,7 @@ def xaw():
             "https://github.com/Unilang/xorg-libXaw/archive/197e9d055f3cd351ae73551955ff463294b965bf.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:Xaw_config.patch",
+            "//bazel/deps/Xaw/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

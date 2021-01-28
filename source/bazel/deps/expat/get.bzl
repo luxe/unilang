@@ -13,6 +13,6 @@ def expat():
             "https://github.com/Unilang/libexpat/archive/5801a1b70adeb59964be51e61ac753be8ebe75e8.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:expat.patch",
+            "//bazel/deps/expat/patches:p1.patch",
         ],
     )

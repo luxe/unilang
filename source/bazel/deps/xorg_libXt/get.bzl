@@ -13,7 +13,7 @@ def xorgLibXt():
             "https://github.com/Unilang/xorg-libXt/archive/51cbf52b7668ad46a428dabe8e79e6819e825b20.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXt.patch",
+            "//bazel/deps/xorg_libXt/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

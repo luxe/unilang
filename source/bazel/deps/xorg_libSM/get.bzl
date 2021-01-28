@@ -13,7 +13,7 @@ def xorgLibSM():
             "https://github.com/Unilang/xorg-libSM/archive/b347e9f8ef3ae027c049741ab5c0c8dac45c9eb2.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libSM_config.patch",
+            "//bazel/deps/xorg_libSM/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

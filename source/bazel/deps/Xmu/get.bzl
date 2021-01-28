@@ -13,7 +13,7 @@ def xmu():
             "https://github.com/Unilang/libXmu/archive/4459e6940fe3fdf26a8d5d4c71989498bc400a62.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:Xmu_config.patch",
+            "//bazel/deps/Xmu/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

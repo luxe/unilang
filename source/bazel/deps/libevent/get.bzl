@@ -13,7 +13,7 @@ def libevent():
             "https://github.com/Unilang/libevent/archive/eee26deed38fc7a6b6780b54628b007a2810efcd.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libevent_gen.patch",
+            "//bazel/deps/libevent/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

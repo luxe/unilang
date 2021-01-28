@@ -10,6 +10,7 @@ class
 ❪"code/utilities/types/strings/transformers/casing/case_modifier"❫
 ❪"code/utilities/types/strings/transformers/search_replace/lib"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
+❪"code/utilities/types/strings/observers/other/lib"❫
 ❪"code/utilities/web/url/github_url_getter"❫
 ⚞⚟
 
@@ -116,12 +117,7 @@ class
     Append(result,"        ");
     Append(result,"],");
     
-    //add patch files
-    if (!spec.patch_files.empty()){
-        Append(result,"        ");
-        Append(result,As_Named_Python_List_Of_Strings("patches",spec.patch_files));
-        Append_With_Newline(result,",");
-    }
+    Add_Patch_Files(result,spec,folder_name);
     
     //add patch args
     if (!spec.patch_args.empty()){
@@ -157,6 +153,25 @@ class
     Append_With_Newline(result,")");
     
     return result;
+❱
+
+◀private: static▶ void ☀Add_Patch_Files(std::string & result, Dependency_Specification spec, std::string const& folder_name)❰
+
+    //transform the patch files if they are relative patches
+    std::vector<std::string> patch_files = spec.patch_files;
+    for (auto & it: patch_files){
+        if (!Begins_With(it,"//")){
+            it = "//bazel/deps/" + folder_name + "/patches:" + it + ".patch";
+        }
+    }
+    
+    
+    //add patch files
+    if (!spec.patch_files.empty()){
+        Append(result,"        ");
+        Append(result,As_Named_Python_List_Of_Strings("patches",patch_files));
+        Append_With_Newline(result,",");
+    }
 ❱
 
 

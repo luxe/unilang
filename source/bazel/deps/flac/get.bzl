@@ -13,7 +13,7 @@ def flac():
             "https://github.com/Unilang/flac/archive/ce6dd6b5732e319ef60716d9cc9af6a836a4011a.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:flac_config.patch",
+            "//bazel/deps/flac/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

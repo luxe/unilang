@@ -13,7 +13,7 @@ def xorgLibXinerama():
             "https://github.com/Unilang/xorg-libXinerama/archive/56777107b0c517ba58304d6a247bf65f7a27eb96.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorg_libXinerama_config.patch",
+            "//bazel/deps/xorg_libXinerama/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

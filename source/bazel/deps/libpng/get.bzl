@@ -13,6 +13,6 @@ def libpng():
             "https://github.com/Unilang/libpng/archive/301f7a14295a3bdfaf406dbb5004d0784dc137ea.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libpng.patch",
+            "//bazel/deps/libpng/patches:p1.patch",
         ],
     )

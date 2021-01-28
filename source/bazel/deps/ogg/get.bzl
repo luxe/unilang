@@ -13,7 +13,7 @@ def ogg():
             "https://github.com/Unilang/ogg/archive/0bbcba4e7cf32324170470569c4527ffd0002870.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:ogg_config.patch",
+            "//bazel/deps/ogg/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

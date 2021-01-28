@@ -13,8 +13,8 @@ def sdl2():
             "https://github.com/Unilang/SDL-mirror/archive/36ea2544f08508f42d5193e175d3a269c3b95bdf.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:sdl2_config.patch",
-            "//bazel/deps/build_files:sdl_gen_files.patch",
+            "//bazel/deps/sdl2/patches:config.patch",
+            "//bazel/deps/sdl2/patches:gen_files.patch",
         ],
         patch_args = [
             "-p1",

@@ -13,7 +13,7 @@ def libgpgError():
             "https://github.com/Unilang/libgpg-error/archive/8047ca99858a7ee812ef11ed3bd2868e920ac1b7.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:libgpg-error.patch",
+            "//bazel/deps/libgpgerror/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

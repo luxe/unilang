@@ -13,7 +13,7 @@ def xorgXorgproto():
             "https://github.com/Unilang/xorg-xorgproto/archive/f61f9a3ee1aa77ebcc67730cda9bfde88e4e9c5f.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:xorgproto_xpoll.patch",
+            "//bazel/deps/xorg_xorgproto/patches:p1.patch",
         ],
         patch_args = [
             "-p1",

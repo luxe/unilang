@@ -13,6 +13,6 @@ def pixman():
             "https://github.com/Unilang/pixman/archive/6f8b8b383f3e9c2c8b9ec22fac73e9e84d0232d3.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:pixman.patch",
+            "//bazel/deps/pixman/patches:p1.patch",
         ],
     )

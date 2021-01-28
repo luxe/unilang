@@ -13,8 +13,8 @@ def x11():
             "https://github.com/Unilang/xorg-libX11/archive/b8766a438461e20b5c6f7a6111b703d4cb71501f.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:x11_ks_tables.patch",
-            "//bazel/deps/build_files:x11_config.patch",
+            "//bazel/deps/x11/patches:ks_tables.patch",
+            "//bazel/deps/x11/patches:config.patch",
         ],
         patch_args = [
             "-p1",

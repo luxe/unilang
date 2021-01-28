@@ -13,6 +13,6 @@ def curl():
             "https://github.com/Unilang/curl/archive/11974ac859c5d82def59e837e0db56fef7f6794e.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:curl.patch",
+            "//bazel/deps/curl/patches:p1.patch",
         ],
     )

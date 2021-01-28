@@ -13,7 +13,7 @@ def ncurses():
             "https://github.com/Unilang/ncurses/archive/9193d076200365eeb5ff932acdbbdcc5e452292c.tar.gz",
         ],
         patches = [
-            "//bazel/deps/build_files:ncurses_gen.patch",
+            "//bazel/deps/ncurses/patches:p1.patch",
         ],
         patch_args = [
             "-p1",
