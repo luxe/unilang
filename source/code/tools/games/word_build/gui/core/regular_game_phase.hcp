@@ -515,90 +515,47 @@ class
     std::vector<std::vector<std::string>> p1_freq_str;
     std::vector<std::vector<std::string>> p2_freq_str;
     
+    
     //show wins
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("wins: ");
-        tmp.emplace_back(std::to_string(state.p1_state.total_wins));
-        p1_freq_str.emplace_back(tmp);
-    }
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("wins: ");
-        tmp.emplace_back(std::to_string(state.p2_state.total_wins));
-        p2_freq_str.emplace_back(tmp);
-    }
+    Add_Row(p1_freq_str, "wins: ", std::to_string(state.p1_state.total_wins));
+    Add_Row(p2_freq_str, "wins: ", std::to_string(state.p2_state.total_wins));
     
     //show score
     auto p1_blocks = Words_Blocked_By_P1(assets,state);
     auto p2_blocks = Words_Blocked_By_P2(assets,state);
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("score: ");
-        tmp.emplace_back(std::to_string(as_signed(assets.p1.score.getString())));
-        p1_freq_str.emplace_back(tmp);
-    }
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("score: ");
-        tmp.emplace_back(std::to_string(as_signed(assets.p2.score.getString())));
-        p2_freq_str.emplace_back(tmp);
-    }
+    Add_Row(p1_freq_str, "score: ", std::to_string(as_signed(assets.p1.score.getString())));
+    Add_Row(p2_freq_str, "score: ", std::to_string(as_signed(assets.p2.score.getString())));
     
     //show blocks
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("too late: ");
-        tmp.emplace_back(std::to_string(p2_blocks));
-        p1_freq_str.emplace_back(tmp);
-    }
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("too late: ");
-        tmp.emplace_back(std::to_string(p1_blocks));
-        p2_freq_str.emplace_back(tmp);
-    }
+    Add_Row(p1_freq_str, "too late: ", std::to_string(p2_blocks));
+    Add_Row(p2_freq_str, "too late: ", std::to_string(p1_blocks));
     
     //show total moves
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("moves:");
-        tmp.emplace_back(std::to_string(state.p1_state.moves.size()));
-        p1_freq_str.emplace_back(tmp);
-    }
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back("moves: ");
-        tmp.emplace_back(std::to_string(state.p2_state.moves.size()));
-        p2_freq_str.emplace_back(tmp);
-    }
+    Add_Row(p1_freq_str, "moves: ", std::to_string(state.p1_state.moves.size()));
+    Add_Row(p2_freq_str, "moves: ", std::to_string(state.p2_state.moves.size()));
     
-    
-    //get p1 and p2 frequencies
-    auto p1_freq = Size_Frequency_Counter::Get(p1_words);
-    auto p2_freq = Size_Frequency_Counter::Get(p2_words);
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back(To_String(p1_freq));
-        tmp.emplace_back("");
-        p1_freq_str.emplace_back(tmp);
-    }
-    {
-        std::vector<std::string> tmp;
-        tmp.emplace_back(To_String(p2_freq));
-        tmp.emplace_back("");
-        p2_freq_str.emplace_back(tmp);
-    }
-    
-    
+    //convert to nice looking table
     auto p1_str = Table_As_Column_Aligned(p1_freq_str);
     auto p2_str = Table_As_Column_Aligned(p2_freq_str);
     
     
+    //show p1 and p2 frequencies at the end of table
+    auto p1_freq = Size_Frequency_Counter::Get(p1_words);
+    auto p2_freq = Size_Frequency_Counter::Get(p2_words);
+    p1_str += To_String(p1_freq);
+    p2_str += To_String(p2_freq);
+    
+    //set label
     assets.p1.stats.setString(p1_str);
     assets.p2.stats.setString(p2_str);
 ❱
 
+◀private: static▶ void ☀Add_Row(std::vector<std::vector<std::string>> & table, std::string const& s1, std::string const& s2)❰
+    std::vector<std::string> tmp;
+    tmp.emplace_back(s1);
+    tmp.emplace_back(s2);
+    table.emplace_back(tmp);
+❱
 
 ◀private: static▶ std::vector<std::string> ☀Get_P1_Words(Game_State & state, Assets & assets) ❰
     std::vector<std::string> p1_words;
