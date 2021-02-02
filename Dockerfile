@@ -20,7 +20,7 @@
 
 # We try to upgrade to the latest Ubuntu when available
 
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 # All of the necessary apt-get installs
 # Strangely, wget was not working on a different machine??
 # Which is confusing because I was building a docker container; why would the host machine matter.
