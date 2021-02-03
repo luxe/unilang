@@ -13,6 +13,7 @@ class
 ❪"code/utilities/data_structures/tree/generic/child_lookup_map_find"❫
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
+❪"code/utilities/types/vectors/observers/lib"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup)❰
@@ -64,26 +65,36 @@ class
 ◀private: static▶ Buttoned_Faced_Label ☀Create_Styled_Unilang_Node_Via_Parent(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup, std::string const& message)❰
     
     //decide how many faces and what they are going to say
-    Buttoned_Faced_Label face_style;
+    Buttoned_Faced_Label new_label;
     if (Is_Chosen_Child_A_Leaf(tree.structure,lookup,parent,message)){
-        face_style = Buttoned_Faced_Label_Premades::Opened_Unilang_Leaf_Node(message);
+        new_label = Buttoned_Faced_Label_Premades::Opened_Unilang_Leaf_Node(message);
     }
     else {
-        face_style = Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
+        new_label = Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
     }
     
+    auto new_style = Get_Color_Styling(tree,parent,style_lookup,message);
+    Apply_Color_Styling(new_label,new_style);
+    
+    
+    return new_label;
+❱
+
+◀private: static▶ Label_Styles ☀Get_Color_Styling(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Style_Lookup_Map const& style_lookup, std::string const& message)❰
+
     //decide the style of those faces
     auto full_name = With_Child_Name(tree.structure,parent,message);
     auto style = style_lookup.map.find(full_name);
     if (style == style_lookup.map.end()){
-        std::cout << "sdff" << std::endl;
+        return style_lookup.default_styles;
     }
-    else{
-        std::cout << "sdff2" << std::endl;
-    }
-    
-    
-    return face_style;
+    return style->second;
+❱
+
+◀private: static▶ void ☀Apply_Color_Styling(Buttoned_Faced_Label & label, Label_Styles const& styles)❰
+
+    //for now, just set multi-label styles like this
+    Modifiable_Last_Element(label.label.state.faces).label.styles = styles;
 ❱
 
 

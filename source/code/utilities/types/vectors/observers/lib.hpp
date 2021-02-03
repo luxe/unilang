@@ -242,7 +242,7 @@ T Last_Element(std::vector<T> const& v){
     return v.back();
 }
 template<typename T>
-T& Modifiable_Last_Element(std::vector<T> const& v){
+T& Modifiable_Last_Element(std::vector<T> & v){
     return v.back();
 }
 template<typename T>
