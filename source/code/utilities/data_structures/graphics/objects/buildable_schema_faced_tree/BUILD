@@ -97,6 +97,7 @@ hcp(
         "//code/utilities/types/tree:full_path_name",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/code/style_theme:style_lookup_map",
     ],
 )
 
@@ -134,5 +135,6 @@ hcp(
         "//code/utilities/data_structures/tree/generic:child_lookup_map",
         "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
         "//code/utilities/types/strings/transformers/removing:lib",
+        "//code/utilities/code/style_theme:style_lookup_map",
     ],
 )
