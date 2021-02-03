@@ -6,6 +6,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/data/buildable_face_tree"❫
 ❪"code/utilities/data_structures/tree/generic/child_lookup_map"❫
 ❪"code/utilities/code/style_theme/style_lookup_map"❫
+❪"code/utilities/code/style_theme/style_theme"❫
 ⚯
 ❪"code/utilities/data_structures/graphics/objects/faced_tree/tree_label_click_finder"❫
 ❪"code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade/buttoned_faced_label_premades"❫
@@ -80,7 +81,7 @@ class
     return new_label;
 ❱
 
-◀private: static▶ Label_Styles ☀Get_Color_Styling(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Style_Lookup_Map const& style_lookup, std::string const& message)❰
+◀private: static▶ Style_Theme ☀Get_Color_Styling(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Style_Lookup_Map const& style_lookup, std::string const& message)❰
 
     //decide the style of those faces
     auto full_name = With_Child_Name(tree.structure,parent,message);
@@ -91,10 +92,29 @@ class
     return style->second;
 ❱
 
-◀private: static▶ void ☀Apply_Color_Styling(Buttoned_Faced_Label & label, Label_Styles const& styles)❰
+◀private: static▶ void ☀Apply_Color_Styling(Buttoned_Faced_Label & label, Style_Theme const& styles)❰
 
-    //for now, just set multi-label styles like this
-    Modifiable_Last_Element(label.label.state.faces).label.styles = styles;
+    //for now, we'll assume the face label created is 1 or 2 faces
+    //1 for non-leaf nodes
+    //2 for leaf nodes
+    //so we'll set these appropriately based on the styles available
+    
+    
+    //first face exists
+    if (label.label.state.faces.size() >= 1){
+        if (styles.label_styles.size() >= 1){
+            label.label.state.faces[0].label.styles = styles.label_styles[0];
+        }
+    }
+    
+    //second face exists
+    if (label.label.state.faces.size() >= 2){
+        if (styles.label_styles.size() >= 2){
+            label.label.state.faces[1].label.styles = styles.label_styles[1];
+        }
+    }
+
+    //Modifiable_Last_Element(label.label.state.faces).label.styles = styles;
 ❱
 
 

@@ -7,6 +7,7 @@ hcp(
     name = "style_lookup_map",
     deps = [
         "//code/utilities/data_structures/graphics/objects/label/style:label_styles",
+        "//code/utilities/code/style_theme:style_theme",
     ],
 )
 
@@ -17,3 +18,11 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label/style:default_label_styles",
     ],
 )
+
+hcp(
+    name = "style_theme",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects/label/style:label_styles",
+    ],
+)
+

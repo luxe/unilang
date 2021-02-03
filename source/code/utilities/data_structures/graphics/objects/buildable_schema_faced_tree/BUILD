@@ -137,5 +137,6 @@ hcp(
         "//code/utilities/types/strings/transformers/removing:lib",
         "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/types/vectors/observers:lib",
+        "//code/utilities/code/style_theme:style_theme",
     ],
 )
