@@ -15,6 +15,7 @@ class
 ❪"code/utilities/types/strings/transformers/removing/lib"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_faced_tree/buildable_face_tree_action_doer"❫
 ❪"code/utilities/types/vectors/observers/lib"❫
+❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/style_theme_applier"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Handle_Menu_Click(Buildable_Face_Tree_State & tree, Child_Lookup_Map const& lookup, Style_Lookup_Map const& style_lookup)❰
@@ -74,48 +75,15 @@ class
         new_label = Buttoned_Faced_Label_Premades::Opened_Unilang_NonLeaf_Node(message);
     }
     
-    auto new_style = Get_Color_Styling(tree,parent,style_lookup,message);
-    Apply_Color_Styling(new_label,new_style);
+    
+    //change color and style based on a customizable theme
+    auto full_name = With_Child_Name(tree.structure,parent,message);
+    Style_Theme_Applier::Apply_Theme(new_label,style_lookup,full_name);
     
     
     return new_label;
 ❱
 
-◀private: static▶ Style_Theme ☀Get_Color_Styling(Buildable_Face_Tree_State & tree, ::tree<Buttoned_Faced_Label>::pre_order_iterator parent, Style_Lookup_Map const& style_lookup, std::string const& message)❰
-
-    //decide the style of those faces
-    auto full_name = With_Child_Name(tree.structure,parent,message);
-    auto style = style_lookup.map.find(full_name);
-    if (style == style_lookup.map.end()){
-        return style_lookup.default_styles;
-    }
-    return style->second;
-❱
-
-◀private: static▶ void ☀Apply_Color_Styling(Buttoned_Faced_Label & label, Style_Theme const& styles)❰
-
-    //for now, we'll assume the face label created is 1 or 2 faces
-    //1 for non-leaf nodes
-    //2 for leaf nodes
-    //so we'll set these appropriately based on the styles available
-    
-    
-    //first face exists
-    if (label.label.state.faces.size() >= 1){
-        if (styles.label_styles.size() >= 1){
-            label.label.state.faces[0].label.styles = styles.label_styles[0];
-        }
-    }
-    
-    //second face exists
-    if (label.label.state.faces.size() >= 2){
-        if (styles.label_styles.size() >= 2){
-            label.label.state.faces[1].label.styles = styles.label_styles[1];
-        }
-    }
-
-    //Modifiable_Last_Element(label.label.state.faces).label.styles = styles;
-❱
 
 
 ◀private: static▶ bool ☀Is_Chosen_Child_A_Leaf(Button_Face_Tree const& structure, Child_Lookup_Map const& lookup, ::tree<Buttoned_Faced_Label>::pre_order_iterator it, std::string const& child_name)❰
