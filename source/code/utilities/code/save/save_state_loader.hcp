@@ -23,7 +23,17 @@ class
     
     //Now that the json has been modified, we can deserialize the object
     Save_State x;
-    x = json.get<Save_State>();
+    
+    try {
+        x = json.get<Save_State>();
+    }
+    catch(std::exception const& e){
+        std::cerr << "We can't deserialize the object properly :(" << std::endl;
+        std::cerr << "Here is the library exception: " << e.what() << std::endl;
+        std::cerr << "We will now dump that object:" << std::endl;
+        std::cerr << json.dump(2) << std::endl;
+        exit(-1);
+    }
     
     //unpack it
     return x.elements;
@@ -34,9 +44,28 @@ class
 ◀private: static▶ void ☀Upgrade_Json_For_Deserialization_Compadibility(nlohmann::json & j, int version)❰
 
     if (version <= 1){
-        //DO WHEN NEEDED
+        std::cout << "applying patch 1" << std::endl;
+        Patch_1(j);
     }
     if (version <= 2){
         //DO WHEN NEEDED
+    }
+❱
+
+◀private: static▶ void ☀Patch_1(nlohmann::json & j)❰
+    for (auto & element: j["elements"]["types"]){
+        
+        //if its the variant structure we care about
+        if (element["element"]["index"] == 1){
+            //std::cout << element["element"]["index"].dump(0) << std::endl;
+            
+            element["element"]["value"]["state"]["schema"].clear();
+            element["element"]["value"]["state"]["schema_styles"].clear();
+            element["element"]["value"]["state"]["schema_styles"]["map"] = {};
+            //element["element"]["value"]["state"]["schema_styles"]["default_styles"] = nlohmann::json::object();
+            //element["element"]["value"]["state"]["schema_styles"]["map"]= nlohmann::json::object();
+            //element["element"]["value"]["state"]["schema"]["default_styles"].clear();
+            //element["element"]["value"]["state"]["default_styles"]["label_styles"]  = nlohmann::json::object();
+        }
     }
 ❱
