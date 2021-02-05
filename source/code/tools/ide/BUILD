@@ -16,7 +16,18 @@ hcp(
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
         "//code/utilities/image:stb_image_setter",
+        "//code/tools/ide:gl_context_element_load",
         "@imgui//:imgui_sdl_opengl3",
+    ],
+)
+
+hcp(
+    name = "gl_context_element_load",
+    deps = [
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
+        "//code/utilities/types/variant:lib",
+        "//code/tools/ide/settings:ide_element",
+        "//code/utilities/image:stb_image_setter",
     ],
 )
 

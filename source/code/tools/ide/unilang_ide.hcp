@@ -14,13 +14,18 @@ class
 ❪"code/tools/ide/global_actions/save_state_serializer"❫
 ❪"code/utilities/data_structures/graphics/image/positioned_image_data"❫
 ❪"code/utilities/image/stb_image_setter"❫
+❪"code/tools/ide/gl_context_element_load"❫
 ⚞⚟
 
 
 ◀public: static▶ int ☀Run(Program_Options const& po)❰
 
+
+
+    Ide_Settings s;
+    
     //lambdas into main application loop
-    auto s = Ide_Settings_Getter::Get();
+    s = Ide_Settings_Getter::Get();
     
     //perform initial file load if requested
     if (!po.File().empty()){
@@ -33,17 +38,10 @@ class
         
         
         
-          {
-            //build
-            Positioned_Image_Data img;
-            Stb_Image_Setter::Set(img,"/home/luxe/Desktop/face.gif");
-            
-            //add
-              Ide_Element e;
-              e.element = img;
-              s.elements.types.emplace_back(e);
-            
-          }
+        //we do things here because the GL context is needed for images
+        for (auto & it: s.elements.types){
+            Gl_Context_Element_Load::Load_Image_If_Needed(it);
+        }
         
         
         
