@@ -6,14 +6,13 @@ class
 ❪"code/utilities/image/stb_image"❫
 ⚞⚟
 
-◀public: static▶ void ☀Set(Positioned_Image_Data & data, std::string const& file_name)❰
+◀public: static▶ void ☀Set(Positioned_Image_Data & data)❰
+
+        //delete the existing image data in case it already has something in it
+
 
         free(data.img_data);
-        data.img_data = stbi_load(file_name.c_str(), &data.width, &data.height, &data.rows, 4);
-        if (data.img_data == nullptr){
-            std::cerr << "unable to read in image" << std::endl;
-            exit(-1);
-        }
+        Load(data);
         // stbir_resize_uint8(data.img_data, width, height, 0)
         
         // Create a OpenGL texture identifier
@@ -41,4 +40,23 @@ class
         glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
 #endif
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.width, data.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.img_data);
+❱
+
+◀private: static▶ void ☀Load(Positioned_Image_Data & data)❰
+
+    //we don't need to load the file if we've already saved and serialized it in memory
+    if (!data.seralizable_image.empty()){
+        data.img_data = reinterpret_cast<unsigned char*>(data.seralizable_image.data());
+        return;
+    }
+    
+    //however, if it was not saved and serialized to memory, we will instead load it from the file_name given
+    data.img_data = stbi_load(data.orign_filepath.c_str(), &data.width, &data.height, &data.rows, 4);
+    if (data.img_data == nullptr){
+        std::cerr << "unable to read in image" << std::endl;
+        exit(-1);
+    }
+    
+    //decide whether to save the image in memory for serialization
+    //TODO
 ❱
