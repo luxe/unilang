@@ -5,6 +5,10 @@
 #include "code/utilities/image/stb_image.hpp"
 #include "code/utilities/data_structures/position/position.hpp"
 
+
+
+//This is lifetime mangaged imgui aware image
+//You can construct it with a filepath and draw it by passing an imgui drawlist.
 class Image
 {
 
