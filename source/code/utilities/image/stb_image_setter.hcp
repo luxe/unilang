@@ -61,17 +61,28 @@ class
     }
     
     //however, if it was not saved and serialized to memory, we will instead load it from the file_name given
+    Load_Image_From_Filename(data);
+    
+    //decide whether to save the image in memory for serialization
+    if (save_image_in_memory_for_serialization){
+        Save_To_Serializable_Memory(data);
+    }
+❱
+
+◀private: static▶ void ☀Load_Image_From_Filename(Positioned_Image_Data & data)❰
+
     std::cout << "loading image from file name: " << data.orign_filepath << std::endl;
     data.img_data = stbi_load(data.orign_filepath.c_str(), &data.width, &data.height, &data.rows, 4);
     if (data.img_data == nullptr){
         std::cerr << "unable to read in image" << std::endl;
         exit(-1);
     }
-    
-    //decide whether to save the image in memory for serialization
-    if (save_image_in_memory_for_serialization){
-        int total_bytes = data.width*data.height*data.rows;
-        data.seralizable_image.clear();
-        std::copy(data.img_data, data.img_data+total_bytes, std::back_inserter(data.seralizable_image)); 
-    }
+❱
+
+◀private: static▶ void ☀Save_To_Serializable_Memory(Positioned_Image_Data & data)❰
+
+    //https://github.com/nothings/stb/issues/855
+    int total_bytes = data.width*data.height*data.rows;
+    data.seralizable_image.clear();
+    std::copy(data.img_data, data.img_data+total_bytes, std::back_inserter(data.seralizable_image)); 
 ❱
