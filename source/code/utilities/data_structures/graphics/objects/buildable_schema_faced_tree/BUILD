@@ -62,6 +62,7 @@ hcp(
 hcp(
     name = "schema_menu_handler",
     deps = [
+        "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/data_structures/counters/unique_max_counter",
         "//code/utilities/data_structures/graphics/bitmap/premade:horizontal_line",
         "//code/utilities/data_structures/graphics/bitmap/premade:l_line",
@@ -97,7 +98,6 @@ hcp(
         "//code/utilities/types/tree:full_path_name",
         "//code/utilities/types/vectors/observers:lib",
         "//code/utilities/types/vectors/operators:lib",
-        "//code/utilities/code/style_theme:style_lookup_map",
     ],
 )
 
@@ -127,24 +127,26 @@ hcp(
 hcp(
     name = "schema_tree_menu_click_handler",
     deps = [
+        "//code/utilities/code/style_theme",
+        "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:style_theme_applier",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_tree:button_face_tree_full_path_name",
         "//code/utilities/data_structures/graphics/objects/faced_tree:tree_label_click_finder",
         "//code/utilities/data_structures/tree/generic:child_lookup_map",
         "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
         "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/code/style_theme:style_theme",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:style_theme_applier",
     ],
 )
 
 hcp(
     name = "style_theme_applier",
     deps = [
+        "//code/utilities/code/style_theme",
+        "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_action_doer",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
@@ -153,8 +155,6 @@ hcp(
         "//code/utilities/data_structures/tree/generic:child_lookup_map",
         "//code/utilities/data_structures/tree/generic:child_lookup_map_find",
         "//code/utilities/types/strings/transformers/removing:lib",
-        "//code/utilities/code/style_theme:style_lookup_map",
         "//code/utilities/types/vectors/observers:lib",
-        "//code/utilities/code/style_theme:style_theme",
     ],
 )

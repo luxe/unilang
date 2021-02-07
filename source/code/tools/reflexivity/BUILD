@@ -67,6 +67,7 @@ hcp(
         "//code/tools/reflexivity/deps_define/refresh:deps_definition_refresher",
         "//code/tools/reflexivity/deps_define/scan:deps_repo_scanner",
         "//code/tools/reflexivity/docker:dockerfile_refresher",
+        "//code/tools/reflexivity/publish:all_essay_publisher",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings",
         "//code/tools/reflexivity/settings:reflexive_refresh_settings_getter",
         "//code/utilities/build:self_builder",

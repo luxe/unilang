@@ -4,6 +4,7 @@ load("//bazel/rules/cpp:main.bzl", "cpp_main")
 hcp(
     name = "unilang_ide",
     deps = [
+        "//code/tools/ide:gl_context_element_load",
         "//code/tools/ide/frame:frame_logic_updater",
         "//code/tools/ide/global_actions:global_action_handler",
         "//code/tools/ide/global_actions:save_state_serializer",
@@ -16,7 +17,6 @@ hcp(
         "//code/utilities/graphics/imgui/loop:mechanics",
         "//code/utilities/graphics/imgui/render:frame_renderer",
         "//code/utilities/image:stb_image_setter",
-        "//code/tools/ide:gl_context_element_load",
         "@imgui//:imgui_sdl_opengl3",
     ],
 )
@@ -24,10 +24,10 @@ hcp(
 hcp(
     name = "gl_context_element_load",
     deps = [
-        "//code/utilities/data_structures/graphics/objects:frame_elements",
-        "//code/utilities/types/variant:lib",
         "//code/tools/ide/settings:ide_element",
+        "//code/utilities/data_structures/graphics/objects:frame_elements",
         "//code/utilities/image:stb_image_setter",
+        "//code/utilities/types/variant:lib",
     ],
 )
 

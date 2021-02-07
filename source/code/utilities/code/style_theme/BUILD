@@ -6,8 +6,8 @@ load("//bazel/rules/cpp:object.bzl", "cpp_object")
 hcp(
     name = "style_lookup_map",
     deps = [
+        "//code/utilities/code/style_theme",
         "//code/utilities/data_structures/graphics/objects/label/style:label_styles",
-        "//code/utilities/code/style_theme:style_theme",
     ],
 )
 
@@ -25,4 +25,3 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/label/style:label_styles",
     ],
 )
-
