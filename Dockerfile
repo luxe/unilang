@@ -31,46 +31,6 @@ RUN apt-get update
 RUN apt-get install -y software-properties-common
 
 
-RUN add-apt-repository ppa:jonathonf/ffmpeg-4
-RUN apt-get install -y software-properties-common
-RUN apt-get install -y git
-RUN apt-get install -y patch
-RUN apt-get install -y python
-RUN apt-get install -y zip
-RUN apt-get install -y wget
-RUN apt-get install -y m4
-RUN apt-get install -y libgmp-dev
-RUN apt-get install -y libgmp3-dev
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y xorg
-RUN apt-get install -y libsdl2-dev
-RUN apt-get install -y libsfml-dev
-RUN apt-get install -y libsdl2-image-dev
-RUN apt-get install -y libsdl2-image-2.0-0
-RUN apt-get install -y libsdl2-net-dev
-RUN apt-get install -y locales
-RUN apt-get install -y libxdo-dev
-RUN apt-get install -y xutils-dev
-RUN apt-get install -y libncurses5-dev
-RUN apt-get install -y libncursesw5-dev
-RUN apt-get install -y libxtst-dev
-RUN apt-get install -y libxaw7-dev
-RUN apt-get install -y imagemagick
-RUN apt-get install -y netpbm
-RUN apt-get install -y libmikmod-dev
-RUN apt-get install -y libfishsound1-dev
-RUN apt-get install -y libsmpeg-dev
-RUN apt-get install -y liboggz2-dev
-RUN apt-get install -y libflac-dev
-RUN apt-get install -y libfluidsynth-dev
-RUN apt-get install -y libsdl2-mixer-dev
-RUN apt-get install -y libsdl2-mixer-2.0-0
-RUN apt-get install -y libsdl-mixer1.2-dev
-RUN apt-get install -y git-lfs
-RUN apt-get install -y mesa-utils
-RUN apt-get install -y freeglut3-dev
-RUN apt-get install -y ffmpeg
-RUN apt-get install -y uuid-dev
-RUN apt-get install -y libalut-dev
 
 # The build runs certain tools that need a particular locale to be available
 # I had to do this differently when transitioning from Ubuntu 14.04 to 18.04
