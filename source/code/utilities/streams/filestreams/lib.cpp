@@ -177,3 +177,62 @@ void Print_To_Stream_N_Times(std::ofstream & outfile, std::wstring const& str, u
     while (amount > 0) {Print_To_Stream(outfile,str); amount -= 1;}
 }
 
+
+
+
+
+
+FILE* OpenFile(const char* filepath, const char* flags)
+{
+	FILE *fp = nullptr; 
+	fp = fopen(filepath, flags); 
+	if (fp == nullptr) {
+		return nullptr; 
+	}
+
+	fseek(fp, 0L, SEEK_SET); 
+	return fp;
+}
+
+bool CloseFile(FILE* fileHandle)
+{
+	// Don't close a nullptr
+	if (fileHandle == nullptr)
+	{
+		return true;
+	}
+
+	int err = fclose(fileHandle);
+	if (err != 0)
+	{
+		std::cerr << "CloseFile could not close the file." << std::endl;
+		return false;
+	}
+
+	return true;
+}
+void* FileReadToNewBuffer( char const *filename, size_t& out_size)
+{
+	FILE* fp = OpenFile(filename, "r");
+	if (fp == nullptr) 
+	{
+		return nullptr;
+	}
+
+	out_size = 0U; 
+
+	fseek(fp, 0L, SEEK_END);
+	out_size = ftell(fp); 
+
+	fseek(fp, 0L, SEEK_SET); 
+
+	unsigned char *buffer = (unsigned char*) malloc(out_size + 1U); // space for NULL 
+
+	size_t read = fread( buffer, 1, out_size, fp );
+	
+	CloseFile(fp);
+
+	buffer[read] = NULL; 
+	return buffer;  
+}
+

@@ -14,10 +14,18 @@ hcp_and_hcp_pos(
     ],
 )
 
-hcp_and_hcp_pos(
-    name = "animated_image_data",
+cpp_object(
+    name = "image",
     deps = [
-        "//code/utilities/graphics/opengl/loader:opengl_loaders",
+        "//code/utilities/data_structures/position",
+        "//code/utilities/image:stb_image",
+    ],
+)
+
+cpp_object(
+    name = "positioned_image",
+    deps = [
+        "//code/utilities/data_structures/position",
         "//code/utilities/image:stb_image",
         "@imgui//:imgui_sdl_opengl3",
         "@system//:KHR_hdrs",

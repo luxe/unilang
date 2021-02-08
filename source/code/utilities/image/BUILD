@@ -16,5 +16,6 @@ hcp(
     deps = [
         "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/image:stb_image",
+        "//code/utilities/streams/filestreams:lib",
     ],
 )

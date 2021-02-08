@@ -55,15 +55,13 @@ class
 
     Position pos = settings.desktop.mouse.change;
     
-    //if mouse is over something
+    //if mouse is over something, we are going to allow moving it,
+    // and adjust the z index appropriately.
     auto index = Find_Mouse_Over_Index::Find(settings,pc_input);
     if (index != -1){
         
         Move_Ide_Element::Move(settings.elements.types[index],pos);
-        
-        if (pc_input.mouse.right.down){
-            Move_Indexed_Item_To_Back(settings.elements.types,index);
-        }
+        Possibly_Adjust_Z_Index_Of_Objects(settings,pc_input,index);
         return true;
     
     }
@@ -73,4 +71,10 @@ class
 
 ◀private: static▶ void ☀Update_All_Positions_Via_View_Anchor(Ide_Settings & settings)❰
     Move_All_Ide_Elements::Move(settings,settings.desktop.mouse.change);
+❱
+
+◀private: static▶ void ☀Possibly_Adjust_Z_Index_Of_Objects(Ide_Settings & settings, Pc_Input_State const& pc_input, size_t index)❰
+    if (pc_input.mouse.right.down){
+        Move_Indexed_Item_To_Back(settings.elements.types,index);
+    }
 ❱

@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <stdio.h>
+#include <cstdlib>
 
 //handling the whole file at once
 std::string Read_Entire_File_Into_String(std::string const& file);
@@ -48,3 +50,10 @@ void Print_To_Stream_N_Times(std::wofstream & outfile, std::wstring const& str, 
 void Print_To_Stream_N_Times(std::wofstream & outfile, std::string const& str, unsigned int amount);
 void Print_To_Stream_N_Times(std::ofstream & outfile, std::string const& str, unsigned int amount);
 void Print_To_Stream_N_Times(std::ofstream & outfile, std::wstring const& str, unsigned int amount);
+
+
+//C-style file access
+FILE* OpenFile(const char* filepath, const char* flags);
+bool CloseFile(FILE* fileHandle);
+void* FileReadToNewBuffer( char const *filename, size_t& out_size);
+
