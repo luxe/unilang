@@ -19,20 +19,20 @@ class
 ◀public: static▶ void ☀Create(Dependency_Specifications const& all_specs)❰
 
     //move into the folder where all the deps are
-    auto path = Bazel_Deps_Directory();
-    Set_Path(path);
+    Temporarily_Move_To_Path_To_Call_Function(Bazel_Deps_Directory(),[&](){
     
     
-    for (auto it: all_specs.specs){
-        
-            //create folder
-            auto folder_name = As_Removed_Dashes(it.lib_name);
-            Create_Path_If_It_Doesnt_Already_Exist(folder_name);
+        for (auto it: all_specs.specs){
             
-            //generate the needed files
-            Make_Sure_A_BUILD_File_Is_Available(folder_name);
-            Possibily_Print_Get_File(it,folder_name);
-    }
+                //create folder
+                auto folder_name = As_Removed_Dashes(it.lib_name);
+                Create_Path_If_It_Doesnt_Already_Exist(folder_name);
+                
+                //generate the needed files
+                Make_Sure_A_BUILD_File_Is_Available(folder_name);
+                Possibily_Print_Get_File(it,folder_name);
+        }
+    });
 ❱
 
 ◀private: static▶ void ☀Make_Sure_A_BUILD_File_Is_Available(std::string const& folder_name)❰
