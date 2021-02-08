@@ -60,6 +60,7 @@ hcp(
         "//code/utilities/peripheral/pc:pc_input_state",
         "//code/utilities/types/variant:lib",
         "//code/utilities/types/vectors/operators:lib",
+        "//code/utilities/types/vectors/transformers:lib",
     ],
 )
 
