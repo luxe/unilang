@@ -20,6 +20,13 @@ template <typename T>
 bool In_Vector(std::vector<T> const& vec, T const& item);
 
 
+template <typename T>
+void Move_Indexed_Item_To_Back(std::vector<T>& v, size_t itemIndex)
+{
+    auto it = v.begin() + itemIndex;
+    std::rotate(it, it + 1, v.end());
+}
+
 
 
 //math (string is treated as integer)
