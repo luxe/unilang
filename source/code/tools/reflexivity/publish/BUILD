@@ -12,6 +12,7 @@ hcp(
         "//code/utilities/data_structures/graph/unique_str_vertex_graph:lib",
         "//code/utilities/filesystem/files/creating:lib",
         "//code/utilities/filesystem/files/getting:lib",
+        "//code/utilities/filesystem/files/observers/lstat_wrap:lib",
         "//code/utilities/filesystem/files/temp:existing_temp_file",
         "//code/utilities/filesystem/files/temp:temp_file",
         "//code/utilities/filesystem/paths:lib",
