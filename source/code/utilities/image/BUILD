@@ -19,3 +19,12 @@ hcp(
         "//code/utilities/streams/filestreams:lib",
     ],
 )
+
+hcp(
+    name = "stb_animated_image_setter",
+    deps = [
+        "//code/utilities/data_structures/graphics/image:positioned_animated_image_data",
+        "//code/utilities/image:stb_image",
+        "//code/utilities/streams/filestreams:lib",
+    ],
+)
