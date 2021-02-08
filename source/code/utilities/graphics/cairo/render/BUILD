@@ -15,6 +15,7 @@ hcp(
         "//code/utilities/graphics/imgui/render/elements:line_drawer",
         "//code/utilities/graphics/imgui/render/elements:multi_color_bitmap_drawer",
         "//code/utilities/graphics/imgui/render/elements:rectangle_drawer",
+        "//code/utilities/data_structures/graphics/image:positioned_texture",
         "//code/utilities/math",
         "//code/utilities/types/general:lib",
         "//code/utilities/types/variant:lib",

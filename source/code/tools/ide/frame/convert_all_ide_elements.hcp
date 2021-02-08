@@ -22,6 +22,7 @@ class
 ❪"code/utilities/data_structures/graphics/objects/slider/slider_drawer"❫
 ❪"code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/buildable_schema_face_tree_drawer"❫
 ❪"code/utilities/types/variant/lib"❫
+❪"code/utilities/data_structures/graphics/image/positioned_texture"❫
 ⚞⚟
 
 ◀public: static▶ Frame_Elements ☀Convert(Ide_Elements & e, Ide_Settings const& settings, Pc_Input_State const& pc_input)❰
@@ -36,15 +37,32 @@ class
                 elements.types += Buildable_Schema_Face_Tree_Drawer::Draw(settings.desktop.unilang_font_lookup,x,pc_input).types;
             },
             [&](Positioned_Image_Data & x) {
-                elements.types.emplace_back(x);
+                
+                //convert
+                Positioned_Texture tex;
+                tex.pos = x.pos;
+                tex.id = x.texture;
+                tex.width = x.width;
+                tex.height = x.height;
+                
+                elements.types.emplace_back(tex);
             },
             [&](Positioned_Animated_Image_Data & x) {
                 
+                //animate
                 x.frame += 1;
                 if (x.frame > x.texture.size()){
                     x.frame = 0;
                 }
-                elements.types.emplace_back(x);
+                
+                //convert
+                Positioned_Texture tex;
+                tex.pos = x.pos;
+                tex.id = x.texture[x.frame];
+                tex.width = x.width;
+                tex.height = x.height;
+                
+                elements.types.emplace_back(tex);
             }
         }, it.element);
     }

@@ -25,6 +25,7 @@ hcp(
         "//code/utilities/peripheral/keyboard:key_detector",
         "//code/utilities/peripheral/mouse/state:mouse_position_getter",
         "//code/utilities/peripheral/pc:pc_input_state_getter",
+        "//code/utilities/data_structures/graphics/image:positioned_texture",
         "//code/utilities/types/variant:lib",
         "@imgui//:imgui_sdl_opengl3",
     ],

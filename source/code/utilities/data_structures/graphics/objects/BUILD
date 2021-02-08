@@ -12,5 +12,6 @@ hcp(
         "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/data_structures/graphics/image:positioned_animated_image_data",
         "//code/utilities/data_structures/shapes/rectangle:positioned_rectangle_settings",
+        "//code/utilities/data_structures/graphics/image:positioned_texture",
     ],
 )

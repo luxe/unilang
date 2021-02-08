@@ -23,3 +23,13 @@ hcp_and_hcp_pos(
         "@system//:KHR_hdrs",
     ],
 )
+
+hcp_and_hcp_pos(
+    name = "texture",
+    deps = [
+        "//code/utilities/graphics/opengl/loader:opengl_loaders",
+        "//code/utilities/image:stb_image",
+        "@imgui//:imgui_sdl_opengl3",
+        "@system//:KHR_hdrs",
+    ],
+)

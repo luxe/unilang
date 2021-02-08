@@ -12,6 +12,12 @@ cpp_object(
 )
 
 hcp(
+    name = "stb_image_set_settings",
+    deps = [
+    ],
+)
+
+hcp(
     name = "texture_loader",
     deps = [
         "//code/utilities/image:stb_image",
@@ -29,6 +35,7 @@ hcp(
         "//code/utilities/image:stb_image",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/image:texture_loader",
+        "//code/utilities/image:stb_image_set_settings",
     ],
 )
 
@@ -39,5 +46,6 @@ hcp(
         "//code/utilities/image:stb_image",
         "//code/utilities/streams/filestreams:lib",
         "//code/utilities/image:texture_loader",
+        "//code/utilities/image:stb_image_set_settings",
     ],
 )
