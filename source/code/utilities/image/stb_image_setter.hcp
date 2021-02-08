@@ -5,6 +5,7 @@ class
 ❪"code/utilities/data_structures/graphics/image/positioned_image_data"❫
 ⚯
 ❪"code/utilities/image/stb_image"❫
+❪"code/utilities/image/texture_loader"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Set(Positioned_Image_Data & data)❰
@@ -16,36 +17,7 @@ class
         Load_Image(data);
         // stbir_resize_uint8(data.img_data, width, height, 0)
         
-        Load_Texture(data);
-❱
-
-◀private: static▶ void ☀Load_Texture(Positioned_Image_Data & data)❰
-
-        // Create a OpenGL texture identifier
-        glGenTextures(1, &data.texture);
-        
-        if (data.texture == 0){
-            std::cerr << "Zero is a reserved texture name and is never returned as a texture name by glGenTextures()." << std::endl;
-            std::cerr << "Have you created an OpenGL context first?" << std::endl;
-            std::cerr << "glGetError: " << glGetError() << std::endl;
-            exit(-1);
-        }
-        
-        glBindTexture(GL_TEXTURE_2D, data.texture);
-        
-        // Setup filtering parameters for display
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
-        
-        //glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        
-    // Upload pixels into texture
-#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#endif
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.width, data.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.img_data);
+        Texture_Loader::Load(data.texture,data.img_data,data.width,data.height);
 ❱
 
 ◀private: static▶ void ☀Load_Image(Positioned_Image_Data & data)❰

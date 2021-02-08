@@ -12,11 +12,23 @@ cpp_object(
 )
 
 hcp(
+    name = "texture_loader",
+    deps = [
+        "//code/utilities/image:stb_image",
+        "//code/utilities/streams/filestreams:lib",
+        "//code/utilities/graphics/opengl/loader:opengl_loaders",
+        "@imgui//:imgui_sdl_opengl3",
+        "@system//:KHR_hdrs",
+    ],
+)
+
+hcp(
     name = "stb_image_setter",
     deps = [
         "//code/utilities/data_structures/graphics/image:positioned_image_data",
         "//code/utilities/image:stb_image",
         "//code/utilities/streams/filestreams:lib",
+        "//code/utilities/image:texture_loader",
     ],
 )
 
@@ -26,5 +38,6 @@ hcp(
         "//code/utilities/data_structures/graphics/image:positioned_animated_image_data",
         "//code/utilities/image:stb_image",
         "//code/utilities/streams/filestreams:lib",
+        "//code/utilities/image:texture_loader",
     ],
 )

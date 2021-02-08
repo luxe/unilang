@@ -6,6 +6,7 @@ class
 ⚯
 ❪"code/utilities/streams/filestreams/lib"❫
 ❪"code/utilities/image/stb_image"❫
+❪"code/utilities/image/texture_loader"❫
 ⚞⚟
 
 ◀public: static▶ void ☀Set(Positioned_Animated_Image_Data & data)❰
@@ -36,17 +37,18 @@ class
     //interpret it as a gif
     int* delays;
     int frames = 0;
-    data.full_img_data = (unsigned char*) stbi_load_gif_from_memory((const stbi_uc*)buf, (int) size, &delays, &data.width, &data.height, &frames, &data.rows, 0);
+    unsigned char* full_img_data = (unsigned char*) stbi_load_gif_from_memory((const stbi_uc*)buf, (int) size, &delays, &data.width, &data.height, &frames, &data.rows, 0);
     
-    if (data.full_img_data == nullptr)
+    if (full_img_data == nullptr)
     {
         std::cerr << "failed to interpret image as gif" << std::endl;
         exit(-1);
     }
     
+    //split up each frame of the image
     for (int frameIndex = 0; frameIndex < frames - 1; ++frameIndex){
         int imageOffset = (data.width * data.height * data.rows) * frameIndex;
-        unsigned char* imageStart = &data.full_img_data[imageOffset];
+        unsigned char* imageStart = &full_img_data[imageOffset];
         data.img_data.emplace_back(imageStart);
     }
 ❱
@@ -55,37 +57,7 @@ class
 
     for (auto & it: data.img_data){
         GLuint tex = 0;
-        Load_Texture(tex,it,data.width,data.height);
+        Texture_Loader::Load(tex,it,data.width,data.height);
         data.texture.emplace_back(tex);
     }
-❱
-
-
-◀private: static▶ void ☀Load_Texture(GLuint & texture, unsigned char* img_data, int const& width, int const& height)❰
-
-        // Create a OpenGL texture identifier
-        glGenTextures(1, &texture);
-        
-        if (texture == 0){
-            std::cerr << "Zero is a reserved texture name and is never returned as a texture name by glGenTextures()." << std::endl;
-            std::cerr << "Have you created an OpenGL context first?" << std::endl;
-            std::cerr << "glGetError: " << glGetError() << std::endl;
-            exit(-1);
-        }
-        
-        glBindTexture(GL_TEXTURE_2D, texture);
-        
-        // Setup filtering parameters for display
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); // This is required on WebGL for non power-of-two textures
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); // Same
-        
-        //glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-        
-    // Upload pixels into texture
-#if defined(GL_UNPACK_ROW_LENGTH) && !defined(__EMSCRIPTEN__)
-        glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-#endif
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img_data);
 ❱
