@@ -6,22 +6,6 @@ load("//bazel/rules/hcp:hcp_and_hcp_pos.bzl", "hcp_and_hcp_pos")
 load("//bazel/rules/enum_cpp:enum_cpp.bzl", "enum_cpp")
 
 hcp(
-    name = "buildable_schema_faced_tree_state",
-    deps = [
-        "//code/utilities/code/style_theme:style_lookup_map",
-        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
-        "//code/utilities/data_structures/tree/generic:child_lookup_map",
-    ],
-)
-
-hcp_and_hcp_pos(
-    name = "buildable_schema_faced_tree",
-    deps = [
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:buildable_schema_faced_tree_state",
-    ],
-)
-
-hcp(
     name = "buildable_schema_face_tree_drawer",
     deps = [
         "//code/utilities/data_structures/counters/unique_max_counter",
@@ -34,8 +18,8 @@ hcp(
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:generic_menu_handler",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:buildable_face_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree/data:positioned_buildable_face_tree",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/data:buildable_schema_faced_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/data:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:schema_menu_handler",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/data:positioned_buttoned_faced_label",
         "//code/utilities/data_structures/graphics/objects/buttoned_faced_label/premade:buttoned_faced_label_premades",
@@ -118,8 +102,8 @@ hcp(
     name = "buildable_schema_faced_tree_tokenizer",
     deps = [
         "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_tokenizer",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree",
-        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree:positioned_buildable_schema_faced_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/data:buildable_schema_faced_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/data:positioned_buildable_schema_faced_tree",
         "//code/utilities/data_structures/tree/generic/tokens:tree_token",
     ],
 )
