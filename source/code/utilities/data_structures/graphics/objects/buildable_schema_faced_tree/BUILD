@@ -44,6 +44,17 @@ hcp(
 )
 
 hcp(
+    name = "buildable_schema_faced_tree_is_mouse_over",
+    deps = [
+        "//code/utilities/fonts/bdf/character_maps:character_maps",
+        "//code/utilities/data_structures/graphics/objects/buildable_schema_faced_tree/data:positioned_buildable_schema_faced_tree",
+        "//code/utilities/data_structures/graphics/objects/buildable_faced_tree:buildable_face_tree_is_mouse_over",
+        "//code/utilities/peripheral/pc:pc_input_state",
+    ],
+)
+
+
+hcp(
     name = "schema_menu_handler",
     deps = [
         "//code/utilities/code/style_theme:style_lookup_map",
